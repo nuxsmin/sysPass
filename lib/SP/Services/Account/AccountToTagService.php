@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Services\Service;
@@ -39,28 +37,25 @@ use SP\Services\Service;
  */
 final class AccountToTagService extends Service
 {
-    /**
-     * @var AccountToTagRepository
-     */
-    protected $accountToTagRepository;
+    protected ?AccountToTagRepository $accountToTagRepository = null;
 
     /**
-     * @param $id
-     *
      * @return ItemData[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getTagsByAccountId($id)
+    public function getTagsByAccountId(int $id): array
     {
-        return $this->accountToTagRepository->getTagsByAccountId($id)->getDataAsArray();
+        return $this->accountToTagRepository
+            ->getTagsByAccountId($id)
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
     }

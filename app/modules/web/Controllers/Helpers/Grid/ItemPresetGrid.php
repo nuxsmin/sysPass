@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
@@ -43,10 +43,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class ItemPresetGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -147,7 +144,10 @@ final class ItemPresetGrid extends GridBase
         $gridActionSearch->setName('frmSearchItemPreset');
         $gridActionSearch->setTitle(__('Search for Value'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ITEMPRESET_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -260,7 +260,10 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setTitle(__('Edit Value'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_EDIT));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ITEMPRESET_EDIT)
+        );
 
         return $gridAction;
     }
@@ -277,7 +280,10 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setTitle(__('Delete Value'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_DELETE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ITEMPRESET_DELETE)
+        );
 
         return $gridAction;
     }

@@ -26,7 +26,7 @@ use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextInterface;
@@ -53,36 +53,41 @@ use function DI\get;
 return [
     Request::class => create(Request::class)
         ->constructor(\Klein\Request::createFromGlobals()),
-    ContextInterface::class => function (ContainerInterface $c) {
-        if (APP_MODULE === 'web') {
-            return $c->get(SessionContext::class);
-        }
+    ContextInterface::class =>
+        static function (ContainerInterface $c) {
+            if (APP_MODULE === 'web') {
+                return $c->get(SessionContext::class);
+            }
 
-        return $c->get(StatelessContext::class);
-    },
-    Config::class => function (ContainerInterface $c) {
-        return new Config(
-            new XmlHandler(new FileHandler(CONFIG_FILE)),
-            new FileCache(Config::CONFIG_CACHE_FILE),
-            $c);
-    },
-    ConfigData::class => function (Config $config) {
-        return $config->getConfigData();
-    },
+            return $c->get(StatelessContext::class);
+        },
+    Config::class =>
+        static function (ContainerInterface $c) {
+            return new Config(
+                new XmlHandler(new FileHandler(CONFIG_FILE)),
+                new FileCache(Config::CONFIG_CACHE_FILE),
+                $c);
+        },
+    ConfigDataInterface::class =>
+        static function (Config $config) {
+            return $config->getConfigData();
+        },
     DBStorageInterface::class => create(MySQLHandler::class)
         ->constructor(factory([DatabaseConnectionData::class, 'getFromConfig'])),
-    Actions::class => function (ContainerInterface $c) {
-        return new Actions(
-            new FileCache(Actions::ACTIONS_CACHE_FILE),
-            new XmlHandler(new FileHandler(ACTIONS_FILE))
-        );
-    },
-    MimeTypes::class => function () {
-        return new MimeTypes(
-            new FileCache(MimeTypes::MIME_CACHE_FILE),
-            new XmlHandler(new FileHandler(MIMETYPES_FILE))
-        );
-    },
+    Actions::class =>
+        static function (ContainerInterface $c) {
+            return new Actions(
+                new FileCache(Actions::ACTIONS_CACHE_FILE),
+                new XmlHandler(new FileHandler(ACTIONS_FILE))
+            );
+        },
+    MimeTypes::class =>
+        static function () {
+            return new MimeTypes(
+                new FileCache(MimeTypes::MIME_CACHE_FILE),
+                new XmlHandler(new FileHandler(MIMETYPES_FILE))
+            );
+        },
     Acl::class => autowire(Acl::class)
         ->constructorParameter('action', get(Actions::class)),
     ThemeInterface::class => autowire(Theme::class)

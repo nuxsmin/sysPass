@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use RuntimeException;
 use SP\Config\ConfigUtil;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Config\ConfigBackupService;
@@ -51,9 +48,9 @@ final class ConfigGeneralController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveAction(): bool
     {
@@ -91,15 +88,24 @@ final class ConfigGeneralController extends SimpleControllerBase
         $syslogPort = $this->request->analyzeInt('remotesyslog_port', 0);
 
         $configData->setLogEnabled($logEnabled);
-        $configData->setLogEvents($this->request->analyzeArray('log_events', function ($items) {
-            return ConfigUtil::eventsAdapter($items);
-        }, []));
+        $configData->setLogEvents(
+            $this->request->analyzeArray(
+                'log_events',
+                function ($items) {
+                    return ConfigUtil::eventsAdapter($items);
+                },
+                []
+            )
+        );
 
         $configData->setSyslogEnabled($syslogEnabled);
 
         if ($remoteSyslogEnabled) {
             if (!$syslogServer || !$syslogPort) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing remote syslog parameters'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('Missing remote syslog parameters')
+                );
             }
 
             $configData->setSyslogRemoteEnabled(true);
@@ -125,7 +131,10 @@ final class ConfigGeneralController extends SimpleControllerBase
 
         // Valores para Proxy
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Proxy parameters '));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Missing Proxy parameters ')
+            );
         }
 
         if ($proxyEnabled) {
@@ -177,7 +186,10 @@ final class ConfigGeneralController extends SimpleControllerBase
             $this->config,
             function () use ($eventMessage, $configData) {
                 if ($configData->isMaintenance()) {
-                    Util::lockApp($this->session->getUserData()->getId(), 'config');
+                    Util::lockApp(
+                        $this->session->getUserData()->getId(),
+                        'config'
+                    );
                 }
 
                 $this->eventDispatcher->notifyEvent(
@@ -188,10 +200,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function downloadLogAction()
+    public function downloadLogAction(): string
     {
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
@@ -203,10 +212,14 @@ final class ConfigGeneralController extends SimpleControllerBase
             $file = new FileHandler(LOG_FILE);
             $file->checkFileExists();
 
-            $this->eventDispatcher->notifyEvent('download.logFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
+            $this->eventDispatcher->notifyEvent(
+                'download.logFile',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('File downloaded'))
+                        ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
+                )
             );
 
             $response = $this->router->response();
@@ -223,38 +236,38 @@ final class ConfigGeneralController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
     }
 
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function downloadConfigBackupAction(string $type)
+    public function downloadConfigBackupAction(string $type): string
     {
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
         }
 
         try {
-            $this->eventDispatcher->notifyEvent('download.configBackupFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), 'config.json'))
+            $this->eventDispatcher->notifyEvent(
+                'download.configBackupFile',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('File downloaded'))
+                        ->addDetail(__u('File'), 'config.json')
+                )
             );
 
             $configBackupService = $this->dic->get(ConfigBackupService::class);
 
-            switch ($type) {
-                case 'json':
-                    $data = ConfigBackupService::configToJson($configBackupService->getBackup());
-                    break;
-                default:
-                    throw new RuntimeException('Not implemented');
+            if ($type === 'json') {
+                $data = ConfigBackupService::configToJson($configBackupService->getBackup());
+            } else {
+                throw new RuntimeException('Not implemented');
             }
 
             $response = $this->router->response();
@@ -273,29 +286,31 @@ final class ConfigGeneralController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
     }
 
     /**
-     * @return bool
-     * @throws SessionTimeout
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_GENERAL);
+            $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

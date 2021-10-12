@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\User;
@@ -33,7 +33,7 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\User\UpdatePassRequest;
 use SP\Storage\Database\QueryData;
@@ -44,7 +44,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\User
  */
-final class UserRepository extends Repository implements RepositoryItemInterface
+final class UserRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -58,7 +58,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated user login/email'));
@@ -112,7 +112,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $query = /** @lang SQL */
             'SELECT id
@@ -143,7 +143,10 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePassById($id, UpdatePassRequest $passRequest)
+    public function updatePassById(
+        int               $id,
+        UpdatePassRequest $passRequest
+    ): int
     {
         $query = /** @lang SQL */
             'UPDATE User SET
@@ -159,8 +162,8 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([
             $passRequest->getPass(),
-            $passRequest->getisChangePass(),
-            $passRequest->getisChangedPass(),
+            (int)$passRequest->getisChangePass(),
+            (int)$passRequest->getisChangedPass(),
             $id
         ]);
         $queryData->setOnErrorMessage(__u('Error while updating the password'));
@@ -171,13 +174,13 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM User WHERE id = ? LIMIT 1');
@@ -196,7 +199,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT U.id,
@@ -244,7 +247,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): array
     {
         $query = /** @lang SQL */
             'SELECT U.id,
@@ -285,14 +288,14 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return UserData[]
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
-            return [];
+        if (count($ids) === 0) {
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -330,7 +333,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -342,9 +345,9 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -363,7 +366,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -377,7 +380,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('User.id,
@@ -395,8 +398,10 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         INNER JOIN UserGroup ON User.userGroupId = UserGroup.id');
         $queryData->setOrder('User.name');
 
-        if ($itemSearchData->getSeachString() !== '') {
-            if ($this->context->getUserData()->getIsAdminApp()) {
+        $isAdminApp = $this->context->getUserData()->getIsAdminApp();
+
+        if (!empty($itemSearchData->getSeachString())) {
+            if ($isAdminApp) {
                 $queryData->setWhere('User.name LIKE ? OR User.login LIKE ?');
             } else {
                 $queryData->setWhere('User.name LIKE ? OR User.login LIKE ? AND User.isAdminApp = 0');
@@ -405,7 +410,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
-        } elseif (!$this->context->getUserData()->getIsAdminApp()) {
+        } elseif (!$isAdminApp) {
             $queryData->setWhere('User.isAdminApp = 0');
         }
 
@@ -425,7 +430,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @return int
      * @throws SPException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated user login/email'));
@@ -486,7 +491,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $query = /** @lang SQL */
             'SELECT id
@@ -513,7 +518,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByLogin($login)
+    public function getByLogin(string $login): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT U.id,
@@ -561,7 +566,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getBasicInfo()
+    public function getBasicInfo(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT U.id,
@@ -586,15 +591,19 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates user's master password
      *
-     * @param $id
-     * @param $pass
-     * @param $key
+     * @param int    $id
+     * @param string $pass
+     * @param string $key
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateMasterPassById($id, $pass, $key)
+    public function updateMasterPassById(
+        int    $id,
+        string $pass,
+        string $key
+    ): int
     {
         $query = /** @lang SQL */
             'UPDATE User SET 
@@ -621,7 +630,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function updateLastLoginById($id)
+    public function updateLastLoginById(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE User SET lastLogin = NOW(), loginCount = loginCount + 1 WHERE id = ? LIMIT 1');
@@ -631,13 +640,13 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * @param $login
+     * @param string $login
      *
      * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function checkExistsByLogin($login)
+    public function checkExistsByLogin(string $login): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM User WHERE UPPER(login) = UPPER(?) OR UPPER(ssoLogin) = UPPER(?) LIMIT 1');
@@ -653,7 +662,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateOnLogin(UserData $itemData)
+    public function updateOnLogin(UserData $itemData): int
     {
         $query = 'UPDATE User SET 
             pass = ?,
@@ -690,7 +699,10 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePreferencesById($id, UserPreferencesData $userPreferencesData)
+    public function updatePreferencesById(
+        int                 $id,
+        UserPreferencesData $userPreferencesData
+    ): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE User SET preferences = ? WHERE id = ? LIMIT 1');
@@ -703,13 +715,13 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @param $groupId
+     * @param int $groupId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUserEmailForGroup($groupId)
+    public function getUserEmailForGroup(int $groupId): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT U.id, U.login, U.name, U.email 
@@ -737,7 +749,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @TODO create unit test
      */
-    public function getUserEmail()
+    public function getUserEmail(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, login, `name`, email 
@@ -755,14 +767,14 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Return the email of the given user's id
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      * @TODO create unit test
      */
-    public function getUserEmailById(array $ids)
+    public function getUserEmailById(array $ids): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, login, `name`, email 
@@ -788,7 +800,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageForUser($id)
+    public function getUsageForUser(int $id): QueryResult
     {
         $query = 'SELECT * FROM (SELECT
                   A.id,

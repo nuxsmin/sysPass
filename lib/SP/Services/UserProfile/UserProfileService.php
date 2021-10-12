@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\UserProfile;
@@ -49,20 +49,14 @@ final class UserProfileService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var UserProfileRepository
-     */
-    protected $userProfileRepository;
+    protected ?UserProfileRepository $userProfileRepository = null;
 
     /**
-     * @param $id
-     *
-     * @return UserProfileData
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): UserProfileData
     {
         $result = $this->userProfileRepository->getById($id);
 
@@ -71,92 +65,97 @@ final class UserProfileService extends Service
         }
 
         $userProfileData = $result->getData();
-        $userProfileData->setProfile(Util::unserialize(ProfileData::class, $userProfileData->getProfile()));
+        $userProfileData->setProfile(
+            Util::unserialize(
+                ProfileData::class,
+                $userProfileData->getProfile()
+            )
+        );
 
         return $userProfileData;
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->userProfileRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): UserProfileService
     {
         if ($this->userProfileRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Profile not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Profile not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->userProfileRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while removing the profiles'), ServiceException::WARNING);
+        $count = $this->userProfileRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while removing the profiles'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\DuplicatedItemException
      */
-    public function create($itemData)
+    public function create(UserProfileData $itemData): int
     {
         return $this->userProfileRepository->create($itemData);
     }
 
     /**
-     * @param $itemData
-     *
-     * @throws SPException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws \SP\Services\ServiceException
      */
-    public function update($itemData)
+    public function update(UserProfileData $itemData): void
     {
-        if ($this->userProfileRepository->update($itemData) === 0) {
+        $update = $this->userProfileRepository->update($itemData);
+
+        if ($update === 0) {
             throw new ServiceException(__u('Error while updating the profile'));
         }
     }
 
     /**
-     * @param $id
-     *
-     * @return array
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUsersForProfile($id)
+    public function getUsersForProfile(int $id): array
     {
-        return $this->userProfileRepository->getUsersForProfile($id)->getDataAsArray();
+        return $this->userProfileRepository
+            ->getUsersForProfile($id)
+            ->getDataAsArray();
     }
 
     /**
@@ -166,16 +165,18 @@ final class UserProfileService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
-        return $this->userProfileRepository->getAll()->getDataAsArray();
+        return $this->userProfileRepository
+            ->getAll()
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userProfileRepository = $this->dic->get(UserProfileRepository::class);
     }

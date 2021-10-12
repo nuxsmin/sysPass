@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Plugin;
@@ -40,14 +40,8 @@ use SP\Services\ServiceException;
  */
 final class PluginOperation
 {
-    /**
-     * @var PluginDataService
-     */
-    private $pluginDataService;
-    /**
-     * @var string
-     */
-    private $pluginName;
+    private PluginDataService $pluginDataService;
+    private string $pluginName;
 
     /**
      * PluginOperation constructor.
@@ -55,7 +49,10 @@ final class PluginOperation
      * @param PluginDataService $pluginDataService
      * @param string            $pluginName
      */
-    public function __construct(PluginDataService $pluginDataService, string $pluginName)
+    public function __construct(
+        PluginDataService $pluginDataService,
+        string            $pluginName
+    )
     {
         $this->pluginDataService = $pluginDataService;
         $this->pluginName = $pluginName;
@@ -104,32 +101,28 @@ final class PluginOperation
     }
 
     /**
-     * @param int $itemId
-     *
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $itemId)
+    public function delete(int $itemId): void
     {
         $this->pluginDataService->deleteByItemId($this->pluginName, $itemId);
     }
 
     /**
-     * @param int         $itemId
-     * @param string|null $class
-     *
-     * @return mixed|null
      * @throws ConstraintException
      * @throws CryptoException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function get(int $itemId, string $class = null)
+    public function get(int $itemId, ?string $class = null)
     {
         try {
-            return $this->pluginDataService->getByItemId($this->pluginName, $itemId)->hydrate($class);
+            return $this->pluginDataService
+                ->getByItemId($this->pluginName, $itemId)
+                ->hydrate($class);
         } catch (NoSuchItemException $e) {
             return null;
         }

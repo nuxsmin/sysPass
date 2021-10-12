@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Api;
@@ -35,12 +35,12 @@ use SP\Http\Json;
  */
 final class JsonRpcResponse
 {
-    const PARSE_ERROR = -32700;
-    const INVALID_REQUEST = -32600;
-    const METHOD_NOT_FOUND = -32601;
-    const INVALID_PARAMS = -32602;
-    const INTERNAL_ERROR = -32603;
-    const SERVER_ERROR = -32000;
+    public const PARSE_ERROR = -32700;
+    public const INVALID_REQUEST = -32600;
+    public const METHOD_NOT_FOUND = -32601;
+    public const INVALID_PARAMS = -32602;
+    public const INTERNAL_ERROR = -32603;
+    public const SERVER_ERROR = -32000;
 
     /**
      * @param ApiResponse $apiResponse
@@ -49,7 +49,10 @@ final class JsonRpcResponse
      * @return string
      * @throws SPException
      */
-    public static function getResponse(ApiResponse $apiResponse, int $id)
+    public static function getResponse(
+        ApiResponse $apiResponse,
+        int         $id
+    ): string
     {
         return Json::getJson([
             'jsonrpc' => '2.0',
@@ -58,13 +61,7 @@ final class JsonRpcResponse
         ], JSON_UNESCAPED_SLASHES);
     }
 
-    /**
-     * @param Exception $e
-     * @param int       $id
-     *
-     * @return string
-     */
-    public static function getResponseException(Exception $e, int $id)
+    public static function getResponseException(Exception $e, int $id): string
     {
         $data = ($e instanceof SPException) ? $e->getHint() : null;
 
@@ -72,14 +69,19 @@ final class JsonRpcResponse
     }
 
     /**
-     * @param string $message
-     * @param int    $code
-     * @param int    $id
-     * @param mixed  $data
+     * @param string     $message
+     * @param int        $code
+     * @param int        $id
+     * @param mixed|null $data
      *
      * @return string
      */
-    public static function getResponseError(string $message, int $code, int $id, $data = null)
+    public static function getResponseError(
+        string $message,
+        int    $code,
+        int    $id,
+               $data = null
+    ): string
     {
         return json_encode([
             'jsonrpc' => '2.0',

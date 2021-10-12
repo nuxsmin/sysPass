@@ -1,12 +1,11 @@
 <?php
 /**
- * @var ThemeIcons $icons
- * @var callable   $_getvar
- * @var ConfigData $configData
- * @var FileData   $file
+ * @var ThemeIcons                     $icons
+ * @var callable                       $_getvar
+ * @var \SP\Config\ConfigDataInterface $configData
+ * @var FileData                       $file
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\FileData;
 use SP\Html\Html;

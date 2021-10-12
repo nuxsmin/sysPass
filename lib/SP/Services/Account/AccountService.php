@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -42,6 +42,7 @@ use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\ProfileData;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
@@ -54,7 +55,6 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Storage\Database\QueryResult;
-use stdClass;
 
 /**
  * Class AccountService
@@ -65,102 +65,78 @@ final class AccountService extends Service implements AccountServiceInterface
 {
     use ServiceItemTrait;
 
-    /**
-     * @var AccountRepository
-     */
-    protected $accountRepository;
-    /**
-     * @var AccountToUserGroupRepository
-     */
-    protected $accountToUserGroupRepository;
-    /**
-     * @var AccountToUserRepository
-     */
-    protected $accountToUserRepository;
-    /**
-     * @var AccountToTagRepository
-     */
-    protected $accountToTagRepository;
-    /**
-     * @var ItemPresetService
-     */
-    protected $itemPresetService;
+    protected ?AccountRepository $accountRepository = null;
+    protected ?AccountToUserGroupRepository $accountToUserGroupRepository = null;
+    protected ?AccountToUserRepository $accountToUserRepository = null;
+    protected ?AccountToTagRepository $accountToTagRepository = null;
+    protected ?ItemPresetService $itemPresetService = null;
 
     /**
-     * @param AccountDetailsResponse $accountDetailsResponse
-     *
-     * @return AccountService
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUsersById(AccountDetailsResponse $accountDetailsResponse)
+    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountService
     {
-        $accountDetailsResponse->setUsers($this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId())->getDataAsArray());
+        $accountDetailsResponse->setUsers(
+            $this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId())
+                ->getDataAsArray()
+        );
 
         return $this;
     }
 
     /**
-     * @param AccountDetailsResponse $accountDetailsResponse
-     *
-     * @return AccountService
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse)
+    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountService
     {
-        $accountDetailsResponse->setUserGroups($this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId())->getDataAsArray());
+        $accountDetailsResponse->setUserGroups(
+            $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId())
+                ->getDataAsArray()
+        );
 
         return $this;
     }
 
     /**
-     * @param AccountDetailsResponse $accountDetailsResponse
-     *
-     * @return AccountService
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withTagsById(AccountDetailsResponse $accountDetailsResponse)
+    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountService
     {
-        $accountDetailsResponse->setTags($this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId())->getDataAsArray());
+        $accountDetailsResponse->setTags(
+            $this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId())
+                ->getDataAsArray()
+        );
 
         return $this;
     }
 
     /**
-     * @param $id
-     *
-     * @return bool
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function incrementViewCounter($id)
+    public function incrementViewCounter(int $id): bool
     {
         return $this->accountRepository->incrementViewCounter($id);
     }
 
     /**
-     * @param $id
-     *
-     * @return bool
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function incrementDecryptCounter($id)
+    public function incrementDecryptCounter(int $id): bool
     {
         return $this->accountRepository->incrementDecryptCounter($id);
     }
 
     /**
-     * @param $id
-     *
-     * @return AccountPassData
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getPasswordForId($id)
+    public function getPasswordForId(int $id): AccountPassData
     {
         $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
 
@@ -174,15 +150,12 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param AccountRequest $accountRequest
-     *
-     * @return int
      * @throws QueryException
      * @throws SPException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      */
-    public function create(AccountRequest $accountRequest)
+    public function create(AccountRequest $accountRequest): int
     {
         $userData = $this->context->getUserData();
 
@@ -223,13 +196,9 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Devolver los datos de la clave encriptados
      *
-     * @param string $pass
-     * @param string $masterPass Clave maestra a utilizar
-     *
-     * @return array
-     * @throws ServiceException
+     * @throws \SP\Services\ServiceException
      */
-    public function getPasswordEncrypted($pass, $masterPass = null)
+    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): array
     {
         try {
             if ($masterPass === null) {
@@ -254,14 +223,12 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param AccountRequest $accountRequest
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws NoSuchItemException
      */
-    private function setPresetPrivate(AccountRequest $accountRequest)
+    private function setPresetPrivate(AccountRequest $accountRequest): void
     {
         $userData = $this->context->getUserData();
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE);
@@ -288,14 +255,11 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return AccountDetailsResponse
      * @throws QueryException
      * @throws NoSuchItemException
      * @throws ConstraintException
      */
-    public function getById($id)
+    public function getById(int $id): AccountDetailsResponse
     {
         $result = $this->accountRepository->getById($id);
 
@@ -308,41 +272,39 @@ final class AccountService extends Service implements AccountServiceInterface
 
     /**
      * Adds external items to the account
-     *
-     * @param AccountRequest $accountRequest
      */
-    private function addItems(AccountRequest $accountRequest)
+    private function addItems(AccountRequest $accountRequest): void
     {
         try {
 
             if ($accountRequest->changePermissions) {
                 if (is_array($accountRequest->userGroupsView)
-                    && !empty($accountRequest->userGroupsView)
+                    && count($accountRequest->userGroupsView) !== 0
                 ) {
                     $this->accountToUserGroupRepository->addByType($accountRequest, false);
                 }
 
                 if (is_array($accountRequest->userGroupsEdit)
-                    && !empty($accountRequest->userGroupsEdit)
+                    && count($accountRequest->userGroupsEdit) !== 0
                 ) {
                     $this->accountToUserGroupRepository->addByType($accountRequest, true);
                 }
 
                 if (is_array($accountRequest->usersView)
-                    && !empty($accountRequest->usersView)
+                    && count($accountRequest->usersView) !== 0
                 ) {
                     $this->accountToUserRepository->addByType($accountRequest, false);
                 }
 
                 if (is_array($accountRequest->usersEdit)
-                    && !empty($accountRequest->usersEdit)
+                    && count($accountRequest->usersEdit) !== 0
                 ) {
                     $this->accountToUserRepository->addByType($accountRequest, true);
                 }
             }
 
             if (is_array($accountRequest->tags)
-                && !empty($accountRequest->tags)
+                && count($accountRequest->tags) !== 0
             ) {
                 $this->accountToTagRepository->add($accountRequest);
             }
@@ -352,13 +314,11 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param int $accountId
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      */
-    private function addPresetPermissions(int $accountId)
+    private function addPresetPermissions(int $accountId): void
     {
         $itemPresetData = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
 
@@ -394,13 +354,10 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param AccountHistoryData $data
-     *
-     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function createFromHistory(AccountHistoryData $data)
+    public function createFromHistory(AccountHistoryData $data): int
     {
         $accountRequest = new AccountRequest();
         $accountRequest->name = $data->getName();
@@ -424,59 +381,55 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param AccountRequest $accountRequest
-     *
      * @throws Exception
      */
-    public function update(AccountRequest $accountRequest)
+    public function update(AccountRequest $accountRequest): void
     {
-        $this->transactionAware(function () use ($accountRequest) {
-            $userData = $this->context->getUserData();
-            $userProfile = $this->context->getUserProfile();
+        $this->transactionAware(
+            function () use ($accountRequest) {
+                $userData = $this->context->getUserData();
+                $userProfile = $this->context->getUserProfile() ?? new ProfileData();
 
-            $accountRequest->changePermissions =
-                AccountAclService::getShowPermission($userData, $userProfile);
+                $accountRequest->changePermissions =
+                    AccountAclService::getShowPermission($userData, $userProfile);
 
-            if ($accountRequest->changePermissions) {
-                $account = $this->getById($accountRequest->id)->getAccountVData();
+                if ($accountRequest->changePermissions) {
+                    $account = $this->getById($accountRequest->id)->getAccountVData();
 
-                $accountRequest->changeOwner = $accountRequest->userId > 0
-                    && ($userData->getIsAdminApp()
-                        || $userData->getIsAdminAcc()
-                        || ($userProfile->isAccPermission()
-                            && $userData->getId() === $account->getUserId()));
+                    $accountRequest->changeOwner = $accountRequest->userId > 0
+                        && ($userData->getIsAdminApp()
+                            || $userData->getIsAdminAcc()
+                            || ($userProfile->isAccPermission()
+                                && $userData->getId() === $account->getUserId()));
 
-                $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
-                    && ($userData->getIsAdminApp()
-                        || $userData->getIsAdminAcc()
-                        || ($userProfile->isAccPermission()
-                            && ($userData->getUserGroupId() === $account->getUserGroupId())
-                            || $userData->getId() === $account->getUserId()));
+                    $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
+                        && ($userData->getIsAdminApp()
+                            || $userData->getIsAdminAcc()
+                            || (($userProfile->isAccPermission()
+                                    && ($userData->getUserGroupId() === $account->getUserGroupId()))
+                                || $userData->getId() === $account->getUserId()));
+                }
+
+                $this->addHistory($accountRequest->id);
+
+                $this->setPresetPrivate($accountRequest);
+
+                $this->accountRepository->update($accountRequest);
+
+                $this->updateItems($accountRequest);
+
+                $this->addPresetPermissions($accountRequest->id);
             }
-
-            $this->addHistory($accountRequest->id);
-
-            $this->setPresetPrivate($accountRequest);
-
-            $this->accountRepository->update($accountRequest);
-
-            $this->updateItems($accountRequest);
-
-            $this->addPresetPermissions($accountRequest->id);
-        });
+        );
     }
 
     /**
-     * @param int  $accountId
-     * @param bool $isDelete
-     *
-     * @return bool
      * @throws NoSuchItemException
      * @throws QueryException
      * @throws ServiceException
      * @throws ConstraintException
      */
-    private function addHistory($accountId, $isDelete = false)
+    private function addHistory(int $accountId, bool $isDelete = false): int
     {
         $accountHistoryRepository = $this->dic->get(AccountHistoryService::class);
         $configService = $this->dic->get(ConfigService::class);
@@ -493,12 +446,10 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param AccountRequest $accountRequest
-     *
      * @throws QueryException
      * @throws ConstraintException
      */
-    private function updateItems(AccountRequest $accountRequest)
+    private function updateItems(AccountRequest $accountRequest): void
     {
         if ($accountRequest->changePermissions) {
             if ($accountRequest->userGroupsView !== null) {
@@ -546,31 +497,29 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Update accounts in bulk mode
      *
-     * @param AccountBulkRequest $request
-     *
      * @throws ServiceException
      */
-    public function updateBulk(AccountBulkRequest $request)
+    public function updateBulk(AccountBulkRequest $request): void
     {
-        $this->transactionAware(function () use ($request) {
-            foreach ($request->getItemsId() as $itemId) {
-                $accountRequest = $request->getAccountRequestForId($itemId);
+        $this->transactionAware(
+            function () use ($request) {
+                foreach ($request->getItemsId() as $itemId) {
+                    $accountRequest = $request->getAccountRequestForId($itemId);
 
-                $this->addHistory($accountRequest->id);
+                    $this->addHistory($accountRequest->id);
 
-                $this->accountRepository->updateBulk($accountRequest);
+                    $this->accountRepository->updateBulk($accountRequest);
 
-                $this->updateItems($accountRequest);
+                    $this->updateItems($accountRequest);
+                }
             }
-        });
+        );
     }
 
     /**
-     * @param AccountRequest $accountRequest
-     *
      * @throws Exception
      */
-    public function editPassword(AccountRequest $accountRequest)
+    public function editPassword(AccountRequest $accountRequest): void
     {
         $this->transactionAware(function () use ($accountRequest) {
             $this->addHistory($accountRequest->id);
@@ -587,41 +536,37 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates an already encrypted password data from a master password changing action
      *
-     * @param AccountPasswordRequest $accountRequest
-     *
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): bool
     {
         return $this->accountRepository->updatePassword($accountRequest);
     }
 
     /**
-     * @param $historyId
-     * @param $accountId
+     * @param int $historyId
+     * @param int $accountId
      *
-     * @throws Exception
+     * @throws \SP\Services\ServiceException
      */
-    public function editRestore($historyId, $accountId)
+    public function editRestore(int $historyId, int $accountId): void
     {
-        $this->transactionAware(function () use ($historyId, $accountId) {
-            $this->addHistory($accountId);
+        $this->transactionAware(
+            function () use ($historyId, $accountId) {
+                $this->addHistory($accountId);
 
-            if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
-                throw new ServiceException(__u('Error on restoring the account'));
+                if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
+                    throw new ServiceException(__u('Error on restoring the account'));
+                }
             }
-        });
+        );
     }
 
     /**
-     * @param $id
-     *
-     * @return AccountService
-     * @throws ServiceException
+     * @throws \SP\Services\ServiceException
      */
-    public function delete($id)
+    public function delete(int $id): AccountService
     {
         $this->transactionAware(function () use ($id) {
             $this->addHistory($id, 1);
@@ -635,13 +580,12 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return AccountService
      * @throws SPException
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): AccountService
     {
         if ($this->accountRepository->deleteByIdBatch($ids) === 0) {
             throw new ServiceException(__u('Error while deleting the accounts'));
@@ -651,13 +595,10 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param $accountId
-     *
-     * @return array
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getForUser($accountId = null)
+    public function getForUser(int $accountId = null): array
     {
         $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
 
@@ -669,13 +610,10 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param $accountId
-     *
-     * @return array
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getLinked($accountId)
+    public function getLinked(int $accountId): array
     {
         $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
 
@@ -685,14 +623,11 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param $id
-     *
-     * @return AccountPassData
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function getPasswordHistoryForId($id)
+    public function getPasswordHistoryForId(int $id): AccountPassData
     {
         $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilterHistory();
         $queryFilter->addFilter('AccountHistory.id = ?', [$id]);
@@ -711,19 +646,16 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->accountRepository->getAll()->getDataAsArray();
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->accountRepository->search($itemSearchData);
     }
@@ -731,26 +663,22 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Devolver el número total de cuentas
      *
-     * @return stdClass
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getTotalNumAccounts()
+    public function getTotalNumAccounts(): int
     {
-        return $this->accountRepository->getTotalNumAccounts()->num;
+        return (int)$this->accountRepository->getTotalNumAccounts()->num;
     }
 
     /**
      * Obtener los datos de una cuenta.
      *
-     * @param $id
-     *
-     * @return AccountExtData
-     * @throws QueryException
-     * @throws NoSuchItemException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getDataForLink($id)
+    public function getDataForLink(int $id): AccountExtData
     {
         $result = $this->accountRepository->getDataForLink($id);
 
@@ -764,26 +692,22 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return array Con los datos de la clave
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAccountsPassData()
+    public function getAccountsPassData(): array
     {
-        return $this->accountRepository->getAccountsPassData();
+        return $this->accountRepository->getAccountsPassData()->getDataAsArray();
     }
 
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @param AccountSearchFilter $accountSearchFilter
-     *
-     * @return QueryResult
      * @throws QueryException
      * @throws SPException
      * @throws ConstraintException
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter)
+    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult
     {
         $accountFilterUser = $this->dic->get(AccountFilterUser::class);
 
@@ -797,7 +721,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountRepository = $this->dic->get(AccountRepository::class);
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);

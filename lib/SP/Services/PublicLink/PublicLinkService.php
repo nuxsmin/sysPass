@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\PublicLink;
@@ -59,69 +59,52 @@ final class PublicLinkService extends Service
     /**
      * Tipos de enlaces
      */
-    const TYPE_ACCOUNT = 1;
-    /**
-     * @var PublicLinkRepository
-     */
-    protected $publicLinkRepository;
-    /**
-     * @var Request
-     */
-    protected $request;
+    public const TYPE_ACCOUNT = 1;
+
+    protected ?PublicLinkRepository $publicLinkRepository = null;
+    protected ?Request $request = null;
 
     /**
      * Returns an HTTP URL for given hash
-     *
-     * @param $baseUrl
-     * @param $hash
-     *
-     * @return string
      */
-    public static function getLinkForHash($baseUrl, $hash)
+    public static function getLinkForHash(string $baseUrl, string $hash): string
     {
-        return (new Uri($baseUrl))->addParam('r', 'account/viewLink/' . $hash)->getUri();
+        return (new Uri($baseUrl))
+            ->addParam('r', 'account/viewLink/' . $hash)
+            ->getUri();
     }
 
     /**
      * Generar el hash para el enlace
-     *
-     * @return string
      */
-    public static function createLinkHash()
+    public static function createLinkHash(): string
     {
         return hash('sha256', uniqid('sysPassPublicLink', true));
     }
 
-    /**
-     * @param string         $salt
-     * @param PublicLinkData $publicLinkData
-     *
-     * @return string
-     */
-    public static function getKeyForHash($salt, PublicLinkData $publicLinkData)
+    public static function getKeyForHash(
+        string         $salt,
+        PublicLinkData $publicLinkData
+    ): string
     {
         return sha1($salt . $publicLinkData->getHash());
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->publicLinkRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return PublicLinkListData
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): PublicLinkListData
     {
         $result = $this->publicLinkRepository->getById($id);
 
@@ -133,18 +116,15 @@ final class PublicLinkService extends Service
     }
 
     /**
-     * @param $id
-     *
-     * @return bool
-     * @throws SPException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    public function refresh($id)
+    public function refresh(int $id): bool
     {
         $result = $this->publicLinkRepository->getById($id);
 
@@ -165,36 +145,36 @@ final class PublicLinkService extends Service
     }
 
     /**
-     * @param string|null $hash
-     *
-     * @return PublicLinkKey
      * @throws EnvironmentIsBrokenException
      */
-    public function getPublicLinkKey(string $hash = null)
+    public function getPublicLinkKey(?string $hash = null): PublicLinkKey
     {
-        return new PublicLinkKey($this->config->getConfigData()->getPasswordSalt(), $hash);
+        return new PublicLinkKey(
+            $this->config->getConfigData()->getPasswordSalt(),
+            $hash
+        );
     }
 
     /**
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
-     * @param int           $itemId
-     * @param PublicLinkKey $key
-     *
-     * @return Vault
-     * @throws NoSuchItemException
-     * @throws ServiceException
-     * @throws CryptoException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    private function getSecuredLinkData($itemId, PublicLinkKey $key)
+    private function getSecuredLinkData(int $itemId, PublicLinkKey $key): string
     {
         // Obtener los datos de la cuenta
         $accountData = $this->dic->get(AccountService::class)->getDataForLink($itemId);
 
         // Desencriptar la clave de la cuenta
-        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), $this->getMasterKeyFromContext()));
+        $accountData->setPass(Crypt::decrypt(
+            $accountData->getPass(),
+            $accountData->getKey(),
+            $this->getMasterKeyFromContext())
+        );
         $accountData->setKey(null);
 
         return (new Vault())->saveData(serialize($accountData), $key->getKey())->getSerialized();
@@ -202,28 +182,24 @@ final class PublicLinkService extends Service
 
     /**
      * Devolver el tiempo de caducidad del enlace
-     *
-     * @param Config $config
-     *
-     * @return int
      */
-    public static function calcDateExpire(Config $config)
+    public static function calcDateExpire(Config $config): int
     {
         return time() + $config->getConfigData()->getPublinksMaxTime();
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): PublicLinkService
     {
         if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Link not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Link not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
@@ -232,26 +208,27 @@ final class PublicLinkService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->publicLinkRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while removing the links'), ServiceException::WARNING);
+        $count = $this->publicLinkRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while removing the links'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param PublicLinkData $itemData
-     *
-     * @return int
      * @throws SPException
      * @throws CryptoException
      * @throws ContainerExceptionInterface
@@ -259,7 +236,7 @@ final class PublicLinkService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PublicLinkData $itemData)
+    public function create(PublicLinkData $itemData): int
     {
         $key = $this->getPublicLinkKey();
 
@@ -279,7 +256,7 @@ final class PublicLinkService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->publicLinkRepository->getAll()->getDataAsArray();
     }
@@ -287,13 +264,11 @@ final class PublicLinkService extends Service
     /**
      * Incrementar el contador de visitas de un enlace
      *
-     * @param PublicLinkData $publicLinkData
-     *
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLinkData $publicLinkData)
+    public function addLinkView(PublicLinkData $publicLinkData): void
     {
         /** @var array $useInfo */
         $useInfo = unserialize($publicLinkData->getUseInfo());
@@ -307,14 +282,8 @@ final class PublicLinkService extends Service
 
     /**
      * Actualizar la información de uso
-     *
-     * @param string  $hash
-     *
-     * @param Request $request
-     *
-     * @return array
      */
-    public static function getUseInfo($hash, Request $request)
+    public static function getUseInfo(string $hash, Request $request): array
     {
         return [
             'who' => $request->getClientAddress(true),
@@ -326,12 +295,9 @@ final class PublicLinkService extends Service
     }
 
     /**
-     * @param $hash string
-     *
-     * @return bool|PublicLinkData
      * @throws SPException
      */
-    public function getByHash($hash)
+    public function getByHash(string $hash): PublicLinkData
     {
         $result = $this->publicLinkRepository->getByHash($hash);
 
@@ -345,14 +311,11 @@ final class PublicLinkService extends Service
     /**
      * Devolver el hash asociado a un elemento
      *
-     * @param int $itemId
-     *
-     * @return PublicLinkData
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getHashForItem($itemId)
+    public function getHashForItem(int $itemId): PublicLinkData
     {
         $result = $this->publicLinkRepository->getHashForItem($itemId);
 
@@ -366,14 +329,11 @@ final class PublicLinkService extends Service
     /**
      * Updates an item
      *
-     * @param PublicLinkData $itemData
-     *
-     * @return mixed
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkData $itemData)
+    public function update(PublicLinkData $itemData): int
     {
         return $this->publicLinkRepository->update($itemData);
     }
@@ -382,7 +342,7 @@ final class PublicLinkService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->publicLinkRepository = $this->dic->get(PublicLinkRepository::class);
         $this->request = $this->dic->get(Request::class);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
@@ -34,11 +34,11 @@ final class AuthResult
     /**
      * @var string
      */
-    public $authName;
+    public string $authName;
     /**
      * @var AuthDataBase
      */
-    public $data;
+    public AuthDataBase $data;
 
     /**
      * AuthResult constructor.
@@ -53,17 +53,17 @@ final class AuthResult
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getAuthName(): ?string
+    public function getAuthName(): string
     {
         return $this->authName;
     }
 
     /**
-     * @return AuthDataBase|null
+     * @return AuthDataBase
      */
-    public function getData(): ?AuthDataBase
+    public function getData(): AuthDataBase
     {
         return $this->data;
     }

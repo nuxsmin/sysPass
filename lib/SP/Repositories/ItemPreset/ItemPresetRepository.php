@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\ItemPreset;
@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Account
  */
-class ItemPresetRepository extends Repository implements RepositoryItemInterface
+class ItemPresetRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -53,7 +53,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $queryData = new QueryData();
         $queryData->setQuery(
@@ -90,7 +90,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $queryData = new QueryData();
         $queryData->setQuery(
@@ -123,13 +123,13 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM ItemPreset WHERE id = ? LIMIT 1');
@@ -148,7 +148,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemPresetData::class);
@@ -172,7 +172,12 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByFilter(string $type, int $userId, int $userGroupId, int $userProfileId)
+    public function getByFilter(
+        string $type,
+        int    $userId,
+        int    $userGroupId,
+        int    $userProfileId
+    ): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemPresetData::class);
@@ -205,7 +210,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemPresetData::class);
@@ -225,9 +230,9 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -244,15 +249,15 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -269,7 +274,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id int
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -279,7 +284,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -289,7 +294,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -303,7 +308,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect(
@@ -329,7 +334,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
         $queryData->setOrder(
             'ItemPreset.type, score DESC');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere(
                 'ItemPreset.type LIKE ? 
                 OR User.name LIKE ? 

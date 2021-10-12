@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -42,25 +42,27 @@ final class ErrorUtil
     /**
      * Constantes de errores
      */
-    const ERR_UNAVAILABLE = 0;
-    const ERR_ACCOUNT_NO_PERMISSION = 1;
-    const ERR_PAGE_NO_PERMISSION = 2;
-    const ERR_UPDATE_MPASS = 3;
-    const ERR_OPERATION_NO_PERMISSION = 4;
-    const ERR_EXCEPTION = 5;
+    public const ERR_UNAVAILABLE = 0;
+    public const ERR_ACCOUNT_NO_PERMISSION = 1;
+    public const ERR_PAGE_NO_PERMISSION = 2;
+    public const ERR_UPDATE_MPASS = 3;
+    public const ERR_OPERATION_NO_PERMISSION = 4;
+    public const ERR_EXCEPTION = 5;
 
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template  $view
-     * @param Exception $e
-     * @param string    $replace Template replacement
-     * @param bool      $render
+     * @param Template    $view
+     * @param Exception   $e
+     * @param string|null $replace Template replacement
+     * @param bool        $render
      */
-    public static function showExceptionInView(Template $view,
-                                               Exception $e,
-                                               $replace = null,
-                                               $render = true)
+    public static function showExceptionInView(
+        Template  $view,
+        Exception $e,
+        ?string   $replace = null,
+        bool      $render = true
+    ): void
     {
         switch (get_class($e)) {
             case UpdatedMasterPassException::class:
@@ -87,10 +89,10 @@ final class ErrorUtil
      */
     public static function showErrorInView(
         Template $view,
-        int $type,
-        bool $render = true,
-        ?string $replace = null
-    )
+        int      $type,
+        bool     $render = true,
+        ?string  $replace = null
+    ): void
     {
         self::addErrorTemplate($view, $replace);
 
@@ -114,11 +116,10 @@ final class ErrorUtil
         }
     }
 
-    /**
-     * @param Template    $view
-     * @param string|null $replace
-     */
-    private static function addErrorTemplate(Template $view, string $replace = null)
+    private static function addErrorTemplate(
+        Template $view,
+        string   $replace = null
+    ): void
     {
         if ($replace === null) {
             $view->resetTemplates();
@@ -142,12 +143,8 @@ final class ErrorUtil
 
     /**
      * Return error message by type
-     *
-     * @param $type
-     *
-     * @return mixed
      */
-    protected static function getErrorTypes($type): array
+    protected static function getErrorTypes(int $type): array
     {
         $errorTypes = [
             self::ERR_UNAVAILABLE => [
@@ -176,13 +173,9 @@ final class ErrorUtil
             ]
         ];
 
-        if (!isset($errorTypes[$type])) {
-            return [
+        return $errorTypes[$type] ?? [
                 'txt' => __('An exception occured'),
                 'hint' => __('Please contact to the administrator')
             ];
-        }
-
-        return $errorTypes[$type];
     }
 }

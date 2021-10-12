@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Task;
@@ -38,20 +38,18 @@ final class TaskFactory
     /**
      * @var Task[]
      */
-    private static $tasks = [];
+    private static array $tasks = [];
 
     /**
      * Crear una tarea para la actualización de estado de la actualización
      *
-     * @param string $name
-     * @param string $id
-     *
-     * @param bool   $hasSession
-     *
-     * @return Task
      * @throws FileException
      */
-    public static function create($name, $id, $hasSession = true)
+    public static function create(
+        string $name,
+        string $id,
+        bool   $hasSession = true
+    ): Task
     {
         $task = self::add((new Task($name, $id)));
 
@@ -62,12 +60,7 @@ final class TaskFactory
         return $task->register();
     }
 
-    /**
-     * @param Task $task
-     *
-     * @return Task
-     */
-    private static function add(Task $task)
+    private static function add(Task $task): Task
     {
         if (!isset(self::$tasks[$task->getUid()])) {
             self::$tasks[$task->getUid()] = $task;
@@ -80,10 +73,8 @@ final class TaskFactory
 
     /**
      * Finalizar la tarea
-     *
-     * @param Task $task
      */
-    public static function end(Task $task)
+    public static function end(Task $task): void
     {
         self::get($task->getUid())
             ->end();
@@ -91,12 +82,7 @@ final class TaskFactory
         self::delete($task->getUid());
     }
 
-    /**
-     * @param $id
-     *
-     * @return Task
-     */
-    private static function get($id)
+    private static function get(string $id): Task
     {
         if (isset(self::$tasks[$id])) {
             return self::$tasks[$id];
@@ -105,34 +91,25 @@ final class TaskFactory
         throw new RuntimeException('Task not registered');
     }
 
-    /**
-     * @param $id
-     */
-    private static function delete($id)
+    private static function delete(string $id): void
     {
         if (isset(self::$tasks[$id])) {
             unset(self::$tasks[$id]);
         }
     }
 
-    /**
-     * @param string $taskId
-     * @param string $task
-     *
-     * @return TaskMessage
-     */
-    public static function createMessage($taskId, $task)
+    public static function createMessage(
+        string $taskId,
+        string $task
+    ): TaskMessage
     {
         return new TaskMessage($taskId, $task);
     }
 
     /**
      * Enviar un mensaje de actualización a la tarea
-     *
-     * @param Task        $task
-     * @param TaskMessage $taskMessage
      */
-    public static function update(Task $task, TaskMessage $taskMessage)
+    public static function update(Task $task, TaskMessage $taskMessage): void
     {
         self::get($task->getUid())
             ->writeJsonStatusAndFlush($taskMessage);

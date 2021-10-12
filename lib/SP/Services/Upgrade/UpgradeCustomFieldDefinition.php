@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
@@ -44,19 +44,17 @@ use SP\Util\Util;
  */
 final class UpgradeCustomFieldDefinition extends Service
 {
-    /**
-     * @var Database
-     */
-    private $db;
+    private ?Database $db = null;
 
     /**
      * upgrade_300_18010101
      *
      * @throws Exception
      */
-    public function upgrade_300_18010101()
+    public function upgrade_300_18010101(): void
     {
-        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
@@ -71,43 +69,54 @@ final class UpgradeCustomFieldDefinition extends Service
                 $customFieldType[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
             }
 
-            $this->transactionAware(function () use ($customFieldType) {
-                $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
+            $this->transactionAware(
+                function () use ($customFieldType) {
+                    $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
 
-                $queryData = new QueryData();
-                $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
+                    $queryData = new QueryData();
+                    $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
 
-                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
-                    /** @var CustomFieldDefDataOld $data */
-                    $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
+                    foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                        /** @var CustomFieldDefDataOld $data */
+                        $data = Util::unserialize(
+                            CustomFieldDefDataOld::class,
+                            $item->field,
+                            'SP\DataModel\CustomFieldDefData'
+                        );
 
-                    $itemData = new CustomFieldDefinitionData();
-                    $itemData->setId($item->id);
-                    $itemData->setModuleId($this->moduleMapper((int)$item->moduleId));
-                    $itemData->setName($data->getName());
-                    $itemData->setHelp($data->getHelp());
-                    $itemData->setRequired($data->isRequired());
-                    $itemData->setShowInList($data->isShowInItemsList());
-                    $itemData->setTypeId($customFieldType[$this->typeMapper((int)$data->getType())]);
+                        $itemData = new CustomFieldDefinitionData();
+                        $itemData->setId($item->id);
+                        $itemData->setModuleId($this->moduleMapper((int)$item->moduleId));
+                        $itemData->setName($data->getName());
+                        $itemData->setHelp($data->getHelp());
+                        $itemData->setRequired($data->isRequired());
+                        $itemData->setShowInList($data->isShowInItemsList());
+                        $itemData->setTypeId($customFieldType[$this->typeMapper((int)$data->getType())]);
 
-                    $customFieldDefService->updateRaw($itemData);
+                        $customFieldDefService->updateRaw($itemData);
 
-                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Field updated'))
-                            ->addDetail(__u('Field'), $data->getName()))
-                    );
+                        $this->eventDispatcher->notifyEvent(
+                            'upgrade.customField.process',
+                            new Event($this, EventMessage::factory()
+                                ->addDescription(__u('Field updated'))
+                                ->addDetail(__u('Field'), $data->getName()))
+                        );
+                    }
                 }
-            });
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
@@ -119,7 +128,7 @@ final class UpgradeCustomFieldDefinition extends Service
      *
      * @return int
      */
-    private function moduleMapper(int $moduleId)
+    private function moduleMapper(int $moduleId): int
     {
         switch ($moduleId) {
             case 10:
@@ -142,7 +151,7 @@ final class UpgradeCustomFieldDefinition extends Service
      *
      * @return string
      */
-    private function typeMapper(int $typeId)
+    private function typeMapper(int $typeId): string
     {
         $types = [
             1 => 'text',
@@ -157,7 +166,7 @@ final class UpgradeCustomFieldDefinition extends Service
             10 => 'textarea'
         ];
 
-        return isset($types[$typeId]) ? $types[$typeId] : $types[1];
+        return $types[$typeId] ?? $types[1];
     }
 
     /**
@@ -165,41 +174,49 @@ final class UpgradeCustomFieldDefinition extends Service
      *
      * @throws Exception
      */
-    public function upgrade_300_18072901()
+    public function upgrade_300_18072901(): void
     {
-        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
 
         try {
-            $this->transactionAware(function () {
-                $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
+            $this->transactionAware(
+                function () {
+                    $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
 
-                foreach ($customFieldDefService->getAllBasic() as $item) {
+                    foreach ($customFieldDefService->getAllBasic() as $item) {
 
-                    $itemData = clone $item;
-                    $itemData->setModuleId($this->moduleMapper((int)$item->getModuleId()));
+                        $itemData = clone $item;
+                        $itemData->setModuleId($this->moduleMapper((int)$item->getModuleId()));
 
-                    $customFieldDefService->updateRaw($itemData);
+                        $customFieldDefService->updateRaw($itemData);
 
-                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Field updated'))
-                            ->addDetail(__u('Field'), $item->getName()))
-                    );
+                        $this->eventDispatcher->notifyEvent(
+                            'upgrade.customField.process',
+                            new Event($this, EventMessage::factory()
+                                ->addDescription(__u('Field updated'))
+                                ->addDetail(__u('Field'), $item->getName()))
+                        );
+                    }
                 }
-            });
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
@@ -211,13 +228,14 @@ final class UpgradeCustomFieldDefinition extends Service
      *
      * @throws Exception
      */
-    public function upgrade_310_19042701()
+    public function upgrade_310_19042701(): void
     {
-        if (!in_array('field', $this->db->getColumnsForTable('CustomFieldDefinition'))) {
+        if (!in_array('field', $this->db->getColumnsForTable('CustomFieldDefinition'), true)) {
             return;
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
@@ -232,45 +250,56 @@ final class UpgradeCustomFieldDefinition extends Service
                 $customFieldType[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
             }
 
-            $this->transactionAware(function () use ($customFieldType) {
-                $queryData = new QueryData();
-                $queryData->setQuery('SELECT id, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
-
-                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
-                    /** @var CustomFieldDefDataOld $data */
-                    $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
-
-                    $typeId = $customFieldType[$this->typeMapper((int)$data->getType())];
-
+            $this->transactionAware(
+                function () use ($customFieldType) {
                     $queryData = new QueryData();
-                    $queryData->setQuery('UPDATE CustomFieldDefinition SET typeId = ? WHERE id = ? LIMIT 1');
-                    $queryData->setParams([$typeId, $item->id]);
+                    $queryData->setQuery('SELECT id, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
 
-                    $this->db->doQuery($queryData);
+                    foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                        /** @var CustomFieldDefDataOld $data */
+                        $data = Util::unserialize(
+                            CustomFieldDefDataOld::class,
+                            $item->field,
+                            'SP\DataModel\CustomFieldDefData'
+                        );
 
-                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Field updated'))
-                            ->addDetail(__u('Field'), $data->getName()))
-                    );
+                        $typeId = $customFieldType[$this->typeMapper((int)$data->getType())];
+
+                        $queryData = new QueryData();
+                        $queryData->setQuery('UPDATE CustomFieldDefinition SET typeId = ? WHERE id = ? LIMIT 1');
+                        $queryData->setParams([$typeId, $item->id]);
+
+                        $this->db->doQuery($queryData);
+
+                        $this->eventDispatcher->notifyEvent(
+                            'upgrade.customField.process',
+                            new Event($this, EventMessage::factory()
+                                ->addDescription(__u('Field updated'))
+                                ->addDetail(__u('Field'), $data->getName()))
+                        );
+                    }
                 }
-            });
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->db = $this->dic->get(Database::class);
     }

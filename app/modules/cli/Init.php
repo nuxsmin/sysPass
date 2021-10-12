@@ -24,11 +24,7 @@
 
 namespace SP\Modules\Cli;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use Exception;
 use Psr\Container\ContainerInterface;
-use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
@@ -52,23 +48,12 @@ final class Init extends ModuleBase
         BackupCommand::class,
         UpdateMasterPasswordCommand::class
     ];
-    /**
-     * @var StatelessContext
-     */
-    protected $context;
-    /**
-     * @var Language
-     */
-    protected $language;
-    /**
-     * @var Application
-     */
-    protected $application;
+    protected StatelessContext $context;
+    protected Language $language;
+    protected Application $application;
 
     /**
      * Module constructor.
-     *
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -80,13 +65,10 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @param string $controller
-     *
-     * @throws ContextException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \SP\Core\Context\ContextException
+     * @throws \Exception
      */
-    public function initialize(string $controller)
+    public function initialize(string $controller): void
     {
         logger(__FUNCTION__);
 
@@ -103,9 +85,7 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws Exception
+     * @throws \Exception
      */
     private function initCli(): void
     {

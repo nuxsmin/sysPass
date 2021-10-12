@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -59,14 +60,8 @@ use SP\Services\Tag\TagService;
  */
 final class ItemManagerController extends ControllerBase
 {
-    /**
-     * @var ItemSearchData
-     */
-    protected $itemSearchData;
-    /**
-     * @var TabsGridHelper
-     */
-    protected $tabsGridHelper;
+    protected ?ItemSearchData $itemSearchData = null;
+    protected ?TabsGridHelper $tabsGridHelper = null;
 
     /**
      * @throws DependencyException
@@ -74,7 +69,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->getGridTabs();
     }
@@ -87,48 +82,55 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs()
+    protected function getGridTabs(): void
     {
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
-        if ($this->checkAccess(Acl::CATEGORY)) {
+        if ($this->checkAccess(ActionsInterface::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
         }
 
-        if ($this->checkAccess(Acl::TAG)) {
+        if ($this->checkAccess(ActionsInterface::TAG)) {
             $this->tabsGridHelper->addTab($this->getTagsList());
         }
 
-        if ($this->checkAccess(Acl::CLIENT)) {
+        if ($this->checkAccess(ActionsInterface::CLIENT)) {
             $this->tabsGridHelper->addTab($this->getClientsList());
         }
 
-        if ($this->checkAccess(Acl::CUSTOMFIELD)) {
+        if ($this->checkAccess(ActionsInterface::CUSTOMFIELD)) {
             $this->tabsGridHelper->addTab($this->getCustomFieldsList());
         }
 
-        if ($this->configData->isFilesEnabled() && $this->checkAccess(Acl::FILE)) {
+        if ($this->configData->isFilesEnabled()
+            && $this->checkAccess(ActionsInterface::FILE)) {
             $this->tabsGridHelper->addTab($this->getAccountFilesList());
         }
 
-        if ($this->checkAccess(Acl::ACCOUNTMGR)) {
+        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR)) {
             $this->tabsGridHelper->addTab($this->getAccountsList());
         }
 
-        if ($this->checkAccess(Acl::ACCOUNTMGR_HISTORY)) {
+        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR_HISTORY)) {
             $this->tabsGridHelper->addTab($this->getAccountsHistoryList());
         }
 
-        if ($this->checkAccess(Acl::ITEMPRESET)) {
+        if ($this->checkAccess(ActionsInterface::ITEMPRESET)) {
             $this->tabsGridHelper->addTab($this->getItemPresetList());
         }
 
-        $this->eventDispatcher->notifyEvent('show.itemlist.items', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'show.itemlist.items',
+            new Event($this)
+        );
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ITEMS_MANAGE), $this->request->analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(
+            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE),
+            $this->request->analyzeInt('tabIndex', 0)
+        );
 
         $this->view();
     }
@@ -145,7 +147,8 @@ final class ItemManagerController extends ControllerBase
     protected function getCategoriesList(): DataGridTab
     {
         return $this->dic->get(CategoryGrid::class)
-            ->getGrid($this->dic->get(CategoryService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(CategoryService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -161,7 +164,8 @@ final class ItemManagerController extends ControllerBase
     protected function getTagsList(): DataGridTab
     {
         return $this->dic->get(TagGrid::class)
-            ->getGrid($this->dic->get(TagService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(TagService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -177,7 +181,8 @@ final class ItemManagerController extends ControllerBase
     protected function getClientsList(): DataGridTab
     {
         return $this->dic->get(ClientGrid::class)
-            ->getGrid($this->dic->get(ClientService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(ClientService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -193,7 +198,8 @@ final class ItemManagerController extends ControllerBase
     protected function getCustomFieldsList(): DataGridTab
     {
         return $this->dic->get(CustomFieldGrid::class)
-            ->getGrid($this->dic->get(CustomFieldDefService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(CustomFieldDefService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -209,7 +215,8 @@ final class ItemManagerController extends ControllerBase
     protected function getAccountFilesList(): DataGridTab
     {
         return $this->dic->get(FileGrid::class)
-            ->getGrid($this->dic->get(AccountFileService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(AccountFileService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -225,7 +232,8 @@ final class ItemManagerController extends ControllerBase
     protected function getAccountsList(): DataGridTab
     {
         return $this->dic->get(AccountGrid::class)
-            ->getGrid($this->dic->get(AccountService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(AccountService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -241,7 +249,8 @@ final class ItemManagerController extends ControllerBase
     protected function getAccountsHistoryList(): DataGridTab
     {
         return $this->dic->get(AccountHistoryGrid::class)
-            ->getGrid($this->dic->get(AccountHistoryService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(AccountHistoryService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -257,7 +266,8 @@ final class ItemManagerController extends ControllerBase
     protected function getItemPresetList(): DataGridTab
     {
         return $this->dic->get(ItemPresetGrid::class)
-            ->getGrid($this->dic->get(ItemPresetService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(ItemPresetService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -275,7 +285,7 @@ final class ItemManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
     }

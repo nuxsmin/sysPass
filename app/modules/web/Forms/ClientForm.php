@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -35,10 +35,7 @@ use SP\DataModel\ClientData;
  */
 final class ClientForm extends FormBase implements FormInterface
 {
-    /**
-     * @var ClientData
-     */
-    protected $clientData;
+    protected ?ClientData $clientData = null;
 
     /**
      * Validar el formulario
@@ -66,7 +63,7 @@ final class ClientForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->clientData = new ClientData();
         $this->clientData->setId($this->itemId);
@@ -78,17 +75,14 @@ final class ClientForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->clientData->getName()) {
             throw new ValidationException(__u('A client name needed'));
         }
     }
 
-    /**
-     * @return ClientData
-     */
-    public function getItemData()
+    public function getItemData(): ?ClientData
     {
         return $this->clientData;
     }

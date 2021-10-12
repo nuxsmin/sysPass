@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 
 /**
  * Class Client
@@ -33,12 +33,7 @@ use SP\Config\ConfigData;
  */
 final class Client
 {
-    /**
-     * @param ConfigData $configData
-     *
-     * @return array
-     */
-    public static function getOptions(ConfigData $configData): array
+    public static function getOptions(ConfigDataInterface $configData): array
     {
         $options = [
             'timeout' => 10,
@@ -48,7 +43,8 @@ final class Client
         if ($configData->isProxyEnabled()) {
             $options['proxy'] = sprintf('tcp://%s:%d', $configData->getProxyServer(), $configData->getProxyPort());
 
-            if (!empty($configData->getProxyUser()) && !empty($configData->getProxyPass())) {
+            if (!empty($configData->getProxyUser())
+                && !empty($configData->getProxyPass())) {
                 $options['auth'] = [$configData->getProxyUser(), $configData->getProxyPass()];
             }
         }

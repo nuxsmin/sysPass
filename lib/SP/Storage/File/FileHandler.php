@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -33,25 +33,17 @@ use SP\Util\Util;
  */
 final class FileHandler
 {
-    const CHUNK_LENGTH = 8192;
-    const CHUNK_FACTOR = 3;
-    /**
-     * @var string
-     */
-    protected $file;
+    private const CHUNK_LENGTH = 8192;
+    public const CHUNK_FACTOR = 3;
+    protected string $file;
     /**
      * @var resource
      */
     protected $handle;
-    /**
-     * @var bool
-     */
-    private $locked = false;
+    private bool $locked = false;
 
     /**
      * FileHandler constructor.
-     *
-     * @param string $file
      */
     public function __construct(string $file)
     {
@@ -61,9 +53,6 @@ final class FileHandler
     /**
      * Writes data into file
      *
-     * @param mixed $data
-     *
-     * @return FileHandler
      * @throws FileException
      */
     public function write($data): FileHandler
@@ -73,7 +62,10 @@ final class FileHandler
         }
 
         if (@fwrite($this->handle, $data) === false) {
-            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                    __('Unable to read/write the file (%s)'),
+                    $this->file)
+            );
         }
 
         return $this;
@@ -82,14 +74,10 @@ final class FileHandler
     /**
      * Opens the file
      *
-     * @param string $mode
-     *
-     * @param bool|null   $lock
-     *
      * @return resource
      * @throws FileException
      */
-    public function open(string $mode = 'r', ?bool $lock = false)
+    public function open(string $mode = 'rb', ?bool $lock = false)
     {
         $this->handle = @fopen($this->file, $mode);
 
@@ -98,7 +86,10 @@ final class FileHandler
         }
 
         if ($this->handle === false) {
-            throw new FileException(sprintf(__('Unable to open the file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                    __('Unable to open the file (%s)'),
+                    $this->file)
+            );
         }
 
         return $this->handle;
@@ -107,16 +98,17 @@ final class FileHandler
     /**
      * Lock the file
      *
-     * @param int $mode
-     *
      * @throws FileException
      */
-    private function lock(int $mode = LOCK_EX)
+    private function lock(int $mode = LOCK_EX): void
     {
         $this->locked = flock($this->handle, $mode);
 
         if (!$this->locked) {
-            throw new FileException(sprintf(__('Unable to obtain a lock (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to obtain a lock (%s)'),
+                $this->file
+            ));
         }
 
         logger(sprintf('File locked: %s', $this->file));
@@ -125,13 +117,17 @@ final class FileHandler
     /**
      * Reads data from file into a string
      *
-     * @return string Data read from file
      * @throws FileException
      */
     public function readToString(): string
     {
-        if (($data = file_get_contents($this->file)) === false) {
-            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
+        $data = file_get_contents($this->file);
+
+        if ($data === false) {
+            throw new FileException(sprintf(
+                __('Unable to read from file (%s)'),
+                $this->file
+            ));
         }
 
         return $data;
@@ -144,25 +140,30 @@ final class FileHandler
      */
     public function readToArray(): array
     {
-        if (($data = @file($this->file, FILE_SKIP_EMPTY_LINES)) === false) {
-            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
+        $data = @file($this->file, FILE_SKIP_EMPTY_LINES);
+
+        if ($data === false) {
+            throw new FileException(sprintf(
+                __('Unable to read from file (%s)'),
+                $this->file
+            ));
         }
 
         return $data;
     }
 
     /**
-     * Reads data from file into a string
+     * Saves a string into a file
      *
-     * @param string $data Data to write into file
-     *
-     * @return FileHandler
      * @throws FileException
      */
     public function save(string $data): FileHandler
     {
         if (file_put_contents($this->file, $data, LOCK_EX) === false) {
-            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to read/write the file (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
@@ -171,13 +172,12 @@ final class FileHandler
     /**
      * Reads data from file
      *
-     * @return string Data read from file
      * @throws FileException
      */
     public function read(): string
     {
         if (!is_resource($this->handle)) {
-            $this->open('rb');
+            $this->open();
         }
 
         $data = '';
@@ -194,7 +194,6 @@ final class FileHandler
     /**
      * Closes the file
      *
-     * @return FileHandler
      * @throws FileException
      */
     public function close(): FileHandler
@@ -204,7 +203,10 @@ final class FileHandler
         }
 
         if (!is_resource($this->handle) || @fclose($this->handle) === false) {
-            throw new FileException(sprintf(__('Unable to close the file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to close the file (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
@@ -213,7 +215,7 @@ final class FileHandler
     /**
      * Unlock the file
      */
-    private function unlock()
+    private function unlock(): void
     {
         $this->locked = !flock($this->handle, LOCK_UN);
     }
@@ -224,16 +226,19 @@ final class FileHandler
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, ?float $rate = null)
+    public function readChunked(
+        callable $chunker = null,
+        ?float   $rate = null
+    ): void
     {
         $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
 
         if ($rate === null || $rate > $maxRate) {
-            $rate = $maxRate;
+            $rate = (float)$maxRate;
         }
 
         if (!is_resource($this->handle)) {
-            $this->open('rb');
+            $this->open();
         }
 
         while (!feof($this->handle)) {
@@ -252,13 +257,15 @@ final class FileHandler
     /**
      * Checks if the file is writable
      *
-     * @return FileHandler
      * @throws FileException
      */
     public function checkIsWritable(): FileHandler
     {
         if (!is_writable($this->file) && @touch($this->file) === false) {
-            throw new FileException(sprintf(__('Unable to write in file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to write in file (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
@@ -267,38 +274,38 @@ final class FileHandler
     /**
      * Checks if the file exists
      *
-     * @return FileHandler
      * @throws FileException
      */
     public function checkFileExists(): FileHandler
     {
         if (!file_exists($this->file)) {
-            throw new FileException(sprintf(__('File not found (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('File not found (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFile(): string
     {
         return $this->file;
     }
 
     /**
-     * @param bool $isExceptionOnZero
-     *
-     * @return int
      * @throws FileException
      */
-    public function getFileSize($isExceptionOnZero = false): int
+    public function getFileSize(bool $isExceptionOnZero = false): int
     {
         $size = filesize($this->file);
 
-        if ($size === false || ($isExceptionOnZero === true && $size === 0)) {
-            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
+        if ($size === false
+            || ($isExceptionOnZero === true && $size === 0)) {
+            throw new FileException(sprintf(
+                __('Unable to read/write file (%s)'),
+                $this->file
+            ));
         }
 
         return $size;
@@ -306,8 +313,6 @@ final class FileHandler
 
     /**
      * Clears the stat cache for the given file
-     *
-     * @return FileHandler
      */
     public function clearCache(): FileHandler
     {
@@ -319,13 +324,15 @@ final class FileHandler
     /**
      * Deletes a file
      *
-     * @return FileHandler
      * @throws FileException
      */
     public function delete(): FileHandler
     {
         if (@unlink($this->file) === false) {
-            throw new FileException(sprintf(__('Unable to delete file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to delete file (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
@@ -334,7 +341,6 @@ final class FileHandler
     /**
      * Returns the content type in MIME format
      *
-     * @return string
      * @throws FileException
      */
     public function getFileType(): string
@@ -347,20 +353,21 @@ final class FileHandler
     /**
      * Checks if the file is readable
      *
-     * @return FileHandler
      * @throws FileException
      */
     public function checkIsReadable(): FileHandler
     {
         if (!is_readable($this->file)) {
-            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
+            throw new FileException(sprintf(
+                __('Unable to read/write file (%s)'),
+                $this->file
+            ));
         }
 
         return $this;
     }
 
     /**
-     * @return int
      * @throws FileException
      */
     public function getFileTime(): int

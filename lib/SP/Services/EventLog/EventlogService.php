@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\EventLog;
@@ -43,46 +43,33 @@ use SP\Storage\Database\QueryResult;
  */
 final class EventlogService extends Service
 {
-    /**
-     * @var EventlogRepository
-     */
-    protected $eventLogRepository;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ?EventlogRepository $eventLogRepository = null;
+    protected ?Request $request = null;
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->eventLogRepository->search($itemSearchData);
     }
 
     /**
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function clear()
+    public function clear(): bool
     {
         return $this->eventLogRepository->clear();
     }
 
     /**
-     * @param EventlogData $eventlogData
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(EventlogData $eventlogData)
+    public function create(EventlogData $eventlogData): int
     {
         $userData = $this->context->getUserData();
 
@@ -97,7 +84,7 @@ final class EventlogService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->eventLogRepository = $this->dic->get(EventlogRepository::class);
         $this->request = $this->dic->get(Request::class);

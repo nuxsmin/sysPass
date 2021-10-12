@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -42,10 +42,10 @@ final class ArrayUtil
      * @return false|object
      */
     public static function searchInObject(
-        array $array,
+        array  $array,
         string $property,
         string $value,
-        $default = null
+               $default = null
     )
     {
         foreach ($array as $object) {
@@ -57,7 +57,7 @@ final class ArrayUtil
             }
         }
 
-        return null !== $default ? $default : false;
+        return $default ?? false;
     }
 
     /**
@@ -69,7 +69,11 @@ final class ArrayUtil
      *
      * @return bool
      */
-    public static function checkInObjectArrayMethod(array $objectArray, string $method, $value)
+    public static function checkInObjectArrayMethod(
+        array  $objectArray,
+        string $method,
+               $value
+    ): bool
     {
         foreach ($objectArray as $object) {
             if (is_callable([$object, $method]) && $object->$method() === $value) {
@@ -82,16 +86,14 @@ final class ArrayUtil
 
     /**
      * Comprobar si un valor existe en un array de objetos
-     *
-     * @param array  $objectArray
-     * @param string $property
-     * @param mixed  $value
-     *
-     * @return bool
      */
-    public static function checkInObjectArray(array $objectArray, string $property, $value)
+    public static function checkInObjectArray(
+        array  $objectArray,
+        string $property,
+               $value
+    ): bool
     {
-        if (empty($objectArray)) {
+        if (count($objectArray) === 0) {
             return false;
         }
 

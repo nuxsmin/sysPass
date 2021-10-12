@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller\Validators;
 
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
 
@@ -34,47 +35,43 @@ use SP\DataModel\ItemPreset\Password;
  */
 final class PasswordValidator implements ValidatorInterface
 {
-    /**
-     * @var Password
-     */
-    private $password;
+    private Password $password;
 
     /**
      * PasswordValidator constructor.
-     *
-     * @param Password $password
      */
     public function __construct(Password $password)
     {
         $this->password = $password;
     }
 
-    /**
-     * @param Password $password
-     *
-     * @return PasswordValidator
-     */
     public static function factory(Password $password): PasswordValidator
     {
         return new self($password);
     }
 
     /**
-     * @param string $string
-     *
-     * @return bool
      * @throws ValidationException
      */
     public function validate(string $string): bool
     {
         if (mb_strlen($string) < $this->password->getLength()) {
-            throw new ValidationException(sprintf(__('Password needs to be %d characters long'), $this->password->getLength()));
+            throw new ValidationException(
+                sprintf(
+                    __('Password needs to be %d characters long'),
+                    $this->password->getLength()
+                )
+            );
         }
 
         $regex = $this->password->getRegex();
 
         if (!empty($this->password->getRegex()) && !Validator::matchRegex($string, $regex)) {
-            throw new ValidationException(__u('Password does not contain the required characters'), ValidationException::ERROR, $regex);
+            throw new ValidationException(
+                __u('Password does not contain the required characters'),
+                SPException::ERROR,
+                $regex
+            );
         }
 
         if ($this->password->isUseLetters()) {

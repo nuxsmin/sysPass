@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\CustomField;
@@ -32,7 +32,7 @@ use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -42,24 +42,25 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\CustomField
  */
-final class CustomFieldDefRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldDefRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
+
     /**
      * @var CustomFieldDefCollection
      */
-    private $customFieldDefCollection;
+    private CustomFieldDefCollection $customFieldDefCollection;
 
     /**
      * Creates an item
      *
      * @param CustomFieldDefinitionData $itemData
      *
-     * @return mixed
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $query = /** @lang SQL */
             'INSERT INTO CustomFieldDefinition SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, isEncrypted = ?';
@@ -89,7 +90,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->customFieldDefCollection->exists($itemData->getId())) {
             $this->customFieldDefCollection->remove($itemData->getId());
@@ -133,7 +134,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): CustomFieldDefinitionData
     {
         if ($this->customFieldDefCollection->exists($id)) {
             return $this->customFieldDefCollection->get($id);
@@ -174,7 +175,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, `name`, moduleId, required, `help`, showInList, isEncrypted, typeId
@@ -197,9 +198,9 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -227,9 +228,9 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -247,14 +248,13 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldDefinition WHERE id = ? LIMIT 1');
@@ -269,7 +269,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      *
      * @param $id int
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -279,7 +279,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -289,7 +289,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -303,7 +303,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
@@ -311,7 +311,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
         $queryData->setFrom('CustomFieldDefinition CFD INNER JOIN CustomFieldType CFT ON CFD.typeId = CFT.id');
         $queryData->setOrder('CFD.moduleId');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('CFD.name LIKE ? OR CFT.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -329,12 +329,12 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
     /**
      * Resets the custom fields collection cache
      */
-    public function resetCollection()
+    public function resetCollection(): void
     {
         $this->customFieldDefCollection->clear();
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->customFieldDefCollection = new CustomFieldDefCollection();
     }

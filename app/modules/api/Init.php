@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api;
@@ -42,24 +42,14 @@ use SP\Util\HttpUtil;
 
 /**
  * Class Init
- *
- * @package api
  */
 final class Init extends ModuleBase
 {
-    /**
-     * @var StatelessContext
-     */
-    protected $context;
-    /**
-     * @var Language
-     */
-    protected $language;
+    protected StatelessContext $context;
+    protected Language $language;
 
     /**
      * Module constructor.
-     *
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -70,16 +60,13 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @param string $controller
-     *
-     * @throws ContextException
-     * @throws InitializationException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws FileException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \JsonException
+     * @throws \SP\Core\Context\ContextException
+     * @throws \SP\Core\Exceptions\InitializationException
+     * @throws \SP\Storage\File\FileException
      */
-    public function initialize(string $controller)
+    public function initialize(string $controller): void
     {
         logger(__FUNCTION__);
 
@@ -127,7 +114,7 @@ final class Init extends ModuleBase
      *
      * @throws InitializationException
      */
-    private function checkInstalled()
+    private function checkInstalled(): void
     {
         if (!$this->configData->isInstalled()) {
             throw new InitializationException('Not installed');
@@ -141,7 +128,7 @@ final class Init extends ModuleBase
      * @throws FileException
      * @throws InitializationException
      */
-    private function checkUpgrade()
+    private function checkUpgrade(): void
     {
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 

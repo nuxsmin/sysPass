@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Http\Request;
@@ -51,26 +48,11 @@ use SP\Util\Util;
  */
 abstract class ModuleBase
 {
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var Container
-     */
-    protected $container;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ConfigDataInterface $configData;
+    protected Config $config;
+    protected Klein $router;
+    protected ContainerInterface $container;
+    protected Request $request;
 
     /**
      * Module constructor.
@@ -86,18 +68,13 @@ abstract class ModuleBase
         $this->request = $container->get(Request::class);
     }
 
-    /**
-     * @param string $controller
-     */
     abstract public function initialize(string $controller);
 
     /**
      * Comprobar si el modo mantenimiento está activado
      * Esta función comprueba si el modo mantenimiento está activado.
      *
-     * @param ContextInterface $context
-     *
-     * @return bool
+     * @throws \JsonException
      */
     public function checkMaintenanceMode(ContextInterface $context): bool
     {
@@ -116,11 +93,8 @@ abstract class ModuleBase
 
     /**
      * Initializes event handlers
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
      */
-    protected function initEventHandlers()
+    protected function initEventHandlers(): void
     {
         $eventDispatcher = $this->container->get(EventDispatcher::class);
 

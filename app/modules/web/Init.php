@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
+use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -42,14 +40,12 @@ use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Http\Address;
 use SP\Plugin\PluginManager;
-use SP\Repositories\NoSuchItemException;
 use SP\Services\Crypt\SecureSessionService;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
@@ -63,9 +59,6 @@ use SP\Util\HttpUtil;
 
 /**
  * Class Init
- *
- * @property  itemPresetService
- * @package SP\Modules\Web
  */
 final class Init extends ModuleBase
 {
@@ -73,7 +66,7 @@ final class Init extends ModuleBase
      * List of controllers that don't need to perform fully initialization
      * like: install/database checks, session/event handlers initialization
      */
-    const PARTIAL_INIT = [
+    private const PARTIAL_INIT = [
         'resource',
         'install',
         'bootstrap',
@@ -85,44 +78,18 @@ final class Init extends ModuleBase
     /**
      * List of controllers that don't need to update the user's session activity
      */
-    const NO_SESSION_ACTIVITY = ['items', 'login'];
-    /**
-     * @var CSRF
-     */
-    private $csrf;
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var ThemeInterface
-     */
-    private $theme;
-    /**
-     * @var Language
-     */
-    private $language;
-    /**
-     * @var SecureSessionService
-     */
-    private $secureSessionService;
-    /**
-     * @var PluginManager
-     */
-    private $pluginManager;
-    /**
-     * @var ItemPresetService
-     */
-    private $itemPresetService;
-    /**
-     * @var bool
-     */
-    private $isIndex = false;
+    private const NO_SESSION_ACTIVITY = ['items', 'login'];
+    private CSRF $csrf;
+    private SessionContext $context;
+    private ThemeInterface $theme;
+    private Language $language;
+    private SecureSessionService $secureSessionService;
+    private PluginManager $pluginManager;
+    private ItemPresetService $itemPresetService;
+    private bool $isIndex = false;
 
     /**
      * Init constructor.
-     *
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -140,18 +107,16 @@ final class Init extends ModuleBase
     /**
      * Initialize Web App
      *
-     * @param string $controller
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws NoSuchItemException
-     * @throws Exception
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InitializationException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Storage\File\FileException
      */
-    public function initialize(string $controller)
+    public function initialize(string $controller): void
     {
         logger(__METHOD__);
 
@@ -166,7 +131,7 @@ final class Init extends ModuleBase
         if ($isReload) {
             logger('Browser reload');
 
-            $this->context->setAppStatus(SessionContext::APP_STATUS_RELOADED);
+            $this->context->setAppStatus(ContextBase::APP_STATUS_RELOADED);
 
             // Cargar la configuración
             $this->config->loadConfig(true);
@@ -253,7 +218,7 @@ final class Init extends ModuleBase
             $this->pluginManager->loadPlugins();
 
             if ($this->context->isLoggedIn()
-                && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED
+                && $this->context->getAppStatus() === ContextBase::APP_STATUS_RELOADED
             ) {
                 logger('Reload user profile');
 
@@ -281,11 +246,9 @@ final class Init extends ModuleBase
     /**
      * Iniciar la sesión PHP
      *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     *
      * @throws Exception
      */
-    private function initSession(bool $encrypt = false)
+    private function initSession(bool $encrypt = false): void
     {
         if ($encrypt === true
             && Bootstrap::$checkPhpVersion
@@ -297,7 +260,9 @@ final class Init extends ModuleBase
         try {
             $this->context->initialize();
         } catch (Exception $e) {
-            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
+            $this->router
+                ->response()
+                ->header('HTTP/1.1', '500 Internal Server Error');
 
             throw $e;
         }
@@ -331,7 +296,7 @@ final class Init extends ModuleBase
      * Inicializar la sesión de usuario
      *
      */
-    private function initUserSession()
+    private function initUserSession(): void
     {
         $lastActivity = $this->context->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
@@ -342,7 +307,9 @@ final class Init extends ModuleBase
             && time() > ($lastActivity + $this->getSessionLifeTime())
         ) {
             if ($this->router->request()->cookies()->get(session_name()) !== null) {
-                $this->router->response()->cookie(session_name(), '', time() - 42000);
+                $this->router
+                    ->response()
+                    ->cookie(session_name(), '', time() - 42000);
             }
 
             SessionContext::restart();
@@ -382,7 +349,8 @@ final class Init extends ModuleBase
 
         try {
             if ($this->isIndex || $timeout === null) {
-                $userTimeout = $this->getSessionTimeoutForUser($timeout) ?: $this->configData->getSessionTimeout();
+                $userTimeout = $this->getSessionTimeoutForUser($timeout)
+                    ?: $this->configData->getSessionTimeout();
 
                 logger('Session timeout: ' . $userTimeout);
 
@@ -396,9 +364,6 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @param int|null $default
-     *
-     * @return int|null
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws NoSuchPropertyException

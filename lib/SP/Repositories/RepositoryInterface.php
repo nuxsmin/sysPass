@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories;
 
 use SP\DataModel\ItemSearchData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Interface RepositoryItemInterface
  *
  * @package SP\Repositories
  */
-interface RepositoryItemInterface
+interface RepositoryInterface
 {
     /**
      * Creates an item
@@ -54,9 +55,9 @@ interface RepositoryItemInterface
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      */
-    public function delete($id);
+    public function delete(int $id);
 
     /**
      * Returns the item for given id
@@ -65,12 +66,10 @@ interface RepositoryItemInterface
      *
      * @return mixed
      */
-    public function getById($id);
+    public function getById(int $id);
 
     /**
      * Returns all the items
-     *
-     * @return array
      */
     public function getAll();
 
@@ -79,18 +78,18 @@ interface RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return array
+     * @return QueryResult
      */
-    public function getByIdBatch(array $ids);
+    public function getByIdBatch(array $ids): QueryResult;
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
      *
-     * @return $this
+     * @return int
      */
-    public function deleteByIdBatch(array $ids);
+    public function deleteByIdBatch(array $ids): int;
 
     /**
      * Checks whether the item is in use or not
@@ -99,7 +98,7 @@ interface RepositoryItemInterface
      *
      * @return bool
      */
-    public function checkInUse($id);
+    public function checkInUse(int $id): bool;
 
     /**
      * Checks whether the item is duplicated on updating
@@ -108,7 +107,7 @@ interface RepositoryItemInterface
      *
      * @return bool
      */
-    public function checkDuplicatedOnUpdate($itemData);
+    public function checkDuplicatedOnUpdate($itemData): bool;
 
     /**
      * Checks whether the item is duplicated on adding
@@ -117,14 +116,14 @@ interface RepositoryItemInterface
      *
      * @return bool
      */
-    public function checkDuplicatedOnAdd($itemData);
+    public function checkDuplicatedOnAdd($itemData): bool;
 
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return mixed
      */
-    public function search(ItemSearchData $SearchData);
+    public function search(ItemSearchData $itemSearchData);
 }

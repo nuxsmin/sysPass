@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -50,7 +50,7 @@ final class InstallController extends ControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         if ($this->configData->isInstalled()) {
             $this->router->response()
@@ -72,7 +72,11 @@ final class InstallController extends ControllerBase
         }
 
         $this->view->assign('errors', $errors);
-        $this->view->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([Language::$globalLang]));
+        $this->view->assign(
+            'langs',
+            SelectItemAdapter::factory(Language::getAvailableLanguages())
+                ->getItemsFromArraySelected([Language::$globalLang])
+        );
 
         $this->view();
     }
@@ -81,6 +85,7 @@ final class InstallController extends ControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function installAction(): bool
     {
@@ -98,7 +103,10 @@ final class InstallController extends ControllerBase
         try {
             $this->dic->get(Installer::class)->run($installData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Installation finished')
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -109,7 +117,7 @@ final class InstallController extends ControllerBase
     /**
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         // TODO: Implement initialize() method.
     }

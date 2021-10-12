@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,20 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
 defined('APP_ROOT') || die();
 
-use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SessionTimeout;
@@ -55,43 +52,33 @@ abstract class ControllerBase
     /**
      * Constantes de errores
      */
-    const ERR_UNAVAILABLE = 0;
-    const ERR_ACCOUNT_NO_PERMISSION = 1;
-    const ERR_PAGE_NO_PERMISSION = 2;
-    const ERR_UPDATE_MPASS = 3;
-    const ERR_OPERATION_NO_PERMISSION = 4;
-    const ERR_EXCEPTION = 5;
+    public const ERR_UNAVAILABLE = 0;
+    public const ERR_ACCOUNT_NO_PERMISSION = 1;
+    public const ERR_PAGE_NO_PERMISSION = 2;
+    public const ERR_UPDATE_MPASS = 3;
+    public const ERR_OPERATION_NO_PERMISSION = 4;
+    public const ERR_EXCEPTION = 5;
     /**
      * @var Template Instancia del motor de plantillas a utilizar
      */
-    protected $view;
-    /**
-     * @var  UserLoginResponse
-     */
-    protected $userData;
-    /**
-     * @var  ProfileData
-     */
-    protected $userProfileData;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var bool
-     */
-    protected $isAjax = false;
+    protected Template $view;
+    protected ?UserLoginResponse $userData = null;
+    protected ?ProfileData $userProfileData = null;
+    protected ContainerInterface $dic;
+    protected bool $isAjax = false;
 
     /**
      * Constructor
      *
-     * @param Container $container
-     * @param           $actionName
+     * @param \Psr\Container\ContainerInterface $container
+     * @param string                            $actionName
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \JsonException
      */
-    public final function __construct(Container $container, $actionName)
+    final public function __construct(
+        ContainerInterface $container,
+        string             $actionName
+    )
     {
         $this->dic = $container;
         $this->actionName = $actionName;
@@ -123,40 +110,48 @@ abstract class ControllerBase
 
     /**
      * Set view variables
-     *
-     * @param bool $loggedIn
      */
-    private function setViewVars($loggedIn = false)
+    private function setViewVars(bool $loggedIn = false): void
     {
-        $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
+        $this->view->assign(
+            'timeStart',
+            $this->request->getServer('REQUEST_TIME_FLOAT')
+        );
         $this->view->assign('queryTimeStart', microtime());
 
         if ($loggedIn) {
             $this->view->assign('ctx_userId', $this->userData->getId());
-            $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
-            $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
-            $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
+            $this->view->assign(
+                'ctx_userGroupId',
+                $this->userData->getUserGroupId()
+            );
+            $this->view->assign(
+                'ctx_userIsAdminApp',
+                $this->userData->getIsAdminApp()
+            );
+            $this->view->assign(
+                'ctx_userIsAdminAcc',
+                $this->userData->getIsAdminAcc()
+            );
         }
 
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
+        $this->view->assign(
+            'themeUri',
+            $this->view->getTheme()->getThemeUri()
+        );
         $this->view->assign('configData', $this->configData);
 
         // Pass the action name to the template as a variable
         $this->view->assign($this->actionName, true);
     }
 
-    /**
-     * @return void
-     */
-    protected abstract function initialize();
+    abstract protected function initialize(): void;
 
     /**
-     * @return void
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
      */
-    private function handleSessionTimeout()
+    private function handleSessionTimeout(): void
     {
         $this->sessionLogout(
             $this->request,
@@ -172,7 +167,7 @@ abstract class ControllerBase
     /**
      * Mostrar los datos de la plantilla
      */
-    protected function view()
+    protected function view(): void
     {
         try {
             $this->router->response()
@@ -203,10 +198,8 @@ abstract class ControllerBase
 
     /**
      * Upgrades a View to use a full page layout
-     *
-     * @param string $page
      */
-    protected function upgradeView($page = null)
+    protected function upgradeView(?string $page = null): void
     {
         $this->view->upgrade();
 
@@ -214,10 +207,14 @@ abstract class ControllerBase
             return;
         }
 
-        $this->view->assign('contentPage', $page ?: strtolower($this->controllerName));
+        $this->view->assign(
+            'contentPage',
+            $page ?: strtolower($this->controllerName)
+        );
 
         try {
-            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
+            $this->dic->get(LayoutHelper::class)
+                ->getFullLayout('main', $this->acl);
         } catch (Exception $e) {
             processException($e);
         }
@@ -226,13 +223,16 @@ abstract class ControllerBase
     /**
      * Obtener los datos para la vista de depuración
      */
-    protected function getDebug()
+    protected function getDebug(): void
     {
         global $memInit;
 
         $this->view->addTemplate('debug', 'common');
 
-        $this->view->assign('time', getElapsedTime($this->router->request()->server()->get('REQUEST_TIME_FLOAT')));
+        $this->view->assign(
+            'time',
+            getElapsedTime($this->router->request()->server()->get('REQUEST_TIME_FLOAT'))
+        );
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
@@ -240,14 +240,12 @@ abstract class ControllerBase
     /**
      * Comprobar si el usuario está logado.
      *
-     * @param bool $requireAuthCompleted
-     *
      * @throws AuthException
      * @throws DependencyException
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function checkLoggedIn($requireAuthCompleted = true)
+    protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {
         if ($this->session->isLoggedIn() === false
             || $this->session->getAuthCompleted() !== $requireAuthCompleted
@@ -275,7 +273,7 @@ abstract class ControllerBase
      *
      * Prepares view's variables to pass in a signed URI
      */
-    final protected function prepareSignedUriOnView()
+    final protected function prepareSignedUriOnView(): void
     {
         $from = $this->request->analyzeString('from');
 
@@ -284,7 +282,10 @@ abstract class ControllerBase
                 $this->request->verifySignature($this->configData->getPasswordSalt());
 
                 $this->view->assign('from', $from);
-                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+                $this->view->assign(
+                    'from_hash',
+                    Hash::signMessage($from, $this->configData->getPasswordSalt())
+                );
             } catch (SPException $e) {
                 processException($e);
             }
@@ -294,12 +295,11 @@ abstract class ControllerBase
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param null $action La acción a comprobar
-     *
-     * @return bool
+     * @param int $action La acción a comprobar
      */
-    protected function checkAccess($action): bool
+    protected function checkAccess(int $action): bool
     {
-        return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
+        return $this->userData->getIsAdminApp()
+            || $this->acl->checkUserAccess($action);
     }
 }

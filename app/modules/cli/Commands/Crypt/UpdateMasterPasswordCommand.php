@@ -63,26 +63,10 @@ final class UpdateMasterPasswordCommand extends CommandBase
      * @var string
      */
     protected static $defaultName = 'sp:crypt:update-master-password';
-    /**
-     * @var MasterPassService
-     */
     private MasterPassService $masterPassService;
-    /**
-     * @var ConfigService
-     */
     private ConfigService $configService;
-    /**
-     * @var \SP\Services\Account\AccountService
-     */
     private AccountService $accountService;
 
-    /**
-     * @param \SP\Services\Crypt\MasterPassService $masterPassService
-     * @param \SP\Services\Account\AccountService  $accountService
-     * @param \SP\Services\Config\ConfigService    $configService
-     * @param \Psr\Log\LoggerInterface             $logger
-     * @param \SP\Config\Config                    $config
-     */
     public function __construct(MasterPassService $masterPassService,
                                 AccountService    $accountService,
                                 ConfigService     $configService,
@@ -114,13 +98,10 @@ final class UpdateMasterPasswordCommand extends CommandBase
                 __('Skip asking to confirm the update'));
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(
+        InputInterface  $input,
+        OutputInterface $output
+    ): int
     {
         $style = new SymfonyStyle($input, $output);
 
@@ -208,9 +189,6 @@ final class UpdateMasterPasswordCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      */
     private function getMasterPassword(
@@ -249,9 +227,6 @@ final class UpdateMasterPasswordCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      */
     private function getCurrentMasterPassword(
@@ -300,13 +275,10 @@ final class UpdateMasterPasswordCommand extends CommandBase
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
-     * @return bool
-     */
-    private function getUpdate(InputInterface $input, StyleInterface $style): bool
+    private function getUpdate(
+        InputInterface $input,
+        StyleInterface $style
+    ): bool
     {
         $option = 'update';
 

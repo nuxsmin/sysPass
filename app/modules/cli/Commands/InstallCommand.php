@@ -67,9 +67,6 @@ final class InstallCommand extends CommandBase
      * @var string
      */
     protected static $defaultName = 'sp:install';
-    /**
-     * @var Installer
-     */
     private Installer $installer;
 
     public function __construct(LoggerInterface $logger,
@@ -127,13 +124,10 @@ final class InstallCommand extends CommandBase
                 __('Skip asking to confirm the installation'));
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(
+        InputInterface  $input,
+        OutputInterface $output
+    ): int
     {
         $style = new SymfonyStyle($input, $output);
 
@@ -175,13 +169,12 @@ final class InstallCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
-     * @return InstallData
      * @throws InstallError
      */
-    private function getInstallData(InputInterface $input, StyleInterface $style): InstallData
+    private function getInstallData(
+        InputInterface $input,
+        StyleInterface $style
+    ): InstallData
     {
         $adminPassword = $this->getAdminPassword($input, $style);
         $masterPassword = $this->getMasterPassword($input, $style);
@@ -208,9 +201,6 @@ final class InstallCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      * @throws InstallError
      */
@@ -256,9 +246,6 @@ final class InstallCommand extends CommandBase
 
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      * @throws InstallError
      */
@@ -298,9 +285,6 @@ final class InstallCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      */
     private function getDatabasePassword(
@@ -320,9 +304,6 @@ final class InstallCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
      * @return array|false|mixed|string
      */
     private function getLanguage(
@@ -345,11 +326,6 @@ final class InstallCommand extends CommandBase
         return $language;
     }
 
-    /**
-     * @param InputInterface $input
-     *
-     * @return bool
-     */
     private function isHostingMode(InputInterface $input): bool
     {
         $option = 'hostingMode';
@@ -362,9 +338,6 @@ final class InstallCommand extends CommandBase
     }
 
     /**
-     * @param InputInterface $input
-     *
-     * @return bool
      * @throws InstallError
      */
     private function getForceInstall(InputInterface $input): bool
@@ -384,13 +357,10 @@ final class InstallCommand extends CommandBase
         return $force;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
-     * @return bool
-     */
-    private function getInstall(InputInterface $input, StyleInterface $style): bool
+    private function getInstall(
+        InputInterface $input,
+        StyleInterface $style
+    ): bool
     {
         $option = 'install';
 

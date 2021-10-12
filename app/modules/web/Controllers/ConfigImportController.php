@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -29,7 +29,7 @@ use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
@@ -53,11 +53,15 @@ final class ConfigImportController extends SimpleControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws \JsonException
      */
     public function importAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_WARNING,
+                __u('Ey, this is a DEMO!!')
+            );
         }
 
         $importParams = new ImportParams();
@@ -75,8 +79,13 @@ final class ConfigImportController extends SimpleControllerBase
             $counter = $this->dic->get(ImportService::class)
                 ->doImport($importParams, FileImport::fromRequest('inFile', $this->request));
 
-            $this->eventDispatcher->notifyEvent('run.import.end',
-                new Event($this, EventMessage::factory()->addDetail(__u('Accounts imported'), $counter))
+            $this->eventDispatcher->notifyEvent(
+                'run.import.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDetail(__u('Accounts imported'), $counter)
+                )
             );
 
             if ($counter > 0) {
@@ -95,7 +104,10 @@ final class ConfigImportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -106,18 +118,20 @@ final class ConfigImportController extends SimpleControllerBase
      * @throws SessionTimeout
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_IMPORT);
+            $this->checkAccess(ActionsInterface::CONFIG_IMPORT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

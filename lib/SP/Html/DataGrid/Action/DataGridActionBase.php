@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Action;
 
+use Closure;
 use RuntimeException;
 use SP\Html\Assets\IconInterface;
 
@@ -39,27 +40,27 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * The runtime function that determines if the action should be displayed
      *
-     * @var callable
+     * @var \Closure|null
      */
-    protected $runtimeFilter;
+    protected ?Closure $runtimeFilter = null;
     /**
      * The runtime function to pass in the row dato to the action
      *
-     * @var callable
+     * @var \Closure|null
      */
-    protected $runtimeData;
+    protected ?Closure $runtimeData = null;
     /**
      * Action's name
      *
      * @var string
      */
-    protected $name = '';
+    protected string $name = '';
     /**
      * Action's title
      *
      * @var string
      */
-    protected $title = '';
+    protected string $title = '';
     /**
      * Action's title ID
      *
@@ -71,74 +72,74 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var string
      */
-    protected $onClickFunction = '';
+    protected string $onClickFunction = '';
     /**
      * The OnClick event arguments
      *
-     * @var array
+     * @var array|null
      */
-    protected $onClickArgs;
+    protected ?array $onClickArgs = null;
     /**
      * Action's icon
      *
-     * @var IconInterface
+     * @var IconInterface|null
      */
-    protected $icon;
+    protected ?IconInterface $icon = null;
     /**
      * Sets whether this action should be skipped from listing in rows
      *
      * @var bool
      */
-    protected $isSkip = false;
+    protected bool $isSkip = false;
     /**
      * The row name which determines whether the action is displayed
      *
-     * @var array
+     * @var array|null
      */
-    protected $filterRowSource;
+    protected ?array $filterRowSource = null;
     /**
      * Sets as a help action
      *
      * @var bool
      */
-    protected $isHelper;
+    protected ?bool $isHelper = null;
     /**
      * Action's type
      *
      * @var int
      */
-    protected $type = 0;
+    protected int $type = 0;
     /**
      * Data attributes (ie. data-*)
      *
-     * @var array
+     * @var array|null
      */
-    protected $data;
+    protected ?array $data = null;
     /**
      * Additional attributes (ie. name=*)
      *
-     * @var array
+     * @var array|null
      */
-    protected $attributes;
+    protected ?array $attributes = null;
     /**
      * CSS classes
      *
-     * @var array
+     * @var array|null
      */
-    protected $classes;
+    protected ?array $classes = null;
     /**
      * Sets as a selection action, that is, to be displayed on a selection menu
      *
      * @var bool
      */
-    protected $isSelection = false;
+    protected bool $isSelection = false;
 
     /**
      * DataGridActionBase constructor.
      *
-     * @param int $id EL id de la acción
+     * @param int|null $id EL id de la acción
      */
-    public function __construct($id = null)
+    public function __construct(?int $id = null)
     {
         $this->id = $id;
     }
@@ -165,7 +166,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function setRuntimeFilter(string $class, string $method): DataGridActionInterface
     {
         if (method_exists($class, $method)) {
-            $this->runtimeFilter = function ($filter) use ($method) {
+            $this->runtimeFilter = static function ($filter) use ($method) {
 //                new \ReflectionMethod($class, $method);
                 return $filter->{$method}();
             };
@@ -271,11 +272,16 @@ abstract class DataGridActionBase implements DataGridActionInterface
     {
         if ($this->onClickArgs !== null) {
 
-            $args = array_map(function ($value) {
-                return (!is_numeric($value) && $value !== 'this') ? '\'' . $value . '\'' : $value;
-            }, $this->onClickArgs);
+            $args = array_map(
+                static function ($value) {
+                    return (!is_numeric($value) && $value !== 'this') ? '\'' . $value . '\'' : $value;
+                },
+                $this->onClickArgs
+            );
 
-            return count($args) > 0 ? $this->onClickFunction . '(' . implode(',', $args) . ')' : $this->onClickFunction;
+            return count($args) > 0
+                ? $this->onClickFunction . '(' . implode(',', $args) . ')'
+                : $this->onClickFunction;
         }
 
         return $this->onClickFunction;
@@ -394,7 +400,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getData(): array
     {
-        return (array)$this->data;
+        return $this->data;
     }
 
     /**
@@ -490,7 +496,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getClasses(): array
     {
-        return (array)$this->classes;
+        return $this->classes;
     }
 
     /**

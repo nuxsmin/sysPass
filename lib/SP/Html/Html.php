@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html;
@@ -104,7 +104,7 @@ final class Html
      */
     public static function truncate(
         string $text,
-        int $limit,
+        int    $limit,
         string $ellipsis = '...'
     ): string
     {
@@ -120,10 +120,8 @@ final class Html
      * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
      *
      * @param array $rgb con color en RGB
-     *
-     * @return string
      */
-    public static function rgb2hex(array $rgb)
+    public static function rgb2hex(array $rgb): string
     {
         $hex = "#";
 
@@ -136,10 +134,6 @@ final class Html
 
     /**
      * Devolver una cadena con el tag HTML strong.
-     *
-     * @param string $text con la cadena de texto
-     *
-     * @return string
      */
     public static function strongText(string $text): string
     {
@@ -157,24 +151,26 @@ final class Html
      * @return string
      */
     public static function anchorText(
-        string $text,
+        string  $text,
         ?string $link = null,
         ?string $title = null,
-        string $attribs = ''
+        string  $attribs = ''
     ): string
     {
-        $alink = $link !== null ? $link : $text;
-        $atitle = $title !== null ? $title : $text;
+        $alink = $link ?? $text;
+        $atitle = $title ?? $text;
 
-        return sprintf('<a href="%s" title="%s" %s>%s</a>', $alink, $atitle, $attribs, $text);
+        return sprintf(
+            '<a href="%s" title="%s" %s>%s</a>',
+            $alink,
+            $atitle,
+            $attribs,
+            $text
+        );
     }
 
     /**
      * Strips out HTML tags preserving some spaces
-     *
-     * @param $text
-     *
-     * @return string
      */
     public static function stripTags(string $text): string
     {
@@ -183,6 +179,10 @@ final class Html
         }
 
         // Replace tags, then new lines, tabs and return chars, and then 2 or more spaces
-        return trim(preg_replace(['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'], ' ', $text));
+        return trim(preg_replace(
+                ['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'],
+                ' ',
+                $text)
+        );
     }
 }

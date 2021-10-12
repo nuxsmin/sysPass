@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 
 /**
  * Interface UpgradeInterface
@@ -34,19 +34,12 @@ use SP\Config\ConfigData;
 interface UpgradeInterface
 {
     /**
-     * Performs the upgrading process
-     *
-     * @param            $version
-     * @param ConfigData $configData
+     * Check if it needs to be upgraded
      */
-    public function upgrade($version, ConfigData $configData);
+    public static function needsUpgrade(string $version): bool;
 
     /**
-     * Check if it needs to be upgraded
-     *
-     * @param $version
-     *
-     * @return bool
+     * Performs the upgrading process
      */
-    public static function needsUpgrade($version);
+    public function upgrade(string $version, ConfigDataInterface $configData);
 }

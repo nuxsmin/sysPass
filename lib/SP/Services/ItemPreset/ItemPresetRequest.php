@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\ItemPreset;
 
 use SP\DataModel\ItemPresetData;
-
 
 /**
  * Class ItemPresetRequest
@@ -34,20 +33,11 @@ use SP\DataModel\ItemPresetData;
  */
 final class ItemPresetRequest
 {
-    /**
-     * @var ItemPresetData
-     */
-    private $itemPresetData;
-    /**
-     * @var mixed
-     */
+    private ItemPresetData $itemPresetData;
     private $data;
 
     /**
      * ItemPresetRequest constructor.
-     *
-     * @param ItemPresetData $itemPresetData
-     * @param mixed          $data
      */
     public function __construct(ItemPresetData $itemPresetData, $data)
     {
@@ -55,9 +45,6 @@ final class ItemPresetRequest
         $this->data = $data;
     }
 
-    /**
-     * @return ItemPresetData
-     */
     public function getItemPresetData(): ItemPresetData
     {
         return $this->itemPresetData;
@@ -71,10 +58,7 @@ final class ItemPresetRequest
         return $this->data;
     }
 
-    /**
-     * @return ItemPresetData
-     */
-    public function prepareToPersist()
+    public function prepareToPersist(): ItemPresetData
     {
         $this->itemPresetData->setData(serialize($this->data));
 

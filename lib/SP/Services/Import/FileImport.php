@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -39,10 +39,7 @@ defined('APP_ROOT') || die();
  */
 final class FileImport
 {
-    /**
-     * @var FileHandler
-     */
-    private $fileHandler;
+    private FileHandler $fileHandler;
 
     /**
      * FileImport constructor.
@@ -55,14 +52,13 @@ final class FileImport
     }
 
     /**
-     * @param string  $filename
-     * @param Request $request
-     *
-     * @return FileImport
      * @throws FileException
      * @throws SPException
      */
-    public static function fromRequest(string $filename, Request $request)
+    public static function fromRequest(
+        string  $filename,
+        Request $request
+    ): FileImport
     {
         return new self(self::checkFile($request->getFile($filename)));
     }
@@ -70,18 +66,18 @@ final class FileImport
     /**
      * Leer los datos del archivo.
      *
-     * @param array $file con los datos del archivo
+     * @param array|null $file con los datos del archivo
      *
      * @return FileHandler
-     * @throws FileException
-     * @throws SPException
+     * @throws \SP\Services\Import\ImportException
+     * @throws \SP\Storage\File\FileException
      */
-    private static function checkFile($file): FileHandler
+    private static function checkFile(?array $file): FileHandler
     {
         if (!is_array($file)) {
             throw new FileException(
                 __u('File successfully uploaded'),
-                FileException::ERROR,
+                SPException::ERROR,
                 __u('Please check the web server user permissions')
             );
         }
@@ -90,21 +86,23 @@ final class FileImport
             $fileHandler = new FileHandler($file['tmp_name']);
             $fileHandler->checkFileExists();
 
-            if (!in_array($fileHandler->getFileType(), ImportService::ALLOWED_MIME)) {
+            if (!in_array(
+                $fileHandler->getFileType(),
+                ImportService::ALLOWED_MIME)) {
                 throw new ImportException(
                     __u('File type not allowed'),
-                    ImportException::ERROR,
+                    SPException::ERROR,
                     sprintf(__('MIME type: %s'), $fileHandler->getFileType())
                 );
             }
 
             return $fileHandler;
         } catch (FileException $e) {
-            logger('Max. upload size: ' . Util::getMaxUpload());
+            logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
 
             throw new FileException(
                 __u('Internal error while reading the file'),
-                FileException::ERROR,
+                SPException::ERROR,
                 __u('Please, check PHP configuration for upload files'),
                 $e->getCode(),
                 $e
@@ -112,29 +110,20 @@ final class FileImport
         }
     }
 
-    /**
-     * @param string $path
-     *
-     * @return FileImport
-     */
-    public static function fromFilesystem(string $path)
+    public static function fromFilesystem(string $path): FileImport
     {
         return new self(new FileHandler($path));
     }
 
-    /**
-     * @return string
-     */
-    public function getFilePath()
+    public function getFilePath(): string
     {
         return $this->fileHandler->getFile();
     }
 
     /**
-     * @return string
      * @throws FileException
      */
-    public function getFileType()
+    public function getFileType(): string
     {
         return $this->fileHandler->getFileType();
     }
@@ -154,7 +143,7 @@ final class FileImport
     /**
      * Activar la autodetección de fin de línea
      */
-    protected function autodetectEOL()
+    protected function autodetectEOL(): void
     {
         ini_set('auto_detect_line_endings', true);
     }
@@ -171,9 +160,6 @@ final class FileImport
         return $this->fileHandler->readToString();
     }
 
-    /**
-     * @return FileHandler
-     */
     public function getFileHandler(): FileHandler
     {
         return $this->fileHandler;

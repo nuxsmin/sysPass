@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -40,18 +40,9 @@ use SP\Mvc\View\Template;
  */
 final class ErrorController
 {
-    /**
-     * @var Template
-     */
-    protected $view;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var LayoutHelper
-     */
-    protected $layoutHelper;
+    protected Template $view;
+    protected Klein $router;
+    protected LayoutHelper $layoutHelper;
 
     /**
      * ErrorController constructor.
@@ -75,7 +66,7 @@ final class ErrorController
     /**
      * indexAction
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->layoutHelper->getPublicLayout('error');
         $this->view();
@@ -84,7 +75,7 @@ final class ErrorController
     /**
      * Mostrar los datos de la plantilla
      */
-    protected function view()
+    protected function view(): void
     {
         try {
             echo $this->view->render();
@@ -100,15 +91,18 @@ final class ErrorController
     /**
      * maintenanceErrorAction
      */
-    public function maintenanceErrorAction()
+    public function maintenanceErrorAction(): void
     {
         $this->layoutHelper->getPublicLayout('error-maintenance');
 
-        $this->view->append('errors', [
-            'type' => SPException::WARNING,
-            'description' => __('Application on maintenance'),
-            'hint' => __('It will be running shortly')
-        ]);
+        $this->view->append(
+            'errors',
+            [
+                'type' => SPException::WARNING,
+                'description' => __('Application on maintenance'),
+                'hint' => __('It will be running shortly')
+            ]
+        );
 
         $this->view();
     }
@@ -116,15 +110,18 @@ final class ErrorController
     /**
      * databaseErrorAction
      */
-    public function databaseErrorAction()
+    public function databaseErrorAction(): void
     {
         $this->layoutHelper->getPublicLayout('error-database');
 
-        $this->view->append('errors', [
-            'type' => SPException::CRITICAL,
-            'description' => __('Error while checking the database'),
-            'hint' => __('Please contact to the administrator')
-        ]);
+        $this->view->append(
+            'errors',
+            [
+                'type' => SPException::CRITICAL,
+                'description' => __('Error while checking the database'),
+                'hint' => __('Please contact to the administrator')
+            ]
+        );
 
         $this->view();
     }
@@ -132,15 +129,18 @@ final class ErrorController
     /**
      * databaseConnectionAction
      */
-    public function databaseConnectionAction()
+    public function databaseConnectionAction(): void
     {
         $this->layoutHelper->getPublicLayout('error-database');
 
-        $this->view->append('errors', [
-            'type' => SPException::CRITICAL,
-            'description' => __('Unable to connect to DB'),
-            'hint' => __('Please contact to the administrator')
-        ]);
+        $this->view->append(
+            'errors',
+            [
+                'type' => SPException::CRITICAL,
+                'description' => __('Unable to connect to DB'),
+                'hint' => __('Please contact to the administrator')
+            ]
+        );
 
         $this->view();
     }

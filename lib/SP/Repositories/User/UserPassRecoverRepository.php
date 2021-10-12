@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\User;
@@ -48,7 +48,7 @@ final class UserPassRecoverRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAttemptsByUserId($userId, $time)
+    public function getAttemptsByUserId(int $userId, int $time): int
     {
         $query = /** @lang SQL */
             'SELECT userId 
@@ -59,7 +59,7 @@ final class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([(int)$userId, (int)$time]);
+        $queryData->setParams([$userId, $time]);
 
         return $this->db->doSelect($queryData)->getNumRows();
     }
@@ -74,7 +74,7 @@ final class UserPassRecoverRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add($userId, $hash)
+    public function add(int $userId, string $hash): int
     {
         $query = /** @lang SQL */
             'INSERT INTO UserPassRecover SET 
@@ -100,7 +100,7 @@ final class UserPassRecoverRepository extends Repository
      * @return int
      * @throws SPException
      */
-    public function toggleUsedByHash($hash, $time)
+    public function toggleUsedByHash(string $hash, int $time): int
     {
         $query = /** @lang SQL */
             'UPDATE UserPassRecover SET used = 1 
@@ -111,7 +111,7 @@ final class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$hash, (int)$time]);
+        $queryData->setParams([$hash, $time]);
         $queryData->setOnErrorMessage(__u('Error while checking hash'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -120,14 +120,14 @@ final class UserPassRecoverRepository extends Repository
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @param $hash
-     * @param $time
+     * @param string $hash
+     * @param int    $time
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUserIdForHash($hash, $time)
+    public function getUserIdForHash(string $hash, int $time): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT userId
@@ -139,7 +139,7 @@ final class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$hash, (int)$time]);
+        $queryData->setParams([$hash, $time]);
 
         return $this->db->doSelect($queryData);
     }

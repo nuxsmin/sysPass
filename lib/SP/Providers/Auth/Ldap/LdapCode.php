@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -32,12 +32,12 @@ namespace SP\Providers\Auth\Ldap;
  */
 interface LdapCode
 {
-    const SUCCESS = 0;
-    const OPERATIONS_ERROR = 1;
-    const AUTH_METHOD_NOT_SUPPORTED = 7;
-    const STRONGER_AUTH_REQUIRED = 8;
-    const CONFIDENTIALITY_REQUIRED = 13;
-    const NO_SUCH_OBJECT = 32;
-    const INVALID_CREDENTIALS = 49;
-    const FILTER_ERROR = 87;
+    public const SUCCESS = 0;
+    public const OPERATIONS_ERROR = 1;
+    public const AUTH_METHOD_NOT_SUPPORTED = 7;
+    public const STRONGER_AUTH_REQUIRED = 8;
+    public const CONFIDENTIALITY_REQUIRED = 13;
+    public const NO_SUCH_OBJECT = 32;
+    public const INVALID_CREDENTIALS = 49;
+    public const FILTER_ERROR = 87;
 }

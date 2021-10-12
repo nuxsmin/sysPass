@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -42,28 +42,35 @@ final class AccountFavoriteController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    /**
-     * @var AccountToFavoriteService
-     */
-    private $accountFavoriteService;
+    private ?AccountToFavoriteService $accountFavoriteService = null;
 
     /**
      * @param int $accountId
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function markAction(int $accountId): bool
     {
         try {
-            $this->accountFavoriteService->add($accountId, $this->session->getUserData()->getId());
+            $this->accountFavoriteService->add(
+                $accountId,
+                $this->session->getUserData()->getId()
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorite added'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Favorite added')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -73,19 +80,29 @@ final class AccountFavoriteController extends SimpleControllerBase
      * @param int $accountId
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function unmarkAction(int $accountId): bool
     {
         try {
-            $this->accountFavoriteService->delete($accountId, $this->session->getUserData()->getId());
+            $this->accountFavoriteService->delete(
+                $accountId,
+                $this->session->getUserData()->getId()
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorite deleted'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Favorite deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -96,7 +113,7 @@ final class AccountFavoriteController extends SimpleControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checks();
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -46,7 +46,7 @@ final class AccountToFavoriteRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUserId($id)
+    public function getForUserId(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT accountId, userId FROM AccountToFavorite WHERE userId = ?');
@@ -66,7 +66,7 @@ final class AccountToFavoriteRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add($accountId, $userId)
+    public function add(int $accountId, int $userId): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO AccountToFavorite SET accountId = ?, userId = ?');
@@ -86,7 +86,7 @@ final class AccountToFavoriteRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($accountId, $userId)
+    public function delete(int $accountId, int $userId): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?');

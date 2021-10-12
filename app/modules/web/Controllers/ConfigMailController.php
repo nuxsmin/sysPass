@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,11 +28,10 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Config\ConfigUtil;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
@@ -51,6 +50,7 @@ final class ConfigMailController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function saveAction(): bool
     {
@@ -73,7 +73,10 @@ final class ConfigMailController extends SimpleControllerBase
         if ($mailEnabled
             && (empty($mailServer) || empty($mailFrom))
         ) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Missing Mail parameters')
+            );
         }
 
         if ($mailEnabled) {
@@ -110,7 +113,10 @@ final class ConfigMailController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Mail disabled'));
         } else {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('No changes')
+            );
         }
 
         return $this->saveConfig(
@@ -129,8 +135,9 @@ final class ConfigMailController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function checkAction()
+    public function checkAction(): bool
     {
         $mailParams = new MailParams();
         $mailParams->server = $this->request->analyzeString('mail_server');
@@ -141,7 +148,9 @@ final class ConfigMailController extends SimpleControllerBase
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
-        if (empty($mailParams->server) || empty($mailParams->from) || empty($mailRecipients)) {
+        if (empty($mailParams->server)
+            || empty($mailParams->from)
+            || count($mailRecipients) === 0) {
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
                 __u('Missing Mail parameters')
@@ -156,10 +165,14 @@ final class ConfigMailController extends SimpleControllerBase
         try {
             $this->dic->get(MailService::class)->check($mailParams, $mailRecipients[0]);
 
-            $this->eventDispatcher->notifyEvent('send.mail.check',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Email sent'))
-                    ->addDetail(__u('Recipient'), $mailRecipients[0]))
+            $this->eventDispatcher->notifyEvent(
+                'send.mail.check',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Email sent'))
+                        ->addDetail(__u('Recipient'), $mailRecipients[0])
+                )
             );
 
             return $this->returnJsonResponse(
@@ -170,29 +183,34 @@ final class ConfigMailController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
+     * @return void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_MAIL);
+            $this->checkAccess(ActionsInterface::CONFIG_MAIL);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

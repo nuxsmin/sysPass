@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
@@ -43,98 +43,130 @@ use SP\Services\UserProfile\UserProfileService;
  */
 final class ItemPresetHelper extends HelperBase
 {
-    /**
-     * @var SelectItemAdapter
-     */
-    private $users;
-    /**
-     * @var SelectItemAdapter
-     */
-    private $userGroups;
-    /**
-     * @var SelectItemAdapter
-     */
-    private $userProfiles;
+    private ?SelectItemAdapter $users = null;
+    private ?SelectItemAdapter $userGroups = null;
+    private ?SelectItemAdapter $userProfiles = null;
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPermissionView(ItemPresetData $itemPresetData)
+    public function makeAccountPermissionView(ItemPresetData $itemPresetData): void
     {
-        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?: new AccountPermission();
+        $accountPermission = $itemPresetData->hydrate(AccountPermission::class)
+            ?? new AccountPermission();
 
-        $this->view->assign('typeTemplate', 'item_preset-permission');
-        $this->view->assign('presetName', __('Permission Preset'));
+        $this->view->assign(
+            'typeTemplate',
+            'item_preset-permission'
+        );
+        $this->view->assign(
+            'presetName',
+            __('Permission Preset')
+        );
 
         $this->view->assign('permission', $accountPermission);
 
-        $this->view->assign('usersView', $this->users->getItemsFromModelSelected($accountPermission->getUsersView()));
-        $this->view->assign('usersEdit', $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit()));
-        $this->view->assign('userGroupsView', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
-        $this->view->assign('userGroupsEdit', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
+        $this->view->assign(
+            'usersView',
+            $this->users->getItemsFromModelSelected($accountPermission->getUsersView())
+        );
+        $this->view->assign(
+            'usersEdit',
+            $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit())
+        );
+        $this->view->assign(
+            'userGroupsView',
+            $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView())
+        );
+        $this->view->assign(
+            'userGroupsEdit',
+            $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit())
+        );
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPrivateView(ItemPresetData $itemPresetData)
+    public function makeAccountPrivateView(ItemPresetData $itemPresetData): void
     {
-        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class) ?: new AccountPrivate();
+        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class)
+            ?? new AccountPrivate();
 
-        $this->view->assign('typeTemplate', 'item_preset-private');
-        $this->view->assign('presetName', __('Private Account Preset'));
+        $this->view->assign(
+            'typeTemplate',
+            'item_preset-private'
+        );
+        $this->view->assign(
+            'presetName',
+            __('Private Account Preset')
+        );
 
         $this->view->assign('private', $accountPrivate);
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      * @throws InvalidArgumentException
      */
-    public function makeSessionTimeoutView(ItemPresetData $itemPresetData)
+    public function makeSessionTimeoutView(ItemPresetData $itemPresetData): void
     {
-        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class) ?: new SessionTimeout($this->request->getClientAddress(), 3600);
+        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class)
+            ?? new SessionTimeout($this->request->getClientAddress(), 3600);
 
-        $this->view->assign('typeTemplate', 'item_preset-session_timeout');
-        $this->view->assign('presetName', __('Session Timeout Preset'));
+        $this->view->assign(
+            'typeTemplate',
+            'item_preset-session_timeout'
+        );
+        $this->view->assign(
+            'presetName',
+            __('Session Timeout Preset')
+        );
 
         $this->view->assign('sessionTimeout', $sessionTimeout);
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPasswordView(ItemPresetData $itemPresetData)
+    public function makeAccountPasswordView(ItemPresetData $itemPresetData): void
     {
-        $password = $itemPresetData->hydrate(Password::class) ?: new Password;
+        $password = $itemPresetData->hydrate(Password::class)
+            ?? new Password;
 
-        $this->view->assign('typeTemplate', 'item_preset-password');
-        $this->view->assign('presetName', __('Account Password Preset'));
+        $this->view->assign(
+            'typeTemplate',
+            'item_preset-password'
+        );
+        $this->view->assign(
+            'presetName',
+            __('Account Password Preset')
+        );
 
         $this->view->assign('password', $password);
 
-        $this->view->assign('expireTimeMultiplier', Password::EXPIRE_TIME_MULTIPLIER);
+        $this->view->assign(
+            'expireTimeMultiplier',
+            Password::EXPIRE_TIME_MULTIPLIER
+        );
     }
 
-    /**
-     * @param ItemPresetData $itemPresetData
-     */
-    public function setCommon(ItemPresetData $itemPresetData)
+    public function setCommon(ItemPresetData $itemPresetData): void
     {
         $this->users = SelectItemAdapter::factory(UserService::getItemsBasic());
         $this->userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $this->userProfiles = SelectItemAdapter::factory(UserProfileService::getItemsBasic());
 
-        $this->view->assign('users', $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()]));
-        $this->view->assign('userGroups', $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()]));
-        $this->view->assign('userProfiles', $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()]));
+        $this->view->assign(
+            'users',
+            $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()])
+        );
+        $this->view->assign(
+            'userGroups',
+            $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()])
+        );
+        $this->view->assign(
+            'userProfiles',
+            $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()])
+        );
     }
 }

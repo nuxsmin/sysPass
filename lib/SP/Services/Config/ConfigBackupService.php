@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Config;
 
 use Exception;
-use RuntimeException;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Repositories\NoSuchItemException;
@@ -42,61 +42,45 @@ use SP\Util\Util;
  */
 final class ConfigBackupService extends Service
 {
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
+    protected ?ConfigService $configService = null;
 
     /**
-     * @param string $configData
-     *
-     * @return string
      * @throws SPException
      */
     public static function configToJson(string $configData): string
     {
-        return Json::getJson(Util::unserialize(ConfigData::class, $configData), JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * @param string $configData
-     */
-    public static function configToXml(string $configData)
-    {
-        throw new RuntimeException('Not implemented');
+        return Json::getJson(
+            Util::unserialize(ConfigData::class, $configData),
+            JSON_PRETTY_PRINT
+        );
     }
 
     /**
      * Backs up the config data into the database
-     *
-     * @param ConfigData $configData
      */
-    public function backup(ConfigData $configData)
+    public function backup(ConfigDataInterface $configData): void
     {
         try {
-            $this->configService->save('config_backup', $this->packConfigData($configData));
+            $this->configService->save(
+                'config_backup',
+                $this->packConfigData($configData)
+            );
             $this->configService->save('config_backup_date', time());
         } catch (Exception $e) {
             processException($e);
         }
     }
 
-    /**
-     * @param ConfigData $configData
-     *
-     * @return string
-     */
-    private function packConfigData(ConfigData $configData)
+    private function packConfigData(ConfigDataInterface $configData): string
     {
         return bin2hex(gzcompress(serialize($configData)));
     }
 
     /**
-     * @return ConfigData
      * @throws FileException
      * @throws ServiceException
      */
-    public function restore()
+    public function restore(): ConfigDataInterface
     {
         return $this->config->saveConfig(
             Util::unserialize(ConfigData::class, $this->getBackup())
@@ -104,7 +88,6 @@ final class ConfigBackupService extends Service
     }
 
     /**
-     * @return ConfigData
      * @throws ServiceException
      */
     public function getBackup(): string
@@ -124,7 +107,7 @@ final class ConfigBackupService extends Service
         }
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configService = $this->dic->get(ConfigService::class);
     }

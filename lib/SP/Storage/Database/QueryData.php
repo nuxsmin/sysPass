@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
-
-use SP\DataModel\DataModelBase;
 
 /**
  * Class QueryData
@@ -33,58 +31,19 @@ use SP\DataModel\DataModelBase;
  */
 final class QueryData
 {
-    /**
-     * @var array
-     */
-    protected $params = [];
-    /**
-     * @var string
-     */
-    protected $query;
-    /**
-     * @var string
-     */
-    protected $mapClassName;
-    /**
-     * @var bool
-     */
-    protected $useKeyPair = false;
-    /**
-     * @var string
-     */
-    protected $select;
-    /**
-     * @var string
-     */
-    protected $from;
-    /**
-     * @var string
-     */
-    protected $where;
-    /**
-     * @var string
-     */
-    protected $groupBy;
-    /**
-     * @var string|null
-     */
-    protected $order;
-    /**
-     * @var string
-     */
-    protected $limit;
-    /**
-     * @var string
-     */
-    protected $queryCount;
-    /**
-     * @var int Código de estado tras realizar la consulta
-     */
-    protected $queryStatus = 0;
-    /**
-     * @var string
-     */
-    protected $onErrorMessage;
+    protected array $params = [];
+    protected ?string $query = null;
+    protected ?string $mapClassName = null;
+    protected bool $useKeyPair = false;
+    protected ?string $select = null;
+    protected ?string $from = null;
+    protected ?string $where = null;
+    protected ?string $groupBy = null;
+    protected ?string $order = null;
+    protected ?string $limit = null;
+    protected ?string $queryCount = null;
+    protected int $queryStatus = 0;
+    protected ?string $onErrorMessage = null;
 
     /**
      * Añadir un parámetro a la consulta
@@ -92,7 +51,7 @@ final class QueryData
      * @param $value
      * @param $name
      */
-    public function addParam($value, $name = null)
+    public function addParam($value, $name = null): void
     {
         if (null !== $name) {
             $this->params[$name] = $value;
@@ -101,123 +60,88 @@ final class QueryData
         }
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->params;
     }
 
-    /**
-     * Establecer los parámetros de la consulta
-     *
-     * @param array $data
-     */
-    public function setParams(array $data)
+    public function setParams(array $data): void
     {
         $this->params = $data;
     }
 
-    /**
-     * @return string
-     */
     public function getQuery(): string
     {
         if (empty($this->query)) {
-            return $this->select . ' ' . $this->from . ' ' . $this->where . ' ' . $this->groupBy . ' ' . $this->order . ' ' . $this->limit;
+            return $this->select .
+                ' ' .
+                $this->from .
+                ' ' .
+                $this->where .
+                ' ' .
+                $this->groupBy .
+                ' ' .
+                $this->order .
+                ' ' .
+                $this->limit;
         }
 
         return $this->query;
     }
 
-    /**
-     * @param $query
-     */
-    public function setQuery($query)
+    public function setQuery(string $query): void
     {
         $this->query = $query;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMapClassName(): ?string
     {
         return $this->mapClassName;
     }
 
-    /**
-     * @param string $mapClassName
-     */
-    public function setMapClassName(string $mapClassName)
+    public function setMapClassName(string $mapClassName): void
     {
         $this->mapClassName = $mapClassName;
     }
 
-    /**
-     * @return bool
-     */
     public function isUseKeyPair(): bool
     {
         return $this->useKeyPair;
     }
 
-    /**
-     * @param boolean $useKeyPair
-     */
-    public function setUseKeyPair(bool $useKeyPair)
+    public function setUseKeyPair(bool $useKeyPair): void
     {
         $this->useKeyPair = $useKeyPair;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelect(): ?string
     {
         return $this->select;
     }
 
-    /**
-     * @param string $select
-     */
-    public function setSelect(string $select)
+    public function setSelect(string $select): void
     {
         $this->select = 'SELECT ' . $select;
     }
 
-    /**
-     * @return string|null
-     */
     public function getOrder(): ?string
     {
         return $this->order;
     }
 
-    /**
-     * @param string $order
-     */
-    public function setOrder(string $order)
+    public function setOrder(string $order): void
     {
         if (!empty($order)) {
             $this->order = 'ORDER BY ' . $order;
         }
     }
 
-    /**
-     * @return string|null
-     */
     public function getLimit(): ?string
     {
         return $this->limit;
     }
 
-    /**
-     * @param string     $limit
-     * @param array|null $params
-     */
-    public function setLimit(string $limit, ?array $params = null)
+    public function setLimit(string $limit, ?array $params = null): void
     {
         if (!empty($limit)) {
             $this->limit = 'LIMIT ' . $limit;
@@ -228,19 +152,11 @@ final class QueryData
         }
     }
 
-    /**
-     * Añadir parámetros a la consulta
-     *
-     * @param array $params
-     */
-    public function addParams(array $params)
+    public function addParams(array $params): void
     {
         $this->params = array_merge($this->params, $params);
     }
 
-    /**
-     * @return string
-     */
     public function getQueryCount(): string
     {
         if (empty($this->queryCount)) {
@@ -250,36 +166,27 @@ final class QueryData
         return $this->queryCount;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFrom(): ?string
     {
         return $this->from;
     }
 
-    /**
-     * @param string $from
-     */
-    public function setFrom(string $from)
+    public function setFrom(string $from): void
     {
         if (!empty($from)) {
             $this->from = 'FROM ' . $from;
         }
     }
 
-    /**
-     * @return string|null
-     */
     public function getWhere(): ?string
     {
         return $this->where;
     }
 
     /**
-     * @param array|string $where
+     * @param string[]|string $where
      */
-    public function setWhere($where)
+    public function setWhere($where): void
     {
         if (!empty($where)) {
             if (is_array($where)) {
@@ -290,34 +197,22 @@ final class QueryData
         }
     }
 
-    /**
-     * @return string
-     */
     public function getOnErrorMessage(): string
     {
         return $this->onErrorMessage ?: __u('Error while querying');
     }
 
-    /**
-     * @param string $onErrorMessage
-     */
-    public function setOnErrorMessage(string $onErrorMessage)
+    public function setOnErrorMessage(string $onErrorMessage): void
     {
         $this->onErrorMessage = $onErrorMessage;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getGroupBy()
+    public function getGroupBy(): ?string
     {
         return $this->groupBy;
     }
 
-    /**
-     * @param string $groupBy
-     */
-    public function setGroupBy(string $groupBy)
+    public function setGroupBy(string $groupBy): void
     {
         if (!empty($groupBy)) {
             $this->groupBy = 'GROUP BY ' . $groupBy;

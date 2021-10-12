@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Export;
@@ -30,13 +30,14 @@ use DOMXPath;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\DataModel\CategoryData;
 use SP\Services\Account\AccountService;
@@ -60,49 +61,25 @@ defined('APP_ROOT') || die();
  */
 final class XmlExportService extends Service
 {
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-    /**
-     * @var
-     */
-    private $extensionChecker;
-    /**
-     * @var DOMDocument
-     */
-    private $xml;
-    /**
-     * @var DOMElement
-     */
-    private $root;
-    /**
-     * @var string
-     */
-    private $exportPass;
-    /**
-     * @var bool
-     */
-    private $encrypted = false;
-    /**
-     * @var string
-     */
-    private $exportPath;
-    /**
-     * @var string
-     */
-    private $exportFile;
+    private ?ConfigDataInterface $configData = null;
+    private ?PhpExtensionChecker $extensionChecker = null;
+    private ?DOMDocument $xml = null;
+    private ?DOMElement $root = null;
+    private ?string $exportPass = null;
+    private bool $encrypted = false;
+    private ?string $exportPath = null;
+    private ?string $exportFile = null;
 
     /**
      * Realiza la exportación de las cuentas a XML
      *
-     * @param string $exportPath
-     * @param string $pass string La clave de exportación
+     * @param string      $exportPath
+     * @param string|null $pass La clave de exportación
      *
-     * @throws ServiceException
-     * @throws FileException
+     * @throws \SP\Services\ServiceException
+     * @throws \SP\Storage\File\FileException
      */
-    public function doExport(string $exportPath, string $pass = null)
+    public function doExport(string $exportPath, ?string $pass = null): void
     {
         set_time_limit(0);
 
@@ -118,16 +95,18 @@ final class XmlExportService extends Service
     }
 
     /**
-     * @param string $exportPath
-     *
      * @throws ServiceException
      */
-    private function setExportPath(string $exportPath)
+    private function setExportPath(string $exportPath): void
     {
         if (!is_dir($exportPath)
-            && @mkdir($exportPath, 0700, true) === false
+            && !mkdir($exportPath, 0700, true)
+            && !is_dir($exportPath)
         ) {
-            throw new ServiceException(sprintf(__('Unable to create the directory (%s)'), $exportPath));
+            throw new ServiceException(sprintf(
+                __('Unable to create the directory (%s)'),
+                $exportPath
+            ));
         }
 
         $this->exportPath = $exportPath;
@@ -136,7 +115,6 @@ final class XmlExportService extends Service
     /**
      * Genera el nombre del archivo usado para la exportación.
      *
-     * @return string
      * @throws FileException
      */
     private function generateExportFilename(): string
@@ -149,34 +127,43 @@ final class XmlExportService extends Service
         return self::getExportFilename($this->exportPath, $hash);
     }
 
-    /**
-     * @param string $path
-     * @param string $hash
-     * @param bool   $compressed
-     *
-     * @return string
-     */
-    public static function getExportFilename(string $path, string $hash, bool $compressed = false)
+    public static function getExportFilename(
+        string $path,
+        string $hash,
+        bool   $compressed = false
+    ): string
     {
-        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_export-' . $hash;
+        $file = sprintf(
+            '%s%s%s_export-%s',
+            $path,
+            DIRECTORY_SEPARATOR,
+            AppInfoInterface::APP_NAME,
+            $hash
+        );
 
         if ($compressed) {
             return $file . ArchiveHandler::COMPRESS_EXTENSION;
         }
 
-        return $file . '.xml';
+        return sprintf('%s.xml', $file);
     }
 
     /**
      * Eliminar los archivos de exportación anteriores
      */
-    private function deleteOldExports()
+    private function deleteOldExports(): void
     {
         $path = $this->exportPath . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME;
 
-        array_map(function ($file) {
-            return @unlink($file);
-        }, array_merge(glob($path . '_export-*'), glob($path . '*.xml')));
+        array_map(
+            static function ($file) {
+                return @unlink($file);
+            },
+            array_merge(
+                glob($path . '_export-*'),
+                glob($path . '*.xml')
+            )
+        );
     }
 
     /**
@@ -186,7 +173,7 @@ final class XmlExportService extends Service
      * @throws NotFoundExceptionInterface
      * @throws ServiceException
      */
-    private function makeXML()
+    private function makeXML(): void
     {
         try {
             $this->createRoot();
@@ -202,7 +189,7 @@ final class XmlExportService extends Service
         } catch (Exception $e) {
             throw new ServiceException(
                 __u('Error while exporting'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 __u('Please check out the event log for more details'),
                 $e->getCode(),
                 $e
@@ -215,13 +202,17 @@ final class XmlExportService extends Service
      *
      * @throws ServiceException
      */
-    private function createRoot()
+    private function createRoot(): void
     {
         try {
             $this->xml = new DOMDocument('1.0', 'UTF-8');
             $this->root = $this->xml->appendChild($this->xml->createElement('Root'));
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -230,7 +221,7 @@ final class XmlExportService extends Service
      *
      * @throws ServiceException
      */
-    private function createMeta()
+    private function createMeta(): void
     {
         try {
             $userData = $this->context->getUserData();
@@ -252,7 +243,11 @@ final class XmlExportService extends Service
 
             $this->root->appendChild($nodeMeta);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -263,10 +258,11 @@ final class XmlExportService extends Service
      * @throws NotFoundExceptionInterface
      * @throws ServiceException
      */
-    private function createCategories()
+    private function createCategories(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process.category',
+            $this->eventDispatcher->notifyEvent(
+                'run.export.process.category',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exporting categories')))
             );
@@ -300,7 +296,11 @@ final class XmlExportService extends Service
 
             $this->appendNode($nodeCategories);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -311,7 +311,7 @@ final class XmlExportService extends Service
      *
      * @throws ServiceException
      */
-    private function appendNode(DOMElement $node)
+    private function appendNode(DOMElement $node): void
     {
         try {
             // Si se utiliza clave de encriptación los datos se encriptan en un nuevo nodo:
@@ -351,7 +351,11 @@ final class XmlExportService extends Service
                 $this->root->appendChild($node);
             }
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -360,9 +364,9 @@ final class XmlExportService extends Service
      *
      * @param $data string Los datos a escapar
      *
-     * @return mixed
+     * @return string
      */
-    private function escapeChars($data)
+    private function escapeChars(string $data): string
     {
         $arrStrFrom = ['&', '<', '>', '"', '\''];
         $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
@@ -378,10 +382,11 @@ final class XmlExportService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createClients()
+    private function createClients(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process.client',
+            $this->eventDispatcher->notifyEvent(
+                'run.export.process.client',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exporting clients')))
             );
@@ -413,7 +418,11 @@ final class XmlExportService extends Service
 
             $this->appendNode($nodeClients);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -424,10 +433,11 @@ final class XmlExportService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createTags()
+    private function createTags(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process.tag',
+            $this->eventDispatcher->notifyEvent(
+                'run.export.process.tag',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exporting tags')))
             );
@@ -457,7 +467,11 @@ final class XmlExportService extends Service
 
             $this->appendNode($nodeTags);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -468,10 +482,11 @@ final class XmlExportService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createAccounts()
+    private function createAccounts(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process.account',
+            $this->eventDispatcher->notifyEvent(
+                'run.export.process.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exporting accounts')))
             );
@@ -525,7 +540,11 @@ final class XmlExportService extends Service
 
             $this->appendNode($nodeAccounts);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -534,7 +553,7 @@ final class XmlExportService extends Service
      *
      * @throws ServiceException
      */
-    private function createHash()
+    private function createHash(): void
     {
         try {
             $hash = self::generateHashFromNodes($this->xml);
@@ -551,15 +570,14 @@ final class XmlExportService extends Service
                 ->item(0)
                 ->appendChild($hashNode);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
-    /**
-     * @param DOMDocument $document
-     *
-     * @return string
-     */
     public static function generateHashFromNodes(DOMDocument $document): string
     {
         $data = '';
@@ -576,7 +594,7 @@ final class XmlExportService extends Service
      *
      * @throws ServiceException
      */
-    private function writeXML()
+    private function writeXML(): void
     {
         try {
             $this->xml->formatOutput = true;
@@ -586,7 +604,11 @@ final class XmlExportService extends Service
                 throw new ServiceException(__u('Error while creating the XML file'));
             }
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                __FUNCTION__
+            );
         }
     }
 
@@ -594,7 +616,7 @@ final class XmlExportService extends Service
      * @throws CheckException
      * @throws FileException
      */
-    public function createArchive()
+    public function createArchive(): void
     {
         $archive = new ArchiveHandler($this->exportFile, $this->extensionChecker);
         $archive->compressFile($this->exportFile);
@@ -603,17 +625,11 @@ final class XmlExportService extends Service
         $file->delete();
     }
 
-    /**
-     * @return string
-     */
     public function getExportFile(): string
     {
         return $this->exportFile;
     }
 
-    /**
-     * @return bool
-     */
     public function isEncrypted(): bool
     {
         return $this->encrypted;
@@ -623,26 +639,9 @@ final class XmlExportService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
         $this->configData = $this->config->getConfigData();
-    }
-
-    /**
-     * Devuelve el código XML de un nodo
-     *
-     * @param $node string El nodo a devolver
-     *
-     * @return string
-     * @throws ServiceException
-     */
-    private function getNodeXML($node)
-    {
-        try {
-            return $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
-        } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
-        }
     }
 }

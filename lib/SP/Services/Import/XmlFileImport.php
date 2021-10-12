@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
 
 use DOMDocument;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\File\FileException;
 
 /**
@@ -34,14 +35,8 @@ use SP\Storage\File\FileException;
  */
 final class XmlFileImport
 {
-    /**
-     * @var FileImport
-     */
-    protected $fileImport;
-    /**
-     * @var DOMDocument
-     */
-    protected $xmlDOM;
+    protected FileImport $fileImport;
+    protected ?DOMDocument $xmlDOM = null;
 
     /**
      * XmlFileImport constructor.
@@ -64,7 +59,7 @@ final class XmlFileImport
      * @throws ImportException
      * @throws FileException
      */
-    protected function readXMLFile()
+    protected function readXMLFile(): void
     {
         libxml_use_internal_errors(true);
 
@@ -80,7 +75,7 @@ final class XmlFileImport
 
             throw new ImportException(
                 __u('Internal error'),
-                ImportException::ERROR,
+                SPException::ERROR,
                 __u('Unable to process the XML file')
             );
         }
@@ -89,10 +84,9 @@ final class XmlFileImport
     /**
      * Detectar la aplicación que generó el XML.
      *
-     * @return string
      * @throws ImportException
      */
-    public function detectXMLFormat()
+    public function detectXMLFormat(): string
     {
         $nodes = $this->xmlDOM->getElementsByTagName('Generator');
 
@@ -106,15 +100,12 @@ final class XmlFileImport
 
         throw new ImportException(
             __u('XML file not supported'),
-            ImportException::ERROR,
+            SPException::ERROR,
             __u('Unable to guess the application which data was exported from')
         );
     }
 
-    /**
-     * @return DOMDocument
-     */
-    public function getXmlDOM()
+    public function getXmlDOM(): DOMDocument
     {
         return $this->xmlDOM;
     }
@@ -122,9 +113,9 @@ final class XmlFileImport
     /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
      */
-    protected function parseFileHeader()
+    protected function parseFileHeader(): ?string
     {
-        if (($handle = @fopen($this->fileImport->getFilePath(), 'r')) !== false) {
+        if (($handle = @fopen($this->fileImport->getFilePath(), 'rb')) !== false) {
             // No. de líneas a leer como máximo
             $maxLines = 5;
             $count = 0;

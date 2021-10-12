@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\ItemPreset;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\ItemPreset\ItemPresetRepository;
@@ -41,46 +42,36 @@ use SP\Storage\Database\QueryResult;
  */
 final class ItemPresetService extends Service
 {
-    /**
-     * @var ItemPresetRepository
-     */
-    private $itemPresetRepository;
+    private ?ItemPresetRepository $itemPresetRepository = null;
 
     /**
-     * @param ItemPresetRequest $itemPresetRequest
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ItemPresetRequest $itemPresetRequest)
+    public function create(ItemPresetRequest $itemPresetRequest): int
     {
-        return $this->itemPresetRepository->create($itemPresetRequest->prepareToPersist());
+        return $this->itemPresetRepository
+            ->create($itemPresetRequest->prepareToPersist());
     }
 
     /**
-     * @param ItemPresetRequest $itemPresetRequest
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(ItemPresetRequest $itemPresetRequest)
+    public function update(ItemPresetRequest $itemPresetRequest): int
     {
-        return $this->itemPresetRepository->update($itemPresetRequest->prepareToPersist());
+        return $this->itemPresetRepository
+            ->update($itemPresetRequest->prepareToPersist());
     }
 
     /**
      * Deletes an item
      *
-     * @param $id
-     *
-     * @return ItemPresetService
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): ItemPresetService
     {
         if ($this->itemPresetRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('Value not found'));
@@ -92,14 +83,11 @@ final class ItemPresetService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
-     * @return ItemPresetData
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): ItemPresetData
     {
         $result = $this->itemPresetRepository->getById($id);
 
@@ -117,7 +105,7 @@ final class ItemPresetService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->itemPresetRepository->getAll()->getDataAsArray();
     }
@@ -125,42 +113,40 @@ final class ItemPresetService extends Service
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->itemPresetRepository->search($itemSearchData);
     }
 
     /**
-     * @param string $type
-     *
-     * @return ItemPresetData
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForCurrentUser(string $type)
+    public function getForCurrentUser(string $type): ?ItemPresetData
     {
         $userData = $this->context->getUserData();
 
-        return $this->getForUser($type, $userData->getId(), $userData->getUserGroupId(), $userData->getUserProfileId());
+        return $this->getForUser(
+            $type,
+            $userData->getId(),
+            $userData->getUserGroupId(),
+            $userData->getUserProfileId()
+        );
     }
 
     /**
-     * @param string $type
-     * @param int    $userId
-     * @param int    $userGroupId
-     * @param int    $userProfileId
-     *
-     * @return ItemPresetData
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId)
+    public function getForUser(
+        string $type,
+        int    $userId,
+        int    $userGroupId,
+        int    $userProfileId
+    ): ?ItemPresetData
     {
         $result = $this->itemPresetRepository->getByFilter(
             $type,
@@ -177,23 +163,27 @@ final class ItemPresetService extends Service
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
-     * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->itemPresetRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the values'), ServiceException::WARNING);
+        $count = $this->itemPresetRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting the values'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->itemPresetRepository = $this->dic->get(ItemPresetRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -50,15 +50,12 @@ final class ClientController extends ControllerBase
 {
     use ItemTrait;
 
-    /**
-     * @var ClientService
-     */
-    private $clientService;
+    private ?ClientService $clientService = null;
 
     /**
      * viewAction
      */
-    public function viewAction()
+    public function viewAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CLIENT_VIEW);
@@ -71,11 +68,15 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('show.client', new Event($this));
 
-            $this->eventDispatcher->notifyEvent('show.client',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Client displayed'))
-                    ->addDetail(__u('Name'), $clientData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'show.client',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Client displayed'))
+                        ->addDetail(__u('Name'), $clientData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
             if ($customFields) {
@@ -91,7 +92,9 @@ final class ClientController extends ControllerBase
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
+            $this->returnResponse(
+                ApiResponse::makeSuccess($out->toArray(), $id)
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -102,7 +105,7 @@ final class ClientController extends ControllerBase
     /**
      * createAction
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CLIENT_CREATE);
@@ -114,14 +117,24 @@ final class ClientController extends ControllerBase
 
             $id = $this->clientService->create($clientData);
 
-            $this->eventDispatcher->notifyEvent('create.client',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Client added'))
-                    ->addDetail(__u('Name'), $clientData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'create.client',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Client added'))
+                        ->addDetail(__u('Name'), $clientData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client added')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $clientData,
+                    $id,
+                    __('Client added')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -132,7 +145,7 @@ final class ClientController extends ControllerBase
     /**
      * editAction
      */
-    public function editAction()
+    public function editAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CLIENT_EDIT);
@@ -145,14 +158,24 @@ final class ClientController extends ControllerBase
 
             $this->clientService->update($clientData);
 
-            $this->eventDispatcher->notifyEvent('edit.client',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Client updated'))
-                    ->addDetail(__u('Name'), $clientData->getName())
-                    ->addDetail('ID', $clientData->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.client',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Client updated'))
+                        ->addDetail(__u('Name'), $clientData->getName())
+                        ->addDetail('ID', $clientData->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $clientData,
+                    $clientData->getId(),
+                    __('Client updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -163,7 +186,7 @@ final class ClientController extends ControllerBase
     /**
      * deleteAction
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CLIENT_DELETE);
@@ -174,14 +197,24 @@ final class ClientController extends ControllerBase
 
             $this->clientService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.client',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Client deleted'))
-                    ->addDetail(__u('Name'), $clientData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'delete.client',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Client deleted'))
+                        ->addDetail(__u('Name'), $clientData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client deleted')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $clientData,
+                    $id,
+                    __('Client deleted')
+                )
+            );
         } catch (Exception $e) {
             $this->returnResponseException($e);
 
@@ -192,7 +225,7 @@ final class ClientController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CLIENT_SEARCH);
@@ -203,7 +236,11 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.client', new Event($this));
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->clientService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $this->clientService->search($itemSearchData)->getDataAsArray()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -216,7 +253,7 @@ final class ClientController extends ControllerBase
      * @throws NotFoundException
      * @throws InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->clientService = $this->dic->get(ClientService::class);
         $this->apiService->setHelpClass(ClientHelp::class);

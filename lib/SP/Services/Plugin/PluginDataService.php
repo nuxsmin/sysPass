@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Plugin;
@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginDataModel;
 use SP\Repositories\Plugin\PluginDataRepository;
@@ -42,52 +43,41 @@ use SP\Storage\Database\QueryResult;
  */
 final class PluginDataService extends Service
 {
-    /**
-     * @var PluginDataRepository
-     */
-    protected $pluginRepository;
+    protected ?PluginDataRepository $pluginRepository = null;
 
     /**
      * Creates an item
      *
-     * @param PluginDataModel $itemData
-     *
-     * @return QueryResult
      * @throws CryptoException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(PluginDataModel $itemData)
+    public function create(PluginDataModel $itemData): QueryResult
     {
-        return $this->pluginRepository->create($itemData->encrypt($this->getMasterKeyFromContext()));
+        return $this->pluginRepository
+            ->create($itemData->encrypt($this->getMasterKeyFromContext()));
     }
 
     /**
      * Updates an item
      *
-     * @param PluginDataModel $itemData
-     *
-     * @return int
      * @throws CryptoException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(PluginDataModel $itemData)
+    public function update(PluginDataModel $itemData): int
     {
-        return $this->pluginRepository->update($itemData->encrypt($this->getMasterKeyFromContext()));
+        return $this->pluginRepository
+            ->update($itemData->encrypt($this->getMasterKeyFromContext()));
     }
 
     /**
      * Returns the item for given plugin and id
      *
-     * @param string $name
-     * @param int    $id
-     *
-     * @return PluginDataModel
      * @throws NoSuchItemException
      * @throws CryptoException
      * @throws ConstraintException
@@ -95,12 +85,15 @@ final class PluginDataService extends Service
      * @throws QueryException
      * @throws ServiceException
      */
-    public function getByItemId(string $name, int $id)
+    public function getByItemId(string $name, int $id): PluginDataModel
     {
         $result = $this->pluginRepository->getByItemId($name, $id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin\'s data not found'),
+                SPException::INFO
+            );
         }
 
         /** @var PluginDataModel $itemData */
@@ -112,27 +105,34 @@ final class PluginDataService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
      * @return PluginDataModel[]
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    public function getById($id)
+    public function getById(string $id): array
     {
         $result = $this->pluginRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin\'s data not found'),
+                SPException::INFO
+            );
         }
 
         $data = $result->getDataAsArray();
 
-        array_walk($data, function ($itemData) {
-            /** @var PluginDataModel $itemData */
-            $itemData->decrypt($this->getMasterKeyFromContext());
-        });
+        array_walk(
+            $data,
+            function ($itemData) {
+                /** @var PluginDataModel $itemData */
+                $itemData->decrypt($this->getMasterKeyFromContext());
+            }
+        );
 
         return $data;
     }
@@ -141,17 +141,23 @@ final class PluginDataService extends Service
      * Returns all the items
      *
      * @return PluginDataModel[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    public function getAll()
+    public function getAll(): array
     {
         $data = $this->pluginRepository->getAll()->getDataAsArray();
 
-        array_walk($data, function ($itemData) {
-            /** @var PluginDataModel $itemData */
-            $itemData->decrypt($this->getMasterKeyFromContext());
-        });
+        array_walk(
+            $data,
+            function ($itemData) {
+                /** @var PluginDataModel $itemData */
+                $itemData->decrypt($this->getMasterKeyFromContext());
+            }
+        );
 
         return $data;
     }
@@ -159,38 +165,38 @@ final class PluginDataService extends Service
     /**
      * Deletes an item
      *
-     * @param $id
-     *
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(string $id): void
     {
         if ($this->pluginRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin\'s data not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Deletes an item
      *
-     * @param string $name
-     * @param int    $itemId
-     *
-     * @return void
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByItemId(string $name, int $itemId)
+    public function deleteByItemId(string $name, int $itemId): void
     {
         if ($this->pluginRepository->deleteByItemId($name, $itemId) === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin\'s data not found'),
+                SPException::INFO
+            );
         }
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->pluginRepository = $this->dic->get(PluginDataRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
@@ -34,86 +34,47 @@ use stdClass;
  */
 final class JsonResponse implements JsonSerializable
 {
-    const JSON_SUCCESS = 0;
-    const JSON_SUCCESS_STICKY = 100;
-    const JSON_ERROR = 1;
-    const JSON_ERROR_STICKY = 101;
-    const JSON_WARNING = 2;
-    const JSON_WARNING_STICKY = 102;
-    const JSON_LOGOUT = 10;
+    public const JSON_SUCCESS = 0;
+    public const JSON_SUCCESS_STICKY = 100;
+    public const JSON_ERROR = 1;
+    public const JSON_ERROR_STICKY = 101;
+    public const JSON_WARNING = 2;
+    public const JSON_WARNING_STICKY = 102;
+    public const JSON_LOGOUT = 10;
 
-    /**
-     * @var int
-     */
-    protected $status = 1;
-    /**
-     * @var string
-     */
-    protected $description = '';
-    /**
-     * @var string
-     */
-    protected $action = '';
-    /**
-     * @var array
-     */
-    protected $data = [];
-    /**
-     * @var array
-     */
-    protected $messages = [];
-    /**
-     * @var string
-     */
-    protected $container = '';
-    /**
-     * @var string
-     */
-    protected $csrf = '';
+    protected int $status = 1;
+    protected ?string $description = null;
+    protected string $action = '';
+    protected array $data = [];
+    protected array $messages = [];
+    protected string $container = '';
+    protected string $csrf = '';
 
     /**
      * JsonResponse constructor.
-     *
-     * @param string|null $description
      */
     public function __construct(?string $description = null)
     {
         $this->description = $description;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return JsonResponse
-     */
     public function setStatus(int $status): JsonResponse
     {
-        $this->status = (int)$status;
+        $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     *
-     * @return JsonResponse
-     */
     public function setDescription(string $description): JsonResponse
     {
         $this->description = __($description);
@@ -121,19 +82,11 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @param string $action
-     *
-     * @return JsonResponse
-     */
     public function setAction(string $action): JsonResponse
     {
         $this->action = $action;
@@ -141,9 +94,6 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
@@ -151,8 +101,6 @@ final class JsonResponse implements JsonSerializable
 
     /**
      * @param array|stdClass $data
-     *
-     * @return JsonResponse
      */
     public function setData($data): JsonResponse
     {
@@ -161,19 +109,11 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMessages(): array
     {
         return $this->messages;
     }
 
-    /**
-     * @param array $messages
-     *
-     * @return JsonResponse
-     */
     public function setMessages(array $messages): JsonResponse
     {
         $this->messages = array_map('__', $messages);
@@ -181,19 +121,11 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContainer(): string
     {
         return $this->container;
     }
 
-    /**
-     * @param string $container
-     *
-     * @return JsonResponse
-     */
     public function setContainer(string $container): JsonResponse
     {
         $this->container = $container;
@@ -201,19 +133,11 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCsrf(): string
     {
         return $this->csrf;
     }
 
-    /**
-     * @param string $csrf
-     *
-     * @return JsonResponse
-     */
     public function setCsrf(string $csrf): JsonResponse
     {
         $this->csrf = $csrf;
@@ -221,11 +145,6 @@ final class JsonResponse implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string $message
-     *
-     * @return JsonResponse
-     */
     public function addMessage(string $message): JsonResponse
     {
         $this->messages[] = __($message);
@@ -263,8 +182,6 @@ final class JsonResponse implements JsonSerializable
 
     /**
      * Devolver un array con las propiedades del objeto
-     *
-     * @return array
      */
     public function getJsonArray(): array
     {
@@ -279,8 +196,6 @@ final class JsonResponse implements JsonSerializable
 
     /**
      * Establecer los valores por defecto
-     *
-     * @return JsonResponse
      */
     public function clear(): JsonResponse
     {

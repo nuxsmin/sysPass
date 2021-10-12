@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Auth;
@@ -31,39 +31,27 @@ namespace SP\Services\Auth;
  */
 final class LoginResponse
 {
-    /**
-     * @var int
-     */
-    private $status;
-    /**
-     * @var string
-     */
-    private $redirect;
+    private int $status;
+    private ?string $redirect = null;
 
     /**
      * LoginResponse constructor.
      *
-     * @param int    $status
-     * @param string $redirect
+     * @param int         $status
+     * @param string|null $redirect
      */
-    public function __construct($status, $redirect = null)
+    public function __construct(int $status, ?string $redirect = null)
     {
         $this->status = $status;
         $this->redirect = $redirect;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @return string
-     */
-    public function getRedirect()
+    public function getRedirect(): ?string
     {
         return $this->redirect;
     }

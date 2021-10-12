@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\SessionTimeout;
@@ -45,16 +46,13 @@ use SP\Services\Auth\AuthException;
  */
 final class UserSettingsManagerController extends ControllerBase implements ExtensibleTabControllerInterface
 {
-    /**
-     * @var TabsHelper
-     */
-    protected $tabsHelper;
+    protected ?TabsHelper $tabsHelper = null;
 
     /**
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->getTabs();
     }
@@ -65,15 +63,21 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
      * @throws DependencyException
      * @throws NotFoundException
      */
-    protected function getTabs()
+    protected function getTabs(): void
     {
         $this->tabsHelper = $this->dic->get(TabsHelper::class);
 
         $this->tabsHelper->addTab($this->getUserPreferences());
 
-        $this->eventDispatcher->notifyEvent('show.userSettings', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'show.userSettings',
+            new Event($this)
+        );
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::USERSETTINGS), $this->request->analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(
+            Acl::getActionRoute(ActionsInterface::USERSETTINGS),
+            $this->request->analyzeInt('tabIndex', 0)
+        );
 
         $this->view();
     }
@@ -109,7 +113,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     /**
      * @param DataTab $tab
      */
-    public function addTab(DataTab $tab)
+    public function addTab(DataTab $tab): void
     {
         $this->tabsHelper->addTab($tab);
     }
@@ -125,7 +129,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     /**
      * @return void
      */
-    public function displayView()
+    public function displayView(): void
     {
         $this->view();
     }
@@ -144,7 +148,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
      * @throws SessionTimeout
      * @throws AuthException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
     }

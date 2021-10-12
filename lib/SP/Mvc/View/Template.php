@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View;
@@ -42,34 +42,22 @@ use SP\Http\Uri;
  */
 final class Template
 {
-    const TEMPLATE_EXTENSION = '.inc';
-    const PARTIALS_DIR = '_partials';
-    const LAYOUTS_DIR = '_layouts';
+    public const TEMPLATE_EXTENSION = '.inc';
+    public const PARTIALS_DIR = '_partials';
+    public const LAYOUTS_DIR = '_layouts';
 
-    /**
-     * @var ThemeInterface
-     */
-    protected $theme;
+    protected ThemeInterface $theme;
     /**
      * @var array List of templates to load into the view
      */
-    private $templates = [];
-    /**
-     * @var TemplateVarCollection Template's variables collection
-     */
-    private $vars;
+    private array $templates = [];
+    private TemplateVarCollection $vars;
     /**
      * @var string Base path for imcluding templates
      */
-    private $base;
-    /**
-     * @var array
-     */
-    private $contentTemplates = [];
-    /**
-     * @var bool
-     */
-    private $upgraded = false;
+    private string $base;
+    private array $contentTemplates = [];
+    private bool $upgraded = false;
 
     /**
      * @param ThemeInterface $theme
@@ -85,10 +73,11 @@ final class Template
      *
      * @param string      $name Con el nombre del archivo de plantilla
      * @param string|null $base Directorio base para la plantilla
-     *
-     * @return bool
      */
-    public function addContentTemplate(string $name, ?string $base = null)
+    public function addContentTemplate(
+        string  $name,
+        ?string $base = null
+    ): string
     {
         try {
             $template = $this->checkTemplate($name, $base);
@@ -110,9 +99,12 @@ final class Template
      *
      * @throws FileNotFoundException
      */
-    private function checkTemplate(string $template, ?string $base = null): string
+    private function checkTemplate(
+        string  $template,
+        ?string $base = null
+    ): string
     {
-        $base = null !== $base ? $base : (null !== $this->base ? $this->base : null);
+        $base = $base ?? $this->base;
 
         if ($base === null) {
             $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
@@ -141,17 +133,13 @@ final class Template
      * @param string $file Con el nombre del archivo
      * @param string $name Nombre de la plantilla
      */
-    private function setContentTemplate(string $file, string $name)
+    private function setContentTemplate(string $file, string $name): void
     {
         $this->contentTemplates[$name] = $file;
     }
 
     /**
      * Removes a template from the stack
-     *
-     * @param string $name
-     *
-     * @return Template
      */
     public function removeTemplate(string $name): Template
     {
@@ -162,10 +150,6 @@ final class Template
 
     /**
      * Removes a template from the stack
-     *
-     * @param string $name
-     *
-     * @return Template
      */
     public function removeContentTemplate(string $name): Template
     {
@@ -198,10 +182,8 @@ final class Template
 
     /**
      * Add partial template
-     *
-     * @param string $partial
      */
-    public function addPartial(string $partial)
+    public function addPartial(string $partial): void
     {
         $this->addTemplate($partial, self::PARTIALS_DIR);
     }
@@ -212,9 +194,9 @@ final class Template
      * @param string      $name Con el nombre del archivo de plantilla
      * @param string|null $base Directorio base para la plantilla
      *
-     * @return bool
+     * @return string
      */
-    public function addTemplate(string $name, ?string $base = null)
+    public function addTemplate(string $name, ?string $base = null): string
     {
         try {
             $template = $this->checkTemplate($name, $base);
@@ -232,7 +214,7 @@ final class Template
      * @param string $file Con el nombre del archivo
      * @param string $name Nombre de la plantilla
      */
-    private function setTemplate(string $file, string $name)
+    private function setTemplate(string $file, string $name): void
     {
         $this->templates[$name] = $file;
     }
@@ -268,10 +250,6 @@ final class Template
 
     /**
      * Overloading para controlar la devolución de atributos dinámicos.
-     *
-     * @param string $name Nombre del atributo
-     *
-     * @return null
      */
     public function __get(string $name)
     {
@@ -292,10 +270,6 @@ final class Template
 
     /**
      * Returns a variable value
-     *
-     * @param string $name
-     *
-     * @return mixed
      */
     public function get(string $name)
     {
@@ -325,10 +299,6 @@ final class Template
     /**
      * Overloading para eliminar una variable del array de variables de la plantilla pasado como
      * atributo dinámico de la clase
-     *
-     * @param string $name Nombre del atributo
-     *
-     * @return $this
      */
     public function __unset(string $name): Template
     {
@@ -353,7 +323,7 @@ final class Template
      */
     public function render(): string
     {
-        if (empty($this->templates)) {
+        if (count($this->templates) === 0) {
             throw new FileNotFoundException(__('Template does not contain files'));
         }
 
@@ -371,7 +341,7 @@ final class Template
             return $this->vars->get($key, $default);
         };
 
-        $_getRoute = function ($path) use ($configData) {
+        $_getRoute = static function ($path) use ($configData) {
             $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
             $uri = new Uri($baseUrl);
@@ -398,7 +368,12 @@ final class Template
      * @param string|null $scope string ámbito de la variable
      * @param int|null    $index string índice del array
      */
-    public function append(string $name, $value, ?string $scope = null, int $index = null)
+    public function append(
+        string  $name,
+                $value,
+        ?string $scope = null,
+        int     $index = null
+    ): void
     {
         if (null !== $scope) {
             $name = $scope . '_' . $name;
@@ -435,33 +410,16 @@ final class Template
         return $this;
     }
 
-    /**
-     * Reset de las plantillas añadidas
-     */
-    public function resetVariables()
-    {
-        $this->vars = [];
-    }
-
-    /**
-     * @return string
-     */
     public function getBase(): string
     {
         return $this->base;
     }
 
-    /**
-     * @param string $base
-     */
-    public function setBase(string $base)
+    public function setBase(string $base): void
     {
         $this->base = $base;
     }
 
-    /**
-     * @return ThemeInterface
-     */
     public function getTheme(): ThemeInterface
     {
         return $this->theme;
@@ -475,25 +433,16 @@ final class Template
         logger($this->vars);
     }
 
-    /**
-     * @return array
-     */
     public function getContentTemplates(): array
     {
         return $this->contentTemplates;
     }
 
-    /**
-     * @return bool
-     */
     public function hasContentTemplates(): bool
     {
         return count($this->contentTemplates) > 0;
     }
 
-    /**
-     * @return array
-     */
     public function getTemplates(): array
     {
         return $this->templates;
@@ -501,8 +450,6 @@ final class Template
 
     /**
      * Assigns the current templates to contentTemplates
-     *
-     * @return $this
      */
     public function upgrade(): Template
     {
@@ -524,7 +471,11 @@ final class Template
      * @param mixed       $value valor de la variable
      * @param string|null $scope string ámbito de la variable
      */
-    public function assign(string $name, $value = '', ?string $scope = null)
+    public function assign(
+        string  $name,
+                $value = '',
+        ?string $scope = null
+    ): void
     {
         if (null !== $scope) {
             $name = $scope . '_' . $name;
@@ -533,9 +484,6 @@ final class Template
         $this->vars->set($name, $value);
     }
 
-    /**
-     * @return bool
-     */
     public function isUpgraded(): bool
     {
         return $this->upgraded;
@@ -555,5 +503,4 @@ final class Template
         // Clone TemplateVarCollection to avoid unwanted object references
         $this->vars = clone $this->vars;
     }
-
 }

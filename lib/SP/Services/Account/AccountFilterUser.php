@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Mvc\Model\QueryCondition;
@@ -34,35 +34,18 @@ defined('APP_ROOT') || die();
 
 /**
  * Class AccountUtil con utilidades para la gestión de cuentas
- *
- * @package SP
  */
 final class AccountFilterUser
 {
-    /**
-     * @var ProfileData
-     */
-    private $userProfile;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-    /**
-     * @var UserLoginResponse
-     */
-    private $userData;
-    /**
-     * @var ContextInterface
-     */
-    private $context;
+    private ?ProfileData $userProfile = null;
+    private ConfigDataInterface $configData;
+    private ?UserLoginResponse $userData = null;
+    private ContextInterface $context;
 
-    /**
-     * AccountFilterUser constructor.
-     *
-     * @param ContextInterface $context
-     * @param ConfigData       $configData
-     */
-    public function __construct(ContextInterface $context, ConfigData $configData)
+    public function __construct(
+        ContextInterface    $context,
+        ConfigDataInterface $configData
+    )
     {
         $this->context = $context;
         $this->configData = $configData;
@@ -70,12 +53,8 @@ final class AccountFilterUser
 
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
-     *
-     * @param bool $useGlobalSearch
-     *
-     * @return QueryCondition
      */
-    public function getFilterHistory($useGlobalSearch = false)
+    public function getFilterHistory(bool $useGlobalSearch = false): QueryCondition
     {
         $this->setUp();
 
@@ -117,7 +96,7 @@ final class AccountFilterUser
     /**
      * setUp
      */
-    private function setUp()
+    private function setUp(): void
     {
         $this->userData = $this->context->getUserData();
         $this->userProfile = $this->context->getUserProfile();
@@ -125,12 +104,8 @@ final class AccountFilterUser
 
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
-     *
-     * @param bool $useGlobalSearch
-     *
-     * @return QueryCondition
      */
-    public function getFilter($useGlobalSearch = false)
+    public function getFilter(bool $useGlobalSearch = false): QueryCondition
     {
         $this->setUp();
 

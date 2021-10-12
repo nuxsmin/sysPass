@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
@@ -42,10 +42,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class FileGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -124,9 +121,13 @@ final class FileGrid extends GridBase
         $gridData->addDataRowSource('clientName');
         $gridData->addDataRowSource('name');
         $gridData->addDataRowSource('type');
-        $gridData->addDataRowSource('size', false, function ($value) {
-            return sprintf('%.2f KB', $value / 1000);
-        });
+        $gridData->addDataRowSource(
+            'size',
+            false,
+            function ($value) {
+                return sprintf('%.2f KB', $value / 1000);
+            }
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -144,7 +145,10 @@ final class FileGrid extends GridBase
         $gridActionSearch->setName('frmSearchFile');
         $gridActionSearch->setTitle(__('Search for File'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -161,8 +165,11 @@ final class FileGrid extends GridBase
         $gridAction->setTitle(__('View File'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('file/view');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
         $gridAction->setFilterRowSource('type', 'application/pdf');
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW)
+        );
 
         return $gridAction;
     }
@@ -179,10 +186,15 @@ final class FileGrid extends GridBase
         $gridAction->setTitle(__('Download File'));
         $gridAction->setIcon($this->icons->getIconDownload());
         $gridAction->setOnClickFunction('file/download');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
-        $gridAction->setRuntimeData(function ($dataItem) use ($gridAction) {
-            return ['item-type' => $dataItem->type];
-        });
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD)
+        );
+        $gridAction->setRuntimeData(
+            function ($dataItem) {
+                return ['item-type' => $dataItem->type];
+            }
+        );
 
         return $gridAction;
     }
@@ -199,7 +211,10 @@ final class FileGrid extends GridBase
         $gridAction->setTitle(__('Delete File'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE)
+        );
 
         return $gridAction;
     }

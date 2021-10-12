@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -60,8 +60,10 @@ final class TaskController
 
     /**
      * @param string $taskId
+     *
+     * @throws \JsonException
      */
-    public function trackStatusAction(string $taskId)
+    public function trackStatusAction(string $taskId): void
     {
         $response = $this->router->response();
         $response->header('Content-Type', 'text/event-stream');
@@ -89,7 +91,7 @@ final class TaskController
      *
      * @throws FileException
      */
-    public function testTaskAction(string $taskId)
+    public function testTaskAction(string $taskId): void
     {
         $task = TaskFactory::create($taskId, $taskId);
 
@@ -99,7 +101,10 @@ final class TaskController
 
         while ($count < 60) {
             TaskFactory::update($task,
-                TaskFactory::createMessage($task->getTaskId(), "Test Task $count")
+                TaskFactory::createMessage(
+                    $task->getTaskId(),
+                    "Test Task $count"
+                )
             );
 
             sleep(1);

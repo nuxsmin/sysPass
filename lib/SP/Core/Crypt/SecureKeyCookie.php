@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -39,23 +39,13 @@ final class SecureKeyCookie extends Cookie
     /**
      * Nombre de la cookie
      */
-    const COOKIE_NAME = 'SYSPASS_SK';
+    public const COOKIE_NAME = 'SYSPASS_SK';
     /**
      * Llave usada para encriptar los datos
-     *
-     * @var Key
      */
-    private $securedKey;
-    /**
-     * @var string
-     */
-    private $cypher;
+    private ?Key $securedKey = null;
+    private ?string $cypher = null;
 
-    /**
-     * @param Request $request
-     *
-     * @return SecureKeyCookie
-     */
     public static function factory(Request $request): SecureKeyCookie
     {
         $self = new self(self::COOKIE_NAME, $request);
@@ -66,8 +56,6 @@ final class SecureKeyCookie extends Cookie
 
     /**
      * Devolver la llave de cifrado para los datos de la cookie
-     *
-     * @return string
      */
     public function getCypher(): string
     {
@@ -77,7 +65,7 @@ final class SecureKeyCookie extends Cookie
     /**
      * Obtener una llave de encriptación
      *
-     * @return Key|false|string
+     * @return false|Key
      */
     public function getKey()
     {
@@ -90,8 +78,7 @@ final class SecureKeyCookie extends Cookie
                 /** @var Vault $vault */
                 $vault = unserialize($data, ['allowed_classes' => Vault::class]);
 
-                if ($vault !== false
-                    && ($vault instanceof Vault) === true
+                if (($vault instanceof Vault) === true
                 ) {
                     try {
                         $this->securedKey = Key::loadFromAsciiSafeString($vault->getData($this->cypher));
@@ -115,10 +102,8 @@ final class SecureKeyCookie extends Cookie
 
     /**
      * Guardar una llave de encriptación
-     *
-     * @return Key|false
      */
-    public function saveKey()
+    public function saveKey(): bool
     {
         try {
             if ($this->setCookie($this->sign($this->generateSecuredData()->getSerialized(), $this->cypher)) === false) {
@@ -140,7 +125,6 @@ final class SecureKeyCookie extends Cookie
     }
 
     /**
-     * @return Vault
      * @throws CryptoException
      * @throws EnvironmentIsBrokenException
      */
@@ -152,9 +136,6 @@ final class SecureKeyCookie extends Cookie
             ->saveData($this->securedKey->saveToAsciiSafeString(), $this->cypher);
     }
 
-    /**
-     * @return Key
-     */
     public function getSecuredKey(): Key
     {
         return $this->securedKey;

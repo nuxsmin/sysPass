@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,13 +28,14 @@ namespace SP\Services\Install;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\ConfigData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
@@ -59,31 +60,16 @@ final class Installer extends Service
     /**
      * sysPass' version and build number
      */
-    const VERSION = [3, 2, 2];
-    const VERSION_TEXT = '3.2';
-    const BUILD = 21031301;
+    public const VERSION = [3, 2, 2];
+    public const VERSION_TEXT = '3.2';
+    public const BUILD = 21031301;
+
+    private ?DatabaseSetupInterface $dbs = null;
+    private ?Request $request = null;
+    private ?InstallData $installData = null;
+    private ?ConfigDataInterface $configData = null;
 
     /**
-     * @var DatabaseSetupInterface
-     */
-    private $dbs;
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var InstallData
-     */
-    private $installData;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-
-    /**
-     * @param InstallData $installData
-     *
-     * @return static
      * @throws InvalidArgumentException
      * @throws SPException
      * @throws ContainerExceptionInterface
@@ -102,7 +88,7 @@ final class Installer extends Service
     /**
      * @throws InvalidArgumentException
      */
-    private function checkData()
+    private function checkData(): void
     {
         if (empty($this->installData->getAdminLogin())) {
             throw new InvalidArgumentException(
@@ -139,7 +125,8 @@ final class Installer extends Service
                 __u('An user with database administrative rights'));
         }
 
-        if (empty($this->installData->getDbAdminPass()) && APP_MODULE !== 'tests') {
+        if (APP_MODULE !== 'tests'
+            && empty($this->installData->getDbAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database password'),
                 SPException::ERROR,
@@ -177,7 +164,7 @@ final class Installer extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function install()
+    private function install(): void
     {
         $this->setupDbHost();
         $this->setupConfig();
@@ -190,7 +177,7 @@ final class Installer extends Service
         $version = VersionUtil::getVersionStringNormalized();
 
         $this->dic->get(ConfigService::class)
-            ->create(new \SP\DataModel\ConfigData('version', $version));
+            ->create(new ConfigData('version', $version));
 
         $this->configData->setInstalled(true);
 
@@ -200,7 +187,7 @@ final class Installer extends Service
     /**
      * Setup database connection data
      */
-    private function setupDbHost()
+    private function setupDbHost(): void
     {
         if (preg_match(
             '/^(?:(?P<host>.*):(?P<port>\d{1,5}))|^(?:unix:(?P<socket>.*))/',
@@ -243,7 +230,7 @@ final class Installer extends Service
     /**
      * Setup sysPass config data
      */
-    private function setupConfig()
+    private function setupConfig(): void
     {
         // Sets version and remove upgrade key
         $this->configData->setConfigVersion(VersionUtil::getVersionStringNormalized());
@@ -263,16 +250,12 @@ final class Installer extends Service
     }
 
     /**
-     * @param string $type
-     *
      * @throws SPException
      */
-    private function setupDb($type = 'mysql')
+    private function setupDb(string $type = 'mysql'): void
     {
-        switch ($type) {
-            case 'mysql':
-                $this->dbs = new MySQL($this->installData, $this->configData);
-                break;
+        if ($type === 'mysql') {
+            $this->dbs = new MySQL($this->installData, $this->configData);
         }
 
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
@@ -294,9 +277,13 @@ final class Installer extends Service
      *
      * Updates the database storage interface in the dependency container
      */
-    private function updateConnectionData()
+    private function updateConnectionData(): void
     {
-        $this->dic->set(DBStorageInterface::class, $this->dbs->createDbHandlerFromInstaller());
+        // Ugly things...
+        $this->dic->set(
+            DBStorageInterface::class,
+            $this->dbs->createDbHandlerFromInstaller()
+        );
         $this->dic->set(
             Database::class,
             new Database(
@@ -311,7 +298,7 @@ final class Installer extends Service
      *
      * @throws SPException
      */
-    private function saveMasterPassword()
+    private function saveMasterPassword(): void
     {
         try {
             // This service needs to be called after a successful database setup, since
@@ -319,8 +306,18 @@ final class Installer extends Service
             // an incomplete database setup
             $configService = $this->dic->get(ConfigService::class);
 
-            $configService->create(new \SP\DataModel\ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword())));
-            $configService->create(new \SP\DataModel\ConfigData('lastupdatempass', time()));
+            $configService->create(
+                new ConfigData(
+                    'masterPwd',
+                    Hash::hashKey($this->installData->getMasterPassword())
+                )
+            );
+            $configService->create(
+                new ConfigData(
+                    'lastupdatempass',
+                    time()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -344,7 +341,7 @@ final class Installer extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function createAdminAccount()
+    private function createAdminAccount(): void
     {
         try {
             $userGroupData = new UserGroupData();
@@ -367,7 +364,11 @@ final class Installer extends Service
             $userData->setName('sysPass Admin');
             $userData->setIsAdminApp(1);
 
-            $id = $userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
+            $id = $userService->createWithMasterPass(
+                $userData,
+                $this->installData->getAdminPass(),
+                $this->installData->getMasterPassword()
+            );
 
             if ($id === 0) {
                 throw new SPException(__u('Error while creating \'admin\' user'));
@@ -387,10 +388,7 @@ final class Installer extends Service
         }
     }
 
-    /**
-     * initialize
-     */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configData = $this->config->getConfigData();
         $this->request = $this->dic->get(Request::class);

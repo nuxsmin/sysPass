@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -49,16 +49,14 @@ final class AccountToUserRepository extends Repository
      *
      * @param bool           $isEdit
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit)
+    public function updateByType(AccountRequest $accountRequest, bool $isEdit): void
     {
         $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
         $this->addByType($accountRequest, $isEdit);
-
-        return false;
     }
 
     /**
@@ -71,7 +69,7 @@ final class AccountToUserRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteTypeByAccountId($id, bool $isEdit)
+    public function deleteTypeByAccountId(int $id, bool $isEdit): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = ?');
@@ -87,11 +85,11 @@ final class AccountToUserRepository extends Repository
      * @param AccountRequest $accountRequest
      * @param bool           $isEdit
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit)
+    public function addByType(AccountRequest $accountRequest, bool $isEdit): int
     {
         $items = $isEdit ? $accountRequest->usersEdit : $accountRequest->usersView;
         $values = $this->getParamsFromArray($items, '(?,?,?)');
@@ -127,7 +125,7 @@ final class AccountToUserRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId($id)
+    public function deleteByAccountId(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ?');
@@ -146,7 +144,7 @@ final class AccountToUserRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsersByAccountId($id)
+    public function getUsersByAccountId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT `User`.id, `User`.name, `User`.login, AccountToUser.isEdit

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Model;
@@ -33,25 +33,16 @@ use RuntimeException;
  */
 final class QueryCondition
 {
-    const CONDITION_AND = ' AND ';
-    const CONDITION_OR = ' OR ';
+    public const CONDITION_AND = ' AND ';
+    public const CONDITION_OR = ' OR ';
 
-    /**
-     * @var array
-     */
-    protected $query = [];
-    /**
-     * @var array
-     */
-    protected $param = [];
+    protected array $query = [];
+    protected array $param = [];
 
-    /**
-     * @param string     $query
-     * @param array|null $params
-     *
-     * @return QueryCondition
-     */
-    public function addFilter(string $query, ?array $params = null): QueryCondition
+    public function addFilter(
+        string $query,
+        ?array $params = null
+    ): QueryCondition
     {
         $this->query[] = "($query)";
 
@@ -62,39 +53,27 @@ final class QueryCondition
         return $this;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return string|null
-     */
     public function getFilters(string $type = self::CONDITION_AND): ?string
     {
         if ($type !== self::CONDITION_AND && $type !== self::CONDITION_OR) {
             throw new RuntimeException(__u('Invalid filter type'));
         }
 
-        return $this->hasFilters() ? '(' . implode($type, $this->query) . ')' : null;
+        return $this->hasFilters()
+            ? '(' . implode($type, $this->query) . ')'
+            : null;
     }
 
-    /**
-     * @return bool
-     */
     public function hasFilters(): bool
     {
-        return !empty($this->query);
+        return count($this->query) !== 0;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->param;
     }
 
-    /**
-     * @return int
-     */
     public function getFiltersCount(): int
     {
         return count($this->query);

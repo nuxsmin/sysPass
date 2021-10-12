@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -30,6 +30,7 @@ use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidImageException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -48,22 +49,16 @@ use SP\Util\ImageUtil;
  */
 final class AccountFileService extends Service
 {
-    /**
-     * @var AccountFileRepository
-     */
-    protected $accountFileRepository;
+    protected ?AccountFileRepository $accountFileRepository = null;
 
     /**
      * Creates an item
      *
-     * @param FileData $itemData
-     *
-     * @return int
      * @throws InvalidImageException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create(FileData $itemData): int
     {
         if (FileUtil::isImage($itemData)) {
             try {
@@ -82,13 +77,10 @@ final class AccountFileService extends Service
     }
 
     /**
-     * @param $id
-     *
-     * @return FileExtData
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getInfoById($id)
+    public function getInfoById(int $id): ?FileExtData
     {
         return $this->accountFileRepository->getInfoById($id)->getData();
     }
@@ -96,13 +88,11 @@ final class AccountFileService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
-     * @return FileExtData
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return mixed|null
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
         return $this->accountFileRepository->getById($id)->getData();
     }
@@ -114,7 +104,7 @@ final class AccountFileService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->accountFileRepository->getAll()->getDataAsArray();
     }
@@ -122,13 +112,13 @@ final class AccountFileService extends Service
     /**
      * Returns all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return FileExtData[]
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): array
     {
         return $this->accountFileRepository->getByIdBatch($ids)->getDataAsArray();
     }
@@ -136,17 +126,21 @@ final class AccountFileService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->accountFileRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the files'), ServiceException::WARNING);
+        $count = $this->accountFileRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting the files'),
+                SPException::WARNING
+            );
         }
 
         return $count;
@@ -155,14 +149,11 @@ final class AccountFileService extends Service
     /**
      * Deletes an item
      *
-     * @param $id
-     *
-     * @return AccountFileService
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): AccountFileService
     {
         if ($this->accountFileRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('File not found'));
@@ -174,13 +165,10 @@ final class AccountFileService extends Service
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $searchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $searchData)
+    public function search(ItemSearchData $searchData): QueryResult
     {
         return $this->accountFileRepository->search($searchData);
     }
@@ -188,13 +176,11 @@ final class AccountFileService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
      * @return FileData[]
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByAccountId($id)
+    public function getByAccountId(int $id): array
     {
         return $this->accountFileRepository->getByAccountId($id)->getDataAsArray();
     }
@@ -203,7 +189,7 @@ final class AccountFileService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountFileRepository = $this->dic->get(AccountFileRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Install;
 
 use PDOException;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\DatabaseUtil;
@@ -43,28 +43,19 @@ use SP\Util\PasswordUtil;
  */
 final class MySQL implements DatabaseSetupInterface
 {
-    /**
-     * @var InstallData
-     */
-    protected $installData;
-    /**
-     * @var MySQLHandler
-     */
-    protected $mysqlHandler;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
+    protected InstallData $installData;
+    protected ConfigDataInterface $configData;
+    protected ?MySQLHandler $mysqlHandler = null;
 
     /**
      * MySQL constructor.
      *
-     * @param InstallData $installData
-     * @param ConfigData  $configData
-     *
      * @throws SPException
      */
-    public function __construct(InstallData $installData, ConfigData $configData)
+    public function __construct(
+        InstallData         $installData,
+        ConfigDataInterface $configData
+    )
     {
         $this->installData = $installData;
         $this->configData = $configData;
@@ -80,7 +71,7 @@ final class MySQL implements DatabaseSetupInterface
      *
      * @throws SPException
      */
-    public function connectDatabase()
+    public function connectDatabase(): void
     {
         try {
             $dbc = (new DatabaseConnectionData())
@@ -110,7 +101,7 @@ final class MySQL implements DatabaseSetupInterface
      */
     public function setupDbUser()
     {
-        $user = substr(uniqid('sp_'), 0, 16);
+        $user = substr(uniqid('sp_', true), 0, 16);
         $pass = PasswordUtil::randomPassword();
 
         try {
@@ -149,12 +140,9 @@ final class MySQL implements DatabaseSetupInterface
      * Crear el usuario para conectar con la base de datos.
      * Esta función crea el usuario para conectar con la base de datos.
      *
-     * @param string $user
-     * @param string $pass
-     *
      * @throws SPException
      */
-    public function createDBUser($user, $pass)
+    public function createDBUser(string $user, string $pass): void
     {
         if ($this->installData->isHostingMode()) {
             return;
@@ -204,7 +192,7 @@ final class MySQL implements DatabaseSetupInterface
      *
      * @throws SPException
      */
-    public function createDatabase()
+    public function createDatabase(): void
     {
         if (!$this->installData->isHostingMode()) {
 
@@ -272,7 +260,10 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 // Commprobar si existe al seleccionarla
                 $this->mysqlHandler->getConnectionSimple()
-                    ->exec(sprintf('USE `%s`', $this->installData->getDbName()));
+                    ->exec(sprintf(
+                        'USE `%s`',
+                        $this->installData->getDbName()
+                    ));
             } catch (PDOException $e) {
                 throw new SPException(
                     __u('The database does not exist'),
@@ -286,10 +277,9 @@ final class MySQL implements DatabaseSetupInterface
     }
 
     /**
-     * @return bool
      * @throws SPException
      */
-    public function checkDatabaseExist()
+    public function checkDatabaseExist(): bool
     {
         $sth = $this->mysqlHandler->getConnectionSimple()
             ->prepare('SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1');
@@ -301,13 +291,17 @@ final class MySQL implements DatabaseSetupInterface
     /**
      * @throws SPException
      */
-    public function rollback()
+    public function rollback(): void
     {
         $dbc = $this->mysqlHandler->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
-            foreach (DatabaseUtil::$tables as $table) {
-                $dbc->exec('DROP TABLE IF EXISTS `' . $this->installData->getDbName() . '`.`' . $table . '`');
+            foreach (DatabaseUtil::TABLES as $table) {
+                $dbc->exec(sprintf(
+                    'DROP TABLE IF EXISTS `%s`.`%s`',
+                    $this->installData->getDbName(),
+                    $table
+                ));
             }
         } else {
             $dbc->exec(sprintf(
@@ -335,7 +329,7 @@ final class MySQL implements DatabaseSetupInterface
     /**
      * @throws SPException
      */
-    public function createDBStructure()
+    public function createDBStructure(): void
     {
         try {
             $dbc = $this->mysqlHandler->getConnectionSimple();
@@ -353,7 +347,13 @@ final class MySQL implements DatabaseSetupInterface
         }
 
         try {
-            $parser = new MySQLFileParser(new FileHandler(SQL_PATH . DIRECTORY_SEPARATOR . 'dbstructure.sql'));
+            $parser = new MySQLFileParser(
+                new FileHandler(
+                    SQL_PATH .
+                    DIRECTORY_SEPARATOR .
+                    'dbstructure.sql'
+                )
+            );
 
             foreach ($parser->parse() as $query) {
                 $dbc->exec($query);
@@ -390,7 +390,7 @@ final class MySQL implements DatabaseSetupInterface
      *
      * @throws SPException
      */
-    public function checkConnection()
+    public function checkConnection(): void
     {
         $databaseUtil = new DatabaseUtil($this->mysqlHandler);
 
@@ -405,17 +405,11 @@ final class MySQL implements DatabaseSetupInterface
         }
     }
 
-    /**
-     * @return DBStorageInterface
-     */
     public function getDbHandler(): DBStorageInterface
     {
         return $this->mysqlHandler;
     }
 
-    /**
-     * @return DBStorageInterface
-     */
     public function createDbHandlerFromInstaller(): DBStorageInterface
     {
         return new MySQLHandler(DatabaseConnectionData::getFromConfig($this->configData));

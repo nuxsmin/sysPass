@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
+use RuntimeException;
 
 /**
  * Class Vault
@@ -33,38 +34,19 @@ use Defuse\Crypto\Exception\CryptoException;
  */
 final class Vault
 {
-    /**
-     * @var string
-     */
-    private $data;
-    /**
-     * @var string
-     */
-    private $key;
-    /**
-     * @var int
-     */
-    private $timeSet = 0;
-    /**
-     * @var int
-     */
-    private $timeUpdated = 0;
+    private ?string $data = null;
+    private ?string $key = null;
+    private int $timeSet = 0;
+    private int $timeUpdated = 0;
 
-    /**
-     * @return static
-     */
     public static function getInstance(): Vault
     {
-        return new Vault();
+        return new self();
     }
 
     /**
      * Regenerar la clave de sesión
      *
-     * @param string $newSeed
-     * @param string $oldSeed
-     *
-     * @return Vault
      * @throws CryptoException
      */
     public function reKey(string $newSeed, string $oldSeed): Vault
@@ -80,23 +62,20 @@ final class Vault
     /**
      * Devolver la clave maestra de la sesión
      *
-     * @param string $key
-     *
-     * @return string
      * @throws CryptoException
      */
     public function getData(string $key): string
     {
+        if ($this->data === null || $this->key === null) {
+            throw new RuntimeException('Either data or key must be set');
+        }
+
         return Crypt::decrypt($this->data, $this->key, $key);
     }
 
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param mixed  $data
-     * @param string $key
-     *
-     * @return $this
      * @throws CryptoException
      */
     public function saveData($data, string $key): Vault
@@ -111,17 +90,11 @@ final class Vault
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTimeSet(): int
     {
         return $this->timeSet;
     }
 
-    /**
-     * @return int
-     */
     public function getTimeUpdated(): int
     {
         return $this->timeUpdated;

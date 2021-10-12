@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Storage\File\FileException;
-use SP\Util\PasswordUtil;
 use SP\Util\VersionUtil;
 
 /**
@@ -42,12 +38,8 @@ final class UpgradeUtil
 {
     /**
      * Normalizar un número de versión
-     *
-     * @param $version
-     *
-     * @return string
      */
-    public static function fixVersionNumber($version)
+    public static function fixVersionNumber(string $version): string
     {
         if (strpos($version, '.') === false) {
             if (strlen($version) === 10) {
@@ -61,35 +53,12 @@ final class UpgradeUtil
     }
 
     /**
-     * Establecer la key de actualización
-     *
-     * @param Config $config
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public static function setUpgradeKey(Config $config)
-    {
-        $configData = $config->getConfigData();
-        $upgradeKey = $configData->getUpgradeKey();
-
-        if (empty($upgradeKey)) {
-            $configData->setUpgradeKey(PasswordUtil::generateRandomBytes(32));
-        }
-
-        $configData->setMaintenance(true);
-        $config->saveConfig($configData, false);
-    }
-
-    /**
-     * @param ConfigData $configData
-     * @param Config     $config
-     *
-     * @throws FileException
-     */
-    public static function fixAppUpgrade(ConfigData $configData, Config $config)
+    public static function fixAppUpgrade(
+        ConfigDataInterface $configData,
+        Config              $config
+    ): void
     {
         // Fixes bug in 3.0.X version where some updates weren't applied
         // when upgrading from v2

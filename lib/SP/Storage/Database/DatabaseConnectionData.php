@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,53 +19,32 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 
 /**
  * Class DatabaseConnectionData
  *
- * @package SP\Storage
+ * @package SP\Storage\Database
  */
 final class DatabaseConnectionData
 {
-    /**
-     * @var string
-     */
-    private $dbHost;
-    /**
-     * @var string
-     */
-    private $dbSocket;
-    /**
-     * @var int
-     */
-    private $dbPort;
-    /**
-     * @var string
-     */
-    private $dbName;
-    /**
-     * @var string
-     */
-    private $dbUser;
-    /**
-     * @var string
-     */
-    private $dbPass;
+    private ?string $dbHost = null;
+    private ?string $dbSocket = null;
+    private ?int $dbPort = null;
+    private ?string $dbName = null;
+    private ?string $dbUser = null;
+    private ?string $dbPass = null;
 
-    /**
-     * @param ConfigData $configData
-     *
-     * @return mixed
-     */
-    public static function getFromConfig(ConfigData $configData)
+    public static function getFromConfig(
+        ConfigDataInterface $configData
+    ): DatabaseConnectionData
     {
-        return (new DatabaseConnectionData())
+        return (new self())
             ->setDbHost($configData->getDbHost())
             ->setDbName($configData->getDbName())
             ->setDbUser($configData->getDbUser())
@@ -74,12 +53,9 @@ final class DatabaseConnectionData
             ->setDbSocket($configData->getDbSocket());
     }
 
-    /**
-     * @param ConfigData $configData
-     *
-     * @return DatabaseConnectionData
-     */
-    public function refreshFromConfig(ConfigData $configData)
+    public function refreshFromConfig(
+        ConfigDataInterface $configData
+    ): DatabaseConnectionData
     {
         logger('Refresh DB connection data');
 
@@ -91,114 +67,66 @@ final class DatabaseConnectionData
             ->setDbSocket($configData->getDbSocket());
     }
 
-    /**
-     * @return string|null
-     */
     public function getDbHost(): ?string
     {
         return $this->dbHost;
     }
 
-    /**
-     * @param string $dbHost
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbHost(string $dbHost): DatabaseConnectionData
     {
         $this->dbHost = $dbHost;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDbSocket(): ?string
     {
         return $this->dbSocket;
     }
 
-    /**
-     * @param string|null $dbSocket
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbSocket(?string $dbSocket): DatabaseConnectionData
     {
         $this->dbSocket = $dbSocket;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getDbPort(): ?int
     {
         return $this->dbPort;
     }
 
-    /**
-     * @param int $dbPort
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbPort(int $dbPort): DatabaseConnectionData
     {
         $this->dbPort = $dbPort;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDbName(): ?string
     {
         return $this->dbName;
     }
 
-    /**
-     * @param string $dbName
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbName(string $dbName): DatabaseConnectionData
     {
         $this->dbName = $dbName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDbUser(): ?string
     {
         return $this->dbUser;
     }
 
-    /**
-     * @param string $dbUser
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbUser(string $dbUser): DatabaseConnectionData
     {
         $this->dbUser = $dbUser;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDbPass(): ?string
     {
         return $this->dbPass;
     }
 
-    /**
-     * @param string $dbPass
-     *
-     * @return DatabaseConnectionData
-     */
     public function setDbPass(string $dbPass): DatabaseConnectionData
     {
         $this->dbPass = $dbPass;

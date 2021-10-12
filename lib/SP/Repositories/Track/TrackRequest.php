@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Track;
@@ -34,33 +34,30 @@ use SP\Http\Address;
  */
 final class TrackRequest
 {
+    public int $time;
+    public string $source;
+    public ?int $userId = null;
+    private ?string $ipv6 = null;
+    private ?string $ipv4 = null;
+
     /**
-     * @var int
+     * @param int      $time
+     * @param string   $source
+     * @param int|null $userId
      */
-    public $time;
-    /**
-     * @var string
-     */
-    public $source;
-    /**
-     * @var int
-     */
-    public $userId;
-    /**
-     * @var string
-     */
-    protected $ipv6;
-    /**
-     * @var string
-     */
-    protected $ipv4;
+    public function __construct(int $time, string $source, ?int $userId = null)
+    {
+        $this->time = $time;
+        $this->source = $source;
+        $this->userId = $userId;
+    }
 
     /**
      * @param string $address
      *
      * @throws InvalidArgumentException
      */
-    public function setTrackIp($address)
+    public function setTrackIp(string $address): void
     {
         $binary = Address::toBinary($address);
         $length = strlen($binary);
@@ -75,7 +72,7 @@ final class TrackRequest
     /**
      * @return string
      */
-    public function getIpv6()
+    public function getIpv6(): ?string
     {
         return $this->ipv6;
     }
@@ -83,7 +80,7 @@ final class TrackRequest
     /**
      * @return string
      */
-    public function getIpv4()
+    public function getIpv4(): ?string
     {
         return $this->ipv4;
     }

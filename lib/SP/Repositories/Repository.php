@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories;
@@ -34,21 +34,9 @@ use SP\Storage\Database\Database;
  */
 abstract class Repository
 {
-    /**
-     * @var ContextInterface
-     */
-    protected $context;
-    /**
-     * @var Database
-     */
-    protected $db;
+    protected ContextInterface $context;
+    protected Database $db;
 
-    /**
-     * Repository constructor.
-     *
-     * @param Database         $database
-     * @param ContextInterface $session
-     */
     final public function __construct(Database $database, ContextInterface $session)
     {
         $this->db = $database;

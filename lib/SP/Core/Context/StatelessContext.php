@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Context;
@@ -39,7 +39,7 @@ final class StatelessContext extends ContextBase
      *
      * @param UserLoginResponse|null $userLoginResponse
      */
-    public function setUserData(UserLoginResponse $userLoginResponse = null)
+    public function setUserData(UserLoginResponse $userLoginResponse = null): void
     {
         $this->setContextKey('userData', $userLoginResponse);
     }
@@ -99,7 +99,7 @@ final class StatelessContext extends ContextBase
      *
      * @param ProfileData $ProfileData
      */
-    public function setUserProfile(ProfileData $ProfileData)
+    public function setUserProfile(ProfileData $ProfileData): void
     {
         $this->setContextKey('userProfile', $ProfileData);
     }
@@ -129,7 +129,7 @@ final class StatelessContext extends ContextBase
      *
      * @param $locale
      */
-    public function setLocale($locale)
+    public function setLocale($locale): void
     {
         $this->setContextKey('locale', $locale);
     }
@@ -159,7 +159,7 @@ final class StatelessContext extends ContextBase
      *
      * @param string $status
      */
-    public function setAppStatus(string $status)
+    public function setAppStatus(string $status): void
     {
         $this->setContextKey('status', $status);
     }
@@ -178,7 +178,7 @@ final class StatelessContext extends ContextBase
      * @return void
      * @throws ContextException
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->setContext(new ContextCollection());
     }
@@ -188,9 +188,9 @@ final class StatelessContext extends ContextBase
      *
      * @param int $time
      */
-    public function setConfigTime(int $time)
+    public function setConfigTime(int $time): void
     {
-        $this->setContextKey('configTime', (int)$time);
+        $this->setContextKey('configTime', $time);
     }
 
     /**
@@ -218,7 +218,7 @@ final class StatelessContext extends ContextBase
      *
      * @throws ContextException
      */
-    public function setTemporaryMasterPass(string $password)
+    public function setTemporaryMasterPass(string $password): void
     {
         $this->setTrasientKey('_tempmasterpass', $password);
     }
@@ -249,10 +249,6 @@ final class StatelessContext extends ContextBase
     {
         $ctxKey = $this->getContextKey('plugins');
 
-        if (isset($ctxKey[$pluginName][$key])) {
-            return $ctxKey[$pluginName][$key];
-        }
-
-        return null;
+        return $ctxKey[$pluginName][$key] ?? null;
     }
 }

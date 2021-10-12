@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
 use SP\Http\Request;
 
 /**
@@ -38,26 +37,11 @@ use SP\Http\Request;
  */
 abstract class FormBase
 {
-    /**
-     * @var int
-     */
-    protected $itemId;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var SessionContext
-     */
-    protected $context;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ?int $itemId;
+    protected Config $config;
+    protected ConfigDataInterface $configData;
+    protected ContextInterface $context;
+    protected Request $request;
 
     /**
      * FormBase constructor.
@@ -65,7 +49,10 @@ abstract class FormBase
      * @param ContainerInterface $container
      * @param int|null           $itemId
      */
-    public function __construct(ContainerInterface $container, ?int $itemId = null)
+    public function __construct(
+        ContainerInterface $container,
+        ?int               $itemId = null
+    )
     {
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
@@ -81,8 +68,6 @@ abstract class FormBase
 
     /**
      * Analizar los datos de la petición HTTP
-     *
-     * @return void
      */
     abstract protected function analyzeRequestData();
 }

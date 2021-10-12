@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -32,23 +32,14 @@ namespace SP\Services\Account;
  */
 final class AccountBulkRequest
 {
-    /**
-     * @var array
-     */
-    private $itemsId;
-    /**
-     * @var AccountRequest
-     */
-    private $accountRequest;
-    /**
-     * @var bool
-     */
-    private $deleteHistory = false;
+    private array $itemsId;
+    private AccountRequest $accountRequest;
+    private bool $deleteHistory = false;
 
     /**
      * AccountBulkRequest constructor.
      *
-     * @param array          $itemsId
+     * @param int[]          $itemsId
      * @param AccountRequest $accountRequest
      */
     public function __construct(array $itemsId, AccountRequest $accountRequest)
@@ -59,41 +50,27 @@ final class AccountBulkRequest
         $this->setUp();
     }
 
-    private function setUp()
+    private function setUp(): void
     {
         $this->accountRequest->changeUserGroup = $this->accountRequest->userGroupId > 0;
         $this->accountRequest->changePermissions = true;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeleteHistory(): bool
     {
         return $this->deleteHistory;
     }
 
-    /**
-     * @param bool $deleteHistory
-     */
-    public function setDeleteHistory(bool $deleteHistory)
+    public function setDeleteHistory(bool $deleteHistory): void
     {
         $this->deleteHistory = $deleteHistory;
     }
 
-    /**
-     * @return array
-     */
     public function getItemsId(): array
     {
         return $this->itemsId;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return AccountRequest
-     */
     public function getAccountRequestForId(int $id): AccountRequest
     {
         $request = clone $this->accountRequest;

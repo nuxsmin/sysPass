@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -32,13 +32,13 @@ namespace SP\Core;
  */
 interface AppInfoInterface
 {
-    const APP_NAME = 'sysPass';
-    const APP_DESC = 'Systems Password Manager';
-    const APP_ALIAS = 'SPM';
-    const APP_WEBSITE_URL = 'https://www.syspass.org';
-    const APP_BLOG_URL = 'https://www.cygnux.org';
-    const APP_DOC_URL = 'https://doc.syspass.org';
-    const APP_UPDATES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
-    const APP_NOTICES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
-    const APP_ISSUES_URL = 'https://github.com/nuxsmin/sysPass/issues';
+    public const APP_NAME = 'sysPass';
+    public const APP_DESC = 'Systems Password Manager';
+    public const APP_ALIAS = 'SPM';
+    public const APP_WEBSITE_URL = 'https://www.syspass.org';
+    public const APP_BLOG_URL = 'https://www.cygnux.org';
+    public const APP_DOC_URL = 'https://doc.syspass.org';
+    public const APP_UPDATES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
+    public const APP_NOTICES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
+    public const APP_ISSUES_URL = 'https://github.com/nuxsmin/sysPass/issues';
 }

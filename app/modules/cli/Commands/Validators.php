@@ -31,13 +31,10 @@ use RuntimeException;
  */
 final class Validators
 {
-    /**
-     * @param string|null $value
-     * @param string|null $message
-     *
-     * @return string
-     */
-    public static function valueNotEmpty(?string $value, ?string $message): string
+    public static function valueNotEmpty(
+        ?string $value,
+        ?string $message
+    ): string
     {
         if (empty($value)) {
             throw new RuntimeException($message ?? __u('Value cannot be blank'));

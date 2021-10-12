@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
@@ -47,10 +47,7 @@ use SP\Util\ImageUtil;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    /**
-     * @var Acl
-     */
-    private $acl;
+    private ?Acl $acl = null;
 
     /**
      * @param AccountPassData $accountData
@@ -66,7 +63,10 @@ final class AccountPasswordHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordView(AccountPassData $accountData, bool $useImage): array
+    public function getPasswordView(
+        AccountPassData $accountData,
+        bool            $useImage
+    ): array
     {
         $this->checkActionAccess();
 
@@ -80,11 +80,20 @@ final class AccountPasswordHelper extends HelperBase
         if ($useImage) {
             $imageUtil = $this->dic->get(ImageUtil::class);
 
-            $this->view->assign('login', $imageUtil->convertText($accountData->getLogin()));
-            $this->view->assign('pass', $imageUtil->convertText($pass));
+            $this->view->assign(
+                'login',
+                $imageUtil->convertText($accountData->getLogin())
+            );
+            $this->view->assign(
+                'pass',
+                $imageUtil->convertText($pass)
+            );
         } else {
             $this->view->assign('login', $accountData->getLogin());
-            $this->view->assign('pass', htmlspecialchars($pass, ENT_COMPAT));
+            $this->view->assign(
+                'pass',
+                htmlspecialchars($pass, ENT_COMPAT)
+            );
         }
 
         return [
@@ -96,7 +105,7 @@ final class AccountPasswordHelper extends HelperBase
     /**
      * @throws HelperException
      */
-    private function checkActionAccess()
+    private function checkActionAccess(): void
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)) {
             throw new HelperException(__u('You don\'t have permission to access this account'));
@@ -130,9 +139,9 @@ final class AccountPasswordHelper extends HelperBase
 
         return trim(
             Crypt::decrypt(
-            $accountData->getPass(),
-            $accountData->getKey(),
-            CryptSession::getSessionKey($this->context)
+                $accountData->getPass(),
+                $accountData->getKey(),
+                CryptSession::getSessionKey($this->context)
             )
         );
     }
@@ -141,7 +150,7 @@ final class AccountPasswordHelper extends HelperBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->acl = $this->dic->get(Acl::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\ItemPreset;
@@ -31,9 +31,8 @@ namespace SP\Services\ItemPreset;
  */
 interface ItemPresetInterface
 {
-    const ITEM_TYPE_ACCOUNT_PERMISSION = 'account.permission';
-    const ITEM_TYPE_ACCOUNT_TAG = 'account.tag';
-    const ITEM_TYPE_ACCOUNT_PASSWORD = 'account.password';
-    const ITEM_TYPE_ACCOUNT_PRIVATE = 'account.private';
-    const ITEM_TYPE_SESSION_TIMEOUT = 'session.timeout';
+    public const ITEM_TYPE_ACCOUNT_PERMISSION = 'account.permission';
+    public const ITEM_TYPE_ACCOUNT_PASSWORD = 'account.password';
+    public const ITEM_TYPE_ACCOUNT_PRIVATE = 'account.private';
+    public const ITEM_TYPE_SESSION_TIMEOUT = 'session.timeout';
 }

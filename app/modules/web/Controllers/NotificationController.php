@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -57,10 +58,7 @@ final class NotificationController extends ControllerBase implements CrudControl
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var NotificationService
-     */
-    protected $notificationService;
+    protected ?NotificationService $notificationService = null;
 
     /**
      * indexAction
@@ -71,9 +69,9 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @throws QueryException
      * @throws SPException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION)) {
             return;
         }
 
@@ -94,11 +92,17 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $notificationGrid = $this->dic->get(NotificationGrid::class);
 
-        return $notificationGrid->updatePager($notificationGrid->getGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
+        return $notificationGrid->updatePager(
+            $notificationGrid->getGrid($this->notificationService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
@@ -107,14 +111,18 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Notification'));
@@ -122,13 +130,19 @@ final class NotificationController extends ControllerBase implements CrudControl
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.notification', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.notification',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -143,19 +157,28 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $notificationId = null)
+    protected function setViewData(?int $notificationId = null): void
     {
         $this->view->addTemplate('notification');
 
-        $notification = $notificationId ? $this->notificationService->getById($notificationId) : new NotificationData();
+        $notification = $notificationId
+            ? $this->notificationService->getById($notificationId)
+            : new NotificationData();
 
         $this->view->assign('notification', $notification);
 
         if ($this->userData->getIsAdminApp()) {
-            $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$notification->userId]));
+            $this->view->assign(
+                'users',
+                SelectItemAdapter::factory(UserService::getItemsBasic())
+                    ->getItemsFromModelSelected([$notification->userId])
+            );
         }
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::NOTIFICATION));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::NOTIFICATION)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -168,16 +191,19 @@ final class NotificationController extends ControllerBase implements CrudControl
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -188,14 +214,18 @@ final class NotificationController extends ControllerBase implements CrudControl
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Notification'));
@@ -204,13 +234,19 @@ final class NotificationController extends ControllerBase implements CrudControl
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.notification.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.notification.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -222,14 +258,18 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Notification'));
@@ -238,13 +278,19 @@ final class NotificationController extends ControllerBase implements CrudControl
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.notification.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.notification.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -256,10 +302,11 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
             if ($id === null) {
@@ -269,13 +316,19 @@ final class NotificationController extends ControllerBase implements CrudControl
                     $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
                 }
 
-                $this->eventDispatcher->notifyEvent('delete.notification.selection',
-                    new Event($this,
+                $this->eventDispatcher->notifyEvent(
+                    'delete.notification.selection',
+                    new Event(
+                        $this,
                         EventMessage::factory()
-                            ->addDescription(__u('Notifications deleted')))
+                            ->addDescription(__u('Notifications deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notifications deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Notifications deleted')
+                );
             }
 
             if ($this->userData->getIsAdminApp()) {
@@ -284,18 +337,27 @@ final class NotificationController extends ControllerBase implements CrudControl
                 $this->notificationService->delete($id);
             }
 
-            $this->eventDispatcher->notifyEvent('delete.notification',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'delete.notification',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Notification deleted'))
-                        ->addDetail(__u('Notification'), $id))
+                        ->addDetail(__u('Notification'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification deleted'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Notification deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -307,30 +369,43 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function checkAction(int $id)
+    public function checkAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CHECK)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->notificationService->setCheckedById($id);
 
-            $this->eventDispatcher->notifyEvent('check.notification',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'check.notification',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Notification read'))
-                        ->addDetail(__u('Notification'), $id))
+                        ->addDetail(__u('Notification'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification read'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Notification read')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -338,32 +413,45 @@ final class NotificationController extends ControllerBase implements CrudControl
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new NotificationForm($this->dic);
-            $form->validate(Acl::NOTIFICATION_CREATE);
+            $form->validate(ActionsInterface::NOTIFICATION_CREATE);
 
             $this->notificationService->create($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.notification',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'create.notification',
+                new Event(
+                    $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Notification created')))
+                        ->addDescription(__u('Notification created'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification created'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Notification created')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -375,32 +463,45 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new NotificationForm($this->dic, $id);
-            $form->validate(Acl::NOTIFICATION_EDIT);
+            $form->validate(ActionsInterface::NOTIFICATION_EDIT);
 
             $this->notificationService->update($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('edit.notification',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'edit.notification',
+                new Event(
+                    $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Notification updated')))
+                        ->addDescription(__u('Notification updated'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Notification updated')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -412,7 +513,7 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

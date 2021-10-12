@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -36,23 +36,23 @@ abstract class Ldap implements LdapInterface
     /**
      * @var LdapParams
      */
-    protected $ldapParams;
+    protected LdapParams $ldapParams;
     /**
      * @var EventDispatcher
      */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
     /**
      * @var LdapActions
      */
-    protected $ldapActions;
+    protected LdapActions $ldapActions;
     /**
      * @var LdapConnectionInterface
      */
-    protected $ldapConnection;
+    protected LdapConnectionInterface $ldapConnection;
     /**
      * @var string
      */
-    private $server;
+    protected string $server;
 
     /**
      * LdapBase constructor.
@@ -80,7 +80,7 @@ abstract class Ldap implements LdapInterface
      *
      * @return mixed
      */
-    protected abstract function pickServer();
+    abstract protected function pickServer(): string;
 
     /**
      * @param LdapParams      $ldapParams
@@ -90,7 +90,11 @@ abstract class Ldap implements LdapInterface
      * @return LdapInterface
      * @throws LdapException
      */
-    public static function factory(LdapParams $ldapParams, EventDispatcher $eventDispatcher, bool $debug)
+    public static function factory(
+        LdapParams      $ldapParams,
+        EventDispatcher $eventDispatcher,
+        bool            $debug
+    ): LdapInterface
     {
         $ldapConnection = new LdapConnection($ldapParams, $eventDispatcher, $debug);
         $ldapConnection->checkConnection();
@@ -98,10 +102,8 @@ abstract class Ldap implements LdapInterface
         switch ($ldapParams->getType()) {
             case LdapTypeInterface::LDAP_STD:
                 return new LdapStd($ldapConnection, $eventDispatcher);
-                break;
             case LdapTypeInterface::LDAP_ADS:
                 return new LdapMsAds($ldapConnection, $eventDispatcher);
-                break;
         }
 
         throw new LdapException(__u('LDAP type not set'));
@@ -151,7 +153,7 @@ abstract class Ldap implements LdapInterface
     protected function getGroupFromParams(): string
     {
         if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
-            return LdapUtil::getGroupName($this->ldapParams->getGroup());
+            return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
         }
 
         return $this->ldapParams->getGroup();

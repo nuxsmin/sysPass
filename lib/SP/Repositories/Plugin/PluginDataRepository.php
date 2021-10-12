@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Plugin;
 
-use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -39,7 +36,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Plugin
  */
-final class PluginDataRepository extends Repository implements RepositoryItemInterface
+final class PluginDataRepository extends Repository
 {
     use RepositoryItemTrait;
 
@@ -52,7 +49,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create(PluginDataModel $itemData): QueryResult
     {
         $query = /** @lang SQL */
             'INSERT INTO PluginData SET `name` = ?, itemId = ?, `data` = ?, `key` = ?';
@@ -79,7 +76,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update(PluginDataModel $itemData): int
     {
         $query = /** @lang SQL */
             'UPDATE PluginData
@@ -102,13 +99,13 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param string $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(string $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM PluginData WHERE `name` = ?');
@@ -128,7 +125,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByItemId($name, $itemId)
+    public function deleteByItemId(string $name, int $itemId): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM PluginData WHERE `name` = ? AND itemId = ? LIMIT 1');
@@ -141,13 +138,13 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     /**
      * Returns the item for given id
      *
-     * @param int $id
+     * @param string $id
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(string $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT itemId,
@@ -172,7 +169,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT itemId,
@@ -192,15 +189,15 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     /**
      * Returns all the items for given ids
      *
-     * @param array $ids
+     * @param string[] $ids
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -224,15 +221,15 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param string[] $ids
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -245,54 +242,6 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     }
 
     /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse($id)
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param mixed $itemData
-     *
-     * @return void
-     */
-    public function checkDuplicatedOnUpdate($itemData)
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @param mixed $itemData
-     *
-     * @return void
-     */
-    public function checkDuplicatedOnAdd($itemData)
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Searches for items by a given filter
-     *
-     * @param ItemSearchData $SearchData
-     *
-     * @return mixed
-     */
-    public function search(ItemSearchData $SearchData)
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
      * Devuelve los datos de un plugin por su nombre
      *
      * @param string $name
@@ -302,7 +251,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByItemId($name, $itemId)
+    public function getByItemId(string $name, int $itemId): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT itemId,

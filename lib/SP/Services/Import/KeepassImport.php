@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -42,20 +42,17 @@ defined('APP_ROOT') || die();
  */
 final class KeepassImport extends XmlImportBase implements ImportInterface
 {
-    /**
-     * @var array
-     */
-    private $items = [];
+    private array $items = [];
 
     /**
      * Iniciar la importación desde KeePass
      *
-     * @return ImportInterface
      * @throws SPException
      */
-    public function doImport()
+    public function doImport(): ImportInterface
     {
-        $this->eventDispatcher->notifyEvent('run.import.keepass',
+        $this->eventDispatcher->notifyEvent(
+            'run.import.keepass',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('KeePass XML Import')))
         );
@@ -70,11 +67,12 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
      *
      * @throws SPException
      */
-    private function process()
+    private function process(): void
     {
         $clientId = $this->addClient(new ClientData(null, 'KeePass'));
 
-        $this->eventDispatcher->notifyEvent('run.import.keepass.process.client',
+        $this->eventDispatcher->notifyEvent(
+            'run.import.keepass.process.client',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('Client added'), 'KeePass'))
         );
@@ -86,9 +84,12 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
         /** @var AccountRequest[] $group */
         foreach ($this->items as $group => $entry) {
             try {
-                $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
+                $categoryId = $this->addCategory(
+                    new CategoryData(null, $group, 'KeePass')
+                );
 
-                $this->eventDispatcher->notifyEvent('run.import.keepass.process.category',
+                $this->eventDispatcher->notifyEvent(
+                    'run.import.keepass.process.category',
                     new Event($this, EventMessage::factory()
                         ->addDetail(__u('Category imported'), $group))
                 );
@@ -100,7 +101,8 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
                         $this->addAccount($account);
 
-                        $this->eventDispatcher->notifyEvent('run.import.keepass.process.account',
+                        $this->eventDispatcher->notifyEvent(
+                            'run.import.keepass.process.account',
                             new Event($this, EventMessage::factory()
                                 ->addDetail(__u('Account imported'), $account->name)
                                 ->addDetail(__u('Category'), $group))
@@ -110,7 +112,10 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notifyEvent(
+                    'exception',
+                    new Event($e)
+                );
             }
         }
     }
@@ -118,7 +123,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     /**
      * Gets the groups found
      */
-    private function getGroups()
+    private function getGroups(): void
     {
         $DomXpath = new DOMXPath($this->xmlDOM);
         $tags = $DomXpath->query('/KeePassFile/Root/Group//Group');
@@ -126,7 +131,9 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
         /** @var DOMElement[] $tags */
         foreach ($tags as $tag) {
             if ($tag->nodeType === 1) {
-                $groupName = $DomXpath->query($tag->getNodePath() . '/Name')->item(0)->nodeValue;
+                $groupName = $DomXpath->query($tag->getNodePath() . '/Name')
+                    ->item(0)
+                    ->nodeValue;
 
                 if (!isset($groups[$groupName])) {
                     $this->items[$groupName] = [];
@@ -138,7 +145,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     /**
      * Gets the entries found
      */
-    private function getEntries()
+    private function getEntries(): void
     {
         $DomXpath = new DOMXPath($this->xmlDOM);
         $tags = $DomXpath->query('/KeePassFile/Root/Group//Entry[not(parent::History)]');
@@ -151,29 +158,28 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
                 /** @var DOMElement $key */
                 foreach ($DomXpath->query($path . '/String/Key') as $key) {
-                    $value = $DomXpath->query($key->getNodePath() . '/../Value')->item(0)->nodeValue;
+                    $value = $DomXpath->query($key->getNodePath() . '/../Value')
+                        ->item(0)
+                        ->nodeValue;
 
                     $entryData[$key->nodeValue] = $value;
                 }
 
-                $groupName = $DomXpath->query($path . '/../Name')->item(0)->nodeValue;
+                $groupName = $DomXpath->query($path . '/../Name')
+                    ->item(0)
+                    ->nodeValue;
 
                 $this->items[$groupName][] = $this->mapEntryToAccount($entryData);
             }
         }
     }
 
-    /**
-     * @param array $entry
-     *
-     * @return AccountRequest
-     */
-    private function mapEntryToAccount(array $entry)
+    private function mapEntryToAccount(array $entry): AccountRequest
     {
         $accountRequest = new AccountRequest();
         $accountRequest->name = isset($entry['Title']) ? Filter::getString($entry['Title']) : '';
         $accountRequest->login = isset($entry['UserName']) ? Filter::getString($entry['UserName']) : '';
-        $accountRequest->pass = isset($entry['Password']) ? $entry['Password'] : '';
+        $accountRequest->pass = $entry['Password'] ?? '';
         $accountRequest->url = isset($entry['URL']) ? Filter::getString($entry['URL']) : '';
         $accountRequest->notes = isset($entry['Notes']) ? Filter::getString($entry['Notes']) : '';
 

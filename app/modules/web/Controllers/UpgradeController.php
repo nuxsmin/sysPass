@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -51,7 +51,7 @@ final class UpgradeController extends ControllerBase
      * @throws NotFoundException
      * @throws FileException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getPublicLayout('index', 'upgrade');
@@ -63,10 +63,11 @@ final class UpgradeController extends ControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function upgradeAction()
+    public function upgradeAction(): bool
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
             return $this->returnJsonResponse(
@@ -117,7 +118,7 @@ final class UpgradeController extends ControllerBase
     /**
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         // TODO: Implement initialize() method.
     }

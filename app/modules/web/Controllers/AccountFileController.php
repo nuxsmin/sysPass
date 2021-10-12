@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -30,6 +30,7 @@ use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -59,14 +60,11 @@ use SP\Util\FileUtil;
  */
 final class AccountFileController extends ControllerBase implements CrudControllerInterface
 {
-    const MIME_VIEW = ['text/plain'];
+    private const MIME_VIEW = ['text/plain'];
 
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var AccountFileService
-     */
-    protected $accountFileService;
+    protected ?AccountFileService $accountFileService = null;
 
     /**
      * View action
@@ -74,10 +72,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
             if (null === ($fileData = $this->accountFileService->getById($id))) {
@@ -91,7 +90,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 $this->view->assign('fileData', $fileData);
                 $this->view->assign('isImage', 1);
 
-                $this->eventDispatcher->notifyEvent('show.accountFile',
+                $this->eventDispatcher->notifyEvent(
+                    'show.accountFile',
                     new Event($this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
@@ -107,7 +107,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 $this->view->assign('mime', $type);
                 $this->view->assign('data', htmlentities($fileData->getContent()));
 
-                $this->eventDispatcher->notifyEvent('show.accountFile',
+                $this->eventDispatcher->notifyEvent(
+                    'show.accountFile',
                     new Event($this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
@@ -119,12 +120,18 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
 
-        return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('File not supported for preview'));
+        return $this->returnJsonResponse(
+            JsonResponse::JSON_WARNING,
+            __u('File not supported for preview')
+        );
     }
 
     /**
@@ -141,7 +148,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 throw new SPException(__u('File does not exist'), SPException::INFO);
             }
 
-            $this->eventDispatcher->notifyEvent('download.accountFile',
+            $this->eventDispatcher->notifyEvent(
+                'download.accountFile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('File downloaded'))
                     ->addDetail(__u('File'), $fileData->getName()))
@@ -157,9 +165,15 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $type = strtolower($fileData->getType());
 
             if ($type === 'application/pdf') {
-                $disposition = sprintf('inline; filename="%s"', $fileData->getName());
+                $disposition = sprintf(
+                    'inline; filename="%s"',
+                    $fileData->getName()
+                );
             } else {
-                $disposition = sprintf('attachment; filename="%s"', $fileData->getName());
+                $disposition = sprintf(
+                    'attachment; filename="%s"',
+                    $fileData->getName()
+                );
                 $response->header('Set-Cookie', 'fileDownload=true; path=/');
             }
 
@@ -170,7 +184,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
@@ -182,8 +199,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @param int $accountId
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function uploadAction(int $accountId): bool
     {
@@ -196,7 +214,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $filesAllowedMime = $this->configData->getFilesAllowedMime();
 
-            if (empty($filesAllowedMime)) {
+            if (count($filesAllowedMime) === 0) {
                 throw new SPException(__u('There aren\'t any allowed MIME types'));
             }
 
@@ -243,7 +261,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 ->getById($accountId)
                 ->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('upload.accountFile',
+            $this->eventDispatcher->notifyEvent(
+                'upload.accountFile',
                 new Event($this,
                     EventMessage::factory()
                         ->addDescription(__u('File saved'))
@@ -259,13 +278,23 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (SPException $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
+            return $this->returnJsonResponse(
+                1,
+                $e->getMessage(),
+                [$e->getHint()]
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -282,9 +311,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler): string
     {
-        if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime())) {
+        if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime(), true)) {
             return $fileData->getType();
-        } elseif (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime())) {
+        }
+
+        if (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime(), true)) {
             return $fileHandler->getFileType();
         }
 
@@ -304,10 +335,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
+     * @throws \JsonException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_FILE_SEARCH)) {
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
                 __u('You don\'t have permission to do this operation')
@@ -315,7 +347,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -331,17 +366,23 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $fileGrid = $this->dic->get(FileGrid::class);
 
-        return $fileGrid->updatePager($fileGrid->getGrid($this->accountFileService->search($itemSearchData)), $itemSearchData);
+        return $fileGrid->updatePager(
+            $fileGrid->getGrid($this->accountFileService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * Create action
      */
-    public function createAction()
+    public function createAction(): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -351,7 +392,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @param $id
      */
-    public function editAction($id)
+    public function editAction($id): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -362,16 +403,18 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
             if ($id === null) {
                 $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.accountFile.selection',
+                $this->eventDispatcher->notifyEvent(
+                    'delete.accountFile.selection',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Files deleted')))
                 );
@@ -379,7 +422,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 return $this->returnJsonResponse(0, __u('Files deleted'));
             }
 
-            $this->eventDispatcher->notifyEvent('delete.accountFile',
+            $this->eventDispatcher->notifyEvent(
+                'delete.accountFile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('File deleted'))
                     ->addDetail(__u('File'), $id))
@@ -391,7 +435,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -400,7 +447,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Saves create action
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -410,7 +457,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @param $id
      */
-    public function saveEditAction($id)
+    public function saveEditAction($id): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -422,7 +469,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @throws ContainerExceptionInterface
      */
-    public function listAction(int $accountId)
+    public function listAction(int $accountId): void
     {
         if (!$this->configData->isFilesEnabled()) {
             echo __('Files management disabled');
@@ -434,25 +481,40 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
             $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
-            $this->view->assign('fileViewRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_VIEW));
-            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DOWNLOAD));
-            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DELETE));
+            $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
+            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
+            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
 
-            if (!is_array($this->view->files) || count($this->view->files) === 0) {
-                $this->view->addTemplate('no_records_found', '_partials');
+            if (!is_array($this->view->files)
+                || count($this->view->files) === 0) {
+                $this->view->addTemplate(
+                    'no_records_found',
+                    '_partials'
+                );
 
-                $this->view->assign('message', __('There are no linked files for the account'));
+                $this->view->assign(
+                    'message',
+                    __('There are no linked files for the account')
+                );
 
                 $this->view();
 
                 return;
             }
 
-            $this->eventDispatcher->notifyEvent('list.accountFile', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'list.accountFile',
+                new Event($this)
+            );
         } catch (Exception $e) {
             processException($e);
 
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION, true, 'files-list');
+            ErrorUtil::showErrorInView(
+                $this->view,
+                ErrorUtil::ERR_EXCEPTION,
+                true,
+                'files-list'
+            );
         }
 
         $this->view();
@@ -466,7 +528,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

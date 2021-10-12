@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Crypt;
@@ -44,72 +44,58 @@ use SP\Services\ServiceException;
  */
 final class MasterPassService extends Service
 {
-    const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
-    const PARAM_MASTER_PASS_HASH = 'masterPwd';
+    public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
+    public const PARAM_MASTER_PASS_HASH = 'masterPwd';
+
+    protected ?ConfigService $configService = null;
+    protected ?AccountCryptService $accountCryptService = null;
+    protected ?CustomFieldCryptService $customFieldCryptService = null;
 
     /**
-     * @var ConfigService
-     */
-    protected $configService;
-    /**
-     * @var AccountCryptService
-     */
-    protected $accountCryptService;
-    /**
-     * @var CustomFieldCryptService
-     */
-    protected $customFieldCryptService;
-
-    /**
-     * @param int $userMPassTime
-     *
-     * @return bool
      * @throws ServiceException
      * @throws NoSuchItemException
      */
-    public function checkUserUpdateMPass($userMPassTime)
+    public function checkUserUpdateMPass(int $userMPassTime): bool
     {
         return $userMPassTime >= $this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, 0);
 
     }
 
     /**
-     * @param string $masterPassword
-     *
-     * @return bool
      * @throws ServiceException
      * @throws NoSuchItemException
      */
-    public function checkMasterPassword($masterPassword)
+    public function checkMasterPassword(string $masterPassword): bool
     {
-        return Hash::checkHashKey($masterPassword, $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH));
+        return Hash::checkHashKey(
+            $masterPassword,
+            $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
+        );
     }
 
     /**
-     * @param UpdateMasterPassRequest $request
-     *
      * @throws Exception
      */
-    public function changeMasterPassword(UpdateMasterPassRequest $request)
+    public function changeMasterPassword(UpdateMasterPassRequest $request): void
     {
-        $this->transactionAware(function () use ($request) {
-            $this->accountCryptService->updateMasterPassword($request);
+        $this->transactionAware(
+            function () use ($request) {
+                $this->accountCryptService->updateMasterPassword($request);
 
-            $this->accountCryptService->updateHistoryMasterPassword($request);
+                $this->accountCryptService->updateHistoryMasterPassword($request);
 
-            $this->customFieldCryptService->updateMasterPassword($request);
+                $this->customFieldCryptService->updateMasterPassword($request);
 
-            $this->updateConfig($request->getHash());
-        });
+                $this->updateConfig($request->getHash());
+            }
+        );
     }
 
     /**
-     * @param $hash
-     *
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateConfig($hash)
+    public function updateConfig($hash): void
     {
         $this->configService->save(self::PARAM_MASTER_PASS_HASH, $hash);
         $this->configService->save(self::PARAM_MASTER_PASS_TIME, time());
@@ -119,7 +105,7 @@ final class MasterPassService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configService = $this->dic->get(ConfigService::class);
         $this->accountCryptService = $this->dic->get(AccountCryptService::class);

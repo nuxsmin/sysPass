@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Acl;
@@ -40,27 +40,17 @@ final class Actions
     /**
      * Cache file name
      */
-    const ACTIONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'actions.cache';
+    public const ACTIONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'actions.cache';
     /**
      * Cache expire time
      */
-    const CACHE_EXPIRE = 86400;
-    /**
-     * @var int
-     */
-    protected $lastLoadTime;
+    public const CACHE_EXPIRE = 86400;
     /**
      * @var  ActionData[]
      */
-    protected $actions;
-    /**
-     * @var XmlFileStorageInterface
-     */
-    protected $xmlFileStorage;
-    /**
-     * @var FileCacheInterface
-     */
-    private $fileCache;
+    protected ?array $actions = null;
+    protected XmlFileStorageInterface $xmlFileStorage;
+    private FileCacheInterface $fileCache;
 
     /**
      * Action constructor.
@@ -70,7 +60,10 @@ final class Actions
      *
      * @throws FileException
      */
-    public function __construct(FileCacheInterface $fileCache, XmlFileStorageInterface $xmlFileStorage)
+    public function __construct(
+        FileCacheInterface      $fileCache,
+        XmlFileStorageInterface $xmlFileStorage
+    )
     {
         $this->xmlFileStorage = $xmlFileStorage;
         $this->fileCache = $fileCache;
@@ -81,10 +74,9 @@ final class Actions
     /**
      * Loads actions from cache file
      *
-     * @return void
      * @throws FileException
      */
-    protected function loadCache()
+    protected function loadCache(): void
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
@@ -106,7 +98,7 @@ final class Actions
     /**
      * @throws FileException
      */
-    protected function mapAndSave()
+    protected function mapAndSave(): void
     {
         logger('ACTION CACHE MISS', 'INFO');
 
@@ -119,7 +111,7 @@ final class Actions
      *
      * @throws FileException
      */
-    protected function map()
+    protected function map(): void
     {
         $this->actions = [];
 
@@ -152,7 +144,7 @@ final class Actions
     /**
      * Saves actions into cache file
      */
-    protected function saveCache()
+    protected function saveCache(): void
     {
         try {
             $this->fileCache->save($this->actions);
@@ -166,9 +158,6 @@ final class Actions
     /**
      * Returns an action by id
      *
-     * @param int $id
-     *
-     * @return ActionData
      * @throws ActionNotFoundException
      */
     public function getActionById(int $id): ActionData
@@ -183,7 +172,7 @@ final class Actions
     /**
      * @throws FileException
      */
-    public function reset()
+    public function reset(): void
     {
         @unlink(self::ACTIONS_CACHE_FILE);
 

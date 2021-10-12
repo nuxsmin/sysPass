@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Crypt;
@@ -35,36 +35,26 @@ use SP\Services\Task\Task;
  */
 final class UpdateMasterPassRequest
 {
-    /**
-     * @var string
-     */
-    private $currentMasterPass;
-    /**
-     * @var string
-     */
-    private $newMasterPass;
-    /**
-     * @var Task
-     */
-    private $task;
-    /**
-     * @var string
-     */
-    private $hash;
-    /**
-     * @var string
-     */
-    private $currentHash;
+    private string $currentMasterPass;
+    private string $newMasterPass;
+    private ?Task $task = null;
+    private string $hash;
+    private string $currentHash;
 
     /**
      * UpdateMasterPassRequest constructor.
      *
-     * @param string $currentMasterPass
-     * @param string $newMasterPass
-     * @param string $currentHash
-     * @param Task   $task
+     * @param string                      $currentMasterPass
+     * @param string                      $newMasterPass
+     * @param string                      $currentHash
+     * @param \SP\Services\Task\Task|null $task
      */
-    public function __construct($currentMasterPass, $newMasterPass, $currentHash, Task $task = null)
+    public function __construct(
+        string $currentMasterPass,
+        string $newMasterPass,
+        string $currentHash,
+        ?Task  $task = null
+    )
     {
         $this->currentMasterPass = $currentMasterPass;
         $this->newMasterPass = $newMasterPass;
@@ -73,50 +63,32 @@ final class UpdateMasterPassRequest
         $this->currentHash = $currentHash;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentMasterPass()
+    public function getCurrentMasterPass(): string
     {
         return $this->currentMasterPass;
     }
 
-    /**
-     * @return string
-     */
-    public function getNewMasterPass()
+    public function getNewMasterPass(): string
     {
         return $this->newMasterPass;
     }
 
-    /**
-     * @return Task
-     */
-    public function getTask()
+    public function getTask(): ?Task
     {
         return $this->task;
     }
 
-    /**
-     * @return bool
-     */
-    public function useTask()
+    public function useTask(): bool
     {
         return $this->task !== null;
     }
 
-    /**
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): string
     {
         return $this->hash;
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentHash()
+    public function getCurrentHash(): string
     {
         return $this->currentHash;
     }

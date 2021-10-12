@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,13 +20,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Acl;
 
 use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
@@ -38,18 +37,9 @@ defined('APP_ROOT') || die();
  */
 final class Acl implements ActionsInterface
 {
-    /**
-     * @var Actions
-     */
-    protected static $action;
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
+    protected static ?Actions $action;
+    private ContextInterface $context;
+    private EventDispatcher $eventDispatcher;
 
     /**
      * Acl constructor.
@@ -58,7 +48,11 @@ final class Acl implements ActionsInterface
      * @param EventDispatcher  $eventDispatcher
      * @param Actions|null     $action
      */
-    public function __construct(ContextInterface $context, EventDispatcher $eventDispatcher, Actions $action = null)
+    public function __construct(
+        ContextInterface $context,
+        EventDispatcher  $eventDispatcher,
+        Actions          $action = null
+    )
     {
         $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
@@ -68,10 +62,6 @@ final class Acl implements ActionsInterface
 
     /**
      * Returns action route
-     *
-     * @param string $actionId
-     *
-     * @return string
      */
     public static function getActionRoute(string $actionId): string
     {
@@ -93,10 +83,11 @@ final class Acl implements ActionsInterface
      * @return string
      * @internal param bool $shortName Si se devuelve el nombre corto de la acción
      */
-    public static function getActionInfo(int $actionId, $translate = true): string
+    public static function getActionInfo(int $actionId, bool $translate = true): string
     {
         try {
             $text = self::$action->getActionById($actionId)->getText();
+
             return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {
             processException($e);
@@ -107,13 +98,8 @@ final class Acl implements ActionsInterface
 
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
-     *
-     * @param int $action con el Id de la acción
-     * @param int $userId opcional, con el Id del usuario
-     *
-     * @return bool
      */
-    public function checkUserAccess(int $action, $userId = 0): bool
+    public function checkUserAccess(int $action, int $userId = 0): bool
     {
         if (!($userProfile = $this->context->getUserProfile())) {
             return false;
@@ -279,7 +265,7 @@ final class Acl implements ActionsInterface
             case self::EVENTLOG_CLEAR:
                 return $userProfile->isEvl();
             case self::CUSTOMFIELD_VIEW_PASS:
-                return ($userData->getIsAdminApp() || $userProfile->isAccViewPass());
+                return $userProfile->isAccViewPass();
             case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:
             case self::NOTIFICATION_VIEW:

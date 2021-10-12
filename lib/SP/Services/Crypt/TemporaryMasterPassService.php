@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Crypt;
@@ -33,8 +33,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\MailMessage;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\NoSuchItemException;
@@ -55,24 +53,18 @@ final class TemporaryMasterPassService extends Service
     /**
      * Número máximo de intentos
      */
-    const MAX_ATTEMPTS = 50;
+    public const MAX_ATTEMPTS = 50;
     /**
      * Parámetros de configuración
      */
-    const PARAM_PASS = 'tempmaster_pass';
-    const PARAM_KEY = 'tempmaster_passkey';
-    const PARAM_HASH = 'tempmaster_passhash';
-    const PARAM_TIME = 'tempmaster_passtime';
-    const PARAM_MAX_TIME = 'tempmaster_maxtime';
-    const PARAM_ATTEMPTS = 'tempmaster_attempts';
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
-    /**
-     * @var int
-     */
-    protected $maxTime;
+    private const PARAM_PASS = 'tempmaster_pass';
+    private const PARAM_KEY = 'tempmaster_passkey';
+    private const PARAM_HASH = 'tempmaster_passhash';
+    public const PARAM_TIME = 'tempmaster_passtime';
+    public const PARAM_MAX_TIME = 'tempmaster_maxtime';
+    public const PARAM_ATTEMPTS = 'tempmaster_attempts';
+    protected ?ConfigService $configService = null;
+    protected ?int $maxTime = null;
 
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
@@ -82,7 +74,7 @@ final class TemporaryMasterPassService extends Service
      * @return string
      * @throws ServiceException
      */
-    public function create($maxTime = 14400)
+    public function create(int $maxTime = 14400): string
     {
         try {
             $this->maxTime = time() + $maxTime;
@@ -104,7 +96,8 @@ final class TemporaryMasterPassService extends Service
             // Guardar la clave temporal hasta que finalice la sesión
             $this->context->setTemporaryMasterPass($randomKey);
 
-            $this->eventDispatcher->notifyEvent('create.tempMasterPassword',
+            $this->eventDispatcher->notifyEvent(
+                'create.tempMasterPassword',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Generate temporary password')))
             );
@@ -125,7 +118,7 @@ final class TemporaryMasterPassService extends Service
      * @return bool
      * @throws ServiceException
      */
-    public function checkTempMasterPass($pass)
+    public function checkTempMasterPass(string $pass): bool
     {
         try {
             $isValid = false;
@@ -133,8 +126,13 @@ final class TemporaryMasterPassService extends Service
 
             // Comprobar si el tiempo de validez o los intentos se han superado
             if ($passMaxTime === 0) {
-                $this->eventDispatcher->notifyEvent('check.tempMasterPassword',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Temporary password expired')))
+                $this->eventDispatcher->notifyEvent(
+                    'check.tempMasterPassword',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Temporary password expired'))
+                    )
                 );
 
                 return $isValid;
@@ -143,18 +141,24 @@ final class TemporaryMasterPassService extends Service
             $passTime = (int)$this->configService->getByParam(self::PARAM_TIME);
             $attempts = (int)$this->configService->getByParam(self::PARAM_ATTEMPTS);
 
-            if ((!empty($passTime) && time() > $passMaxTime)
-                || $attempts >= self::MAX_ATTEMPTS
+            if ($attempts >= self::MAX_ATTEMPTS
+                || (!empty($passTime) && time() > $passMaxTime)
             ) {
                 $this->expire();
 
                 return $isValid;
             }
 
-            $isValid = Hash::checkHashKey($pass, $this->configService->getByParam(self::PARAM_HASH));
+            $isValid = Hash::checkHashKey(
+                $pass,
+                $this->configService->getByParam(self::PARAM_HASH)
+            );
 
             if (!$isValid) {
-                $this->configService->save(self::PARAM_ATTEMPTS, $attempts + 1);
+                $this->configService->save(
+                    self::PARAM_ATTEMPTS,
+                    $attempts + 1
+                );
             }
 
             return $isValid;
@@ -170,7 +174,7 @@ final class TemporaryMasterPassService extends Service
     /**
      * @throws ServiceException
      */
-    protected function expire()
+    protected function expire(): void
     {
         $configRequest = new ConfigRequest();
         $configRequest->add(self::PARAM_PASS, '');
@@ -182,74 +186,65 @@ final class TemporaryMasterPassService extends Service
 
         $this->configService->saveBatch($configRequest);
 
-        $this->eventDispatcher->notifyEvent('expire.tempMasterPassword',
+        $this->eventDispatcher->notifyEvent(
+            'expire.tempMasterPassword',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Temporary password expired')))
         );
     }
 
     /**
-     * @param $groupId
-     * @param $key
-     *
-     * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function sendByEmailForGroup($groupId, $key)
+    public function sendByEmailForGroup(int $groupId, string $key): void
     {
         $mailMessage = $this->getMessageForEmail($key);
 
-        $emails = array_map(function ($value) {
-            return $value->email;
-        }, $this->dic->get(UserService::class)->getUserEmailForGroup($groupId));
+        $emails = array_map(
+            static function ($value) {
+                return $value->email;
+            },
+            $this->dic->get(UserService::class)->getUserEmailForGroup($groupId)
+        );
 
         $this->dic->get(MailService::class)
             ->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
     }
 
-    /**
-     * @param $key
-     *
-     * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function sendByEmailForAllUsers($key)
-    {
-        $mailMessage = $this->getMessageForEmail($key);
-
-        $emails = array_map(function ($value) {
-            return $value->email;
-        }, $this->dic->get(UserService::class)->getUserEmailForAll());
-
-        $this->dic->get(MailService::class)
-            ->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
-    }
-
-    /**
-     * @param $key
-     *
-     * @return MailMessage
-     */
-    private function getMessageForEmail($key)
+    private function getMessageForEmail(string $key): MailMessage
     {
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(sprintf(__('%s Master Password'), AppInfoInterface::APP_NAME));
         $mailMessage->addDescription(__('A new sysPass master password has been generated, so next time you log into the application it will be requested.'));
         $mailMessage->addDescription(sprintf(__('The new Master Password is: %s'), $key));
-        $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->getMaxTime())));
+        $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->maxTime)));
         $mailMessage->addDescription(__('Please, don\'t forget to log in as soon as possible to save the changes.'));
 
         return $mailMessage;
     }
 
     /**
-     * @return int
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    public function getMaxTime()
+    public function sendByEmailForAllUsers(string $key): void
     {
-        return $this->maxTime;
+        $mailMessage = $this->getMessageForEmail($key);
+
+        $emails = array_map(
+            static function ($value) {
+                return $value->email;
+            },
+            $this->dic->get(UserService::class)->getUserEmailForAll()
+        );
+
+        $this->dic->get(MailService::class)
+            ->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
     }
 
     /**
@@ -262,18 +257,20 @@ final class TemporaryMasterPassService extends Service
      * @throws ServiceException
      * @throws CryptoException
      */
-    public function getUsingKey($key)
+    public function getUsingKey(string $key): string
     {
-        return Crypt::decrypt($this->configService->getByParam(self::PARAM_PASS),
+        return Crypt::decrypt(
+            $this->configService->getByParam(self::PARAM_PASS),
             $this->configService->getByParam(self::PARAM_KEY),
-            $key);
+            $key
+        );
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configService = $this->dic->get(ConfigService::class);
     }

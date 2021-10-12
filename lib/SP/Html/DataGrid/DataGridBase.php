@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
@@ -48,91 +47,88 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @var int
      */
-    protected $time = 0;
+    protected int $time = 0;
     /**
      * El id de la matriz
      *
      * @var string
      */
-    protected $id = '';
+    protected string $id = '';
     /**
      * La cabecera de la matriz
      *
-     * @var DataGridHeaderInterface
+     * @var DataGridHeaderInterface|null
      */
-    protected $header;
+    protected ?DataGridHeaderInterface $header = null;
     /**
      * Los datos de la matriz
      *
-     * @var DataGridData
+     * @var DataGridData|null
      */
-    protected $data;
+    protected ?DataGridData $data = null;
     /**
      * El paginador
      *
-     * @var DataGridPagerBase
+     * @var DataGridPagerBase|null
      */
-    protected $pager;
+    protected ?DataGridPagerBase $pager = null;
     /**
      * Las acciones asociadas a los elementos de la matriz
      *
      * @var DataGridActionInterface[]
      */
-    protected $actions = [];
+    protected array $actions = [];
     /**
      * @var int
      */
-    protected $actionsCount = 0;
+    protected int $actionsCount = 0;
     /**
      * Las acciones asociadas a los elementos de la matriz que se muestran en un menú
      *
      * @var DataGridActionInterface[]
      */
-    protected $actionsMenu = [];
+    protected array $actionsMenu = [];
     /**
      * @var int
      */
-    protected $actionsMenuCount = 0;
+    protected int $actionsMenuCount = 0;
     /**
      * La acción a realizar al cerrar la matriz
      *
      * @var int
      */
-    protected $onCloseAction = 0;
+    protected int $onCloseAction = 0;
     /**
      * La plantilla a utilizar para presentar la cabecera
      *
-     * @var string
+     * @var string|null
      */
-    protected $headerTemplate;
+    protected ?string $headerTemplate = null;
     /**
      * La plantilla a utilizar para presentar las acciones
      *
-     * @var string
+     * @var string|null
      */
-    protected $actionsTemplate;
+    protected ?string $actionsTemplate = null;
     /**
      * La plantilla a utilizar para presentar el paginador
      *
-     * @var string
+     * @var string|null
      */
-    protected $pagerTemplate;
+    protected ?string $pagerTemplate = null;
     /**
      * La plantilla a utilizar para presentar los datos
      *
-     * @var string
+     * @var string|null
      */
-    protected $rowsTemplate;
+    protected ?string $rowsTemplate = null;
     /**
      * La plantilla a utilizar para presentar la tabla
      *
-     * @var string
+     * @var string|null
      */
-    protected $tableTemplate;
-    /**
-     * @var ThemeInterface
-     */
-    protected $theme;
+    protected ?string $tableTemplate = null;
+    protected ?ThemeInterface $theme = null;
 
     /**
      * DataGridBase constructor.
@@ -153,11 +149,11 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param ActionsInterface $action
+     * @param int $action
      *
      * @return $this
      */
-    public function setOnCloseAction(ActionsInterface $action)
+    public function setOnCloseAction(int $action): DataGridBase
     {
         $this->onCloseAction = $action;
 
@@ -375,9 +371,9 @@ abstract class DataGridBase implements DataGridInterface
      * @param string      $template El nombre de la plantilla a utilizar
      * @param string|null $base
      *
-     * @return mixed
+     * @return \SP\Html\DataGrid\DataGridBase
      */
-    public function setDataRowTemplate(string $template, ?string $base = null)
+    public function setDataRowTemplate(string $template, ?string $base = null): DataGridBase
     {
         try {
             $this->rowsTemplate = $this->checkTemplate($template, $base);
@@ -516,7 +512,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return DataGridBase
      */
-    public function setDataTableTemplate($template, $base = null)
+    public function setDataTableTemplate($template, $base = null): DataGridBase
     {
         try {
             $this->tableTemplate = $this->checkTemplate($template, $base);

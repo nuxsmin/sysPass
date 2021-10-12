@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\UserPassRecover;
@@ -48,25 +48,15 @@ final class UserPassRecoverService extends Service
     /**
      * Tiempo máximo para recuperar la clave
      */
-    const MAX_PASS_RECOVER_TIME = 3600;
+    private const MAX_PASS_RECOVER_TIME = 3600;
     /**
      * Número de intentos máximos para recuperar la clave
      */
-    const MAX_PASS_RECOVER_LIMIT = 3;
-    const USER_LOGIN_EXIST = 1;
-    const USER_MAIL_EXIST = 2;
+    public const MAX_PASS_RECOVER_LIMIT = 3;
 
-    /**
-     * @var UserPassRecoverRepository
-     */
-    protected $userPassRecoverRepository;
+    protected ?UserPassRecoverRepository $userPassRecoverRepository = null;
 
-    /**
-     * @param $hash
-     *
-     * @return MailMessage
-     */
-    public static function getMailMessage($hash)
+    public static function getMailMessage(string $hash): MailMessage
     {
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(__('Password Change'));
@@ -82,32 +72,35 @@ final class UserPassRecoverService extends Service
     }
 
     /**
-     * @param $hash
-     *
-     * @return void
-     * @throws ServiceException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Services\ServiceException
      */
-    public function toggleUsedByHash($hash)
+    public function toggleUsedByHash(string $hash): void
     {
-        if ($this->userPassRecoverRepository->toggleUsedByHash($hash, time() - self::MAX_PASS_RECOVER_TIME) === 0) {
-            throw new ServiceException(__u('Wrong hash or expired'), ServiceException::INFO);
+        if ($this->userPassRecoverRepository->toggleUsedByHash(
+                $hash,
+                time() - self::MAX_PASS_RECOVER_TIME) === 0
+        ) {
+            throw new ServiceException(
+                __u('Wrong hash or expired'),
+                SPException::INFO
+            );
         }
     }
 
     /**
-     * @param int $id
-     *
-     * @return string
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
      * @throws EnvironmentIsBrokenException
      */
-    public function requestForUserId($id)
+    public function requestForUserId(int $id): string
     {
         if ($this->checkAttemptsByUserId($id)) {
-            throw new ServiceException(__u('Attempts exceeded'), ServiceException::WARNING);
+            throw new ServiceException(
+                __u('Attempts exceeded'),
+                SPException::WARNING
+            );
         }
 
         $hash = PasswordUtil::generateRandomBytes(16);
@@ -120,26 +113,22 @@ final class UserPassRecoverService extends Service
     /**
      * Comprobar el límite de recuperaciones de clave.
      *
-     * @param int $userId
-     *
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkAttemptsByUserId($userId)
+    public function checkAttemptsByUserId(int $userId): bool
     {
-        return $this->userPassRecoverRepository->getAttemptsByUserId($userId, time() - self::MAX_PASS_RECOVER_TIME) >= self::MAX_PASS_RECOVER_LIMIT;
+        return $this->userPassRecoverRepository->getAttemptsByUserId(
+                $userId,
+                time() - self::MAX_PASS_RECOVER_TIME
+            ) >= self::MAX_PASS_RECOVER_LIMIT;
     }
 
     /**
-     * @param $userId
-     * @param $hash
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add($userId, $hash)
+    public function add(int $userId, string $hash): bool
     {
         return $this->userPassRecoverRepository->add($userId, $hash);
     }
@@ -147,19 +136,22 @@ final class UserPassRecoverService extends Service
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @param string $hash
-     *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUserIdForHash($hash)
+    public function getUserIdForHash(string $hash): int
     {
-        $result = $this->userPassRecoverRepository->getUserIdForHash($hash, time() - self::MAX_PASS_RECOVER_TIME);
+        $result = $this->userPassRecoverRepository->getUserIdForHash(
+            $hash,
+            time() - self::MAX_PASS_RECOVER_TIME
+        );
 
         if ($result->getNumRows() === 0) {
-            throw new ServiceException(__u('Wrong hash or expired'), ServiceException::INFO);
+            throw new ServiceException(
+                __u('Wrong hash or expired'),
+                SPException::INFO
+            );
         }
 
         return (int)$result->getData()->userId;
@@ -169,7 +161,7 @@ final class UserPassRecoverService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
     }

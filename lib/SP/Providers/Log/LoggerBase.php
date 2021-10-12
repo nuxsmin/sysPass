@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
@@ -46,23 +44,23 @@ abstract class LoggerBase extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const MESSAGE_FORMAT = 'event="%s";address="%s";user="%s";message="%s"';
+    public const MESSAGE_FORMAT = 'event="%s";address="%s";user="%s";message="%s"';
     /**
      * @var Logger
      */
-    protected $logger;
+    protected Logger $logger;
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
     /**
      * @var string
      */
-    protected $events;
+    protected string $events;
     /**
      * @var Language
      */
-    protected $language;
+    protected Language $language;
 
     /**
      * Evento de actualización
@@ -72,7 +70,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function updateEvent(string $eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event): void
     {
         $this->language->setAppLocales();
 
@@ -103,16 +101,17 @@ abstract class LoggerBase extends Provider implements EventReceiver
     }
 
     /**
-     * @param $message
-     * @param $address
-     * @param $user
+     * @param string $message
+     * @param string $address
+     * @param string $user
      *
      * @return array
      */
     final protected function formatContext(
         string $message,
         string $address,
-        string $user): array
+        string $user
+    ): array
     {
         return [
             'message' => trim($message),
@@ -123,19 +122,16 @@ abstract class LoggerBase extends Provider implements EventReceiver
     }
 
     /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->language = $dic->get(Language::class);
         $this->request = $dic->get(Request::class);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
-        if (empty($configEvents)) {
+        if (count($configEvents) === 0) {
             $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));

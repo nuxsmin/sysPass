@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -29,6 +29,7 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Services\Account\AccountRequest;
@@ -49,30 +50,12 @@ abstract class CsvImportBase
 {
     use ImportTrait;
 
-    /**
-     * @var int
-     */
-    protected $numFields = 7;
-    /**
-     * @var array
-     */
-    protected $mapFields = [];
-    /**
-     * @var FileImport
-     */
-    protected $fileImport;
-    /**
-     * @var EventDispatcher
-     */
+    protected int $numFields = 7;
+    protected array $mapFields = [];
+    protected FileImport $fileImport;
     protected $eventDispatcher;
-    /**
-     * @var array
-     */
-    protected $categories = [];
-    /**
-     * @var array
-     */
-    protected $clients = [];
+    protected array $categories = [];
+    protected array $clients = [];
 
     /**
      * ImportBase constructor.
@@ -82,7 +65,11 @@ abstract class CsvImportBase
      * @param ImportParams       $importParams
      *
      */
-    public function __construct(ContainerInterface $dic, FileImport $fileImport, ImportParams $importParams)
+    public function __construct(
+        ContainerInterface $dic,
+        FileImport         $fileImport,
+        ImportParams       $importParams
+    )
     {
         $this->fileImport = $fileImport;
         $this->importParams = $importParams;
@@ -97,7 +84,7 @@ abstract class CsvImportBase
     /**
      * @param int $numFields
      */
-    public function setNumFields($numFields)
+    public function setNumFields(int $numFields): void
     {
         $this->numFields = $numFields;
     }
@@ -105,9 +92,14 @@ abstract class CsvImportBase
     /**
      * @param array $mapFields
      */
-    public function setMapFields($mapFields)
+    public function setMapFields(array $mapFields): void
     {
         $this->mapFields = $mapFields;
+    }
+
+    public function getEventDispatcher(): EventDispatcher
+    {
+        return $this->eventDispatcher;
     }
 
     /**
@@ -116,7 +108,7 @@ abstract class CsvImportBase
      * @throws ImportException
      * @throws FileException
      */
-    protected function processAccounts()
+    protected function processAccounts(): void
     {
         $line = 0;
 
@@ -130,13 +122,21 @@ abstract class CsvImportBase
             if ($numfields !== $this->numFields) {
                 throw new ImportException(
                     sprintf(__('Wrong number of fields (%d)'), $numfields),
-                    ImportException::ERROR,
+                    SPException::ERROR,
                     sprintf(__('Please, check the CSV file format in line %s'), $line)
                 );
             }
 
             // Asignar los valores del array a variables
-            list($accountName, $clientName, $categoryName, $url, $login, $password, $notes) = $fields;
+            [
+                $accountName,
+                $clientName,
+                $categoryName,
+                $url,
+                $login,
+                $password,
+                $notes
+            ] = $fields;
 
             try {
                 if (empty($clientName) || empty($categoryName)) {
@@ -144,8 +144,12 @@ abstract class CsvImportBase
                 }
 
                 // Obtener los ids de cliente y categoría
-                $clientId = $this->addClient(new ClientData(null, $clientName));
-                $categoryId = $this->addCategory(new CategoryData(null, $categoryName));
+                $clientId = $this->addClient(
+                    new ClientData(null, $clientName)
+                );
+                $categoryId = $this->addCategory(
+                    new CategoryData(null, $categoryName)
+                );
 
                 // Crear la nueva cuenta
                 $accountRequest = new AccountRequest();
@@ -159,7 +163,8 @@ abstract class CsvImportBase
 
                 $this->addAccount($accountRequest);
 
-                $this->eventDispatcher->notifyEvent('run.import.csv.process.account',
+                $this->eventDispatcher->notifyEvent(
+                    'run.import.csv.process.account',
                     new Event($this, EventMessage::factory()
                         ->addDetail(__u('Account imported'), $accountName)
                         ->addDetail(__u('Client'), $clientName))
@@ -167,7 +172,8 @@ abstract class CsvImportBase
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception',
+                $this->eventDispatcher->notifyEvent(
+                    'exception',
                     new Event($e, EventMessage::factory()
                         ->addDetail(__u('Error while importing the account'), $accountName)
                         ->addDetail(__u('Error while processing line'), $line))
@@ -180,7 +186,7 @@ abstract class CsvImportBase
         if ($line === 0) {
             throw new ImportException(
                 sprintf(__('Wrong number of fields (%d)'), 0),
-                ImportException::ERROR,
+                SPException::ERROR,
                 sprintf(__('Please, check the CSV file format in line %s'), 0)
             );
         }

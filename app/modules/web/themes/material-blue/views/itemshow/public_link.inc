@@ -1,13 +1,12 @@
 <?php
 /**
- * @var PublicLinkListData $publicLink
- * @var ThemeIcons         $icons
- * @var ConfigData         $configData
- * @var callable           $_getvar
- * @var Template           $this
+ * @var PublicLinkListData             $publicLink
+ * @var ThemeIcons                     $icons
+ * @var \SP\Config\ConfigDataInterface $configData
+ * @var callable                       $_getvar
+ * @var Template                       $this
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\PublicLinkListData;
 use SP\Mvc\View\Components\SelectItem;

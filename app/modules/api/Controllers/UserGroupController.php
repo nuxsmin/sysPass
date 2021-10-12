@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -44,15 +44,12 @@ use SP\Services\UserGroup\UserGroupService;
  */
 final class UserGroupController extends ControllerBase
 {
-    /**
-     * @var UserGroupService
-     */
-    private $userGroupService;
+    private ?UserGroupService $userGroupService = null;
 
     /**
      * viewAction
      */
-    public function viewAction()
+    public function viewAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::GROUP_VIEW);
@@ -60,14 +57,20 @@ final class UserGroupController extends ControllerBase
             $id = $this->apiService->getParamInt('id', true);
             $userGroupData = $this->userGroupService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.userGroup',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Group viewed'))
-                    ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'show.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Group viewed'))
+                        ->addDetail(__u('Name'), $userGroupData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id));
+            $this->returnResponse(
+                ApiResponse::makeSuccess($userGroupData, $id)
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -78,7 +81,7 @@ final class UserGroupController extends ControllerBase
     /**
      * createAction
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::GROUP_CREATE);
@@ -90,14 +93,22 @@ final class UserGroupController extends ControllerBase
 
             $id = $this->userGroupService->create($userGroupData);
 
-            $this->eventDispatcher->notifyEvent('create.userGroup',
+            $this->eventDispatcher->notifyEvent(
+                'create.userGroup',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group added'))
                     ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id))
+                    ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group added')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $userGroupData,
+                    $id,
+                    __('Group added')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -108,7 +119,7 @@ final class UserGroupController extends ControllerBase
     /**
      * editAction
      */
-    public function editAction()
+    public function editAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::GROUP_EDIT);
@@ -121,15 +132,25 @@ final class UserGroupController extends ControllerBase
 
             $this->userGroupService->update($userGroupData);
 
-            $this->eventDispatcher->notifyEvent('edit.userGroup',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Group updated'))
-                    ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $userGroupData->getId())
-                    ->addExtra('userGroupId', $userGroupData->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Group updated'))
+                        ->addDetail(__u('Name'), $userGroupData->getName())
+                        ->addDetail('ID', $userGroupData->getId())
+                        ->addExtra('userGroupId', $userGroupData->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $userGroupData,
+                    $userGroupData->getId(),
+                    __('Group updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -140,7 +161,7 @@ final class UserGroupController extends ControllerBase
     /**
      * deleteAction
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::GROUP_DELETE);
@@ -151,15 +172,25 @@ final class UserGroupController extends ControllerBase
 
             $this->userGroupService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.userGroup',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Group deleted'))
-                    ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id)
-                    ->addExtra('userGroupId', $id))
+            $this->eventDispatcher->notifyEvent(
+                'delete.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Group deleted'))
+                        ->addDetail(__u('Name'), $userGroupData->getName())
+                        ->addDetail('ID', $id)
+                        ->addExtra('userGroupId', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $userGroupData,
+                    $id,
+                    __('Group deleted')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -170,7 +201,7 @@ final class UserGroupController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::GROUP_SEARCH);
@@ -179,9 +210,16 @@ final class UserGroupController extends ControllerBase
             $itemSearchData->setSeachString($this->apiService->getParamString('text'));
             $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
 
-            $this->eventDispatcher->notifyEvent('search.userGroup', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'search.userGroup',
+                new Event($this)
+            );
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $this->userGroupService->search($itemSearchData)->getDataAsArray()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -190,11 +228,9 @@ final class UserGroupController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userGroupService = $this->dic->get(UserGroupService::class);
         $this->apiService->setHelpClass(TagHelp::class);

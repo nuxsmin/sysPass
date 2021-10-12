@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Mail;
@@ -30,6 +30,7 @@ use SP\Bootstrap;
 use SP\Core\AppInfoInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\MailMessage;
 use SP\Html\Html;
 use SP\Providers\Mail\MailParams;
@@ -45,23 +46,18 @@ use SP\Services\ServiceException;
  */
 final class MailService extends Service
 {
-    /**
-     * @var PHPMailer
-     */
-    protected $mailer;
+    protected ?PHPMailer $mailer = null;
 
     /**
      * Checks mail params by sending a test email
      *
-     * @param MailParams $mailParams
-     * @param string     $to
-     *
      * @throws ServiceException
      */
-    public function check(MailParams $mailParams, $to)
+    public function check(MailParams $mailParams, string $to): void
     {
         try {
-            $mailer = $this->dic->get(MailProvider::class)->getMailer($mailParams);
+            $mailer = $this->dic->get(MailProvider::class)
+                ->getMailer($mailParams);
 
             $mailMessage = new MailMessage();
             $mailMessage->setTitle(__u('Mail test'));
@@ -76,11 +72,14 @@ final class MailService extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw new ServiceException(
                 __u('Error while sending the email'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
                 $e);
@@ -89,15 +88,17 @@ final class MailService extends Service
 
     /**
      * Devolver el pie del email con la firma de la aplicación
-     *
-     * @return array
      */
-    protected function getEmailFooter()
+    protected function getEmailFooter(): array
     {
         return [
             '',
             '--',
-            sprintf('%s - %s', AppInfoInterface::APP_NAME, AppInfoInterface::APP_DESC),
+            sprintf(
+                '%s - %s',
+                AppInfoInterface::APP_NAME,
+                AppInfoInterface::APP_DESC
+            ),
             Html::anchorText(Bootstrap::$WEBURI)
         ];
     }
@@ -107,9 +108,13 @@ final class MailService extends Service
      *
      * @return string
      */
-    protected function getSubjectForAction($action)
+    protected function getSubjectForAction($action): string
     {
-        return sprintf('%s - %s', AppInfoInterface::APP_NAME, $action);
+        return sprintf(
+            '%s - %s',
+            AppInfoInterface::APP_NAME,
+            $action
+        );
     }
 
     /**
@@ -117,9 +122,10 @@ final class MailService extends Service
      * @param array|string $to
      * @param MailMessage  $mailMessage
      *
-     * @throws ServiceException
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \SP\Services\ServiceException
      */
-    public function send($subject, $to, MailMessage $mailMessage)
+    public function send(string $subject, $to, MailMessage $mailMessage): void
     {
         $this->mailer->isHTML();
 
@@ -132,7 +138,8 @@ final class MailService extends Service
         }
 
         $this->mailer->Subject = $this->getSubjectForAction($subject);
-        $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())->composeHtml();
+        $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())
+            ->composeHtml();
 
         $this->sendMail();
     }
@@ -140,7 +147,7 @@ final class MailService extends Service
     /**
      * @throws ServiceException
      */
-    private function sendMail()
+    private function sendMail(): void
     {
         try {
             $this->mailer->send();
@@ -148,27 +155,40 @@ final class MailService extends Service
             $this->eventDispatcher->notifyEvent('send.mail',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Email sent'))
-                    ->addDetail(__u('Recipient'), implode(',', array_map(function ($value) {
-                        return $value[0];
-                    }, $this->mailer->getToAddresses()))))
+                    ->addDetail(
+                        __u('Recipient'),
+                        implode(
+                            ',',
+                            array_map(
+                                static function ($value) {
+                                    return $value[0];
+                                },
+                                $this->mailer->getToAddresses()
+                            )
+                        )
+                    ))
             );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw new ServiceException(__u('Error while sending the email'));
         }
     }
 
     /**
-     * @param string      $subject
-     * @param array       $to
-     * @param MailMessage $mailMessage
-     *
-     * @throws ServiceException
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \SP\Services\ServiceException
      */
-    public function sendBatch($subject, array $to, MailMessage $mailMessage)
+    public function sendBatch(
+        string      $subject,
+        array       $to,
+        MailMessage $mailMessage
+    ): void
     {
         $this->mailer->isHTML();
 
@@ -177,7 +197,8 @@ final class MailService extends Service
         }
 
         $this->mailer->Subject = $this->getSubjectForAction($subject);
-        $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())->composeHtml();
+        $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())
+            ->composeHtml();
 
         $this->sendMail();
     }
@@ -185,7 +206,7 @@ final class MailService extends Service
     /**
      * @throws MailProviderException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         if ($this->config->getConfigData()->isMailEnabled()) {
             $this->mailer = $this->dic->get(MailProvider::class)
@@ -193,10 +214,7 @@ final class MailService extends Service
         }
     }
 
-    /**
-     * @return MailParams
-     */
-    public function getParamsFromConfig()
+    public function getParamsFromConfig(): MailParams
     {
         $configData = $this->config->getConfigData();
 

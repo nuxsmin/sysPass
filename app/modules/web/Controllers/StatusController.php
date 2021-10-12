@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use SP\Core\AppInfoInterface;
@@ -43,14 +41,15 @@ final class StatusController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    const TAG_VERSION_REGEX = '/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/';
+    private const TAG_VERSION_REGEX = '/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/';
 
     /**
      * checkReleaseAction
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function checkReleaseAction(): bool
     {
@@ -63,38 +62,41 @@ final class StatusController extends SimpleControllerBase
             if ($request->getStatusCode() === 200
                 && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
             ) {
-                $requestData = json_decode($request->getBody());
+                $requestData = json_decode(
+                    $request->getBody(),
+                    false,
+                    512,
+                    JSON_THROW_ON_ERROR
+                );
 
-                if ($requestData !== null && !isset($requestData->message)) {
-                    // $updateInfo[0]->tag_name
-                    // $updateInfo[0]->name
-                    // $updateInfo[0]->body
-                    // $updateInfo[0]->tarball_url
-                    // $updateInfo[0]->zipball_url
-                    // $updateInfo[0]->published_at
-                    // $updateInfo[0]->html_url
+                if ($requestData !== null && !isset($requestData->message)
+                    && preg_match(self::TAG_VERSION_REGEX, $requestData->tag_name, $matches)) {
+                    $pubVersion = $matches['major'] .
+                        $matches['minor'] .
+                        $matches['patch'] .
+                        '.' .
+                        $matches['build'];
 
-                    if (preg_match(self::TAG_VERSION_REGEX, $requestData->tag_name, $matches)) {
-                        $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
-
-                        if (VersionUtil::checkVersion(VersionUtil::getVersionStringNormalized(), $pubVersion)) {
-                            return $this->returnJsonResponseData([
-                                'version' => $requestData->tag_name,
-                                'url' => $requestData->html_url,
-                                'title' => $requestData->name,
-                                'description' => $requestData->body,
-                                'date' => $requestData->published_at
-                            ]);
-                        }
-
-                        return $this->returnJsonResponseData([]);
+                    if (VersionUtil::checkVersion(VersionUtil::getVersionStringNormalized(), $pubVersion)) {
+                        return $this->returnJsonResponseData([
+                            'version' => $requestData->tag_name,
+                            'url' => $requestData->html_url,
+                            'title' => $requestData->name,
+                            'description' => $requestData->body,
+                            'date' => $requestData->published_at
+                        ]);
                     }
+
+                    return $this->returnJsonResponseData([]);
                 }
 
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Version unavailable'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Version unavailable')
+            );
         } catch (GuzzleException $e) {
             processException($e);
 
@@ -108,8 +110,9 @@ final class StatusController extends SimpleControllerBase
      * checkNoticesAction
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function checkNoticesAction(): bool
     {
@@ -122,7 +125,12 @@ final class StatusController extends SimpleControllerBase
             if ($request->getStatusCode() === 200
                 && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
             ) {
-                $requestData = json_decode($request->getBody());
+                $requestData = json_decode(
+                    $request->getBody(),
+                    false,
+                    512,
+                    JSON_THROW_ON_ERROR
+                );
 
                 if ($requestData !== null && !isset($requestData->message)) {
                     $notices = [];
@@ -141,7 +149,10 @@ final class StatusController extends SimpleControllerBase
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notifications not available'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Notifications not available')
+            );
         } catch (GuzzleException $e) {
             processException($e);
 
@@ -154,7 +165,7 @@ final class StatusController extends SimpleControllerBase
     /**
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         // TODO: Implement initialize() method.
     }

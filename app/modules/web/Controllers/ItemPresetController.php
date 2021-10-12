@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -61,10 +62,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var ItemPresetService
-     */
-    protected $itemPresetService;
+    protected ?ItemPresetService $itemPresetService = null;
 
     /**
      * View action
@@ -72,14 +70,18 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Display Value'));
@@ -87,13 +89,19 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.itemPreset', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.itemPreset',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -113,11 +121,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @throws NotFoundException
      * @throws QueryException
      */
-    protected function setViewData(?int $id = null, ?string $type = null)
+    protected function setViewData(?int $id = null, ?string $type = null): void
     {
         $this->view->addTemplate('item_preset', 'itemshow');
 
-        $itemPresetData = $id ? $this->itemPresetService->getById($id) : new ItemPresetData();
+        $itemPresetData = $id
+            ? $this->itemPresetService->getById($id)
+            : new ItemPresetData();
 
         $itemPresetHelper = $this->dic->get(ItemPresetHelper::class);
         $itemPresetHelper->setCommon($itemPresetData);
@@ -142,7 +152,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
         }
 
         $this->view->assign('preset', $itemPresetData);
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -162,15 +175,22 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
+     * @throws \JsonException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -186,7 +206,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $grid = $this->dic->get(ItemPresetGrid::class);
 
@@ -198,14 +221,18 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $args = func_get_args();
@@ -221,13 +248,19 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
             $this->setViewData(null, $type);
 
-            $this->eventDispatcher->notifyEvent('show.itemPreset.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.itemPreset.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -239,14 +272,18 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Value'));
@@ -255,13 +292,19 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.itemPreset.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.itemPreset.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -273,42 +316,62 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->itemPresetService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.itemPreset',
-                    new Event($this,
+                $this->eventDispatcher->notifyEvent(
+                    'delete.itemPreset',
+                    new Event(
+                        $this,
                         EventMessage::factory()
-                            ->addDescription(__u('Values deleted')))
+                            ->addDescription(__u('Values deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Values deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Values deleted')
+                );
             }
 
             $this->itemPresetService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.itemPreset',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'delete.itemPreset',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Value deleted'))
-                        ->addDetail(__u('ID'), $id))
+                        ->addDetail(__u('ID'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value deleted'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Value deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -316,38 +379,51 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new ItemsPresetForm($this->dic);
-            $form->validate(Acl::ITEMPRESET_CREATE);
+            $form->validate(ActionsInterface::ITEMPRESET_CREATE);
 
             $itemData = $form->getItemData();
 
             $id = $this->itemPresetService->create($itemData);
 
-            $this->eventDispatcher->notifyEvent('create.itemPreset',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'create.itemPreset',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Value created'))
                         ->addDetail(__u('Type'), $itemData->getItemPresetData()->getType())
-                        ->addDetail(__u('ID'), $id))
+                        ->addDetail(__u('ID'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value created'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Value created')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -359,14 +435,18 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ITEMPRESET_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new ItemsPresetForm($this->dic, $id);
@@ -376,21 +456,30 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
 
             $this->itemPresetService->update($itemData);
 
-            $this->eventDispatcher->notifyEvent('edit.itemPreset',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'edit.itemPreset',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Value updated'))
                         ->addDetail(__u('Type'), $itemData->getItemPresetData()->getType())
-                        ->addDetail(__u('ID'), $id))
+                        ->addDetail(__u('ID'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Value updated')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -404,7 +493,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

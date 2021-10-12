@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -32,7 +32,7 @@ namespace SP\Providers\Auth\Ldap;
  */
 interface LdapTypeInterface
 {
-    const LDAP_STD = 1;
-    const LDAP_ADS = 2;
-    const LDAP_AZURE = 3;
+    public const LDAP_STD = 1;
+    public const LDAP_ADS = 2;
+    public const LDAP_AZURE = 3;
 }

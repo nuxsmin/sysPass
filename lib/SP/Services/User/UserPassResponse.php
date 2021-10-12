@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -31,96 +31,52 @@ namespace SP\Services\User;
  */
 final class UserPassResponse
 {
-    /**
-     * @var int
-     */
-    private $status;
-    /**
-     * @var string
-     */
-    private $cryptMasterPass;
-    /**
-     * @var string
-     */
-    private $cryptSecuredKey;
-    /**
-     * @var string
-     */
-    private $clearMasterPass;
+    private int $status;
+    private ?string $cryptMasterPass = null;
+    private ?string $cryptSecuredKey = null;
+    private ?string $clearMasterPass = null;
 
     /**
      * UserPassResponse constructor.
-     *
-     * @param int    $status
-     * @param string $clearUserMPass
      */
-    public function __construct($status, $clearUserMPass = null)
+    public function __construct(int $status, ?string $clearUserMPass = null)
     {
         $this->status = $status;
         $this->clearMasterPass = $clearUserMPass;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
-    public function setStatus($status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return string
-     */
-    public function getCryptMasterPass()
+    public function getCryptMasterPass(): ?string
     {
         return $this->cryptMasterPass;
     }
 
-    /**
-     * @param string $cryptMasterPass
-     */
-    public function setCryptMasterPass($cryptMasterPass)
+    public function setCryptMasterPass(string $cryptMasterPass): void
     {
         $this->cryptMasterPass = $cryptMasterPass;
     }
 
-    /**
-     * @return string
-     */
-    public function getCryptSecuredKey()
+    public function getCryptSecuredKey(): ?string
     {
         return $this->cryptSecuredKey;
     }
 
-    /**
-     * @param string $cryptSecuredKey
-     */
-    public function setCryptSecuredKey($cryptSecuredKey)
+    public function setCryptSecuredKey(string $cryptSecuredKey): void
     {
         $this->cryptSecuredKey = $cryptSecuredKey;
     }
 
-    /**
-     * @return string
-     */
-    public function getClearMasterPass()
+    public function getClearMasterPass(): ?string
     {
         return $this->clearMasterPass;
-    }
-
-    /**
-     * @param string $clearMasterPass
-     */
-    public function setClearMasterPass($clearMasterPass)
-    {
-        $this->clearMasterPass = $clearMasterPass;
     }
 }

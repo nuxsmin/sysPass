@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -35,8 +35,6 @@ final class VersionUtil
 {
     /**
      * Devolver versión normalizada en cadena
-     *
-     * @return string
      */
     public static function getVersionStringNormalized(): string
     {
@@ -68,8 +66,8 @@ final class VersionUtil
             return version_compare($currentVersion, $upgradeableVersion) === -1;
         }
 
-        list($currentVersion, $build) = explode('.', $currentVersion, 2);
-        list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeableVersion, 2);
+        [$currentVersion, $build] = explode('.', $currentVersion, 2);
+        [$upgradeVersion, $upgradeBuild] = explode('.', $upgradeableVersion, 2);
 
         $versionRes = (int)$currentVersion < (int)$upgradeVersion;
 
@@ -81,14 +79,12 @@ final class VersionUtil
      * Return a normalized version string to be compared
      *
      * @param string|array $versionIn
-     *
-     * @return string
      */
     public static function normalizeVersionForCompare($versionIn): string
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {
-                list($version, $build) = explode('.', $versionIn);
+                [$version, $build] = explode('.', $versionIn);
             } elseif (is_array($versionIn) && count($versionIn) === 4) {
                 $version = implode('', array_slice($versionIn, 0, 3));
                 $build = $versionIn[3];
@@ -109,15 +105,15 @@ final class VersionUtil
     }
 
     /**
-     * @param string $version
-     *
      * @return float|int
      */
     public static function versionToInteger(string $version)
     {
         $intVersion = 0;
 
-        foreach (str_split(str_replace('.', '', $version)) as $key => $value) {
+        $strSplit = str_split(str_replace('.', '', $version));
+
+        foreach ($strSplit as $key => $value) {
             $intVersion += (int)$value * (10 ** (3 - $key));
         }
 
@@ -131,7 +127,7 @@ final class VersionUtil
      *
      * @return array con el número de versión
      */
-    public static function getVersionArray($retBuild = false): array
+    public static function getVersionArray(bool $retBuild = false): array
     {
         $version = array_values(Installer::VERSION);
 
@@ -146,8 +142,6 @@ final class VersionUtil
 
     /**
      * Devolver versión normalizada en array
-     *
-     * @return array
      */
     public static function getVersionArrayNormalized(): array
     {

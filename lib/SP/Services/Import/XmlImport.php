@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
 
-use DI\Container;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
@@ -40,18 +37,9 @@ defined('APP_ROOT') || die();
  */
 final class XmlImport implements ImportInterface
 {
-    /**
-     * @var FileImport
-     */
-    protected $xmlFileImport;
-    /**
-     * @var ImportParams
-     */
-    protected $importParams;
-    /**
-     * @var Container
-     */
-    private $dic;
+    protected XmlFileImport $xmlFileImport;
+    protected ImportParams $importParams;
+    private ContainerInterface $dic;
 
     /**
      * XmlImport constructor.
@@ -60,7 +48,11 @@ final class XmlImport implements ImportInterface
      * @param XmlFileImport      $xmlFileImport
      * @param ImportParams       $importParams
      */
-    public function __construct(ContainerInterface $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
+    public function __construct(
+        ContainerInterface $dic,
+        XmlFileImport      $xmlFileImport,
+        ImportParams       $importParams
+    )
     {
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;
@@ -70,11 +62,10 @@ final class XmlImport implements ImportInterface
     /**
      * Iniciar la importación desde XML.
      *
-     * @return ImportInterface
      * @throws ImportException
      * @throws SPException
      */
-    public function doImport()
+    public function doImport(): ImportInterface
     {
         $format = $this->xmlFileImport->detectXMLFormat();
 
@@ -82,20 +73,26 @@ final class XmlImport implements ImportInterface
     }
 
     /**
-     * @param $format
+     * @param string $format
      *
      * @return KeepassImport|SyspassImport
-     * @throws ImportException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \SP\Services\Import\ImportException
      */
-    protected function selectImportType($format)
+    protected function selectImportType(string $format)
     {
         switch ($format) {
             case 'syspass':
-                return new SyspassImport($this->dic, $this->xmlFileImport, $this->importParams);
+                return new SyspassImport(
+                    $this->dic,
+                    $this->xmlFileImport,
+                    $this->importParams
+                );
             case 'keepass':
-                return new KeepassImport($this->dic, $this->xmlFileImport, $this->importParams);
+                return new KeepassImport(
+                    $this->dic,
+                    $this->xmlFileImport,
+                    $this->importParams
+                );
         }
 
         throw new ImportException(__u('Format not detected'));
@@ -104,7 +101,7 @@ final class XmlImport implements ImportInterface
     /**
      * @throws ImportException
      */
-    public function getCounter()
+    public function getCounter(): int
     {
         throw new ImportException(__u('Not implemented'));
     }

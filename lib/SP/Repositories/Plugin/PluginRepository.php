@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Plugin;
@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Plugin
  */
-final class PluginRepository extends Repository implements RepositoryItemInterface
+final class PluginRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -54,7 +54,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): QueryResult
     {
         $query = /** @lang SQL */
             'INSERT INTO Plugin SET `name` = ?, `data` = ?, enabled = ?, available = ?';
@@ -81,7 +81,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $query = /** @lang SQL */
             'UPDATE Plugin
@@ -117,7 +117,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -144,7 +144,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -171,9 +171,9 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -205,9 +205,9 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -222,14 +222,13 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws SPException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Plugin WHERE id = ? LIMIT 1');
@@ -246,7 +245,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -258,7 +257,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      *
      * @return void
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -270,7 +269,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      *
      * @return void
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -284,7 +283,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PluginModel::class);
@@ -292,7 +291,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData->setFrom('Plugin');
         $queryData->setOrder('name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -316,7 +315,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -339,14 +338,14 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Cambiar el estado del plugin
      *
-     * @param $id
-     * @param $enabled
+     * @param int  $id
+     * @param bool $enabled
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function toggleEnabled($id, $enabled)
+    public function toggleEnabled(int $id, bool $enabled): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE id = ? LIMIT 1');
@@ -359,14 +358,14 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Cambiar el estado del plugin
      *
-     * @param $name
-     * @param $enabled
+     * @param string $name
+     * @param bool   $enabled
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function toggleEnabledByName($name, $enabled)
+    public function toggleEnabledByName(string $name, bool $enabled): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE name = ? LIMIT 1');
@@ -379,14 +378,14 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Cambiar el estado del plugin
      *
-     * @param $id
-     * @param $available
+     * @param int  $id
+     * @param bool $available
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function toggleAvailable($id, $available)
+    public function toggleAvailable(int $id, bool $available): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE id = ? LIMIT 1');
@@ -399,14 +398,14 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Cambiar el estado del plugin
      *
-     * @param $name
-     * @param $available
+     * @param string $name
+     * @param bool   $available
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function toggleAvailableByName($name, $available)
+    public function toggleAvailableByName(string $name, bool $available): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE `name` = ? LIMIT 1');
@@ -425,7 +424,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function resetById($id)
+    public function resetById(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET `data` = NULL WHERE id = ? LIMIT 1');
@@ -442,7 +441,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getEnabled()
+    public function getEnabled(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemData::class);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html;
@@ -41,52 +41,35 @@ final class Minify
     /**
      * Constantes para tipos de archivos
      */
-    const FILETYPE_JS = 1;
-    const FILETYPE_CSS = 2;
-    const OFFSET = 3600 * 24 * 30;
-    /**
-     * @var Klein
-     */
-    protected $router;
+    public const FILETYPE_JS = 1;
+    public const FILETYPE_CSS = 2;
+    public const OFFSET = 3600 * 24 * 30;
+
+    protected Klein $router;
 
     /**
      * Array con los archivos a procesar
-     *
-     * @var array
      */
-    private $files = [];
+    private array $files = [];
     /**
      * Tipos de archivos a procesar
-     *
-     * @var int
      */
-    private $type = 0;
+    private int $type = 0;
     /**
      * Base relativa de búsqueda de los archivos
-     *
-     * @var string
      */
-    private $base = '';
+    private string $base = '';
 
-    /**
-     * Minify constructor.
-     *
-     * @param Klein $router
-     */
     public function __construct(Klein $router)
     {
         $this->router = $router;
     }
 
-    /**
-     * @param string $path
-     * @param bool   $checkPath
-     *
-     * @return $this
-     */
-    public function setBase(string $path, $checkPath = false): Minify
+    public function setBase(string $path, bool $checkPath = false): Minify
     {
-        $this->base = $checkPath === true ? Request::getSecureAppPath($path) : $path;
+        $this->base = $checkPath === true
+            ? Request::getSecureAppPath($path) :
+            $path;
 
         return $this;
     }
@@ -101,7 +84,7 @@ final class Minify
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function getMinified($disableMinify = false)
+    public function getMinified(bool $disableMinify = false): void
     {
         if (count($this->files) === 0) {
             return;
@@ -119,16 +102,14 @@ final class Minify
                 logger('URL:' . $file['name']);
 
 //                    $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
-            } else {
-                if ($file['min'] === true && $disableMinify === false) {
-                    $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
+            } else if ($file['min'] === true && $disableMinify === false) {
+                $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
 
-                    if ($this->type === self::FILETYPE_JS) {
-                        $data .= $this->jsCompress(file_get_contents($filePath));
-                    }
-                } else {
-                    $data .= PHP_EOL . '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
+                if ($this->type === self::FILETYPE_JS) {
+                    $data .= $this->jsCompress(file_get_contents($filePath));
                 }
+            } else {
+                $data .= PHP_EOL . '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
             }
         }
 
@@ -138,7 +119,7 @@ final class Minify
     /**
      * Sets HTTP headers
      */
-    protected function setHeaders()
+    protected function setHeaders(): void
     {
         $response = $this->router->response();
         $headers = $this->router->request()->headers();
@@ -207,18 +188,15 @@ final class Minify
         return str_replace(["\r\n", "\r", "\n", "\t"], '', preg_replace($regexReplace, '', $buffer));
     }
 
-    /**
-     * @param string $files
-     * @param bool   $minify
-     *
-     * @return Minify
-     */
-    public function addFilesFromString(string $files, bool $minify = true): Minify
+    public function addFilesFromString(
+        string $files,
+        bool   $minify = true
+    ): Minify
     {
         if (strrpos($files, ',')) {
-            $files = explode(',', $files);
+            $filesList = explode(',', $files);
 
-            foreach ($files as $filename) {
+            foreach ($filesList as $filename) {
                 $this->addFile($filename, $minify);
             }
         } else {
@@ -235,11 +213,11 @@ final class Minify
      * @param bool        $minify Si es necesario reducir
      * @param string|null $base
      *
-     * @return $this
+     * @return \SP\Html\Minify
      */
     public function addFile(
-        string $file,
-        bool $minify = true,
+        string  $file,
+        bool    $minify = true,
         ?string $base = null
     ): Minify
     {
@@ -267,22 +245,12 @@ final class Minify
 
     /**
      * Comprobar si es necesario reducir
-     *
-     * @param string $file El nombre del archivo
-     *
-     * @return bool
      */
     private function needsMinify(string $file): bool
     {
         return !preg_match('/\.min|pack\.css|js/', $file);
     }
 
-    /**
-     * @param array $files
-     * @param bool  $minify
-     *
-     * @return Minify
-     */
     public function addFiles(array $files, bool $minify = true): Minify
     {
         foreach ($files as $filename) {
@@ -292,11 +260,7 @@ final class Minify
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @param bool   $minify
-     */
-    protected function processFile(string $file, bool $minify = true)
+    protected function processFile(string $file, bool $minify = true): void
     {
         $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
 
@@ -315,10 +279,6 @@ final class Minify
 
     /**
      * Añadir un recurso desde URL
-     *
-     * @param string $url
-     *
-     * @return $this
      */
     public function addUrl(string $url): Minify
     {
@@ -335,14 +295,10 @@ final class Minify
 
     /**
      * Establecer el tipo de recurso a procesar
-     *
-     * @param int $type
-     *
-     * @return $this
      */
     public function setType(int $type): Minify
     {
-        $this->type = (int)$type;
+        $this->type = $type;
 
         return $this;
     }

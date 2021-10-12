@@ -29,13 +29,16 @@ use SP\Bootstrap;
 defined('APP_ROOT') || die();
 
 // Core PATHS
-define('DS', DIRECTORY_SEPARATOR);
-define('BASE_PATH', __DIR__);
-define('APP_PATH', APP_ROOT . DS . 'app');
-define('VENDOR_PATH', APP_ROOT . DS . 'vendor');
-define('SQL_PATH', APP_ROOT . DS . 'schemas');
-define('PUBLIC_PATH', APP_ROOT . DS . 'public');
-define('XML_SCHEMA', SQL_PATH . DS . 'syspass.xsd');
+const DS = DIRECTORY_SEPARATOR;
+const BASE_PATH = __DIR__;
+const APP_PATH = APP_ROOT . DS . 'app';
+const VENDOR_PATH = APP_ROOT . DS . 'vendor';
+const SQL_PATH = APP_ROOT . DS . 'schemas';
+const PUBLIC_PATH = APP_ROOT . DS . 'public';
+const XML_SCHEMA = SQL_PATH . DS . 'syspass.xsd';
+const RESOURCES_PATH = APP_PATH . DS . 'resources';
+const MODULES_PATH = APP_PATH . DS . 'modules';
+const LOCALES_PATH = APP_PATH . DS . 'locales';
 
 // Start tracking the memory used
 $memInit = memory_get_usage();
@@ -53,9 +56,11 @@ define('DEBUG', getenv('DEBUG') || false);
 define('CONFIG_PATH',
     getenv('CONFIG_PATH')
         ?: APP_PATH . DS . 'config');
-define('RESOURCES_PATH', APP_PATH . DS . 'resources');
+
 
 // Setup config files
+const OLD_CONFIG_FILE = CONFIG_PATH . DS . 'config.php';
+
 define('CONFIG_FILE',
     getenv('CONFIG_FILE')
         ?: CONFIG_PATH . DS . 'config.xml');
@@ -65,15 +70,12 @@ define('ACTIONS_FILE',
 define('MIMETYPES_FILE',
     getenv('MIMETYPES_FILE')
         ?: RESOURCES_PATH . DS . 'mime.xml');
-define('OLD_CONFIG_FILE', CONFIG_PATH . DS . 'config.php');
 define('LOG_FILE',
     getenv('LOG_FILE')
         ?: CONFIG_PATH . DS . 'syspass.log');
-define('LOCK_FILE', CONFIG_PATH . DS . '.lock');
+const LOCK_FILE = CONFIG_PATH . DS . '.lock';
 
 // Setup application paths
-define('MODULES_PATH', APP_PATH . DS . 'modules');
-define('LOCALES_PATH', APP_PATH . DS . 'locales');
 define('BACKUP_PATH',
     getenv('BACKUP_PATH')
         ?: APP_PATH . DS . 'backup');

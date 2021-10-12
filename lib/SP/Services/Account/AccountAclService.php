@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
 
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\QueryException;
@@ -48,34 +49,19 @@ final class AccountAclService extends Service
     /**
      * ACL's file base path
      */
-    const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
-    /**
-     * @var bool
-     */
-    public static $useCache = true;
-    /**
-     * @var AccountAclDto
-     */
-    private $accountAclDto;
-    /**
-     * @var AccountAcl
-     */
-    private $accountAcl;
-    /**
-     * @var Acl
-     */
-    private $acl;
-    /**
-     * @var UserLoginResponse
-     */
-    private $userData;
+    public const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
+    public static bool $useCache = true;
+    private ?AccountAclDto $accountAclDto = null;
+    private ?AccountAcl $accountAcl = null;
+    private ?Acl $acl = null;
+    private ?UserLoginResponse $userData = null;
 
     /**
      * @param $userId
      *
      * @return bool
      */
-    public static function clearAcl($userId)
+    public static function clearAcl($userId): bool
     {
         logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
@@ -105,10 +91,17 @@ final class AccountAclService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAcl($actionId, ?AccountAclDto $accountAclDto = null, $isHistory = false)
+    public function getAcl(
+        int            $actionId,
+        ?AccountAclDto $accountAclDto = null,
+        bool           $isHistory = false
+    ): AccountAcl
     {
         $this->accountAcl = new AccountAcl($actionId, $isHistory);
-        $this->accountAcl->setShowPermission(self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile()));
+        $this->accountAcl->setShowPermission(
+            self::getShowPermission($this->context->getUserData(),
+                $this->context->getUserProfile())
+        );
 
         if ($accountAclDto !== null) {
             $this->accountAclDto = $accountAclDto;
@@ -116,8 +109,10 @@ final class AccountAclService extends Service
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
             if (self::$useCache && null !== $accountAcl) {
-                $this->accountAcl->setModified(($accountAclDto->getDateEdit() > $accountAcl->getTime()
-                    || $this->userData->getLastUpdate() > $accountAcl->getTime()));
+                $this->accountAcl->setModified((
+                    $accountAclDto->getDateEdit() > $accountAcl->getTime()
+                    || $this->userData->getLastUpdate() > $accountAcl->getTime()
+                ));
 
                 if (!$this->accountAcl->isModified()) {
                     logger('Account ACL HIT');
@@ -144,7 +139,10 @@ final class AccountAclService extends Service
      *
      * @return bool
      */
-    public static function getShowPermission(UserLoginResponse $userData, ProfileData $profileData)
+    public static function getShowPermission(
+        UserLoginResponse $userData,
+        ProfileData       $profileData
+    ): bool
     {
         return $userData->getIsAdminApp()
             || $userData->getIsAdminAcc()
@@ -159,7 +157,7 @@ final class AccountAclService extends Service
      *
      * @return AccountAcl
      */
-    public function getAclFromCache($accountId, $actionId)
+    public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl
     {
         try {
             $acl = FileCache::factory($this->getCacheFileForAcl($accountId, $actionId))
@@ -181,10 +179,16 @@ final class AccountAclService extends Service
      *
      * @return string
      */
-    public function getCacheFileForAcl($accountId, $actionId)
+    public function getCacheFileForAcl(int $accountId, int $actionId): string
     {
         $userId = $this->context->getUserData()->getId();
-        return self::ACL_PATH . $userId . DIRECTORY_SEPARATOR . $accountId . DIRECTORY_SEPARATOR . md5($userId . $accountId . $actionId) . '.cache';
+        return self::ACL_PATH
+            . $userId
+            . DIRECTORY_SEPARATOR
+            . $accountId
+            . DIRECTORY_SEPARATOR
+            . md5($userId . $accountId . $actionId)
+            . '.cache';
     }
 
     /**
@@ -194,7 +198,7 @@ final class AccountAclService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function updateAcl()
+    private function updateAcl(): AccountAcl
     {
         if ($this->checkComponents()) {
             $this->makeAcl();
@@ -210,7 +214,7 @@ final class AccountAclService extends Service
     /**
      * @return bool
      */
-    private function checkComponents()
+    private function checkComponents(): bool
     {
         return null !== $this->accountAclDto;
     }
@@ -221,7 +225,7 @@ final class AccountAclService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function makeAcl()
+    private function makeAcl(): void
     {
         $this->compileAccountAccess();
         $this->accountAcl->setCompiledAccountAccess(true);
@@ -236,7 +240,7 @@ final class AccountAclService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function compileAccountAccess()
+    private function compileAccountAccess(): void
     {
         $this->accountAcl->setResultView(false);
         $this->accountAcl->setResultEdit(false);
@@ -268,9 +272,12 @@ final class AccountAclService extends Service
         $userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
 
         // Groups in whinch the user is listed in
-        $userGroups = array_map(function ($value) {
-            return (int)$value->userGroupId;
-        }, $userToUserGroupService->getGroupsForUser($this->userData->getId()));
+        $userGroups = array_map(
+            static function ($value) {
+                return (int)$value->userGroupId;
+            },
+            $userToUserGroupService->getGroupsForUser($this->userData->getId())
+        );
 
         // Check out if user groups match with account's main group
         if ($this->getUserGroupsInMainGroup($userGroups)) {
@@ -282,7 +289,11 @@ final class AccountAclService extends Service
         }
 
         // Check out if user groups match with account's secondary groups
-        $userGroupsInSecondaryUserGroups = $this->getUserGroupsInSecondaryGroups($userGroups, $this->userData->getUserGroupId());
+        $userGroupsInSecondaryUserGroups =
+            $this->getUserGroupsInSecondaryGroups(
+                $userGroups,
+                $this->userData->getUserGroupId()
+            );
 
         $this->accountAcl->setUserInGroups(count($userGroupsInSecondaryUserGroups) > 0);
 
@@ -295,15 +306,18 @@ final class AccountAclService extends Service
     /**
      * Checks if the user is listed in the account users
      *
-     * @param $userId
+     * @param int $userId
      *
      * @return array
      */
-    private function getUserInSecondaryUsers($userId)
+    private function getUserInSecondaryUsers(int $userId): array
     {
-        return array_values(array_filter($this->accountAclDto->getUsersId(), function ($value) use ($userId) {
-            return (int)$value->id === $userId;
-        }));
+        return array_values(array_filter(
+            $this->accountAclDto->getUsersId(),
+            static function ($value) use ($userId) {
+                return (int)$value->id === $userId;
+            }
+        ));
     }
 
     /**
@@ -313,10 +327,10 @@ final class AccountAclService extends Service
      *
      * @return bool
      */
-    private function getUserGroupsInMainGroup(array $userGroups)
+    private function getUserGroupsInMainGroup(array $userGroups): bool
     {
         // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
-        return in_array($this->accountAclDto->getUserGroupId(), $userGroups);
+        return in_array($this->accountAclDto->getUserGroupId(), $userGroups, true);
     }
 
     /**
@@ -326,57 +340,59 @@ final class AccountAclService extends Service
      * @param array $userGroups
      * @param int   $userGroupId
      *
-     * @return bool|array
+     * @return array
      */
-    private function getUserGroupsInSecondaryGroups(array $userGroups, $userGroupId)
+    private function getUserGroupsInSecondaryGroups(array $userGroups, int $userGroupId): array
     {
         $isAccountFullGroupAccess = $this->config->getConfigData()->isAccountFullGroupAccess();
 
         // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
-        return array_values(array_filter($this->accountAclDto->getUserGroupsId(),
-            function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
+        return array_values(array_filter(
+            $this->accountAclDto->getUserGroupsId(),
+            static function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
                 return (int)$value->id === $userGroupId
                     // o... permitir los grupos que no sean el principal del usuario?
                     || ($isAccountFullGroupAccess
                         // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
-                        && in_array((int)$value->id, $userGroups));
-            }));
+                        && in_array((int)$value->id, $userGroups, true));
+            }
+        ));
     }
 
     /**
      * compileShowAccess
      */
-    private function compileShowAccess()
+    private function compileShowAccess(): void
     {
         // Mostrar historial
-        $this->accountAcl->setShowHistory($this->acl->checkUserAccess(Acl::ACCOUNT_HISTORY_VIEW));
+        $this->accountAcl->setShowHistory($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_HISTORY_VIEW));
 
         // Mostrar lista archivos
-        $this->accountAcl->setShowFiles($this->acl->checkUserAccess(Acl::ACCOUNT_FILE));
+        $this->accountAcl->setShowFiles($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_FILE));
 
         // Mostrar acción de ver clave
-        $this->accountAcl->setShowViewPass($this->acl->checkUserAccess(Acl::ACCOUNT_VIEW_PASS));
+        $this->accountAcl->setShowViewPass($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS));
 
         // Mostrar acción de editar
-        $this->accountAcl->setShowEdit($this->acl->checkUserAccess(Acl::ACCOUNT_EDIT));
+        $this->accountAcl->setShowEdit($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT));
 
         // Mostrar acción de editar clave
-        $this->accountAcl->setShowEditPass($this->acl->checkUserAccess(Acl::ACCOUNT_EDIT_PASS));
+        $this->accountAcl->setShowEditPass($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT_PASS));
 
         // Mostrar acción de eliminar
-        $this->accountAcl->setShowDelete($this->acl->checkUserAccess(Acl::ACCOUNT_DELETE));
+        $this->accountAcl->setShowDelete($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_DELETE));
 
         // Mostrar acción de restaurar
-        $this->accountAcl->setShowRestore($this->acl->checkUserAccess(Acl::ACCOUNT_EDIT));
+        $this->accountAcl->setShowRestore($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT));
 
         // Mostrar acción de enlace público
-        $this->accountAcl->setShowLink($this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE));
+        $this->accountAcl->setShowLink($this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE));
 
         // Mostrar acción de ver cuenta
-        $this->accountAcl->setShowView($this->acl->checkUserAccess(Acl::ACCOUNT_VIEW));
+        $this->accountAcl->setShowView($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW));
 
         // Mostrar acción de copiar cuenta
-        $this->accountAcl->setShowCopy($this->acl->checkUserAccess(Acl::ACCOUNT_COPY));
+        $this->accountAcl->setShowCopy($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_COPY));
     }
 
     /**
@@ -386,7 +402,7 @@ final class AccountAclService extends Service
      *
      * @return null|FileCacheInterface
      */
-    public function saveAclInCache(AccountAcl $accountAcl)
+    public function saveAclInCache(AccountAcl $accountAcl): ?FileCacheInterface
     {
         try {
             return FileCache::factory($this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId()))
@@ -396,7 +412,7 @@ final class AccountAclService extends Service
         }
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->acl = $this->dic->get(Acl::class);
         $this->userData = $this->context->getUserData();

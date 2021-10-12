@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Client;
@@ -50,35 +50,31 @@ final class ClientService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var ClientRepository
-     */
-    protected $clientRepository;
+    protected ?ClientRepository $clientRepository = null;
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->clientRepository->search($itemSearchData);
     }
 
     /**
-     * @param int $id
-     *
-     * @return ClientData
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): ClientData
     {
-        if (($result = $this->clientRepository->getById($id))->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
+        $result = $this->clientRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException
+            (__u('Client not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
@@ -87,75 +83,78 @@ final class ClientService extends Service
     /**
      * Returns the item for given name
      *
-     * @param string $name
-     *
-     * @return ClientData
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName($name)
+    public function getByName(string $name): ClientData
     {
         if (($result = $this->clientRepository->getByName($name))->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Client not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): ClientService
     {
         if ($this->clientRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Client not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->clientRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the clients'), ServiceException::WARNING);
+        $count = $this->clientRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting the clients'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         return $this->clientRepository->create($itemData);
     }
 
     /**
-     * @param $itemData
+     * @param ClientData $itemData
      *
      * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update(ClientData $itemData): int
     {
         return $this->clientRepository->update($itemData);
     }
@@ -167,7 +166,7 @@ final class ClientService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->clientRepository->getAll()->getDataAsArray();
     }
@@ -179,16 +178,20 @@ final class ClientService extends Service
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllForUser()
+    public function getAllForUser(): array
     {
-        return $this->clientRepository->getAllForFilter($this->dic->get(AccountFilterUser::class)->getFilter())->getDataAsArray();
+        return $this->clientRepository
+            ->getAllForFilter(
+                $this->dic->get(AccountFilterUser::class)->getFilter()
+            )
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->clientRepository = $this->dic->get(ClientRepository::class);
     }

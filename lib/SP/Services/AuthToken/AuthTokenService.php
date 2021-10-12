@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\AuthToken;
@@ -55,31 +55,28 @@ final class AuthTokenService extends Service
 {
     use ServiceItemTrait;
 
-    const SECURED_ACTIONS = [
+    private const SECURED_ACTIONS = [
         ActionsInterface::ACCOUNT_VIEW_PASS,
         ActionsInterface::ACCOUNT_EDIT_PASS,
         ActionsInterface::ACCOUNT_CREATE
     ];
 
-    const CAN_USE_SECURE_TOKEN_ACTIONS = [
+    private const CAN_USE_SECURE_TOKEN_ACTIONS = [
         ActionsInterface::ACCOUNT_VIEW,
         ActionsInterface::CATEGORY_VIEW,
         ActionsInterface::CLIENT_VIEW,
     ];
 
-    /**
-     * @var AuthTokenRepository
-     */
-    protected $authTokenRepository;
+    protected ?AuthTokenRepository $authTokenRepository = null;
 
     /**
      * Devuelver un array de acciones posibles para los tokens
      *
      * @return array
      */
-    public static function getTokenActions()
+    public static function getTokenActions(): array
     {
-        $actions = [
+        return [
             ActionsInterface::ACCOUNT_SEARCH => Acl::getActionInfo(ActionsInterface::ACCOUNT_SEARCH),
             ActionsInterface::ACCOUNT_VIEW => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW),
             ActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW_PASS),
@@ -110,43 +107,32 @@ final class AuthTokenService extends Service
             ActionsInterface::CONFIG_BACKUP_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_BACKUP_RUN),
             ActionsInterface::CONFIG_EXPORT_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_EXPORT_RUN)
         ];
-
-        return $actions;
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->authTokenRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return AuthTokenData
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getById($id)
+    public function getById(int $id): AuthTokenData
     {
         return $this->authTokenRepository->getById($id)->getData();
     }
 
     /**
-     * @param $id
-     *
-     * @return AuthTokenService
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): AuthTokenService
     {
         if ($this->authTokenRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('Token not found'));
@@ -158,33 +144,32 @@ final class AuthTokenService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
-     *
-     * @return bool
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->authTokenRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while removing the tokens'), ServiceException::WARNING);
+        $count = $this->authTokenRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while removing the tokens'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param $itemData
-     *
-     * @return mixed
      * @throws SPException
      * @throws CryptoException
      * @throws EnvironmentIsBrokenException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         return $this->authTokenRepository->create($this->injectSecureData($itemData));
     }
@@ -192,26 +177,28 @@ final class AuthTokenService extends Service
     /**
      * Injects secure data for token
      *
-     * @param AuthTokenData $authTokenData
-     * @param string        $token
-     *
-     * @return AuthTokenData
      * @throws ServiceException
      * @throws CryptoException
      * @throws EnvironmentIsBrokenException
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function injectSecureData(AuthTokenData $authTokenData, $token = null)
+    private function injectSecureData(
+        AuthTokenData $authTokenData,
+        ?string       $token = null
+    ): AuthTokenData
     {
         if ($token === null) {
-            $token = $this->authTokenRepository->getTokenByUserId($authTokenData->getUserId()) ?: $this->generateToken();
+            $token = $this->authTokenRepository
+                ->getTokenByUserId($authTokenData->getUserId()) ?: $this->generateToken();
         }
 
         if (self::isSecuredAction($authTokenData->getActionId())
             || self::canUseSecureTokenAction($authTokenData->getActionId())
         ) {
-            $authTokenData->setVault($this->getSecureData($token, $authTokenData->getHash()));
+            $authTokenData->setVault(
+                $this->getSecureData($token, $authTokenData->getHash())
+            );
             $authTokenData->setHash(Hash::hashKey($authTokenData->getHash()));
         } else {
             $authTokenData->setHash(null);
@@ -226,30 +213,19 @@ final class AuthTokenService extends Service
     /**
      * Generar un token de acceso
      *
-     * @return string
      * @throws EnvironmentIsBrokenException
      */
-    private function generateToken()
+    private function generateToken(): string
     {
         return PasswordUtil::generateRandomBytes(32);
     }
 
-    /**
-     * @param int $action
-     *
-     * @return bool
-     */
-    public static function isSecuredAction(int $action)
+    public static function isSecuredAction(int $action): bool
     {
         return in_array($action, self::SECURED_ACTIONS, true);
     }
 
-    /**
-     * @param int $action
-     *
-     * @return bool
-     */
-    public static function canUseSecureTokenAction(int $action)
+    public static function canUseSecureTokenAction(int $action): bool
     {
         return in_array($action, self::CAN_USE_SECURE_TOKEN_ACTIONS, true);
     }
@@ -257,46 +233,54 @@ final class AuthTokenService extends Service
     /**
      * Generar la llave segura del token
      *
-     * @param string $token
-     * @param string $key
-     *
-     * @return Vault
      * @throws ServiceException
      * @throws CryptoException
      */
-    private function getSecureData($token, $key)
+    private function getSecureData(string $token, string $key): Vault
     {
-        return (new Vault())->saveData($this->getMasterKeyFromContext(), $key . $token);
+        return (new Vault())->saveData(
+            $this->getMasterKeyFromContext(),
+            $key . $token
+        );
     }
 
     /**
-     * @param AuthTokenData $itemData
-     *
      * @throws Exception
      */
-    public function refreshAndUpdate(AuthTokenData $itemData)
+    public function refreshAndUpdate(AuthTokenData $itemData): void
     {
-        $this->transactionAware(function () use ($itemData) {
-            $token = $this->generateToken();
-            $vault = serialize($this->getSecureData($token, $itemData->getHash()));
+        $this->transactionAware(
+            function () use ($itemData) {
+                $token = $this->generateToken();
+                $vault = serialize(
+                    $this->getSecureData($token, $itemData->getHash())
+                );
 
-            $this->authTokenRepository->refreshTokenByUserId($itemData->getUserId(), $token);
-            $this->authTokenRepository->refreshVaultByUserId($itemData->getUserId(), $vault, Hash::hashKey($itemData->getHash()));
+                $this->authTokenRepository->refreshTokenByUserId(
+                    $itemData->getUserId(),
+                    $token
+                );
+                $this->authTokenRepository->refreshVaultByUserId(
+                    $itemData->getUserId(),
+                    $vault,
+                    Hash::hashKey($itemData->getHash())
+                );
 
-            $this->update($itemData, $token);
-        });
+                $this->update($itemData, $token);
+            }
+        );
     }
 
     /**
-     * @param AuthTokenData $itemData
-     * @param string        $token
-     *
-     * @throws SPException
-     * @throws CryptoException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    public function update(AuthTokenData $itemData, $token = null)
+    public function update(AuthTokenData $itemData, ?string $token = null): void
     {
         if ($this->authTokenRepository->update($this->injectSecureData($itemData, $token)) === 0) {
             throw new NoSuchItemException(__u('Token not found'));
@@ -304,13 +288,11 @@ final class AuthTokenService extends Service
     }
 
     /**
-     * @param AuthTokenData $itemData
-     *
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(AuthTokenData $itemData)
+    public function updateRaw(AuthTokenData $itemData): void
     {
         if ($this->authTokenRepository->update($itemData) === 0) {
             throw new NoSuchItemException(__u('Token not found'));
@@ -320,15 +302,11 @@ final class AuthTokenService extends Service
     /**
      * Devolver los datos de un token
      *
-     * @param $actionId int El id de la accion
-     * @param $token    string El token de seguridad
-     *
-     * @return false|AuthTokenData
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function getTokenByToken($actionId, $token)
+    public function getTokenByToken(int $actionId, string $token)
     {
         $result = $this->authTokenRepository->getTokenByToken($actionId, $token);
 
@@ -344,7 +322,7 @@ final class AuthTokenService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->authTokenRepository->getAll()->getDataAsArray();
     }
@@ -353,7 +331,7 @@ final class AuthTokenService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->authTokenRepository = $this->dic->get(AuthTokenRepository::class);
     }

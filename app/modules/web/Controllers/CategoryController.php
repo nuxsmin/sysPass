@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -57,10 +58,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var CategoryService
-     */
-    protected $categoryService;
+    protected ?CategoryService $categoryService = null;
 
     /**
      * Search action
@@ -71,15 +69,22 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
+     * @throws \JsonException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::CATEGORY_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -95,23 +100,33 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $itemsGridHelper = $this->dic->get(CategoryGrid::class);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getGrid($this->categoryService->search($itemSearchData)), $itemSearchData);
+        return $itemsGridHelper->updatePager(
+            $itemsGridHelper->getGrid($this->categoryService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Category'));
@@ -120,13 +135,19 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.category.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.category.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -149,11 +170,16 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     {
         $this->view->addTemplate('category', 'itemshow');
 
-        $category = $categoryId ? $this->categoryService->getById($categoryId) : new CategoryData();
+        $category = $categoryId
+            ? $this->categoryService->getById($categoryId)
+            : new CategoryData();
 
         $this->view->assign('category', $category);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -163,8 +189,14 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->view->assign('readonly', false);
         }
 
-        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CATEGORY, $categoryId));
+        $this->view->assign(
+            'showViewCustomPass',
+            $this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW_PASS)
+        );
+        $this->view->assign(
+            'customFields',
+            $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId)
+        );
     }
 
     /**
@@ -175,12 +207,16 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Category'));
@@ -190,13 +226,19 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.category.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.category.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -210,44 +252,64 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->categoryService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-                $this->eventDispatcher->notifyEvent('delete.category',
-                    new Event($this,
+                $this->eventDispatcher->notifyEvent(
+                    'delete.category',
+                    new Event(
+                        $this,
                         EventMessage::factory()
-                            ->addDescription(__u('Categories deleted')))
+                            ->addDescription(__u('Categories deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categories deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Categories deleted')
+                );
             }
 
             $this->categoryService->delete($id);
 
-            $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
+            $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.category',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'delete.category',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Category deleted'))
-                        ->addDetail(__u('Category'), $id))
+                        ->addDetail(__u('Category'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category deleted'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Category deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -257,37 +319,54 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new CategoryForm($this->dic);
-            $form->validate(Acl::CATEGORY_CREATE);
+            $form->validate(ActionsInterface::CATEGORY_CREATE);
 
             $itemData = $form->getItemData();
 
             $id = $this->categoryService->create($itemData);
 
-            $this->eventDispatcher->notifyEvent('create.category',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'create.category',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Category added'))
-                        ->addDetail(__u('Category'), $itemData->getName()))
+                        ->addDetail(__u('Category'), $itemData->getName())
+                )
             );
 
-            $this->addCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
+            $this->addCustomFieldsForItem(
+                ActionsInterface::CATEGORY,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category added'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Category added')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -301,12 +380,16 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new CategoryForm($this->dic, $id);
@@ -316,22 +399,35 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->categoryService->update($itemData);
 
-            $this->eventDispatcher->notifyEvent('edit.category',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'edit.category',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Category updated'))
-                        ->addDetail(__u('Category'), $itemData->getName()))
+                        ->addDetail(__u('Category'), $itemData->getName())
+                )
             );
 
-            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
+            $this->updateCustomFieldsForItem(
+                ActionsInterface::CATEGORY,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Category updated')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -345,12 +441,16 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CATEGORY_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Category'));
@@ -358,13 +458,19 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.category', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.category',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -378,7 +484,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

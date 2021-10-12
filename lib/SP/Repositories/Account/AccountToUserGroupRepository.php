@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -51,7 +51,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUserGroupsByAccountId($id)
+    public function getUserGroupsByAccountId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
@@ -71,13 +71,13 @@ final class AccountToUserGroupRepository extends Repository
     /**
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUserGroupsByUserGroupId($id)
+    public function getUserGroupsByUserGroupId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
@@ -101,7 +101,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByUserGroupId($id)
+    public function deleteByUserGroupId(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE userGroupId = ?');
@@ -115,11 +115,11 @@ final class AccountToUserGroupRepository extends Repository
      * @param AccountRequest $accountRequest
      * @param bool           $isEdit
      *
-     * @return bool
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit)
+    public function updateByType(AccountRequest $accountRequest, bool $isEdit): int
     {
         $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
 
@@ -134,7 +134,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteTypeByAccountId($id, bool $isEdit)
+    public function deleteTypeByAccountId(int $id, bool $isEdit): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = ?');
@@ -152,7 +152,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit)
+    public function addByType(AccountRequest $accountRequest, bool $isEdit): int
     {
         $items = $isEdit ? $accountRequest->userGroupsEdit : $accountRequest->userGroupsView;
         $values = $this->getParamsFromArray($items, '(?,?,?)');
@@ -186,7 +186,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId($id)
+    public function deleteByAccountId(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ?');

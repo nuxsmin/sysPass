@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Acl;
 
-use DI\Container;
 use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Exceptions\SPException;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Services\Account\AccountAclService;
@@ -45,7 +45,7 @@ final class AclHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
+    public const EVENTS = [
         'edit.userProfile',
         'edit.user',
         'edit.userGroup',
@@ -56,11 +56,11 @@ final class AclHandler extends Provider implements EventReceiver
     /**
      * @var string
      */
-    private $events;
+    private string $events;
     /**
      * @var ContainerInterface
      */
-    private $dic;
+    private ContainerInterface $dic;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -93,8 +93,9 @@ final class AclHandler extends Provider implements EventReceiver
      *
      * @return void
      * @since 5.1.0
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function update(SplSubject $subject)
+    public function update(SplSubject $subject): void
     {
         $this->updateEvent('update', new Event($subject));
     }
@@ -104,8 +105,10 @@ final class AclHandler extends Provider implements EventReceiver
      *
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function updateEvent(string $eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event): void
     {
         switch ($eventType) {
             case 'edit.userProfile':
@@ -125,10 +128,15 @@ final class AclHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function processUserProfile(Event $event)
+    private function processUserProfile(Event $event): void
     {
         try {
             $eventMessage = $event->getEventMessage();
+
+            if (null === $eventMessage) {
+                throw new SPException(__u('Unable to process event for user profile'));
+            }
+
             $extra = $eventMessage->getExtra();
 
             if (isset($extra['userProfileId'])) {
@@ -145,10 +153,17 @@ final class AclHandler extends Provider implements EventReceiver
 
     /**
      * @param Event $event
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
-    private function processUser(Event $event)
+    private function processUser(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
+
+        if (null === $eventMessage) {
+            throw new SPException(__u('Unable to process event for user'));
+        }
+
         $extra = $eventMessage->getExtra();
 
         if (isset($extra['userId'])) {
@@ -161,10 +176,15 @@ final class AclHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function processUserGroup(Event $event)
+    private function processUserGroup(Event $event): void
     {
         try {
             $eventMessage = $event->getEventMessage();
+
+            if (null === $eventMessage) {
+                throw new SPException(__u('Unable to process event for user group'));
+            }
+
             $extra = $eventMessage->getExtra();
 
             if (isset($extra['userGroupId'])) {
@@ -180,9 +200,9 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Container $dic
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->dic = $dic;
         $this->events = $this->parseEventsToRegex(self::EVENTS);

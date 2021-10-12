@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Track;
@@ -52,43 +52,33 @@ final class TrackService extends Service
     /**
      * Tiempo para contador de intentos
      */
-    const TIME_TRACKING = 600;
-    const TIME_TRACKING_MAX_ATTEMPTS = 10;
-    const TIME_SLEEP = 0.5;
+    public const TIME_TRACKING = 600;
+    public const TIME_TRACKING_MAX_ATTEMPTS = 10;
+    public const TIME_SLEEP = 0.5;
+
+    protected ?TrackRepository $trackRepository = null;
+    protected ?Request $request = null;
 
     /**
-     * @var TrackRepository
-     */
-    protected $trackRepository;
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * @param string $source
-     *
-     * @return TrackRequest
      * @throws InvalidArgumentException
      */
-    public function getTrackRequest($source)
+    public function getTrackRequest(string $source): TrackRequest
     {
-        $trackRequest = new TrackRequest();
-        $trackRequest->time = time() - self::TIME_TRACKING;
+        $trackRequest = new TrackRequest(
+            time() - self::TIME_TRACKING,
+            $source
+        );
         $trackRequest->setTrackIp($this->request->getClientAddress());
-        $trackRequest->source = $source;
 
         return $trackRequest;
     }
 
     /**
-     * @param $id int
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): void
     {
         if ($this->trackRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('Track not found'));
@@ -96,13 +86,11 @@ final class TrackService extends Service
     }
 
     /**
-     * @param $id int
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function unlock($id)
+    public function unlock(int $id): void
     {
         if ($this->trackRepository->unlock($id) === 0) {
             throw new NoSuchItemException(__u('Track not found'));
@@ -110,24 +98,20 @@ final class TrackService extends Service
     }
 
     /**
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function clear()
+    public function clear(): bool
     {
         return $this->trackRepository->clear();
     }
 
     /**
-     * @param $id int
-     *
-     * @return TrackData
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): TrackData
     {
         $result = $this->trackRepository->getById($id);
 
@@ -143,7 +127,7 @@ final class TrackService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->trackRepository->getAll()->getDataAsArray();
     }
@@ -151,12 +135,10 @@ final class TrackService extends Service
     /**
      * Comprobar los intentos de login
      *
-     * @param TrackRequest $trackRequest
-     *
      * @return bool True if delay is performed, false otherwise
      * @throws Exception
      */
-    public function checkTracking(TrackRequest $trackRequest)
+    public function checkTracking(TrackRequest $trackRequest): bool
     {
         try {
             $attempts = $this->getTracksForClientFromTime($trackRequest);
@@ -188,26 +170,22 @@ final class TrackService extends Service
     /**
      * Devuelve los tracks de un cliente desde un tiempo y origen determinados
      *
-     * @param TrackRequest $trackRequest
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTracksForClientFromTime(TrackRequest $trackRequest)
+    public function getTracksForClientFromTime(TrackRequest $trackRequest): int
     {
-        return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getNumRows();
+        return $this->trackRepository
+            ->getTracksForClientFromTime($trackRequest)
+            ->getNumRows();
     }
 
     /**
-     * @param TrackRequest $trackRequest
-     *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(TrackRequest $trackRequest)
+    public function add(TrackRequest $trackRequest): int
     {
         if ($trackRequest->getIpv4() === null
             && $trackRequest->getIpv6() === null
@@ -217,7 +195,8 @@ final class TrackService extends Service
 
         $result = $this->trackRepository->add($trackRequest);
 
-        $this->eventDispatcher->notifyEvent('track.add',
+        $this->eventDispatcher->notifyEvent(
+            'track.add',
             new Event($this, EventMessage::factory()
                 ->addDescription($this->request->getClientAddress(true)))
         );
@@ -226,13 +205,10 @@ final class TrackService extends Service
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->trackRepository->search($itemSearchData);
     }
@@ -241,7 +217,7 @@ final class TrackService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->trackRepository = $this->dic->get(TrackRepository::class);
         $this->request = $this->dic->get(Request::class);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
 
-use DI\DependencyException;
-use DI\NotFoundException;
+use JsonException;
 use Klein\Klein;
 use Klein\Response;
 use SP\Bootstrap;
@@ -39,31 +38,21 @@ use SP\Core\Exceptions\SPException;
  */
 final class Json
 {
-    const SAFE = [
+    public const SAFE = [
         'from' => ['\\', '"', '\''],
         'to' => ['\\', '\"', '\\\'']
     ];
 
-    /**
-     * @var Response
-     */
-    private $response;
+    private Response $response;
 
     /**
      * Json constructor.
-     *
-     * @param Response $response
      */
     public function __construct(Response $response)
     {
         $this->response = $response;
     }
 
-    /**
-     * @param Response $response
-     *
-     * @return Json
-     */
     public static function factory(Response $response): Json
     {
         return new self($response);
@@ -71,26 +60,23 @@ final class Json
 
     /**
      * @return Json
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     public static function fromDic(): Json
     {
-        return new self(Bootstrap::getContainer()->get(Klein::class)->response());
+        return new self(Bootstrap::getContainer()
+            ->get(Klein::class)
+            ->response());
     }
 
     /**
      * Devuelve un array con las cadenas formateadas para JSON
-     *
-     * @param $data mixed
-     *
-     * @return string
      */
     public static function safeJson(&$data): string
     {
         if (is_array($data) || is_object($data)) {
-            array_walk_recursive($data,
-                function (&$value) {
+            array_walk_recursive(
+                $data,
+                static function (&$value) {
                     if (is_object($value)) {
                         foreach ($value as $property => $v) {
                             if (is_string($v) && $v !== '') {
@@ -118,9 +104,7 @@ final class Json
     /**
      * Devuelve una cadena con los carácteres formateadas para JSON
      *
-     * @param $string
-     *
-     * @return mixed
+     * @return array|string|string[]
      */
     public static function safeJsonString($string)
     {
@@ -146,9 +130,7 @@ final class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param JsonResponse $jsonResponse
-     *
-     * @return bool
+     * @throws \JsonException
      */
     public function returnJson(JsonResponse $jsonResponse): bool
     {
@@ -160,7 +142,7 @@ final class Json
             $jsonResponse = new JsonResponse($e->getMessage());
             $jsonResponse->addMessage($e->getHint());
 
-            $this->response->body(json_encode($jsonResponse));
+            $this->response->body(json_encode($jsonResponse, JSON_THROW_ON_ERROR));
         }
 
         return $this->response->send(true)->isSent();
@@ -172,14 +154,14 @@ final class Json
      * @param mixed $data
      * @param int   $flags JSON_* flags
      *
-     * @return string La cadena en formato JSON
      * @throws SPException
      */
     public static function getJson($data, int $flags = 0): string
     {
-        $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR | $flags);
 
-        if ($json === false || json_last_error() !== JSON_ERROR_NONE) {
+        try {
+            $json = json_encode($data, JSON_THROW_ON_ERROR | $flags);
+        } catch (JsonException $e) {
             throw new SPException(
                 __u('Encoding error'),
                 SPException::CRITICAL,

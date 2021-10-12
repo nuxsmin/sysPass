@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Task;
 
+use JsonException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Messages\TaskMessage;
 use SP\Storage\File\FileException;
@@ -40,31 +41,22 @@ final class Task
     /**
      * @var string Nombre de la tarea
      */
-    private $name;
+    private string $name;
     /**
      * @var string ID de la tarea
      */
-    private $taskId;
-    /**
-     * @var FileHandler
-     */
-    private $fileOut;
-    /**
-     * @var FileHandler
-     */
-    private $fileTask;
+    private string $taskId;
+    private ?FileHandler $fileOut = null;
+    private ?FileHandler $fileTask = null;
     /**
      * @var int Intérvalo en segundos
      */
-    private $interval = 5;
+    private int $interval = 5;
     /**
      * @var bool Si se ha inicializado para escribir en el archivo
      */
-    private $initialized = false;
-    /**
-     * @var string
-     */
-    private $uid;
+    private bool $initialized;
+    private string $uid;
 
     /**
      * Task constructor.
@@ -72,7 +64,7 @@ final class Task
      * @param string $name Nombre de la tarea
      * @param string $id
      */
-    public function __construct($name, $id)
+    public function __construct(string $name, string $id)
     {
         $this->name = $name;
         $this->taskId = $id;
@@ -82,16 +74,24 @@ final class Task
 
     /**
      * Comprobar si se puede escribir en el archivo
-     *
-     * @return bool
      */
-    private function checkFile()
+    private function checkFile(): bool
     {
         $tempDir = Util::getTempDir();
 
         if ($tempDir !== false) {
-            $this->fileOut = new FileHandler($tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.out');
-            $this->fileTask = new FileHandler($tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.task');
+            $this->fileOut = new FileHandler(
+                $tempDir .
+                DIRECTORY_SEPARATOR .
+                $this->taskId .
+                '.out'
+            );
+            $this->fileTask = new FileHandler(
+                $tempDir .
+                DIRECTORY_SEPARATOR .
+                $this->taskId .
+                '.task'
+            );
 
             $this->deleteTaskFiles();
 
@@ -104,42 +104,42 @@ final class Task
     /**
      * Eliminar los archivos de la tarea no usados
      */
-    private function deleteTaskFiles()
+    private function deleteTaskFiles(): void
     {
-        $filesOut = dirname($this->fileOut->getFile()) . DIRECTORY_SEPARATOR . $this->taskId . '*.out';
-        $filesTask = dirname($this->fileTask->getFile()) . DIRECTORY_SEPARATOR . $this->taskId . '*.task';
+        $filesOut =
+            dirname($this->fileOut->getFile()) .
+            DIRECTORY_SEPARATOR .
+            $this->taskId .
+            '*.out';
+        $filesTask =
+            dirname($this->fileTask->getFile()) .
+            DIRECTORY_SEPARATOR .
+            $this->taskId .
+            '*.task';
 
-        array_map('unlink', array_merge(glob($filesOut), glob($filesTask)));
+        array_map(
+            'unlink',
+            array_merge(glob($filesOut), glob($filesTask))
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function genUid()
+    public function genUid(): string
     {
         return md5($this->name . $this->taskId);
     }
 
     /**
      * Generar un ID de tarea
-     *
-     * @param $name
-     *
-     * @return string
      */
-    public static function genTaskId($name)
+    public static function genTaskId(string $name): string
     {
-        return uniqid($name);
+        return uniqid($name, true);
     }
 
     /**
      * Escribir el tado de la tarea a un archivo
-     *
-     * @param TaskMessage $message
-     *
-     * @return bool
      */
-    public function writeStatusAndFlush(TaskMessage $message)
+    public function writeStatusAndFlush(TaskMessage $message): bool
     {
         try {
             if ($this->initialized === true) {
@@ -155,16 +155,14 @@ final class Task
 
     /**
      * Escribir un mensaje en el archivo de la tarea en formato JSON
-     *
-     * @param TaskMessage $message
      */
-    public function writeJsonStatusAndFlush(TaskMessage $message)
+    public function writeJsonStatusAndFlush(TaskMessage $message): void
     {
         try {
             if ($this->initialized === true) {
                 $this->fileOut->save($message->composeJson());
             }
-        } catch (FileException $e) {
+        } catch (FileException | JsonException $e) {
             processException($e);
         }
     }
@@ -172,7 +170,7 @@ final class Task
     /**
      * Iniciar la tarea
      */
-    public function end()
+    public function end(): void
     {
         try {
             logger("End Task: {$this->name}");
@@ -190,45 +188,31 @@ final class Task
      *
      * @throws FileException
      */
-    public function unregister()
+    public function unregister(): void
     {
-        logger("Unregister Task: {$this->name}");
+        logger("Unregister Task: $this->name");
 
         $this->fileTask->delete();
     }
 
-    /**
-     * @return int
-     */
-    public function getInterval()
+    public function getInterval(): int
     {
         return $this->interval;
     }
 
-    /**
-     * @param int $interval
-     *
-     * @return Task
-     */
-    public function setInterval($interval)
+    public function setInterval(int $interval): Task
     {
         $this->interval = $interval;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTaskId()
+    public function getTaskId(): string
     {
         return $this->taskId;
     }
 
-    /**
-     * @return FileHandler
-     */
-    public function getFileOut(): FileHandler
+    public function getFileOut(): ?FileHandler
     {
         return $this->fileOut;
     }
@@ -236,12 +220,11 @@ final class Task
     /**
      * Register a task
      *
-     * @return Task
      * @throws FileException
      */
-    public function register()
+    public function register(): Task
     {
-        logger("Register Task: {$this->name}");
+        logger("Register Task: $this->name");
 
         $this->fileTask->save(serialize($this));
 
@@ -253,12 +236,11 @@ final class Task
      *
      * Session is locked in order to allow other scripts execution
      *
-     * @return Task
      * @throws FileException
      */
-    public function registerSession()
+    public function registerSession(): Task
     {
-        logger("Register Task (session): {$this->name}");
+        logger("Register Task (session): $this->name");
 
         $this->fileTask->save(serialize($this));
 
@@ -267,18 +249,12 @@ final class Task
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUid(): string
     {
         return $this->uid;
     }
 
-    /**
-     * @return FileHandler
-     */
-    public function getFileTask(): FileHandler
+    public function getFileTask(): ?FileHandler
     {
         return $this->fileTask;
     }

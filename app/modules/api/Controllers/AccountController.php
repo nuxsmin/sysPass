@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -54,19 +54,13 @@ final class AccountController extends ControllerBase
 {
     use ItemTrait;
 
-    /**
-     * @var AccountPresetService
-     */
-    private $accountPresetService;
-    /**
-     * @var AccountService
-     */
-    private $accountService;
+    private ?AccountPresetService $accountPresetService = null;
+    private ?AccountService $accountService = null;
 
     /**
      * viewAction
      */
-    public function viewAction()
+    public function viewAction(): void
     {
 
         try {
@@ -90,12 +84,16 @@ final class AccountController extends ControllerBase
                 ->withUserGroupsById($accountResponse)
                 ->withTagsById($accountResponse);
 
-            $this->eventDispatcher->notifyEvent('show.account',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account displayed'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'show.account',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account displayed'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $id)
+                )
             );
 
             $adapter = new AccountAdapter($this->configData);
@@ -107,7 +105,9 @@ final class AccountController extends ControllerBase
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
+            $this->returnResponse(
+                ApiResponse::makeSuccess($out->toArray(), $id)
+            );
         } catch (Exception $e) {
             $this->returnResponseException($e);
 
@@ -118,28 +118,38 @@ final class AccountController extends ControllerBase
     /**
      * viewPassAction
      */
-    public function viewPassAction()
+    public function viewPassAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_VIEW_PASS);
 
             $id = $this->apiService->getParamInt('id', true);
             $accountPassData = $this->accountService->getPasswordForId($id);
-            $password = Crypt::decrypt($accountPassData->getPass(), $accountPassData->getKey(), $this->apiService->getMasterPass());
+            $password = Crypt::decrypt(
+                $accountPassData->getPass(),
+                $accountPassData->getKey(),
+                $this->apiService->getMasterPass()
+            );
 
             $this->accountService->incrementDecryptCounter($id);
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('show.account.pass',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Password viewed'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'show.account.pass',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Password viewed'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $id));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(["password" => $password], $id)
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -150,7 +160,7 @@ final class AccountController extends ControllerBase
     /**
      * viewPassAction
      */
-    public function editPassAction()
+    public function editPassAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_EDIT_PASS);
@@ -167,15 +177,25 @@ final class AccountController extends ControllerBase
 
             $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('edit.account.pass',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Password updated'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $accountDetails->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.account.pass',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Password updated'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $accountDetails->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Password updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $accountDetails,
+                    $accountRequest->id,
+                    __('Password updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -186,7 +206,7 @@ final class AccountController extends ControllerBase
     /**
      * createAction
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_CREATE);
@@ -217,15 +237,25 @@ final class AccountController extends ControllerBase
 
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('create.account',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account created'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $accountDetails->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'create.account',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account created'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $accountDetails->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Account created')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $accountDetails,
+                    $accountId,
+                    __('Account created')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -236,7 +266,7 @@ final class AccountController extends ControllerBase
     /**
      * editAction
      */
-    public function editAction()
+    public function editAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_EDIT);
@@ -259,7 +289,7 @@ final class AccountController extends ControllerBase
 
             $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 
-            if (!empty($tagsId)) {
+            if (count($tagsId) !== 0) {
                 $accountRequest->updateTags = true;
                 $accountRequest->tags = $tagsId;
             }
@@ -268,15 +298,25 @@ final class AccountController extends ControllerBase
 
             $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('edit.account',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account updated'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $accountDetails->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.account',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account updated'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $accountDetails->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Account updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $accountDetails,
+                    $accountRequest->id,
+                    __('Account updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -287,7 +327,7 @@ final class AccountController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_SEARCH);
@@ -299,7 +339,7 @@ final class AccountController extends ControllerBase
 
             $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 
-            if (!empty($tagsId)) {
+            if (count($tagsId) !== 0) {
                 $accountSearchFilter->setTagsId($tagsId);
             }
 
@@ -321,7 +361,9 @@ final class AccountController extends ControllerBase
 
             $this->returnResponse(
                 ApiResponse::makeSuccess(
-                    $this->accountService->getByFilter($accountSearchFilter)->getDataAsArray()));
+                    $this->accountService->getByFilter($accountSearchFilter)->getDataAsArray()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -332,7 +374,7 @@ final class AccountController extends ControllerBase
     /**
      * deleteAction
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_DELETE);
@@ -343,15 +385,25 @@ final class AccountController extends ControllerBase
 
             $this->accountService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.account',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account removed'))
-                    ->addDetail(__u('Name'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'delete.account',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account removed'))
+                        ->addDetail(__u('Name'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id, __('Account removed')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $accountDetails,
+                    $id,
+                    __('Account removed')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -364,7 +416,7 @@ final class AccountController extends ControllerBase
      * @throws NotFoundException
      * @throws InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountService = $this->dic->get(AccountService::class);
         $this->accountPresetService = $this->dic->get(AccountPresetService::class);

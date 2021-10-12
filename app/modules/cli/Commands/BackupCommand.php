@@ -52,9 +52,6 @@ final class BackupCommand extends CommandBase
      * @var string
      */
     protected static $defaultName = 'sp:backup';
-    /**
-     * @var FileBackupService
-     */
     private FileBackupService $fileBackupService;
 
     public function __construct(FileBackupService $fileBackupService,
@@ -77,13 +74,10 @@ final class BackupCommand extends CommandBase
                 BACKUP_PATH);
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(
+        InputInterface  $input,
+        OutputInterface $output
+    ): int
     {
         $style = new SymfonyStyle($input, $output);
 
@@ -119,13 +113,10 @@ final class BackupCommand extends CommandBase
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param StyleInterface $style
-     *
-     * @return string
-     */
-    private function getPath(InputInterface $input, StyleInterface $style): string
+    private function getPath(
+        InputInterface $input,
+        StyleInterface $style
+    ): string
     {
         $path = self::getEnvVarOrOption('path', $input);
 

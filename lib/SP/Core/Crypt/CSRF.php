@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
 use SP\Http\Request;
 
 /**
@@ -37,27 +36,22 @@ use SP\Http\Request;
  */
 final class CSRF
 {
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
+    private ContextInterface $context;
+    private Request $request;
+    private ConfigDataInterface $configData;
 
     /**
      * CSRF constructor.
      *
-     * @param ContextInterface $context
-     * @param Request          $request
-     * @param ConfigData       $configData
+     * @param ContextInterface    $context
+     * @param Request             $request
+     * @param ConfigDataInterface $configData
      */
-    public function __construct(ContextInterface $context, Request $request, ConfigData $configData)
+    public function __construct(
+        ContextInterface    $context,
+        Request             $request,
+        ConfigDataInterface $configData
+    )
     {
         $this->context = $context;
         $this->request = $request;
@@ -95,8 +89,6 @@ final class CSRF
 
     /**
      * Devolver la llave de cifrado para los datos de la cookie
-     *
-     * @return string
      */
     private function getKey(): string
     {
@@ -105,10 +97,8 @@ final class CSRF
 
     /**
      * Initialize the CSRF key
-     *
-     * @return void
      */
-    public function initialize()
+    public function initialize(): void
     {
         if ($this->context->isLoggedIn()
             && $this->context->getCSRF() === null

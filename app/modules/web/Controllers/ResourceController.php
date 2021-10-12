@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -36,7 +36,7 @@ use SP\Html\Minify;
  */
 final class ResourceController extends SimpleControllerBase
 {
-    const CSS_MIN_FILES = [
+    private const CSS_MIN_FILES = [
         'reset.min.css',
         'jquery-ui.min.css',
         'jquery-ui.structure.min.css',
@@ -44,7 +44,7 @@ final class ResourceController extends SimpleControllerBase
         'toastr.min.css',
         'magnific-popup.min.css'
     ];
-    const JS_MIN_FILES = [
+    private const JS_MIN_FILES = [
         'jquery-3.3.1.min.js',
         'jquery.fileDownload.min.js',
         'clipboard.min.js',
@@ -58,7 +58,7 @@ final class ResourceController extends SimpleControllerBase
         'toastr.min.js',
         'jquery.magnific-popup.min.js',
         'eventsource.min.js'];
-    const JS_APP_MIN_FILES = [
+    private const JS_APP_MIN_FILES = [
         'app.min.js',
         'app-config.min.js',
         'app-triggers.min.js',
@@ -67,15 +67,12 @@ final class ResourceController extends SimpleControllerBase
         'app-util.min.js',
         'app-main.min.js'];
 
-    /**
-     * @var Minify
-     */
-    private $minify;
+    private ?Minify $minify = null;
 
     /**
      * Returns CSS resources
      */
-    public function cssAction()
+    public function cssAction(): void
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
@@ -98,7 +95,7 @@ final class ResourceController extends SimpleControllerBase
     /**
      * Returns JS resources
      */
-    public function jsAction()
+    public function jsAction(): void
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
@@ -133,7 +130,7 @@ final class ResourceController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->request->verifySignature($this->configData->getPasswordSalt());
 

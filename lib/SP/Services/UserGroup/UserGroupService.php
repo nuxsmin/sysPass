@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\UserGroup;
@@ -48,118 +48,119 @@ final class UserGroupService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var UserGroupRepository
-     */
-    protected $userGroupRepository;
-    /**
-     * @var UserToUserGroupService
-     */
-    protected $userToUserGroupService;
+    protected ?UserGroupRepository $userGroupRepository = null;
+    protected ?UserToUserGroupService $userToUserGroupService = null;
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->userGroupRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return UserGroupData
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): UserGroupData
     {
         $result = $this->userGroupRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Group not found'),
+                SPException::INFO
+            );
         }
 
-        $data = $result->getData(UserGroupData::class);
+        $data = $result->getData();
         $data->setUsers($this->userToUserGroupService->getUsersByGroupId($id));
 
         return $data;
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): UserGroupService
     {
-        if ($this->userGroupRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
+        $delete = $this->userGroupRepository->delete($id);
+
+        if ($delete === 0) {
+            throw new NoSuchItemException(
+                __u('Group not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->userGroupRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the groups'), ServiceException::WARNING);
+        $count = $this->userGroupRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting the groups'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param UserGroupData $itemData
-     *
-     * @return int
      * @throws ServiceException
      */
-    public function create($itemData)
+    public function create(UserGroupData $itemData): int
     {
-        return $this->transactionAware(function () use ($itemData) {
-            $id = $this->userGroupRepository->create($itemData);
+        return $this->transactionAware(
+            function () use ($itemData) {
+                $id = $this->userGroupRepository->create($itemData);
 
-            $users = $itemData->getUsers();
+                $users = $itemData->getUsers();
 
-            if ($users !== null) {
-                $this->userToUserGroupService->add($id, $users);
+                if ($users !== null) {
+                    $this->userToUserGroupService->add($id, $users);
+                }
+
+                return $id;
             }
-
-            return $id;
-        });
+        );
     }
 
     /**
-     * @param UserGroupData $itemData
-     *
      * @throws ServiceException
      */
-    public function update($itemData)
+    public function update(UserGroupData $itemData): void
     {
-        $this->transactionAware(function () use ($itemData) {
-            $this->userGroupRepository->update($itemData);
+        $this->transactionAware(
+            function () use ($itemData) {
+                $this->userGroupRepository->update($itemData);
 
-            $users = $itemData->getUsers();
+                $users = $itemData->getUsers();
 
-            if ($users !== null) {
-                $this->userToUserGroupService->update($itemData->getId(), $users);
+                if ($users !== null) {
+                    $this->userToUserGroupService->update(
+                        $itemData->getId(),
+                        $users
+                    );
+                }
             }
-        });
+        );
     }
 
     /**
@@ -169,27 +170,29 @@ final class UserGroupService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
-        return $this->userGroupRepository->getAll()->getDataAsArray();
+        return $this->userGroupRepository
+            ->getAll()
+            ->getDataAsArray();
     }
 
     /**
      * Returns the item for given name
      *
-     * @param string $name
-     *
-     * @return UserGroupData
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): UserGroupData
     {
         $result = $this->userGroupRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Group not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
@@ -198,36 +201,34 @@ final class UserGroupService extends Service
     /**
      * Returns the users that are using the given group id
      *
-     * @param $id int
-     *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsage($id)
+    public function getUsage(int $id): array
     {
-        return $this->userGroupRepository->getUsage($id)->getDataAsArray();
+        return $this->userGroupRepository
+            ->getUsage($id)
+            ->getDataAsArray();
     }
 
     /**
      * Returns the items that are using the given group id
      *
-     * @param $id int
-     *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageByUsers($id)
+    public function getUsageByUsers(int $id): array
     {
-        return $this->userGroupRepository->getUsageByUsers($id)->getDataAsArray();
+        return $this->userGroupRepository
+            ->getUsageByUsers($id)
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userGroupRepository = $this->dic->get(UserGroupRepository::class);
         $this->userToUserGroupService = $this->dic->get(UserToUserGroupService::class);

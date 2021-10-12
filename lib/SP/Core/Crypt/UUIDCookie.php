@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -36,13 +36,8 @@ class UUIDCookie extends Cookie
     /**
      * Nombre de la cookie
      */
-    const COOKIE_NAME = 'SYSPASS_UUID';
+    public const COOKIE_NAME = 'SYSPASS_UUID';
 
-    /**
-     * @param Request $request
-     *
-     * @return UUIDCookie
-     */
     public static function factory(Request $request): UUIDCookie
     {
         return new self(self::COOKIE_NAME, $request);
@@ -50,8 +45,6 @@ class UUIDCookie extends Cookie
 
     /**
      * Creates a cookie and sets its data
-     *
-     * @param string $signKey Signing key
      *
      * @return string|false
      */
@@ -69,14 +62,14 @@ class UUIDCookie extends Cookie
     /**
      * Loads cookie data
      *
-     * @param string $signKey Signing key
-     *
      * @return false|string
      */
     public function loadCookie(string $signKey)
     {
         $data = $this->getCookie();
 
-        return $data !== false ? $this->getCookieData($data, $signKey) : false;
+        return $data !== false
+            ? $this->getCookieData($data, $signKey)
+            : false;
     }
 }

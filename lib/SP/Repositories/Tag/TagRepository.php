@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Tag;
@@ -30,7 +30,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Tag
  */
-final class TagRepository extends Repository implements RepositoryItemInterface
+final class TagRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -54,7 +54,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated tag'));
@@ -80,7 +80,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Tag WHERE `name` = ? OR `hash` = ?');
@@ -102,7 +102,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated tag'));
@@ -129,7 +129,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT `hash` FROM Tag WHERE (`name` = ?  OR `hash` = ?) AND id <> ?');
@@ -151,7 +151,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(TagData::class);
@@ -170,7 +170,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(TagData::class);
@@ -187,7 +187,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(TagData::class);
@@ -201,14 +201,14 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return TagData[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
-            return [];
+        if (count($ids) === 0) {
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -219,7 +219,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -231,9 +231,9 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -248,13 +248,13 @@ final class TagRepository extends Repository implements RepositoryItemInterface
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Tag WHERE id = ? LIMIT 1');
@@ -273,7 +273,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT tagId FROM AccountToTag WHERE tagId = ?');
@@ -291,7 +291,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('id, name');

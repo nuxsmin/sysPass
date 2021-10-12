@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
@@ -43,10 +43,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class CategoryGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -136,7 +133,10 @@ final class CategoryGrid extends GridBase
         $gridActionSearch->setName('frmSearchCategory');
         $gridActionSearch->setTitle(__('Search for Category'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -154,7 +154,10 @@ final class CategoryGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE)
+        );
 
         return $gridAction;
     }
@@ -171,7 +174,10 @@ final class CategoryGrid extends GridBase
         $gridAction->setTitle(__('Edit Category'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT)
+        );
 
         return $gridAction;
     }
@@ -188,7 +194,10 @@ final class CategoryGrid extends GridBase
         $gridAction->setTitle(__('Delete Category'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE)
+        );
 
         return $gridAction;
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Track;
@@ -47,7 +47,7 @@ final class TrackRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(TrackRequest $trackRequest)
+    public function add(TrackRequest $trackRequest): int
     {
         $query = /** @lang SQL */
             'INSERT INTO Track SET 
@@ -77,7 +77,7 @@ final class TrackRepository extends Repository
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Track WHERE id = ? LIMIT 1');
@@ -94,7 +94,7 @@ final class TrackRepository extends Repository
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function unlock($id)
+    public function unlock(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Track SET timeUnlock = UNIX_TIMESTAMP() WHERE id = ?');
@@ -111,7 +111,7 @@ final class TrackRepository extends Repository
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function clear()
+    public function clear(): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('TRUNCATE TABLE Track');
@@ -127,7 +127,7 @@ final class TrackRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, 
@@ -153,7 +153,7 @@ final class TrackRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, 
@@ -180,7 +180,7 @@ final class TrackRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTracksForClientFromTime(TrackRequest $trackRequest)
+    public function getTracksForClientFromTime(TrackRequest $trackRequest): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, userId 
@@ -213,7 +213,7 @@ final class TrackRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('

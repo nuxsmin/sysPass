@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Crypt;
@@ -41,25 +41,13 @@ use SP\Storage\File\FileException;
  */
 final class SecureSessionService extends Service
 {
-    const CACHE_EXPIRE_TIME = 86400;
-    const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';
+    private const CACHE_EXPIRE_TIME = 86400;
+    private const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';
 
-    /**
-     * @var string
-     */
-    protected $seed;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var UUIDCookie
-     */
-    protected $cookie;
-    /**
-     * @var string
-     */
-    private $filename;
+    protected ?string $seed = null;
+    protected ?Request $request = null;
+    protected ?UUIDCookie $cookie = null;
+    private ?string $filename = null;
 
     /**
      * Returns the encryption key
@@ -96,12 +84,11 @@ final class SecureSessionService extends Service
     /**
      * Returns an unique filename from a browser cookie
      *
-     * @return string
      * @throws ServiceException
      */
-    private function getFileNameFromCookie()
+    private function getFileNameFromCookie(): string
     {
-        if (!$this->filename) {
+        if (empty($this->filename)) {
             if (($uuid = $this->cookie->loadCookie($this->seed)) === false
                 && ($uuid = $this->cookie->createCookie($this->seed)) === false
             ) {
@@ -124,7 +111,11 @@ final class SecureSessionService extends Service
         try {
             $securedKey = Key::createNewRandomKey();
 
-            FileCache::factory($this->getFileNameFromCookie())->save((new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
+            FileCache::factory($this->getFileNameFromCookie())
+                ->save(
+                    (new Vault())->saveData($securedKey->saveToAsciiSafeString(),
+                        $this->getCypher())
+                );
 
             logger('Saved session key');
 
@@ -138,28 +129,27 @@ final class SecureSessionService extends Service
 
     /**
      * Returns the key to be used for encrypting the session data
-     *
-     * @return string
      */
-    private function getCypher()
+    private function getCypher(): string
     {
-        return hash_pbkdf2('sha1',
-            sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress()),
+        return hash_pbkdf2(
+            'sha1',
+            sha1(
+                $this->request->getHeader('User-Agent') .
+                $this->request->getClientAddress()
+            ),
             $this->seed,
             500,
             32
         );
     }
 
-    /**
-     * @return string
-     */
     public function getFilename(): string
     {
         return $this->filename;
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->request = $this->dic->get(Request::class);
         $this->seed = $this->config->getConfigData()->getPasswordSalt();

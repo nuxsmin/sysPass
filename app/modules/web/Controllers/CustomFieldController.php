@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,12 +28,12 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Html\DataGrid\DataGridInterface;
@@ -58,29 +58,32 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var CustomFieldDefService
-     */
-    protected $customFieldService;
+    protected ?CustomFieldDefService $customFieldService = null;
 
     /**
      * Search action
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -96,22 +99,29 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $customFieldGrid = $this->dic->get(CustomFieldGrid::class);
 
-        return $customFieldGrid->updatePager($customFieldGrid->getGrid($this->customFieldService->search($itemSearchData)), $itemSearchData);
+        return $customFieldGrid->updatePager(
+            $customFieldGrid->getGrid($this->customFieldService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -124,13 +134,19 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.customField.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -145,17 +161,30 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $customFieldId = null)
+    protected function setViewData(?int $customFieldId = null): void
     {
         $this->view->addTemplate('custom_field', 'itemshow');
 
-        $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
+        $customField = $customFieldId
+            ? $this->customFieldService->getById($customFieldId)
+            : new CustomFieldDefinitionData();
 
         $this->view->assign('field', $customField);
-        $this->view->assign('types', SelectItemAdapter::factory(CustomFieldTypeService::getItemsBasic())->getItemsFromModelSelected([$customField->getTypeId()]));
-        $this->view->assign('modules', SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())->getItemsFromArraySelected([$customField->getModuleId()]));
+        $this->view->assign(
+            'types',
+            SelectItemAdapter::factory(CustomFieldTypeService::getItemsBasic())
+                ->getItemsFromModelSelected([$customField->getTypeId()])
+        );
+        $this->view->assign(
+            'modules',
+            SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())
+                ->getItemsFromArraySelected([$customField->getModuleId()])
+        );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -174,12 +203,16 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Field'));
@@ -188,13 +221,19 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.customField.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -206,35 +245,57 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->customFieldService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->customFieldService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.customField.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Fields deleted')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.customField.selection',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Fields deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Fields deleted'));
-            } else {
-                $this->customFieldService->delete($id);
-
-                $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
-
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Fields deleted')
+                );
             }
+
+            $this->customFieldService->delete($id);
+
+            $this->eventDispatcher->notifyEvent(
+                'delete.customField',
+                new Event($this)
+            );
+
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Field deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -244,34 +305,48 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new CustomFieldDefForm($this->dic);
-            $form->validate(Acl::CUSTOMFIELD_CREATE);
+            $form->validate(ActionsInterface::CUSTOMFIELD_CREATE);
 
             $itemData = $form->getItemData();
 
             $this->customFieldService->create($itemData);
 
-            $this->eventDispatcher->notifyEvent('create.customField',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Field added'))
-                    ->addDetail(__u('Field'), $itemData->getName()))
+            $this->eventDispatcher->notifyEvent(
+                'create.customField',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Field added'))
+                        ->addDetail(__u('Field'), $itemData->getName())
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field added'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Field added')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -285,34 +360,48 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new CustomFieldDefForm($this->dic, $id);
-            $form->validate(Acl::CUSTOMFIELD_EDIT);
+            $form->validate(ActionsInterface::CUSTOMFIELD_EDIT);
 
             $itemData = $form->getItemData();
 
             $this->customFieldService->update($itemData);
 
-            $this->eventDispatcher->notifyEvent('edit.customField',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Field updated'))
-                    ->addDetail(__u('Field'), $itemData->getName()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.customField',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Field updated'))
+                        ->addDetail(__u('Field'), $itemData->getName())
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Field updated')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -324,14 +413,18 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Field'));
@@ -339,13 +432,22 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.customField', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.customField',
+                new Event($this)
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                $e->getMessage()
+            );
         }
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -359,7 +461,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

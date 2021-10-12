@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Model;
@@ -31,22 +31,10 @@ namespace SP\Mvc\Model;
  */
 final class QueryJoin
 {
-    /**
-     * @var array
-     */
-    protected $join = [];
-    /**
-     * @var array
-     */
-    protected $param = [];
+    protected array $join = [];
+    protected array $param = [];
 
-    /**
-     * @param string $join
-     * @param array  $params
-     *
-     * @return QueryJoin
-     */
-    public function addJoin($join, array $params = null)
+    public function addJoin(string $join, ?array $params = null): QueryJoin
     {
         $this->join[] = $join;
 
@@ -57,34 +45,24 @@ final class QueryJoin
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getJoins()
+    public function getJoins(): ?string
     {
-        return $this->hasJoins() ? implode(PHP_EOL, $this->join) : null;
+        return $this->hasJoins()
+            ? implode(PHP_EOL, $this->join)
+            : null;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasJoins()
+    public function hasJoins(): bool
     {
-        return !empty($this->join);
+        return count($this->join) !== 0;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->param;
     }
 
-    /**
-     * @return int
-     */
-    public function getJoinsCount()
+    public function getJoinsCount(): int
     {
         return count($this->join);
     }

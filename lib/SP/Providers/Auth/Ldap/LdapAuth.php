@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
@@ -36,44 +36,44 @@ use SP\Providers\Auth\AuthInterface;
  */
 final class LdapAuth implements AuthInterface
 {
-    const ACCOUNT_EXPIRED = 701;
-    const ACCOUNT_NO_GROUPS = 702;
+    public const ACCOUNT_EXPIRED = 701;
+    public const ACCOUNT_NO_GROUPS = 702;
 
     /**
      * @var string
      */
-    protected $userLogin;
+    protected string $userLogin;
     /**
      * @var LdapAuthData
      */
-    protected $ldapAuthData;
+    protected LdapAuthData $ldapAuthData;
     /**
      * @var EventDispatcher
      */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
     /**
      * @var string
      */
-    protected $server;
+    protected string $server;
     /**
      * @var LdapInterface
      */
-    private $ldap;
+    private LdapInterface $ldap;
     /**
-     * @var ConfigData
+     * @var ConfigDataInterface
      */
-    private $configData;
+    private ConfigDataInterface $configData;
 
     /**
      * LdapBase constructor.
      *
-     * @param LdapInterface   $ldap
-     * @param EventDispatcher $eventDispatcher
-     * @param ConfigData      $configData
+     * @param LdapInterface       $ldap
+     * @param EventDispatcher     $eventDispatcher
+     * @param ConfigDataInterface $configData
      */
-    public function __construct(LdapInterface $ldap,
-                                EventDispatcher $eventDispatcher,
-                                ConfigData $configData)
+    public function __construct(LdapInterface       $ldap,
+                                EventDispatcher     $eventDispatcher,
+                                ConfigDataInterface $configData)
     {
         $this->ldap = $ldap;
         $this->eventDispatcher = $eventDispatcher;
@@ -85,7 +85,7 @@ final class LdapAuth implements AuthInterface
     /**
      * @return LdapAuthData
      */
-    public function getLdapAuthData(): ?LdapAuthData
+    public function getLdapAuthData(): LdapAuthData
     {
         return $this->ldapAuthData;
     }
@@ -101,7 +101,7 @@ final class LdapAuth implements AuthInterface
     /**
      * @param string $userLogin
      */
-    public function setUserLogin(string $userLogin)
+    public function setUserLogin(string $userLogin): void
     {
         $this->userLogin = strtolower($userLogin);
     }
@@ -113,7 +113,7 @@ final class LdapAuth implements AuthInterface
      *
      * @return bool
      */
-    public function authenticate(UserLoginData $userLoginData)
+    public function authenticate(UserLoginData $userLoginData): bool
     {
         try {
             $this->ldapAuthData->setAuthoritative($this->isAuthGranted());

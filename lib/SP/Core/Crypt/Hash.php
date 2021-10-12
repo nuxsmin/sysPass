@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -34,15 +34,14 @@ final class Hash
     /**
      * Longitud máxima aceptada para hashing
      */
-    const MAX_KEY_LENGTH = 72;
+    public const MAX_KEY_LENGTH = 72;
+    private const HASH_ALGO = 'sha256';
 
     /**
      * Comprobar el hash de una clave.
      *
      * @param string $key  con la clave a comprobar
      * @param string $hash con el hash a comprobar
-     *
-     * @return bool
      */
     public static function checkHashKey(string $key, string $hash): bool
     {
@@ -57,10 +56,10 @@ final class Hash
      *
      * @return string
      */
-    private static function getKey(string &$key, $isCheck = true): string
+    private static function getKey(string &$key, bool $isCheck = true): string
     {
         if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
-            $key = hash('sha256', $key);
+            $key = hash(self::HASH_ALGO, $key);
 
             if ($isCheck === false) {
                 logger('[INFO] Password string shortened using SHA256 and then BCRYPT');
@@ -84,28 +83,21 @@ final class Hash
 
     /**
      * Checks a message with a given key against a hash
-     *
-     * @param $message
-     * @param $key
-     * @param $hash
-     *
-     * @return bool
      */
-    public static function checkMessage($message, $key, $hash): bool
+    public static function checkMessage(
+        string $message,
+        string $key,
+        string $hash
+    ): bool
     {
         return hash_equals($hash, self::signMessage($message, $key));
     }
 
     /**
      * Signs a message with a given key
-     *
-     * @param $message
-     * @param $key
-     *
-     * @return string
      */
-    public static function signMessage($message, $key): string
+    public static function signMessage(string $message, string $key): string
     {
-        return hash_hmac('sha256', $message, $key);
+        return hash_hmac(self::HASH_ALGO, $message, $key);
     }
 }

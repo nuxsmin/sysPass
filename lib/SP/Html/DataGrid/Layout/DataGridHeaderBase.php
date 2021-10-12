@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
@@ -38,18 +38,18 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
      *
      * @var array
      */
-    private $headers = [];
+    private array $headers = [];
     /**
      * El ancho de las columnas
      *
      * @var int
      */
-    private $width = 0;
+    private int $width = 0;
 
     /**
      * @param $header string
      */
-    public function addHeader(string $header)
+    public function addHeader(string $header): void
     {
         $this->headers[] = $header;
 
@@ -60,7 +60,7 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }

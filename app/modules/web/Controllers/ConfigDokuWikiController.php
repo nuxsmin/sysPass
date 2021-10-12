@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -47,6 +46,7 @@ final class ConfigDokuWikiController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function saveAction(): bool
     {
@@ -63,7 +63,10 @@ final class ConfigDokuWikiController extends SimpleControllerBase
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing DokuWiki parameters'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Missing DokuWiki parameters')
+            );
         }
 
         if ($dokuWikiEnabled) {
@@ -77,34 +80,42 @@ final class ConfigDokuWikiController extends SimpleControllerBase
             if ($configData->isDokuwikiEnabled() === false) {
                 $eventMessage->addDescription(__u('DokuWiki enabled'));
             }
-        } elseif ($dokuWikiEnabled === false && $configData->isDokuwikiEnabled()) {
+        } elseif ($configData->isDokuwikiEnabled()) {
             $configData->setDokuwikiEnabled(false);
 
             $eventMessage->addDescription(__u('DokuWiki disabled'));
         }
 
-        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-            $this->eventDispatcher->notifyEvent('save.config.dokuwiki', new Event($this, $eventMessage));
-        });
+        return $this->saveConfig(
+            $configData,
+            $this->config,
+            function () use ($eventMessage) {
+                $this->eventDispatcher->notifyEvent(
+                    'save.config.dokuwiki',
+                    new Event($this, $eventMessage)
+                );
+            });
     }
 
     /**
-     * @return bool
-     * @throws SessionTimeout
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @return void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_WIKI);
+            $this->checkAccess(ActionsInterface::CONFIG_WIKI);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -38,39 +38,23 @@ interface FileCacheInterface
     public function load();
 
     /**
-     * @param mixed $data
-     *
-     * @return FileCacheInterface
      * @throws FileException
      */
     public function save($data): FileCacheInterface;
 
-    /**
-     * @return FileCacheInterface
-     */
     public function delete(): FileCacheInterface;
 
     /**
      * Returns whether the file is expired
-     *
-     * @param int $time
-     *
-     * @return bool
      */
-    public function isExpired($time = 86400): bool;
+    public function isExpired(int $time = 86400): bool;
 
     /**
      * Returns if the file is expired comparing against a reference date
      *
-     * @param int $date
-     *
-     * @return bool
      * @throws FileException
      */
     public function isExpiredDate(int $date): bool;
 
-    /**
-     * @return bool
-     */
     public function exists(): bool;
 }

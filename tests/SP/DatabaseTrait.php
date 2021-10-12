@@ -32,20 +32,9 @@ use SP\Storage\Database\DatabaseException;
  */
 trait DatabaseTrait
 {
-    /**
-     * @var bool
-     */
     protected static bool $loadFixtures = false;
-    /**
-     * @var PDO|null
-     */
     private static ?PDO $conn = null;
 
-    /**
-     * @param string $table
-     *
-     * @return int
-     */
     protected static function getRowCount(string $table): int
     {
         if (!self::$conn) {

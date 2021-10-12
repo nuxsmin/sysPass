@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('APP_ROOT', __DIR__);
-define('APP_MODULE', 'api');
+const APP_ROOT = __DIR__;
+const APP_MODULE = 'api';
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';

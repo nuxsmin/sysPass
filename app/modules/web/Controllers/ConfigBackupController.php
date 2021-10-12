@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
@@ -53,11 +53,15 @@ final class ConfigBackupController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function fileBackupAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_WARNING,
+                __u('Ey, this is a DEMO!!')
+            );
         }
 
         try {
@@ -66,12 +70,19 @@ final class ConfigBackupController extends SimpleControllerBase
             $this->dic->get(FileBackupService::class)
                 ->doBackup(BACKUP_PATH);
 
-            $this->eventDispatcher->notifyEvent('run.backup.end',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Application and database backup completed successfully')))
+            $this->eventDispatcher->notifyEvent('
+            run.backup.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Application and database backup completed successfully'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Backup process finished'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Backup process finished')
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -85,6 +96,7 @@ final class ConfigBackupController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function xmlExportAction(): bool
     {
@@ -92,13 +104,20 @@ final class ConfigBackupController extends SimpleControllerBase
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Passwords do not match'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Passwords do not match')
+            );
         }
 
         try {
-            $this->eventDispatcher->notifyEvent('run.export.start',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('sysPass XML export')))
+            $this->eventDispatcher->notifyEvent(
+                'run.export.start',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('sysPass XML export'))
+                )
             );
 
             SessionContext::close();
@@ -106,41 +125,57 @@ final class ConfigBackupController extends SimpleControllerBase
             $export = $this->dic->get(XmlExportService::class);
             $export->doExport(BACKUP_PATH, $exportPassword);
 
-            $this->eventDispatcher->notifyEvent('run.export.end',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Export process finished')))
+            $this->eventDispatcher->notifyEvent(
+                'run.export.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Export process finished'))
+                )
             );
 
             $verify = $this->dic->get(XmlVerifyService::class);
 
             if ($export->isEncrypted()) {
-                $verifyResult = $verify->verifyEncrypted($export->getExportFile(), $exportPassword);
+                $verifyResult = $verify->verifyEncrypted(
+                    $export->getExportFile(),
+                    $exportPassword
+                );
             } else {
                 $verifyResult = $verify->verify($export->getExportFile());
             }
 
             $nodes = $verifyResult->getNodes();
 
-            $this->eventDispatcher->notifyEvent('run.export.verify',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Verification of exported data finished'))
-                    ->addDetail(__u('Version'), $verifyResult->getVersion())
-                    ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))
-                    ->addDetail(__u('Accounts'), $nodes['Account'])
-                    ->addDetail(__u('Clients'), $nodes['Client'])
-                    ->addDetail(__u('Categories'), $nodes['Category'])
-                    ->addDetail(__u('Tags'), $nodes['Tag'])
+            $this->eventDispatcher->notifyEvent(
+                'run.export.verify',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Verification of exported data finished'))
+                        ->addDetail(__u('Version'), $verifyResult->getVersion())
+                        ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))
+                        ->addDetail(__u('Accounts'), $nodes['Account'])
+                        ->addDetail(__u('Clients'), $nodes['Client'])
+                        ->addDetail(__u('Categories'), $nodes['Category'])
+                        ->addDetail(__u('Tags'), $nodes['Tag'])
                 )
             );
 
             // Create the XML archive after verifying the export integrity
             $export->createArchive();
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Export process finished'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Export process finished')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -154,32 +189,44 @@ final class ConfigBackupController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash(), true);
+            $filePath = XmlExportService::getExportFilename(
+                BACKUP_PATH,
+                $this->configData->getExportHash(),
+                true
+            );
 
             $file = new FileHandler($filePath);
             $file->checkFileExists();
 
-            $this->eventDispatcher->notifyEvent('download.exportFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
+            $this->eventDispatcher->notifyEvent(
+                'download.exportFile',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('File downloaded'))
+                        ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
+                )
             );
 
-            $response = $this->router->response();
-            $response->header('Cache-Control', 'max-age=60, must-revalidate');
-            $response->header('Content-length', $file->getFileSize());
-            $response->header('Content-type', $file->getFileType());
-            $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-transfer-encoding', 'chunked');
-            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
-            $response->header('Set-Cookie', 'fileDownload=true; path=/');
-            $response->send();
+            $this->router
+                ->response()
+                ->header('Cache-Control', 'max-age=60, must-revalidate')
+                ->header('Content-length', $file->getFileSize())
+                ->header('Content-type', $file->getFileType())
+                ->header('Content-Description', ' sysPass file')
+                ->header('Content-transfer-encoding', 'chunked')
+                ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
+                ->header('Set-Cookie', 'fileDownload=true; path=/')
+                ->send();
 
             $file->readChunked();
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
@@ -197,32 +244,44 @@ final class ConfigBackupController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true);
+            $filePath = FileBackupService::getAppBackupFilename(
+                BACKUP_PATH,
+                $this->configData->getBackupHash(),
+                true
+            );
 
             $file = new FileHandler($filePath);
             $file->checkFileExists();
 
-            $this->eventDispatcher->notifyEvent('download.backupAppFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
+            $this->eventDispatcher->notifyEvent(
+                'download.backupAppFile',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('File downloaded'))
+                        ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
+                )
             );
 
-            $response = $this->router->response();
-            $response->header('Cache-Control', 'max-age=60, must-revalidate');
-            $response->header('Content-length', $file->getFileSize());
-            $response->header('Content-type', $file->getFileType());
-            $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-transfer-encoding', 'chunked');
-            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
-            $response->header('Set-Cookie', 'fileDownload=true; path=/');
-            $response->send();
+            $this->router
+                ->response()
+                ->header('Cache-Control', 'max-age=60, must-revalidate')
+                ->header('Content-length', $file->getFileSize())
+                ->header('Content-type', $file->getFileType())
+                ->header('Content-Description', ' sysPass file')
+                ->header('Content-transfer-encoding', 'chunked')
+                ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
+                ->header('Set-Cookie', 'fileDownload=true; path=/')
+                ->send();
 
             $file->readChunked();
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
@@ -240,32 +299,44 @@ final class ConfigBackupController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true);
+            $filePath = FileBackupService::getDbBackupFilename(
+                BACKUP_PATH,
+                $this->configData->getBackupHash(),
+                true
+            );
 
             $file = new FileHandler($filePath);
             $file->checkFileExists();
 
-            $this->eventDispatcher->notifyEvent('download.backupDbFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
+            $this->eventDispatcher->notifyEvent(
+                'download.backupDbFile',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('File downloaded'))
+                        ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
+                )
             );
 
-            $response = $this->router->response();
-            $response->header('Cache-Control', 'max-age=60, must-revalidate');
-            $response->header('Content-length', $file->getFileSize());
-            $response->header('Content-type', $file->getFileType());
-            $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-transfer-encoding', 'chunked');
-            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
-            $response->header('Set-Cookie', 'fileDownload=true; path=/');
-            $response->send();
+            $this->router
+                ->response()
+                ->header('Cache-Control', 'max-age=60, must-revalidate')
+                ->header('Content-length', $file->getFileSize())
+                ->header('Content-type', $file->getFileType())
+                ->header('Content-Description', ' sysPass file')
+                ->header('Content-transfer-encoding', 'chunked')
+                ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
+                ->header('Set-Cookie', 'fileDownload=true; path=/')
+                ->send();
 
             $file->readChunked();
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
         return '';
@@ -277,14 +348,18 @@ final class ConfigBackupController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      * @throws SessionTimeout
+     * @throws \JsonException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_BACKUP);
+            $this->checkAccess(ActionsInterface::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             $this->returnJsonResponseException($e);
         }

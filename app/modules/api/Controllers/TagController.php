@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -44,15 +44,12 @@ use SP\Services\Tag\TagService;
  */
 final class TagController extends ControllerBase
 {
-    /**
-     * @var TagService
-     */
-    private $tagService;
+    private ?TagService $tagService = null;
 
     /**
      * viewAction
      */
-    public function viewAction()
+    public function viewAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::TAG_VIEW);
@@ -60,11 +57,13 @@ final class TagController extends ControllerBase
             $id = $this->apiService->getParamInt('id', true);
             $tagData = $this->tagService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.tag',
+            $this->eventDispatcher->notifyEvent(
+                'show.tag',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Tag displayed'))
                     ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $id))
+                    ->addDetail('ID', $id)
+                )
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($tagData, $id));
@@ -78,7 +77,7 @@ final class TagController extends ControllerBase
     /**
      * createAction
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::TAG_CREATE);
@@ -88,14 +87,24 @@ final class TagController extends ControllerBase
 
             $id = $this->tagService->create($tagData);
 
-            $this->eventDispatcher->notifyEvent('create.tag',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Tag added'))
-                    ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'create.tag',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Tag added'))
+                        ->addDetail(__u('Name'), $tagData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag added')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $tagData,
+                    $id,
+                    __('Tag added')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -106,7 +115,7 @@ final class TagController extends ControllerBase
     /**
      * editAction
      */
-    public function editAction()
+    public function editAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::TAG_EDIT);
@@ -117,14 +126,24 @@ final class TagController extends ControllerBase
 
             $this->tagService->update($tagData);
 
-            $this->eventDispatcher->notifyEvent('edit.tag',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Tag updated'))
-                    ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $tagData->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.tag',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Tag updated'))
+                        ->addDetail(__u('Name'), $tagData->getName())
+                        ->addDetail('ID', $tagData->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $tagData,
+                    $tagData->getId(),
+                    __('Tag updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -135,7 +154,7 @@ final class TagController extends ControllerBase
     /**
      * deleteAction
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::TAG_DELETE);
@@ -146,14 +165,24 @@ final class TagController extends ControllerBase
 
             $this->tagService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.tag',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Tag removed'))
-                    ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'delete.tag',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Tag removed'))
+                        ->addDetail(__u('Name'), $tagData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag removed')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $tagData,
+                    $id,
+                    __('Tag removed')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -164,7 +193,7 @@ final class TagController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::TAG_SEARCH);
@@ -173,9 +202,16 @@ final class TagController extends ControllerBase
             $itemSearchData->setSeachString($this->apiService->getParamString('text'));
             $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
 
-            $this->eventDispatcher->notifyEvent('search.tag', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'search.tag',
+                new Event($this)
+            );
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->tagService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $this->tagService->search($itemSearchData)->getDataAsArray()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -184,11 +220,9 @@ final class TagController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->tagService = $this->dic->get(TagService::class);
         $this->apiService->setHelpClass(TagHelp::class);

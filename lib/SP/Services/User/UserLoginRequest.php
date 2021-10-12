@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -31,103 +31,58 @@ namespace SP\Services\User;
  */
 final class UserLoginRequest
 {
-    /**
-     * @var string
-     */
-    private $login;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $password;
-    /**
-     * @var string
-     */
-    private $email;
-    /**
-     * @var int
-     */
-    private $isLdap;
+    private ?string $login = null;
+    private ?string $name = null;
+    private ?string $password = null;
+    private ?string $email = null;
+    private ?bool $isLdap = null;
 
-    /**
-     * @return string
-     */
-    public function getLogin()
+    public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    /**
-     * @param string $login
-     */
-    public function setLogin($login)
+    public function setLogin(string $login): void
     {
         $this->login = $login;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     */
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return int
-     */
-    public function getisLdap()
+    public function getisLdap(): ?bool
     {
         return $this->isLdap;
     }
 
-    /**
-     * @param int $isLdap
-     */
-    public function setIsLdap($isLdap)
+    public function setIsLdap(bool $isLdap): void
     {
         $this->isLdap = $isLdap;
     }

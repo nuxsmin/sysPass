@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
 
-use DI\Container;
 use DOMDocument;
 use DOMElement;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -46,38 +48,23 @@ abstract class XmlImportBase
 {
     use ImportTrait;
 
-    /**
-     * @var XmlFileImport
-     */
-    protected $xmlFileImport;
-    /**
-     * @var DOMDocument
-     */
-    protected $xmlDOM;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
+    protected XmlFileImport $xmlFileImport;
+    protected DOMDocument $xmlDOM;
+    protected EventDispatcher $eventDispatcher;
+    protected ConfigService $configService;
+    protected ConfigDataInterface $configData;
 
     /**
      * ImportBase constructor.
      *
-     * @param Container     $dic
-     * @param XmlFileImport $xmlFileImport
-     * @param ImportParams  $importParams
-     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __construct(Container $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
+    public function __construct(
+        ContainerInterface $dic,
+        XmlFileImport      $xmlFileImport,
+        ImportParams       $importParams
+    )
     {
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;
@@ -102,13 +89,21 @@ abstract class XmlImportBase
      *
      * @throws ImportException
      */
-    protected function getNodesData($nodeName, $childNodeName, $callback, $required = true)
+    protected function getNodesData(
+        string   $nodeName,
+        string   $childNodeName,
+        callable $callback,
+        bool     $required = true
+    ): void
     {
         $nodeList = $this->xmlDOM->getElementsByTagName($nodeName);
 
         if ($nodeList->length > 0) {
             if (!is_callable($callback)) {
-                throw new ImportException(__u('Invalid Method'), ImportException::WARNING);
+                throw new ImportException(
+                    __u('Invalid Method'),
+                    SPException::WARNING
+                );
             }
 
             /** @var DOMElement $nodes */
@@ -121,7 +116,7 @@ abstract class XmlImportBase
         } elseif ($required === true) {
             throw new ImportException(
                 __u('Invalid XML format'),
-                ImportException::WARNING,
+                SPException::WARNING,
                 sprintf(__('"%s" node doesn\'t exist'), $nodeName)
             );
         }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -32,7 +32,7 @@ use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Storage\Database\QueryData;
@@ -43,7 +43,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package Services
  */
-final class AccountHistoryRepository extends Repository implements RepositoryItemInterface
+final class AccountHistoryRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -155,7 +155,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountHistory WHERE id = ? LIMIT 1');
@@ -170,9 +170,9 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @param mixed $itemData
      *
-     * @return mixed
+     * @return void
      */
-    public function update($itemData)
+    public function update($itemData): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -185,7 +185,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @return QueryResult
      * @throws SPException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AH.id,
@@ -241,7 +241,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AH.id,
@@ -265,9 +265,9 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @param array $ids
      *
-     * @return void
+     * @return QueryResult
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
         throw new RuntimeException('Not implemented');
     }
@@ -281,9 +281,9 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -304,9 +304,9 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountIdBatch(array $ids)
+    public function deleteByAccountIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -325,7 +325,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -337,7 +337,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @return void
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -349,7 +349,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @return void
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -363,7 +363,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted');
@@ -373,7 +373,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         ');
         $queryData->setOrder('date DESC, AH.name, C.name, AH.id DESC');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('AH.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -395,7 +395,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAccountsPassData()
+    public function getAccountsPassData(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, `name`, pass, `key`, mPassHash
@@ -413,11 +413,11 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @param AccountPasswordRequest $request
      *
-     * @return bool
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePassword(AccountPasswordRequest $request)
+    public function updatePassword(AccountPasswordRequest $request): int
     {
         $query = /** @lang SQL */
             'UPDATE AccountHistory SET 

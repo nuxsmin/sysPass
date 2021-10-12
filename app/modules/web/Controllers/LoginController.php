@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,7 +28,7 @@ use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\SessionUtil;
@@ -51,6 +51,7 @@ final class LoginController extends ControllerBase
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws \JsonException
      */
     public function loginAction(): bool
     {
@@ -76,19 +77,26 @@ final class LoginController extends ControllerBase
                 return $uri->getUri();
             };
 
-            $this->eventDispatcher->notifyEvent('login.finish',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'login.finish',
+                new Event(
+                    $this,
                     EventMessage::factory()
-                        ->addExtra('redirect', $redirector))
+                        ->addExtra('redirect', $redirector)
+                )
             );
 
             return $this->returnJsonResponseData([
-                'url' => $this->session->getTrasientKey('redirect') ?: $loginResponmse->getRedirect()
+                'url' => $this->session->getTrasientKey('redirect')
+                    ?: $loginResponmse->getRedirect()
             ]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponse($e->getCode(), $e->getMessage());
         }
@@ -97,14 +105,18 @@ final class LoginController extends ControllerBase
     /**
      * checkForwarded
      */
-    private function checkForwarded()
+    private function checkForwarded(): void
     {
         $forward = $this->request->getForwardedFor();
 
         if ($forward !== null) {
-            $this->eventDispatcher->notifyEvent('login.info',
-                new Event($this, EventMessage::factory()
-                    ->addDetail('Forwarded', $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)))
+            $this->eventDispatcher->notifyEvent(
+                'login.info',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDetail('Forwarded', $this->configData->isDemoEnabled() ? '***' : implode(',', $forward))
+                )
             );
         }
     }
@@ -112,23 +124,27 @@ final class LoginController extends ControllerBase
     /**
      * Logout action
      */
-    public function logoutAction()
+    public function logoutAction(): void
     {
         if ($this->session->isLoggedIn() === true) {
             $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
             $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
-            $this->eventDispatcher->notifyEvent('logout',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Logout session'))
-                    ->addDetail(__u('User'), $this->session->getUserData()->getLogin())
-                    ->addDetail(__u('Inactive time'), $inactiveTime . ' min.')
-                    ->addDetail(__u('Total time'), $totalTime . ' min.'))
+            $this->eventDispatcher->notifyEvent(
+                'logout',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Logout session'))
+                        ->addDetail(__u('User'), $this->session->getUserData()->getLogin())
+                        ->addDetail(__u('Inactive time'), $inactiveTime . ' min.')
+                        ->addDetail(__u('Total time'), $totalTime . ' min.')
+                )
             );
 
             SessionUtil::cleanSession();
 
-            $this->session->setAppStatus(SessionContext::APP_STATUS_LOGGEDOUT);
+            $this->session->setAppStatus(ContextBase::APP_STATUS_LOGGEDOUT);
 
             $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getCustomLayout('logout', 'logout');
@@ -145,12 +161,15 @@ final class LoginController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('index', 'login');
 
-        $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
+        $this->view->assign(
+            'mailEnabled',
+            $this->configData->isMailEnabled()
+        );
 
         $this->prepareSignedUriOnView();
 
@@ -160,7 +179,7 @@ final class LoginController extends ControllerBase
     /**
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         // TODO: Implement initialize() method.
     }

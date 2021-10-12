@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -36,19 +36,19 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @var string
      */
-    protected $dn;
+    protected string $dn;
     /**
      * @var string
      */
-    protected $groupDn;
+    protected string $groupDn;
     /**
      * @var int
      */
-    protected $expire = 0;
+    protected int $expire = 0;
     /**
      * @var bool
      */
-    protected $inGroup = false;
+    protected bool $inGroup = false;
 
     /**
      * @return string
@@ -61,7 +61,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param string $dn
      */
-    public function setDn(string $dn)
+    public function setDn(string $dn): void
     {
         $this->dn = $dn;
     }
@@ -71,15 +71,15 @@ final class LdapAuthData extends AuthDataBase
      */
     public function getExpire(): int
     {
-        return (int)$this->expire;
+        return $this->expire;
     }
 
     /**
      * @param int $expire
      */
-    public function setExpire($expire)
+    public function setExpire(int $expire): void
     {
-        $this->expire = (int)$expire;
+        $this->expire = $expire;
     }
 
     /**
@@ -93,7 +93,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param boolean $inGroup
      */
-    public function setInGroup(bool $inGroup)
+    public function setInGroup(bool $inGroup): void
     {
         $this->inGroup = $inGroup;
     }
@@ -109,7 +109,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param string $groupDn
      */
-    public function setGroupDn(string $groupDn)
+    public function setGroupDn(string $groupDn): void
     {
         $this->groupDn = $groupDn;
     }

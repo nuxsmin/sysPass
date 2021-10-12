@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -38,17 +38,9 @@ final class CryptSessionHandler extends SessionHandler
     /**
      * @var bool Indica si la sesión está encriptada
      */
-    public static $isSecured = false;
-    /**
-     * @var Key
-     */
-    private $key;
+    public static bool $isSecured = false;
+    private Key $key;
 
-    /**
-     * Session constructor.
-     *
-     * @param Key $Key
-     */
     public function __construct(Key $Key)
     {
         $this->key = $Key;
@@ -68,25 +60,25 @@ final class CryptSessionHandler extends SessionHandler
      *                           </p>
      * @since 5.4.0
      */
-    public function read($id)
+    public function read($id): string
     {
         $data = parent::read($id);
 
         if (!$data) {
             return '';
-        } else {
-            try {
-                self::$isSecured = true;
+        }
 
-                return Crypt::decrypt($data, $this->key);
-            } catch (CryptoException $e) {
-                self::$isSecured = false;
+        try {
+            self::$isSecured = true;
 
-                logger($e->getMessage());
-                logger('Session data not encrypted.');
+            return Crypt::decrypt($data, $this->key);
+        } catch (CryptoException $e) {
+            self::$isSecured = false;
 
-                return $data;
-            }
+            logger($e->getMessage());
+            logger('Session data not encrypted.');
+
+            return $data;
         }
     }
 
@@ -110,7 +102,7 @@ final class CryptSessionHandler extends SessionHandler
      *                             </p>
      * @since 5.4.0
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         try {
             $data = Crypt::encrypt($data, $this->key);

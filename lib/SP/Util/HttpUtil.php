@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Html\Html;
 use SP\Http\Request;
 
@@ -37,26 +37,35 @@ final class HttpUtil
 {
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS
-     *
-     * @param ConfigData $configData
-     * @param Request    $request
      */
-    public static function checkHttps(ConfigData $configData, Request $request)
+    public static function checkHttps(
+        ConfigDataInterface $configData,
+        Request             $request
+    ): void
     {
         if ($configData->isHttpsEnabled() && !$request->isHttps()) {
             $serverPort = $request->getServerPort();
 
             $port = $serverPort !== 443 ? ':' . $serverPort : '';
-            $host = str_replace('http', 'https', $request->getHttpHost());
+            $host = str_replace(
+                'http',
+                'https',
+                $request->getHttpHost()
+            );
 
-            header('Location: ' . $host . $port . $_SERVER['REQUEST_URI']);
+            header(sprintf(
+                'Location: %s%s%s',
+                $host,
+                $port,
+                $_SERVER['REQUEST_URI']
+            ));
         }
     }
 
     /**
      * Comprobar si existen parámetros pasados por POST para enviarlos por GET
      */
-    public static function importUrlParamsToGet()
+    public static function importUrlParamsToGet(): string
     {
         $params = [];
 

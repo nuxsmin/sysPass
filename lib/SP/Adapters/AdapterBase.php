@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Adapters;
 
 
 use League\Fractal\TransformerAbstract;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 
 /**
  * Class AdapterBase
@@ -35,17 +35,9 @@ use SP\Config\ConfigData;
  */
 abstract class AdapterBase extends TransformerAbstract
 {
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
+    protected ConfigDataInterface $configData;
 
-    /**
-     * AccountAdapter constructor.
-     *
-     * @param ConfigData $configData
-     */
-    public function __construct(ConfigData $configData)
+    public function __construct(ConfigDataInterface $configData)
     {
         $this->configData = $configData;
     }

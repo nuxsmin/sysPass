@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,9 +19,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('MODULE_PATH', __DIR__);
-define('VIEW_PATH', MODULE_PATH . DIRECTORY_SEPARATOR . 'themes');
-define('PLUGINS_PATH', MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins');
+const MODULE_PATH = __DIR__;
+const VIEW_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'themes';
+const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';

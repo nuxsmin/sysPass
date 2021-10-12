@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,23 +27,18 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\ServiceException;
 use SP\Services\Task\TaskFactory;
 
 /**
@@ -57,11 +52,11 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws NoSuchItemException
-     * @throws ServiceException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     public function saveAction(): bool
     {
@@ -147,15 +142,23 @@ final class ConfigEncryptionController extends SimpleControllerBase
                     $task
                 );
 
-                $this->eventDispatcher->notifyEvent('update.masterPassword.start', new Event($this));
+                $this->eventDispatcher->notifyEvent(
+                    'update.masterPassword.start',
+                    new Event($this)
+                );
 
                 $mastePassService->changeMasterPassword($request);
 
-                $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
+                $this->eventDispatcher->notifyEvent(
+                    'update.masterPassword.end',
+                    new Event($this)
+                );
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notifyEvent(
+                    'exception', new Event($e)
+                );
 
                 return $this->returnJsonResponseException($e);
             } finally {
@@ -165,15 +168,24 @@ final class ConfigEncryptionController extends SimpleControllerBase
             }
         } else {
             try {
-                $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
+                $this->eventDispatcher->notifyEvent(
+                    'update.masterPassword.hash',
+                    new Event($this)
+                );
 
                 $mastePassService->updateConfig(Hash::hashKey($newMasterPass));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notifyEvent(
+                    'exception',
+                    new Event($e)
+                );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the Master Password\'s hash'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('Error while saving the Master Password\'s hash')
+                );
             }
         }
 
@@ -190,28 +202,47 @@ final class ConfigEncryptionController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function refreshAction(): bool
     {
         try {
             if ($this->config->getConfigData()->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_WARNING,
+                    __u('Ey, this is a DEMO!!')
+                );
             }
 
             $masterPassService = $this->dic->get(MasterPassService::class);
             $masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
-            $this->eventDispatcher->notifyEvent('refresh.masterPassword.hash',
-                new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated'))));
+            $this->eventDispatcher->notifyEvent(
+                'refresh.masterPassword.hash',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Master password hash updated'))
+                )
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Master password hash updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Master password hash updated')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while updating the master password hash'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Error while updating the master password hash')
+            );
         }
     }
 
@@ -219,8 +250,9 @@ final class ConfigEncryptionController extends SimpleControllerBase
      * Create a temporary master pass
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveTempAction(): bool
     {
@@ -248,7 +280,10 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 } catch (Exception $e) {
                     processException($e);
 
-                    $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                    $this->eventDispatcher->notifyEvent(
+                        'exception',
+                        new Event($e)
+                    );
 
                     return $this->returnJsonResponse(
                         JsonResponse::JSON_WARNING,
@@ -258,33 +293,41 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 }
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Temporary password generated')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
+     * @return void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

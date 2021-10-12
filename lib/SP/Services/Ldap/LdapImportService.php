@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Ldap;
@@ -44,39 +44,21 @@ use SP\Services\UserGroup\UserGroupService;
  */
 final class LdapImportService extends Service
 {
-    /**
-     * @var int
-     */
-    protected $totalObjects = 0;
-    /**
-     * @var int
-     */
-    protected $syncedObjects = 0;
-    /**
-     * @var int
-     */
-    protected $errorObjects = 0;
+    protected int $totalObjects = 0;
+    protected int $syncedObjects = 0;
+    protected int $errorObjects = 0;
 
-    /**
-     * @return int
-     */
-    public function getTotalObjects()
+    public function getTotalObjects(): int
     {
         return $this->totalObjects;
     }
 
-    /**
-     * @return int
-     */
-    public function getSyncedObjects()
+    public function getSyncedObjects(): int
     {
         return $this->syncedObjects;
     }
 
-    /**
-     * @return int
-     */
-    public function getErrorObjects()
+    public function getErrorObjects(): int
     {
         return $this->errorObjects;
     }
@@ -84,12 +66,12 @@ final class LdapImportService extends Service
     /**
      * Sincronizar usuarios de LDAP
      *
-     * @param LdapParams       $ldapParams
-     * @param LdapImportParams $ldapImportParams
-     *
      * @throws LdapException
      */
-    public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams)
+    public function importGroups(
+        LdapParams       $ldapParams,
+        LdapImportParams $ldapImportParams
+    ): void
     {
         $ldap = $this->getLdap($ldapParams);
 
@@ -103,7 +85,8 @@ final class LdapImportService extends Service
 
         $numObjects = (int)$objects['count'];
 
-        $this->eventDispatcher->notifyEvent('import.ldap.groups',
+        $this->eventDispatcher->notifyEvent(
+            'import.ldap.groups',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('Objects found'), $numObjects))
         );
@@ -121,10 +104,8 @@ final class LdapImportService extends Service
 
                         $value = $values[0];
 
-                        switch (strtolower($attribute)) {
-                            case $ldapImportParams->userGroupNameAttribute:
-                                $userGroupData->setName($value);
-                                break;
+                        if (strtolower($attribute) === $ldapImportParams->userGroupNameAttribute) {
+                            $userGroupData->setName($value);
                         }
                     }
 
@@ -134,7 +115,8 @@ final class LdapImportService extends Service
 
                             $userGroupService->create($userGroupData);
 
-                            $this->eventDispatcher->notifyEvent('import.ldap.progress.groups',
+                            $this->eventDispatcher->notifyEvent(
+                                'import.ldap.progress.groups',
                                 new Event($this, EventMessage::factory()
                                     ->addDetail(__u('Group'), sprintf('%s', $userGroupData->getName())))
                             );
@@ -143,7 +125,10 @@ final class LdapImportService extends Service
                         } catch (Exception $e) {
                             processException($e);
 
-                            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                            $this->eventDispatcher->notifyEvent(
+                                'exception',
+                                new Event($e)
+                            );
 
                             $this->errorObjects++;
                         }
@@ -154,23 +139,24 @@ final class LdapImportService extends Service
     }
 
     /**
-     * @param LdapParams $ldapParams
-     *
-     * @return LdapInterface
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    protected function getLdap(LdapParams $ldapParams)
+    protected function getLdap(LdapParams $ldapParams): LdapInterface
     {
-        return Ldap::factory($ldapParams, $this->eventDispatcher, $this->config->getConfigData()->isDebug());
+        return Ldap::factory(
+            $ldapParams,
+            $this->eventDispatcher,
+            $this->config->getConfigData()->isDebug()
+        );
     }
 
     /**
-     * @param LdapParams       $ldapParams
-     * @param LdapImportParams $ldapImportParams
-     *
      * @throws LdapException
      */
-    public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams)
+    public function importUsers(
+        LdapParams       $ldapParams,
+        LdapImportParams $ldapImportParams
+    ): void
     {
         $ldap = $this->getLdap($ldapParams);
 
@@ -184,7 +170,8 @@ final class LdapImportService extends Service
 
         $numObjects = (int)$objects['count'];
 
-        $this->eventDispatcher->notifyEvent('import.ldap.users',
+        $this->eventDispatcher->notifyEvent(
+            'import.ldap.users',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('Objects found'), $numObjects))
         );
@@ -226,7 +213,8 @@ final class LdapImportService extends Service
 
                             $userService->create($userData);
 
-                            $this->eventDispatcher->notifyEvent('import.ldap.progress.users',
+                            $this->eventDispatcher->notifyEvent(
+                                'import.ldap.progress.users',
                                 new Event($this, EventMessage::factory()
                                     ->addDetail(__u('User'), sprintf('%s (%s)', $userData->getName(), $userData->getLogin())))
                             );
@@ -235,7 +223,10 @@ final class LdapImportService extends Service
                         } catch (Exception $e) {
                             processException($e);
 
-                            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                            $this->eventDispatcher->notifyEvent(
+                                'exception',
+                                new Event($e)
+                            );
 
                             $this->errorObjects++;
                         }

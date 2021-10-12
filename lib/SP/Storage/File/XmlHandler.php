@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -43,23 +43,11 @@ final class XmlHandler implements XmlFileStorageInterface
      * @var mixed
      */
     protected $items;
-    /**
-     * @var DOMDocument
-     */
-    private $Dom;
-    /**
-     * @var DOMElement
-     */
-    private $root;
-    /**
-     * @var FileHandler
-     */
-    private $fileHandler;
+    private ?DOMDocument $document = null;
+    private FileHandler $fileHandler;
 
     /**
      * XmlHandler constructor.
-     *
-     * @param FileHandler $fileHandler
      */
     public function __construct(FileHandler $fileHandler)
     {
@@ -69,9 +57,6 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Cargar un archivo XML
      *
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
@@ -82,9 +67,9 @@ final class XmlHandler implements XmlFileStorageInterface
 
         $this->items = [];
         $this->setDOM();
-        $this->Dom->load($this->fileHandler->getFile());
+        $this->document->load($this->fileHandler->getFile());
 
-        $nodes = $this->Dom->getElementsByTagName($node);
+        $nodes = $this->document->getElementsByTagName($node);
 
         if ($nodes->length === 0) {
             throw new RuntimeException(__u('XML node does not exist'));
@@ -98,17 +83,13 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Crear un nuevo documento XML
      */
-    private function setDOM()
+    private function setDOM(): void
     {
-        $this->Dom = new DOMDocument('1.0', 'utf-8');
+        $this->document = new DOMDocument('1.0', 'utf-8');
     }
 
     /**
      * Leer de forma recursiva los nodos hijos y devolver un array multidimensional
-     *
-     * @param DOMNodeList $nodeList
-     *
-     * @return array
      */
     protected function readChildNodes(DOMNodeList $nodeList): array
     {
@@ -127,7 +108,7 @@ final class XmlHandler implements XmlFileStorageInterface
 
                     } elseif ($node->hasAttribute('class')) {
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
-                        $nodes[$node->nodeName]['__class__'] = (string)$node->getAttribute('class');;
+                        $nodes[$node->nodeName]['__class__'] = (string)$node->getAttribute('class');
                     } else {
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                     }
@@ -155,10 +136,6 @@ final class XmlHandler implements XmlFileStorageInterface
 
     /**
      * Obtener un elemento del array
-     *
-     * @param $id
-     *
-     * @return mixed
      */
     public function __get($id)
     {
@@ -168,10 +145,6 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Guardar el archivo XML
      *
-     * @param mixed  $data Data to be saved
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
@@ -184,32 +157,32 @@ final class XmlHandler implements XmlFileStorageInterface
         }
 
         $this->setDOM();
-        $this->Dom->formatOutput = true;
+        $this->document->formatOutput = true;
 
-        $this->root = $this->Dom->createElement($node);
-        $this->Dom->appendChild($this->root);
-        $this->writeChildNodes($data, $this->root);
+        $root = $this->document->createElement($node);
+        $this->document->appendChild($root);
+        $this->writeChildNodes($data, $root);
 
-        $this->fileHandler->save($this->Dom->saveXML());
+        $this->fileHandler->save($this->document->saveXML());
 
         return $this;
     }
 
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
-     *
-     * @param mixed   $items
-     * @param DOMNode $node
-     * @param null    $type
      */
-    protected function writeChildNodes($items, DOMNode $node, $type = null)
+    protected function writeChildNodes(
+        $items,
+        DOMNode $node,
+        $type = null
+    ): void
     {
         foreach ($this->analyzeItems($items) as $key => $value) {
             if (is_int($key)) {
-                $newNode = $this->Dom->createElement('item');
+                $newNode = $this->document->createElement('item');
                 $newNode->setAttribute('type', $type);
             } else {
-                $newNode = $this->Dom->createElement($key);
+                $newNode = $this->document->createElement($key);
             }
 
             if (is_array($value)) {
@@ -217,9 +190,9 @@ final class XmlHandler implements XmlFileStorageInterface
             } else if (is_object($value)) {
                 $newNode->setAttribute('class', get_class($value));
                 $this->writeChildNodes($value, $newNode, $key);
-//                $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
+//                $newNode->appendChild($this->document->createTextNode(base64_encode(serialize($value))));
             } else {
-                $newNode->appendChild($this->Dom->createTextNode(trim($value)));
+                $newNode->appendChild($this->document->createTextNode(trim($value)));
             }
 
             $node->appendChild($newNode);
@@ -229,12 +202,9 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Analizar el tipo de elementos
      *
-     * @param mixed $items
-     * @param bool  $serialize
-     *
      * @return array|string
      */
-    protected function analyzeItems($items, $serialize = false)
+    protected function analyzeItems($items, bool $serialize = false)
     {
         if (is_array($items)) {
             ksort($items);
@@ -252,12 +222,8 @@ final class XmlHandler implements XmlFileStorageInterface
 
     /**
      * Analizar un elemento del tipo objeto
-     *
-     * @param $object
-     *
-     * @return array
      */
-    protected function analyzeObject($object)
+    protected function analyzeObject(object $object): array
     {
         $items = [];
         $reflection = new ReflectionObject($object);
@@ -286,8 +252,6 @@ final class XmlHandler implements XmlFileStorageInterface
 
     /**
      * Devolver los elementos cargados
-     *
-     * @return mixed
      */
     public function getItems()
     {
@@ -296,12 +260,8 @@ final class XmlHandler implements XmlFileStorageInterface
 
     /**
      * Establecer los elementos
-     *
-     * @param $items
-     *
-     * @return XmlHandler
      */
-    public function setItems($items)
+    public function setItems($items): XmlHandler
     {
         $this->items = $items;
 
@@ -309,12 +269,9 @@ final class XmlHandler implements XmlFileStorageInterface
     }
 
     /**
-     * @param $path
-     *
-     * @return string
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
-    public function getPathValue(string $path):string
+    public function getPathValue(string $path): string
     {
         $this->fileHandler->checkIsReadable();
         $this->fileHandler->getFileSize(true);
@@ -331,9 +288,6 @@ final class XmlHandler implements XmlFileStorageInterface
         return $query->item(0)->nodeValue;
     }
 
-    /**
-     * @return FileHandler
-     */
     public function getFileHandler(): FileHandler
     {
         return $this->fileHandler;

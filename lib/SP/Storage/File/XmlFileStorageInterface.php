@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -32,9 +32,6 @@ namespace SP\Storage\File;
 interface XmlFileStorageInterface
 {
     /**
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
      * @throws FileException
      */
     public function load(string $node = ''): XmlFileStorageInterface;
@@ -43,28 +40,18 @@ interface XmlFileStorageInterface
      * @param mixed  $data Data to be saved
      * @param string $node
      *
-     * @return XmlFileStorageInterface
      * @throws FileException
      */
     public function save($data, string $node = ''): XmlFileStorageInterface;
 
-    /**
-     * @return mixed
-     */
     public function getItems();
 
     /**
      * Returns the given path node value
      *
-     * @param $path
-     *
-     * @return string
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function getPathValue(string $path): string;
 
-    /**
-     * @return FileHandler
-     */
     public function getFileHandler(): FileHandler;
 }

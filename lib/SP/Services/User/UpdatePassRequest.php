@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -31,65 +31,36 @@ namespace SP\Services\User;
  */
 final class UpdatePassRequest
 {
-    /**
-     * @var string
-     */
-    private $pass;
-    /**
-     * @var int
-     */
-    private $isChangePass = 0;
-    /**
-     * @var int
-     */
-    private $isChangedPass = 0;
+    private string $pass;
+    private bool $isChangePass = false;
+    private bool $isChangedPass = false;
 
-    /**
-     * UpdatePassRequest constructor.
-     *
-     * @param string $pass
-     */
-    public function __construct($pass)
+    public function __construct(string $pass)
     {
         $this->pass = $pass;
     }
 
-    /**
-     * @return string
-     */
-    public function getPass()
+    public function getPass(): string
     {
         return $this->pass;
     }
 
-    /**
-     * @return int
-     */
-    public function getisChangePass()
+    public function getisChangePass(): bool
     {
         return $this->isChangePass;
     }
 
-    /**
-     * @param int $isChangePass
-     */
-    public function setIsChangePass($isChangePass)
+    public function setIsChangePass(bool $isChangePass): void
     {
         $this->isChangePass = $isChangePass;
     }
 
-    /**
-     * @return int
-     */
-    public function getisChangedPass()
+    public function getisChangedPass(): bool
     {
         return $this->isChangedPass;
     }
 
-    /**
-     * @param int $isChangedPass
-     */
-    public function setIsChangedPass($isChangedPass)
+    public function setIsChangedPass(bool $isChangedPass): void
     {
         $this->isChangedPass = $isChangedPass;
     }

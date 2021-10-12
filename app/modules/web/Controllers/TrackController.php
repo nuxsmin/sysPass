@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -51,10 +51,7 @@ final class TrackController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var TrackService
-     */
-    protected $trackService;
+    protected ?TrackService $trackService = null;
 
     /**
      * Search action
@@ -69,12 +66,15 @@ final class TrackController extends ControllerBase
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::TRACK_SEARCH)) {
-            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+        if (!$this->acl->checkUserAccess(ActionsInterface::TRACK_SEARCH)) {
+            throw new UnauthorizedActionException(SPException::ERROR);
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -90,11 +90,17 @@ final class TrackController extends ControllerBase
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $itemsGridHelper = $this->dic->get(TrackGrid::class);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getGrid($this->trackService->search($itemSearchData)), $itemSearchData);
+        return $itemsGridHelper->updatePager(
+            $itemsGridHelper->getGrid($this->trackService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
@@ -103,25 +109,35 @@ final class TrackController extends ControllerBase
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function unlockAction(int $id)
+    public function unlockAction(int $id): ?bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
-                throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+            if (!$this->acl->checkUserAccess(ActionsInterface::TRACK_UNLOCK)) {
+                throw new UnauthorizedActionException(SPException::ERROR);
             }
 
             $this->trackService->unlock($id);
 
-            $this->eventDispatcher->notifyEvent('unlock.track', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'unlock.track',
+                new Event($this)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track unlocked'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Track unlocked')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -131,25 +147,35 @@ final class TrackController extends ControllerBase
      * Clears tracks
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function clearAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {
-                throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+            if (!$this->acl->checkUserAccess(ActionsInterface::TRACK_CLEAR)) {
+                throw new UnauthorizedActionException(SPException::ERROR);
             }
 
             $this->trackService->clear();
 
-            $this->eventDispatcher->notifyEvent('clear.track', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'clear.track',
+                new Event($this)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks cleared out'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Tracks cleared out')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -161,7 +187,7 @@ final class TrackController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

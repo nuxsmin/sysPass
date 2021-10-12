@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Tag;
@@ -48,115 +48,105 @@ final class TagService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var TagRepository
-     */
-    protected $tagRepository;
+    protected ?TagRepository $tagRepository = null;
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->tagRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return TagData
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): TagData
     {
         $result = $this->tagRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Tag not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
     }
 
     /**
-     * @param string $name
-     *
-     * @return TagData
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): TagData
     {
         $result = $this->tagRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Tag not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): TagService
     {
         if ($this->tagRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Tag not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return $this
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): TagService
     {
         if ($this->tagRepository->deleteByIdBatch($ids) !== count($ids)) {
-            throw new ServiceException(__u('Error while removing the tags'), ServiceException::WARNING);
+            throw new ServiceException(
+                __u('Error while removing the tags'),
+                SPException::WARNING
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create($itemData)
+    public function create(TagData $itemData): int
     {
         return $this->tagRepository->create($itemData);
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update(TagData $itemData): int
     {
         return $this->tagRepository->update($itemData);
     }
@@ -168,7 +158,7 @@ final class TagService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->tagRepository->getAll();
     }
@@ -177,7 +167,7 @@ final class TagService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->tagRepository = $this->dic->get(TagRepository::class);
     }

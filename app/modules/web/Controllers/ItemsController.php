@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -55,12 +55,13 @@ final class ItemsController extends SimpleControllerBase
      *
      * @param int|null $accountId
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function accountsUserAction(?int $accountId = null)
+    public function accountsUserAction(?int $accountId = null): void
     {
         $outItems = [];
 
@@ -86,7 +87,7 @@ final class ItemsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function clientsAction()
+    public function clientsAction(): void
     {
         Json::factory($this->router->response())
             ->returnRawJson(
@@ -102,7 +103,7 @@ final class ItemsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function categoriesAction()
+    public function categoriesAction(): void
     {
         Json::factory($this->router->response())
             ->returnRawJson(
@@ -112,16 +113,16 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function notificationsAction()
+    public function notificationsAction(): void
     {
         $notifications = array_map(
-            function ($notification) {
+            static function ($notification) {
                 /** @@var $notification NotificationData */
                 return sprintf(
                     '(%s) - %s',
@@ -155,7 +156,7 @@ final class ItemsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function tagsAction()
+    public function tagsAction(): void
     {
         Json::factory($this->router->response())
             ->returnRawJson(
@@ -169,7 +170,7 @@ final class ItemsController extends SimpleControllerBase
      *
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checks();
     }
@@ -181,7 +182,7 @@ final class ItemsController extends SimpleControllerBase
      *
      * @return array
      */
-    private function prepareItems(array $items)
+    private function prepareItems(array $items): array
     {
         $outItems = [];
 

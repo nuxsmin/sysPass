@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -38,10 +38,6 @@ defined('APP_ROOT') || die();
 final class ImageUtil
 {
     /**
-     * ImageUtil constructor.
-     *
-     * @param PhpExtensionChecker $checker
-     *
      * @throws CheckException
      */
     public function __construct(PhpExtensionChecker $checker)
@@ -52,12 +48,9 @@ final class ImageUtil
     /**
      * Crear miniatura de una imagen
      *
-     * @param $image string La imagen a redimensionar
-     *
-     * @return bool|string
      * @throws InvalidImageException
      */
-    public function createThumbnail(string $image)
+    public function createThumbnail(string $image): string
     {
         $im = @imagecreatefromstring($image);
 
@@ -76,13 +69,24 @@ final class ImageUtil
         $imTmp = imagecreatetruecolor($new_width, $new_height);
 
         // Redimensionar la imagen
-        imagecopyresized($imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+        imagecopyresized(
+            $imTmp,
+            $im,
+            0,
+            0,
+            0,
+            0,
+            $new_width,
+            $new_height,
+            $width,
+            $height
+        );
 
         // Devolver la imagen
         ob_start();
         imagepng($imTmp);
-        $thumbnail = ob_get_contents();
-        ob_end_clean();
+
+        $thumbnail = ob_get_clean();
 
         imagedestroy($imTmp);
         imagedestroy($im);
@@ -92,8 +96,6 @@ final class ImageUtil
 
     /**
      * Convertir un texto a imagen
-     *
-     * @param $text string El texto a convertir
      *
      * @return bool|string
      */
@@ -126,8 +128,7 @@ final class ImageUtil
         // Devolver la imagen
         ob_start();
         imagepng($im);
-        $image = ob_get_contents();
-        ob_end_clean();
+        $image = ob_get_clean();
 
         imagedestroy($im);
 

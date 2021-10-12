@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -31,67 +31,70 @@ namespace SP\Providers\Auth\Ldap;
  */
 final class LdapParams
 {
-    const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
+    private const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
 
     /**
      * @var string
      */
-    protected $server;
+    protected string $server;
     /**
      * @var int
      */
-    protected $port = 389;
+    protected int $port = 389;
     /**
      * @var string
      */
-    protected $searchBase;
+    protected string $searchBase;
     /**
      * @var string
      */
-    protected $bindDn;
+    protected string $bindDn;
     /**
      * @var string
      */
-    protected $bindPass;
+    protected string $bindPass;
     /**
      * @var string
      */
-    protected $group;
+    protected string $group;
     /**
      * @var int
      */
-    protected $type;
+    protected int $type;
     /**
      * @var bool
      */
-    protected $tlsEnabled = false;
+    protected bool $tlsEnabled = false;
     /**
      * @var string
      */
-    protected $filterUserObject;
+    protected string $filterUserObject;
     /**
      * @var string
      */
-    protected $filterGroupObject;
+    protected string $filterGroupObject;
     /**
      * @var array
      */
-    protected $filterUserAttributes;
+    protected array $filterUserAttributes;
     /**
      * @var array
      */
-    protected $filterGroupAttributes;
+    protected array $filterGroupAttributes;
 
     /**
      * Devolver el puerto del servidor si está establecido
      *
      * @param $server
      *
-     * @return array|false
+     * @return array
      */
-    public static function getServerAndPort($server)
+    public static function getServerAndPort($server): array
     {
-        return preg_match('#' . self::REGEX_SERVER . '#i', $server, $matches) ? $matches : false;
+        return preg_match(
+            '#' . self::REGEX_SERVER . '#i', $server,
+            $matches
+        ) ? $matches : [];
     }
 
     /**
@@ -105,7 +108,7 @@ final class LdapParams
     /**
      * @param string|null $filterUserObject
      */
-    public function setFilterUserObject(?string $filterUserObject = null)
+    public function setFilterUserObject(?string $filterUserObject = null): void
     {
         if (!empty($filterUserObject)) {
             $this->filterUserObject = $filterUserObject;
@@ -123,7 +126,7 @@ final class LdapParams
     /**
      * @param string|null $filterGroupObject
      */
-    public function setFilterGroupObject(?string $filterGroupObject = null)
+    public function setFilterGroupObject(?string $filterGroupObject = null): void
     {
         if (!empty($filterGroupObject)) {
             $this->filterGroupObject = $filterGroupObject;
@@ -141,7 +144,7 @@ final class LdapParams
     /**
      * @param array|null $filterUserAttributes
      */
-    public function setFilterUserAttributes(?array $filterUserAttributes = null)
+    public function setFilterUserAttributes(?array $filterUserAttributes = null): void
     {
         $this->filterUserAttributes = $filterUserAttributes;
     }
@@ -157,7 +160,7 @@ final class LdapParams
     /**
      * @param array|null $filterGroupAttributes
      */
-    public function setFilterGroupAttributes(?array $filterGroupAttributes = null)
+    public function setFilterGroupAttributes(?array $filterGroupAttributes = null): void
     {
         $this->filterGroupAttributes = $filterGroupAttributes;
     }
@@ -255,6 +258,7 @@ final class LdapParams
     public function setGroup(string $group): LdapParams
     {
         $this->group = $group;
+
         return $this;
     }
 
@@ -291,9 +295,9 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setType($type): LdapParams
+    public function setType(int $type): LdapParams
     {
-        $this->type = (int)$type;
+        $this->type = $type;
 
         return $this;
     }

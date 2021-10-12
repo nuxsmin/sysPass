@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services;
@@ -45,30 +45,13 @@ use SP\Storage\Database\Database;
  */
 abstract class Service
 {
-    const STATUS_INTERNAL_ERROR = 1000;
+    protected const STATUS_INTERNAL_ERROR = 1000;
 
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ContextInterface
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
+    protected Config $config;
+    protected ContextInterface $context;
+    protected EventDispatcher $eventDispatcher;
+    protected ContainerInterface $dic;
 
-    /**
-     * Service constructor.
-     *
-     * @param ContainerInterface $dic
-     */
     public function __construct(ContainerInterface $dic)
     {
         $this->dic = $dic;
@@ -84,9 +67,6 @@ abstract class Service
     /**
      * Bubbles a Closure in a database transaction
      *
-     * @param Closure $closure
-     *
-     * @return mixed
      * @throws ServiceException
      * @throws Exception
      */
@@ -106,7 +86,8 @@ abstract class Service
 
                 logger('Transaction:Rollback');
 
-                $this->eventDispatcher->notifyEvent('database.rollback',
+                $this->eventDispatcher->notifyEvent(
+                    'database.rollback',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Rollback')))
                 );
@@ -119,10 +100,9 @@ abstract class Service
     }
 
     /**
-     * @return string
      * @throws ServiceException
      */
-    protected final function getMasterKeyFromContext(): String
+    final protected function getMasterKeyFromContext(): string
     {
         try {
             if ($this->context instanceof SessionContext) {
@@ -144,11 +124,9 @@ abstract class Service
     }
 
     /**
-     * @param string $masterPass
-     *
      * @throws ServiceException
      */
-    protected final function setMasterKeyInContext(string $masterPass)
+    final protected function setMasterKeyInContext(string $masterPass): void
     {
         try {
             if ($this->context instanceof SessionContext) {
@@ -156,11 +134,7 @@ abstract class Service
             } else {
                 $this->context->setTrasientKey('_masterpass', $masterPass);
             }
-        } catch (ContextException $e) {
-            logger($e->getMessage());
-
-            throw new ServiceException(__u('Error while setting master password in context'));
-        } catch (CryptoException $e) {
+        } catch (ContextException | CryptoException $e) {
             logger($e->getMessage());
 
             throw new ServiceException(__u('Error while setting master password in context'));

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Events;
@@ -38,7 +38,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     /**
      * @var EventReceiver[]
      */
-    protected $observers = [];
+    protected array $observers = [];
 
     /**
      * Attach an SplObserver
@@ -104,18 +104,16 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
 
     /**
      * Notificar un evento
-     *
-     * @param string $eventName
-     * @param Event  $event
      */
-    public function notifyEvent(string $eventName, Event $event)
+    public function notifyEvent(string $eventName, Event $event): void
     {
         foreach ($this->observers as $observer) {
             if (method_exists($observer, 'getEventsString')) {
                 $events = $observer->getEventsString();
 
                 if (!empty($events)
-                    && ($events === '*' || preg_match('/' . $events . '/i', $eventName))
+                    && ($events === '*'
+                        || preg_match('/' . $events . '/i', $eventName))
                 ) {
                     // FIXME: update receivers Event
                     $observer->updateEvent($eventName, $event);

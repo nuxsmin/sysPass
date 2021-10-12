@@ -1,11 +1,10 @@
 <?php
 /**
- * @var ThemeIcons $icons
- * @var callable   $_getvar
- * @var ConfigData $configData
+ * @var ThemeIcons                     $icons
+ * @var callable                       $_getvar
+ * @var \SP\Config\ConfigDataInterface $configData
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 
 ?>

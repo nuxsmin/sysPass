@@ -239,9 +239,9 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
-        $this->assertCount(0, self::$repository->getByIdBatch([]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3])->getDataAsArray());
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5])->getDataAsArray());
+        $this->assertCount(0, self::$repository->getByIdBatch([])->getDataAsArray());
     }
 
     /**

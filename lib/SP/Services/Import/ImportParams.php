@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -32,104 +32,59 @@ namespace SP\Services\Import;
  */
 final class ImportParams
 {
-    /**
-     * @var string
-     */
-    protected $importPwd;
-    /**
-     * @var string
-     */
-    protected $importMasterPwd;
-    /**
-     * @var int
-     */
-    protected $defaultUser = 0;
-    /**
-     * @var int
-     */
-    protected $defaultGroup = 0;
-    /**
-     * @var string
-     */
-    protected $csvDelimiter = ';';
+    protected ?string $importPwd = null;
+    protected ?string $importMasterPwd = null;
+    protected int $defaultUser = 0;
+    protected int $defaultGroup = 0;
+    protected string $csvDelimiter = ';';
 
-    /**
-     * @return string
-     */
-    public function getImportPwd()
+    public function getImportPwd(): ?string
     {
         return $this->importPwd;
     }
 
-    /**
-     * @param string $importPwd
-     */
-    public function setImportPwd($importPwd)
+    public function setImportPwd(string $importPwd): void
     {
         $this->importPwd = $importPwd;
     }
 
-    /**
-     * @return int
-     */
-    public function getDefaultGroup()
+    public function getDefaultGroup(): int
     {
         return $this->defaultGroup;
     }
 
-    /**
-     * @param int $defaultGroup
-     */
-    public function setDefaultGroup($defaultGroup)
+    public function setDefaultGroup(int $defaultGroup): void
     {
-        $this->defaultGroup = (int)$defaultGroup;
+        $this->defaultGroup = $defaultGroup;
     }
 
-    /**
-     * @return string
-     */
-    public function getCsvDelimiter()
+    public function getCsvDelimiter(): string
     {
         return $this->csvDelimiter;
     }
 
-    /**
-     * @param string $csvDelimiter
-     */
-    public function setCsvDelimiter($csvDelimiter)
+    public function setCsvDelimiter(string $csvDelimiter): void
     {
         $this->csvDelimiter = $csvDelimiter;
     }
 
-    /**
-     * @return string
-     */
-    public function getImportMasterPwd()
+    public function getImportMasterPwd(): ?string
     {
         return $this->importMasterPwd;
     }
 
-    /**
-     * @param string $importMasterPwd
-     */
-    public function setImportMasterPwd($importMasterPwd)
+    public function setImportMasterPwd(string $importMasterPwd): void
     {
         $this->importMasterPwd = $importMasterPwd;
     }
 
-    /**
-     * @return int
-     */
-    public function getDefaultUser()
+    public function getDefaultUser(): int
     {
         return $this->defaultUser;
     }
 
-    /**
-     * @param int $defaultUser
-     */
-    public function setDefaultUser($defaultUser)
+    public function setDefaultUser(int $defaultUser): void
     {
-        $this->defaultUser = (int)$defaultUser;
+        $this->defaultUser = $defaultUser;
     }
 }

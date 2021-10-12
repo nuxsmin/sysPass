@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 
 /**
@@ -41,25 +39,17 @@ abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var string
-     */
-    protected $previousSk;
+    protected ContainerInterface $dic;
 
     /**
      * SimpleControllerBase constructor.
      *
-     * @param Container $container
-     * @param           $actionName
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function __construct(Container $container, $actionName)
+    public function __construct(
+        ContainerInterface $container,
+        string             $actionName
+    )
     {
         $this->dic = $container;
         $this->actionName = $actionName;
@@ -75,18 +65,12 @@ abstract class SimpleControllerBase
         }
     }
 
-    /**
-     * @return void
-     */
-    protected abstract function initialize();
+    abstract protected function initialize(): void;
 
     /**
-     * @return void
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function handleSessionTimeout()
+    public function handleSessionTimeout(): void
     {
         $this->sessionLogout(
             $this->request,
@@ -104,7 +88,7 @@ abstract class SimpleControllerBase
      *
      * @throws SessionTimeout
      */
-    protected function checks()
+    protected function checks(): void
     {
         if ($this->session->isLoggedIn() === false
             || $this->session->getAuthCompleted() !== true
@@ -118,16 +102,14 @@ abstract class SimpleControllerBase
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param string|null $action La acción a comprobar
-     *
      * @throws UnauthorizedPageException
      */
-    protected function checkAccess(?string $action)
+    protected function checkAccess(int $action): void
     {
-        if (!$this->session->getUserData()->getIsAdminApp()
-            && !$this->acl->checkUserAccess($action)
+        if (!$this->acl->checkUserAccess($action)
+            && !$this->session->getUserData()->getIsAdminApp()
         ) {
-            throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
+            throw new UnauthorizedPageException(SPException::INFO);
         }
     }
 }

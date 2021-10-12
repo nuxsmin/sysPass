@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Config;
 
 use SP\Core\Exceptions\ConfigException;
+use SP\Core\Exceptions\SPException;
 use SP\Util\Checks;
 
 /**
@@ -36,18 +37,14 @@ final class ConfigUtil
 {
     /**
      * Adaptador para convertir una cadena de extensiones a un array
-     *
-     * @param string $filesAllowedExts
-     *
-     * @return array
      */
-    public static function filesExtsAdapter(string $filesAllowedExts)
+    public static function filesExtsAdapter(string $filesAllowedExts): array
     {
         if (empty($filesAllowedExts)) {
             return [];
         }
 
-        return array_map(function ($value) {
+        return array_map(static function ($value) {
             if (preg_match('/[^a-z0-9_-]+/i', $value)) {
                 return null;
             }
@@ -58,10 +55,6 @@ final class ConfigUtil
 
     /**
      * Adaptador para convertir una cadena de direcciones de email a un array
-     *
-     * @param string $mailAddresses
-     *
-     * @return array
      */
     public static function mailAddressesAdapter(string $mailAddresses): array
     {
@@ -69,23 +62,21 @@ final class ConfigUtil
             return [];
         }
 
-        return array_filter(explode(',', $mailAddresses), function ($value) {
-            return filter_var($value, FILTER_VALIDATE_EMAIL);
-        });
+        return array_filter(
+            explode(',', $mailAddresses),
+            static fn($value) => filter_var($value, FILTER_VALIDATE_EMAIL)
+        );
     }
 
     /**
      * Adaptador para convertir una cadena de eventos a un array
-     *
-     * @param array $events
-     *
-     * @return array
      */
-    public static function eventsAdapter(array $events)
+    public static function eventsAdapter(array $events): array
     {
-        return array_filter($events, function ($value) {
-            return preg_match('/^[a-z][a-z\.]+$/i', $value);
-        });
+        return array_filter(
+            $events,
+            static fn($value) => preg_match('/^[a-z][a-z.]+$/i', $value)
+        );
     }
 
     /**
@@ -94,18 +85,18 @@ final class ConfigUtil
      *
      * @throws ConfigException
      */
-    public static function checkConfigDir()
+    public static function checkConfigDir(): void
     {
         if (!is_dir(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('\'/app/config\' directory does not exist.'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('\'/app/config\' directory does not exist.'), SPException::CRITICAL);
         }
 
         if (!is_writable(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('Unable to write into \'/app/config\' directory'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('Unable to write into \'/app/config\' directory'), SPException::CRITICAL);
         }
 
         if (!Checks::checkIsWindows()
@@ -115,7 +106,7 @@ final class ConfigUtil
 
             throw new ConfigException(
                 __u('\'/app/config\' directory permissions are wrong'),
-                ConfigException::ERROR,
+                SPException::ERROR,
                 sprintf(__('Current: %s - Needed: 750'), $configPerms));
         }
     }

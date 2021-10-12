@@ -1,10 +1,9 @@
-<?php
-/*
+<?php /*
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +18,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Providers\Auth\Ldap;
 
@@ -60,7 +61,11 @@ final class LdapUtil
      */
     public static function getGroupName(string $group)
     {
-        if (preg_match('/^cn=(?<groupname>[^,]+),.*/i', $group, $matches)) {
+        if (preg_match(
+            '/^cn=(?<groupname>[^,]+),.*/i',
+            $group,
+            $matches)
+        ) {
             return $matches['groupname'];
         }
 
@@ -75,13 +80,16 @@ final class LdapUtil
      */
     public static function getAttributesForFilter(array $attributes, string $value): string
     {
-        $value = ldap_escape((string)$value, null, LDAP_ESCAPE_FILTER);
+        $value = ldap_escape($value, null, LDAP_ESCAPE_FILTER);
 
         return implode(
             '',
-            array_map(function ($attribute) use ($value) {
-                return sprintf('(%s=%s)', $attribute, $value);
-            }, $attributes)
+            array_map(
+                static function ($attribute) use ($value) {
+                    return sprintf('(%s=%s)', $attribute, $value);
+                },
+                $attributes
+            )
         );
     }
 }

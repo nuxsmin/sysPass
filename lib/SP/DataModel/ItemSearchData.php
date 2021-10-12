@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
@@ -34,38 +34,20 @@ use SP\Util\Filter;
  */
 class ItemSearchData
 {
-    const ORDER_ASC = 'ASC';
-    const ORDER_DESC = 'DESC';
+    private const ORDER_ASC = 'ASC';
+    private const ORDER_DESC = 'DESC';
 
-    /**
-     * @var string
-     */
-    public $seachString = '';
-    /**
-     * @var int
-     */
-    public $limitStart = 0;
-    /**
-     * @var int
-     */
-    public $limitCount = 0;
-    /**
-     * @var string
-     */
-    public $order = self::ORDER_ASC;
+    public ?string $seachString = null;
+    public int $limitStart = 0;
+    public int $limitCount = 0;
+    public string $order = self::ORDER_ASC;
 
-    /**
-     * @return string|null
-     */
     public function getSeachString(): ?string
     {
         return $this->seachString;
     }
 
-    /**
-     * @param string|null $seachString
-     */
-    public function setSeachString(?string $seachString)
+    public function setSeachString(?string $seachString): void
     {
         if ($seachString) {
             $this->seachString = Filter::safeSearchString($seachString);
@@ -74,50 +56,32 @@ class ItemSearchData
         }
     }
 
-    /**
-     * @return int
-     */
     public function getLimitStart(): int
     {
         return $this->limitStart;
     }
 
-    /**
-     * @param int|null $limitStart
-     */
-    public function setLimitStart(?int $limitStart)
+    public function setLimitStart(int $limitStart): void
     {
-        $this->limitStart = (int)$limitStart;
+        $this->limitStart = $limitStart;
     }
 
-    /**
-     * @return int
-     */
     public function getLimitCount(): int
     {
         return $this->limitCount;
     }
 
-    /**
-     * @param int|null $limitCount
-     */
-    public function setLimitCount(?int $limitCount)
+    public function setLimitCount(int $limitCount): void
     {
-        $this->limitCount = (int)$limitCount;
+        $this->limitCount = $limitCount;
     }
 
-    /**
-     * @return string
-     */
     public function getOrder(): string
     {
         return $this->order;
     }
 
-    /**
-     * @param string|null $order
-     */
-    public function setOrder(?string $order)
+    public function setOrder(string $order): void
     {
         $this->order = $order;
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -55,14 +56,8 @@ final class PluginController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var PluginService
-     */
-    protected $pluginService;
-    /**
-     * @var PluginDataService
-     */
-    protected $pluginDataService;
+    protected ?PluginService $pluginService = null;
+    protected ?PluginDataService $pluginDataService = null;
 
     /**
      * indexAction
@@ -73,9 +68,9 @@ final class PluginController extends ControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
-        if (!$this->acl->checkUserAccess(Acl::PLUGIN)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN)) {
             return;
         }
 
@@ -96,27 +91,36 @@ final class PluginController extends ControllerBase
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $pluginGrid = $this->dic->get(PluginGrid::class);
 
-        return $pluginGrid->updatePager($pluginGrid->getGrid($this->pluginService->search($itemSearchData)), $itemSearchData);
+        return $pluginGrid->updatePager(
+            $pluginGrid->getGrid($this->pluginService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * Search action
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -131,14 +135,18 @@ final class PluginController extends ControllerBase
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Plugin'));
@@ -146,13 +154,19 @@ final class PluginController extends ControllerBase
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.plugin', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.plugin',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -169,17 +183,23 @@ final class PluginController extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $pluginId = null)
+    protected function setViewData(?int $pluginId = null): void
     {
         $this->view->addTemplate('plugin');
 
-        $pluginData = $pluginId ? $this->pluginService->getById($pluginId) : new PluginModel();
-        $pluginInfo = $this->dic->get(PluginManager::class)->getPlugin($pluginData->getName());
+        $pluginData = $pluginId
+            ? $this->pluginService->getById($pluginId)
+            : new PluginModel();
+        $pluginInfo = $this->dic->get(PluginManager::class)
+            ->getPlugin($pluginData->getName());
 
         $this->view->assign('plugin', $pluginData);
         $this->view->assign('pluginInfo', $pluginInfo);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -198,22 +218,33 @@ final class PluginController extends ControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function enableAction(int $id)
+    public function enableAction(int $id): bool
     {
         try {
-            $this->pluginService->toggleEnabled($id, 1);
+            $this->pluginService->toggleEnabled($id, true);
 
-            $this->eventDispatcher->notifyEvent('edit.plugin.enable',
-                new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin enabled')))
+            $this->eventDispatcher->notifyEvent(
+                'edit.plugin.enable',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Plugin enabled'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin enabled'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Plugin enabled')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -227,22 +258,33 @@ final class PluginController extends ControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function disableAction(int $id)
+    public function disableAction(int $id): bool
     {
         try {
-            $this->pluginService->toggleEnabled($id, 0);
+            $this->pluginService->toggleEnabled($id, false);
 
-            $this->eventDispatcher->notifyEvent('edit.plugin.disable',
-                new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin disabled')))
+            $this->eventDispatcher->notifyEvent(
+                'edit.plugin.disable',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Plugin disabled'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin disabled'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Plugin disabled')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -254,25 +296,36 @@ final class PluginController extends ControllerBase
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function resetAction(int $id)
+    public function resetAction(int $id): bool
     {
         try {
             $pluginModel = $this->pluginService->getById($id);
             $this->pluginDataService->delete($pluginModel->getName());
 
-            $this->eventDispatcher->notifyEvent('edit.plugin.reset',
-                new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin reset')))
+            $this->eventDispatcher->notifyEvent(
+                'edit.plugin.reset',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Plugin reset'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin reset'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Plugin reset')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -284,33 +337,53 @@ final class PluginController extends ControllerBase
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PLUGIN_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->pluginService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->pluginService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.plugin.selection', new Event($this));
+                $this->eventDispatcher->notifyEvent(
+                    'delete.plugin.selection',
+                    new Event($this)
+                );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugins deleted'));
-            } else {
-                $this->pluginService->delete($id);
-
-                $this->eventDispatcher->notifyEvent('delete.plugin', new Event($this));
-
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Plugins deleted')
+                );
             }
+
+            $this->pluginService->delete($id);
+
+            $this->eventDispatcher->notifyEvent(
+                'delete.plugin',
+                new Event($this)
+            );
+
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Plugin deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -322,7 +395,7 @@ final class PluginController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\PublicLink;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Util\PasswordUtil;
 
 /**
@@ -34,24 +33,15 @@ use SP\Util\PasswordUtil;
  */
 final class PublicLinkKey
 {
-    /**
-     * @var string
-     */
-    private $hash;
-    /**
-     * @var string
-     */
-    private $salt;
+    private string $hash;
+    private string $salt;
 
     /**
      * PublicLinkKey constructor.
      *
-     * @param string $salt
-     * @param string $hash
-     *
-     * @throws EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    public function __construct(string $salt, string $hash = null)
+    public function __construct(string $salt, ?string $hash = null)
     {
         $this->salt = $salt;
 
@@ -62,25 +52,16 @@ final class PublicLinkKey
         }
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return sha1($this->salt . $this->hash);
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         return $this->hash;
     }
 
-    /**
-     * @return string
-     */
     public function getSalt(): string
     {
         return $this->salt;

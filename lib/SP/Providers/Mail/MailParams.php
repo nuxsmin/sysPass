@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Mail;
@@ -34,29 +34,29 @@ final class MailParams
     /**
      * @var string
      */
-    public $server;
+    public string $server;
     /**
      * @var int
      */
-    public $port;
+    public int $port;
     /**
      * @var string
      */
-    public $user;
+    public string $user;
     /**
      * @var string
      */
-    public $pass;
+    public string $pass;
     /**
      * @var string
      */
-    public $security;
+    public string $security;
     /**
      * @var string
      */
-    public $from;
+    public string $from;
     /**
      * @var bool
      */
-    public $mailAuthenabled;
+    public bool $mailAuthenabled;
 }

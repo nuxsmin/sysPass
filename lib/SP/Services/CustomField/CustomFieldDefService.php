@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\CustomField;
@@ -29,6 +29,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
@@ -47,14 +48,7 @@ final class CustomFieldDefService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var CustomFieldDefRepository
-     */
-    protected $customFieldDefRepository;
-    /**
-     * @var CustomFieldService
-     */
-    protected $customFieldService;
+    protected ?CustomFieldDefRepository $customFieldDefRepository = null;
 
     /**
      * @param $id
@@ -65,55 +59,50 @@ final class CustomFieldDefService extends Service
     {
         $modules = self::getFieldModules();
 
-        return isset($modules[$id]) ? $modules[$id] : $id;
+        return $modules[$id] ?? $id;
     }
 
     /**
      * Devuelve los módulos disponibles para los campos personalizados
-     *
-     * @return array
      */
-    public static function getFieldModules()
+    public static function getFieldModules(): array
     {
-        $modules = [
+        return [
             ActionsInterface::ACCOUNT => __('Accounts'),
             ActionsInterface::CATEGORY => __('Categories'),
             ActionsInterface::CLIENT => __('Clients'),
             ActionsInterface::USER => __('Users'),
             ActionsInterface::GROUP => __('Groups')
         ];
-
-        return $modules;
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->customFieldDefRepository->search($itemSearchData);
     }
 
     /**
-     * @param $id
-     *
-     * @return CustomFieldDefService
-     * @throws ServiceException
+     * @throws \SP\Services\ServiceException
      */
-    public function delete($id)
+    public function delete(int $id): CustomFieldDefService
     {
-        $this->transactionAware(function () use ($id) {
-            $this->dic->get(CustomFieldService::class)
-                ->deleteCustomFieldDefinitionData($id);
+        $this->transactionAware(
+            function () use ($id) {
+                $this->dic->get(CustomFieldService::class)
+                    ->deleteCustomFieldDefinitionData($id);
 
-            if ($this->customFieldDefRepository->delete($id) === 0) {
-                throw new NoSuchItemException(__u('Field not found'), NoSuchItemException::INFO);
+                if ($this->customFieldDefRepository->delete($id) === 0) {
+                    throw new NoSuchItemException(
+                        __u('Field not found'),
+                        SPException::INFO
+                    );
+                }
             }
-        });
+        );
 
         return $this;
     }
@@ -121,78 +110,77 @@ final class CustomFieldDefService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): void
     {
-        $this->transactionAware(function () use ($ids) {
-            $this->dic->get(CustomFieldService::class)
-                ->deleteCustomFieldDefinitionDataBatch($ids);
+        $this->transactionAware(
+            function () use ($ids) {
+                $this->dic->get(CustomFieldService::class)
+                    ->deleteCustomFieldDefinitionDataBatch($ids);
 
-            if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
-                throw new ServiceException(__u('Error while deleting the fields'), ServiceException::WARNING);
+                if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
+                    throw new ServiceException(
+                        __u('Error while deleting the fields'),
+                        SPException::WARNING
+                    );
+                }
             }
-        });
+        );
     }
 
     /**
-     * @param $itemData
+     * @param \SP\DataModel\CustomFieldDefinitionData $itemData
      *
-     * @return mixed
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($itemData)
+    public function create(CustomFieldDefinitionData $itemData): int
     {
         return $this->customFieldDefRepository->create($itemData);
     }
 
     /**
-     * @param CustomFieldDefinitionData $itemData
-     *
-     * @return mixed
      * @throws ServiceException
      */
     public function update(CustomFieldDefinitionData $itemData)
     {
-        return $this->transactionAware(function () use ($itemData) {
-            $customFieldDefinitionData = $this->getById($itemData->getId());
+        return $this->transactionAware(
+            function () use ($itemData) {
+                $customFieldDefinitionData = $this->getById($itemData->getId());
 
-            // Delete the data used by the items using the previous definition
-            if ($customFieldDefinitionData->getModuleId() !== $itemData->moduleId) {
-                $this->dic->get(CustomFieldService::class)
-                    ->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
-            }
+                // Delete the data used by the items using the previous definition
+                if ($customFieldDefinitionData->getModuleId() !== $itemData->moduleId) {
+                    $this->dic->get(CustomFieldService::class)
+                        ->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
+                }
 
-            if ($this->customFieldDefRepository->update($itemData) !== 1) {
-                throw new ServiceException(__u('Error while updating the custom field'));
+                if ($this->customFieldDefRepository->update($itemData) !== 1) {
+                    throw new ServiceException(__u('Error while updating the custom field'));
+                }
             }
-        });
+        );
     }
 
     /**
-     * @param $id
-     *
-     * @return CustomFieldDefinitionData
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): CustomFieldDefinitionData
     {
         return $this->customFieldDefRepository->getById($id);
     }
 
     /**
-     * @param CustomFieldDefinitionData $itemData
-     *
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(CustomFieldDefinitionData $itemData)
+    public function updateRaw(CustomFieldDefinitionData $itemData): void
     {
         if ($this->customFieldDefRepository->update($itemData) !== 1) {
             throw new ServiceException(__u('Error while updating the custom field'));
@@ -206,7 +194,7 @@ final class CustomFieldDefService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->customFieldDefRepository->getAll()->getDataAsArray();
     }
@@ -215,7 +203,7 @@ final class CustomFieldDefService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->customFieldDefRepository = $this->dic->get(CustomFieldDefRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
 
 use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class Address
@@ -33,31 +34,25 @@ use SP\Core\Exceptions\InvalidArgumentException;
  */
 final class Address
 {
-    const PATTERN_IP_ADDRESS = '#^(?<address>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})(?:/(?:(?<mask>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})|(?<cidr>[\d]{1,2})))?$#';
+    public const PATTERN_IP_ADDRESS = '#^(?<address>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})(?:/(?:(?<mask>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})|(?<cidr>[\d]{1,2})))?$#';
 
     /**
-     * @param $address
-     *
-     * @return mixed
-     * @throws InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
-    public static function toBinary(string $address)
+    public static function toBinary(string $address): string
     {
         if (!filter_var($address, FILTER_VALIDATE_IP)
             || ($binAddress = @inet_pton($address)) === false
         ) {
             logger(sprintf('%s : %s', __('Invalid IP'), $address));
 
-            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
         return $binAddress;
     }
 
     /**
-     * @param string $address
-     *
-     * @return string
      * @throws InvalidArgumentException
      */
     public static function fromBinary(string $address): string
@@ -67,7 +62,7 @@ final class Address
         if ($stringAddress === false) {
             logger(sprintf('%s : %s', __('Invalid IP'), $address));
 
-            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
         return $stringAddress;
@@ -76,9 +71,6 @@ final class Address
     /**
      * Parses an IPv4 address from either "192.168.0.1", "192.168.0.0/255.255.255.0" or "192.168.0.0/24" formats
      *
-     * @param string $address
-     *
-     * @return array
      * @throws InvalidArgumentException
      */
     public static function parse4(string $address): array
@@ -87,26 +79,25 @@ final class Address
             return $matches;
         }
 
-        throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
+        throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
     }
 
     /**
      * Checks whether an IP address is included within $inAddress and $inMask
      *
-     * @param string $address
-     * @param string $inAddress
-     * @param string $inMask
-     *
-     * @return int
      * @throws InvalidArgumentException
      */
-    public static function check(string $address, string $inAddress, string $inMask)
+    public static function check(
+        string $address,
+        string $inAddress,
+        string $inMask
+    ): bool
     {
         if (!filter_var($address, FILTER_VALIDATE_IP)
             || !filter_var($inAddress, FILTER_VALIDATE_IP)
             || !filter_var($inMask, FILTER_VALIDATE_IP)
         ) {
-            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
         // Obtains subnets based on mask ie.: subnet === subnet
@@ -115,10 +106,6 @@ final class Address
 
     /**
      * Converts a CIDR mask into decimal
-     *
-     * @param int $bits
-     *
-     * @return string
      */
     public static function cidrToDec(int $bits): string
     {

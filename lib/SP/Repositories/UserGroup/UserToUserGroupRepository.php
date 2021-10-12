@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\UserGroup;
@@ -44,14 +44,14 @@ final class UserToUserGroupRepository extends Repository
     /**
      * Checks whether the user is included in the group
      *
-     * @param $groupId
-     * @param $userId
+     * @param int $groupId
+     * @param int $userId
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkUserInGroup($groupId, $userId)
+    public function checkUserInGroup(int $groupId, int $userId): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?');
@@ -63,13 +63,13 @@ final class UserToUserGroupRepository extends Repository
     /**
      * Returns the groups which the user belongs to
      *
-     * @param $userId
+     * @param int $userId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getGroupsForUser($userId)
+    public function getGroupsForUser(int $userId): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userId = ?');
@@ -88,7 +88,7 @@ final class UserToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($id, array $users)
+    public function update(int $id, array $users): int
     {
         $this->delete($id);
         return $this->add($id, $users);
@@ -103,7 +103,7 @@ final class UserToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserToUserGroup WHERE userGroupId = ?');
@@ -123,9 +123,9 @@ final class UserToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add($groupId, array $users)
+    public function add(int $groupId, array $users): int
     {
-        if (empty($users)) {
+        if (count($users) === 0) {
             return 0;
         }
 
@@ -154,7 +154,7 @@ final class UserToUserGroupRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserToUserGroupData::class);

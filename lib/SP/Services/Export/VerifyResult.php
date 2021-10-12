@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Export;
@@ -32,26 +32,10 @@ namespace SP\Services\Export;
  */
 final class VerifyResult
 {
-    /**
-     * @var string
-     */
-    private $version;
-    /**
-     * @var bool
-     */
-    private $encrypted = false;
-    /**
-     * @var array
-     */
-    private $nodes;
+    private string $version;
+    private bool $encrypted;
+    private array $nodes;
 
-    /**
-     * VerifyResult constructor.
-     *
-     * @param string $version
-     * @param bool   $encrypted
-     * @param array  $nodes
-     */
     public function __construct(string $version, bool $encrypted, array $nodes)
     {
         $this->version = $version;
@@ -59,25 +43,16 @@ final class VerifyResult
         $this->nodes = $nodes;
     }
 
-    /**
-     * @return string
-     */
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    /**
-     * @return bool
-     */
     public function isEncrypted(): bool
     {
         return $this->encrypted;
     }
 
-    /**
-     * @return array
-     */
     public function getNodes(): array
     {
         return $this->nodes;

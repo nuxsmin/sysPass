@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -35,10 +35,7 @@ use SP\DataModel\CategoryData;
  */
 final class CategoryForm extends FormBase implements FormInterface
 {
-    /**
-     * @var CategoryData
-     */
-    protected $categoryData;
+    protected ?CategoryData $categoryData = null;
 
     /**
      * Validar el formulario
@@ -66,28 +63,28 @@ final class CategoryForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->categoryData = new CategoryData();
-        $this->categoryData->setId($this->itemId);
-        $this->categoryData->setName($this->request->analyzeString('name'));
-        $this->categoryData->setDescription($this->request->analyzeString('description'));
+        $this->categoryData
+            ->setId($this->itemId);
+        $this->categoryData
+            ->setName($this->request->analyzeString('name'));
+        $this->categoryData
+            ->setDescription($this->request->analyzeString('description'));
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->categoryData->getName()) {
             throw new ValidationException(__u('A category name needed'));
         }
     }
 
-    /**
-     * @return CategoryData
-     */
-    public function getItemData()
+    public function getItemData(): ?CategoryData
     {
         return $this->categoryData;
     }

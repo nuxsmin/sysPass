@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Config;
@@ -45,7 +45,7 @@ final class ConfigRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(ConfigData $configData)
+    public function update(ConfigData $configData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Config SET `value` = ? WHERE parameter = ?');
@@ -61,7 +61,7 @@ final class ConfigRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ConfigData $configData)
+    public function create(ConfigData $configData): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO Config SET parameter = ?, `value` = ?');
@@ -77,7 +77,7 @@ final class ConfigRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT parameter, `value` FROM Config ORDER BY parameter');
@@ -92,7 +92,7 @@ final class ConfigRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByParam($param)
+    public function getByParam(string $param): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT parameter, `value` FROM Config WHERE parameter = ? LIMIT 1');
@@ -108,7 +108,7 @@ final class ConfigRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function has($param)
+    public function has(string $param): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT parameter FROM Config WHERE parameter = ? LIMIT 1');
@@ -118,13 +118,13 @@ final class ConfigRepository extends Repository
     }
 
     /**
-     * @param $param
+     * @param string $param
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteByParam($param)
+    public function deleteByParam(string $param): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Config WHERE parameter = ? LIMIT 1');

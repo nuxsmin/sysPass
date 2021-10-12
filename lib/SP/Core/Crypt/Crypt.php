@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -39,14 +39,20 @@ final class Crypt
     /**
      * Encriptar datos con una clave segura
      *
-     * @param string     $data
-     * @param string|Key $securedKey
-     * @param null       $password
+     * @param string      $data
+     * @param string|Key  $securedKey
+     * @param string|null $password
      *
      * @return string
-     * @throws CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    public static function encrypt(string $data, $securedKey, $password = null)
+    public static function encrypt(
+        string  $data,
+                $securedKey,
+        ?string $password = null
+    ): string
     {
         try {
             if ($securedKey instanceof Key) {
@@ -57,7 +63,7 @@ final class Crypt
                 $key = Key::loadFromAsciiSafeString($securedKey);
             }
 
-            return Crypto::encrypt((string)$data, $key);
+            return Crypto::encrypt($data, $key);
         } catch (CryptoException $e) {
             logger($e->getMessage());
 
@@ -66,14 +72,14 @@ final class Crypt
     }
 
     /**
-     * @param string $key
-     * @param string $password
-     * @param bool   $useAscii
-     *
      * @return string|Key
      * @throws CryptoException
      */
-    public static function unlockSecuredKey(string $key, string $password, $useAscii = true)
+    public static function unlockSecuredKey(
+        string $key,
+        string $password,
+        bool   $useAscii = true
+    )
     {
         try {
             if ($useAscii) {
@@ -93,22 +99,31 @@ final class Crypt
      *
      * @param string                            $data
      * @param string|Key|KeyProtectedByPassword $securedKey
-     * @param null                              $password
+     * @param string|null                       $password
      *
      * @return string
-     * @throws CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
      */
-    public static function decrypt(string $data, $securedKey, $password = null)
+    public static function decrypt(
+        string  $data,
+                $securedKey,
+        ?string $password = null
+    ): string
     {
         try {
             if ($securedKey instanceof Key) {
                 return Crypto::decrypt($data, $securedKey);
-            } elseif (null !== $password) {
+            }
+
+            if (null !== $password) {
                 if ($securedKey instanceof KeyProtectedByPassword) {
                     return Crypto::decrypt($data, $securedKey->unlockKey($password));
-                } else {
-                    return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password, false));
                 }
+
+                return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password, false));
             }
 
             return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));
@@ -123,13 +138,13 @@ final class Crypt
     /**
      * Securiza una clave de seguridad
      *
-     * @param string $password
-     * @param bool   $useAscii
-     *
      * @return string|KeyProtectedByPassword
      * @throws CryptoException
      */
-    public static function makeSecuredKey(string $password, $useAscii = true)
+    public static function makeSecuredKey(
+        string $password,
+        bool   $useAscii = true
+    )
     {
         try {
             if ($useAscii) {

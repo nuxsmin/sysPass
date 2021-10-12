@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\CustomField;
@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\CustomField
  */
-final class CustomFieldTypeRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldTypeRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -50,12 +50,12 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @param CustomFieldTypeData $itemData
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO CustomFieldType SET `name` = ?, `text` = ?');
@@ -72,7 +72,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @return void
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -82,12 +82,12 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @param CustomFieldTypeData $itemData
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE CustomFieldType SET `name` = ?, `text` = ? WHERE id = ? LIMIT 1');
@@ -108,7 +108,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @return void
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -122,7 +122,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldTypeData::class);
@@ -139,7 +139,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldTypeData::class);
@@ -155,7 +155,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @return void
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
         throw new RuntimeException('Not implemented');
     }
@@ -169,9 +169,9 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -188,11 +188,11 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @param $id
      *
-     * @return bool
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete($id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldType WHERE id = ? LIMIT 1');
@@ -209,7 +209,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -217,11 +217,11 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return void
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData): void
     {
         throw new RuntimeException('Not implemented');
     }

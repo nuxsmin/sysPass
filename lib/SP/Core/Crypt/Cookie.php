@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -34,14 +34,8 @@ use SP\Http\Request;
  */
 abstract class Cookie
 {
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var string
-     */
-    private $cookieName;
+    protected Request $request;
+    private string $cookieName;
 
     /**
      * Cookie constructor.
@@ -57,13 +51,8 @@ abstract class Cookie
 
     /**
      * Firmar la cookie para autentificación
-     *
-     * @param string $data
-     * @param string $cypher
-     *
-     * @return string
      */
-    public final function sign(string $data, string $cypher): string
+    final public function sign(string $data, string $cypher): string
     {
         $data = base64_encode($data);
 
@@ -73,20 +62,19 @@ abstract class Cookie
     /**
      * Comprobar la firma de la cookie y devolver los datos
      *
-     * @param string $data
-     * @param string $cypher
-     *
      * @return bool|string
      */
-    public final function getCookieData(string $data, string $cypher)
+    final public function getCookieData(string $data, string $cypher)
     {
         if (strpos($data, ';') === false) {
             return false;
         }
 
-        list($signature, $data) = explode(';', $data, 2);
+        [$signature, $data] = explode(';', $data, 2);
 
-        return Hash::checkMessage($data, $cypher, $signature) ? base64_decode($data) : false;
+        return Hash::checkMessage($data, $cypher, $signature)
+            ? base64_decode($data)
+            : false;
     }
 
     /**
@@ -96,15 +84,14 @@ abstract class Cookie
      */
     protected function getCookie()
     {
-        return $this->request->getRequest()->cookies()->get($this->cookieName, false);
+        return $this->request
+            ->getRequest()
+            ->cookies()
+            ->get($this->cookieName, false);
     }
 
     /**
      * Sets cookie data
-     *
-     * @param string $data
-     *
-     * @return bool
      */
     protected function setCookie(string $data): bool
     {

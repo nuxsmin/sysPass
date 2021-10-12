@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\AuthToken;
@@ -31,7 +31,7 @@ use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,20 +41,20 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\ApiToken
  */
-final class AuthTokenRepository extends Repository implements RepositoryItemInterface
+final class AuthTokenRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AuthToken WHERE id = ? LIMIT 1');
@@ -73,7 +73,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -103,7 +103,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -131,7 +131,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      *
      * @return void
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
         throw new RuntimeException('Not implemented');
     }
@@ -145,9 +145,9 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -166,7 +166,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -180,7 +180,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('AuthToken.id,
@@ -191,7 +191,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData->setFrom('AuthToken 
             INNER JOIN User ON AuthToken.userid = User.id');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('User.login LIKE ? OR User.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -218,7 +218,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
             throw new DuplicatedItemException(__u('The authorization already exist'));
@@ -258,7 +258,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $query = /** @lang SQL */
             'SELECT id FROM AuthToken 
@@ -279,13 +279,13 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
     /**
      * Obtener el token de la API de un usuario
      *
-     * @param $id
+     * @param int $id
      *
      * @return string
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getTokenByUserId($id)
+    public function getTokenByUserId(int $id): ?string
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1');
@@ -306,7 +306,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
             throw new DuplicatedItemException(__u('The authorization already exist'));
@@ -348,7 +348,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $query = /** @lang SQL */
             'SELECT id FROM AuthToken 
@@ -374,11 +374,11 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param int    $id
      * @param string $token
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function refreshTokenByUserId($id, $token)
+    public function refreshTokenByUserId(int $id, string $token): int
     {
         $query = /** @lang SQL */
             'UPDATE AuthToken 
@@ -397,15 +397,15 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
     /**
      * Regenerar el hash de los tokens de un usuario
      *
-     * @param int $id
-     * @param     $vault
-     * @param     $hash
+     * @param int    $id
+     * @param string $vault
+     * @param string $hash
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function refreshVaultByUserId($id, $vault, $hash)
+    public function refreshVaultByUserId(int $id, string $vault, string $hash): int
     {
         $query = /** @lang SQL */
             'UPDATE AuthToken 
@@ -431,7 +431,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUserIdForToken($token)
+    public function getUserIdForToken(string $token)
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT userId FROM AuthToken WHERE token = ? LIMIT 1');
@@ -452,7 +452,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTokenByToken($actionId, $token)
+    public function getTokenByToken(int $actionId, string $token): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, actionId, userId, vault, `hash`, token

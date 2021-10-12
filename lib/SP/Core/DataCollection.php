@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -39,10 +39,8 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
 {
     /**
      * Collection of data attributes
-     *
-     * @type array
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * Retrieve an external iterator
@@ -72,7 +70,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *                      The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->exists($offset);
     }
@@ -119,11 +117,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      */
     public function get(string $key, $default_val = null)
     {
-        if (isset($this->attributes[$key])) {
-            return $this->attributes[$key];
-        }
-
-        return $default_val;
+        return $this->attributes[$key] ?? $default_val;
     }
 
     /**
@@ -141,7 +135,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);
     }
@@ -173,7 +167,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->remove($offset);
     }
@@ -185,7 +179,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return void
      */
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         unset($this->attributes[$key]);
     }
@@ -200,7 +194,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * The return value is cast to an integer.
      * @since 5.1.0
      */
-    public function count()
+    public function count(): int
     {
         return count($this->attributes);
     }
@@ -238,7 +232,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      */
     public function isEmpty(): bool
     {
-        return empty($this->attributes);
+        return count($this->attributes) === 0;
     }
 
     /**
@@ -252,7 +246,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @return mixed
      * @see get()
      */
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->get($key);
     }
@@ -269,7 +263,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @return void
      * @see set()
      */
-    public function __set($key, $value)
+    public function __set(string $key, $value)
     {
         $this->set($key, $value);
     }
@@ -285,7 +279,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @return boolean
      * @see exists()
      */
-    public function __isset($key)
+    public function __isset(string $key)
     {
         return $this->exists($key);
     }
@@ -302,7 +296,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * @see remove()
      *
      */
-    public function __unset($key)
+    public function __unset(string $key)
     {
         $this->remove($key);
     }

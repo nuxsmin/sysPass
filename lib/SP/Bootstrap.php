@@ -34,7 +34,7 @@ use PHPMailer\PHPMailer\Exception;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Config\ConfigUtil;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
@@ -85,28 +85,14 @@ final class Bootstrap
     /**
      * @var bool Indica si la versión de PHP es correcta
      */
-    public static bool $checkPhpVersion;
-    /**
-     * @var ContainerInterface
-     */
-    private static $container;
-    /**
-     * @var Klein
-     */
-    private $router;
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
+    public static bool $checkPhpVersion = false;
+    private static ContainerInterface $container;
+    private Klein $router;
+    private Request $request;
+    private ConfigDataInterface $configData;
 
     /**
      * Bootstrap constructor.
-     *
-     * @param Container $container
      *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -125,9 +111,6 @@ final class Bootstrap
         $this->initRouter();
     }
 
-    /**
-     * Inicializar router
-     */
     protected function initRouter(): void
     {
         $this->router->onError(function ($router, $err_msg, $type, $err) {
@@ -162,9 +145,6 @@ final class Bootstrap
         );
     }
 
-    /**
-     * @return \Closure
-     */
     private function manageCorsRequest(): Closure
     {
         return function ($request, $response) {
@@ -175,20 +155,20 @@ final class Bootstrap
         };
     }
 
-    /**
-     * @param \Klein\Response $response
-     */
     private function setCors(Response $response): void
     {
-        $response->header('Access-Control-Allow-Origin', $this->configData->getApplicationUrl() ?? $this->request->getHttpHost());
-        $response->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
+        $response->header(
+            'Access-Control-Allow-Origin',
+            $this->configData->getApplicationUrl()
+            ?? $this->request->getHttpHost()
+        );
+        $response->header(
+            'Access-Control-Allow-Headers',
+            'X-Requested-With, Content-Type, Accept, Origin, Authorization'
+        );
         $response->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     }
 
-    /**
-     *
-     * @return \Closure
-     */
     private function manageApiRequest(): Closure
     {
         return function ($request, $response, $service) {
@@ -197,16 +177,21 @@ final class Bootstrap
 
                 $apiRequest = self::$container->get(ApiRequest::class);
 
-                [$controller, $action] = explode('/', $apiRequest->getMethod());
+                [$controllerName, $action] = explode('/', $apiRequest->getMethod());
 
-                $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
+                $controllerClass = self::getControllerClass($controllerName);
+
                 $method = $action . 'Action';
 
                 if (!method_exists($controllerClass, $method)) {
                     logger($controllerClass . '::' . $method);
 
                     /** @var Response $response */
-                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                    $response->headers()
+                        ->set(
+                            'Content-type',
+                            'application/json; charset=utf-8'
+                        );
 
                     return $response->body(
                         JsonRpcResponse::getResponseError(
@@ -220,7 +205,7 @@ final class Bootstrap
                 $this->initializeCommon();
 
                 self::$container->get(InitApi::class)
-                    ->initialize($controller);
+                    ->initialize($controllerName);
 
                 logger('Routing call: ' . $controllerClass . '::' . $method);
 
@@ -236,6 +221,15 @@ final class Bootstrap
                 $this->router->skipRemaining();
             }
         };
+    }
+
+    private static function getControllerClass(string $controllerName): string
+    {
+        return sprintf(
+            'SP\Modules\%s\Controllers\%sController',
+            ucfirst(APP_MODULE),
+            ucfirst($controllerName)
+        );
     }
 
     /**
@@ -292,11 +286,19 @@ final class Bootstrap
         // Establecer las cabeceras de autentificación para apache+php-cgi
         // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
         if (($server->get('HTTP_AUTHORIZATION') !== null
-                && preg_match('/Basic\s+(.*)$/i', $server->get('HTTP_AUTHORIZATION'), $matches))
+                && preg_match(
+                    '/Basic\s+(.*)$/i',
+                    $server->get('HTTP_AUTHORIZATION'),
+                    $matches))
             || ($server->get('REDIRECT_HTTP_AUTHORIZATION') !== null
-                && preg_match('/Basic\s+(.*)$/i', $server->get('REDIRECT_HTTP_AUTHORIZATION'), $matches))
+                && preg_match(
+                    '/Basic\s+(.*)$/i',
+                    $server->get('REDIRECT_HTTP_AUTHORIZATION'),
+                    $matches))
         ) {
-            [$name, $password] = explode(':', base64_decode($matches[1]), 2);
+            [$name, $password] = explode(':',
+                base64_decode($matches[1]),
+                2);
 
             $server->set('PHP_AUTH_USER', strip_tags($name));
             $server->set('PHP_AUTH_PW', strip_tags($password));
@@ -343,7 +345,7 @@ final class Bootstrap
     /**
      * Establecer las rutas de la aplicación.
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
-     * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
+     * Las variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
      */
     private function initPaths(): void
     {
@@ -401,10 +403,6 @@ final class Bootstrap
         }
     }
 
-    /**
-     *
-     * @return \Closure
-     */
     private function manageWebRequest(): Closure
     {
         return function ($request, $response, $service) {
@@ -420,8 +418,8 @@ final class Bootstrap
                 if (!preg_match_all(
                     '#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#',
                     $route,
-                    $matches)
-                ) {
+                    $matches
+                )) {
                     throw new RuntimeException(self::OOPS_MESSAGE);
                 }
 
@@ -437,7 +435,7 @@ final class Bootstrap
                             '/')
                     ));
 
-                $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controllerName) . 'Controller';
+                $controllerClass = self::getControllerClass($controllerName);
 
                 $this->initializePluginClasses();
 
@@ -458,7 +456,12 @@ final class Bootstrap
                         ->initialize($controllerName);
                 }
 
-                logger('Routing call: ' . $controllerClass . '::' . $methodName . '::' . print_r($methodParams, true));
+                logger(sprintf(
+                    'Routing call: %s::%s::%s',
+                    $controllerClass,
+                    $methodName,
+                    print_r($methodParams, true)
+                ));
 
                 $controller = new $controllerClass(self::$container, $methodName);
 
@@ -478,9 +481,6 @@ final class Bootstrap
         };
     }
 
-    /**
-     * initializePluginClasses
-     */
     protected function initializePluginClasses(): void
     {
         $loader = require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -490,24 +490,21 @@ final class Bootstrap
         }
     }
 
-    /**
-     * @return ContainerInterface
-     */
-    public static function getContainer()
+    public static function getContainer(): ContainerInterface
     {
         return self::$container;
     }
 
     /**
-     * @param Container $container
-     * @param string    $module
-     *
      * @throws InitializationException
      * @throws DependencyException
      * @throws NotFoundException
      * @throws Core\Context\ContextException
      */
-    public static function run(Container $container, string $module = APP_MODULE): void
+    public static function run(
+        Container $container,
+        string    $module = APP_MODULE
+    ): void
     {
         switch ($module) {
             case 'web':

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -31,14 +31,12 @@ namespace SP\Util;
  */
 interface ConnectionInterface
 {
-    const TYPE_TCP = 1;
-    const TYPE_UDP = 2;
-    const SOCKET_TIMEOUT = 10;
+    public const TYPE_TCP = 1;
+    public const TYPE_UDP = 2;
+    public const SOCKET_TIMEOUT = 10;
 
     /**
      * Obtener un socket
-     *
-     * @param $type
      *
      * @return resource
      */
@@ -46,24 +44,16 @@ interface ConnectionInterface
 
     /**
      * Cerrar un socket
-     *
-     * @return mixed
      */
     public function closeSocket();
 
     /**
      * Obtener el último error del socket
-     *
-     * @return string
      */
     public function getSocketError(): string;
 
     /**
      * Enviar un mensaje al socket
-     *
-     * @param $message string El mensaje a enviar
-     *
-     * @return mixed
      */
     public function send(string $message);
 }

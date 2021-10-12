@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
@@ -47,14 +47,8 @@ use SP\Util\VersionUtil;
  */
 final class LayoutHelper extends HelperBase
 {
-    /**
-     * @var  bool
-     */
-    protected $loggedIn;
-    /**
-     * @var ThemeInterface
-     */
-    protected $theme;
+    protected ?bool $loggedIn = null;
+    protected ?ThemeInterface $theme = null;
 
     /**
      * Sets a full layout page
@@ -85,10 +79,8 @@ final class LayoutHelper extends HelperBase
 
     /**
      * Establecer la variable de página de la vista
-     *
-     * @param $page
      */
-    public function setPage($page)
+    public function setPage(string $page): void
     {
         $this->view->assign('page', $page);
     }
@@ -96,9 +88,9 @@ final class LayoutHelper extends HelperBase
     /**
      * Inicializar las variables para la vista principal de la aplicación
      */
-    public function initBody()
+    public function initBody(): void
     {
-        $baseUrl = $this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI;
+        $baseUrl = $this->configData->getApplicationUrl() ?? Bootstrap::$WEBURI;
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
@@ -133,21 +125,27 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para la cabcera de la página
      */
-    protected function getResourcesLinks()
+    protected function getResourcesLinks(): void
     {
         $version = VersionUtil::getVersionStringNormalized();
-        $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+        $baseUrl = ($this->configData->getApplicationUrl() ?? Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
         $jsUri = new Uri($baseUrl);
         $jsUri->addParam('_r', 'resource/js');
         $jsUri->addParam('_v', md5($version));
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append(
+            'jsLinks',
+            $jsUri->getUriSigned($this->configData->getPasswordSalt())
+        );
 
         $jsUri->resetParams()
             ->addParam('g', 1);
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append(
+            'jsLinks',
+            $jsUri->getUriSigned($this->configData->getPasswordSalt())
+        );
 
         $themeInfo = $this->theme->getThemeInfo();
 
@@ -156,25 +154,35 @@ final class LayoutHelper extends HelperBase
                 ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'js')
                 ->addParam('f', implode(',', $themeInfo['js']));
 
-            $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append(
+                'jsLinks',
+                $jsUri->getUriSigned($this->configData->getPasswordSalt())
+            );
         }
 
         $userPreferences = $this->context->getUserData()->getPreferences();
 
-        if ($this->loggedIn && $userPreferences->getUserId() > 0) {
+        if ($this->loggedIn
+            && $userPreferences
+            && $userPreferences->getUserId() > 0) {
             $resultsAsCards = $userPreferences->isResultsAsCards();
         } else {
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
-        $cssUri = new Uri($baseUrl);
-        $cssUri->addParam('_r', 'resource/css');
-        $cssUri->addParam('_v', md5($version . $resultsAsCards));
+        $cssUri = (new Uri($baseUrl))
+            ->addParam('_r', 'resource/css')
+            ->addParam('_v', md5($version . $resultsAsCards));
 
-        $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append(
+            'cssLinks',
+            $cssUri->getUriSigned($this->configData->getPasswordSalt())
+        );
 
         if (isset($themeInfo['css'])) {
-            $themeInfo['css'][] = $resultsAsCards ? 'search-card.min.css' : 'search-grid.min.css';
+            $themeInfo['css'][] = $resultsAsCards
+                ? 'search-card.min.css'
+                : 'search-grid.min.css';
 
             if ($this->configData->isDokuwikiEnabled()) {
                 $themeInfo['css'][] = 'styles-wiki.min.css';
@@ -184,11 +192,16 @@ final class LayoutHelper extends HelperBase
                 ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'css')
                 ->addParam('f', implode(',', $themeInfo['css']));
 
-            $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append(
+                'cssLinks',
+                $cssUri->getUriSigned($this->configData->getPasswordSalt())
+            );
         }
 
         // Cargar los recursos de los plugins
-        foreach ($this->dic->get(PluginManager::class)->getLoadedPlugins() as $plugin) {
+        $loadedPlugins = $this->dic->get(PluginManager::class)->getLoadedPlugins();
+
+        foreach ($loadedPlugins as $plugin) {
             $base = str_replace(APP_ROOT, '', $plugin->getBase());
             $base .= DIRECTORY_SEPARATOR . 'public';
 
@@ -200,7 +213,10 @@ final class LayoutHelper extends HelperBase
                     ->addParam('b', $base . DIRECTORY_SEPARATOR . 'js')
                     ->addParam('f', implode(',', $jsResources));
 
-                $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+                $this->view->append(
+                    'jsLinks',
+                    $jsUri->getUriSigned($this->configData->getPasswordSalt())
+                );
             }
 
             if (count($cssResources) > 0) {
@@ -208,7 +224,10 @@ final class LayoutHelper extends HelperBase
                     ->addParam('b', $base . DIRECTORY_SEPARATOR . 'css')
                     ->addParam('f', implode(',', $cssResources));
 
-                $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+                $this->view->append(
+                    'cssLinks',
+                    $cssUri->getUriSigned($this->configData->getPasswordSalt())
+                );
             }
         }
     }
@@ -216,7 +235,7 @@ final class LayoutHelper extends HelperBase
     /**
      * Establecer las cabeceras HTTP
      */
-    private function setResponseHeaders()
+    private function setResponseHeaders(): void
     {
         // UTF8 Headers
         header('Content-Type: text/html; charset=UTF-8');
@@ -229,7 +248,7 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para la mostrar la barra de sesión
      */
-    public function getSessionBar()
+    public function getSessionBar(): void
     {
         $userType = null;
 
@@ -243,10 +262,22 @@ final class LayoutHelper extends HelperBase
         }
 
         $this->view->assign('ctx_userType', $userType);
-        $this->view->assign('ctx_userLogin', mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userName', $userData->getName() ?: mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userGroup', $userData->getUserGroupName());
-        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
+        $this->view->assign(
+            'ctx_userLogin',
+            mb_strtoupper($userData->getLogin())
+        );
+        $this->view->assign(
+            'ctx_userName',
+            $userData->getName() ?: mb_strtoupper($userData->getLogin())
+        );
+        $this->view->assign(
+            'ctx_userGroup',
+            $userData->getUserGroupName()
+        );
+        $this->view->assign(
+            'showPassIcon',
+            !($this->configData->isLdapEnabled() && $userData->getIsLdap())
+        );
     }
 
     /**
@@ -254,7 +285,7 @@ final class LayoutHelper extends HelperBase
      *
      * @param Acl $acl
      */
-    public function getMenu(Acl $acl)
+    public function getMenu(Acl $acl): void
     {
         $icons = $this->theme->getIcons();
         $actions = [];
@@ -387,7 +418,10 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getCustomLayout(string $template, string $page = ''): LayoutHelper
+    public function getCustomLayout(
+        string $template,
+        string $page = ''
+    ): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
@@ -402,7 +436,7 @@ final class LayoutHelper extends HelperBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->theme = $this->dic->get(ThemeInterface::class);
 

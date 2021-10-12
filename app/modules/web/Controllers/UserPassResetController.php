@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -52,14 +52,9 @@ use SP\Util\ErrorUtil;
 final class UserPassResetController extends ControllerBase
 {
     use JsonTrait;
-    /**
-     * @var TrackService
-     */
-    protected $trackService;
-    /**
-     * @var TrackRequest
-     */
-    protected $trackRequest;
+
+    protected ?TrackService $trackService = null;
+    protected ?TrackRequest $trackRequest = null;
 
     /**
      * Password reset action
@@ -67,13 +62,18 @@ final class UserPassResetController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('request', strtolower($this->controllerName));
 
         if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
+            ErrorUtil::showErrorInView(
+                $this->view,
+                self::ERR_UNAVAILABLE,
+                true,
+                'request'
+            );
         }
 
         $this->view();
@@ -81,8 +81,9 @@ final class UserPassResetController extends ControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveRequestAction(): bool
     {
@@ -106,19 +107,25 @@ final class UserPassResetController extends ControllerBase
                 );
             }
 
-            $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
+            $hash = $this->dic->get(UserPassRecoverService::class)
+                ->requestForUserId($userData->getId());
 
             $this->eventDispatcher->notifyEvent(
                 'request.user.passReset',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Password Recovery'))
-                    ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email)))
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Password Recovery'))
+                        ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email))
+                )
             );
 
             $this->dic->get(MailService::class)
-                ->send(__('Password Change'),
+                ->send(
+                    __('Password Change'),
                     $email,
-                    UserPassRecoverService::getMailMessage($hash));
+                    UserPassRecoverService::getMailMessage($hash)
+                );
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,
@@ -143,17 +150,20 @@ final class UserPassResetController extends ControllerBase
      * @throws SPException
      * @throws Exception
      */
-    protected function checkTracking()
+    protected function checkTracking(): void
     {
         if ($this->trackService->checkTracking($this->trackRequest)) {
-            throw new SPException(__u('Attempts exceeded'), SPException::INFO);
+            throw new SPException(
+                __u('Attempts exceeded'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Añadir un seguimiento
      */
-    private function addTracking()
+    private function addTracking(): void
     {
         try {
             $this->trackService->add($this->trackRequest);
@@ -168,7 +178,7 @@ final class UserPassResetController extends ControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function resetAction(?string $hash = null)
+    public function resetAction(?string $hash = null): void
     {
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('reset', strtolower($this->controllerName));
@@ -176,7 +186,12 @@ final class UserPassResetController extends ControllerBase
         if ($hash && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);
         } else {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'reset');
+            ErrorUtil::showErrorInView(
+                $this->view,
+                self::ERR_UNAVAILABLE,
+                true,
+                'reset'
+            );
         }
 
         $this->view();
@@ -184,8 +199,9 @@ final class UserPassResetController extends ControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveResetAction(): bool
     {
@@ -216,11 +232,14 @@ final class UserPassResetController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent(
                 'edit.user.password',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Password updated'))
-                    ->addDetail(__u('User'), $user->getLogin())
-                    ->addExtra('userId', $userId)
-                    ->addExtra('email', $user->getEmail()))
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Password updated'))
+                        ->addDetail(__u('User'), $user->getLogin())
+                        ->addExtra('userId', $userId)
+                        ->addExtra('email', $user->getEmail())
+                )
             );
 
             return $this->returnJsonResponse(
@@ -232,7 +251,10 @@ final class UserPassResetController extends ControllerBase
 
             $this->addTracking();
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -243,7 +265,7 @@ final class UserPassResetController extends ControllerBase
      * @throws NotFoundException
      * @throws InvalidArgumentException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->trackService = $this->dic->get(TrackService::class);
         $this->trackRequest = $this->trackService->getTrackRequest($this->controllerName);

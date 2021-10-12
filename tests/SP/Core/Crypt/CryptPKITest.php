@@ -60,7 +60,7 @@ class CryptPKITest extends TestCase
 
         $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
 
-        $this->assertFalse($this->cryptPki->decryptRSA('test123'));
+        $this->assertNull($this->cryptPki->decryptRSA('test123'));
     }
 
     /**

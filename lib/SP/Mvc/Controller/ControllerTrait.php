@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller;
 
 use Closure;
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Bootstrap;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
@@ -41,13 +39,10 @@ use SP\Util\Util;
  * Trait ControllerTrait
  *
  * @package SP\Mvc\Controller
- * @property ConfigData $configData
+ * @property ConfigDataInterface $configData
  */
 trait ControllerTrait
 {
-    /**
-     * @return string
-     */
     protected function getControllerName(): string
     {
         $class = static::class;
@@ -58,14 +53,13 @@ trait ControllerTrait
     /**
      * Logout from current session
      *
-     * @param Request    $request
-     * @param ConfigData $configData
-     * @param Closure    $onRedirect
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
      */
-    protected function sessionLogout(Request $request, ConfigData $configData, Closure $onRedirect)
+    protected function sessionLogout(
+        Request             $request,
+        ConfigDataInterface $configData,
+        Closure             $onRedirect
+    ): void
     {
         if ($request->isJson()) {
             $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
@@ -103,24 +97,23 @@ trait ControllerTrait
 
     /**
      * Acción no disponible
+     *
+     * @throws \JsonException
      */
-    protected function invalidAction()
+    protected function invalidAction(): void
     {
         Json::fromDic()->returnJson(new JsonResponse(__u('Invalid Action')));
     }
 
     /**
-     * @param string  $previousToken
-     * @param Request $request
-     *
      * @throws SPException
      * @deprecated
      */
-    protected function checkSecurityToken(string $previousToken, Request $request)
+    protected function checkSecurityToken(string $previousToken, Request $request): void
     {
-        if ($request->analyzeString('h') !== null
+        if (isset($this->configData)
+            && $request->analyzeString('h') !== null
             && $request->analyzeString('from') === null
-            && isset($this->configData)
         ) {
             $request->verifySignature($this->configData->getPasswordSalt());
         } else {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Client;
@@ -34,7 +34,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -44,7 +44,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Client
  */
-final class ClientRepository extends Repository implements RepositoryItemInterface
+final class ClientRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -57,10 +57,10 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated client'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated client'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -92,7 +92,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? LIMIT 1');
@@ -111,10 +111,10 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated client'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated client'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -148,7 +148,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Client WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
@@ -170,7 +170,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ClientData::class);
@@ -189,7 +189,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getByName($name)
+    public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ClientData::class);
@@ -209,7 +209,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client ORDER BY `name`');
@@ -223,14 +223,14 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      *
      * @param array $ids
      *
-     * @return array
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
-            return [];
+        if (count($ids) === 0) {
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -241,7 +241,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -253,9 +253,9 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -270,13 +270,13 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Client WHERE id = ? LIMIT 1');
@@ -293,7 +293,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -307,7 +307,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ClientData::class);
@@ -315,7 +315,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
         $queryData->setFrom('Client');
         $queryData->setOrder('name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -340,7 +340,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllForFilter(QueryCondition $queryFilter)
+    public function getAllForFilter(QueryCondition $queryFilter): QueryResult
     {
         if (!$queryFilter->hasFilters()) {
             throw new QueryException(__u('Wrong filter'));

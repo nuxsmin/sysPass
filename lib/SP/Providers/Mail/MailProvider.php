@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Mail;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Container\ContainerInterface;
 use SP\Core\AppInfoInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Providers\Provider;
 
 /**
@@ -42,11 +41,11 @@ final class MailProvider extends Provider
     /**
      * @var  PHPMailer
      */
-    private $mailer;
+    private PHPMailer $mailer;
     /**
      * @var bool
      */
-    private $debug = false;
+    private bool $debug = false;
 
     /**
      * Inicializar la clase PHPMailer.
@@ -56,7 +55,7 @@ final class MailProvider extends Provider
      * @return PHPMailer
      * @throws MailProviderException
      */
-    public function getMailer(MailParams $mailParams)
+    public function getMailer(MailParams $mailParams): PHPMailer
     {
         $appName = AppInfoInterface::APP_NAME;
 
@@ -92,7 +91,7 @@ final class MailProvider extends Provider
 
             throw new MailProviderException(
                 __u('Unable to initialize'),
-                MailProviderException::ERROR,
+                SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
                 $e
@@ -113,16 +112,13 @@ final class MailProvider extends Provider
      */
     public function setDebug(bool $debug)
     {
-        $this->debug = (bool)$debug;
+        $this->debug = $debug;
     }
 
     /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->mailer = $dic->get(PHPMailer::class);
     }

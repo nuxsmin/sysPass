@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -39,7 +39,7 @@ use SP\Mvc\Model\QueryAssignment;
 use SP\Mvc\Model\QueryCondition;
 use SP\Mvc\Model\QueryJoin;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\Account\AccountRequest;
@@ -53,7 +53,7 @@ use stdClass;
  *
  * @package Services
  */
-final class AccountRepository extends Repository implements RepositoryItemInterface
+final class AccountRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -64,7 +64,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getTotalNumAccounts()
+    public function getTotalNumAccounts(): stdClass
     {
         $query = /** @lang SQL */
             'SELECT SUM(n) AS num FROM 
@@ -77,14 +77,14 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     }
 
     /**
-     * @param                $id
+     * @param int            $id
      * @param QueryCondition $queryCondition
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getPasswordForId($id, QueryCondition $queryCondition)
+    public function getPasswordForId(int $id, QueryCondition $queryCondition): QueryResult
     {
         $queryCondition->addFilter('Account.id = ?', [$id]);
 
@@ -106,7 +106,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getPasswordHistoryForId(QueryCondition $queryCondition)
+    public function getPasswordHistoryForId(QueryCondition $queryCondition): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT 
@@ -137,7 +137,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function incrementDecryptCounter($id)
+    public function incrementDecryptCounter(int $id): bool
     {
         $query = /** @lang SQL */
             'UPDATE Account SET countDecrypt = (countDecrypt + 1) WHERE id = ? LIMIT 1';
@@ -158,7 +158,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $query = /** @lang SQL */
             'INSERT INTO Account SET 
@@ -213,7 +213,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function editPassword(AccountRequest $accountRequest)
+    public function editPassword(AccountRequest $accountRequest): int
     {
         $query = /** @lang SQL */
             'UPDATE Account SET 
@@ -248,7 +248,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePassword(AccountPasswordRequest $request)
+    public function updatePassword(AccountPasswordRequest $request): bool
     {
         $query = /** @lang SQL */
             'UPDATE Account SET 
@@ -274,7 +274,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function editRestore($historyId, $userId)
+    public function editRestore(int $historyId, int $userId): bool
     {
         $query = /** @lang SQL */
             'UPDATE Account dst, 
@@ -314,7 +314,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
 
@@ -330,10 +330,10 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param AccountRequest $itemData
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $queryAssignment = new QueryAssignment();
 
@@ -391,10 +391,10 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param AccountRequest $itemData
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      */
-    public function updateBulk($itemData)
+    public function updateBulk(AccountRequest $itemData): int
     {
         $queryAssignment = new QueryAssignment();
 
@@ -444,7 +444,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT * FROM account_data_v WHERE id = ? LIMIT 1');
@@ -462,7 +462,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountData::class);
@@ -476,7 +476,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param array $ids
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
         throw new RuntimeException('Not implemented');
     }
@@ -490,9 +490,9 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -510,7 +510,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param $id int
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -520,7 +520,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -530,7 +530,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -544,14 +544,14 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('id, name, clientName, categoryName, userName, userGroupName');
         $queryData->setFrom('account_search_v');
         $queryData->setOrder('name, clientName');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ? 
             OR clientName LIKE ? 
             OR categoryName LIKE ? 
@@ -583,7 +583,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function incrementViewCounter($id)
+    public function incrementViewCounter(int $id): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1');
@@ -595,13 +595,13 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     /**
      * Obtener los datos de una cuenta.
      *
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getDataForLink($id)
+    public function getDataForLink(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT Account.id, 
@@ -638,7 +638,10 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws QueryException
      * @throws SPException
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter, QueryCondition $queryFilterUser)
+    public function getByFilter(
+        AccountSearchFilter $accountSearchFilter,
+        QueryCondition      $queryFilterUser
+    ): QueryResult
     {
         $queryFilters = new QueryCondition();
 
@@ -656,15 +659,24 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $stringFilters = $accountSearchFilter->getStringFilters();
 
         if ($stringFilters->hasFilters()) {
-            $queryFilters->addFilter($stringFilters->getFilters($accountSearchFilter->getFilterOperator()), $stringFilters->getParams());
+            $queryFilters->addFilter(
+                $stringFilters->getFilters($accountSearchFilter->getFilterOperator()),
+                $stringFilters->getParams()
+            );
         }
 
-        if (!empty($accountSearchFilter->getCategoryId())) {
-            $queryFilters->addFilter('Account.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
+        if ($accountSearchFilter->getCategoryId() !== null) {
+            $queryFilters->addFilter(
+                'Account.categoryId = ?',
+                [$accountSearchFilter->getCategoryId()]
+            );
         }
 
-        if (!empty($accountSearchFilter->getClientId())) {
-            $queryFilters->addFilter('Account.clientId = ?', [$accountSearchFilter->getClientId()]);
+        if ($accountSearchFilter->getClientId() !== null) {
+            $queryFilters->addFilter(
+                'Account.clientId = ?',
+                [$accountSearchFilter->getClientId()]
+            );
         }
 
         $where = [];
@@ -700,7 +712,11 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         }
 
         $queryData->setWhere($where);
-        $queryData->setParams(array_merge($queryJoins->getParams(), $queryFilterUser->getParams(), $queryFilters->getParams()));
+        $queryData->setParams(array_merge(
+            $queryJoins->getParams(),
+            $queryFilterUser->getParams(),
+            $queryFilters->getParams()
+        ));
         $queryData->setSelect('DISTINCT Account.*');
         $queryData->setFrom('account_search_v Account ' . $queryJoins->getJoins());
         $queryData->setOrder($accountSearchFilter->getOrderString());
@@ -725,7 +741,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUser(QueryCondition $queryFilter)
+    public function getForUser(QueryCondition $queryFilter): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT Account.id, Account.name, C.name AS clientName 
@@ -748,7 +764,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getLinked(QueryCondition $queryFilter)
+    public function getLinked(QueryCondition $queryFilter): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT Account.id, Account.name, Client.name AS clientName 
@@ -766,15 +782,15 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return array Con los datos de la clave
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAccountsPassData()
+    public function getAccountsPassData(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id, `name`, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

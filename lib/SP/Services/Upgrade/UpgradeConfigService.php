@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
 
 use Exception;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\MimeTypes;
@@ -45,7 +45,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = [
+    private const UPGRADES = [
         '112.4',
         '130.16020501',
         '200.17011202',
@@ -53,17 +53,9 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         '300.18112501',
         '320.20062801',
     ];
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
+    protected ?ConfigDataInterface $configData = null;
 
-    /**
-     * @param $version
-     *
-     * @return bool
-     */
-    public static function needsUpgrade($version)
+    public static function needsUpgrade(string $version): bool
     {
         return VersionUtil::checkVersion($version, self::UPGRADES);
     }
@@ -71,17 +63,18 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * Actualizar el archivo de configuración a formato XML
      *
-     * @param $version
-     *
-     * @throws UpgradeException
+     * @throws \SP\Services\Upgrade\UpgradeException
      */
-    public function upgradeOldConfigFile($version)
+    public function upgradeOldConfigFile(string $version): void
     {
         $configData = $this->config->getConfigData();
 
         $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.old.start', new Event($this, $message));
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.config.old.start',
+            new Event($this, $message)
+        );
 
         // Include the file, save the data from $CONFIG
         include OLD_CONFIG_FILE;
@@ -89,7 +82,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         $message = EventMessage::factory();
 
         if (isset($CONFIG) && is_array($CONFIG)) {
-            $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message, $configData) {
+            $paramMapper = static function ($mapFrom, $mapTo) use ($CONFIG, $message, $configData) {
                 if (isset($CONFIG[$mapFrom])) {
                     $message->addDetail(__u('Parameter'), $mapFrom);
                     $configData->{$mapTo}($CONFIG[$mapFrom]);
@@ -99,14 +92,11 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             foreach (self::getConfigParams() as $mapTo => $mapFrom) {
                 if (method_exists($configData, $mapTo)) {
                     if (is_array($mapFrom)) {
-                        /** @var array $mapFrom */
                         foreach ($mapFrom as $param) {
                             $paramMapper($mapFrom, $param);
                         }
-                    } else {
-                        if (isset($CONFIG[$mapFrom])) {
-                            $paramMapper($mapFrom, $mapTo);
-                        }
+                    } else if (isset($CONFIG[$mapFrom])) {
+                        $paramMapper($mapFrom, $mapTo);
                     }
                 }
             }
@@ -124,11 +114,15 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
             $message->addDetail(__u('Version'), $version);
 
-            $this->eventDispatcher->notifyEvent('upgrade.config.old.end', new Event($this, $message));
+            $this->eventDispatcher->notifyEvent(
+                'upgrade.config.old.end',
+                new Event($this, $message)
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception',
+            $this->eventDispatcher->notifyEvent(
+                'exception',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Error while updating the configuration'))
                     ->addDetail(__u('File'), $oldFile))
@@ -140,10 +134,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
     /**
      * Devuelve array de métodos y parámetros de configuración
-     *
-     * @return array
      */
-    private static function getConfigParams()
+    private static function getConfigParams(): array
     {
         return [
             'setAccountCount' => 'account_count',
@@ -204,17 +196,18 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * Migrar valores de configuración.
      *
-     * @param            $version
-     * @param ConfigData $configData
-     *
      * @throws FileException
      */
-    public function upgrade($version, ConfigData $configData)
+    public function upgrade(string $version, ConfigDataInterface $configData): void
     {
         $this->configData = $configData;
 
-        $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
-        $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
+        $message = EventMessage::factory()
+            ->addDescription(__u('Update Configuration'));
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.config.start',
+            new Event($this, $message)
+        );
 
         foreach (self::UPGRADES as $upgradeVersion) {
             if (VersionUtil::checkVersion($version, $upgradeVersion)) {
@@ -222,15 +215,13 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             }
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.end', new Event($this, $message));
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.config.end',
+            new Event($this, $message)
+        );
     }
 
-    /**
-     * @param $version
-     *
-     * @throws FileException
-     */
-    private function applyUpgrade($version)
+    private function applyUpgrade(string $version): void
     {
         switch ($version) {
             case '200.17011202':
@@ -249,18 +240,17 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     }
 
     /**
-     * @param $version
-     *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
-    private function upgrade_200_17011202($version)
+    private function upgrade_200_17011202(string $version): void
     {
         $this->configData->setSiteTheme('material-blue');
         $this->configData->setConfigVersion($version);
 
         $this->config->saveConfig($this->configData, false);
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.process',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.config.process',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Update Configuration'))
                 ->addDetail(__u('Version'), $version))
@@ -268,13 +258,14 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     }
 
     /**
-     * @param $version
-     *
      * @throws FileException
      */
-    private function upgrade_300_18111001($version)
+    private function upgrade_300_18111001(string $version): void
     {
-        $extensions = array_map('strtolower', $this->configData->getFilesAllowedExts());
+        $extensions = array_map(
+            'strtolower',
+            $this->configData->getFilesAllowedExts()
+        );
         $mimeTypes = $this->dic->get(MimeTypes::class)->getMimeTypes();
         $configMimeTypes = [];
 
@@ -286,7 +277,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
                     $configMimeTypes[] = $mimeType['type'];
                     $exists = true;
 
-                    $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                    $this->eventDispatcher->notifyEvent(
+                        'upgrade.config.process',
                         new Event($this, EventMessage::factory()
                             ->addDescription(__u('MIME type set for this extension'))
                             ->addDetail(__u('MIME type'), $mimeType['type'])
@@ -296,7 +288,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             }
 
             if (!$exists) {
-                $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                $this->eventDispatcher->notifyEvent(
+                    'upgrade.config.process',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('MIME type not found for this extension'))
                         ->addDetail(__u('Extension'), $extension))
@@ -309,7 +302,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
         $this->config->saveConfig($this->configData, false);
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.process',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.config.process',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Update Configuration'))
                 ->addDetail(__u('Version'), $version))
@@ -317,11 +311,9 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     }
 
     /**
-     * @param $version
-     *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
-    private function upgrade_300_18112501($version)
+    private function upgrade_300_18112501(string $version): void
     {
         if ($this->configData->isLdapEnabled()) {
             if ($this->configData->get('ldapAds')) {
@@ -334,7 +326,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
             $this->config->saveConfig($this->configData, false);
 
-            $this->eventDispatcher->notifyEvent('upgrade.config.process',
+            $this->eventDispatcher->notifyEvent(
+                'upgrade.config.process',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Update Configuration'))
                     ->addDetail(__u('Version'), $version))
@@ -343,11 +336,9 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     }
 
     /**
-     * @param $version
-     *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
-    private function upgrade_320_20062801($version)
+    private function upgrade_320_20062801(string $version): void
     {
         if ($this->configData->isLdapEnabled()) {
             if ($this->configData->get('ldapType') === LdapTypeInterface::LDAP_AZURE) {
@@ -358,7 +349,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
             $this->config->saveConfig($this->configData, false);
 
-            $this->eventDispatcher->notifyEvent('upgrade.config.process',
+            $this->eventDispatcher->notifyEvent(
+                'upgrade.config.process',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Update Configuration'))
                     ->addDetail(__u('Version'), $version))
@@ -366,10 +358,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         }
     }
 
-    /**
-     * initialize
-     */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->eventDispatcher->attach($this->dic->get(FileLogHandler::class));
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
@@ -38,27 +38,27 @@ use SplObjectStorage;
 final class DataGridHeaderSort extends DataGridHeaderBase
 {
     /**
-     * @var DataGridActionInterface[]
+     * @var SplObjectStorage|DataGridActionInterface[]|null
      */
-    private $actions;
+    private ?SplObjectStorage $actions = null;
 
     /**
-     * @var DataGridSortInterface[]
+     * @var SplObjectStorage|DataGridSortInterface[]|null
      */
-    private $sortFields;
+    private ?SplObjectStorage $sortFields = null;
 
     /**
-     * @return DataGridSortInterface[]
+     * @return DataGridSortInterface[]|null
      */
-    public function getSortFields(): array
+    public function getSortFields(): ?array
     {
         return $this->sortFields;
     }
 
     /**
-     * @return DataGridActionInterface[]
+     * @return DataGridActionInterface[]|null
      */
-    public function getActions(): array
+    public function getActions(): ?array
     {
         return $this->actions;
     }
@@ -66,7 +66,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
     /**
      * @param DataGridActionInterface $action
      */
-    public function addAction(DataGridActionInterface  $action)
+    public function addAction(DataGridActionInterface $action): void
     {
         if (null === $this->actions) {
             $this->actions = new SplObjectStorage();

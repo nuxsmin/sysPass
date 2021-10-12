@@ -2,19 +2,23 @@
   #box-login {
     position: relative;
     min-height: 14em;
+
     #box-buttons {
       position: absolute;
       top: 2em;
       right: 2em;
     }
+
     #box-actions {
       width: 100%;
       text-align: right;
+
       a {
         color: #c9c9c9;
       }
     }
   }
+
   #box-updated {
     width: 350px;
     margin: 3em auto;
@@ -23,16 +27,19 @@
     padding: 0.5em;
     @include color-teal();
   }
+
   #demo-info {
     padding: .5em;
     margin: 3em auto 0 auto;
     color: #c9c9c9;
     border-top: 1px solid #d9d9d9;
     border-bottom: 1px solid #d9d9d9;
+
     ul {
       display: flex;
       justify-content: space-around;
       list-style: none;
+
       li {
         > span {
           padding: 0 1em;
@@ -51,19 +58,23 @@
         right: 0;
         text-align: right;
       }
+
       #box-actions {
         margin-top: 1em;
       }
     }
+
     #demo-info {
       ul {
         display: flex;
         flex-direction: column;
         align-items: center;
         list-style: none;
+
         li {
           width: 11em;
           text-align: left;
+
           > span {
             padding: 0 1em;
           }

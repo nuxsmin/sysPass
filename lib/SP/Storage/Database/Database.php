@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
@@ -41,30 +41,12 @@ use SP\Core\Exceptions\SPException;
  */
 final class Database implements DatabaseInterface
 {
-    /**
-     * @var int Número de registros obtenidos
-     */
-    protected $numRows = 0;
-    /**
-     * @var int Número de campos de la consulta
-     */
-    protected $numFields = 0;
-    /**
-     * @var array Resultados de la consulta
-     */
-    protected $lastResult;
-    /**
-     * @var DBStorageInterface
-     */
-    protected $dbHandler;
-    /**
-     * @var int Último Id de elemento insertado/actualizado
-     */
-    private $lastId;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
+    protected int $numRows = 0;
+    protected int $numFields = 0;
+    protected ?array $lastResult = null;
+    protected DBStorageInterface $dbHandler;
+    private ?int $lastId = null;
+    private EventDispatcher $eventDispatcher;
 
     /**
      * DB constructor.
@@ -72,64 +54,55 @@ final class Database implements DatabaseInterface
      * @param DBStorageInterface $dbHandler
      * @param EventDispatcher    $eventDispatcher
      */
-    public function __construct(DBStorageInterface $dbHandler, EventDispatcher $eventDispatcher)
+    public function __construct(
+        DBStorageInterface $dbHandler,
+        EventDispatcher    $eventDispatcher
+    )
     {
         $this->dbHandler = $dbHandler;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @return int
-     */
     public function getNumRows(): int
     {
         return $this->numRows;
     }
 
-    /**
-     * @return int
-     */
     public function getNumFields(): int
     {
         return $this->numFields;
     }
 
-    /**
-     * @return array|null
-     */
     public function getLastResult(): ?array
     {
         return $this->lastResult;
     }
 
-    /**
-     * @return int|null
-     */
     public function getLastId(): ?int
     {
         return $this->lastId;
     }
 
-    /**
-     * @return DBStorageInterface
-     */
     public function getDbHandler(): DBStorageInterface
     {
         return $this->dbHandler;
     }
 
     /**
-     * @param QueryData $queryData
-     * @param bool      $fullCount
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function doSelect(QueryData $queryData, $fullCount = false): QueryResult
+    public function doSelect(
+        QueryData $queryData,
+        bool      $fullCount = false
+    ): QueryResult
     {
         if ($queryData->getQuery() === '') {
-            throw new QueryException($queryData->getOnErrorMessage(), QueryException::ERROR, __u('Blank query'));
+            throw new QueryException(
+                $queryData->getOnErrorMessage(),
+                SPException::ERROR,
+                __u('Blank query')
+            );
         }
 
         try {
@@ -140,11 +113,7 @@ final class Database implements DatabaseInterface
             }
 
             return $queryResult;
-        } catch (ConstraintException $e) {
-            processException($e);
-
-            throw $e;
-        } catch (QueryException $e) {
+        } catch (ConstraintException | QueryException $e) {
             processException($e);
 
             throw $e;
@@ -164,9 +133,6 @@ final class Database implements DatabaseInterface
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param $queryData   QueryData Los datos de la consulta
-     *
-     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -174,7 +140,8 @@ final class Database implements DatabaseInterface
     {
         $stmt = $this->prepareQueryData($queryData);
 
-        $this->eventDispatcher->notifyEvent('database.query',
+        $this->eventDispatcher->notifyEvent(
+            'database.query',
             new Event($this, EventMessage::factory()
                 ->addDescription($queryData->getQuery())
             )
@@ -198,14 +165,14 @@ final class Database implements DatabaseInterface
      * @param bool      $isCount   Indica si es una consulta de contador de registros
      * @param array     $options
      *
-     * @return PDOStatement
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return \PDOStatement
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     private function prepareQueryData(
         QueryData $queryData,
-        bool $isCount = false,
-        array $options = []
+        bool      $isCount = false,
+        array     $options = []
     ): PDOStatement
     {
         $query = $queryData->getQuery();
@@ -219,7 +186,7 @@ final class Database implements DatabaseInterface
         try {
             $connection = $this->dbHandler->getConnection();
 
-            if (!empty($params)) {
+            if (count($params) !== 0) {
                 $stmt = $connection->prepare($query, $options);
 
                 foreach ($params as $param => $value) {
@@ -247,27 +214,28 @@ final class Database implements DatabaseInterface
         } catch (Exception $e) {
             processException($e);
 
-            switch ((int)$e->getCode()) {
-                case 23000:
-                    throw new ConstraintException(
-                        __u('Integrity constraint'),
-                        ConstraintException::ERROR,
-                        $e->getMessage(),
-                        $e->getCode(),
-                        $e
-                    );
+            if ((int)$e->getCode() === 23000) {
+                throw new ConstraintException(
+                    __u('Integrity constraint'),
+                    SPException::ERROR,
+                    $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
             }
 
-            throw new QueryException($e->getMessage(), QueryException::CRITICAL, $e->getCode(), 0, $e);
+            throw new QueryException(
+                $e->getMessage(),
+                SPException::CRITICAL,
+                $e->getCode(),
+                0,
+                $e
+            );
         }
     }
 
     /**
      * Strips out the unused params from the query count
-     *
-     * @param QueryData $queryData
-     *
-     * @return array
      */
     private function getParamsForCount(QueryData $queryData): array
     {
@@ -275,21 +243,24 @@ final class Database implements DatabaseInterface
         $countFrom = substr_count($queryData->getFrom(), '?');
         $countWhere = substr_count($queryData->getWhere(), '?');
 
-        return array_slice($queryData->getParams(), $countSelect, $countFrom + $countWhere);
+        return array_slice(
+            $queryData->getParams(),
+            $countSelect,
+            $countFrom + $countWhere
+        );
     }
 
-    /**
-     * @param QueryData    $queryData
-     * @param PDOStatement $stmt
-     *
-     * @return array
-     */
     private function fetch(QueryData $queryData, PDOStatement $stmt): array
     {
         if ($queryData->isUseKeyPair()) {
             return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        } elseif ($queryData->getMapClassName()) {
-            return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
+        }
+
+        if ($queryData->getMapClassName()) {
+            return $stmt->fetchAll(
+                PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
+                $queryData->getMapClassName()
+            );
         }
 
         return $stmt->fetchAll();
@@ -298,9 +269,7 @@ final class Database implements DatabaseInterface
     /**
      * Obtener el número de filas de una consulta realizada
      *
-     * @param QueryData $queryData Los datos de la consulta
-     *
-     * @return int Número de files de la consulta
+     * @return int Número de filas de la consulta
      * @throws SPException
      */
     public function getFullRowCount(QueryData $queryData): int
@@ -329,15 +298,19 @@ final class Database implements DatabaseInterface
      */
     public function doQueryRaw(
         QueryData $queryData,
-        array $options = [],
-        ?bool $buffered = null): PDOStatement
+        array     $options = [],
+        ?bool     $buffered = null
+    ): PDOStatement
     {
         if ($buffered === false
             && $this->dbHandler instanceof MySQLHandler
         ) {
             $this->dbHandler
                 ->getConnection()
-                ->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+                ->setAttribute(
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+                    false
+                );
         }
 
         return $this->prepareQueryData($queryData, false, $options);
@@ -345,8 +318,6 @@ final class Database implements DatabaseInterface
 
     /**
      * Iniciar una transacción
-     *
-     * @return bool
      */
     public function beginTransaction(): bool
     {
@@ -355,21 +326,25 @@ final class Database implements DatabaseInterface
         if (!$conn->inTransaction()) {
             $result = $conn->beginTransaction();
 
-            $this->eventDispatcher->notifyEvent('database.transaction.begin',
-                new Event($this, EventMessage::factory()->addExtra('result', $result)));
+            $this->eventDispatcher->notifyEvent(
+                'database.transaction.begin',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addExtra('result', $result)
+                )
+            );
 
             return $result;
-        } else {
-            logger('beginTransaction: already in transaction');
-
-            return true;
         }
+
+        logger('beginTransaction: already in transaction');
+
+        return true;
     }
 
     /**
      * Finalizar una transacción
-     *
-     * @return bool
      */
     public function endTransaction(): bool
     {
@@ -377,16 +352,20 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->commit();
 
-        $this->eventDispatcher->notifyEvent('database.transaction.end',
-            new Event($this, EventMessage::factory()->addExtra('result', $result)));
+        $this->eventDispatcher->notifyEvent(
+            'database.transaction.end',
+            new Event(
+                $this,
+                EventMessage::factory()
+                    ->addExtra('result', $result)
+            )
+        );
 
         return $result;
     }
 
     /**
      * Rollback de una transacción
-     *
-     * @return bool
      */
     public function rollbackTransaction(): bool
     {
@@ -394,17 +373,18 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->rollBack();
 
-        $this->eventDispatcher->notifyEvent('database.transaction.rollback',
-            new Event($this, EventMessage::factory()->addExtra('result', $result)));
+        $this->eventDispatcher->notifyEvent(
+            'database.transaction.rollback',
+            new Event(
+                $this,
+                EventMessage::factory()
+                    ->addExtra('result', $result)
+            )
+        );
 
         return $result;
     }
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     */
     public function getColumnsForTable(string $table): array
     {
         $conn = $this->dbHandler->getConnection()

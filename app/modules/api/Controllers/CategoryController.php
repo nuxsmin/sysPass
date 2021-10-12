@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -51,15 +51,12 @@ final class CategoryController extends ControllerBase
 {
     use ItemTrait;
 
-    /**
-     * @var CategoryService
-     */
-    private $categoryService;
+    private ?CategoryService $categoryService = null;
 
     /**
      * viewAction
      */
-    public function viewAction()
+    public function viewAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CATEGORY_VIEW);
@@ -71,11 +68,15 @@ final class CategoryController extends ControllerBase
 
             $categoryData = $this->categoryService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.category',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Category displayed'))
-                    ->addDetail(__u('Name'), $categoryData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'show.category',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Category displayed'))
+                        ->addDetail(__u('Name'), $categoryData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
             $out = $this->fractal
@@ -87,7 +88,9 @@ final class CategoryController extends ControllerBase
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
+            $this->returnResponse(
+                ApiResponse::makeSuccess($out->toArray(), $id)
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -98,7 +101,7 @@ final class CategoryController extends ControllerBase
     /**
      * createAction
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CATEGORY_CREATE);
@@ -109,14 +112,24 @@ final class CategoryController extends ControllerBase
 
             $id = $this->categoryService->create($categoryData);
 
-            $this->eventDispatcher->notifyEvent('create.category',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Category added'))
-                    ->addDetail(__u('Name'), $categoryData->getName())
-                    ->addDetail('ID', $id))
+            $this->eventDispatcher->notifyEvent(
+                'create.category',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Category added'))
+                        ->addDetail(__u('Name'), $categoryData->getName())
+                        ->addDetail('ID', $id)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category added')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $categoryData,
+                    $id,
+                    __('Category added')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -127,7 +140,7 @@ final class CategoryController extends ControllerBase
     /**
      * editAction
      */
-    public function editAction()
+    public function editAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CATEGORY_EDIT);
@@ -139,14 +152,24 @@ final class CategoryController extends ControllerBase
 
             $this->categoryService->update($categoryData);
 
-            $this->eventDispatcher->notifyEvent('edit.category',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Category updated'))
-                    ->addDetail(__u('Name'), $categoryData->getName())
-                    ->addDetail('ID', $categoryData->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'edit.category',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Category updated'))
+                        ->addDetail(__u('Name'), $categoryData->getName())
+                        ->addDetail('ID', $categoryData->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $categoryData,
+                    $categoryData->getId(),
+                    __('Category updated')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -157,7 +180,7 @@ final class CategoryController extends ControllerBase
     /**
      * deleteAction
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CATEGORY_DELETE);
@@ -168,14 +191,24 @@ final class CategoryController extends ControllerBase
 
             $this->categoryService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.category',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Category deleted'))
-                    ->addDetail(__u('Name'), $categoryData->getName())
-                    ->addDetail('ID', $categoryData->getId()))
+            $this->eventDispatcher->notifyEvent(
+                'delete.category',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Category deleted'))
+                        ->addDetail(__u('Name'), $categoryData->getName())
+                        ->addDetail('ID', $categoryData->getId())
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category deleted')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $categoryData,
+                    $id,
+                    __('Category deleted')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -186,7 +219,7 @@ final class CategoryController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CATEGORY_SEARCH);
@@ -197,7 +230,11 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.category', new Event($this));
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->categoryService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $this->categoryService->search($itemSearchData)->getDataAsArray()
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -212,7 +249,7 @@ final class CategoryController extends ControllerBase
      * @throws NotFoundException
      * @throws InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->categoryService = $this->dic->get(CategoryService::class);
         $this->apiService->setHelpClass(CategoryHelp::class);

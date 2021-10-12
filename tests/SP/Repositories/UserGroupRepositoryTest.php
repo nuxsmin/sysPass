@@ -306,9 +306,9 @@ class UserGroupRepositoryTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function testGetByIdBatch()
+    public function testGetByIdBatch(): void
     {
-        $data = self::$repository->getByIdBatch([1, 2, 10]);
+        $data = self::$repository->getByIdBatch([1, 2, 10])->getDataAsArray();
 
         $this->assertCount(2, $data);
         $this->assertInstanceOf(UserGroupData::class, $data[0]);

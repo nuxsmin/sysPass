@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
@@ -36,11 +36,11 @@ final class TabsGridHelper extends HelperBase
     /**
      * Máximo numero de acciones antes de agrupar
      */
-    const MAX_NUM_ACTIONS = 3;
+    private const MAX_NUM_ACTIONS = 3;
     /**
      * @var DataGridTab[]
      */
-    protected $tabs = [];
+    protected array $tabs = [];
 
     /**
      * Inicializar las plantillas para las pestañas
@@ -48,7 +48,7 @@ final class TabsGridHelper extends HelperBase
      * @param string $route
      * @param int    $activeTab
      */
-    public function renderTabs(string $route, $activeTab = 0)
+    public function renderTabs(string $route, int $activeTab = 0): void
     {
         $this->view->addTemplate('datatabs-grid', 'grid');
 
@@ -63,7 +63,7 @@ final class TabsGridHelper extends HelperBase
      *
      * @param DataGridTab $tab
      */
-    public function addTab(DataGridTab $tab)
+    public function addTab(DataGridTab $tab): void
     {
         $this->tabs[] = $tab;
     }

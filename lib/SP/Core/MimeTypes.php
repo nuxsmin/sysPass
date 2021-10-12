@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -38,37 +38,24 @@ final class MimeTypes
     /**
      * Cache file name
      */
-    const MIME_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'mime.cache';
+    public const MIME_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'mime.cache';
     /**
      * Cache expire time
      */
-    const CACHE_EXPIRE = 86400;
-    /**
-     * @var int
-     */
-    protected $lastLoadTime;
-    /**
-     * @var  array
-     */
-    protected $mimeTypes;
-    /**
-     * @var XmlFileStorageInterface
-     */
-    protected $xmlFileStorage;
-    /**
-     * @var FileCacheInterface
-     */
-    private $fileCache;
+    public const CACHE_EXPIRE = 86400;
+    protected ?array $mimeTypes = null;
+    protected XmlFileStorageInterface $xmlFileStorage;
+    private FileCacheInterface $fileCache;
 
     /**
      * Mime constructor.
      *
-     * @param FileCacheInterface      $fileCache
-     * @param XmlFileStorageInterface $xmlFileStorage
-     *
      * @throws FileException
      */
-    public function __construct(FileCacheInterface $fileCache, XmlFileStorageInterface $xmlFileStorage)
+    public function __construct(
+        FileCacheInterface      $fileCache,
+        XmlFileStorageInterface $xmlFileStorage
+    )
     {
         $this->xmlFileStorage = $xmlFileStorage;
         $this->fileCache = $fileCache;
@@ -79,10 +66,9 @@ final class MimeTypes
     /**
      * Loads MIME types from cache file
      *
-     * @return void
      * @throws FileException
      */
-    protected function loadCache()
+    protected function loadCache(): void
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
@@ -104,7 +90,7 @@ final class MimeTypes
     /**
      * @throws FileException
      */
-    protected function mapAndSave()
+    protected function mapAndSave(): void
     {
         logger('MIME TYPES CACHE MISS', 'INFO');
 
@@ -117,7 +103,7 @@ final class MimeTypes
      *
      * @throws FileException
      */
-    protected function map()
+    protected function map(): void
     {
         $this->mimeTypes = [];
 
@@ -129,10 +115,9 @@ final class MimeTypes
     /**
      * Loads MIME types from XML
      *
-     * @return array
      * @throws FileException
      */
-    protected function load()
+    protected function load(): array
     {
         return $this->xmlFileStorage->load('mimetypes')->getItems();
     }
@@ -140,7 +125,7 @@ final class MimeTypes
     /**
      * Saves MIME types into cache file
      */
-    protected function saveCache()
+    protected function saveCache(): void
     {
         try {
             $this->fileCache->save($this->mimeTypes);
@@ -154,17 +139,14 @@ final class MimeTypes
     /**
      * @throws FileException
      */
-    public function reset()
+    public function reset(): void
     {
         @unlink(self::MIME_CACHE_FILE);
 
         $this->loadCache();
     }
 
-    /**
-     * @return array
-     */
-    public function getMimeTypes(): array
+    public function getMimeTypes(): ?array
     {
         return $this->mimeTypes;
     }

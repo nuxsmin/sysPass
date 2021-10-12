@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -33,72 +33,55 @@ defined('APP_ROOT') || die();
  */
 final class Filter
 {
-    /**
-     * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares
-     *
-     * @param $string
-     *
-     * @return mixed
-     */
-    public static function safeSearchString(string $string)
-    {
-        return str_replace(['/', '[', '\\', ']', '%', '{', '}', '*', '$'], '', (string)$string);
-    }
+    private const UNSAFE_CHARS = ['/', '[', '\\', ']', '%', '{', '}', '*', '$'];
 
     /**
-     * @param $value
-     *
-     * @return string
+     * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares
      */
+    public static function safeSearchString(string $string): string
+    {
+        return str_replace(self::UNSAFE_CHARS, '', $string);
+    }
+
     public static function getEmail(string $value): string
     {
         return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
     }
 
-    /**
-     * @param array $array
-     *
-     * @return array
-     */
     public static function getArray(array $array): array
     {
-        return array_map(static function ($value) {
-            if ($value !== null) {
-                return is_numeric($value)
-                    ? Filter::getInt($value)
-                    : Filter::getString($value);
-            }
+        return array_map(
+            static function ($value) {
+                if ($value !== null) {
+                    return is_numeric($value)
+                        ? Filter::getInt($value)
+                        : Filter::getString($value);
+                }
 
-            return null;
-        }, $array);
+                return null;
+            },
+            $array
+        );
     }
 
     /**
      * @param string|int $value
-     *
-     * @return int
      */
     public static function getInt($value): int
     {
         return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
     }
 
-    /**
-     * @param string|null $value
-     *
-     * @return string
-     */
     public static function getString(?string $value): string
     {
-        return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        return filter_var(
+            trim($value),
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
     }
 
-    /**
-     * @param $value
-     *
-     * @return string
-     */
-    public static function getRaw($value): string
+    public static function getRaw(string $value): string
     {
         return filter_var(trim($value), FILTER_UNSAFE_RAW);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\UI;
@@ -39,7 +39,7 @@ final class ThemeIcons
     /**
      * @var IconInterface[]
      */
-    private $icons = [];
+    private array $icons = [];
 
     /**
      * @return IconInterface
@@ -56,11 +56,8 @@ final class ThemeIcons
      */
     public function getIconByName(string $name)
     {
-        if (isset($this->icons[$name])) {
-            return $this->icons[$name];
-        }
-
-        return new FontIcon($name, 'mdl-color-text--indigo-A200');
+        return $this->icons[$name]
+            ?? new FontIcon($name, 'mdl-color-text--indigo-A200');
     }
 
     /**
@@ -387,7 +384,7 @@ final class ThemeIcons
      * @param string        $alias
      * @param IconInterface $icon
      */
-    public function addIcon(string $alias, IconInterface $icon)
+    public function addIcon(string $alias, IconInterface $icon): void
     {
         $this->icons[$alias] = $icon;
     }

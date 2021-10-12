@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -40,14 +40,8 @@ use SP\Services\Account\AccountRequest;
  */
 final class AccountForm extends FormBase implements FormInterface
 {
-    /**
-     * @var AccountRequest
-     */
-    protected $accountRequest;
-    /**
-     * @var AccountPresetService
-     */
-    private $accountPresetService;
+    protected ?AccountRequest $accountRequest = null;
+    private ?AccountPresetService $accountPresetService = null;
 
     /**
      * Validar el formulario
@@ -96,7 +90,7 @@ final class AccountForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->accountRequest->id = $this->itemId;
         $this->accountRequest->name = $this->request->analyzeString('name');
@@ -122,7 +116,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    private function checkPassword()
+    private function checkPassword(): void
     {
         if ($this->accountRequest->parentId > 0) {
             return;
@@ -137,10 +131,7 @@ final class AccountForm extends FormBase implements FormInterface
         }
     }
 
-    /**
-     * analyzeItems
-     */
-    private function analyzeItems()
+    private function analyzeItems(): void
     {
         if ($this->request->analyzeInt('other_users_view_update') === 1) {
             $this->accountRequest->usersView = $this->request->analyzeArray('other_users_view', null, []);
@@ -166,7 +157,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    private function checkCommon()
+    private function checkCommon(): void
     {
         if (!$this->accountRequest->name) {
             throw new ValidationException(__u('An account name needed'));
@@ -181,10 +172,7 @@ final class AccountForm extends FormBase implements FormInterface
         }
     }
 
-    /**
-     * analyzeBulkEdit
-     */
-    private function analyzeBulkEdit()
+    private function analyzeBulkEdit(): void
     {
         if ($this->request->analyzeBool('clear_permission_users_view', false)) {
             $this->accountRequest->usersView = [];
@@ -203,18 +191,12 @@ final class AccountForm extends FormBase implements FormInterface
         }
     }
 
-    /**
-     * @return AccountRequest
-     */
-    public function getItemData()
+    public function getItemData(): ?AccountRequest
     {
         return $this->accountRequest;
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->accountPresetService = $dic->get(AccountPresetService::class);
         $this->accountRequest = new AccountRequest();

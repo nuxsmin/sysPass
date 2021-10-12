@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -33,531 +33,267 @@ use SP\DataModel\UserPreferencesData;
  */
 final class UserLoginResponse
 {
-    /**
-     * @var int
-     */
-    private $id;
-    /**
-     * @var string
-     */
-    private $login;
-    /**
-     * @var string
-     */
-    private $ssoLogin;
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var string
-     */
-    private $email;
-    /**
-     * @var int
-     */
-    private $userGroupId = 0;
-    /**
-     * @var string
-     */
-    private $userGroupName;
-    /**
-     * @var int
-     */
-    private $userProfileId = 0;
-    /**
-     * @var string
-     */
-    private $userProfileName;
-    /**
-     * @var int
-     */
-    private $isAdminApp = 0;
-    /**
-     * @var int
-     */
-    private $isAdminAcc = 0;
-    /**
-     * @var int
-     */
-    private $isDisabled = 0;
-    /**
-     * @var int
-     */
-    private $isChangePass = 0;
-    /**
-     * @var int
-     */
-    private $isChangedPass = 0;
-    /**
-     * @var int
-     */
-    private $isLdap = 0;
-    /**
-     * @var int
-     */
-    private $isMigrate = 0;
-    /**
-     * @var UserPreferencesData
-     */
-    private $preferences;
-    /**
-     * @var string
-     */
-    private $pass;
-    /**
-     * @var string
-     */
-    private $hashSalt;
-    /**
-     * @var string
-     */
-    private $mPass;
-    /**
-     * @var string
-     */
-    private $mKey;
-    /**
-     * @var int
-     */
-    private $lastUpdateMPass = 0;
-    /**
-     * @var int
-     */
-    private $lastUpdate;
+    private ?int $id = null;
+    private ?string $login = null;
+    private ?string $ssoLogin = null;
+    private ?string $name = null;
+    private ?string $email = null;
+    private int $userGroupId = 0;
+    private ?string $userGroupName = null;
+    private int $userProfileId = 0;
+    private bool $isAdminApp = false;
+    private bool $isAdminAcc = false;
+    private bool $isDisabled = false;
+    private bool $isChangePass = false;
+    private bool $isChangedPass = false;
+    private bool $isLdap = false;
+    private bool $isMigrate = false;
+    private ?UserPreferencesData $preferences = null;
+    private ?string $pass = null;
+    private ?string $hashSalt = null;
+    private ?string $mPass = null;
+    private ?string $mKey = null;
+    private int $lastUpdateMPass = 0;
+    private ?int $lastUpdate = null;
 
-    /**
-     * @return string
-     */
-    public function getLogin()
+    public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    /**
-     * @param string $login
-     *
-     * @return UserLoginResponse
-     */
-    public function setLogin($login)
+    public function setLogin(string $login): UserLoginResponse
     {
         $this->login = $login;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSsoLogin()
+    public function getSsoLogin(): ?string
     {
         return $this->ssoLogin;
     }
 
-    /**
-     * @param string $ssoLogin
-     *
-     * @return UserLoginResponse
-     */
-    public function setSsoLogin($ssoLogin)
+    public function setSsoLogin(?string $ssoLogin): UserLoginResponse
     {
         $this->ssoLogin = $ssoLogin;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return UserLoginResponse
-     */
-    public function setName($name)
+    public function setName(string $name): UserLoginResponse
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     *
-     * @return UserLoginResponse
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): UserLoginResponse
     {
         $this->email = $email;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
+    public function getUserGroupId(): int
     {
         return $this->userGroupId;
     }
 
-    /**
-     * @param int $userGroupId
-     *
-     * @return UserLoginResponse
-     */
-    public function setUserGroupId($userGroupId)
+    public function setUserGroupId(int $userGroupId): UserLoginResponse
     {
-        $this->userGroupId = (int)$userGroupId;
+        $this->userGroupId = $userGroupId;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserProfileId()
+    public function getUserProfileId(): int
     {
         return $this->userProfileId;
     }
 
-    /**
-     * @param int $userProfileId
-     *
-     * @return UserLoginResponse
-     */
-    public function setUserProfileId($userProfileId)
+    public function setUserProfileId(int $userProfileId): UserLoginResponse
     {
-        $this->userProfileId = (int)$userProfileId;
+        $this->userProfileId = $userProfileId;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsAdminApp()
+    public function getIsAdminApp(): bool
     {
         return $this->isAdminApp;
     }
 
-    /**
-     * @param int $isAdminApp
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsAdminApp($isAdminApp)
+    public function setIsAdminApp(bool $isAdminApp): UserLoginResponse
     {
-        $this->isAdminApp = (int)$isAdminApp;
+        $this->isAdminApp = $isAdminApp;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsAdminAcc()
+    public function getIsAdminAcc(): bool
     {
         return $this->isAdminAcc;
     }
 
-    /**
-     * @param int $isAdminAcc
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsAdminAcc($isAdminAcc)
+    public function setIsAdminAcc(bool $isAdminAcc): UserLoginResponse
     {
-        $this->isAdminAcc = (int)$isAdminAcc;
+        $this->isAdminAcc = $isAdminAcc;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsDisabled()
+    public function getIsDisabled(): bool
     {
         return $this->isDisabled;
     }
 
-    /**
-     * @param int $isDisabled
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsDisabled($isDisabled)
+    public function setIsDisabled(bool $isDisabled): UserLoginResponse
     {
-        $this->isDisabled = (int)$isDisabled;
+        $this->isDisabled = $isDisabled;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsChangePass()
+    public function getIsChangePass(): bool
     {
         return $this->isChangePass;
     }
 
-    /**
-     * @param int $isChangePass
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsChangePass($isChangePass)
+    public function setIsChangePass(bool $isChangePass): UserLoginResponse
     {
-        $this->isChangePass = (int)$isChangePass;
+        $this->isChangePass = $isChangePass;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsChangedPass()
+    public function getIsChangedPass(): bool
     {
         return $this->isChangedPass;
     }
 
-    /**
-     * @param int $isChangedPass
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsChangedPass($isChangedPass)
+    public function setIsChangedPass(bool $isChangedPass): UserLoginResponse
     {
-        $this->isChangedPass = (int)$isChangedPass;
+        $this->isChangedPass = $isChangedPass;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsLdap()
+    public function getIsLdap(): bool
     {
         return $this->isLdap;
     }
 
-    /**
-     * @param int $isLdap
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsLdap($isLdap)
+    public function setIsLdap(bool $isLdap): UserLoginResponse
     {
-        $this->isLdap = (int)$isLdap;
+        $this->isLdap = $isLdap;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsMigrate()
+    public function getIsMigrate(): bool
     {
         return $this->isMigrate;
     }
 
-    /**
-     * @param int $isMigrate
-     *
-     * @return UserLoginResponse
-     */
-    public function setIsMigrate($isMigrate)
+    public function setIsMigrate(bool $isMigrate): UserLoginResponse
     {
-        $this->isMigrate = (int)$isMigrate;
+        $this->isMigrate = $isMigrate;
         return $this;
     }
 
-    /**
-     * @return UserPreferencesData
-     */
-    public function getPreferences()
+    public function getPreferences(): ?UserPreferencesData
     {
         return $this->preferences;
     }
 
-    /**
-     * @param mixed $preferences
-     *
-     * @return UserLoginResponse
-     */
-    public function setPreferences(UserPreferencesData $preferences)
+    public function setPreferences(UserPreferencesData $preferences): UserLoginResponse
     {
         $this->preferences = $preferences;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPass()
+    public function getPass(): ?string
     {
         return $this->pass;
     }
 
-    /**
-     * @param string $pass
-     *
-     * @return UserLoginResponse
-     */
-    public function setPass($pass)
+    public function setPass(string $pass): UserLoginResponse
     {
         $this->pass = $pass;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMPass()
+    public function getMPass(): ?string
     {
         return $this->mPass;
     }
 
-    /**
-     * @param string $mPass
-     *
-     * @return UserLoginResponse
-     */
-    public function setMPass($mPass)
+    public function setMPass(string $mPass): UserLoginResponse
     {
         $this->mPass = $mPass;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMKey()
+    public function getMKey(): ?string
     {
         return $this->mKey;
     }
 
-    /**
-     * @param string $mKey
-     *
-     * @return UserLoginResponse
-     */
-    public function setMKey($mKey)
+    public function setMKey(string $mKey): UserLoginResponse
     {
         $this->mKey = $mKey;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getLastUpdateMPass()
+    public function getLastUpdateMPass(): int
     {
         return $this->lastUpdateMPass;
     }
 
-    /**
-     * @param int $lastUpdateMPass
-     *
-     * @return UserLoginResponse
-     */
-    public function setLastUpdateMPass($lastUpdateMPass)
+    public function setLastUpdateMPass(int $lastUpdateMPass): UserLoginResponse
     {
-        $this->lastUpdateMPass = (int)$lastUpdateMPass;
+        $this->lastUpdateMPass = $lastUpdateMPass;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getHashSalt()
+    public function getHashSalt(): ?string
     {
         return $this->hashSalt;
     }
 
-    /**
-     * @param string $hashSalt
-     *
-     * @return UserLoginResponse
-     */
-    public function setHashSalt($hashSalt)
+    public function setHashSalt(string $hashSalt): UserLoginResponse
     {
         $this->hashSalt = $hashSalt;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return UserLoginResponse
-     */
-    public function setId($id)
+    public function setId(int $id): UserLoginResponse
     {
-        $this->id = (int)$id;
+        $this->id = $id;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserGroupName()
+    public function getUserGroupName(): ?string
     {
         return $this->userGroupName;
     }
 
-    /**
-     * @param string $userGroupName
-     *
-     * @return UserLoginResponse
-     */
-    public function setUserGroupName($userGroupName)
+    public function setUserGroupName(string $userGroupName): UserLoginResponse
     {
         $this->userGroupName = $userGroupName;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserProfileName()
-    {
-        return $this->userProfileName;
-    }
 
-    /**
-     * @param string $userProfileName
-     *
-     * @return UserLoginResponse
-     */
-    public function setUserProfileName($userProfileName)
-    {
-        $this->userProfileName = $userProfileName;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getLastUpdate(): int
     {
         return $this->lastUpdate;
     }
 
-    /**
-     * @param int $lastUpdate
-     *
-     * @return UserLoginResponse
-     */
-    public function setLastUpdate(int $lastUpdate)
+    public function setLastUpdate(int $lastUpdate): UserLoginResponse
     {
         $this->lastUpdate = $lastUpdate;
 

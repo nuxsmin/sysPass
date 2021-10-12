@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Events;
@@ -39,49 +39,24 @@ final class EventMessage implements MessageInterface
     /**
      * @var array Detalles de la acción en formato "detalle : descripción"
      */
-    protected $details = [];
-    /**
-     * @var int
-     */
-    protected $descriptionCounter = 0;
-    /**
-     * @var int
-     */
-    protected $detailsCounter = 0;
-    /**
-     * @var array
-     */
-    protected $description = [];
-    /**
-     * @var array
-     */
-    protected $extra = [];
+    protected array $details = [];
+    protected int $descriptionCounter = 0;
+    protected int $detailsCounter = 0;
+    protected array $description = [];
+    protected array $extra = [];
 
-    /**
-     * @return static
-     */
-    public static function factory()
+    public static function factory(): EventMessage
     {
-        return new static();
+        return new self();
     }
 
-    /**
-     * Devuelve la descripción
-     *
-     * @return array
-     */
-    public function getDescriptionRaw()
+    public function getDescriptionRaw(): array
     {
         return $this->description;
     }
 
     /**
      * Establece los detalles de la acción realizada
-     *
-     * @param $key   string
-     * @param $value string|null
-     *
-     * @return $this
      */
     public function addDetail(string $key, ?string $value): EventMessage
     {
@@ -98,10 +73,6 @@ final class EventMessage implements MessageInterface
 
     /**
      * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     *
-     * @return string
      */
     private function formatString(string $string): string
     {
@@ -110,12 +81,8 @@ final class EventMessage implements MessageInterface
 
     /**
      * Establece la descripción de la acción realizada
-     *
-     * @param string $description
-     *
-     * @return $this
      */
-    public function addDescription($description = ''): EventMessage
+    public function addDescription(string $description = ''): EventMessage
     {
         $this->description[] = $this->formatString($description);
 
@@ -126,10 +93,6 @@ final class EventMessage implements MessageInterface
 
     /**
      * Componer un mensaje en formato texto
-     *
-     * @param string $delimiter
-     *
-     * @return string
      */
     public function composeText(string $delimiter = PHP_EOL): string
     {
@@ -147,13 +110,11 @@ final class EventMessage implements MessageInterface
 
     /**
      * Devuelve la descripción de la acción realizada
-     *
-     * @param FormatterInterface $formatter
-     * @param bool               $translate
-     *
-     * @return string
      */
-    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    public function getDescription(
+        FormatterInterface $formatter,
+        bool               $translate
+    ): string
     {
         if ($this->descriptionCounter === 0) {
             return '';
@@ -164,13 +125,11 @@ final class EventMessage implements MessageInterface
 
     /**
      * Devuelve los detalles de la acción realizada
-     *
-     * @param FormatterInterface $formatter
-     * @param bool               $translate
-     *
-     * @return string
      */
-    public function getDetails(FormatterInterface $formatter, bool $translate = false): string
+    public function getDetails(
+        FormatterInterface $formatter,
+        bool               $translate = false
+    ): string
     {
         if ($this->detailsCounter === 0) {
             return '';
@@ -181,18 +140,14 @@ final class EventMessage implements MessageInterface
 
     /**
      * Devuelve los detalles
-     *
-     * @return array
      */
-    public function getDetailsRaw()
+    public function getDetailsRaw(): array
     {
         return $this->details;
     }
 
     /**
      * Componer un mensaje en formato HTML
-     *
-     * @return string
      */
     public function composeHtml(): string
     {
@@ -206,36 +161,21 @@ final class EventMessage implements MessageInterface
         return $message;
     }
 
-    /**
-     * @return int
-     */
     public function getDescriptionCounter(): int
     {
         return $this->descriptionCounter;
     }
 
-    /**
-     * @return int
-     */
     public function getDetailsCounter(): int
     {
         return $this->detailsCounter;
     }
 
-    /**
-     * @return array
-     */
     public function getExtra(): array
     {
         return $this->extra;
     }
 
-    /**
-     * @param string $type
-     * @param array  $data
-     *
-     * @return EventMessage
-     */
     public function setExtra(string $type, array $data): EventMessage
     {
         if (isset($this->extra[$type])) {
@@ -249,16 +189,11 @@ final class EventMessage implements MessageInterface
 
     /**
      * Extra data are stored as an array of values per key, thus each key is unique
-     *
-     * @param string $type
-     * @param mixed  $data
-     *
-     * @return EventMessage
      */
     public function addExtra(string $type, $data): EventMessage
     {
         if (isset($this->extra[$type])
-            && in_array($data, $this->extra[$type])
+            && in_array($data, $this->extra[$type], false)
         ) {
             return $this;
         }

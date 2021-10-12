@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
@@ -34,16 +34,8 @@ use SP\Storage\File\FileHandler;
  */
 final class MySQLFileParser implements DatabaseFileInterface
 {
-    /**
-     * @var FileHandler
-     */
-    private $fileHandler;
+    private FileHandler $fileHandler;
 
-    /**
-     * MySQLFileParser constructor.
-     *
-     * @param FileHandler $fileHandler
-     */
     public function __construct(FileHandler $fileHandler)
     {
         $this->fileHandler = $fileHandler;
@@ -52,12 +44,9 @@ final class MySQLFileParser implements DatabaseFileInterface
     /**
      * Parses a database script file and returns an array of lines parsed
      *
-     * @param string $delimiter
-     *
-     * @return array
      * @throws FileException
      */
-    public function parse($delimiter = ';'): array
+    public function parse(string $delimiter = ';'): array
     {
         $queries = [];
         $query = '';
@@ -86,14 +75,18 @@ final class MySQLFileParser implements DatabaseFileInterface
 
                         $query = '';
                     }
-                } else {
-                    if (!$end) {
-                        $query .= $buffer . PHP_EOL;
-                    } elseif ($end && strpos($buffer, 'DELIMITER') === false) {
-                        $queries[] = $query . trim(substr_replace($buffer, '', $length - $delimiterLength), $delimiterLength);
+                } else if (!$end) {
+                    $query .= $buffer . PHP_EOL;
+                } else if (strpos($buffer, 'DELIMITER') === false) {
+                    $queries[] = $query .
+                        trim(substr_replace(
+                            $buffer,
+                            '',
+                            $length - $delimiterLength),
+                            $delimiterLength
+                        );
 
-                        $query = '';
-                    }
+                    $query = '';
                 }
             }
         }

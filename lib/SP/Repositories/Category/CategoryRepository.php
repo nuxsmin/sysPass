@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Category;
@@ -32,7 +32,7 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -42,7 +42,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Category
  */
-final class CategoryRepository extends Repository implements RepositoryItemInterface
+final class CategoryRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -55,10 +55,10 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated category'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated category'), SPException::WARNING);
         }
 
         $queryData = new QueryData();
@@ -82,7 +82,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Category WHERE `hash` = ? OR `name` = ?');
@@ -104,10 +104,10 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated category name'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated category name'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -139,7 +139,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Category WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
@@ -161,7 +161,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CategoryData::class);
@@ -180,7 +180,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CategoryData::class);
@@ -200,7 +200,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CategoryData::class);
@@ -218,9 +218,9 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -244,9 +244,9 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -261,13 +261,13 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $query = /** @lang SQL */
             'DELETE FROM Category WHERE id = ? LIMIT 1';
@@ -287,7 +287,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -301,14 +301,14 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('id, name, description');
         $queryData->setFrom('Category');
         $queryData->setOrder('name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';

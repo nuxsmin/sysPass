@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Traits;
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Traits;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
@@ -40,67 +40,27 @@ use SP\Mvc\Controller\ControllerTrait;
 
 /**
  * Trait ControllerTratit
- *
- * @package SP\Modules\Web\Controllers
  */
 trait WebControllerTrait
 {
     use ControllerTrait;
 
-    /**
-     * @var string Nombre del controlador
-     */
-    protected $controllerName;
-    /**
-     * @var  EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var  Config
-     */
-    protected $config;
-    /**
-     * @var  SessionContext
-     */
-    protected $session;
-    /**
-     * @var  ThemeInterface
-     */
-    protected $theme;
-    /**
-     * @var string
-     */
-    protected $actionName;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var Acl
-     */
-    protected $acl;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var PhpExtensionChecker
-     */
-    protected $extensionChecker;
-    /**
-     * @var bool
-     */
-    private $setup = false;
+    protected ?string $controllerName = null;
+    protected ?EventDispatcher $eventDispatcher = null;
+    protected ?Config $config = null;
+    protected ?SessionContext $session = null;
+    protected ?ThemeInterface $theme = null;
+    protected ?string $actionName = null;
+    protected ?Klein $router = null;
+    protected ?Acl $acl = null;
+    protected ConfigDataInterface $configData;
+    protected ?Request $request = null;
+    protected ?PhpExtensionChecker $extensionChecker = null;
+    private bool $setup = false;
 
     /**
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
-     *
-     * @return null|string
      */
     final protected function getSignedUriFromRequest(): ?string
     {
@@ -112,7 +72,10 @@ trait WebControllerTrait
 
         if ($from) {
             try {
-                $this->request->verifySignature($this->configData->getPasswordSalt(), 'from');
+                $this->request->verifySignature(
+                    $this->configData->getPasswordSalt(),
+                    'from'
+                );
             } catch (SPException $e) {
                 processException($e);
 
@@ -123,10 +86,7 @@ trait WebControllerTrait
         return $from;
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    private function setUp(ContainerInterface $dic)
+    private function setUp(ContainerInterface $dic): void
     {
         $this->controllerName = $this->getControllerName();
 

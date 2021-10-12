@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -31,14 +31,14 @@ namespace SP\Core;
  */
 interface ItemsTypeInterface
 {
-    const ITEM_CATEGORIES = 1;
-    const ITEM_CUSTOMERS = 2;
-    const ITEM_CUSTOMERS_USER = 52;
-    const ITEM_FILES = 3;
-    const ITEM_TAGS = 4;
-    const ITEM_USERS = 5;
-    const ITEM_GROUPS = 6;
-    const ITEM_PROFILES = 7;
-    const ITEM_ACCOUNTS = 8;
-    const ITEM_ACCOUNTS_USER = 58;
+    public const ITEM_CATEGORIES = 1;
+    public const ITEM_CUSTOMERS = 2;
+    public const ITEM_CUSTOMERS_USER = 52;
+    public const ITEM_FILES = 3;
+    public const ITEM_TAGS = 4;
+    public const ITEM_USERS = 5;
+    public const ITEM_GROUPS = 6;
+    public const ITEM_PROFILES = 7;
+    public const ITEM_ACCOUNTS = 8;
+    public const ITEM_ACCOUNTS_USER = 58;
 }

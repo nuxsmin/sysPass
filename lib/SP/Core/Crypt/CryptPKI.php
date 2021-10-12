@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
@@ -38,26 +38,15 @@ use SP\Storage\File\FileHandler;
  */
 final class CryptPKI
 {
-    const KEY_SIZE = 1024;
-    const PUBLIC_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
-    const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
+    public const KEY_SIZE = 1024;
+    public const PUBLIC_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
+    public const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
+
+    protected RSA $rsa;
+    private ?FileHandler $publicKeyFile = null;
+    private ?FileHandler $privateKeyFile = null;
 
     /**
-     * @var RSA
-     */
-    protected $rsa;
-    /**
-     * @var FileHandler
-     */
-    private $publicKeyFile;
-    /**
-     * @var FileHandler
-     */
-    private $privateKeyFile;
-
-    /**
-     * @param RSA $rsa
-     *
      * @throws SPException
      */
     public function __construct(RSA $rsa)
@@ -70,10 +59,9 @@ final class CryptPKI
     /**
      * Check if private and public keys exist
      *
-     * @return void
      * @throws SPException
      */
-    private function setUp()
+    private function setUp(): void
     {
         $this->publicKeyFile = new FileHandler(self::PUBLIC_KEY_FILE);
         $this->privateKeyFile = new FileHandler(self::PRIVATE_KEY_FILE);
@@ -93,20 +81,17 @@ final class CryptPKI
      *
      * @throws FileException
      */
-    public function createKeys()
+    public function createKeys(): void
     {
         $keys = $this->rsa->createKey(self::KEY_SIZE);
 
         $this->publicKeyFile->save($keys['publickey']);
         $this->privateKeyFile->save($keys['privatekey']);
 
-        chmod(CryptPKI::PRIVATE_KEY_FILE, 0600);
+        chmod(self::PRIVATE_KEY_FILE, 0600);
     }
 
-    /**
-     * @return int
-     */
-    public static function getMaxDataSize()
+    public static function getMaxDataSize(): int
     {
         return (self::KEY_SIZE / 8) - 11;
     }
@@ -114,9 +99,6 @@ final class CryptPKI
     /**
      * Encriptar datos con la clave pública
      *
-     * @param string $data los datos a encriptar
-     *
-     * @return string
      * @throws FileException
      */
     public function encryptRSA(string $data): string
@@ -130,7 +112,6 @@ final class CryptPKI
     /**
      * Devuelve la clave pública desde el archivo
      *
-     * @return string
      * @throws FileException
      */
     public function getPublicKey(): string
@@ -143,23 +124,19 @@ final class CryptPKI
     /**
      * Desencriptar datos cifrados con la clave pública
      *
-     * @param string $data los datos a desencriptar
-     *
-     * @return string|false
      * @throws FileException
      */
-    public function decryptRSA(string $data)
+    public function decryptRSA(string $data): ?string
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
 
-        return @$this->rsa->decrypt($data);
+        return @$this->rsa->decrypt($data) ?: null;
     }
 
     /**
      * Devuelve la clave privada desde el archivo
      *
-     * @return string
      * @throws FileException
      */
     public function getPrivateKey(): string
@@ -170,10 +147,9 @@ final class CryptPKI
     }
 
     /**
-     * @return int
      * @throws FileException
      */
-    public function getKeySize()
+    public function getKeySize(): int
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
 
-use DI\Container;
+use Psr\Container\ContainerInterface;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Providers\Auth\Database\Database;
@@ -48,7 +50,7 @@ final class AuthProvider extends Provider
     /**
      * @var callable[]
      */
-    protected $auths = [];
+    protected array $auths = [];
 
     /**
      * Probar los métodos de autentificación
@@ -62,10 +64,9 @@ final class AuthProvider extends Provider
         $authsResult = [];
 
         foreach ($this->auths as $authName => $auth) {
-            /** @var AuthDataBase $data */
             $data = $auth($userLoginData);
 
-            if ($data !== false) {
+            if ($data instanceof AuthDataBase) {
                 $authsResult[] = new AuthResult($authName, $data);
             }
         }
@@ -76,11 +77,11 @@ final class AuthProvider extends Provider
     /**
      * Auth constructor.
      *
-     * @param Container $dic
+     * @param ContainerInterface $dic
      *
      * @throws AuthException
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $configData = $this->config->getConfigData();
 
@@ -98,9 +99,13 @@ final class AuthProvider extends Provider
                 function (UserLoginData $userLoginData) use ($configData) {
                     $data = LdapParams::getServerAndPort($configData->getLdapServer());
 
+                    if (count($data) === 0) {
+                        throw new ValidationException(__u('Wrong LDAP parameters'));
+                    }
+
                     $ldapParams = new LdapParams();
                     $ldapParams->setServer($data['server']);
-                    $ldapParams->setPort(isset($data['port']) ? $data['port'] : 389);
+                    $ldapParams->setPort($data['port'] ?? 389);
                     $ldapParams->setSearchBase($configData->getLdapBase());
                     $ldapParams->setGroup($configData->getLdapGroup());
                     $ldapParams->setBindDn($configData->getLdapBindUser());
@@ -155,11 +160,11 @@ final class AuthProvider extends Provider
      *
      * @throws AuthException
      */
-    private function registerAuth(callable $auth, string $name)
+    private function registerAuth(callable $auth, string $name): void
     {
         if (array_key_exists($name, $this->auths)) {
             throw new AuthException(__u('Authentication already initialized'),
-                AuthException::ERROR,
+                SPException::ERROR,
                 __FUNCTION__);
         }
 

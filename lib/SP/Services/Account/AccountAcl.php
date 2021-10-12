@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,146 +19,57 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
 
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 
 /**
  * Class AccountAcl
  *
- * @package SP\Account
+ * @package SP\Services\Account
  */
 final class AccountAcl
 {
-    /**
-     * @var bool
-     */
-    private $userInGroups = false;
-    /**
-     * @var bool
-     */
-    private $userInUsers = false;
-    /**
-     * @var bool
-     */
-    private $resultView = false;
-    /**
-     * @var bool
-     */
-    private $resultEdit = false;
-    /**
-     * @var bool
-     */
-    private $modified = false;
-    /**
-     * @var bool
-     */
-    private $showView = false;
-    /**
-     * @var bool
-     */
-    private $showHistory = false;
-    /**
-     * @var bool
-     */
-    private $showDetails = false;
-    /**
-     * @var bool
-     */
-    private $showPass = false;
-    /**
-     * @var bool
-     */
-    private $showFiles = false;
-    /**
-     * @var bool
-     */
-    private $showViewPass = false;
-    /**
-     * @var bool
-     */
-    private $showSave = false;
-    /**
-     * @var bool
-     */
-    private $showEdit = false;
-    /**
-     * @var bool
-     */
-    private $showEditPass = false;
-    /**
-     * @var bool
-     */
-    private $showDelete = false;
-    /**
-     * @var bool
-     */
-    private $showRestore = false;
-    /**
-     * @var bool
-     */
-    private $showLink = false;
-    /**
-     * @var bool
-     */
-    private $showCopy = false;
-    /**
-     * @var bool
-     */
-    private $showPermission = false;
-    /**
-     * @var bool
-     */
-    private $compiledAccountAccess = false;
-    /**
-     * @var bool
-     */
-    private $compiledShowAccess = false;
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var int
-     */
-    private $actionId;
-    /**
-     * @var int
-     */
-    private $time = 0;
-    /**
-     * @var bool
-     */
-    private $isHistory;
+    private bool $userInGroups = false;
+    private bool $userInUsers = false;
+    private bool $resultView = false;
+    private bool $resultEdit = false;
+    private bool $modified = false;
+    private bool $showView = false;
+    private bool $showHistory = false;
+    private bool $showDetails = false;
+    private bool $showPass = false;
+    private bool $showFiles = false;
+    private bool $showViewPass = false;
+    private bool $showSave = false;
+    private bool $showEdit = false;
+    private bool $showEditPass = false;
+    private bool $showDelete = false;
+    private bool $showRestore = false;
+    private bool $showLink = false;
+    private bool $showCopy = false;
+    private bool $showPermission = false;
+    private bool $compiledAccountAccess = false;
+    private bool $compiledShowAccess = false;
+    private ?int $accountId = null;
+    private int $actionId;
+    private int $time = 0;
+    private bool $isHistory;
 
-    /**
-     * AccountAcl constructor.
-     *
-     * @param int  $actionId
-     * @param bool $isHistory
-     */
-    public function __construct($actionId, $isHistory = false)
+    public function __construct(int $actionId, bool $isHistory = false)
     {
-        $this->actionId = (int)$actionId;
+        $this->actionId = $actionId;
         $this->isHistory = $isHistory;
     }
 
-    /**
-     * @return bool
-     */
     public function isUserInGroups(): bool
     {
         return $this->userInGroups;
     }
 
-    /**
-     * @param bool $userInGroups
-     *
-     * @return AccountAcl
-     */
     public function setUserInGroups(bool $userInGroups): AccountAcl
     {
         $this->userInGroups = $userInGroups;
@@ -166,19 +77,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isUserInUsers(): bool
     {
         return $this->userInUsers;
     }
 
-    /**
-     * @param bool $userInUsers
-     *
-     * @return AccountAcl
-     */
     public function setUserInUsers(bool $userInUsers): AccountAcl
     {
         $this->userInUsers = $userInUsers;
@@ -186,19 +89,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isResultView(): bool
     {
         return $this->resultView;
     }
 
-    /**
-     * @param bool $resultView
-     *
-     * @return AccountAcl
-     */
     public function setResultView(bool $resultView): AccountAcl
     {
         $this->resultView = $resultView;
@@ -206,19 +101,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isResultEdit(): bool
     {
         return $this->resultEdit;
     }
 
-    /**
-     * @param bool $resultEdit
-     *
-     * @return AccountAcl
-     */
     public function setResultEdit(bool $resultEdit): AccountAcl
     {
         $this->resultEdit = $resultEdit;
@@ -226,21 +113,14 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowDetails(): bool
     {
-        return $this->resultView && ($this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW
-                || $this->actionId === Acl::ACCOUNT_DELETE);
+        return $this->resultView
+            && ($this->actionId === ActionsInterface::ACCOUNT_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_DELETE);
     }
 
-    /**
-     * @param bool $showDetails
-     *
-     * @return AccountAcl
-     */
     public function setShowDetails(bool $showDetails): AccountAcl
     {
         $this->showDetails = $showDetails;
@@ -248,20 +128,12 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowPass(): bool
     {
-        return ($this->actionId === Acl::ACCOUNT_CREATE
-            || $this->actionId === Acl::ACCOUNT_COPY);
+        return ($this->actionId === ActionsInterface::ACCOUNT_CREATE
+            || $this->actionId === ActionsInterface::ACCOUNT_COPY);
     }
 
-    /**
-     * @param bool $showPass
-     *
-     * @return AccountAcl
-     */
     public function setShowPass(bool $showPass): AccountAcl
     {
         $this->showPass = $showPass;
@@ -269,22 +141,14 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowFiles(): bool
     {
         return $this->showFiles
-            && ($this->actionId === Acl::ACCOUNT_EDIT
-                || $this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW);
+            && ($this->actionId === ActionsInterface::ACCOUNT_EDIT
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW);
     }
 
-    /**
-     * @param bool $showFiles
-     *
-     * @return AccountAcl
-     */
     public function setShowFiles(bool $showFiles): AccountAcl
     {
         $this->showFiles = $this->resultView && $showFiles;
@@ -292,24 +156,16 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowViewPass(): bool
     {
         return $this->showViewPass
-            && ($this->actionId === Acl::ACCOUNT_SEARCH
-                || $this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_VIEW_PASS
-                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW
-                || $this->actionId === Acl::ACCOUNT_EDIT);
+            && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW_PASS
+                || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
     }
 
-    /**
-     * @param bool $showViewPass
-     *
-     * @return AccountAcl
-     */
     public function setShowViewPass(bool $showViewPass): AccountAcl
     {
         $this->showViewPass = $this->resultView && $showViewPass;
@@ -317,21 +173,13 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowSave(): bool
     {
-        return $this->actionId === Acl::ACCOUNT_EDIT
-            || $this->actionId === Acl::ACCOUNT_CREATE
-            || $this->actionId === Acl::ACCOUNT_COPY;
+        return $this->actionId === ActionsInterface::ACCOUNT_EDIT
+            || $this->actionId === ActionsInterface::ACCOUNT_CREATE
+            || $this->actionId === ActionsInterface::ACCOUNT_COPY;
     }
 
-    /**
-     * @param bool $showSave
-     *
-     * @return AccountAcl
-     */
     public function setShowSave(bool $showSave): AccountAcl
     {
         $this->showSave = $showSave;
@@ -339,21 +187,13 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowEdit(): bool
     {
         return $this->showEdit
-            && ($this->actionId === Acl::ACCOUNT_SEARCH
-                || $this->actionId === Acl::ACCOUNT_VIEW);
+            && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW);
     }
 
-    /**
-     * @param bool $showEdit
-     *
-     * @return AccountAcl
-     */
     public function setShowEdit(bool $showEdit): AccountAcl
     {
         $this->showEdit = $this->resultEdit && $showEdit && !$this->isHistory;
@@ -361,21 +201,13 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowEditPass(): bool
     {
         return $this->showEditPass
-            && ($this->actionId === Acl::ACCOUNT_EDIT
-                || $this->actionId === Acl::ACCOUNT_VIEW);
+            && ($this->actionId === ActionsInterface::ACCOUNT_EDIT
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW);
     }
 
-    /**
-     * @param bool $showEditPass
-     *
-     * @return AccountAcl
-     */
     public function setShowEditPass(bool $showEditPass): AccountAcl
     {
         $this->showEditPass = $this->resultEdit && $showEditPass && !$this->isHistory;
@@ -383,22 +215,14 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowDelete(): bool
     {
         return $this->showDelete
-            && ($this->actionId === Acl::ACCOUNT_SEARCH
-                || $this->actionId === Acl::ACCOUNT_DELETE
-                || $this->actionId === Acl::ACCOUNT_EDIT);
+            && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
+                || $this->actionId === ActionsInterface::ACCOUNT_DELETE
+                || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
     }
 
-    /**
-     * @param bool $showDelete
-     *
-     * @return AccountAcl
-     */
     public function setShowDelete(bool $showDelete): AccountAcl
     {
         $this->showDelete = $this->resultEdit && $showDelete;
@@ -406,19 +230,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowRestore(): bool
     {
-        return $this->actionId === Acl::ACCOUNT_HISTORY_VIEW && $this->showRestore;
+        return $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW && $this->showRestore;
     }
 
-    /**
-     * @param bool $showRestore
-     *
-     * @return AccountAcl
-     */
     public function setShowRestore(bool $showRestore): AccountAcl
     {
         $this->showRestore = $this->resultEdit && $showRestore;
@@ -426,19 +242,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowLink(): bool
     {
         return $this->showLink;
     }
 
-    /**
-     * @param bool $showLink
-     *
-     * @return AccountAcl
-     */
     public function setShowLink(bool $showLink): AccountAcl
     {
         $this->showLink = $showLink;
@@ -446,21 +254,13 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowHistory(): bool
     {
         return $this->showHistory
-            && ($this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW);
+            && ($this->actionId === ActionsInterface::ACCOUNT_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW);
     }
 
-    /**
-     * @param bool $showHistory
-     *
-     * @return AccountAcl
-     */
     public function setShowHistory(bool $showHistory): AccountAcl
     {
         $this->showHistory = $showHistory;
@@ -468,60 +268,37 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShow(): bool
     {
         return ($this->showView || $this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete);
     }
 
-    /**
-     * @return int
-     */
     public function getActionId(): int
     {
         return $this->actionId;
     }
 
-    /**
-     * @param int $actionId
-     *
-     * @return AccountAcl
-     */
-    public function setActionId($actionId): AccountAcl
+    public function setActionId(int $actionId): AccountAcl
     {
-        $this->actionId = (int)$actionId;
+        $this->actionId = $actionId;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTime(): int
     {
         return $this->time;
     }
 
-    /**
-     * @param int $time
-     *
-     * @return AccountAcl
-     */
-    public function setTime($time): AccountAcl
+    public function setTime(int $time): AccountAcl
     {
-        $this->time = (int)$time;
+        $this->time = $time;
 
         return $this;
     }
 
     /**
      * Comprueba los permisos de acceso a una cuenta.
-     *
-     * @param int $actionId
-     *
-     * @return bool
      */
     public function checkAccountAccess(int $actionId): bool
     {
@@ -530,35 +307,27 @@ final class AccountAcl
         }
 
         switch ($actionId) {
-            case Acl::ACCOUNT_VIEW:
-            case Acl::ACCOUNT_SEARCH:
-            case Acl::ACCOUNT_VIEW_PASS:
-            case Acl::ACCOUNT_HISTORY_VIEW:
-            case Acl::ACCOUNT_COPY:
+            case ActionsInterface::ACCOUNT_VIEW
+                || ActionsInterface::ACCOUNT_SEARCH
+                || ActionsInterface::ACCOUNT_VIEW_PASS
+                || ActionsInterface::ACCOUNT_HISTORY_VIEW
+                || ActionsInterface::ACCOUNT_COPY:
                 return $this->resultView;
-            case Acl::ACCOUNT_EDIT:
-            case Acl::ACCOUNT_DELETE:
-            case Acl::ACCOUNT_EDIT_PASS:
-            case Acl::ACCOUNT_EDIT_RESTORE:
+            case ActionsInterface::ACCOUNT_EDIT
+                || ActionsInterface::ACCOUNT_DELETE
+                || ActionsInterface::ACCOUNT_EDIT_PASS
+                || ActionsInterface::ACCOUNT_EDIT_RESTORE:
                 return $this->resultEdit;
             default:
                 return false;
         }
     }
 
-    /**
-     * @return boolean
-     */
     public function isModified(): bool
     {
         return $this->modified;
     }
 
-    /**
-     * @param boolean $modified
-     *
-     * @return AccountAcl
-     */
     public function setModified(bool $modified): AccountAcl
     {
         $this->modified = $modified;
@@ -566,19 +335,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowView(): bool
     {
         return $this->showView;
     }
 
-    /**
-     * @param bool $showView
-     *
-     * @return AccountAcl
-     */
     public function setShowView(bool $showView): AccountAcl
     {
         $this->showView = $this->resultView && $showView;
@@ -586,22 +347,14 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowCopy(): bool
     {
         return $this->showCopy
-            && ($this->actionId === Acl::ACCOUNT_SEARCH
-                || $this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_EDIT);
+            && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
+                || $this->actionId === ActionsInterface::ACCOUNT_VIEW
+                || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
     }
 
-    /**
-     * @param bool $showCopy
-     *
-     * @return AccountAcl
-     */
     public function setShowCopy(bool $showCopy): AccountAcl
     {
         $this->showCopy = $this->resultView && $showCopy;
@@ -609,19 +362,11 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
     public function isShowPermission(): bool
     {
         return $this->showPermission;
     }
 
-    /**
-     * @param bool $showPermission
-     *
-     * @return AccountAcl
-     */
     public function setShowPermission(bool $showPermission): AccountAcl
     {
         $this->showPermission = $showPermission;
@@ -629,39 +374,23 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getAccountId(): int
+    public function getAccountId(): ?int
     {
         return $this->accountId;
     }
 
-    /**
-     * @param int $accountId
-     *
-     * @return AccountAcl
-     */
-    public function setAccountId($accountId): AccountAcl
+    public function setAccountId(int $accountId): AccountAcl
     {
-        $this->accountId = (int)$accountId;
+        $this->accountId = $accountId;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isHistory(): bool
     {
         return $this->isHistory;
     }
 
-    /**
-     * @param bool $isHistory
-     *
-     * @return AccountAcl
-     */
     public function setIsHistory(bool $isHistory): AccountAcl
     {
         $this->isHistory = $isHistory;
@@ -669,47 +398,31 @@ final class AccountAcl
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isCompiledShowAccess(): bool
     {
         return $this->compiledShowAccess;
     }
 
-    /**
-     * @param bool $compiledShowAccess
-     *
-     * @return AccountAcl
-     */
     public function setCompiledShowAccess(bool $compiledShowAccess): AccountAcl
     {
-        $this->compiledShowAccess = (bool)$compiledShowAccess;
+        $this->compiledShowAccess = $compiledShowAccess;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isCompiledAccountAccess(): bool
     {
         return $this->compiledAccountAccess;
     }
 
-    /**
-     * @param bool $compiledAccountAccess
-     *
-     * @return AccountAcl
-     */
     public function setCompiledAccountAccess(bool $compiledAccountAccess): AccountAcl
     {
-        $this->compiledAccountAccess = (bool)$compiledAccountAccess;
+        $this->compiledAccountAccess = $compiledAccountAccess;
 
         return $this;
     }
 
-    public function reset()
+    public function reset(): void
     {
         foreach ($this as $property => $value) {
             if (strpos($property, 'show') === 0) {

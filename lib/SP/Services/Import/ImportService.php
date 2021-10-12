@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,7 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -28,6 +28,7 @@ namespace SP\Services\Import;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Service;
 use SP\Storage\File\FileException;
 
@@ -38,7 +39,7 @@ defined('APP_ROOT') || die();
  */
 final class ImportService extends Service
 {
-    const ALLOWED_MIME = [
+    public const ALLOWED_MIME = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.ms-excel',
         'text/plain',
@@ -48,58 +49,61 @@ final class ImportService extends Service
         'text/xml'
     ];
 
-    /**
-     * @var ImportParams
-     */
-    protected $importParams;
-    /**
-     * @var FileImport
-     */
-    protected $fileImport;
+    protected ?ImportParams $importParams = null;
+    protected ?FileImport $fileImport = null;
 
     /**
      * Iniciar la importación de cuentas.
-     *
-     * @param ImportParams $importParams
-     * @param FileImport   $fileImport
      *
      * @return int Returns the total number of imported items
      * @throws Exception
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function doImport(ImportParams $importParams, FileImport $fileImport)
+    public function doImport(
+        ImportParams $importParams,
+        FileImport   $fileImport
+    ): int
     {
         $this->importParams = $importParams;
         $this->fileImport = $fileImport;
 
-        return $this->transactionAware(function () {
-            return $this->selectImportType()
-                ->doImport()
-                ->getCounter();
-        });
+        return $this->transactionAware(
+            function () {
+                return $this->selectImportType()
+                    ->doImport()
+                    ->getCounter();
+            }
+        );
     }
 
     /**
-     * @return ImportInterface
      * @throws ImportException
      * @throws FileException
      */
-    protected function selectImportType()
+    protected function selectImportType(): ImportInterface
     {
         $fileType = $this->fileImport->getFileType();
 
         switch ($fileType) {
             case 'text/plain':
-                return new CsvImport($this->dic, $this->fileImport, $this->importParams);
+                return new CsvImport(
+                    $this->dic,
+                    $this->fileImport,
+                    $this->importParams
+                );
             case 'text/xml':
             case 'application/xml':
-                return new XmlImport($this->dic, new XmlFileImport($this->fileImport), $this->importParams);
+                return new XmlImport(
+                    $this->dic,
+                    new XmlFileImport($this->fileImport),
+                    $this->importParams
+                );
         }
 
         throw new ImportException(
             sprintf(__('Mime type not supported ("%s")'), $fileType),
-            ImportException::ERROR,
+            SPException::ERROR,
             __u('Please, check the file format')
         );
     }
@@ -108,7 +112,7 @@ final class ImportService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         set_time_limit(0);
     }

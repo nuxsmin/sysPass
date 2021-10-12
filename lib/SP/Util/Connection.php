@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -38,27 +38,10 @@ final class Connection implements ConnectionInterface
      */
     protected $socket;
 
-    /**
-     * @var string
-     */
-    protected $host = '';
-
-    /**
-     * @var int
-     */
-    protected $port = 0;
-    /**
-     * Código de error del socket
-     *
-     * @var int
-     */
-    protected $errorno = 0;
-    /**
-     * Mensaje de error del socket
-     *
-     * @var string
-     */
-    protected $errorstr = '';
+    protected string $host;
+    protected int $port;
+    protected int $errorno = 0;
+    protected string $errorstr = '';
 
     /**
      * @param $host string El host a conectar
@@ -80,17 +63,17 @@ final class Connection implements ConnectionInterface
      */
     public function getSocket(int $type)
     {
-        switch ($type) {
-            case self::TYPE_UDP:
-                $this->socket = $this->getUDPSocket();
-                break;
-            default:
-                $this->socket = $this->getTCPSocket();
-                break;
+        if ($type === self::TYPE_UDP) {
+            $this->socket = $this->getUDPSocket();
+        } else {
+            $this->socket = $this->getTCPSocket();
         }
 
         if ($this->socket === false) {
-            throw new SPException($this->getSocketError(), SPException::WARNING);
+            throw new SPException(
+                $this->getSocketError(),
+                SPException::WARNING
+            );
         }
 
         stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
@@ -105,8 +88,12 @@ final class Connection implements ConnectionInterface
      */
     private function getUDPSocket()
     {
-        return stream_socket_client('udp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
-//        return @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        return stream_socket_client(
+            'udp://' . $this->host . ':' . $this->port,
+            $this->errorno,
+            $this->errorstr,
+            self::SOCKET_TIMEOUT
+        );
     }
 
     /**
@@ -116,19 +103,20 @@ final class Connection implements ConnectionInterface
      */
     private function getTCPSocket()
     {
-        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
-//        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        return stream_socket_client(
+            'tcp://' . $this->host . ':' . $this->port,
+            $this->errorno,
+            $this->errorstr,
+            self::SOCKET_TIMEOUT
+        );
     }
 
     /**
      * Obtener el último error del socket
-     *
-     * @return string
      */
     public function getSocketError(): string
     {
         return sprintf('%s (%d)', $this->errorstr, $this->errorno);
-//        return socket_strerror(socket_last_error($this->_socket));
     }
 
     /**
@@ -137,28 +125,30 @@ final class Connection implements ConnectionInterface
     public function closeSocket()
     {
         fclose($this->socket);
-//        @socket_close($this->_socket);
     }
 
     /**
      * Enviar un mensaje al socket
      *
-     * @param $message string El mensaje a enviar
-     *
-     * @return int|bool
      * @throws SPException
      */
-    public function send(string $message)
+    public function send(string $message): int
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(__u('Socket not initialized'), SPException::WARNING);
+            throw new SPException(
+                __u('Socket not initialized'),
+                SPException::WARNING
+            );
         }
 
         $nBytes = @fwrite($this->socket, $message);
-//        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
-            throw new SPException(__u('Error while sending the data'), SPException::WARNING, $this->getSocketError());
+            throw new SPException(
+                __u('Error while sending the data'),
+                SPException::WARNING,
+                $this->getSocketError()
+            );
         }
 
         return $nBytes;

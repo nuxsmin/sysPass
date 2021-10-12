@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
@@ -36,7 +36,7 @@ final class DatabaseUtil
     /**
      * @var array Tablas de la BBDD
      */
-    public static $tables = [
+    public const TABLES = [
         'Client',
         'Category',
         'Tag',
@@ -60,49 +60,46 @@ final class DatabaseUtil
         'UserPassRecover',
         'UserToUserGroup',
         'Plugin',
+        'Track',
         'Notification',
         'account_data_v',
         'account_search_v'
     ];
-    /**
-     * @var DBStorageInterface
-     */
-    private $DBStorage;
+    private DBStorageInterface $DBStorage;
 
     /**
      * DatabaseUtil constructor.
-     *
-     * @param DBStorageInterface $DBStorage
      */
     public function __construct(DBStorageInterface $DBStorage)
     {
-
         $this->DBStorage = $DBStorage;
     }
 
     /**
      * Comprobar que la base de datos existe.
-     *
-     * @param string $dbName
-     *
-     * @return bool
      */
     public function checkDatabaseTables(string $dbName): bool
     {
         try {
-            $tables = implode(',', array_map(function ($value) {
-                return '\'' . $value . '\'';
-            }, self::$tables));
+            $tables = implode(',', array_map(
+                static function ($value) {
+                    return '\'' . $value . '\'';
+                },
+                self::TABLES
+            ));
 
             $query = /** @lang SQL */
-                'SELECT COUNT(*) 
+                sprintf('SELECT COUNT(*) 
                 FROM information_schema.tables
-                WHERE table_schema = \'' . $dbName . '\'
-                AND `table_name` IN (' . $tables . ')';
+                WHERE table_schema = \'%s\'
+                AND `table_name` IN (%s)', $dbName, $tables);
 
-            $numTables = (int)$this->DBStorage->getConnection()->query($query)->fetchColumn();
+            $numTables = $this->DBStorage
+                ->getConnection()
+                ->query($query)
+                ->fetchColumn();
 
-            return $numTables === count(self::$tables);
+            return (int)$numTables === count(self::TABLES);
         } catch (Exception $e) {
             processException($e);
         }
@@ -110,9 +107,6 @@ final class DatabaseUtil
         return false;
     }
 
-    /**
-     * @return bool
-     */
     public function checkDatabaseConnection(): bool
     {
         try {
@@ -128,8 +122,6 @@ final class DatabaseUtil
 
     /**
      * Obtener la información del servidor de base de datos
-     *
-     * @return array
      */
     public function getDBinfo(): array
     {
@@ -159,10 +151,6 @@ final class DatabaseUtil
 
     /**
      * Escapar una cadena de texto con funciones de mysqli.
-     *
-     * @param string $str string con la cadena a escapar
-     *
-     * @return string con la cadena escapada
      */
     public function escape(string $str): string
     {

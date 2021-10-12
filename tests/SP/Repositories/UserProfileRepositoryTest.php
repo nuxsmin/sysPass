@@ -264,7 +264,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $profiles = self::$repository->getByIdBatch([1, 2, 5]);
+        $profiles = self::$repository->getByIdBatch([1, 2, 5])->getDataAsArray();
 
         $this->assertCount(2, $profiles);
         $this->assertInstanceOf(UserProfileData::class, $profiles[0]);

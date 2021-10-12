@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -48,29 +48,17 @@ use SP\Storage\Database\QueryResult;
  */
 final class AccountHistoryService extends Service
 {
-    /**
-     * @var AccountHistoryRepository
-     */
-    protected $accountHistoryRepository;
-    /**
-     * @var AccountToUserGroupRepository
-     */
-    protected $accountToUserGroupRepository;
-    /**
-     * @var AccountToUserRepository
-     */
-    protected $accountToUserRepository;
+    protected ?AccountHistoryRepository $accountHistoryRepository = null;
+    protected ?AccountToUserGroupRepository $accountToUserGroupRepository = null;
+    protected ?AccountToUserRepository $accountToUserRepository = null;
 
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
-     * @return AccountHistoryData
      * @throws SPException
      * @throws SPException
      */
-    public function getById($id)
+    public function getById(int $id): AccountHistoryData
     {
         $results = $this->accountHistoryRepository->getById($id);
 
@@ -84,25 +72,19 @@ final class AccountHistoryService extends Service
     /**
      * Obtiene el listado del histórico de una cuenta.
      *
-     * @param $id
-     *
      * @return array Con los registros con id como clave y fecha - usuario como valor
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getHistoryForAccount($id)
+    public function getHistoryForAccount(int $id): array
     {
         return self::mapHistoryForDateSelect($this->accountHistoryRepository->getHistoryForAccount($id)->getDataAsArray());
     }
 
     /**
      * Masps history items to fill in a date select
-     *
-     * @param array $history
-     *
-     * @return array
      */
-    private static function mapHistoryForDateSelect(array $history)
+    private static function mapHistoryForDateSelect(array $history): array
     {
         $items = [];
 
@@ -115,43 +97,36 @@ final class AccountHistoryService extends Service
             }
 
             $items[$item->id] = $date;
-        };
+        }
 
         return $items;
     }
 
     /**
-     * @param $id
-     *
      * @return ItemData[]
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUsersByAccountId($id)
+    public function getUsersByAccountId(int $id): array
     {
         return $this->accountToUserRepository->getUsersByAccountId($id)->getDataAsArray();
     }
 
     /**
-     * @param $id
-     *
      * @return ItemData[]
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUserGroupsByAccountId($id)
+    public function getUserGroupsByAccountId(int $id): array
     {
         return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray();
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->accountHistoryRepository->search($itemSearchData);
     }
@@ -159,23 +134,19 @@ final class AccountHistoryService extends Service
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param AccountHistoryCreateDto $dto
-     *
-     * @return bool
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create(AccountHistoryCreateDto $dto)
+    public function create(AccountHistoryCreateDto $dto): int
     {
         return $this->accountHistoryRepository->create($dto);
     }
 
     /**
-     * @return array
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAccountsPassData()
+    public function getAccountsPassData(): array
     {
         return $this->accountHistoryRepository->getAccountsPassData()->getDataAsArray();
     }
@@ -183,13 +154,11 @@ final class AccountHistoryService extends Service
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
-     * @param array|int $id
-     *
      * @throws QueryException
      * @throws ServiceException
      * @throws ConstraintException
      */
-    public function delete($id)
+    public function delete(int $id): void
     {
         if ($this->accountHistoryRepository->delete($id) === 0) {
             throw new ServiceException(__u('Error while deleting the account'));
@@ -199,13 +168,13 @@ final class AccountHistoryService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
         return $this->accountHistoryRepository->deleteByIdBatch($ids);
     }
@@ -213,24 +182,24 @@ final class AccountHistoryService extends Service
     /**
      * Deletes all the items for given accounts id
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteByAccountIdBatch(array $ids)
+    public function deleteByAccountIdBatch(array $ids): int
     {
         return $this->accountHistoryRepository->deleteByAccountIdBatch($ids);
     }
 
     /**
-     * @param AccountPasswordRequest $accountRequest
-     *
      * @throws SPException
      * @throws ConstraintException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
+    public function updatePasswordMasterPass(
+        AccountPasswordRequest $accountRequest
+    ): void
     {
         if ($this->accountHistoryRepository->updatePassword($accountRequest) !== 1) {
             throw new ServiceException(__u('Error while updating the password'));
@@ -240,11 +209,10 @@ final class AccountHistoryService extends Service
     /**
      * Returns all the items
      *
-     * @return array
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->accountHistoryRepository->getAll()->getDataAsArray();
     }
@@ -253,7 +221,7 @@ final class AccountHistoryService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountHistoryRepository = $this->dic->get(AccountHistoryRepository::class);
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);

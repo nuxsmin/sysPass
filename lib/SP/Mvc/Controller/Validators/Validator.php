@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller\Validators;
@@ -31,72 +31,36 @@ namespace SP\Mvc\Controller\Validators;
  */
 final class Validator
 {
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public static function hasLetters(string $string): bool
     {
         return preg_match('#[a-z]+#i', $string) === 1;
     }
 
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public static function hasNumbers(string $string): bool
     {
         return preg_match('#[\d]+#', $string) === 1;
     }
 
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public static function hasUpper(string $string): bool
     {
         return preg_match('#[A-Z]+#', $string) === 1;
     }
 
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public static function hasLower(string $string): bool
     {
         return preg_match('#[a-z]+#', $string) === 1;
     }
 
-    /**
-     * @param string $string
-     *
-     * @return bool
-     */
     public static function hasSymbols(string $string): bool
     {
         return preg_match('#[$-/:-?{-~!"^_`\[\]]+#', $string) === 1;
     }
 
-    /**
-     * @param string $string
-     * @param string $regex
-     *
-     * @return bool
-     */
     public static function matchRegex(string $string, string $regex): bool
     {
         return preg_match('#' . str_replace('#', '\#', $regex) . '#', $string) === 1;
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return bool
-     */
     public static function isRegex(string $regex): bool
     {
         return @preg_match('#' . str_replace('#', '\#', $regex) . '#', null) !== false;

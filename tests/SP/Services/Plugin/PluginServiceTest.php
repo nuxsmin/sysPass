@@ -122,7 +122,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testToggleAvailable()
     {
-        self::$service->toggleAvailable(1, 0);
+        self::$service->toggleAvailable(1, false);
 
         $data = self::$service->getById(1);
 
@@ -130,7 +130,7 @@ class PluginServiceTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->toggleAvailable(4, 1);
+        self::$service->toggleAvailable(4, true);
     }
 
     /**
@@ -320,7 +320,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testToggleEnabledByName()
     {
-        self::$service->toggleEnabledByName('Authenticator', 1);
+        self::$service->toggleEnabledByName('Authenticator', true);
 
         $data = self::$service->getByName('Authenticator');
 
@@ -328,7 +328,7 @@ class PluginServiceTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->toggleEnabledByName('Test', 0);
+        self::$service->toggleEnabledByName('Test', false);
     }
 
     /**
@@ -338,7 +338,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testToggleAvailableByName()
     {
-        self::$service->toggleAvailableByName('Authenticator', 0);
+        self::$service->toggleAvailableByName('Authenticator', false);
 
         $data = self::$service->getByName('Authenticator');
 
@@ -346,7 +346,7 @@ class PluginServiceTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->toggleAvailableByName('Authenticator 2', 1);
+        self::$service->toggleAvailableByName('Authenticator 2', true);
     }
 
     /**
@@ -372,7 +372,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testToggleEnabled()
     {
-        self::$service->toggleEnabled(1, 1);
+        self::$service->toggleEnabled(1, true);
 
         $data = self::$service->getById(1);
 
@@ -380,6 +380,6 @@ class PluginServiceTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->toggleEnabled(4, 0);
+        self::$service->toggleEnabled(4, false);
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Export;
@@ -48,25 +48,13 @@ use SP\Util\VersionUtil;
  */
 final class XmlVerifyService extends Service
 {
-    const NODES = ['Category', 'Client', 'Tag', 'Account'];
-    const XML_MIN_VERSION = [2, 1, 0, 0];
-    /**
-     * @var DOMDocument
-     */
-    private $xml;
-    /**
-     * @var string
-     */
-    private $xmlFile;
-    /**
-     * @var string
-     */
-    private $password;
+    private const NODES = ['Category', 'Client', 'Tag', 'Account'];
+    private const XML_MIN_VERSION = [2, 1, 0, 0];
+    private ?DOMDocument $xml = null;
+    private ?string $xmlFile = null;
+    private ?string $password = null;
 
     /**
-     * @param string $xmlFile
-     *
-     * @return VerifyResult
      * @throws FileException
      * @throws ImportException
      * @throws ServiceException
@@ -83,26 +71,31 @@ final class XmlVerifyService extends Service
 
         self::checkVersion($version);
 
-        self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
+        self::checkXmlHash(
+            $this->xml,
+            $this->config->getConfigData()->getPasswordSalt()
+        );
 
-        return new VerifyResult($version, false, $this->countItemNodes($this->xml));
+        return new VerifyResult(
+            $version,
+            false,
+            $this->countItemNodes($this->xml)
+        );
     }
 
     /**
      * @throws FileException
      * @throws ImportException
      */
-    private function setup()
+    private function setup(): void
     {
         $this->xml = (new XmlFileImport(FileImport::fromFilesystem($this->xmlFile)))->getXmlDOM();
     }
 
     /**
-     * @param DOMDocument $document
-     *
      * @throws ServiceException
      */
-    public static function validateSchema(DOMDocument $document)
+    public static function validateSchema(DOMDocument $document): void
     {
         if (!$document->schemaValidate(XML_SCHEMA)) {
             throw new ServiceException('Invalid XML schema');
@@ -118,44 +111,44 @@ final class XmlVerifyService extends Service
     }
 
     /**
-     * @param string $version
-     *
-     * @return void
      * @throws ServiceException
      */
-    public static function checkVersion(string $version)
+    public static function checkVersion(string $version): void
     {
         if (VersionUtil::checkVersion($version, self::XML_MIN_VERSION)) {
-            throw new ServiceException(sprintf('Sorry, this XML version is not compatible. Please use >= %s',
-                    VersionUtil::normalizeVersionForCompare(self::XML_MIN_VERSION))
+            throw new ServiceException(
+                sprintf(
+                    'Sorry, this XML version is not compatible. Please use >= %s',
+                    VersionUtil::normalizeVersionForCompare(self::XML_MIN_VERSION)
+                )
             );
         }
     }
 
     /**
      * Obtener la versión del XML
-     *
-     * @param DOMDocument $document
-     * @param string      $key
-     *
-     * @return bool
      */
-    public static function checkXmlHash(DOMDocument $document, string $key)
+    public static function checkXmlHash(
+        DOMDocument $document,
+        string      $key
+    ): bool
     {
         $DOMXPath = new DOMXPath($document);
         $hash = $DOMXPath->query('/Root/Meta/Hash');
         $sign = $DOMXPath->query('/Root/Meta/Hash/@sign');
 
         if ($hash->length === 1 && $sign->length === 1) {
-            return Hash::checkMessage($hash->item(0)->nodeValue, $key, $sign->item(0)->nodeValue);
+            return Hash::checkMessage(
+                $hash->item(0)->nodeValue,
+                $key,
+                $sign->item(0)->nodeValue
+            );
         }
 
-        return $hash === XmlExportService::generateHashFromNodes($document);
+        return (string)$hash === XmlExportService::generateHashFromNodes($document);
     }
 
     /**
-     * @param DOMDocument $document
-     *
      * @return int[]
      */
     private function countItemNodes(DOMDocument $document): array
@@ -163,22 +156,21 @@ final class XmlVerifyService extends Service
         $result = [];
 
         foreach (self::NODES as $node) {
-            $result[$node] = (int)$document->getElementsByTagName($node)->length;
+            $result[$node] = $document->getElementsByTagName($node)->length;
         }
 
         return $result;
     }
 
     /**
-     * @param string $xmlFile
-     * @param string $password
-     *
-     * @return VerifyResult
      * @throws FileException
      * @throws ImportException
      * @throws ServiceException
      */
-    public function verifyEncrypted(string $xmlFile, string $password): VerifyResult
+    public function verifyEncrypted(
+        string $xmlFile,
+        string $password
+    ): VerifyResult
     {
         $this->xmlFile = $xmlFile;
         $this->password = $password;
@@ -205,7 +197,7 @@ final class XmlVerifyService extends Service
     /**
      * @throws ServiceException
      */
-    private function checkPassword()
+    private function checkPassword(): void
     {
         $hash = $this->xml
             ->getElementsByTagName('Encrypted')
@@ -219,10 +211,8 @@ final class XmlVerifyService extends Service
 
     /**
      * Verificar si existen datos encriptados
-     *
-     * @return bool
      */
-    private function detectEncrypted()
+    private function detectEncrypted(): bool
     {
         return $this->xml->getElementsByTagName('Encrypted')->length > 0;
     }
@@ -237,14 +227,21 @@ final class XmlVerifyService extends Service
         $xpath = new DOMXPath($this->xml);
         $dataNodes = $xpath->query('/Root/Encrypted/Data');
 
-        $decode = VersionUtil::checkVersion($this->getXmlVersion(), '320.0');
+        $decode = VersionUtil::checkVersion(
+            $this->getXmlVersion(),
+            '320.0'
+        );
 
         /** @var $node DOMElement */
         foreach ($dataNodes as $node) {
             $data = $decode ? base64_decode($node->nodeValue) : $node->nodeValue;
 
             try {
-                $xmlDecrypted = Crypt::decrypt($data, $node->getAttribute('key'), $this->password);
+                $xmlDecrypted = Crypt::decrypt(
+                    $data,
+                    $node->getAttribute('key'),
+                    $this->password
+                );
             } catch (CryptoException $e) {
                 throw new ServiceException(__u('Wrong encryption password'));
             }
@@ -255,7 +252,9 @@ final class XmlVerifyService extends Service
                 throw new ServiceException(__u('Error loading XML data'));
             }
 
-            $this->xml->documentElement->appendChild($this->xml->importNode($newXmlData->documentElement, true));
+            $this->xml->documentElement->appendChild(
+                $this->xml->importNode($newXmlData->documentElement, true)
+            );
         }
 
         // Remove the encrypted data after processing

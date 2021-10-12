@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
@@ -31,31 +31,16 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
  */
 final class AccountActionsDto
 {
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var int
-     */
-    private $accountHistoryId;
-    /**
-     * @var int
-     */
-    private $accountParentId;
-    /**
-     * @var int
-     */
-    private $publicLinkId;
-    /**
-     * @var int
-     */
-    private $publicLinkCreatorId;
+    private ?int $accountId;
+    private ?int $accountHistoryId;
+    private ?int $accountParentId;
+    private ?int $publicLinkId = null;
+    private ?int $publicLinkCreatorId = null;
 
     /**
      * AccountActionsDto constructor.
      *
-     * @param int|null  $accountId
+     * @param int|null $accountId
      * @param int|null $accountHistoryId
      * @param int|null $accountParentId
      */
@@ -120,7 +105,7 @@ final class AccountActionsDto
     /**
      * @param int $publicLinkId
      */
-    public function setPublicLinkId(int $publicLinkId)
+    public function setPublicLinkId(int $publicLinkId): void
     {
         $this->publicLinkId = $publicLinkId;
     }
@@ -136,7 +121,7 @@ final class AccountActionsDto
     /**
      * @param int $publicLinkCreatorId
      */
-    public function setPublicLinkCreatorId(int $publicLinkCreatorId)
+    public function setPublicLinkCreatorId(int $publicLinkCreatorId): void
     {
         $this->publicLinkCreatorId = $publicLinkCreatorId;
     }

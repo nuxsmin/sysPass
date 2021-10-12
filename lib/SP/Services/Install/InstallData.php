@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Install;
@@ -31,303 +31,168 @@ namespace SP\Services\Install;
  */
 final class InstallData
 {
-    /**
-     * @var string Usuario de la BD
-     */
-    private $dbUser;
-    /**
-     * @var string
-     */
-    private $dbAdminUser = '';
-    /**
-     * @var string Clave de la BD
-     */
-    private $dbPass;
-    /**
-     * @var string
-     */
-    private $dbAdminPass = '';
-    /**
-     * @var string Nombre de la BD
-     */
-    private $dbName = 'syspass';
-    /**
-     * @var string Host de la BD
-     */
-    private $dbHost = 'localhost';
-    /**
-     * @var string
-     */
-    private $dbSocket;
-    /**
-     * @var int
-     */
-    private $dbPort = 0;
-    /**
-     * @var string Usuario 'admin' de sysPass
-     */
-    private $adminLogin = '';
-    /**
-     * @var string Clave del usuario 'admin' de sysPass
-     */
-    private $adminPass = '';
-    /**
-     * @var string Clave maestra de sysPass
-     */
-    private $masterPassword = '';
-    /**
-     * @var bool Activar/desactivar Modo hosting
-     */
-    private $hostingMode = false;
-    /**
-     * @var string
-     */
-    private $dbAuthHost = '';
-    /**
-     * @var string
-     */
-    private $dbAuthHostDns = '';
-    /**
-     * @var string
-     */
-    private $siteLang = 'en_US';
+    private ?string $dbUser = null;
+    private ?string $dbAdminUser = null;
+    private ?string $dbPass = null;
+    private ?string $dbAdminPass = null;
+    private string $dbName = 'syspass';
+    private string $dbHost = 'localhost';
+    private ?string $dbSocket = null;
+    private int $dbPort = 0;
+    private ?string $adminLogin = null;
+    private ?string $adminPass = null;
+    private ?string $masterPassword = null;
+    private bool $hostingMode = false;
+    private ?string $dbAuthHost = null;
+    private ?string $dbAuthHostDns = null;
+    private string $siteLang = 'en_US';
 
-    /**
-     * @return string
-     */
-    public function getDbUser()
+    public function getDbUser(): ?string
     {
         return $this->dbUser;
     }
 
-    /**
-     * @param string $dbUser
-     */
-    public function setDbUser($dbUser)
+    public function setDbUser(string $dbUser): void
     {
         $this->dbUser = $dbUser;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbPass()
+    public function getDbPass(): ?string
     {
         return $this->dbPass;
     }
 
-    /**
-     * @param string $dbPass
-     */
-    public function setDbPass($dbPass)
+    public function setDbPass(string $dbPass): void
     {
         $this->dbPass = $dbPass;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbName()
+    public function getDbName(): string
     {
         return $this->dbName;
     }
 
-    /**
-     * @param string $dbName
-     */
-    public function setDbName($dbName)
+    public function setDbName(string $dbName): void
     {
         $this->dbName = $dbName;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbHost()
+    public function getDbHost(): string
     {
         return $this->dbHost;
     }
 
-    /**
-     * @param string $dbHost
-     */
-    public function setDbHost($dbHost)
+    public function setDbHost(string $dbHost): void
     {
         $this->dbHost = $dbHost;
     }
 
-    /**
-     * @return string
-     */
-    public function getAdminLogin()
+    public function getAdminLogin(): ?string
     {
         return $this->adminLogin;
     }
 
-    /**
-     * @param string $adminLogin
-     */
-    public function setAdminLogin($adminLogin)
+    public function setAdminLogin(string $adminLogin): void
     {
         $this->adminLogin = $adminLogin;
     }
 
-    /**
-     * @return string
-     */
-    public function getAdminPass()
+    public function getAdminPass(): ?string
     {
         return $this->adminPass;
     }
 
-    /**
-     * @param string $adminPass
-     */
-    public function setAdminPass($adminPass)
+    public function setAdminPass(string $adminPass): void
     {
         $this->adminPass = $adminPass;
     }
 
-    /**
-     * @return string
-     */
-    public function getMasterPassword()
+    public function getMasterPassword(): ?string
     {
         return $this->masterPassword;
     }
 
-    /**
-     * @param string $masterPassword
-     */
-    public function setMasterPassword($masterPassword)
+    public function setMasterPassword(string $masterPassword): void
     {
         $this->masterPassword = $masterPassword;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isHostingMode()
+    public function isHostingMode(): bool
     {
         return $this->hostingMode;
     }
 
-    /**
-     * @param boolean $hostingMode
-     */
-    public function setHostingMode($hostingMode)
+    public function setHostingMode(bool $hostingMode): void
     {
         $this->hostingMode = $hostingMode;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbAuthHost()
+    public function getDbAuthHost(): ?string
     {
         return $this->dbAuthHost;
     }
 
-    /**
-     * @param string $dbAuthHost
-     */
-    public function setDbAuthHost($dbAuthHost)
+    public function setDbAuthHost(string $dbAuthHost): void
     {
         $this->dbAuthHost = $dbAuthHost;
     }
 
-    /**
-     * @return int
-     */
-    public function getDbPort()
+    public function getDbPort(): int
     {
         return $this->dbPort;
     }
 
-    /**
-     * @param int $dbPort
-     */
-    public function setDbPort($dbPort)
+    public function setDbPort(int $dbPort): void
     {
         $this->dbPort = $dbPort;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbAdminUser()
+    public function getDbAdminUser(): ?string
     {
         return $this->dbAdminUser;
     }
 
-    /**
-     * @param string $dbAdminUser
-     */
-    public function setDbAdminUser($dbAdminUser)
+    public function setDbAdminUser(string $dbAdminUser): void
     {
         $this->dbAdminUser = $dbAdminUser;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbAdminPass()
+    public function getDbAdminPass(): ?string
     {
         return $this->dbAdminPass;
     }
 
-    /**
-     * @param string $dbAdminPass
-     */
-    public function setDbAdminPass($dbAdminPass)
+    public function setDbAdminPass(string $dbAdminPass): void
     {
         $this->dbAdminPass = $dbAdminPass;
     }
 
-    /**
-     * @return string
-     */
-    public function getSiteLang()
+    public function getSiteLang(): string
     {
         return $this->siteLang;
     }
 
-    /**
-     * @param string $siteLang
-     */
-    public function setSiteLang($siteLang)
+    public function setSiteLang(string $siteLang): void
     {
         $this->siteLang = $siteLang;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbAuthHostDns()
+    public function getDbAuthHostDns(): ?string
     {
         return $this->dbAuthHostDns;
     }
 
-    /**
-     * @param string $dbAuthHostDns
-     */
-    public function setDbAuthHostDns($dbAuthHostDns)
+    public function setDbAuthHostDns(string $dbAuthHostDns): void
     {
         $this->dbAuthHostDns = $dbAuthHostDns;
     }
 
-    /**
-     * @return string
-     */
-    public function getDbSocket()
+    public function getDbSocket(): ?string
     {
         return $this->dbSocket;
     }
 
-    /**
-     * @param string $dbSocket
-     */
-    public function setDbSocket($dbSocket)
+    public function setDbSocket(string $dbSocket): void
     {
         $this->dbSocket = $dbSocket;
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -35,14 +35,8 @@ use SP\DataModel\UserData;
  */
 final class UserForm extends FormBase implements FormInterface
 {
-    /**
-     * @var UserData
-     */
-    protected $userData;
-    /**
-     * @var int
-     */
-    protected $isLdap = 0;
+    protected ?UserData $userData = null;
+    protected int $isLdap = 0;
 
     /**
      * Validar el formulario
@@ -81,7 +75,7 @@ final class UserForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->isLdap = $this->request->analyzeInt('isLdap', 0);
 
@@ -105,7 +99,7 @@ final class UserForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->isLdap && !$this->userData->getName()) {
             throw new ValidationException(__u('An username is needed'));
@@ -139,13 +133,13 @@ final class UserForm extends FormBase implements FormInterface
     {
         return $this->configData->isDemoEnabled()
             && $this->itemId === 2 // FIXME: Ugly!!
-            && $this->context->getUserData()->getIsAdminApp() === 0;
+            && $this->context->getUserData()->getIsAdminApp();
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkPass()
+    protected function checkPass(): void
     {
         $userPassR = $this->request->analyzeEncrypted('password_repeat');
 
@@ -165,7 +159,7 @@ final class UserForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkDelete()
+    protected function checkDelete(): void
     {
         if ($this->isDemo()) {
             throw new ValidationException(__u('Ey, this is a DEMO!!'));
@@ -173,25 +167,20 @@ final class UserForm extends FormBase implements FormInterface
 
         $userData = $this->context->getUserData();
 
-        if ((is_array($this->itemId) && in_array($userData->getId(), $this->itemId))
-            || $this->itemId === $userData->getId()
+        if ($this->itemId === $userData->getId()
+            || (is_array($this->itemId)
+                && in_array($userData->getId(), $this->itemId, true))
         ) {
             throw new ValidationException(__u('Unable to delete, user in use'));
         }
     }
 
-    /**
-     * @return UserData
-     */
-    public function getItemData()
+    public function getItemData(): ?UserData
     {
         return $this->userData;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsLdap()
+    public function getIsLdap(): int
     {
         return $this->isLdap;
     }

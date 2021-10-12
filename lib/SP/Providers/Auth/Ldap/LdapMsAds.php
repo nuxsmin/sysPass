@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
@@ -38,10 +38,10 @@ use SP\Http\Address;
  */
 final class LdapMsAds extends Ldap
 {
-    const DEFAULT_FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=32))(|(objectCategory=person)(objectClass=user)))';
-    const DEFAULT_FILTER_GROUP_OBJECT = '(objectCategory=group)';
-    const DEFAULT_FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
-    const DEFAULT_FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
+    public const DEFAULT_FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=32))(|(objectCategory=person)(objectClass=user)))';
+    public const DEFAULT_FILTER_GROUP_OBJECT = '(objectCategory=group)';
+    public const DEFAULT_FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
+    public const DEFAULT_FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
 
     /**
      * @inheritDoc
@@ -122,7 +122,7 @@ final class LdapMsAds extends Ldap
         // los grupos del usuario
         if (empty($this->ldapParams->getGroup())
             || $this->ldapParams->getGroup() === '*'
-            || in_array($this->getGroupDn(), $groupsDn)
+            || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.group',
                 new Event($this, EventMessage::factory()
@@ -192,7 +192,7 @@ final class LdapMsAds extends Ldap
     /**
      * @inheritDoc
      */
-    protected function pickServer()
+    protected function pickServer(): string
     {
         $server = $this->ldapParams->getServer();
 
@@ -214,7 +214,7 @@ final class LdapMsAds extends Ldap
 
         foreach ($records as $record) {
             $adServers[] = $record['target'];
-        };
+        }
 
         return count($adServers) > 0 ? array_rand($adServers) : $server;
     }

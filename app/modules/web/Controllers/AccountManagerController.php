@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -63,14 +64,8 @@ final class AccountManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var AccountService
-     */
-    protected $accountService;
-    /**
-     * @var AccountSearchService
-     */
-    protected $accountSearchService;
+    protected ?AccountService $accountService = null;
+    protected ?AccountSearchService $accountSearchService = null;
 
     /**
      * @return bool
@@ -79,11 +74,15 @@ final class AccountManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
+     * @throws \JsonException
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -104,15 +103,21 @@ final class AccountManagerController extends ControllerBase
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $accountGrid = $this->dic->get(AccountGrid::class);
 
         $filter = new AccountSearchFilter();
         $filter->setLimitCount($itemSearchData->getLimitCount());
         $filter->setLimitStart($itemSearchData->getLimitStart());
-        $filter->setStringFilters($this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString()));
-        $filter->setCleanTxtSearch($this->accountSearchService->getCleanString());
+
+        if (!empty($itemSearchData->getSeachString())) {
+            $filter->setStringFilters($this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString()));
+            $filter->setCleanTxtSearch($this->accountSearchService->getCleanString());
+        }
 
         return $accountGrid->updatePager(
             $accountGrid->getGrid(
@@ -126,8 +131,9 @@ final class AccountManagerController extends ControllerBase
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function deleteAction(?int $id = null): bool
     {
@@ -135,29 +141,46 @@ final class AccountManagerController extends ControllerBase
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
-                $this->eventDispatcher->notifyEvent('delete.account.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.account.selection',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Accounts removed'))
+                    )
                 );
 
-                return $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
+                return $this->returnJsonResponseData(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Accounts removed')
+                );
             }
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($id)
+                ->getAccountVData();
 
             $this->accountService->delete($id);
 
-            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
+            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.account',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account removed'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+            $this->eventDispatcher->notifyEvent(
+                'delete.account',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account removed'))
+                        ->addDetail(__u('Account'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Account removed')
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -171,12 +194,13 @@ final class AccountManagerController extends ControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function saveBulkEditAction(): bool
     {
         try {
             $form = new AccountForm($this->dic);
-            $form->validate(Acl::ACCOUNTMGR_BULK_EDIT);
+            $form->validate(ActionsInterface::ACCOUNTMGR_BULK_EDIT);
 
             $request = new AccountBulkRequest(
                 Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
@@ -190,14 +214,19 @@ final class AccountManagerController extends ControllerBase
 
             $this->accountService->updateBulk($request);
 
-//            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
-
-            $this->eventDispatcher->notifyEvent('edit.account.bulk',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Accounts updated')))
+            $this->eventDispatcher->notifyEvent(
+                'edit.account.bulk',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Accounts updated'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Accounts updated')
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -209,14 +238,18 @@ final class AccountManagerController extends ControllerBase
      * bulkEditAction
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function bulkEditAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Bulk Update'));
@@ -226,7 +259,10 @@ final class AccountManagerController extends ControllerBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.account.bulkEdit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.bulkEdit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
@@ -239,7 +275,7 @@ final class AccountManagerController extends ControllerBase
     /**
      * Sets view data
      */
-    protected function setViewData()
+    protected function setViewData(): void
     {
         $this->view->addTemplate('account_bulkedit', 'itemshow');
 
@@ -276,7 +312,7 @@ final class AccountManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

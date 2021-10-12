@@ -28,11 +28,11 @@
 
 use DI\ContainerBuilder;
 
-define('LOG_FORMAT', "[%s] [%s] %s");
+const LOG_FORMAT = "[%s] [%s] %s";
 /**
  * [timestamp] [type] [caller] data
  */
-define('LOG_FORMAT_OWN', '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL);
+const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL;
 
 /**
  * Basic logger to handle some debugging and exception messages.
@@ -56,9 +56,21 @@ function logger($data, ?string $type = 'DEBUG')
     $caller = getLastCaller();
 
     if (is_scalar($data)) {
-        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $data, $caller);
+        $line = sprintf(
+            LOG_FORMAT_OWN,
+            $date,
+            $type,
+            $data,
+            $caller
+        );
     } else {
-        $line = sprintf(LOG_FORMAT_OWN, $date, $type, print_r($data, true), $caller);
+        $line = sprintf(
+            LOG_FORMAT_OWN,
+            $date,
+            $type,
+            print_r($data, true),
+            $caller
+        );
     }
 
     $useOwn = (!defined('LOG_FILE')
@@ -67,9 +79,19 @@ function logger($data, ?string $type = 'DEBUG')
 
     if ($useOwn === false) {
         if (is_scalar($data)) {
-            $line = sprintf(LOG_FORMAT, $type, $data, $caller);
+            $line = sprintf(
+                LOG_FORMAT,
+                $type,
+                $data,
+                $caller
+            );
         } else {
-            $line = sprintf(LOG_FORMAT, $type, print_r($data, true), $caller);
+            $line = sprintf(
+                LOG_FORMAT,
+                $type,
+                print_r($data, true),
+                $caller
+            );
         }
 
         error_log($line);
@@ -86,40 +108,39 @@ function printLastCallers()
 
 /**
  * Print last caller from backtrace
- *
- * @param int $skip
- *
- * @return string
  */
-function getLastCaller($skip = 2): string
+function getLastCaller(int $skip = 2): string
 {
     $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
-    if (isset($callers[$skip], $callers[$skip]['class'], $callers[$skip]['function'])) {
+    if (isset($callers[$skip]['class'], $callers[$skip]['function'])) {
         return $callers[$skip]['class'] . '::' . $callers[$skip]['function'];
     }
 
     return 'N/A';
 }
 
-/**
- * @param Throwable $e
- *
- * @return string
- */
 function formatStackTrace(Throwable $e): string
 {
     $out = [];
 
     foreach ($e->getTrace() as $index => $trace) {
         if (isset($trace['file'])) {
-            $file = sprintf('%s(%d)', $trace['file'], $trace['line']);
+            $file = sprintf(
+                '%s(%d)',
+                $trace['file'],
+                $trace['line']
+            );
         } else {
             $file = '[internal function]';
         }
 
         if (isset($trace['class'])) {
-            $function = sprintf('%s->%s', $trace['class'], $trace['function']);
+            $function = sprintf(
+                '%s->%s',
+                $trace['class'],
+                $trace['function']
+            );
         } else {
             $function = $trace['function'];
         }
@@ -138,7 +159,13 @@ function formatStackTrace(Throwable $e): string
             }
         }
 
-        $out[] = sprintf('#%d %s: %s(%s)', $index, $file, $function, implode(',', $args));
+        $out[] = sprintf(
+            '#%d %s: %s(%s)',
+            $index,
+            $file,
+            $function,
+            implode(',', $args)
+        );
     }
 
     return implode(PHP_EOL, $out);
@@ -151,29 +178,39 @@ function formatStackTrace(Throwable $e): string
  */
 function processException(\Exception $exception)
 {
-    logger(sprintf("%s\n%s", __($exception->getMessage()), formatStackTrace($exception)), 'EXCEPTION');
+    logger(sprintf(
+        "%s\n%s",
+        __($exception->getMessage()),
+        formatStackTrace($exception)),
+        'EXCEPTION');
 
     if (($previous = $exception->getPrevious()) !== null) {
-        logger(sprintf("(P) %s\n%s", __($previous->getMessage()), $previous->getTraceAsString()), 'EXCEPTION');
+        logger(sprintf(
+            "(P) %s\n%s",
+            __($previous->getMessage()),
+            $previous->getTraceAsString()),
+            'EXCEPTION');
     }
 }
 
-/**
- * @param array $trace
- *
- * @return string
- */
 function formatTrace(array $trace): string
 {
     $btLine = [];
     $i = 0;
 
     foreach ($trace as $caller) {
-        $class = isset($caller['class']) ? $caller['class'] : '';
-        $file = isset($caller['file']) ? $caller['file'] : '';
-        $line = isset($caller['line']) ? $caller['line'] : 0;
+        $class = $caller['class'] ?? '';
+        $file = $caller['file'] ?? '';
+        $line = $caller['line'] ?? 0;
 
-        $btLine[] = sprintf('Caller %d: %s\%s (%s:%d)', $i, $class, $caller['function'], $file, $line);
+        $btLine[] = sprintf(
+            'Caller %d: %s\%s (%s:%d)',
+            $i,
+            $class,
+            $caller['function'],
+            $file,
+            $line
+        );
         $i++;
     }
 
@@ -185,21 +222,19 @@ function formatTrace(array $trace): string
  *
  * @param string $message
  * @param bool   $translate Si es necesario traducir
- *
- * @return string
  */
-function __(string $message, $translate = true): string
+function __(string $message, bool $translate = true): string
 {
-    return $translate === true && $message !== '' && mb_strlen($message) < 4096 ? gettext($message) : $message;
+    return $translate === true
+    && $message !== ''
+    && mb_strlen($message) < 4096
+        ? gettext($message)
+        : $message;
 }
 
 /**
  * Returns an untranslated string (gettext placeholder).
  * Dummy function to extract strings from source code
- *
- * @param string $message
- *
- * @return string
  */
 function __u(string $message): string
 {
@@ -208,24 +243,18 @@ function __u(string $message): string
 
 /**
  * Alias para obtener las locales de un dominio
- *
- * @param string $domain
- * @param string $message
- * @param bool   $translate
- *
- * @return string
  */
 function _t(string $domain, string $message, bool $translate = true): string
 {
-    return $translate === true && $message !== '' && mb_strlen($message) < 4096 ? dgettext($domain, $message) : $message;
+    return $translate === true
+    && $message !== ''
+    && mb_strlen($message) < 4096
+        ? dgettext($domain, $message)
+        : $message;
 }
 
 /**
  * Capitalización de cadenas multi byte
- *
- * @param $string
- *
- * @return string
  */
 function mb_ucfirst($string): string
 {
@@ -236,27 +265,21 @@ function mb_ucfirst($string): string
  * Devuelve el tiempo actual en coma flotante.
  * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
  *
- * @param float $from
- *
  * @returns float con el tiempo actual
- * @return float
  */
-function getElapsedTime($from)
+function getElapsedTime(float $from): float
 {
-    if ($from === 0) {
+    if ($from === 0.0) {
         return 0;
     }
 
-    return microtime(true) - floatval($from);
+    return microtime(true) - $from;
 }
 
 /**
  * Inicializar módulo
- *
- * @param                       $module
- * @param ContainerBuilder|null $builder
  */
-function initModule($module, ContainerBuilder $builder = null)
+function initModule(string $module, ?ContainerBuilder $builder = null)
 {
     $dir = dir(MODULES_PATH);
 
@@ -281,9 +304,6 @@ function initModule($module, ContainerBuilder $builder = null)
 }
 
 /**
- * @param $dir
- * @param $levels
- *
  * @return bool|string
  */
 function nDirname($dir, $levels)

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\Assets;
@@ -33,15 +33,5 @@ defined('APP_ROOT') || die();
  */
 final class ImageIcon extends IconBase
 {
-    /**
-     * @param string $icon
-     * @param null   $class
-     * @param null   $title
-     */
-    public function __construct(string $icon, $class = null, $title = null)
-    {
-        $this->setIcon($icon);
-        $this->setClass($class);
-        $this->setTitle($title);
-    }
+
 }

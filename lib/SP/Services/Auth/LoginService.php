@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Auth;
@@ -31,7 +31,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -72,51 +72,24 @@ final class LoginService extends Service
     /**
      * Estados
      */
-    const STATUS_INVALID_LOGIN = 1;
-    const STATUS_INVALID_MASTER_PASS = 2;
-    const STATUS_USER_DISABLED = 3;
-    const STATUS_NEED_OLD_PASS = 5;
-    const STATUS_MAX_ATTEMPTS_EXCEEDED = 6;
-    const STATUS_PASS_RESET = 7;
-    const STATUS_PASS = 0;
-    const STATUS_NONE = 100;
+    private const STATUS_INVALID_LOGIN = 1;
+    private const STATUS_INVALID_MASTER_PASS = 2;
+    private const STATUS_USER_DISABLED = 3;
+    private const STATUS_NEED_OLD_PASS = 5;
+    private const STATUS_MAX_ATTEMPTS_EXCEEDED = 6;
+    private const STATUS_PASS_RESET = 7;
+    private const STATUS_PASS = 0;
+    private const STATUS_NONE = 100;
 
-    /**
-     * @var UserLoginData
-     */
-    private $userLoginData;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-    /**
-     * @var ThemeInterface
-     */
-    private $theme;
-    /**
-     * @var UserService
-     */
-    private $userService;
-    /**
-     * @var Language
-     */
-    private $language;
-    /**
-     * @var TrackService
-     */
-    private $trackService;
-    /**
-     * @var TrackRequest
-     */
-    private $trackRequest;
-    /**
-     * @var string
-     */
-    private $from;
-    /**
-     * @var Request
-     */
-    private $request;
+    private ?UserLoginData $userLoginData = null;
+    private ?ConfigDataInterface $configData = null;
+    private ?ThemeInterface $theme = null;
+    private ?UserService $userService = null;
+    private ?Language $language = null;
+    private ?TrackService $trackService = null;
+    private ?TrackRequest $trackRequest = null;
+    private ?string $from = null;
+    private ?Request $request = null;
 
     /**
      * Ejecutar las acciones de login
@@ -135,7 +108,7 @@ final class LoginService extends Service
      * @uses LoginService::authLdap()
      *
      */
-    public function doLogin()
+    public function doLogin(): LoginResponse
     {
         $this->userLoginData->setLoginUser($this->request->analyzeString('user'));
         $this->userLoginData->setLoginPass($this->request->analyzeEncrypted('pass'));
@@ -145,13 +118,14 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Attempts exceeded'),
-                AuthException::INFO,
+                SPException::INFO,
                 null,
                 self::STATUS_MAX_ATTEMPTS_EXCEEDED
             );
         }
 
-        $result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData);
+        $result = $this->dic->get(AuthProvider::class)
+            ->doAuth($this->userLoginData);
 
         if ($result !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
@@ -169,7 +143,7 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Wrong login'),
-                AuthException::INFO,
+                SPException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
             );
@@ -186,7 +160,7 @@ final class LoginService extends Service
 
         $uri = new Uri('index.php');
 
-        if ($this->from) {
+        if (!empty($this->from)) {
             $uri->addParam('r', $this->from);
         } else {
             $uri->addParam('r', 'index');
@@ -200,14 +174,14 @@ final class LoginService extends Service
      *
      * @throws AuthException
      */
-    private function addTracking()
+    private function addTracking(): void
     {
         try {
             $this->trackService->add($this->trackRequest);
         } catch (Exception $e) {
             throw new AuthException(
                 __u('Internal error'),
-                AuthException::ERROR,
+                SPException::ERROR,
                 null,
                 Service::STATUS_INTERNAL_ERROR
             );
@@ -225,7 +199,7 @@ final class LoginService extends Service
      * @throws QueryException
      * @throws AuthException
      */
-    private function checkUser()
+    private function checkUser(): LoginResponse
     {
         $userLoginResponse = $this->userLoginData->getUserLoginResponse();
 
@@ -243,7 +217,7 @@ final class LoginService extends Service
 
                 throw new AuthException(
                     __u('User disabled'),
-                    AuthException::INFO,
+                    SPException::INFO,
                     null,
                     self::STATUS_USER_DISABLED
                 );
@@ -265,7 +239,10 @@ final class LoginService extends Service
                 $uri = new Uri('index.php');
                 $uri->addParam('r', 'userPassReset/reset/' . $hash);
 
-                return new LoginResponse(self::STATUS_PASS_RESET, $uri->getUri());
+                return new LoginResponse(
+                    self::STATUS_PASS_RESET,
+                    $uri->getUri()
+                );
             }
         }
 
@@ -280,7 +257,7 @@ final class LoginService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function loadMasterPass()
+    private function loadMasterPass(): void
     {
         $temporaryMasterPass = $this->dic->get(TemporaryMasterPassService::class);
         $userPassService = $this->dic->get(UserPassService::class);
@@ -314,7 +291,7 @@ final class LoginService extends Service
 
                     throw new AuthException(
                         __u('Wrong master password'),
-                        AuthException::INFO,
+                        SPException::INFO,
                         null,
                         self::STATUS_INVALID_MASTER_PASS
                     );
@@ -340,7 +317,7 @@ final class LoginService extends Service
 
                     throw new AuthException(
                         __u('Wrong master password'),
-                        AuthException::INFO,
+                        SPException::INFO,
                         null,
                         self::STATUS_INVALID_MASTER_PASS
                     );
@@ -356,11 +333,10 @@ final class LoginService extends Service
                     case UserPassService::MPASS_CHECKOLD:
                         throw new AuthException(
                             __u('Your previous password is needed'),
-                            AuthException::INFO,
+                            SPException::INFO,
                             null,
                             self::STATUS_NEED_OLD_PASS
                         );
-                        break;
                     case UserPassService::MPASS_NOTSET:
                     case UserPassService::MPASS_CHANGED:
                     case UserPassService::MPASS_WRONG:
@@ -368,11 +344,10 @@ final class LoginService extends Service
 
                         throw new AuthException(
                             __u('The Master Password either is not saved or is wrong'),
-                            AuthException::INFO,
+                            SPException::INFO,
                             null,
                             self::STATUS_INVALID_MASTER_PASS
                         );
-                        break;
                 }
             }
         } catch (CryptoException $e) {
@@ -380,7 +355,7 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Internal error'),
-                AuthException::ERROR,
+                SPException::ERROR,
                 $e->getMessage(),
                 Service::STATUS_INTERNAL_ERROR,
                 $e
@@ -397,7 +372,7 @@ final class LoginService extends Service
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    private function setUserSession()
+    private function setUserSession(): void
     {
         $userLoginResponse = $this->userLoginData->getUserLoginResponse();
 
@@ -410,7 +385,11 @@ final class LoginService extends Service
 
         // Cargar las variables de ussuario en la sesión
         $this->context->setUserData($userLoginResponse);
-        $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
+        $this->context->setUserProfile(
+            $this->dic->get(UserProfileService::class)
+                ->getById($userLoginResponse->getUserProfileId())
+                ->getProfile()
+        );
         $this->context->setLocale($userLoginResponse->getPreferences()->getLang());
 
         if ($this->configData->isDemoEnabled()) {
@@ -427,7 +406,7 @@ final class LoginService extends Service
     /**
      * Cargar las preferencias del usuario y comprobar si usa 2FA
      */
-    private function loadUserPreferences()
+    private function loadUserPreferences(): void
     {
         $this->language->setLanguage(true);
 
@@ -444,15 +423,15 @@ final class LoginService extends Service
     /**
      * Limpiar datos de usuario
      */
-    private function cleanUserData()
+    private function cleanUserData(): void
     {
         $this->userLoginData->setUserLoginResponse();
     }
 
     /**
-     * @param string $from
+     * @param string|null $from
      */
-    public function setFrom($from)
+    public function setFrom(?string $from): void
     {
         $this->from = $from;
     }
@@ -462,7 +441,7 @@ final class LoginService extends Service
      * @throws NotFoundExceptionInterface
      * @throws InvalidArgumentException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configData = $this->config->getConfigData();
         $this->theme = $this->dic->get(ThemeInterface::class);
@@ -470,7 +449,6 @@ final class LoginService extends Service
         $this->language = $this->dic->get(Language::class);
         $this->trackService = $this->dic->get(TrackService::class);
         $this->request = $this->dic->get(Request::class);
-
         $this->userLoginData = new UserLoginData();
         $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
     }
@@ -484,7 +462,7 @@ final class LoginService extends Service
      * @throws SPException
      * @throws AuthException
      */
-    private function authLdap(LdapAuthData $authData)
+    private function authLdap(LdapAuthData $authData): bool
     {
         if ($authData->getStatusCode() > LdapCode::SUCCESS) {
             $eventMessage = EventMessage::factory()
@@ -504,7 +482,7 @@ final class LoginService extends Service
 
                 throw new AuthException(
                     __u('Wrong login'),
-                    AuthException::INFO,
+                    SPException::INFO,
                     __FUNCTION__,
                     self::STATUS_INVALID_LOGIN
                 );
@@ -520,7 +498,7 @@ final class LoginService extends Service
 
                 throw new AuthException(
                     __u('Account expired'),
-                    AuthException::INFO,
+                    SPException::INFO,
                     __FUNCTION__,
                     self::STATUS_USER_DISABLED
                 );
@@ -536,7 +514,7 @@ final class LoginService extends Service
 
                 throw new AuthException(
                     __u('User has no associated groups'),
-                    AuthException::INFO,
+                    SPException::INFO,
                     __FUNCTION__,
                     self::STATUS_USER_DISABLED
                 );
@@ -564,7 +542,7 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Internal error'),
-                AuthException::INFO,
+                SPException::INFO,
                 __FUNCTION__,
                 Service::STATUS_INTERNAL_ERROR
             );
@@ -591,7 +569,7 @@ final class LoginService extends Service
 
             $userLoginRequest->setEmail($authData->getEmail());
             $userLoginRequest->setName($authData->getName());
-            $userLoginRequest->setIsLdap(1);
+            $userLoginRequest->setIsLdap(true);
 
             // Verificamos si el usuario existe en la BBDD
             if ($this->userService->checkExistsByLogin($this->userLoginData->getLoginUser())) {
@@ -604,7 +582,7 @@ final class LoginService extends Service
         } catch (Exception $e) {
             throw new AuthException(
                 __u('Internal error'),
-                AuthException::ERROR,
+                SPException::ERROR,
                 __FUNCTION__,
                 Service::STATUS_INTERNAL_ERROR,
                 $e
@@ -623,7 +601,7 @@ final class LoginService extends Service
      * @throws SPException
      * @throws AuthException
      */
-    private function authDatabase(DatabaseAuthData $authData)
+    private function authDatabase(DatabaseAuthData $authData): bool
     {
         $eventMessage = EventMessage::factory()
             ->addDetail(__u('Type'), __FUNCTION__)
@@ -653,7 +631,7 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Wrong login'),
-                AuthException::INFO,
+                SPException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
             );
@@ -675,7 +653,7 @@ final class LoginService extends Service
      * @return bool
      * @throws AuthException
      */
-    private function authBrowser(BrowserAuthData $authData)
+    private function authBrowser(BrowserAuthData $authData): bool
     {
         $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/A');
 
@@ -708,7 +686,7 @@ final class LoginService extends Service
 
             throw new AuthException(
                 __u('Wrong login'),
-                AuthException::INFO,
+                SPException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
             );
@@ -733,7 +711,7 @@ final class LoginService extends Service
             } catch (Exception $e) {
                 throw new AuthException(
                     __u('Internal error'),
-                    AuthException::ERROR,
+                    SPException::ERROR,
                     __FUNCTION__,
                     Service::STATUS_INTERNAL_ERROR,
                     $e

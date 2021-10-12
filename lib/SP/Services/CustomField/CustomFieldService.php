@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\CustomField;
@@ -44,41 +44,33 @@ use SP\Services\ServiceException;
  */
 final class CustomFieldService extends Service
 {
-    /**
-     * @var CustomFieldRepository
-     */
-    protected $customFieldRepository;
-    /**
-     * @var CustomFieldDefService
-     */
-    protected $customFieldDefService;
+    protected ?CustomFieldRepository $customFieldRepository = null;
+    protected ?CustomFieldDefService $customFieldDefService = null;
 
     /**
      * Returns the form Id for a given name
-     *
-     * @param $name
-     *
-     * @return string
      */
-    public static function getFormIdForName($name)
+    public static function getFormIdForName(string $name): string
     {
-        return 'cf_' . strtolower(preg_replace('/\W*/', '', $name));
+        return sprintf(
+            'cf_%s',
+            strtolower(preg_replace('/\W*/', '', $name))
+        );
     }
 
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @param string $data
-     * @param string $key
-     *
-     * @return string
      * @throws CryptoException
      * @throws ServiceException
      */
-    public function decryptData($data, $key)
+    public function decryptData(string $data, string $key): string
     {
         if (!empty($data) && !empty($key)) {
-            return self::formatValue(Crypt::decrypt($data, $key, $this->getMasterKeyFromContext()));
+            return self::formatValue(
+                Crypt::decrypt($data, $key,
+                    $this->getMasterKeyFromContext())
+            );
         }
 
         return '';
@@ -91,10 +83,14 @@ final class CustomFieldService extends Service
      *
      * @return string
      */
-    public static function formatValue($value)
+    public static function formatValue(string $value): string
     {
         if (preg_match('#https?://#', $value)) {
-            return '<a href="' . $value . '" target="_blank">' . $value . '</a>';
+            return sprintf(
+                '<a href="%s" target="_blank">%s</a>',
+                $value,
+                $value
+            );
         }
 
         return $value;
@@ -103,36 +99,35 @@ final class CustomFieldService extends Service
     /**
      * Returns the module's item for given id
      *
-     * @param $moduleId
-     * @param $itemId
-     *
-     * @return array
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForModuleAndItemId($moduleId, $itemId)
+    public function getForModuleAndItemId(int $moduleId, ?int $itemId): array
     {
-        return $this->customFieldRepository->getForModuleAndItemId($moduleId, $itemId)->getDataAsArray();
+        return $this->customFieldRepository
+            ->getForModuleAndItemId($moduleId, $itemId)
+            ->getDataAsArray();
     }
 
     /**
      * Updates an item
      *
-     * @param CustomFieldData $customFieldData
-     *
-     * @return bool
      * @throws CryptoException
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
-    public function updateOrCreateData(CustomFieldData $customFieldData)
+    public function updateOrCreateData(CustomFieldData $customFieldData): bool
     {
         $exists = $this->customFieldRepository->checkExists($customFieldData);
 
         // Deletes item's custom field data if value is left blank
         if ($exists && empty($customFieldData->getData())) {
-            return $this->deleteCustomFieldData($customFieldData->getId(), $customFieldData->getModuleId(), $customFieldData->getDefinitionId()) === 1;
+            return $this->deleteCustomFieldData(
+                    $customFieldData->getId(),
+                    $customFieldData->getModuleId(),
+                    $customFieldData->getDefinitionId()
+                ) === 1;
         }
 
         // Create item's custom field data if value is set
@@ -150,35 +145,31 @@ final class CustomFieldService extends Service
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
-     * @param int $itemId
-     * @param int $moduleId
-     * @param int $definitionId
-     *
-     * @return int
      * @throws SPException
      */
-    public function deleteCustomFieldData($itemId, $moduleId, $definitionId = null)
+    public function deleteCustomFieldData(
+        int  $itemId,
+        int  $moduleId,
+        ?int $definitionId = null
+    ): int
     {
         if ($definitionId === null) {
             return $this->customFieldRepository->deleteCustomFieldData($itemId, $moduleId);
-        } else {
-            return $this->customFieldRepository->deleteCustomFieldDataForDefinition($itemId, $moduleId, $definitionId);
         }
+
+        return $this->customFieldRepository->deleteCustomFieldDataForDefinition($itemId, $moduleId, $definitionId);
     }
 
     /**
      * Creates an item
      *
-     * @param CustomFieldData $customFieldData
-     *
-     * @return bool
      * @throws CryptoException
      * @throws QueryException
      * @throws ServiceException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function create(CustomFieldData $customFieldData)
+    public function create(CustomFieldData $customFieldData): bool
     {
         if (empty($customFieldData->getData())) {
             return true;
@@ -192,37 +183,42 @@ final class CustomFieldService extends Service
     }
 
     /**
-     * @param CustomFieldData $customFieldData
-     * @param null            $key
-     *
-     * @throws CryptoException
-     * @throws ServiceException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Services\ServiceException
      */
-    protected function setSecureData(CustomFieldData $customFieldData, $key = null)
+    protected function setSecureData(
+        CustomFieldData $customFieldData,
+        ?string         $key = null
+    ): void
     {
         $key = $key ?: $this->getMasterKeyFromContext();
         $securedKey = Crypt::makeSecuredKey($key);
 
         if (strlen($securedKey) > 1000) {
-            throw new ServiceException(__u('Internal error'), SPException::ERROR);
+            throw new ServiceException(
+                __u('Internal error'),
+                SPException::ERROR
+            );
         }
 
-        $customFieldData->setData(Crypt::encrypt($customFieldData->getData(), $securedKey, $key));
+        $customFieldData->setData(Crypt::encrypt(
+            $customFieldData->getData(),
+            $securedKey,
+            $key
+        ));
         $customFieldData->setKey($securedKey);
     }
 
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
-     * @param int $definitionId
-     *
-     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldDefinitionData($definitionId)
+    public function deleteCustomFieldDefinitionData(int $definitionId): int
     {
-        return $this->customFieldRepository->deleteCustomFieldDefinitionData($definitionId);
+        return $this->customFieldRepository
+            ->deleteCustomFieldDefinitionData($definitionId);
     }
 
     /**
@@ -235,38 +231,39 @@ final class CustomFieldService extends Service
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldDataBatch(array $ids, $moduleId)
+    public function deleteCustomFieldDataBatch(array $ids, int $moduleId): bool
     {
-        return $this->customFieldRepository->deleteCustomFieldDataBatch($ids, $moduleId);
+        return $this->customFieldRepository
+            ->deleteCustomFieldDataBatch($ids, $moduleId);
     }
 
     /**
      * Eliminar los datos de los elementos de una definición
      *
-     * @param array $definitionIds
+     * @param int[] $definitionIds
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
+    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds): int
     {
-        return $this->customFieldRepository->deleteCustomFieldDefinitionDataBatch($definitionIds);
+        return $this->customFieldRepository
+            ->deleteCustomFieldDefinitionDataBatch($definitionIds);
     }
 
     /**
      * Updates an item
      *
-     * @param CustomFieldData $customFieldData
-     * @param string          $masterPass
-     *
-     * @return bool
-     * @throws CryptoException
-     * @throws QueryException
-     * @throws ServiceException
-     * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    public function updateMasterPass(CustomFieldData $customFieldData, $masterPass)
+    public function updateMasterPass(
+        CustomFieldData $customFieldData,
+        string          $masterPass
+    ): int
     {
         $this->setSecureData($customFieldData, $masterPass);
 
@@ -278,7 +275,7 @@ final class CustomFieldService extends Service
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->customFieldRepository->getAll()->getDataAsArray();
     }
@@ -288,7 +285,7 @@ final class CustomFieldService extends Service
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllEncrypted()
+    public function getAllEncrypted(): array
     {
         return $this->customFieldRepository->getAllEncrypted()->getDataAsArray();
     }
@@ -297,7 +294,7 @@ final class CustomFieldService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->customFieldRepository = $this->dic->get(CustomFieldRepository::class);
         $this->customFieldDefService = $this->dic->get(CustomFieldDefService::class);

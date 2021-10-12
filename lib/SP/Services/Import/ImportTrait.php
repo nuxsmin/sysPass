@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Import;
@@ -48,47 +48,23 @@ use SP\Services\Tag\TagService;
  */
 trait ImportTrait
 {
-    /**
-     * @var ImportParams
-     */
-    protected $importParams;
-    /**
-     * @var int
-     */
-    protected $version = 0;
+    protected int $version = 0;
     /**
      * @var bool Indica si el hash de la clave suministrada es igual a la actual
      */
-    protected $mPassValidHash = false;
-    /**
-     * @var int
-     */
-    protected $counter = 0;
-    /**
-     * @var AccountService
-     */
-    private $accountService;
-    /**
-     * @var CategoryService
-     */
-    private $categoryService;
-    /**
-     * @var ClientService
-     */
-    private $clientService;
-    /**
-     * @var TagService
-     */
-    private $tagService;
-    /**
-     * @var array
-     */
-    private $items;
+    protected bool $mPassValidHash = false;
+    protected int $counter = 0;
+    protected ImportParams $importParams;
+    private AccountService $accountService;
+    private CategoryService $categoryService;
+    private ClientService $clientService;
+    private TagService $tagService;
+    private array $items;
 
     /**
      * @return int
      */
-    public function getCounter()
+    public function getCounter(): int
     {
         return $this->counter;
     }
@@ -105,7 +81,7 @@ trait ImportTrait
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    protected function addAccount(AccountRequest $accountRequest)
+    protected function addAccount(AccountRequest $accountRequest): void
     {
         if (empty($accountRequest->categoryId)) {
             throw new ImportException(__u('Category Id not set. Unable to import account.'));
@@ -118,11 +94,20 @@ trait ImportTrait
         $accountRequest->userId = $this->importParams->getDefaultUser();
         $accountRequest->userGroupId = $this->importParams->getDefaultGroup();
 
-        if ($this->mPassValidHash === false && !empty($this->importParams->getImportMasterPwd())) {
+        if ($this->mPassValidHash === false
+            && !empty($this->importParams->getImportMasterPwd())) {
             if ($this->version >= 210) {
-                $pass = Crypt::decrypt($accountRequest->pass, $accountRequest->key, $this->importParams->getImportMasterPwd());
+                $pass = Crypt::decrypt(
+                    $accountRequest->pass,
+                    $accountRequest->key,
+                    $this->importParams->getImportMasterPwd()
+                );
             } else {
-                $pass = OldCrypt::getDecrypt($accountRequest->pass, $accountRequest->key, $this->importParams->getImportMasterPwd());
+                $pass = OldCrypt::getDecrypt(
+                    $accountRequest->pass,
+                    $accountRequest->key,
+                    $this->importParams->getImportMasterPwd()
+                );
             }
 
             $accountRequest->pass = $pass;
@@ -143,50 +128,50 @@ trait ImportTrait
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    protected function addCategory(CategoryData $categoryData)
+    protected function addCategory(CategoryData $categoryData): int
     {
         try {
             $categoryId = $this->getWorkingItem('category', $categoryData->getName());
 
-            if ($categoryId === null) {
-                return $this->categoryService->create($categoryData);
-            }
-
-            return $categoryId;
+            return $categoryId ?? $this->categoryService->create($categoryData);
         } catch (DuplicatedItemException $e) {
             $itemData = $this->categoryService->getByName($categoryData->getName());
 
-            if (empty($itemData)) {
+            if ($itemData === null) {
                 throw $e;
             }
 
-            return $this->addWorkingItem('category', $itemData->getName(), $itemData->getId());
+            return $this->addWorkingItem(
+                'category',
+                $itemData->getName(),
+                $itemData->getId()
+            );
         }
     }
 
     /**
-     * @param string $type
-     * @param string $value
+     * @param string     $type
+     * @param string|int $value
      *
      * @return int|null
      */
-    protected function getWorkingItem($type, $value)
+    protected function getWorkingItem(string $type, $value): ?int
     {
-        if (!isset($this->items[$type][$value])) {
-            return null;
-        }
-
-        return $this->items[$type][$value];
+        return $this->items[$type][$value] ?? null;
     }
 
     /**
-     * @param string $type
-     * @param string $value
-     * @param int    $id
+     * @param string     $type
+     * @param string|int $value
+     * @param int        $id
      *
-     * @return int|bool
+     * @return int
      */
-    protected function addWorkingItem($type, $value, $id)
+    protected function addWorkingItem(
+        string $type,
+               $value,
+        int    $id
+    ): int
     {
         if (isset($this->items[$type][$value])) {
             return $this->items[$type][$value];
@@ -206,24 +191,24 @@ trait ImportTrait
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    protected function addClient(ClientData $clientData)
+    protected function addClient(ClientData $clientData): int
     {
         try {
             $clientId = $this->getWorkingItem('client', $clientData->getName());
 
-            if ($clientId === null) {
-                return $this->clientService->create($clientData);
-            }
-
-            return $clientId;
+            return $clientId ?? $this->clientService->create($clientData);
         } catch (DuplicatedItemException $e) {
             $itemData = $this->clientService->getByName($clientData->getName());
 
-            if (empty($itemData)) {
+            if ($itemData === null) {
                 throw $e;
             }
 
-            return $this->addWorkingItem('client', $itemData->getName(), $itemData->getId());
+            return $this->addWorkingItem(
+                'client',
+                $itemData->getName(),
+                $itemData->getId()
+            );
         }
     }
 
@@ -235,24 +220,24 @@ trait ImportTrait
      * @return int
      * @throws SPException
      */
-    protected function addTag(TagData $tagData)
+    protected function addTag(TagData $tagData): int
     {
         try {
             $tagId = $this->getWorkingItem('tag', $tagData->getName());
 
-            if ($tagId === null) {
-                return $this->tagService->create($tagData);
-            }
-
-            return $tagId;
+            return $tagId ?? $this->tagService->create($tagData);
         } catch (DuplicatedItemException $e) {
             $itemData = $this->tagService->getByName($tagData->getName());
 
-            if (empty($itemData)) {
+            if ($itemData === null) {
                 throw $e;
             }
 
-            return $this->addWorkingItem('tag', $itemData->getName(), $itemData->getId());
+            return $this->addWorkingItem(
+                'tag',
+                $itemData->getName(),
+                $itemData->getId()
+            );
         }
     }
 }

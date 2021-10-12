@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
@@ -45,24 +45,11 @@ final class MySQLHandler implements DBStorageInterface
         PDO::MYSQL_ATTR_FOUND_ROWS => true,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
     ];
-    /**
-     * @var PDO
-     */
-    private $db;
-    /**
-     * @var int
-     */
-    private $dbStatus = self::STATUS_KO;
-    /**
-     * @var DatabaseConnectionData
-     */
-    private $connectionData;
 
-    /**
-     * MySQLHandler constructor.
-     *
-     * @param DatabaseConnectionData $connectionData
-     */
+    private ?PDO $db = null;
+    private int $dbStatus = self::STATUS_KO;
+    private DatabaseConnectionData $connectionData;
+
     public function __construct(DatabaseConnectionData $connectionData)
     {
         $this->connectionData = $connectionData;
@@ -73,8 +60,6 @@ final class MySQLHandler implements DBStorageInterface
      *
      * OK -> 0
      * KO -> 1
-     *
-     * @return int
      */
     public function getDbStatus(): int
     {
@@ -85,7 +70,6 @@ final class MySQLHandler implements DBStorageInterface
      * Realizar la conexión con la BBDD.
      * Esta función utiliza PDO para conectar con la base de datos.
      *
-     * @return PDO
      * @throws DatabaseException
      */
     public function getConnection(): PDO
@@ -94,7 +78,8 @@ final class MySQLHandler implements DBStorageInterface
             if (null === $this->connectionData->getDbUser()
                 || null === $this->connectionData->getDbPass()
                 || null === $this->connectionData->getDbName()
-                || (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket())
+                || (null === $this->connectionData->getDbHost()
+                    && null === $this->connectionData->getDbSocket())
             ) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
@@ -112,7 +97,10 @@ final class MySQLHandler implements DBStorageInterface
 
                 // Set prepared statement emulation depending on server version
                 $serverVersion = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
-                $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, version_compare($serverVersion, '5.1.17', '<'));
+                $this->db->setAttribute(
+                    PDO::ATTR_EMULATE_PREPARES,
+                    version_compare($serverVersion, '5.1.17', '<')
+                );
 
                 $this->dbStatus = self::STATUS_OK;
             } catch (Exception $e) {
@@ -129,9 +117,6 @@ final class MySQLHandler implements DBStorageInterface
         return $this->db;
     }
 
-    /**
-     * @return string
-     */
     public function getConnectionUri(): string
     {
         $dsn = ['charset=utf8'];
@@ -156,7 +141,6 @@ final class MySQLHandler implements DBStorageInterface
     /**
      * Obtener una conexión PDO sin seleccionar la BD
      *
-     * @return PDO
      * @throws DatabaseException
      */
     public function getConnectionSimple(): PDO
@@ -172,7 +156,10 @@ final class MySQLHandler implements DBStorageInterface
             }
 
             try {
-                $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+                $opts = [
+                    PDO::ATTR_EMULATE_PREPARES => true,
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ];
 
                 $this->db = new PDO(
                     $this->getConnectionUri(),
@@ -195,9 +182,6 @@ final class MySQLHandler implements DBStorageInterface
         return $this->db;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDatabaseName(): ?string
     {
         return $this->connectionData->getDbName();

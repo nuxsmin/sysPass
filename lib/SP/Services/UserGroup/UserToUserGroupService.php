@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\UserGroup;
@@ -28,6 +28,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
@@ -40,52 +41,41 @@ use SP\Services\Service;
  */
 final class UserToUserGroupService extends Service
 {
-    /**
-     * @var UserToUserGroupRepository
-     */
-    protected $userToUserGroupRepository;
+    protected ?UserToUserGroupRepository $userToUserGroupRepository = null;
 
     /**
-     * @param $id
-     *
-     * @return UserToUserGroupData[]
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): array
     {
         $result = $this->userToUserGroupRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Group not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getDataAsArray();
     }
 
     /**
-     * @param       $id
-     * @param array $users
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add($id, array $users)
+    public function add(int $id, array $users): int
     {
         return $this->userToUserGroupRepository->add($id, $users);
     }
 
     /**
-     * @param int   $id
-     * @param array $users
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($id, array $users)
+    public function update(int $id, array $users): int
     {
         if (count($users) === 0) {
             return $this->userToUserGroupRepository->delete($id);
@@ -95,18 +85,19 @@ final class UserToUserGroupService extends Service
     }
 
     /**
-     * @param $id
-     *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsersByGroupId($id)
+    public function getUsersByGroupId(int $id): array
     {
         $usersId = [];
 
         /** @var UserToUserGroupData $userToUserGroupData */
-        foreach ($this->userToUserGroupRepository->getById($id)->getDataAsArray() as $userToUserGroupData) {
+        $userByGroup = $this->userToUserGroupRepository
+            ->getById($id)
+            ->getDataAsArray();
+
+        foreach ($userByGroup as $userToUserGroupData) {
             $usersId[] = $userToUserGroupData->getUserId();
         }
 
@@ -116,37 +107,33 @@ final class UserToUserGroupService extends Service
     /**
      * Checks whether the user is included in the group
      *
-     * @param $groupId
-     * @param $userId
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function checkUserInGroup($groupId, $userId)
+    public function checkUserInGroup(int $groupId, int $userId): bool
     {
-        return $this->userToUserGroupRepository->checkUserInGroup($groupId, $userId);
+        return $this->userToUserGroupRepository
+            ->checkUserInGroup($groupId, $userId);
     }
 
     /**
      * Returns the groups which the user belongs to
      *
-     * @param $userId
-     *
-     * @return array
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getGroupsForUser($userId)
+    public function getGroupsForUser(int $userId): array
     {
-        return $this->userToUserGroupRepository->getGroupsForUser($userId)->getDataAsArray();
+        return $this->userToUserGroupRepository
+            ->getGroupsForUser($userId)
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userToUserGroupRepository = $this->dic->get(UserToUserGroupRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,27 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller;
 
 use Defuse\Crypto\Exception\CryptoException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
-use SP\Repositories\NoSuchItemException;
 use SP\Services\CustomField\CustomFieldItem;
 use SP\Services\CustomField\CustomFieldService;
-use SP\Services\ServiceException;
 use SP\Util\Filter;
 
 /**
@@ -52,18 +46,12 @@ trait ItemTrait
     /**
      * Obtener la lista de campos personalizados y sus valores
      *
-     * @param int $moduleId
-     * @param int $itemId
-     *
-     * @return array
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Services\ServiceException
      */
-    protected function getCustomFieldsForItem(int $moduleId, $itemId): array
+    protected function getCustomFieldsForItem(int $moduleId, ?int $itemId): array
     {
         $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
         $customFields = [];
@@ -109,21 +97,28 @@ trait ItemTrait
      * @param int|int[] $itemId
      * @param Request   $request
      *
-     * @throws ConstraintException
-     * @throws DependencyException
-     * @throws NoSuchItemException
-     * @throws NotFoundException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    protected function addCustomFieldsForItem(int $moduleId, $itemId, Request $request)
+    protected function addCustomFieldsForItem(
+        int     $moduleId,
+                $itemId,
+        Request $request): void
     {
-        $customFields = $request->analyzeArray('customfield', function ($values) {
-            return array_map(function ($value) {
-                return Filter::getString($value);
-            }, $values);
-        });
+        $customFields = $request->analyzeArray(
+            'customfield',
+            function ($values) {
+                return array_map(
+                    static function ($value) {
+                        return Filter::getString($value);
+                    },
+                    $values
+                );
+            }
+        );
 
         if (!empty($customFields)) {
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
@@ -154,7 +149,7 @@ trait ItemTrait
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function deleteCustomFieldsForItem(int $moduleId, $itemId)
+    protected function deleteCustomFieldsForItem(int $moduleId, $itemId): void
     {
         $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
@@ -172,22 +167,31 @@ trait ItemTrait
      * @param int|int[] $itemId
      * @param Request   $request
      *
-     * @throws ConstraintException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function updateCustomFieldsForItem(int $moduleId, $itemId, Request $request)
+    protected function updateCustomFieldsForItem(
+        int     $moduleId,
+                $itemId,
+        Request $request
+    ): void
     {
-        $customFields = $request->analyzeArray('customfield', function ($values) {
-            return array_map(function ($value) {
-                return Filter::getString($value);
-            }, $values);
-        });
+        $customFields = $request->analyzeArray(
+            'customfield',
+            function ($values) {
+                return array_map(
+                    static function ($value) {
+                        return Filter::getString($value);
+                    },
+                    $values
+                );
+            }
+        );
 
         if (!empty($customFields)) {
-            $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+            $customFieldService = Bootstrap::getContainer()
+                ->get(CustomFieldService::class);
 
             try {
                 foreach ($customFields as $id => $value) {
@@ -209,13 +213,11 @@ trait ItemTrait
 
     /**
      * Returns search data object for the current request
-     *
-     * @param int     $limitCount
-     * @param Request $request
-     *
-     * @return ItemSearchData
      */
-    protected function getSearchData($limitCount, Request $request): ItemSearchData
+    protected function getSearchData(
+        int     $limitCount,
+        Request $request
+    ): ItemSearchData
     {
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setSeachString($request->analyzeString('search'));
@@ -225,12 +227,7 @@ trait ItemTrait
         return $itemSearchData;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    protected function getItemsIdFromRequest(Request $request)
+    protected function getItemsIdFromRequest(Request $request): ?array
     {
         return $request->analyzeArray('items');
     }

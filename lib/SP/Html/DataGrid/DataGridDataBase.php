@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
@@ -41,29 +41,29 @@ abstract class DataGridDataBase implements DataGridDataInterface
      *
      * @var array
      */
-    private $data = [];
+    private array $data = [];
     /**
      * Las columnas a mostrar de los datos obtenidos
      *
      * @var array
      */
-    private $sources = [];
+    private array $sources = [];
     /**
      * La columna que identifica cada elemento de los datos de la matriz
      *
-     * @var int
+     * @var string
      */
-    private $sourceId = 0;
+    private string $sourceId = '';
     /**
      * Las columnas a mostrar de los datos obtenidos que son representadas con iconos
      *
      * @var array
      */
-    private $sourcesWithIcon = [];
+    private array $sourcesWithIcon = [];
     /**
      * @var int
      */
-    private $dataCount = 0;
+    private int $dataCount = 0;
 
     /**
      * @return array
@@ -80,11 +80,11 @@ abstract class DataGridDataBase implements DataGridDataInterface
      * @param bool          $truncate
      */
     public function addDataRowSource(
-        string $source,
-        ?bool $isMethod = false,
+        string    $source,
+        ?bool     $isMethod = false,
         ?callable $filter = null,
-        ?bool $truncate = true
-    )
+        ?bool     $truncate = true
+    ): void
     {
         $this->sources[] = [
             'name' => $source,
@@ -97,7 +97,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @param $id string
      */
-    public function setDataRowSourceId(string $id)
+    public function setDataRowSourceId(string $id): void
     {
         $this->sourceId = $id;
     }
@@ -129,7 +129,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @param QueryResult $queryResult
      */
-    public function setData(QueryResult $queryResult)
+    public function setData(QueryResult $queryResult): void
     {
         $this->dataCount = $queryResult->getTotalNumRows();
         $this->data = $queryResult->getDataAsArray();
@@ -141,10 +141,10 @@ abstract class DataGridDataBase implements DataGridDataInterface
      * @param mixed         $value Valor para mostrar el icono
      */
     public function addDataRowSourceWithIcon(
-        string $source,
+        string        $source,
         IconInterface $icon,
-        int $value = 1
-    )
+        int           $value = 1
+    ): void
     {
         $this->sourcesWithIcon[] = [
             'field' => $source,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\Database;
@@ -31,30 +31,12 @@ namespace SP\Storage\Database;
  */
 final class QueryResult
 {
-    /**
-     * @var array
-     */
-    private $data;
-    /**
-     * @var int
-     */
-    private $numRows = 0;
-    /**
-     * @var int
-     */
-    private $totalNumRows;
-    /**
-     * @var int
-     */
-    private $affectedNumRows;
-    /**
-     * @var int
-     */
-    private $statusCode;
-    /**
-     * @var int
-     */
-    private $lastId = 0;
+    private ?array $data = null;
+    private int $numRows = 0;
+    private int $totalNumRows = 0;
+    private int $affectedNumRows = 0;
+    private int $statusCode = 0;
+    private int $lastId = 0;
 
     /**
      * QueryResult constructor.
@@ -63,23 +45,20 @@ final class QueryResult
      */
     public function __construct(?array $data = null)
     {
-        if ($data !== null) {
+        if (null !== $data) {
             $this->data = $data;
             $this->numRows = count($data);
         }
     }
 
-    /**
-     * @param array $data
-     * @param null  $totalNumRows
-     *
-     * @return QueryResult
-     */
-    public static function fromResults(array $data, $totalNumRows = null): QueryResult
+    public static function fromResults(
+        array $data,
+        ?int  $totalNumRows = null
+    ): QueryResult
     {
         $result = new self($data);
 
-        if ($totalNumRows !== null) {
+        if (null !== $totalNumRows) {
             $result->totalNumRows = $totalNumRows;
         }
 
@@ -91,44 +70,25 @@ final class QueryResult
      */
     public function getData()
     {
-        if ($this->numRows === 1) {
-            return $this->data[0];
-        }
+        return $this->numRows === 1 ? $this->data[0] : null;
 
-        return null;
     }
 
-    /**
-     * Always returns an array
-     *
-     * @return array
-     */
     public function getDataAsArray(): array
     {
-        return (array)$this->data;
+        return $this->data ?? [];
     }
 
-    /**
-     * @return int
-     */
     public function getNumRows(): int
     {
         return $this->numRows;
     }
 
-    /**
-     * @return int
-     */
     public function getTotalNumRows(): int
     {
         return $this->totalNumRows;
     }
 
-    /**
-     * @param int $totalNumRows
-     *
-     * @return QueryResult
-     */
     public function setTotalNumRows(int $totalNumRows): QueryResult
     {
         $this->totalNumRows = $totalNumRows;
@@ -136,19 +96,11 @@ final class QueryResult
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @param int $statusCode
-     *
-     * @return QueryResult
-     */
     public function setStatusCode(int $statusCode): QueryResult
     {
         $this->statusCode = $statusCode;
@@ -156,19 +108,11 @@ final class QueryResult
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getAffectedNumRows(): int
     {
         return $this->affectedNumRows;
     }
 
-    /**
-     * @param int $affectedNumRows
-     *
-     * @return QueryResult
-     */
     public function setAffectedNumRows(int $affectedNumRows): QueryResult
     {
         $this->affectedNumRows = $affectedNumRows;
@@ -176,19 +120,11 @@ final class QueryResult
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getLastId(): int
     {
         return $this->lastId;
     }
 
-    /**
-     * @param int $lastId
-     *
-     * @return QueryResult
-     */
     public function setLastId(int $lastId): QueryResult
     {
         $this->lastId = $lastId;

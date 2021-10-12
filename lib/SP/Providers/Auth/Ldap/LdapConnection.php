@@ -1,10 +1,9 @@
-<?php
-/*
+<?php /*
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +18,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 
 
 /**
@@ -36,39 +38,18 @@ use SP\Core\Events\EventMessage;
  */
 final class LdapConnection implements LdapConnectionInterface
 {
-    const TIMEOUT = 10;
+    public const TIMEOUT = 10;
     /**
      * @var resource
      */
     private $ldapHandler;
-    /**
-     * @var LdapParams
-     */
-    private $ldapParams;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
-    /**
-     * @var bool
-     */
-    private $isConnected = false;
-    /**
-     * @var bool
-     */
-    private $isBound = false;
-    /**
-     * @var bool
-     */
-    private $isTls;
-    /**
-     * @var bool
-     */
-    private $debug;
-    /**
-     * @var string
-     */
-    private $server;
+    private LdapParams $ldapParams;
+    private EventDispatcher $eventDispatcher;
+    private bool $isConnected = false;
+    private bool $isBound = false;
+    private ?bool $isTls = null;
+    private bool $debug;
+    private ?string $server = null;
 
     /**
      * LdapBase constructor.
@@ -78,14 +59,14 @@ final class LdapConnection implements LdapConnectionInterface
      * @param bool            $debug
      */
     public function __construct(
-        LdapParams $ldapParams,
+        LdapParams      $ldapParams,
         EventDispatcher $eventDispatcher,
-        bool $debug = false
+        bool            $debug = false
     )
     {
         $this->ldapParams = $ldapParams;
         $this->eventDispatcher = $eventDispatcher;
-        $this->debug = (bool)$debug;
+        $this->debug = $debug;
     }
 
     /**
@@ -93,18 +74,15 @@ final class LdapConnection implements LdapConnectionInterface
      *
      * @throws LdapException
      */
-    public function checkConnection()
+    public function checkConnection(): void
     {
-        try {
-            $this->connectAndBind();
 
-            $this->eventDispatcher->notifyEvent('ldap.check.connection',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('LDAP connection OK')))
-            );
-        } catch (LdapException $e) {
-            throw $e;
-        }
+        $this->connectAndBind();
+
+        $this->eventDispatcher->notifyEvent('ldap.check.connection',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('LDAP connection OK')))
+        );
     }
 
     /**
@@ -203,9 +181,6 @@ final class LdapConnection implements LdapConnectionInterface
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getServerUri(): string
     {
         $server = $this->getServer();
@@ -289,7 +264,7 @@ final class LdapConnection implements LdapConnectionInterface
 
             throw new LdapException(
                 __u('Connection error (BIND)'),
-                LdapException::ERROR,
+                SPException::ERROR,
                 self::getLdapErrorMessage($this->ldapHandler),
                 $this->getErrorCode()
             );

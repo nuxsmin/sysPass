@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
@@ -48,47 +48,40 @@ use SP\Services\Service;
 final class UserPassService extends Service
 {
     // La clave maestra incorrecta
-    const MPASS_WRONG = 0;
+    public const MPASS_WRONG = 0;
     // La clave maestra correcta
-    const MPASS_OK = 1;
+    public const MPASS_OK = 1;
     // La clave maestra no está guardada
-    const MPASS_NOTSET = 2;
+    public const MPASS_NOTSET = 2;
     // La clave maestra ha cambiado
-    const MPASS_CHANGED = 3;
+    public const MPASS_CHANGED = 3;
     // Comprobar la clave maestra con la clave del usuario anterior
-    const MPASS_CHECKOLD = 4;
+    public const MPASS_CHECKOLD = 4;
 
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
+    protected ?ConfigDataInterface $configData = null;
+    protected ?UserRepository $userRepository = null;
+    protected ?ConfigService $configService = null;
 
     /**
      * Actualizar la clave maestra con la clave anterior del usuario
      *
-     * @param string        $oldUserPass
-     * @param UserLoginData $userLoginData $UserData
-     *
-     * @return UserPassResponse
      * @throws SPException
      * @throws CryptoException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function updateMasterPassFromOldPass($oldUserPass, UserLoginData $userLoginData)
+    public function updateMasterPassFromOldPass(
+        string        $oldUserPass,
+        UserLoginData $userLoginData
+    ): UserPassResponse
     {
         $response = $this->loadUserMPass($userLoginData, $oldUserPass);
 
         if ($response->getStatus() === self::MPASS_OK) {
-            return $this->updateMasterPassOnLogin($response->getClearMasterPass(), $userLoginData);
+            return $this->updateMasterPassOnLogin(
+                $response->getClearMasterPass(),
+                $userLoginData
+            );
         }
 
         return new UserPassResponse(self::MPASS_WRONG);
@@ -97,14 +90,13 @@ final class UserPassService extends Service
     /**
      * Comprueba la clave maestra del usuario.
      *
-     * @param UserLoginData $userLoginData
-     * @param string        $userPass Clave de cifrado
-     *
-     * @return UserPassResponse
      * @throws SPException
      * @throws ContainerExceptionInterface
      */
-    public function loadUserMPass(UserLoginData $userLoginData, $userPass = null)
+    public function loadUserMPass(
+        UserLoginData $userLoginData,
+        ?string       $userPass = null
+    ): UserPassResponse
     {
         $userLoginResponse = $userLoginData->getUserLoginResponse();
 
@@ -122,24 +114,30 @@ final class UserPassService extends Service
             return new UserPassResponse(self::MPASS_CHANGED);
         }
 
-//        if ($userLoginResponse->getIsMigrate() === 1) {
-//            $key = $this->makeKeyForUserOld($userLoginData->getLoginUser(), $userPass ?: $userLoginData->getLoginPass());
-//        }
-
-        if ($userPass === null && $userLoginResponse->getIsChangedPass() === 1) {
+        if ($userPass === null && $userLoginResponse->getIsChangedPass()) {
             return new UserPassResponse(self::MPASS_CHECKOLD);
         }
 
         try {
-            $key = $this->makeKeyForUser($userLoginData->getLoginUser(), $userPass ?: $userLoginData->getLoginPass());
+            $key = $this->makeKeyForUser(
+                $userLoginData->getLoginUser(),
+                $userPass ?: $userLoginData->getLoginPass()
+            );
 
-            $clearMPass = Crypt::decrypt($userLoginResponse->getMPass(), $userLoginResponse->getMKey(), $key);
+            $clearMPass = Crypt::decrypt(
+                $userLoginResponse->getMPass(),
+                $userLoginResponse->getMKey(),
+                $key
+            );
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($clearMPass, $configHashMPass)) {
                 $this->setMasterKeyInContext($clearMPass);
 
-                $response = new UserPassResponse(self::MPASS_OK, $clearMPass);
+                $response = new UserPassResponse(
+                    self::MPASS_OK,
+                    $clearMPass
+                );
                 $response->setCryptMasterPass($userLoginResponse->getMPass());
                 $response->setCryptSecuredKey($userLoginResponse->getMKey());
 
@@ -155,35 +153,39 @@ final class UserPassService extends Service
     /**
      * Obtener una clave de cifrado basada en la clave del usuario y un salt.
      *
-     * @param string $userLogin
-     * @param string $userPass
-     *
      * @return string con la clave de cifrado
      */
-    public function makeKeyForUser($userLogin, $userPass)
+    public function makeKeyForUser(string $userLogin, string $userPass): string
     {
         // Use always the most recent config data
         if (Config::getTimeUpdated() > $this->configData->getConfigDate()) {
-            return trim($userPass . $userLogin . $this->config->getConfigData()->getPasswordSalt());
-        } else {
-            return trim($userPass . $userLogin . $this->configData->getPasswordSalt());
+            return trim(
+                $userPass .
+                $userLogin .
+                $this->config->getConfigData()->getPasswordSalt()
+            );
         }
+
+        return trim(
+            $userPass .
+            $userLogin .
+            $this->configData->getPasswordSalt()
+        );
     }
 
     /**
      * Actualizar la clave maestra del usuario al realizar login
      *
-     * @param string        $userMPass     con la clave maestra
-     * @param UserLoginData $userLoginData $userLoginData
-     *
-     * @return UserPassResponse
      * @throws SPException
      * @throws CryptoException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws SPException
      */
-    public function updateMasterPassOnLogin($userMPass, UserLoginData $userLoginData)
+    public function updateMasterPassOnLogin(
+        string        $userMPass,
+        UserLoginData $userLoginData
+    ): UserPassResponse
     {
         $userData = $userLoginData->getUserLoginResponse();
         $configHashMPass = $this->configService->getByParam('masterPwd');
@@ -199,9 +201,17 @@ final class UserPassService extends Service
         }
 
         if (Hash::checkHashKey($userMPass, $configHashMPass)) {
-            $response = $this->createMasterPass($userMPass, $userLoginData->getLoginUser(), $userLoginData->getLoginPass());
+            $response = $this->createMasterPass(
+                $userMPass,
+                $userLoginData->getLoginUser(),
+                $userLoginData->getLoginPass()
+            );
 
-            $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());
+            $this->userRepository->updateMasterPassById(
+                $userData->getId(),
+                $response->getCryptMasterPass(),
+                $response->getCryptSecuredKey()
+            );
 
             // Tells that the master password has been updated
             $this->context->setTrasientKey('mpass_updated', true);
@@ -217,15 +227,14 @@ final class UserPassService extends Service
     /**
      * Actualizar la clave maestra del usuario en la BBDD.
      *
-     * @param string $masterPass
-     * @param string $userLogin
-     * @param string $userPass
-     *
-     * @return UserPassResponse
      * @throws CryptoException
      * @throws SPException
      */
-    public function createMasterPass($masterPass, $userLogin, $userPass)
+    public function createMasterPass(
+        string $masterPass,
+        string $userLogin,
+        string $userPass
+    ): UserPassResponse
     {
         $key = $this->makeKeyForUser($userLogin, $userPass);
 
@@ -248,16 +257,18 @@ final class UserPassService extends Service
     }
 
     /**
-     * @param int    $id
-     * @param string $userPass
-     *
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function migrateUserPassById($id, string $userPass)
+    public function migrateUserPassById(int $id, string $userPass): void
     {
-        if ($this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass))) === 0) {
+        $updatePassById = $this->userRepository->updatePassById(
+            $id,
+            new UpdatePassRequest(Hash::hashKey($userPass))
+        );
+
+        if ($updatePassById === 0) {
             throw new NoSuchItemException(__u('User does not exist'));
         }
     }
@@ -266,10 +277,10 @@ final class UserPassService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configData = $this->config->getConfigData();
         $this->userRepository = $this->dic->get(UserRepository::class);
-        $this->configService = $this->dic->get(ConfigService::class);;
+        $this->configService = $this->dic->get(ConfigService::class);
     }
 }

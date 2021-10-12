@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
 
 use Exception;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
 use SP\Storage\File\FileException;
@@ -40,7 +41,7 @@ use SP\Util\VersionUtil;
  */
 final class UpgradeAppService extends Service implements UpgradeInterface
 {
-    const UPGRADES = [
+    private const UPGRADES = [
         '300.18010101',
         '300.18072901',
         '300.18072902',
@@ -48,26 +49,23 @@ final class UpgradeAppService extends Service implements UpgradeInterface
         '310.19042701'
     ];
 
-    /**
-     * @param $version
-     *
-     * @return bool
-     */
-    public static function needsUpgrade($version)
+    public static function needsUpgrade(string $version): bool
     {
-        return empty($version) || VersionUtil::checkVersion($version, self::UPGRADES);
+        return empty($version)
+            || VersionUtil::checkVersion($version, self::UPGRADES);
     }
 
     /**
-     * @param            $version
-     * @param ConfigData $configData
-     *
      * @throws UpgradeException
      * @throws FileException
      */
-    public function upgrade($version, ConfigData $configData)
+    public function upgrade(
+        string              $version,
+        ConfigDataInterface $configData
+    ): void
     {
-        $this->eventDispatcher->notifyEvent('upgrade.app.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.app.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Update Application')))
         );
@@ -77,7 +75,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                 if ($this->applyUpgrade($appVersion) === false) {
                     throw new UpgradeException(
                         __u('Error while applying the application update'),
-                        UpgradeException::CRITICAL,
+                        SPException::CRITICAL,
                         __u('Please, check the event log for more details')
                     );
                 }
@@ -90,7 +88,8 @@ final class UpgradeAppService extends Service implements UpgradeInterface
             }
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.app.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.app.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Update Application')))
         );
@@ -98,12 +97,8 @@ final class UpgradeAppService extends Service implements UpgradeInterface
 
     /**
      * Actualizaciones de la aplicación
-     *
-     * @param $version
-     *
-     * @return bool
      */
-    private function applyUpgrade($version)
+    private function applyUpgrade(string $version): bool
     {
         try {
             switch ($version) {
@@ -139,10 +134,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
         return false;
     }
 
-    /**
-     * initialize
-     */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->eventDispatcher->attach($this->dic->get(FileLogHandler::class));
     }

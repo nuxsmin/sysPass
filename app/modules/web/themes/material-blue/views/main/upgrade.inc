@@ -1,16 +1,15 @@
 <?php
 /**
- * @var ThemeIcons $icons
- * @var ConfigData $configData
- * @var callable   $_getvar
- * @var Template   $this
+ * @var ThemeIcons                     $icons
+ * @var \SP\Config\ConfigDataInterface $configData
+ * @var callable                       $_getvar
+ * @var Template                       $this
  */
 ?>
 <main class="mdl-layout__content">
     <div id="actions" class="upgrade">
         <div id="page-title">
-            <h1><?php use SP\Config\ConfigData;
-                use SP\Core\UI\ThemeIcons;
+            <h1><?php use SP\Core\UI\ThemeIcons;
                 use SP\Mvc\View\Template;
                 use SP\Util\VersionUtil;
 

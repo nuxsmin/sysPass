@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -53,14 +54,8 @@ use SP\Services\UserProfile\UserProfileService;
  */
 final class AccessManagerController extends ControllerBase
 {
-    /**
-     * @var ItemSearchData
-     */
-    protected $itemSearchData;
-    /**
-     * @var TabsGridHelper
-     */
-    protected $tabsGridHelper;
+    protected ?ItemSearchData $itemSearchData = null;
+    protected ?TabsGridHelper $tabsGridHelper = null;
 
     /**
      * @throws DependencyException
@@ -68,7 +63,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->getGridTabs();
     }
@@ -81,36 +76,42 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs()
+    protected function getGridTabs(): void
     {
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
-        if ($this->checkAccess(Acl::USER)) {
+        if ($this->checkAccess(ActionsInterface::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
         }
 
-        if ($this->checkAccess(Acl::GROUP)) {
+        if ($this->checkAccess(ActionsInterface::GROUP)) {
             $this->tabsGridHelper->addTab($this->getUsersGroupList());
         }
 
-        if ($this->checkAccess(Acl::PROFILE)) {
+        if ($this->checkAccess(ActionsInterface::PROFILE)) {
             $this->tabsGridHelper->addTab($this->getUsersProfileList());
         }
 
-        if ($this->checkAccess(Acl::AUTHTOKEN)) {
+        if ($this->checkAccess(ActionsInterface::AUTHTOKEN)) {
             $this->tabsGridHelper->addTab($this->getAuthTokensList());
         }
 
-        if ($this->configData->isPublinksEnabled() && $this->checkAccess(Acl::PUBLICLINK)) {
+        if ($this->configData->isPublinksEnabled()
+            && $this->checkAccess(ActionsInterface::PUBLICLINK)) {
             $this->tabsGridHelper->addTab($this->getPublicLinksList());
         }
 
-        $this->eventDispatcher->notifyEvent('show.itemlist.accesses', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'show.itemlist.accesses',
+            new Event($this)
+        );
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ACCESS_MANAGE), $this->request->analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(
+            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE),
+            $this->request->analyzeInt('tabIndex', 0));
 
         $this->view();
     }
@@ -127,7 +128,8 @@ final class AccessManagerController extends ControllerBase
     protected function getUsersList(): DataGridTab
     {
         return $this->dic->get(UserGrid::class)
-            ->getGrid($this->dic->get(UserService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(UserService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -143,7 +145,8 @@ final class AccessManagerController extends ControllerBase
     protected function getUsersGroupList(): DataGridTab
     {
         return $this->dic->get(UserGroupGrid::class)
-            ->getGrid($this->dic->get(UserGroupService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(UserGroupService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -159,7 +162,8 @@ final class AccessManagerController extends ControllerBase
     protected function getUsersProfileList(): DataGridTab
     {
         return $this->dic->get(UserProfileGrid::class)
-            ->getGrid($this->dic->get(UserProfileService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(UserProfileService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -175,7 +179,8 @@ final class AccessManagerController extends ControllerBase
     protected function getAuthTokensList(): DataGridTab
     {
         return $this->dic->get(AuthTokenGrid::class)
-            ->getGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(AuthTokenService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -191,7 +196,8 @@ final class AccessManagerController extends ControllerBase
     protected function getPublicLinksList(): DataGridTab
     {
         return $this->dic->get(PublicLinkGrid::class)
-            ->getGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(PublicLinkService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -209,7 +215,7 @@ final class AccessManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
     }

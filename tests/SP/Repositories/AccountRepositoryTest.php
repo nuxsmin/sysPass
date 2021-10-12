@@ -438,9 +438,9 @@ class AccountRepositoryTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function testGetAccountsPassData()
+    public function testGetAccountsPassData(): void
     {
-        $this->assertCount(4, self::$repository->getAccountsPassData());
+        $this->assertCount(4, self::$repository->getAccountsPassData()->getDataAsArray());
     }
 
     /**

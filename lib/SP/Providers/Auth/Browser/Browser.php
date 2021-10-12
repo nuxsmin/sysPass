@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Browser;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\DataModel\UserLoginData;
 use SP\Http\Request;
 use SP\Providers\Auth\AuthInterface;
@@ -39,21 +39,21 @@ use SP\Providers\Auth\AuthInterface;
 final class Browser implements AuthInterface
 {
     /**
-     * @var ConfigData
+     * @var ConfigDataInterface
      */
-    private $configData;
+    private ConfigDataInterface $configData;
     /**
      * @var Request
      */
-    private $request;
+    private Request $request;
 
     /**
      * Browser constructor.
      *
-     * @param ConfigData $configData
-     * @param Request    $request
+     * @param ConfigDataInterface $configData
+     * @param Request             $request
      */
-    public function __construct(ConfigData $configData, Request $request)
+    public function __construct(ConfigDataInterface $configData, Request $request)
     {
         $this->configData = $configData;
         $this->request = $request;
@@ -66,12 +66,13 @@ final class Browser implements AuthInterface
      *
      * @return BrowserAuthData
      */
-    public function authenticate(UserLoginData $userLoginData)
+    public function authenticate(UserLoginData $userLoginData): BrowserAuthData
     {
         $browserAuthData = new BrowserAuthData();
         $browserAuthData->setAuthoritative($this->isAuthGranted());
 
-        if (!empty($userLoginData->getLoginUser()) && !empty($userLoginData->getLoginPass())) {
+        if (!empty($userLoginData->getLoginUser())
+            && !empty($userLoginData->getLoginPass())) {
             return $browserAuthData->setAuthenticated($this->checkServerAuthUser($userLoginData->getLoginUser()));
         }
 
@@ -119,7 +120,7 @@ final class Browser implements AuthInterface
             $login = $authUser . '@' . $domain;
         }
 
-        return $authUser !== null && $authUser === $login ?: null;
+        return $authUser === $login ?: null;
     }
 
     /**

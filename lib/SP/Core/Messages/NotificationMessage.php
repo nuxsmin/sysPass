@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
@@ -33,8 +33,6 @@ final class NotificationMessage extends MessageBase
 {
     /**
      * Componer un mensaje en formato HTML
-     *
-     * @return string
      */
     public function composeHtml(): string
     {
@@ -46,11 +44,11 @@ final class NotificationMessage extends MessageBase
             $message .= '<h3>' . $this->title . '</h3>';
         }
 
-        if (!empty($this->description)) {
+        if (count($this->description) !== 0) {
             $message .= '<div class="notice-description">' . $this->getDescription($formatter) . '</div>';
         }
 
-        if (!empty($this->footer)) {
+        if (count($this->footer) !== 0) {
             $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
         }
 
@@ -59,23 +57,16 @@ final class NotificationMessage extends MessageBase
         return $message;
     }
 
-    /**
-     * @param FormatterInterface $formatter
-     * @param bool               $translate
-     *
-     * @return string
-     */
-    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    public function getDescription(
+        FormatterInterface $formatter,
+        bool               $translate
+    ): string
     {
         return $formatter->formatDescription($this->description, $translate);
     }
 
     /**
      * Componer un mensaje en formato texto
-     *
-     * @param string $delimiter
-     *
-     * @return string
      */
     public function composeText(string $delimiter = PHP_EOL): string
     {
@@ -85,11 +76,11 @@ final class NotificationMessage extends MessageBase
             $parts[] = $this->title;
         }
 
-        if (!empty($this->description)) {
+        if (count($this->description) !== 0) {
             $parts[] = implode($delimiter, $this->description);
         }
 
-        if (!empty($this->footer)) {
+        if (count($this->footer) !== 0) {
             $parts[] = implode($delimiter, $this->footer);
         }
 

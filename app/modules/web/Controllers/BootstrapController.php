@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -96,7 +96,10 @@ final class BootstrapController extends SimpleControllerBase
     private function getNotificationsEnabled(): bool
     {
         if ($this->session->isLoggedIn()) {
-            return $this->session->getUserData()->getPreferences()->isCheckNotifications();
+            return $this->session
+                ->getUserData()
+                ->getPreferences()
+                ->isCheckNotifications();
         }
 
         return false;
@@ -107,7 +110,10 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getCookiesEnabled(): bool
     {
-        return $this->router->request()->cookies()->get(session_name()) !== null;
+        return $this->router
+                ->request()
+                ->cookies()
+                ->get(session_name()) !== null;
     }
 
     /**
@@ -143,20 +149,13 @@ final class BootstrapController extends SimpleControllerBase
     private function getPublicKey(): string
     {
         try {
-            return $this->session->getPublicKey() ?: $this->dic->get(CryptPKI::class)->getPublicKey();
+            return $this->session->getPublicKey()
+                ?: $this->dic->get(CryptPKI::class)->getPublicKey();
         } catch (FileException $e) {
             processException($e);
 
             return '';
         }
-    }
-
-    /**
-     * @return void
-     */
-    protected function initialize()
-    {
-        // TODO: Implement initialize() method.
     }
 
     /**
@@ -169,5 +168,13 @@ final class BootstrapController extends SimpleControllerBase
         logger(sprintf('CSRF key (get): %s', $this->session->getCSRF()));
 
         return $this->session->getCSRF();
+    }
+
+    /**
+     * @return void
+     */
+    protected function initialize(): void
+    {
+        // TODO: Implement initialize() method.
     }
 }

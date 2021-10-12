@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
@@ -45,11 +45,11 @@ interface DataGridDataInterface
      * @param bool          $truncate
      */
     public function addDataRowSource(
-        string $source,
-        bool $isMethod = false,
+        string   $source,
+        bool     $isMethod = false,
         callable $filter = null,
-        bool $truncate = true
-    );
+        bool     $truncate = true
+    ): void;
 
     /**
      * Devolver los orígenes de datos de la consulta
@@ -63,7 +63,7 @@ interface DataGridDataInterface
      *
      * @param $id string
      */
-    public function setDataRowSourceId(string $id);
+    public function setDataRowSourceId(string $id): void;
 
     /**
      * Devolver el origen de datos utilizado como Id de los elementos
@@ -77,7 +77,7 @@ interface DataGridDataInterface
      *
      * @param QueryResult $queryResult
      */
-    public function setData(QueryResult $queryResult);
+    public function setData(QueryResult $queryResult): void;
 
     /**
      * Devolver los datos de la consulta
@@ -94,10 +94,10 @@ interface DataGridDataInterface
      * @param mixed $value  Valor para mostrar el icono
      */
     public function addDataRowSourceWithIcon(
-        string $source,
+        string        $source,
         IconInterface $icon,
-        int $value = 1
-    );
+        int           $value = 1
+    ): void;
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos

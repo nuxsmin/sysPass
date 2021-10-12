@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -43,10 +43,7 @@ use SP\Services\ItemPreset\ItemPresetRequest;
  */
 final class ItemsPresetForm extends FormBase implements FormInterface
 {
-    /**
-     * @var ItemPresetRequest
-     */
-    protected $itemPresetRequest;
+    protected ?ItemPresetRequest $itemPresetRequest = null;
 
     /**
      * Validar el formulario
@@ -75,7 +72,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return void
      * @throws ValidationException
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $itemPresetData = new ItemPresetData();
 
@@ -101,16 +98,28 @@ final class ItemsPresetForm extends FormBase implements FormInterface
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
+                $this->itemPresetRequest = new ItemPresetRequest(
+                    $itemPresetData,
+                    $this->makePermissionPreset()
+                );
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
+                $this->itemPresetRequest = new ItemPresetRequest(
+                    $itemPresetData,
+                    $this->makePrivatePreset()
+                );
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutPreset());
+                $this->itemPresetRequest = new ItemPresetRequest(
+                    $itemPresetData,
+                    $this->makeSessionTimeoutPreset()
+                );
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
+                $this->itemPresetRequest = new ItemPresetRequest(
+                    $itemPresetData,
+                    $this->makePasswordPreset()
+                );
                 break;
             default:
                 throw new ValidationException(__u('Value type not set or incorrect'));
@@ -177,10 +186,8 @@ final class ItemsPresetForm extends FormBase implements FormInterface
 
         $regex = $this->request->analyzeUnsafeString('regex');
 
-        if (!empty($regex)) {
-            if (Validator::isRegex($regex) === false) {
-                throw new ValidationException(__u('Invalid regular expression'));
-            }
+        if (!empty($regex) && Validator::isRegex($regex) === false) {
+            throw new ValidationException(__u('Invalid regular expression'));
         }
 
         $password->setRegex($regex);
@@ -197,7 +204,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         $itemPresetData = $this->itemPresetRequest->getItemPresetData();
 
@@ -209,10 +216,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
     }
 
-    /**
-     * @return ItemPresetRequest
-     */
-    public function getItemData()
+    public function getItemData(): ?ItemPresetRequest
     {
         return $this->itemPresetRequest;
     }

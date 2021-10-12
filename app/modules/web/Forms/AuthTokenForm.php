@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -36,14 +36,8 @@ use SP\Services\AuthToken\AuthTokenService;
  */
 final class AuthTokenForm extends FormBase implements FormInterface
 {
-    /**
-     * @var AuthTokenData
-     */
-    protected $authTokenData;
-    /**
-     * @var bool
-     */
-    protected $refresh = false;
+    protected ?AuthTokenData $authTokenData = null;
+    protected bool $refresh = false;
 
     /**
      * Validar el formulario
@@ -71,7 +65,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->refresh = $this->request->analyzeBool('refreshtoken', false);
 
@@ -85,7 +79,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (0 === $this->authTokenData->getUserId()) {
             throw new ValidationException(__u('User not set'));
@@ -95,25 +89,19 @@ final class AuthTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Action not set'));
         }
 
-        if ((AuthTokenService::isSecuredAction($this->authTokenData->getActionId()) || $this->isRefresh())
-            && empty($this->authTokenData->getHash())
-        ) {
+        if (empty($this->authTokenData->getHash())
+            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+                || $this->isRefresh())) {
             throw new ValidationException(__u('Password cannot be blank'));
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isRefresh(): bool
     {
         return $this->refresh;
     }
 
-    /**
-     * @return AuthTokenData
-     */
-    public function getItemData()
+    public function getItemData(): ?AuthTokenData
     {
         return $this->authTokenData;
     }

@@ -1,13 +1,12 @@
 <?php
 /**
- * @var callable       $_getvar
- * @var ThemeIcons     $icons
- * @var AccountExtData $accountData
- * @var AccountAcl     $accountAcl
- * @var ConfigData     $configData
+ * @var callable                       $_getvar
+ * @var ThemeIcons                     $icons
+ * @var AccountExtData                 $accountData
+ * @var AccountAcl                     $accountAcl
+ * @var \SP\Config\ConfigDataInterface $configData
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
 use SP\Services\Account\AccountAcl;

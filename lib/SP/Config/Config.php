@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Config;
@@ -30,6 +30,7 @@ use Psr\Container\ContainerInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
@@ -47,45 +48,24 @@ final class Config
      * Cache file name
      */
     public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
-    /**
-     * @var int
-     */
-    private static $timeUpdated;
-    /**
-     * @var ContextInterface
-     */
-    private $context;
-    /**
-     * @var bool
-     */
-    private $configLoaded = false;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-    /**
-     * @var XmlFileStorageInterface
-     */
-    private $fileStorage;
-    /**
-     * @var FileCacheInterface
-     */
-    private $fileCache;
-    /**
-     * @var ContainerInterface
-     */
-    private $dic;
+    private static int $timeUpdated;
+    private ContextInterface $context;
+    private bool $configLoaded = false;
+    private ?ConfigDataInterface $configData = null;
+    private XmlFileStorageInterface $fileStorage;
+    private FileCacheInterface $fileCache;
+    private ContainerInterface $dic;
 
     /**
      * Config constructor.
      *
-     * @param XmlFileStorageInterface $fileStorage
-     * @param FileCacheInterface      $fileCache
-     * @param ContainerInterface      $dic
-     *
      * @throws ConfigException
      */
-    public function __construct(XmlFileStorageInterface $fileStorage, FileCacheInterface $fileCache, ContainerInterface $dic)
+    public function __construct(
+        XmlFileStorageInterface $fileStorage,
+        FileCacheInterface      $fileCache,
+        ContainerInterface      $dic
+    )
     {
         $this->fileCache = $fileCache;
         $this->fileStorage = $fileStorage;
@@ -98,7 +78,7 @@ final class Config
     /**
      * @throws ConfigException
      */
-    private function initialize()
+    private function initialize(): void
     {
         if (!$this->configLoaded) {
             try {
@@ -139,7 +119,7 @@ final class Config
                 processException($e);
 
                 throw new ConfigException($e->getMessage(),
-                    ConfigException::CRITICAL,
+                    SPException::CRITICAL,
                     null,
                     $e->getCode(),
                     $e);
@@ -147,9 +127,6 @@ final class Config
         }
     }
 
-    /**
-     * @return bool
-     */
     private function isCacheExpired(): bool
     {
         try {
@@ -162,22 +139,17 @@ final class Config
     /**
      * Cargar el archivo de configuración
      *
-     * @return ConfigData
      * @throws FileException
      */
-    public function loadConfigFromFile(): ConfigData
+    public function loadConfigFromFile(): ConfigDataInterface
     {
         return $this->configMapper($this->fileStorage->load('config')->getItems());
     }
 
     /**
      * Map the config array keys with ConfigData class setters
-     *
-     * @param array $items
-     *
-     * @return ConfigData
      */
-    private function configMapper(array $items): ConfigData
+    private function configMapper(array $items): ConfigDataInterface
     {
         $configData = new ConfigData();
 
@@ -196,13 +168,12 @@ final class Config
     /**
      * Guardar la configuración
      *
-     * @param ConfigData $configData
-     * @param bool       $backup
-     *
-     * @return Config
      * @throws FileException
      */
-    public function saveConfig(ConfigData $configData, ?bool $backup = true): Config
+    public function saveConfig(
+        ConfigDataInterface $configData,
+        ?bool               $backup = true
+    ): Config
     {
         if ($backup) {
             $this->dic->get(ConfigBackupService::class)
@@ -226,9 +197,6 @@ final class Config
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public static function getTimeUpdated(): int
     {
         return self::$timeUpdated;
@@ -236,12 +204,8 @@ final class Config
 
     /**
      * Commits a config data
-     *
-     * @param ConfigData $configData
-     *
-     * @return Config
      */
-    public function updateConfig(ConfigData $configData): Config
+    public function updateConfig(ConfigDataInterface $configData): Config
     {
         $configData->setConfigDate(time());
         $configData->setConfigSaver($this->context->getUserData()->getLogin());
@@ -256,12 +220,8 @@ final class Config
 
     /**
      * Cargar la configuración desde el contexto
-     *
-     * @param bool $reload
-     *
-     * @return ConfigData
      */
-    public function loadConfig(?bool $reload = false): ConfigData
+    public function loadConfig(?bool $reload = false): ConfigDataInterface
     {
         try {
             $configData = $this->fileCache->load();
@@ -285,15 +245,16 @@ final class Config
     }
 
     /**
-     * @return ConfigData
+     * Returns a clone of the configuration data
+     *
+     * @return \SP\Config\ConfigDataInterface
      */
-    public function getConfigData(): ConfigData
+    public function getConfigData(): ConfigDataInterface
     {
         return clone $this->configData;
     }
 
     /**
-     * @return Config
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */

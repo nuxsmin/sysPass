@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -47,14 +48,8 @@ use SP\Services\Track\TrackService;
  */
 final class SecurityManagerController extends ControllerBase
 {
-    /**
-     * @var ItemSearchData
-     */
-    protected $itemSearchData;
-    /**
-     * @var TabsGridHelper
-     */
-    protected $tabsGridHelper;
+    protected ?ItemSearchData $itemSearchData = null;
+    protected ?TabsGridHelper $tabsGridHelper = null;
 
     /**
      * @throws DependencyException
@@ -62,7 +57,7 @@ final class SecurityManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->getGridTabs();
     }
@@ -75,26 +70,32 @@ final class SecurityManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs()
+    protected function getGridTabs(): void
     {
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
-        if ($this->checkAccess(Acl::EVENTLOG)
+        if ($this->checkAccess(ActionsInterface::EVENTLOG)
             && $this->configData->isLogEnabled()
         ) {
             $this->tabsGridHelper->addTab($this->getEventlogList());
         }
 
-        if ($this->checkAccess(Acl::TRACK)) {
+        if ($this->checkAccess(ActionsInterface::TRACK)) {
             $this->tabsGridHelper->addTab($this->getTracksList());
         }
 
-        $this->eventDispatcher->notifyEvent('show.itemlist.security', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'show.itemlist.security',
+            new Event($this)
+        );
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::SECURITY_MANAGE), $this->request->analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(
+            Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE),
+            $this->request->analyzeInt('tabIndex', 0)
+        );
 
         $this->view();
     }
@@ -111,7 +112,8 @@ final class SecurityManagerController extends ControllerBase
     protected function getEventlogList(): DataGridTab
     {
         return $this->dic->get(EventlogGrid::class)
-            ->getGrid($this->dic->get(EventlogService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(EventlogService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -127,7 +129,8 @@ final class SecurityManagerController extends ControllerBase
     protected function getTracksList(): DataGridTab
     {
         return $this->dic->get(TrackGrid::class)
-            ->getGrid($this->dic->get(TrackService::class)->search($this->itemSearchData))
+            ->getGrid($this->dic->get(TrackService::class)
+                ->search($this->itemSearchData))
             ->updatePager();
     }
 
@@ -145,7 +148,7 @@ final class SecurityManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
     }

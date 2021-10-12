@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Mail;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
@@ -47,7 +45,7 @@ final class MailHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
+    public const EVENTS = [
         'create.',
         'delete.',
         'edit.',
@@ -57,7 +55,7 @@ final class MailHandler extends Provider implements EventReceiver
         'run.import.end'
     ];
 
-    const EVENTS_FIXED = [
+    public const EVENTS_FIXED = [
         'clear.eventlog',
         'refresh.masterPassword',
         'update.masterPassword.start',
@@ -71,15 +69,15 @@ final class MailHandler extends Provider implements EventReceiver
     /**
      * @var MailService
      */
-    private $mailService;
+    private MailService $mailService;
     /**
      * @var string
      */
-    private $events;
+    private string $events;
     /**
      * @var Request
      */
-    private $request;
+    private Request $request;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -113,7 +111,7 @@ final class MailHandler extends Provider implements EventReceiver
      * @return void
      * @since 5.1.0
      */
-    public function update(SplSubject $subject)
+    public function update(SplSubject $subject): void
     {
         $this->updateEvent('update', new Event($subject));
     }
@@ -124,7 +122,7 @@ final class MailHandler extends Provider implements EventReceiver
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
      */
-    public function updateEvent(string $eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event): void
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
@@ -158,12 +156,29 @@ final class MailHandler extends Provider implements EventReceiver
                 $mailMessage->addDescriptionLine();
 
                 if ($userData->getId() !== null) {
-                    $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
+                    $mailMessage->addDescription(
+                        sprintf(
+                            __('Performed by: %s (%s)'),
+                            $userData->getName(),
+                            $userData->getLogin()
+                        )
+                    );
                 } else {
-                    $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), 'sysPass', 'APP'));
+                    $mailMessage->addDescription(
+                        sprintf(
+                            __('Performed by: %s (%s)'),
+                            'sysPass',
+                            'APP'
+                        )
+                    );
                 }
 
-                $mailMessage->addDescription(sprintf(__('IP Address: %s'), $this->request->getClientAddress(true)));
+                $mailMessage->addDescription(
+                    sprintf(
+                        __('IP Address: %s'),
+                        $this->request->getClientAddress(true)
+                    )
+                );
 
                 $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
 
@@ -179,19 +194,16 @@ final class MailHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->mailService = $dic->get(MailService::class);
         $this->request = $dic->get(Request::class);
 
         $configEvents = $this->config->getConfigData()->getMailEvents();
 
-        if (empty($configEvents)) {
+        if (count($configEvents) === 0) {
             $this->events = $this->parseEventsToRegex(self::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, self::EVENTS_FIXED));

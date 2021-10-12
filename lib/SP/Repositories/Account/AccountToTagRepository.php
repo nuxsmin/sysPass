@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -51,7 +51,7 @@ final class AccountToTagRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTagsByAccountId($id)
+    public function getTagsByAccountId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT T.id, T.name
@@ -74,7 +74,7 @@ final class AccountToTagRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(AccountRequest $accountRequest)
+    public function update(AccountRequest $accountRequest): void
     {
         $this->deleteByAccountId($accountRequest->id);
         $this->add($accountRequest);
@@ -89,7 +89,7 @@ final class AccountToTagRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId($id)
+    public function deleteByAccountId(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
@@ -108,7 +108,7 @@ final class AccountToTagRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(AccountRequest $accountRequest)
+    public function add(AccountRequest $accountRequest): int
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . $this->getParamsFromArray($accountRequest->tags, '(?,?)');

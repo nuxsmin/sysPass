@@ -363,7 +363,7 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    private function setUpAccountEnvironment($accountId, $userId, $groupId, $isAdminApp = 0, $isAdminAcc = 0)
+    private function setUpAccountEnvironment($accountId, $userId, $groupId, $isAdminApp = false, $isAdminAcc = false)
     {
         AccountAclService::$useCache = false;
 

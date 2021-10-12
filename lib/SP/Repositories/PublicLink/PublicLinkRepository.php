@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\PublicLink;
@@ -33,7 +33,7 @@ use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -43,20 +43,20 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\PublicLink
  */
-final class PublicLinkRepository extends Repository implements RepositoryItemInterface
+final class PublicLinkRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM PublicLink WHERE id = ? LIMIT 1');
@@ -73,7 +73,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT PL.id, 
@@ -114,9 +114,9 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -161,9 +161,9 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -181,7 +181,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -195,7 +195,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PublicLinkListData::class);
@@ -223,7 +223,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
               INNER JOIN Client ON Account.clientId = Client.id');
         $queryData->setOrder('PublicLink.dateExpire DESC');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('User.login LIKE ? OR Account.name LIKE ? OR Client.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -250,7 +250,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create($itemData)
+    public function create($itemData): QueryResult
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
             throw new DuplicatedItemException(__u('Link already created'));
@@ -294,7 +294,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM PublicLink WHERE itemId = ? LIMIT 1');
@@ -310,7 +310,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      *
      * @return void
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -324,7 +324,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLinkData $publicLinkData)
+    public function addLinkView(PublicLinkData $publicLinkData): int
     {
         $query = /** @lang SQL */
             'UPDATE PublicLink
@@ -354,7 +354,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $query = /** @lang SQL */
             'UPDATE PublicLink
@@ -402,7 +402,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function refresh(PublicLinkData $publicLinkData)
+    public function refresh(PublicLinkData $publicLinkData): int
     {
         $query = /** @lang SQL */
             'UPDATE PublicLink
@@ -436,7 +436,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT PL.id, 
@@ -476,7 +476,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByHash($hash)
+    public function getByHash(string $hash): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT PL.id, 
@@ -519,7 +519,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getHashForItem($itemId)
+    public function getHashForItem(int $itemId): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PublicLinkData::class);

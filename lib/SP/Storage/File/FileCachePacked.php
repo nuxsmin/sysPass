@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -34,7 +34,6 @@ use RuntimeException;
 final class FileCachePacked extends FileCacheBase
 {
     /**
-     * @return mixed
      * @throws RuntimeException
      * @throws FileException
      */
@@ -44,7 +43,10 @@ final class FileCachePacked extends FileCacheBase
         $dataUnpacked = gzuncompress($this->path->readToString());
 
         if ($dataUnpacked === false) {
-            throw new FileException(sprintf(__('Error while decompressing the file data (%s)'), $this->path->getFile()));
+            throw new FileException(sprintf(
+                __('Error while decompressing the file data (%s)'),
+                $this->path->getFile()
+            ));
         }
 
         $data = unserialize($dataUnpacked);
@@ -57,9 +59,6 @@ final class FileCachePacked extends FileCacheBase
     }
 
     /**
-     * @param mixed $data
-     *
-     * @return FileCacheInterface
      * @throws FileException
      */
     public function save($data): FileCacheInterface
@@ -69,7 +68,10 @@ final class FileCachePacked extends FileCacheBase
         $data = gzcompress(serialize($data));
 
         if ($data === false) {
-            throw new FileException(sprintf(__('Error while compressing the file data (%s)'), $this->path->getFile()));
+            throw new FileException(sprintf(
+                __('Error while compressing the file data (%s)'),
+                $this->path->getFile()
+            ));
         }
 
         $this->path->checkIsWritable()

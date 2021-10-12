@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
@@ -34,31 +34,31 @@ abstract class AuthDataBase
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
     /**
      * @var string
      */
-    protected $email;
+    protected string $email;
     /**
      * @var bool
      */
-    protected $authenticated;
+    protected bool $authenticated;
     /**
      * @var int
      */
-    protected $statusCode = 0;
+    protected int $statusCode = 0;
     /**
      * @var string
      */
-    protected $server;
+    protected string $server;
     /**
      * @var bool
      */
-    protected $authoritative = false;
+    protected bool $authoritative = false;
     /**
      * @var bool
      */
-    protected $failed = false;
+    protected bool $failed = false;
 
     /**
      * @return string|null
@@ -87,7 +87,7 @@ abstract class AuthDataBase
     /**
      * @param string $email
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -139,9 +139,9 @@ abstract class AuthDataBase
     /**
      * @param int $statusCode
      */
-    public function setStatusCode(int $statusCode)
+    public function setStatusCode(int $statusCode): void
     {
-        $this->statusCode = (int)$statusCode;
+        $this->statusCode = $statusCode;
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class AuthDataBase
      */
     public function isAuthoritative(): bool
     {
-        return (bool)$this->authoritative;
+        return $this->authoritative;
     }
 
     /**
@@ -159,9 +159,9 @@ abstract class AuthDataBase
      *
      * @param bool $authoritative
      */
-    public function setAuthoritative(bool $authoritative)
+    public function setAuthoritative(bool $authoritative): void
     {
-        $this->authoritative = (bool)$authoritative;
+        $this->authoritative = $authoritative;
     }
 
     /**

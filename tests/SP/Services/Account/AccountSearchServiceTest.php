@@ -91,7 +91,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $userData = new UserLoginResponse();
         $userData->setId(1);
         $userData->setUserGroupId(1);
-        $userData->setIsAdminApp(1);
+        $userData->setIsAdminApp(false);
         $userData->setPreferences(new UserPreferencesData());
 
         self::$setupUser->call($this, $userData);

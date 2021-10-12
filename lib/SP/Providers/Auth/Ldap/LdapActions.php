@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /** @noinspection PhpComposerExtensionStubsInspection */
@@ -29,6 +29,7 @@ namespace SP\Providers\Auth\Ldap;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 
 
 /**
@@ -41,7 +42,7 @@ final class LdapActions
     /**
      * Atributos de búsqueda
      */
-    const USER_ATTRIBUTES = [
+    public const USER_ATTRIBUTES = [
         'dn',
         'displayname',
         'samaccountname',
@@ -57,7 +58,7 @@ final class LdapActions
         'cn'
     ];
 
-    const ATTRIBUTES_MAPPING = [
+    public const ATTRIBUTES_MAPPING = [
         'dn' => 'dn',
         'groupmembership' => 'group',
         'memberof' => 'group',
@@ -72,7 +73,7 @@ final class LdapActions
     /**
      * @var LdapParams
      */
-    private $ldapParams;
+    private LdapParams $ldapParams;
     /**
      * @var resource
      */
@@ -80,7 +81,7 @@ final class LdapActions
     /**
      * @var EventDispatcher
      */
-    private $eventDispatcher;
+    private EventDispatcher $eventDispatcher;
 
     /**
      * LdapActions constructor.
@@ -90,7 +91,10 @@ final class LdapActions
      *
      * @throws LdapException
      */
-    public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
+    public function __construct(
+        LdapConnectionInterface $ldapConnection,
+        EventDispatcher         $eventDispatcher
+    )
     {
         $this->ldapHandler = $ldapConnection->connectAndBind();
         $this->ldapParams = $ldapConnection->getLdapParams();
@@ -126,19 +130,22 @@ final class LdapActions
 
             throw new LdapException(
                 __u('Error while searching the group RDN'),
-                LdapException::ERROR,
+                SPException::ERROR,
                 null,
                 LdapCode::NO_SUCH_OBJECT
             );
         }
 
-        return array_filter(array_map(function ($value) {
-            if (is_array($value)) {
-                return $value['dn'];
-            }
+        return array_filter(array_map(
+                static function ($value) {
+                    if (is_array($value)) {
+                        return $value['dn'];
+                    }
 
-            return null;
-        }, $searchResults));
+                    return null;
+                },
+                $searchResults)
+        );
     }
 
     /**
@@ -147,7 +154,7 @@ final class LdapActions
     protected function getGroupFromParams(): string
     {
         if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
-            return LdapUtil::getGroupName($this->ldapParams->getGroup());
+            return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
         }
 
         return $this->ldapParams->getGroup();
@@ -163,8 +170,8 @@ final class LdapActions
      * @return bool|array
      */
     protected function getResults(
-        string $filter,
-        ?array $attributes = null,
+        string  $filter,
+        ?array  $attributes = null,
         ?string $searchBase = null
     )
     {
@@ -207,7 +214,7 @@ final class LdapActions
                 $searchRes,
                 $cookie
             );
-        } while ($cookie !== null && $cookie != '');
+        } while (!empty($cookie));
 
         return $results;
     }
@@ -233,7 +240,7 @@ final class LdapActions
 
             throw new LdapException(
                 __u('Error while searching the user on LDAP'),
-                LdapException::ERROR,
+                SPException::ERROR,
                 null,
                 LdapCode::NO_SUCH_OBJECT
             );
@@ -276,10 +283,10 @@ final class LdapActions
      * @throws LdapException
      */
     public function getObjects(
-        string $filter,
-        array $attributes = self::USER_ATTRIBUTES,
+        string  $filter,
+        array   $attributes = self::USER_ATTRIBUTES,
         ?string $searchBase = null
-    )
+    ): array
     {
         $searchResults = $this->getResults($filter, $attributes, $searchBase);
 
@@ -293,7 +300,7 @@ final class LdapActions
 
             throw new LdapException(
                 __u('Error while searching objects in base DN'),
-                LdapException::ERROR,
+                SPException::ERROR,
                 null,
                 LdapCode::OPERATIONS_ERROR
             );

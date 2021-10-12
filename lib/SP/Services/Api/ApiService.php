@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Api;
@@ -33,7 +33,6 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
-use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\AuthToken\AuthTokenService;
@@ -51,45 +50,22 @@ use SP\Util\Filter;
  */
 final class ApiService extends Service
 {
-    /**
-     * @var AuthTokenService
-     */
-    private $authTokenService;
-    /**
-     * @var TrackService
-     */
-    private $trackService;
-    /**
-     * @var ApiRequest
-     */
-    private $apiRequest;
-    /**
-     * @var TrackRequest
-     */
-    private $trackRequest;
-    /**
-     * @var AuthTokenData
-     */
-    private $authTokenData;
-    /**
-     * @var HelpInterface
-     */
-    private $helpClass;
-    /**
-     * @var bool
-     */
+    private ?AuthTokenService $authTokenService = null;
+    private ?TrackService $trackService = null;
+    private ?ApiRequest $apiRequest = null;
+    private ?TrackRequest $trackRequest = null;
+    private ?AuthTokenData $authTokenData = null;
+    private ?string $helpClass = null;
     private $initialized = false;
 
     /**
      * Sets up API
      *
-     * @param int $actionId
-     *
      * @throws ServiceException
      * @throws SPException
      * @throws Exception
      */
-    public function setup(int $actionId)
+    public function setup(int $actionId): void
     {
         $this->initialized = false;
         $this->apiRequest = $this->dic->get(ApiRequest::class);
@@ -99,21 +75,25 @@ final class ApiService extends Service
 
             throw new ServiceException(
                 __u('Attempts exceeded'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 null,
                 JsonRpcResponse::INTERNAL_ERROR
             );
         }
 
         try {
-            $this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'));
+            $this->authTokenData = $this->authTokenService
+                ->getTokenByToken(
+                    $actionId,
+                    $this->getParam('authToken')
+                );
         } catch (NoSuchItemException $e) {
             logger($e->getMessage(), 'ERROR');
 
             // For security reasons there won't be any hint about a not found token...
             throw new ServiceException(
                 __u('Internal error'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 null,
                 JsonRpcResponse::INTERNAL_ERROR
             );
@@ -137,14 +117,14 @@ final class ApiService extends Service
      *
      * @throws ServiceException
      */
-    private function addTracking()
+    private function addTracking(): void
     {
         try {
             $this->trackService->add($this->trackRequest);
         } catch (Exception $e) {
             throw new ServiceException(
                 __u('Internal error'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 null,
                 JsonRpcResponse::INTERNAL_ERROR
             );
@@ -161,13 +141,17 @@ final class ApiService extends Service
      * @return mixed
      * @throws ServiceException
      */
-    public function getParam($param, $required = false, $default = null)
+    public function getParam(
+        string $param,
+        bool   $required = false,
+               $default = null
+    )
     {
         if ($this->apiRequest === null
             || ($required && !$this->apiRequest->exists($param))) {
             throw new ServiceException(
                 __u('Wrong parameters'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 $this->getHelp($this->apiRequest->getMethod()),
                 JsonRpcResponse::INVALID_PARAMS
             );
@@ -183,7 +167,7 @@ final class ApiService extends Service
      *
      * @return array
      */
-    public function getHelp($action)
+    public function getHelp(string $action): array
     {
         if ($this->helpClass !== null) {
             return call_user_func([$this->helpClass, 'getHelpFor'], $action);
@@ -195,13 +179,13 @@ final class ApiService extends Service
     /**
      * @throws ServiceException
      */
-    private function accessDenied()
+    private function accessDenied(): void
     {
         $this->addTracking();
 
         throw new ServiceException(
             __u('Unauthorized access'),
-            ServiceException::ERROR,
+            SPException::ERROR,
             null,
             JsonRpcResponse::INTERNAL_ERROR
         );
@@ -212,10 +196,12 @@ final class ApiService extends Service
      *
      * @throws SPException
      */
-    private function setupUser()
+    private function setupUser(): void
     {
-        $userLoginResponse = UserService::mapUserLoginResponse($this->dic->get(UserService::class)
-            ->getById($this->authTokenData->getUserId()));
+        $userLoginResponse = UserService::mapUserLoginResponse(
+            $this->dic->get(UserService::class)
+                ->getById($this->authTokenData->getUserId())
+        );
         $userLoginResponse->getIsDisabled() && $this->accessDenied();
 
         $this->context->setUserData($userLoginResponse);
@@ -227,18 +213,20 @@ final class ApiService extends Service
      * @throws ServiceException
      * @throws ContextException
      */
-    public function requireMasterPass()
+    public function requireMasterPass(): void
     {
-        $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
+        $this->context->setTrasientKey(
+            '_masterpass',
+            $this->getMasterPassFromVault()
+        );
     }
 
     /**
      * Devolver la clave maestra
      *
-     * @return string
      * @throws ServiceException
      */
-    private function getMasterPassFromVault()
+    private function getMasterPassFromVault(): string
     {
         try {
             $tokenPass = $this->getParam('tokenPass', true);
@@ -250,18 +238,18 @@ final class ApiService extends Service
 
             if ($vault && ($pass = $vault->getData($tokenPass . $this->getParam('authToken')))) {
                 return $pass;
-            } else {
-                throw new ServiceException(
-                    __u('Internal error'),
-                    ServiceException::ERROR,
-                    __u('Invalid data'),
-                    JsonRpcResponse::INTERNAL_ERROR
-                );
             }
+
+            throw new ServiceException(
+                __u('Internal error'),
+                SPException::ERROR,
+                __u('Invalid data'),
+                JsonRpcResponse::INTERNAL_ERROR
+            );
         } catch (CryptoException $e) {
             throw new ServiceException(
                 __u('Internal error'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 $e->getMessage(),
                 JsonRpcResponse::INTERNAL_ERROR
             );
@@ -269,40 +257,37 @@ final class ApiService extends Service
     }
 
     /**
-     * @param string $param
-     * @param bool   $required
-     * @param mixed  $default
-     *
-     * @return int
      * @throws ServiceException
      */
-    public function getParamInt($param, $required = false, $default = null)
+    public function getParamInt(
+        string $param,
+        bool   $required = false,
+               $default = null
+    ): int
     {
         return Filter::getInt($this->getParam($param, $required, $default));
     }
 
     /**
-     * @param string $param
-     * @param bool   $required
-     * @param mixed  $default
-     *
-     * @return string
      * @throws ServiceException
      */
-    public function getParamString($param, $required = false, $default = null)
+    public function getParamString(
+        string $param,
+        bool   $required = false,
+               $default = null
+    ): string
     {
         return Filter::getString($this->getParam($param, $required, $default));
     }
 
     /**
-     * @param string $param
-     * @param bool   $required
-     * @param mixed  $default
-     *
-     * @return array
      * @throws ServiceException
      */
-    public function getParamArray($param, $required = false, $default = null)
+    public function getParamArray(
+        string $param,
+        bool   $required = false,
+               $default = null):
+    ?array
     {
         $array = $this->getParam($param, $required, $default);
 
@@ -310,78 +295,50 @@ final class ApiService extends Service
             return Filter::getArray($array);
         }
 
-        return $array;
+        return null;
     }
 
     /**
-     * @param string $param
-     * @param bool   $required
-     * @param mixed  $default
-     *
-     * @return int|string
      * @throws ServiceException
      */
-    public function getParamEmail($param, $required = false, $default = null)
-    {
-        return Filter::getEmail($this->getParam($param, $required, $default));
-    }
-
-    /**
-     * @param string $param
-     * @param bool   $required
-     * @param mixed  $default
-     *
-     * @return string
-     * @throws ServiceException
-     */
-    public function getParamRaw($param, $required = false, $default = null)
+    public function getParamRaw(
+        string $param,
+        bool   $required = false,
+               $default = null
+    ): string
     {
         return Filter::getRaw($this->getParam($param, $required, $default));
     }
 
     /**
-     * @return string
      * @throws ServiceException
      */
-    public function getMasterPass()
+    public function getMasterPass(): string
     {
         return $this->getMasterKeyFromContext();
     }
 
-    /**
-     * @param ApiRequest $apiRequest
-     *
-     * @return ApiService
-     */
-    public function setApiRequest(ApiRequest $apiRequest)
+    public function setApiRequest(ApiRequest $apiRequest): ApiService
     {
         $this->apiRequest = $apiRequest;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getRequestId()
+    public function getRequestId(): int
     {
         return $this->apiRequest->getId();
     }
 
-    /**
-     * @return bool
-     */
     public function isInitialized(): bool
     {
         return $this->initialized;
     }
 
     /**
-     * @param string $helpClass
-     *
      * @throws InvalidClassException
      */
-    public function setHelpClass(string $helpClass)
+    public function setHelpClass(string $helpClass): void
     {
         if (class_exists($helpClass)) {
             $this->helpClass = $helpClass;
@@ -394,7 +351,7 @@ final class ApiService extends Service
     /**
      * @throws InvalidArgumentException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
         $this->trackService = $this->dic->get(TrackService::class);

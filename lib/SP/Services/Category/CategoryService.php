@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Category;
@@ -48,37 +48,28 @@ final class CategoryService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
+    protected ?CategoryRepository $categoryRepository = null;
 
     /**
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->categoryRepository->search($itemSearchData);
     }
 
     /**
-     * @param int $id
-     *
-     * @return CategoryData
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): CategoryData
     {
         $result = $this->categoryRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Category not found'), SPException::INFO);
         }
 
         return $result->getData();
@@ -87,14 +78,11 @@ final class CategoryService extends Service
     /**
      * Returns the item for given id
      *
-     * @param string $name
-     *
-     * @return CategoryData
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName($name)
+    public function getByName(string $name): CategoryData
     {
         $result = $this->categoryRepository->getByName($name);
 
@@ -106,14 +94,11 @@ final class CategoryService extends Service
     }
 
     /**
-     * @param $id
-     *
-     * @return $this
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): CategoryService
     {
         if ($this->categoryRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
@@ -125,43 +110,39 @@ final class CategoryService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
-     *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->categoryRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting categories'), ServiceException::WARNING);
+        $count = $this->categoryRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting categories'),
+                SPException::WARNING
+            );
         }
 
         return $count;
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create($itemData)
+    public function create(CategoryData $itemData): int
     {
         return $this->categoryRepository->create($itemData);
     }
 
     /**
-     * @param $itemData
-     *
-     * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update(CategoryData $itemData): int
     {
         return $this->categoryRepository->update($itemData);
     }
@@ -173,7 +154,7 @@ final class CategoryService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->categoryRepository->getAll()->getDataAsArray();
     }
@@ -182,7 +163,7 @@ final class CategoryService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->categoryRepository = $this->dic->get(CategoryRepository::class);
     }

@@ -37,15 +37,10 @@ use function SP\Tests\getDbHandler;
 
 /**
  * Class CliTestCase
- *
- * @package SP\Tests\Modules\Cli
  */
 abstract class CliTestCase extends TestCase
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected static $dic;
+    protected static ContainerInterface $dic;
     /**
      * @var string[]
      */
@@ -73,11 +68,6 @@ abstract class CliTestCase extends TestCase
     }
 
     /**
-     * @param string     $commandClass
-     * @param array|null $inputData
-     * @param bool       $useInputData
-     *
-     * @return CommandTester
      * @throws DependencyException
      * @throws NotFoundException
      */

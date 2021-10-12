@@ -3,12 +3,11 @@
  * @var DataGridAction|DataGridActionSearch $action
  * @var SP\Html\DataGrid\DataGridTab        $data
  * @var ThemeIcons                          $icons
- * @var ConfigData                          $configData
+ * @var \SP\Config\ConfigDataInterface      $configData
  * @var callable                            $_getvar
  * @var Template                            $this
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;

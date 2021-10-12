@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
@@ -45,31 +45,15 @@ final class Request
      * @var array Directorios seguros para include
      */
     public const SECURE_DIRS = ['css', 'js'];
-    /**
-     * @var HeaderDataCollection
-     */
+
     private HeaderDataCollection $headers;
-    /**
-     * @var \Klein\Request
-     */
     private \Klein\Request $request;
-    /**
-     * @var DataCollection
-     */
     private DataCollection $params;
-    /**
-     * @var string
-     */
-    private string $method;
-    /**
-     * @var bool
-     */
-    private bool $https;
+    private ?string $method = null;
+    private ?bool $https = null;
 
     /**
      * Request constructor.
-     *
-     * @param \Klein\Request $request
      */
     public function __construct(\Klein\Request $request)
     {
@@ -79,9 +63,6 @@ final class Request
         $this->detectHttps();
     }
 
-    /**
-     * @return DataCollection
-     */
     private function getParamsByMethod(): DataCollection
     {
         if ($this->request->method('GET')) {
@@ -106,26 +87,22 @@ final class Request
 
     /**
      * Devuelve un nombre de archivo seguro
-     *
-     * @param string      $file
-     * @param string|null $base
-     *
-     * @return string
      */
-    public static function getSecureAppFile(string $file, ?string $base = null): string
+    public static function getSecureAppFile(
+        string  $file,
+        ?string $base = null
+    ): string
     {
         return basename(self::getSecureAppPath($file, $base));
     }
 
     /**
      * Devolver una ruta segura para
-     *
-     * @param string      $path
-     * @param string|null $base
-     *
-     * @return string
      */
-    public static function getSecureAppPath(string $path, ?string $base = null): string
+    public static function getSecureAppPath(
+        string  $path,
+        ?string $base = null
+    ): string
     {
         if ($base === null) {
             $base = APP_ROOT;
@@ -145,8 +122,6 @@ final class Request
     }
 
     /**
-     * @param bool $fullForwarded
-     *
      * @return array|string
      */
     public function getClientAddress(bool $fullForwarded = false)
@@ -209,21 +184,16 @@ final class Request
 
     /**
      * Comprobar si se realiza una recarga de la página
-     *
-     * @return bool
      */
     public function checkReload(): bool
     {
         return $this->headers->get('Cache-Control') === 'max-age=0';
     }
 
-    /**
-     * @param string      $param
-     * @param string|null $default
-     *
-     * @return string|null
-     */
-    public function analyzeEmail(string $param, ?string $default = null): ?string
+    public function analyzeEmail(
+        string  $param,
+        ?string $default = null
+    ): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -234,10 +204,6 @@ final class Request
 
     /**
      * Analizar un valor encriptado y devolverlo desencriptado
-     *
-     * @param string $param
-     *
-     * @return string
      */
     public function analyzeEncrypted(string $param): string
     {
@@ -253,7 +219,7 @@ final class Request
                 ->decryptRSA(base64_decode($encryptedData));
 
             // Desencriptar con la clave RSA
-            if ($clearData === false) {
+            if ($clearData === null) {
                 logger('No RSA encrypted data from request');
 
                 return $encryptedData;
@@ -267,13 +233,10 @@ final class Request
         }
     }
 
-    /**
-     * @param string      $param
-     * @param string|null $default
-     *
-     * @return string|null
-     */
-    public function analyzeString(string $param, ?string $default = null): ?string
+    public function analyzeString(
+        string  $param,
+        ?string $default = null
+    ): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -282,13 +245,10 @@ final class Request
         return Filter::getString($this->params->get($param));
     }
 
-    /**
-     * @param string      $param
-     * @param string|null $default
-     *
-     * @return string|null
-     */
-    public function analyzeUnsafeString(string $param, ?string $default = null): ?string
+    public function analyzeUnsafeString(
+        string  $param,
+        ?string $default = null
+    ): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -300,11 +260,14 @@ final class Request
     /**
      * @param string        $param
      * @param callable|null $mapper
-     * @param mixed         $default
+     * @param null          $default
      *
      * @return array|null
      */
-    public function analyzeArray(string $param, callable $mapper = null, $default = null): ?array
+    public function analyzeArray(
+        string   $param,
+        callable $mapper = null,
+                 $default = null): ?array
     {
         $requestValue = $this->params->get($param);
 
@@ -321,8 +284,6 @@ final class Request
 
     /**
      * Comprobar si la petición es en formato JSON
-     *
-     * @return bool
      */
     public function isJson(): bool
     {
@@ -331,8 +292,6 @@ final class Request
 
     /**
      * Comprobar si la petición es Ajax
-     *
-     * @return bool
      */
     public function isAjax(): bool
     {
@@ -340,12 +299,6 @@ final class Request
             || $this->analyzeInt('isAjax', 0) === 1;
     }
 
-    /**
-     * @param string   $param
-     * @param int|null $default
-     *
-     * @return int
-     */
     public function analyzeInt(string $param, ?int $default = null): ?int
     {
         if (!$this->params->exists($param)) {
@@ -355,22 +308,11 @@ final class Request
         return Filter::getInt($this->params->get($param));
     }
 
-    /**
-     * @param string $file
-     *
-     * @return array|null
-     */
     public function getFile(string $file): ?array
     {
         return $this->request->files()->get($file);
     }
 
-    /**
-     * @param string $param
-     * @param bool   $default
-     *
-     * @return bool
-     */
     public function analyzeBool(string $param, ?bool $default = null): bool
     {
         if (!$this->params->exists($param)) {
@@ -418,7 +360,6 @@ final class Request
      * Returns the URI used by the browser and checks for the protocol used
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return string
      */
     public function getHttpHost(): string
     {
@@ -443,7 +384,6 @@ final class Request
      * Devolver datos de forward RFC 7239
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return array|null
      */
     public function getForwardedData(): ?array
     {
@@ -472,11 +412,6 @@ final class Request
         return null;
     }
 
-    /**
-     * @param string $header
-     *
-     * @return string
-     */
     public function getHeader(string $header): string
     {
         return $this->headers->get($header, '');
@@ -484,8 +419,6 @@ final class Request
 
     /**
      * Devolver datos de x-forward
-     *
-     * @return array|null
      */
     public function getXForwardedData(): ?array
     {
@@ -509,43 +442,26 @@ final class Request
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod(): string
+    public function getMethod(): ?string
     {
         return $this->method;
     }
 
-    /**
-     * @return bool
-     */
-    public function isHttps(): bool
+    public function isHttps(): ?bool
     {
         return $this->https;
     }
 
-    /**
-     * @return int
-     */
     public function getServerPort(): int
     {
         return (int)$this->request->server()->get('SERVER_PORT', 80);
     }
 
-    /**
-     * @return \Klein\Request
-     */
     public function getRequest(): \Klein\Request
     {
         return $this->request;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
     public function getServer(string $key): string
     {
         return (string)$this->request->server()->get($key, '');

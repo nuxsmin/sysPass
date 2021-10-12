@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -49,7 +50,6 @@ use SP\Services\Auth\AuthException;
 use SP\Services\ServiceException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserGroup\UserToUserGroupService;
 
 /**
  * Class GroupController
@@ -60,33 +60,32 @@ final class UserGroupController extends ControllerBase implements CrudController
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var UserGroupService
-     */
-    protected $userGroupService;
-    /**
-     * @var UserToUserGroupService
-     */
-    protected $userToUserGroupService;
+    protected ?UserGroupService $userGroupService = null;
 
     /**
      * Search action
      *
      * @return bool
-     * @throws ConstraintException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -102,23 +101,33 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $userGroupGrid = $this->dic->get(UserGroupGrid::class);
 
-        return $userGroupGrid->updatePager($userGroupGrid->getGrid($this->userGroupService->search($itemSearchData)), $itemSearchData);
+        return $userGroupGrid->updatePager(
+            $userGroupGrid->getGrid($this->userGroupService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Group'));
@@ -127,13 +136,19 @@ final class UserGroupController extends ControllerBase implements CrudController
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.userGroup.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.userGroup.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -152,22 +167,34 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $userGroupId = null)
+    protected function setViewData(?int $userGroupId = null): void
     {
         $this->view->addTemplate('user_group', 'itemshow');
 
-        $userGroupData = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
+        $userGroupData = $userGroupId
+            ? $this->userGroupService->getById($userGroupId)
+            : new UserGroupData();
 
         $this->view->assign('group', $userGroupData);
 
         $users = $userGroupData->getUsers() ?: [];
 
-        $this->view->assign('users',
+        $this->view->assign(
+            'users',
             SelectItemAdapter::factory(UserService::getItemsBasic())
-                ->getItemsFromModelSelected($users));
-        $this->view->assign('usedBy', $this->userGroupService->getUsageByUsers($userGroupId));
+                ->getItemsFromModelSelected($users)
+        );
+        $this->view->assign(
+            'usedBy',
+            $userGroupId
+                ? $this->userGroupService->getUsageByUsers($userGroupId)
+                : []
+        );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -177,8 +204,14 @@ final class UserGroupController extends ControllerBase implements CrudController
             $this->view->assign('readonly', false);
         }
 
-        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::GROUP, $userGroupId));
+        $this->view->assign(
+            'showViewCustomPass',
+            $this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW_PASS)
+        );
+        $this->view->assign(
+            'customFields',
+            $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId)
+        );
     }
 
     /**
@@ -187,14 +220,18 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Group'));
@@ -203,13 +240,19 @@ final class UserGroupController extends ControllerBase implements CrudController
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.userGroup.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.userGroup.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -221,46 +264,73 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->userGroupService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->eventDispatcher->notifyEvent(
                     'delete.userGroup.selection',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Groups deleted')))
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Groups deleted'))
+                    )
                 );
 
-                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
+                $this->deleteCustomFieldsForItem(
+                    ActionsInterface::GROUP,
+                    $id
+                );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Groups deleted'));
-            } else {
-                $this->userGroupService->delete($id);
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Groups deleted')
+                );
+            }
 
-                $this->eventDispatcher->notifyEvent('delete.userGroup',
-                    new Event($this, EventMessage::factory()
+            $this->userGroupService->delete($id);
+
+            $this->eventDispatcher->notifyEvent(
+                'delete.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
                         ->addDescription(__u('Group deleted'))
                         ->addDetail(__u('Group'), $id)
-                        ->addExtra('userGroupId', $id))
-                );
+                        ->addExtra('userGroupId', $id)
+                )
+            );
 
-                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
+            $this->deleteCustomFieldsForItem(
+                ActionsInterface::GROUP,
+                $id
+            );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group deleted'));
-            }
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Group deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -268,38 +338,56 @@ final class UserGroupController extends ControllerBase implements CrudController
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new UserGroupForm($this->dic);
-            $form->validate(Acl::GROUP_CREATE);
+            $form->validate(ActionsInterface::GROUP_CREATE);
 
             $groupData = $form->getItemData();
 
             $id = $this->userGroupService->create($groupData);
 
-            $this->eventDispatcher->notifyEvent('create.userGroup',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Group added'))
-                    ->addDetail(__u('Name'), $groupData->getName()))
+            $this->eventDispatcher->notifyEvent(
+                'create.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Group added'))
+                        ->addDetail(__u('Name'), $groupData->getName())
+                )
             );
 
-            $this->addCustomFieldsForItem(Acl::GROUP, $id, $this->request);
+            $this->addCustomFieldsForItem(
+                ActionsInterface::GROUP,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group added'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Group added')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -311,39 +399,57 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new UserGroupForm($this->dic, $id);
-            $form->validate(Acl::GROUP_EDIT);
+            $form->validate(ActionsInterface::GROUP_EDIT);
 
             $groupData = $form->getItemData();
 
             $this->userGroupService->update($groupData);
 
-            $this->eventDispatcher->notifyEvent('edit.userGroup',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Group updated'))
-                    ->addDetail(__u('Name'), $groupData->getName())
-                    ->addExtra('userGroupId', $id))
+            $this->eventDispatcher->notifyEvent(
+                'edit.userGroup',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Group updated'))
+                        ->addDetail(__u('Name'), $groupData->getName())
+                        ->addExtra('userGroupId', $id)
+                )
             );
 
-            $this->updateCustomFieldsForItem(Acl::GROUP, $id, $this->request);
+            $this->updateCustomFieldsForItem(
+                ActionsInterface::GROUP,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Group updated')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -357,12 +463,16 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::GROUP_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Group'));
@@ -370,13 +480,19 @@ final class UserGroupController extends ControllerBase implements CrudController
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.userGroup', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.userGroup',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -390,7 +506,7 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

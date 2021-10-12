@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -37,288 +37,164 @@ final class AccountSearchFilter
     /**
      * Constantes de ordenación
      */
-    const SORT_DIR_ASC = 0;
-    const SORT_DIR_DESC = 1;
-    const SORT_LOGIN = 3;
-    const SORT_URL = 4;
-    const SORT_CATEGORY = 2;
-    const SORT_CLIENT = 5;
-    const SORT_NAME = 1;
-    const SORT_DEFAULT = 0;
+    public const SORT_DIR_ASC = 0;
+    public const SORT_DIR_DESC = 1;
+    public const SORT_LOGIN = 3;
+    public const SORT_URL = 4;
+    public const SORT_CATEGORY = 2;
+    public const SORT_CLIENT = 5;
+    public const SORT_NAME = 1;
+    public const SORT_DEFAULT = 0;
 
     /**
-     * @var int El número de registros de la última consulta
+     * @var int|null El número de registros de la última consulta
      */
-    public static $queryNumRows;
+    public static ?int $queryNumRows;
+    private bool $globalSearch = false;
+    private ?string $txtSearch = null;
     /**
-     * @var bool
+     * @var string|null Search string without special filters
      */
-    private $globalSearch = false;
-    /**
-     * @var string
-     */
-    private $txtSearch;
-    /**
-     * @var string Search string without special filters
-     */
-    private $cleanTxtSearch;
-    /**
-     * @var int
-     */
-    private $clientId;
-    /**
-     * @var int
-     */
-    private $categoryId;
-    /**
-     * @var array
-     */
-    private $tagsId;
-    /**
-     * @var int
-     */
-    private $sortOrder = self::SORT_DEFAULT;
-    /**
-     * @var int
-     */
-    private $sortKey = self::SORT_DIR_ASC;
-    /**
-     * @var int
-     */
-    private $limitStart = 0;
-    /**
-     * @var int
-     */
-    private $limitCount;
-    /**
-     * @var bool
-     */
-    private $sortViews;
-    /**
-     * @var bool
-     */
-    private $searchFavorites = false;
-    /**
-     * @var QueryCondition
-     */
-    private $stringFilters;
-    /**
-     * @var string
-     */
-    private $filterOperator;
+    private ?string $cleanTxtSearch = null;
+    private ?int $clientId = null;
+    private ?int $categoryId = null;
+    private ?array $tagsId = null;
+    private int $sortOrder = self::SORT_DEFAULT;
+    private int $sortKey = self::SORT_DIR_ASC;
+    private int $limitStart = 0;
+    private ?int $limitCount = null;
+    private ?bool $sortViews = null;
+    private bool $searchFavorites = false;
+    private ?QueryCondition $stringFilters = null;
+    private ?string $filterOperator = null;
 
-    /**
-     * @return boolean
-     */
-    public function isSearchFavorites()
+    public function isSearchFavorites(): bool
     {
         return $this->searchFavorites;
     }
 
-    /**
-     * @param boolean $searchFavorites
-     *
-     * @return $this
-     */
-    public function setSearchFavorites($searchFavorites)
+    public function setSearchFavorites(bool $searchFavorites): AccountSearchFilter
     {
-        $this->searchFavorites = (bool)$searchFavorites;
+        $this->searchFavorites = $searchFavorites;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getGlobalSearch()
+    public function getGlobalSearch(): bool
     {
         return $this->globalSearch;
     }
 
-    /**
-     * @param int $globalSearch
-     *
-     * @return $this
-     */
-    public function setGlobalSearch($globalSearch)
+    public function setGlobalSearch(bool $globalSearch): AccountSearchFilter
     {
         $this->globalSearch = $globalSearch;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTxtSearch()
+    public function getTxtSearch(): ?string
     {
         return $this->txtSearch;
     }
 
-    /**
-     * @param string $txtSearch
-     *
-     * @return $this
-     */
-    public function setTxtSearch($txtSearch)
+    public function setTxtSearch(?string $txtSearch): AccountSearchFilter
     {
         $this->txtSearch = $txtSearch;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getClientId()
+    public function getClientId(): ?int
     {
         return $this->clientId;
     }
 
-    /**
-     * @param int $clientId
-     *
-     * @return $this
-     */
-    public function setClientId($clientId)
+    public function setClientId(?int $clientId): AccountSearchFilter
     {
         $this->clientId = $clientId;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getCategoryId()
+    public function getCategoryId(): ?int
     {
         return $this->categoryId;
     }
 
-    /**
-     * @param int $categoryId
-     *
-     * @return $this
-     */
-    public function setCategoryId($categoryId)
+    public function setCategoryId(?int $categoryId): AccountSearchFilter
     {
         $this->categoryId = $categoryId;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getSortOrder()
+    public function getSortOrder(): int
     {
         return $this->sortOrder;
     }
 
-    /**
-     * @param int $sortOrder
-     *
-     * @return $this
-     */
-    public function setSortOrder($sortOrder)
+    public function setSortOrder(int $sortOrder): AccountSearchFilter
     {
         $this->sortOrder = $sortOrder;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getLimitStart()
+    public function getLimitStart(): int
     {
         return $this->limitStart;
     }
 
-    /**
-     * @param int $limitStart
-     *
-     * @return $this
-     */
-    public function setLimitStart($limitStart)
+    public function setLimitStart(int $limitStart): AccountSearchFilter
     {
         $this->limitStart = $limitStart;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getLimitCount()
+    public function getLimitCount(): ?int
     {
         return $this->limitCount;
     }
 
-    /**
-     * @param int $limitCount
-     *
-     * @return $this
-     */
-    public function setLimitCount($limitCount)
+    public function setLimitCount(?int $limitCount): AccountSearchFilter
     {
         $this->limitCount = $limitCount;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getTagsId()
+    public function getTagsId(): ?array
     {
-        return $this->tagsId ?: [];
+        return $this->tagsId;
     }
 
-    /**
-     * @param array $tagsId
-     *
-     * @return $this
-     */
-    public function setTagsId($tagsId)
+    public function setTagsId(?array $tagsId): AccountSearchFilter
     {
-        if (is_array($tagsId)) {
-            $this->tagsId = $tagsId;
-        }
+        $this->tagsId = $tagsId;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasTags()
+    public function hasTags(): bool
     {
-        return !empty($this->tagsId);
+        return null !== $this->tagsId && count($this->tagsId) !== 0;
     }
 
-    /**
-     * @return QueryCondition
-     */
-    public function getStringFilters()
+    public function getStringFilters(): QueryCondition
     {
-        return $this->stringFilters ?: new QueryCondition();
+        return $this->stringFilters ?? new QueryCondition();
     }
 
-    /**
-     * @param QueryCondition $stringFilters
-     */
-    public function setStringFilters(QueryCondition $stringFilters)
+    public function setStringFilters(?QueryCondition $stringFilters): void
     {
         $this->stringFilters = $stringFilters;
     }
 
     /**
      * Devuelve la cadena de ordenación de la consulta
-     *
-     * @return string
      */
-    public function getOrderString()
+    public function getOrderString(): string
     {
         switch ($this->sortKey) {
             case self::SORT_NAME:
@@ -347,78 +223,51 @@ final class AccountSearchFilter
             $this->setSortOrder(self::SORT_DIR_DESC);
         }
 
-        $orderDir = ($this->sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
+        $orderDir = $this->sortOrder === self::SORT_DIR_ASC ? 'ASC' : 'DESC';
+
         return sprintf('%s %s', implode(',', $orderKey), $orderDir);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isSortViews()
+    public function isSortViews(): bool
     {
-        return $this->sortViews;
+        return $this->sortViews ?? false;
     }
 
-    /**
-     * @param boolean $sortViews
-     *
-     * @return $this
-     */
-    public function setSortViews($sortViews)
-    {
-        $this->sortViews = $sortViews;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSortKey()
+    public function getSortKey(): int
     {
         return $this->sortKey;
     }
 
-    /**
-     * @param int $sortKey
-     *
-     * @return $this
-     */
-    public function setSortKey($sortKey)
+    public function setSortKey(int $sortKey): AccountSearchFilter
     {
         $this->sortKey = $sortKey;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCleanTxtSearch()
+    public function setSortViews(?bool $sortViews): AccountSearchFilter
+    {
+        $this->sortViews = $sortViews;
+
+        return $this;
+    }
+
+    public function getCleanTxtSearch(): ?string
     {
         return $this->cleanTxtSearch;
     }
 
-    /**
-     * @param string $cleanTxtSearch
-     */
-    public function setCleanTxtSearch($cleanTxtSearch)
+    public function setCleanTxtSearch(?string $cleanTxtSearch): void
     {
         $this->cleanTxtSearch = $cleanTxtSearch;
     }
 
-    /**
-     * @return string
-     */
-    public function getFilterOperator()
+    public function getFilterOperator(): string
     {
-        return $this->filterOperator ?: QueryCondition::CONDITION_AND;
+        return $this->filterOperator ?? QueryCondition::CONDITION_AND;
     }
 
-    /**
-     * @param string $filterOperator
-     */
-    public function setFilterOperator($filterOperator)
+    public function setFilterOperator(?string $filterOperator): void
     {
         $this->filterOperator = $filterOperator;
     }
@@ -426,7 +275,7 @@ final class AccountSearchFilter
     /**
      * Resets internal variables
      */
-    public function reset()
+    public function reset(): void
     {
         self::$queryNumRows = null;
         $this->categoryId = null;

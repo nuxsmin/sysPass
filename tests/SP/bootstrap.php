@@ -135,7 +135,7 @@ function setupContext(): Container
     $userData->setLogin('Admin');
     $userData->setUserGroupName('Admins');
     $userData->setUserGroupId(1);
-    $userData->setIsAdminApp(1);
+    $userData->setIsAdminApp(true);
     $userData->setLastUpdate(time());
 
     $context->setUserData($userData);

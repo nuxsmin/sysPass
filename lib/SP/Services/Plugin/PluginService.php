@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Plugin;
@@ -43,21 +43,15 @@ use SP\Storage\Database\QueryResult;
  */
 final class PluginService extends Service
 {
-    /**
-     * @var PluginRepository
-     */
-    protected $pluginRepository;
+    protected PluginRepository $pluginRepository;
 
     /**
      * Creates an item
      *
-     * @param PluginModel $itemData
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PluginModel $itemData)
+    public function create(PluginModel $itemData): int
     {
         return $this->pluginRepository->create($itemData)->getLastId();
     }
@@ -65,13 +59,10 @@ final class PluginService extends Service
     /**
      * Updates an item
      *
-     * @param PluginModel $itemData
-     *
-     * @return mixed
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PluginModel $itemData)
+    public function update(PluginModel $itemData): int
     {
         return $this->pluginRepository->update($itemData);
     }
@@ -79,19 +70,19 @@ final class PluginService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
-     * @return PluginModel
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id): PluginModel
     {
         $result = $this->pluginRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
@@ -104,7 +95,7 @@ final class PluginService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->pluginRepository->getAll()->getDataAsArray();
     }
@@ -112,13 +103,13 @@ final class PluginService extends Service
     /**
      * Returns all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return PluginModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): array
     {
         return $this->pluginRepository->getByIdBatch($ids)->getDataAsArray();
     }
@@ -126,14 +117,14 @@ final class PluginService extends Service
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): void
     {
         if ($this->pluginRepository->deleteByIdBatch($ids) !== count($ids)) {
             throw new ServiceException(__u('Error while deleting the plugins'));
@@ -143,29 +134,27 @@ final class PluginService extends Service
     /**
      * Deletes an item
      *
-     * @param $id
-     *
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($id)
+    public function delete(int $id): void
     {
         if ($this->pluginRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         return $this->pluginRepository->search($itemSearchData);
     }
@@ -173,19 +162,19 @@ final class PluginService extends Service
     /**
      * Devuelve los datos de un plugin por su nombre
      *
-     * @param string $name
-     *
-     * @return PluginModel
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): PluginModel
     {
         $result = $this->pluginRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
 
         return $result->getData();
@@ -194,87 +183,85 @@ final class PluginService extends Service
     /**
      * Cambiar el estado del plugin
      *
-     * @param $id
-     * @param $enabled
-     *
-     * @return void
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function toggleEnabled($id, $enabled)
+    public function toggleEnabled(int $id, bool $enabled): void
     {
         if ($this->pluginRepository->toggleEnabled($id, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Cambiar el estado del plugin
      *
-     * @param $name
-     * @param $enabled
-     *
-     * @return void
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function toggleEnabledByName($name, $enabled)
+    public function toggleEnabledByName(string $name, bool $enabled): void
     {
         if ($this->pluginRepository->toggleEnabledByName($name, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Cambiar el estado del plugin
      *
-     * @param $id
-     * @param $available
-     *
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function toggleAvailable($id, $available)
+    public function toggleAvailable(int $id, bool $available): void
     {
         if ($this->pluginRepository->toggleAvailable($id, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Cambiar el estado del plugin
      *
-     * @param string $name
-     * @param int    $available
-     *
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function toggleAvailableByName($name, $available)
+    public function toggleAvailableByName(string $name, bool $available): void
     {
         if ($this->pluginRepository->toggleAvailableByName($name, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
     }
 
     /**
      * Restablecer los datos de un plugin
      *
-     * @param int $id Id del plugin
-     *
-     * @return bool
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function resetById($id)
+    public function resetById(int $id): bool
     {
         if (($count = $this->pluginRepository->resetById($id)) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Plugin not found'),
+                SPException::INFO
+            );
         }
 
         return $count;
@@ -287,12 +274,12 @@ final class PluginService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getEnabled()
+    public function getEnabled(): array
     {
         return $this->pluginRepository->getEnabled()->getDataAsArray();
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->pluginRepository = $this->dic->get(PluginRepository::class);
     }

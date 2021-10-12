@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Adapters;
@@ -34,11 +34,6 @@ use SP\Services\CustomField\CustomFieldItem;
  */
 final class CustomFieldAdapter extends AdapterBase
 {
-    /**
-     * @param CustomFieldItem $data
-     *
-     * @return array
-     */
     public function transform(CustomFieldItem $data): array
     {
         return [

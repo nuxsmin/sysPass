@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,13 +27,12 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
@@ -52,23 +51,23 @@ final class AccountHistoryManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var AccountHistoryService
-     */
-    protected $accountHistoryService;
+    protected ?AccountHistoryService $accountHistoryService = null;
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_HISTORY_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -88,11 +87,17 @@ final class AccountHistoryManagerController extends ControllerBase
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $historyGrid = $this->dic->get(AccountHistoryGrid::class);
 
-        return $historyGrid->updatePager($historyGrid->getGrid($this->accountHistoryService->search($itemSearchData)), $itemSearchData);
+        return $historyGrid->updatePager(
+            $historyGrid->getGrid($this->accountHistoryService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
@@ -101,8 +106,9 @@ final class AccountHistoryManagerController extends ControllerBase
      * @param int|null $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function deleteAction(?int $id = null): bool
     {
@@ -110,28 +116,46 @@ final class AccountHistoryManagerController extends ControllerBase
             if ($id === null) {
                 $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.accountHistory.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.accountHistory.selection',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Accounts removed'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Accounts removed')
+                );
             }
             $accountDetails = $this->accountHistoryService->getById($id);
 
             $this->accountHistoryService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.accountHistory',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account removed'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+            $this->eventDispatcher->notifyEvent(
+                'delete.accountHistory',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account removed'))
+                        ->addDetail(__u('Account'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Account removed')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -143,8 +167,9 @@ final class AccountHistoryManagerController extends ControllerBase
      * @param int $id Account's history ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function restoreAction(int $id): bool
     {
@@ -159,18 +184,28 @@ final class AccountHistoryManagerController extends ControllerBase
                 $accountService->createFromHistory($accountDetails);
             }
 
-            $this->eventDispatcher->notifyEvent('restore.accountHistory',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Account restored'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+            $this->eventDispatcher->notifyEvent(
+                'restore.accountHistory',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Account restored'))
+                        ->addDetail(__u('Account'), $accountDetails->getName())
+                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account restored'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Account restored')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -184,7 +219,7 @@ final class AccountHistoryManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

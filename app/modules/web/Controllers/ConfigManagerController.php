@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -29,6 +29,7 @@ use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
@@ -67,22 +68,17 @@ use SP\Util\Util;
 
 /**
  * Class ConfigManagerController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class ConfigManagerController extends ControllerBase
 {
-    /**
-     * @var TabsHelper
-     */
-    protected $tabsHelper;
+    protected ?TabsHelper $tabsHelper = null;
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws SPException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->getTabs();
     }
@@ -94,51 +90,54 @@ final class ConfigManagerController extends ControllerBase
      * @throws NotFoundExceptionInterface
      * @throws SPException
      */
-    protected function getTabs()
+    protected function getTabs(): void
     {
         $this->tabsHelper = $this->dic->get(TabsHelper::class);
 
-        if ($this->checkAccess(Acl::CONFIG_GENERAL)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_ACCOUNT)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_ACCOUNT)) {
             $this->tabsHelper->addTab($this->getAccountConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_WIKI)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_WIKI)) {
             $this->tabsHelper->addTab($this->getWikiConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_LDAP)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_LDAP)) {
             $this->tabsHelper->addTab($this->getLdapConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_MAIL)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_MAIL)) {
             $this->tabsHelper->addTab($this->getMailConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_CRYPT)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_CRYPT)) {
             $this->tabsHelper->addTab($this->getEncryptionConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_BACKUP)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_BACKUP)) {
             $this->tabsHelper->addTab($this->getBackupConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_IMPORT)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_IMPORT)) {
             $this->tabsHelper->addTab($this->getImportConfig());
         }
 
-        if ($this->checkAccess(Acl::CONFIG_GENERAL)) {
+        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getInfo());
         }
 
 
-        $this->eventDispatcher->notifyEvent('show.config', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'show.config',
+            new Event($this)
+        );
 
         $this->tabsHelper->renderTabs(
-            Acl::getActionRoute(Acl::CONFIG),
+            Acl::getActionRoute(ActionsInterface::CONFIG),
             $this->request->analyzeInt('tabIndex', 0)
         );
 
@@ -146,7 +145,6 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @return DataTab
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws CheckException
@@ -175,7 +173,6 @@ final class ConfigManagerController extends ControllerBase
             $this->configData->isDemoEnabled()
             && !$this->userData->getIsAdminApp() ? 'disabled' : ''
         );
-
         $template->assign('users',
             SelectItemAdapter::factory(
                 UserService::getItemsBasic()
@@ -195,7 +192,10 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('curlIsAvailable',
             $this->extensionChecker->checkCurlAvailable());
 
-        $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
+        $events = array_merge(
+            LogInterface::EVENTS,
+            $this->configData->getLogEvents()
+        );
 
         sort($events, SORT_STRING);
 
@@ -211,7 +211,6 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @return DataTab
      * @throws DependencyException
      * @throws NotFoundException
      * @throws CheckException
@@ -222,19 +221,31 @@ final class ConfigManagerController extends ControllerBase
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('accounts');
-        $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
-
-        $mimeTypesAvailable = array_map(function ($value) {
-            return $value['type'];
-        }, $this->dic->get(MimeTypes::class)->getMimeTypes());
-
-        $mimeTypes = SelectItemAdapter::factory(
-            array_merge($mimeTypesAvailable, $this->configData->getFilesAllowedMime())
+        $template->assign(
+            'gdIsAvailable',
+            $this->extensionChecker->checkGdAvailable()
         );
 
-        $template->assign('mimeTypes', $mimeTypes->getItemsFromArraySelected(
-            $this->configData->getFilesAllowedMime(),
-            true)
+        $mimeTypesAvailable = array_map(
+            static function ($value) {
+                return $value['type'];
+            },
+            $this->dic->get(MimeTypes::class)->getMimeTypes()
+        );
+
+        $mimeTypes = SelectItemAdapter::factory(
+            array_merge(
+                $mimeTypesAvailable,
+                $this->configData->getFilesAllowedMime()
+            )
+        );
+
+        $template->assign(
+            'mimeTypes',
+            $mimeTypes->getItemsFromArraySelected(
+                $this->configData->getFilesAllowedMime(),
+                true
+            )
         );
 
         return new DataTab(__('Accounts'), $template);
@@ -250,13 +261,15 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('wiki');
 
-        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
+        $template->assign(
+            'curlIsAvailable',
+            $this->extensionChecker->checkCurlAvailable()
+        );
 
         return new DataTab(__('Wiki'), $template);
     }
 
     /**
-     * @return DataTab
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws CheckException
@@ -309,7 +322,6 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @return DataTab
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -331,19 +343,28 @@ final class ConfigManagerController extends ControllerBase
             )->getItemsFromModel()
         );
 
-        $events = array_merge(MailHandler::EVENTS, $this->configData->getMailEvents());
+        $mailEvents = $this->configData->getMailEvents();
+
+        $events = array_merge(
+            MailHandler::EVENTS,
+            $mailEvents
+        );
 
         sort($events, SORT_STRING);
 
-        $template->assign('mailEvents', SelectItemAdapter::factory($events)
-            ->getItemsFromArraySelected($this->configData->getMailEvents(), true)
+        $template->assign(
+            'mailEvents',
+            SelectItemAdapter::factory($events)
+                ->getItemsFromArraySelected(
+                    $mailEvents,
+                    true
+                )
         );
 
         return new DataTab(__('Mail'), $template);
     }
 
     /**
-     * @return DataTab
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
@@ -361,36 +382,50 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('numAccounts', $numAccounts);
 
         if ($numAccounts > 150) {
-            $template->assign('taskId', Task::genTaskId('masterpass'));
+            $template->assign(
+                'taskId',
+                Task::genTaskId('masterpass')
+            );
         }
 
         $configService = $this->dic->get(ConfigService::class);
 
-        $template->assign('lastUpdateMPass',
+        $template->assign(
+            'lastUpdateMPass',
             $configService->getByParam('lastupdatempass', 0)
         );
 
-        $template->assign('tempMasterPassTime',
+        $template->assign(
+            'tempMasterPassTime',
             $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0)
         );
-        $template->assign('tempMasterMaxTime',
+        $template->assign(
+            'tempMasterMaxTime',
             $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0)
         );
 
-        $tempMasterAttempts = sprintf('%d/%d',
+        $tempMasterAttempts = sprintf(
+            '%d/%d',
             $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
-            TemporaryMasterPassService::MAX_ATTEMPTS);
+            TemporaryMasterPassService::MAX_ATTEMPTS
+        );
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
-        $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());
+        $template->assign(
+            'tempMasterPass',
+            $this->session->getTemporaryMasterPass()
+        );
 
-        $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
+        $template->assign(
+            'userGroups',
+            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
+                ->getItemsFromModel()
+        );
 
         return new DataTab(__('Encryption'), $template);
     }
 
     /**
-     * @return DataTab
      * @throws CheckException
      */
     protected function getBackupConfig(): DataTab
@@ -398,8 +433,10 @@ final class ConfigManagerController extends ControllerBase
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('backup');
-        $template->assign('pharIsAvailable',
-            $this->extensionChecker->checkPharAvailable());
+        $template->assign(
+            'pharIsAvailable',
+            $this->extensionChecker->checkPharAvailable()
+        );
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
@@ -427,12 +464,14 @@ final class ConfigManagerController extends ControllerBase
             $backupDbFile->checkFileExists();
 
             $template->assign('hasBackup', true);
-            $template->assign('lastBackupTime',
+            $template->assign(
+                'lastBackupTime',
                 date('r', $backupAppFile->getFileTime())
             );
         } catch (FileException $e) {
             $template->assign('hasBackup', false);
-            $template->assign('lastBackupTime',
+            $template->assign(
+                'lastBackupTime',
                 __('There aren\'t any backups available')
             );
         }
@@ -455,36 +494,36 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @return DataTab
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function getImportConfig()
+    protected function getImportConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('import');
 
-        $template->assign('userGroups', SelectItemAdapter::factory(
-            UserGroupService::getItemsBasic())
-            ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
+        $template->assign(
+            'userGroups',
+            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
+                ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
         );
-        $template->assign('users', SelectItemAdapter::factory(
-            UserService::getItemsBasic())
-            ->getItemsFromModelSelected([$this->userData->getId()])
+        $template->assign(
+            'users',
+            SelectItemAdapter::factory(UserService::getItemsBasic())
+                ->getItemsFromModelSelected([$this->userData->getId()])
         );
 
         return new DataTab(__('Import Accounts'), $template);
     }
 
     /**
-     * @return DataTab
      * @throws DependencyException
      * @throws NotFoundException
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    protected function getInfo()
+    protected function getInfo(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
@@ -493,34 +532,43 @@ final class ConfigManagerController extends ControllerBase
         $databaseUtil = $this->dic->get(DatabaseUtil::class);
 
         $template->assign('dbInfo', $databaseUtil->getDBinfo());
-        $template->assign('dbName',
+        $template->assign(
+            'dbName',
             $this->configData->getDbName() . '@' . $this->configData->getDbHost()
         );
-        $template->assign('configBackupDate',
+        $template->assign(
+            'configBackupDate',
             date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0))
         );
-        $template->assign('plugins',
+        $template->assign(
+            'plugins',
             $this->dic->get(PluginManager::class)->getLoadedPlugins()
         );
-        $template->assign('locale',
+        $template->assign(
+            'locale',
             Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed'))
         );
-        $template->assign('securedSession',
+        $template->assign(
+            'securedSession',
             CryptSessionHandler::$isSecured
         );
-        $template->assign('missingExtensions',
+        $template->assign(
+            'missingExtensions',
             $this->extensionChecker->getMissing()
         );
-        $template->assign('downloadRate',
+        $template->assign(
+            'downloadRate',
             round(Util::getMaxDownloadChunk() / 1024 / 1024)
         );
 
         $isDemo = $this->configData->isDemoEnabled();
 
-        $template->assign('downloadConfigBackup',
+        $template->assign(
+            'downloadConfigBackup',
             !$isDemo && $this->userData->getIsAdminApp()
         );
-        $template->assign('downloadLog',
+        $template->assign(
+            'downloadLog',
             !$isDemo
             && is_readable(LOG_FILE)
             && $this->userData->getIsAdminApp()
@@ -529,9 +577,6 @@ final class ConfigManagerController extends ControllerBase
         return new DataTab(__('Information'), $template);
     }
 
-    /**
-     * @return TabsHelper
-     */
     public function getTabsHelper(): TabsHelper
     {
         return $this->tabsHelper;
@@ -543,7 +588,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
     }

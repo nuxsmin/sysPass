@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -37,40 +37,34 @@ use SP\Core\PhpExtensionChecker;
  */
 final class ArchiveHandler
 {
-    const COMPRESS_EXTENSION = '.tar.gz';
+    public const COMPRESS_EXTENSION = '.tar.gz';
 
-    /**
-     * @var PhpExtensionChecker
-     */
-    private $extensionChecker;
-    /**
-     * @var FileHandler
-     */
-    private $archive;
+    private PhpExtensionChecker $extensionChecker;
+    private FileHandler $archive;
 
-    /**
-     * ArchiveHandler constructor.
-     *
-     * @param string              $archive
-     * @param PhpExtensionChecker $extensionChecker
-     */
-    public function __construct(string $archive, PhpExtensionChecker $extensionChecker)
+    public function __construct(
+        string              $archive,
+        PhpExtensionChecker $extensionChecker
+    )
     {
         $this->extensionChecker = $extensionChecker;
         $this->archive = new FileHandler(self::makeArchiveName($archive));
     }
 
-    /**
-     * @param string $archive
-     *
-     * @return bool|string
-     */
-    private static function makeArchiveName(string $archive)
+    private static function makeArchiveName(string $archive): string
     {
-        $archiveExtension = substr(self::COMPRESS_EXTENSION, 0, strrpos(self::COMPRESS_EXTENSION, '.'));
+        $archiveExtension = substr(
+            self::COMPRESS_EXTENSION,
+            0,
+            strrpos(self::COMPRESS_EXTENSION, '.')
+        );
 
         if (is_file($archive)) {
-            return substr($archive, 0, strrpos($archive, '.')) . $archiveExtension;
+            return substr(
+                    $archive,
+                    0,
+                    strrpos($archive, '.')
+                ) . $archiveExtension;
         }
 
         return $archive . $archiveExtension;
@@ -79,13 +73,13 @@ final class ArchiveHandler
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @param string      $directory
-     * @param string|null $regex
-     *
      * @throws CheckException
      * @throws FileException
      */
-    public function compressDirectory(string $directory, ?string $regex = null)
+    public function compressDirectory(
+        string  $directory,
+        ?string $regex = null
+    ): void
     {
         $this->extensionChecker->checkPharAvailable(true);
 
@@ -100,12 +94,10 @@ final class ArchiveHandler
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @param string $file
-     *
      * @throws CheckException
      * @throws FileException
      */
-    public function compressFile(string $file)
+    public function compressFile(string $file): void
     {
         $this->extensionChecker->checkPharAvailable(true);
 

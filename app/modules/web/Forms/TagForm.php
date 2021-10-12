@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
@@ -35,10 +35,7 @@ use SP\DataModel\TagData;
  */
 final class TagForm extends FormBase implements FormInterface
 {
-    /**
-     * @var TagData
-     */
-    protected $tagData;
+    protected ?TagData $tagData = null;
 
     /**
      * Validar el formulario
@@ -66,7 +63,7 @@ final class TagForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->tagData = new TagData();
         $this->tagData->setId($this->itemId);
@@ -76,17 +73,14 @@ final class TagForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->tagData->getName()) {
             throw new ValidationException(__u('A tag name is needed'));
         }
     }
 
-    /**
-     * @return TagData
-     */
-    public function getItemData()
+    public function getItemData(): ?TagData
     {
         return $this->tagData;
     }

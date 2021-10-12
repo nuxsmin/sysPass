@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Api;
+
+use JsonException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class ApiRequest
@@ -31,27 +34,18 @@ namespace SP\Services\Api;
  */
 final class ApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $method;
-    /**
-     * @var int
-     */
-    protected $id;
-    /**
-     * @var ApiRequestData
-     */
-    protected $data;
+    protected ?string $method = null;
+    protected ?int $id = null;
+    protected ?ApiRequestData $data = null;
 
     /**
      * ApiRequest constructor.
      *
-     * @param string $request
+     * @param string|null $request
      *
-     * @throws ApiRequestException
+     * @throws \SP\Services\Api\ApiRequestException
      */
-    public function __construct($request = null)
+    public function __construct(?string $request = null)
     {
         if ($request === null) {
             $this->requestFromJsonData($this->getDataFromRequest());
@@ -65,34 +59,48 @@ final class ApiRequest
      *
      * Comprueba que el JSON esté bien formado
      *
-     * @param null $request
+     * @param string $request
      *
      * @return ApiRequest
-     * @throws ApiRequestException
+     * @throws \SP\Services\Api\ApiRequestException
      */
-    public function requestFromJsonData($request)
+    public function requestFromJsonData(string $request): ApiRequest
     {
-        $data = json_decode($request, true);
-
-        if ($data === null) {
+        try {
+            $data = json_decode(
+                $request,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        } catch (JsonException $e) {
             throw new ApiRequestException(
                 __u('Invalid data'),
-                ApiRequestException::ERROR,
-                json_last_error_msg(),
+                SPException::ERROR,
+                $e->getMessage(),
                 JsonRpcResponse::PARSE_ERROR
             );
         }
 
-        if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id'], $data['params']['authToken'])) {
+        if (!isset(
+            $data['jsonrpc'],
+            $data['method'],
+            $data['id'],
+            $data['params']['authToken'])
+        ) {
             throw new ApiRequestException(
                 __u('Invalid format'),
-                ApiRequestException::ERROR,
+                SPException::ERROR,
                 null,
                 JsonRpcResponse::INVALID_REQUEST
             );
         }
 
-        $this->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
+        $this->method = preg_replace(
+            '#[^a-z/]+#i',
+            '',
+            $data['method']
+        );
         $this->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
         $this->data = new ApiRequestData();
         $this->data->replace($data['params']);
@@ -104,14 +112,14 @@ final class ApiRequest
      * @return string
      * @throws ApiRequestException
      */
-    public function getDataFromRequest()
+    public function getDataFromRequest(): string
     {
         $content = file_get_contents('php://input');
 
-        if ($content === false || empty($content)) {
+        if (empty($content)) {
             throw new ApiRequestException(
                 __u('Invalid data'),
-                ApiRequestException::ERROR,
+                SPException::ERROR,
                 null,
                 JsonRpcResponse::PARSE_ERROR
             );
@@ -136,7 +144,7 @@ final class ApiRequest
      *
      * @return bool
      */
-    public function exists(string $key)
+    public function exists(string $key): bool
     {
         return $this->data->exists($key);
     }
@@ -144,7 +152,7 @@ final class ApiRequest
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -152,7 +160,7 @@ final class ApiRequest
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

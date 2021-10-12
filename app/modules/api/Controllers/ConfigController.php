@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
@@ -44,7 +44,7 @@ final class ConfigController extends ControllerBase
     /**
      * backupAction
      */
-    public function backupAction()
+    public function backupAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CONFIG_BACKUP_RUN);
@@ -54,13 +54,23 @@ final class ConfigController extends ControllerBase
             $this->dic->get(FileBackupService::class)
                 ->doBackup($path);
 
-            $this->eventDispatcher->notifyEvent('run.backup.end',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Application and database backup completed successfully'))
-                    ->addDetail(__u('Path'), $path))
+            $this->eventDispatcher->notifyEvent(
+                'run.backup.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Application and database backup completed successfully'))
+                        ->addDetail(__u('Path'), $path)
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Backup process finished')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $path,
+                    null,
+                    __('Backup process finished')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -71,7 +81,7 @@ final class ConfigController extends ControllerBase
     /**
      * exportAction
      */
-    public function exportAction()
+    public function exportAction(): void
     {
         try {
             $this->setupApi(ActionsInterface::CONFIG_EXPORT_RUN);
@@ -79,21 +89,35 @@ final class ConfigController extends ControllerBase
             $password = $this->apiService->getParamString('password');
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 
-            $this->eventDispatcher->notifyEvent('run.export.start',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('sysPass XML export'))
-                    ->addDetail(__u('Path'), $path))
+            $this->eventDispatcher->notifyEvent(
+                'run.export.start',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('sysPass XML export'))
+                        ->addDetail(__u('Path'), $path)
+                )
             );
 
             $this->dic->get(XmlExportService::class)
                 ->doExport($path, $password);
 
-            $this->eventDispatcher->notifyEvent('run.export.end',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Export process finished')))
+            $this->eventDispatcher->notifyEvent(
+                'run.export.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Export process finished'))
+                )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Export process finished')));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $path,
+                    null,
+                    __('Export process finished')
+                )
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -104,7 +128,7 @@ final class ConfigController extends ControllerBase
     /**
      * @throws InvalidClassException
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->apiService->setHelpClass(ConfigHelp::class);
     }

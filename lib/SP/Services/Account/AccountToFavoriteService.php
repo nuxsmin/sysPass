@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -38,36 +38,28 @@ use SP\Services\Service;
  */
 final class AccountToFavoriteService extends Service
 {
-    /**
-     * @var AccountToFavoriteRepository
-     */
-    protected $accountFavoriteRepository;
+    protected ?AccountToFavoriteRepository $accountFavoriteRepository = null;
 
     /**
      * Obtener un array con los Ids de cuentas favoritas
      *
-     * @param $id int El Id de usuario
-     *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUserId($id)
+    public function getForUserId(int $id): array
     {
-        return $this->accountFavoriteRepository->getForUserId($id)->getDataAsArray();
+        return $this->accountFavoriteRepository
+            ->getForUserId($id)
+            ->getDataAsArray();
     }
 
     /**
      * Añadir una cuenta a la lista de favoritos
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
-     *
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add($accountId, $userId)
+    public function add(int $accountId, int $userId): int
     {
         return $this->accountFavoriteRepository->add($accountId, $userId);
     }
@@ -75,14 +67,10 @@ final class AccountToFavoriteService extends Service
     /**
      * Eliminar una cuenta de la lista de favoritos
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete($accountId, $userId)
+    public function delete(int $accountId, int $userId): int
     {
         return $this->accountFavoriteRepository->delete($accountId, $userId);
     }
@@ -91,7 +79,7 @@ final class AccountToFavoriteService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountFavoriteRepository = $this->dic->get(AccountToFavoriteRepository::class);
     }

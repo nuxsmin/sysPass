@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\Assets;
@@ -35,37 +35,38 @@ abstract class IconBase implements IconInterface
 {
     /**
      * El nombre del icono o imagen a utilizar
-     *
-     * @var string
      */
-    protected $icon = '';
+    protected string $icon;
 
     /**
      * Título del icono
-     *
-     * @var string
      */
-    protected $title = '';
+    protected ?string $title = null;
     /**
      * Clases CSS del icono
-     *
-     * @var array
      */
-    protected $class = [];
+    protected ?array $class = null;
 
-    /**
-     * @return string
-     */
-    public function getTitle(): string
+    public function __construct(
+        string  $icon,
+        ?string $class = null,
+        ?string $title = null
+    )
     {
-        return __($this->title);
+        $this->setIcon($icon);
+        $this->setClass($class);
+        $this->setTitle($title);
     }
 
-    /**
-     * @param string|null $title
-     *
-     * @return $this
-     */
+    public function getTitle(): ?string
+    {
+        if ($this->title) {
+            return __($this->title);
+        }
+
+        return null;
+    }
+
     public function setTitle(?string $title): IconBase
     {
         $this->title = $title;
@@ -73,19 +74,15 @@ abstract class IconBase implements IconInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClass(): string
+    public function getClass(): ?string
     {
-        return implode(' ', $this->class);
+        if ($this->class) {
+            return implode(' ', $this->class);
+        }
+
+        return null;
     }
 
-    /**
-     * @param string|null $class
-     *
-     * @return $this
-     */
     public function setClass(?string $class): IconBase
     {
         if ($class) {
@@ -95,22 +92,15 @@ abstract class IconBase implements IconInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getIcon(): string
     {
         return $this->icon;
     }
 
-    /**
-     * @param string $icon
-     *
-     * @return $this
-     */
     public function setIcon(string $icon): IconBase
     {
         $this->icon = $icon;
+
         return $this;
     }
 }

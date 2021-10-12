@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Ldap;
 
 use SP\Providers\Auth\Ldap\Ldap;
 use SP\Providers\Auth\Ldap\LdapException;
+use SP\Providers\Auth\Ldap\LdapInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Services\Service;
 
@@ -36,28 +37,26 @@ use SP\Services\Service;
  */
 final class LdapCheckService extends Service
 {
-    /**
-     * @var Ldap
-     */
-    protected $ldap;
+    protected ?LdapInterface $ldap = null;
 
     /**
      * @param LdapParams $ldapParams
      *
      * @throws LdapException
      */
-    public function checkConnection(LdapParams $ldapParams)
+    public function checkConnection(LdapParams $ldapParams): void
     {
-        $this->ldap = Ldap::factory($ldapParams, $this->eventDispatcher, true);
+        $this->ldap = Ldap::factory(
+            $ldapParams,
+            $this->eventDispatcher,
+            true
+        );
     }
 
     /**
-     * @param bool $includeGroups
-     *
-     * @return array
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function getObjects($includeGroups = true)
+    public function getObjects(bool $includeGroups = true): array
     {
         $ldapActions = $this->ldap->getLdapActions();
 
@@ -94,9 +93,12 @@ final class LdapCheckService extends Service
             ];
         }
 
-        array_walk($data['results'], function ($value) use (&$data) {
-            $data['count'] += count($value['items']);
-        });
+        array_walk(
+            $data['results'],
+            static function ($value) use (&$data) {
+                $data['count'] += count($value['items']);
+            }
+        );
 
         return $data;
     }
@@ -104,19 +106,22 @@ final class LdapCheckService extends Service
     /**
      * Obtener los datos de una búsqueda de LDAP de un atributo
      *
-     * @param array $data
-     * @param array $attributes
+     * @param array    $data
+     * @param string[] $attributes
      *
      * @return array
      */
-    public function ldapResultsMapper($data, $attributes = ['dn'])
+    public function ldapResultsMapper(
+        array $data,
+        array $attributes = ['dn']
+    ): array
     {
         $out = [];
 
         foreach ($data as $result) {
             if (is_array($result)) {
                 foreach ($result as $ldapAttribute => $value) {
-                    if (in_array(strtolower($ldapAttribute), $attributes)) {
+                    if (in_array(strtolower($ldapAttribute), $attributes, true)) {
                         if (is_array($value)) {
                             unset($value['count']);
 
@@ -133,12 +138,9 @@ final class LdapCheckService extends Service
     }
 
     /**
-     * @param $filter
-     *
-     * @return array
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function getObjectsByFilter($filter)
+    public function getObjectsByFilter(string $filter): array
     {
         $objects = $this->ldapResultsMapper(
             $this->ldap->getLdapActions()->getObjects($filter, ['dn'])

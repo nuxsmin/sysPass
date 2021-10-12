@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Acl\ActionsInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
 use SP\Html\DataGrid\Layout\DataGridPagerInterface;
@@ -101,9 +100,9 @@ interface DataGridInterface
     public function getPager(): ?DataGridPagerInterface;
 
     /**
-     * @param ActionsInterface $action
+     * @param int $action
      */
-    public function setOnCloseAction(ActionsInterface $action);
+    public function setOnCloseAction(int $action);
 
     /**
      * Establecer la plantilla utilizada para la cabecera

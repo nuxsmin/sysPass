@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\ConstraintException;
@@ -77,7 +77,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
         // Inicializar el servicio
         self::$service = $dic->get(PublicLinkService::class);
 
-        self::$salt = $dic->get(ConfigData::class)->getPasswordSalt();
+        self::$salt = $dic->get(ConfigDataInterface::class)->getPasswordSalt();
     }
 
     /**

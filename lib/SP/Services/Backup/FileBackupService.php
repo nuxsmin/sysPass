@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Backup;
@@ -28,13 +28,11 @@ use Exception;
 use PDO;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Services\Service;
@@ -56,39 +54,19 @@ final class FileBackupService extends Service
 {
     private const BACKUP_EXCLUDE_REGEX = '#^(?!.*(backup|cache|temp|vendor|tests))(.*)$#i';
 
-    /**
-     * @var ConfigData
-     */
-    private $configData;
-    /**
-     * @var string
-     */
-    private $path;
-    /**
-     * @var string
-     */
-    private $backupFileApp;
-    /**
-     * @var string
-     */
-    private $backupFileDb;
-    /**
-     * @var PhpExtensionChecker
-     */
-    private $extensionChecker;
-    /**
-     * @var string
-     */
-    private $hash;
+    private ?ConfigDataInterface $configData = null;
+    private ?string $path = null;
+    private ?string $backupFileApp = null;
+    private ?string $backupFileDb = null;
+    private ?PhpExtensionChecker $extensionChecker = null;
+    private ?string $hash = null;
 
     /**
      * Realizar backup de la BBDD y aplicación.
      *
-     * @param string $path
-     *
      * @throws ServiceException
      */
-    public function doBackup(string $path)
+    public function doBackup(string $path): void
     {
         set_time_limit(0);
 
@@ -109,7 +87,7 @@ final class FileBackupService extends Service
                 new Event($this,
                     EventMessage::factory()->addDescription(__u('Make Backup'))));
 
-            $this->backupTables(new FileHandler($this->backupFileDb), '*');
+            $this->backupTables(new FileHandler($this->backupFileDb));
 
             if (!$this->backupApp()
                 && !$this->backupAppLegacyLinux()
@@ -137,7 +115,6 @@ final class FileBackupService extends Service
     /**
      * Comprobar y crear el directorio de backups.
      *
-     * @return void
      * @throws ServiceException
      */
     private function checkBackupDir(): void
@@ -157,14 +134,11 @@ final class FileBackupService extends Service
 
     }
 
-    /**
-     * @param string $path
-     * @param string $hash
-     * @param bool   $compressed
-     *
-     * @return string
-     */
-    public static function getAppBackupFilename(string $path, string $hash, bool $compressed = false)
+    public static function getAppBackupFilename(
+        string $path,
+        string $hash,
+        bool   $compressed = false
+    ): string
     {
         $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_app-' . $hash;
 
@@ -175,14 +149,11 @@ final class FileBackupService extends Service
         return $file;
     }
 
-    /**
-     * @param string $path
-     * @param string $hash
-     * @param bool   $compressed
-     *
-     * @return string
-     */
-    public static function getDbBackupFilename(string $path, string $hash, bool $compressed = false)
+    public static function getDbBackupFilename(
+        string $path,
+        string $hash,
+        bool   $compressed = false
+    ): string
     {
         $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $hash;
 
@@ -196,32 +167,36 @@ final class FileBackupService extends Service
     /**
      * Eliminar las copias de seguridad anteriores
      */
-    private function deleteOldBackups()
+    private function deleteOldBackups(): void
     {
         $path = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME;
 
-        array_map(function ($file) {
-            return @unlink($file);
-        }, array_merge(
-            glob($path . '_db-*'),
-            glob($path . '_app-*'),
-            glob($path . '*.sql')
-        ));
+        array_map(
+            static function ($file) {
+                return @unlink($file);
+            },
+            array_merge(
+                glob($path . '_db-*'),
+                glob($path . '_app-*'),
+                glob($path . '*.sql')
+            )
+        );
     }
 
     /**
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param FileHandler  $fileHandler
-     * @param string|array $tables
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws FileException
-     * @throws CheckException
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Storage\Database\DatabaseException
+     * @throws \SP\Storage\File\FileException
      */
-    private function backupTables(FileHandler $fileHandler, $tables = '*')
+    private function backupTables(
+        FileHandler $fileHandler,
+        string      $tables = '*'
+    ): void
     {
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this,
@@ -236,7 +211,7 @@ final class FileBackupService extends Service
         $queryData = new QueryData();
 
         if ($tables === '*') {
-            $resTables = DatabaseUtil::$tables;
+            $resTables = DatabaseUtil::TABLES;
         } else {
             $resTables = is_array($tables) ? $tables : explode(',', $tables);
         }
@@ -305,7 +280,7 @@ final class FileBackupService extends Service
 
             $numColumns = $queryRes->columnCount();
 
-            while ($row = $queryRes->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
+            while ($row = $queryRes->fetch(PDO::FETCH_NUM)) {
                 $fileHandler->write('INSERT INTO `' . $tableName . '` VALUES(');
 
                 $field = 1;
@@ -351,7 +326,6 @@ final class FileBackupService extends Service
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @return bool
      * @throws CheckException
      * @throws FileException
      */
@@ -372,14 +346,15 @@ final class FileBackupService extends Service
     /**
      * Realizar un backup de la aplicación y comprimirlo usando aplicaciones del SO Linux.
      *
-     * @return int Con el código de salida del comando ejecutado
      * @throws ServiceException
      */
-    private function backupAppLegacyLinux()
+    private function backupAppLegacyLinux(): int
     {
         if (Checks::checkIsWindows()) {
             throw new ServiceException(
-                __u('This operation is only available on Linux environments'), ServiceException::INFO);
+                __u('This operation is only available on Linux environments'),
+                SPException::INFO
+            );
         }
 
         $this->eventDispatcher->notifyEvent('run.backup.process',
@@ -387,15 +362,18 @@ final class FileBackupService extends Service
                 ->addDescription(__u('Copying application')))
         );
 
-        $command = 'tar czf ' . $this->backupFileApp . ArchiveHandler::COMPRESS_EXTENSION . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';
+        $command = sprintf(
+            'tar czf %s%s %s --exclude "%s" 2>&1',
+            $this->backupFileApp,
+            ArchiveHandler::COMPRESS_EXTENSION,
+            BASE_PATH,
+            $this->path
+        );
         exec($command, $resOut, $resBakApp);
 
         return $resBakApp;
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         return $this->hash;
@@ -405,7 +383,7 @@ final class FileBackupService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configData = $this->config->getConfigData();
         $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);

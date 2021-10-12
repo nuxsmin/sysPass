@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Context;
@@ -37,10 +37,10 @@ use SP\Services\User\UserLoginResponse;
  */
 final class SessionContext extends ContextBase
 {
-    const MAX_SID_TIME = 120;
+    public const MAX_SID_TIME = 120;
 
-    private static $isReset = false;
-    private static $isLocked = false;
+    private static bool $isReset = false;
+    private static bool $isLocked = false;
 
     /**
      * @return bool
@@ -53,7 +53,7 @@ final class SessionContext extends ContextBase
     /**
      * Closes session
      */
-    public static function close()
+    public static function close(): void
     {
         if (!self::$isLocked) {
             logger('Session closed');
@@ -67,7 +67,7 @@ final class SessionContext extends ContextBase
     /**
      * Destruir la sesión y reiniciar
      */
-    public static function restart()
+    public static function restart(): void
     {
         self::$isReset = true;
 
@@ -145,9 +145,9 @@ final class SessionContext extends ContextBase
      *
      * @param int $time
      */
-    public function setConfigTime(int $time)
+    public function setConfigTime(int $time): void
     {
-        $this->setContextKey('configTime', (int)$time);
+        $this->setContextKey('configTime', $time);
     }
 
     /**
@@ -165,7 +165,7 @@ final class SessionContext extends ContextBase
      *
      * @param UserLoginResponse|null $userLoginResponse
      */
-    public function setUserData(UserLoginResponse $userLoginResponse = null)
+    public function setUserData(UserLoginResponse $userLoginResponse = null): void
     {
         $this->setContextKey('userData', $userLoginResponse);
     }
@@ -185,7 +185,7 @@ final class SessionContext extends ContextBase
      *
      * @param ProfileData $ProfileData
      */
-    public function setUserProfile(ProfileData $ProfileData)
+    public function setUserProfile(ProfileData $ProfileData): void
     {
         $this->setContextKey('userProfile', $ProfileData);
     }
@@ -201,7 +201,7 @@ final class SessionContext extends ContextBase
     /**
      * @param AccountSearchFilter $searchFilters
      */
-    public function setSearchFilters(AccountSearchFilter $searchFilters)
+    public function setSearchFilters(AccountSearchFilter $searchFilters): void
     {
         $this->setContextKey('searchFilters', $searchFilters);
     }
@@ -237,7 +237,7 @@ final class SessionContext extends ContextBase
      *
      * @param $bool
      */
-    public function setAuthCompleted($bool)
+    public function setAuthCompleted($bool): void
     {
         $this->setContextKey('authCompleted', (bool)$bool);
     }
@@ -265,7 +265,7 @@ final class SessionContext extends ContextBase
      *
      * @param string $password
      */
-    public function setTemporaryMasterPass(string $password)
+    public function setTemporaryMasterPass(string $password): void
     {
         $this->setContextKey('tempmasterpass', $password);
     }
@@ -285,7 +285,7 @@ final class SessionContext extends ContextBase
      *
      * @param $key
      */
-    public function setPublicKey($key)
+    public function setPublicKey($key): void
     {
         $this->setContextKey('pubkey', $key);
     }
@@ -329,7 +329,7 @@ final class SessionContext extends ContextBase
      *
      * @param $time int La marca de hora
      */
-    public function setLastActivity(int $time)
+    public function setLastActivity(int $time): void
     {
         $this->setContextKey('lastActivity', $time);
     }
@@ -349,7 +349,7 @@ final class SessionContext extends ContextBase
      *
      * @param $locale
      */
-    public function setLocale($locale)
+    public function setLocale($locale): void
     {
         $this->setContextKey('locale', $locale);
     }
@@ -379,7 +379,7 @@ final class SessionContext extends ContextBase
      *
      * @param array $color
      */
-    public function setAccountColor(array $color)
+    public function setAccountColor(array $color): void
     {
         $this->setContextKey('accountcolor', $color);
     }
@@ -399,7 +399,7 @@ final class SessionContext extends ContextBase
      *
      * @param string $status
      */
-    public function setAppStatus(string $status)
+    public function setAppStatus(string $status): void
     {
         $this->setContextKey('status', $status);
     }
@@ -419,7 +419,7 @@ final class SessionContext extends ContextBase
      *
      * @param string $csrf
      */
-    public function setCSRF(string $csrf)
+    public function setCSRF(string $csrf): void
     {
         $this->setContextKey('csrf', $csrf);
     }
@@ -449,7 +449,7 @@ final class SessionContext extends ContextBase
      *
      * @param Vault $vault
      */
-    public function setVault(Vault $vault)
+    public function setVault(Vault $vault): void
     {
         $this->setContextKey('vault', $vault);
     }
@@ -459,7 +459,7 @@ final class SessionContext extends ContextBase
      *
      * @param array $accountsCache
      */
-    public function setAccountsCache(array $accountsCache)
+    public function setAccountsCache(array $accountsCache): void
     {
         $this->setContextKey('accountsCache', $accountsCache);
     }
@@ -477,7 +477,7 @@ final class SessionContext extends ContextBase
     /**
      * @throws ContextException
      */
-    public function initialize()
+    public function initialize(): void
     {
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {

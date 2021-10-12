@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Account;
@@ -31,7 +31,7 @@ use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Account
  */
-final class AccountFileRepository extends Repository implements RepositoryItemInterface
+final class AccountFileRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -50,11 +50,11 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param FileData $itemData
      *
-     * @return mixed
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountFile
@@ -87,21 +87,21 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param mixed $itemData
      *
-     * @return mixed
+     * @return void
      */
-    public function update($itemData)
+    public function update($itemData): void
     {
         throw new RuntimeException('Not implemented');
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getInfoById($id)
+    public function getInfoById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AF.name,
@@ -133,7 +133,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AF.id, 
@@ -168,7 +168,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByAccountId($id)
+    public function getByAccountId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -198,7 +198,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AF.id,
@@ -232,9 +232,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -265,13 +265,13 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $query = /** @lang SQL */
             'DELETE FROM AccountFile WHERE id = ? LIMIT 1';
@@ -293,9 +293,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -312,7 +312,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param $id int
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -322,7 +322,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -332,7 +332,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -342,11 +342,11 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(FileExtData::class);
@@ -366,7 +366,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
         INNER JOIN Client ON Account.clientId = Client.id');
         $queryData->setOrder('Account.name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere(
                 'AccountFile.name LIKE ? 
             OR AccountFile.type LIKE ? 

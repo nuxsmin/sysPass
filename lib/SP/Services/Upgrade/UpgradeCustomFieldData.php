@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
@@ -41,19 +41,17 @@ use SP\Storage\Database\QueryData;
  */
 final class UpgradeCustomFieldData extends Service
 {
-    /**
-     * @var Database
-     */
-    private $db;
+    private ?Database $db = null;
 
     /**
      * upgrade_300_18072902
      *
      * @throws Exception
      */
-    public function upgrade_300_18072902()
+    public function upgrade_300_18072902(): void
     {
-        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
@@ -70,7 +68,8 @@ final class UpgradeCustomFieldData extends Service
 
                     $this->db->doQuery($queryData);
 
-                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
+                    $this->eventDispatcher->notifyEvent(
+                        'upgrade.customField.process',
                         new Event($this, EventMessage::factory()
                             ->addDescription(__u('Field updated')))
                     );
@@ -79,24 +78,23 @@ final class UpgradeCustomFieldData extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.customField.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
     }
 
-    /**
-     * @param int $moduleId
-     *
-     * @return int
-     */
-    private function moduleMapper(int $moduleId)
+    private function moduleMapper(int $moduleId): int
     {
         switch ($moduleId) {
             case 10:
@@ -114,7 +112,7 @@ final class UpgradeCustomFieldData extends Service
         return $moduleId;
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->db = $this->dic->get(Database::class);
     }

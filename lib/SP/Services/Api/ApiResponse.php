@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Api;
@@ -31,25 +31,13 @@ namespace SP\Services\Api;
  */
 final class ApiResponse
 {
-    const RESULT_SUCCESS = 0;
-    const RESULT_ERROR = 1;
+    private const RESULT_SUCCESS = 0;
+    private const RESULT_ERROR = 1;
 
-    /**
-     * @var mixed
-     */
     private $result;
-    /**
-     * @var int
-     */
-    private $resultCode;
-    /**
-     * @var int
-     */
-    private $itemId;
-    /**
-     * @var string
-     */
-    private $resultMessage;
+    private ?int $resultCode = null;
+    private int $itemId;
+    private ?string $resultMessage = null;
 
     /**
      * ApiResponse constructor.
@@ -65,12 +53,16 @@ final class ApiResponse
 
     /**
      * @param mixed       $result
-     * @param int         $itemId
+     * @param int|null    $itemId
      * @param string|null $message
      *
      * @return ApiResponse
      */
-    public static function makeSuccess($result, int $itemId = null, string $message = null)
+    public static function makeSuccess(
+        $result,
+        ?int $itemId = null,
+        string $message = null
+    ): ApiResponse
     {
         $out = new self($result, $itemId);
         $out->resultCode = self::RESULT_SUCCESS;
@@ -85,7 +77,10 @@ final class ApiResponse
      *
      * @return ApiResponse
      */
-    public static function makeError($result, string $message = null)
+    public static function makeError(
+        $result,
+        ?string $message = null
+    ): ApiResponse
     {
         $out = new self($result);
         $out->resultCode = self::RESULT_ERROR;
@@ -97,7 +92,7 @@ final class ApiResponse
     /**
      * @return array
      */
-    public function getResponse()
+    public function getResponse(): array
     {
         return [
             'itemId' => $this->itemId,

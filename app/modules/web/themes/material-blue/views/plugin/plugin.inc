@@ -1,14 +1,13 @@
 <?php
 /**
- * @var  PluginModel     $plugin
- * @var  PluginInterface $pluginInfo
- * @var ThemeIcons       $icons
- * @var ConfigData       $configData
- * @var callable         $_getvar
- * @var Template         $this
+ * @var  PluginModel                   $plugin
+ * @var  PluginInterface               $pluginInfo
+ * @var ThemeIcons                     $icons
+ * @var \SP\Config\ConfigDataInterface $configData
+ * @var callable                       $_getvar
+ * @var Template                       $this
  */
 
-use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\Mvc\View\Template;
 use SP\Plugin\PluginInterface;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -39,7 +39,7 @@ final class PhpExtensionChecker
      * true  -> required
      * false -> not required
      */
-    const EXTENSIONS = [
+    public const EXTENSIONS = [
         'ldap' => false,
         'curl' => false,
         'simplexml' => false,
@@ -60,14 +60,12 @@ final class PhpExtensionChecker
         'fileinfo' => true
     ];
 
-    const MSG_NOT_AVAILABLE = 'Oops, it seems that some extensions are not available: \'%s\'';
+    public const MSG_NOT_AVAILABLE = 'Oops, it seems that some extensions are not available: \'%s\'';
 
     /**
      * Available extensions
-     *
-     * @var array
      */
-    private $available;
+    private ?array $available = null;
 
     /**
      * PhpExtensionChecker constructor.
@@ -80,17 +78,17 @@ final class PhpExtensionChecker
     /**
      * Check for available extensions
      */
-    public function checkExtensions()
+    public function checkExtensions(): void
     {
-        $this->available = array_intersect(array_keys(self::EXTENSIONS), array_map('strtolower', get_loaded_extensions()));
+        $this->available = array_intersect(
+            array_keys(self::EXTENSIONS),
+            array_map('strtolower', get_loaded_extensions())
+        );
     }
 
     /**
      * Checks if the extension is installed
      *
-     * @param bool $exception
-     *
-     * @return bool
      * @throws CheckException
      */
     public function checkCurlAvailable(bool $exception = false): bool
@@ -105,11 +103,14 @@ final class PhpExtensionChecker
      * @param bool   $exception Throws an exception if the extension is not available
      *
      * @return bool
-     * @throws CheckException
+     * @throws \SP\Core\Exceptions\CheckException
      */
-    public function checkIsAvailable(string $extension, bool $exception = false): bool
+    public function checkIsAvailable(
+        string $extension,
+        bool   $exception = false
+    ): bool
     {
-        $result = in_array(strtolower($extension), $this->available);
+        $result = in_array(strtolower($extension), $this->available, true);
 
         if (!$result && $exception) {
             throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, $extension));
@@ -253,9 +254,13 @@ final class PhpExtensionChecker
      */
     public function checkMandatory()
     {
-        $missing = array_filter(self::EXTENSIONS, function ($v, $k) {
-            return $v === true && !in_array($k, $this->available);
-        }, ARRAY_FILTER_USE_BOTH);
+        $missing = array_filter(
+            self::EXTENSIONS,
+            function ($v, $k) {
+                return $v === true && !in_array($k, $this->available, true);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
 
         if (count($missing) > 0) {
             throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, implode(',', array_keys($missing))));
@@ -266,13 +271,15 @@ final class PhpExtensionChecker
 
     /**
      * Returns missing extensions
-     *
-     * @return array
      */
     public function getMissing(): array
     {
-        return array_filter(self::EXTENSIONS, function ($k) {
-            return !in_array($k, $this->available);
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            self::EXTENSIONS,
+            function ($k) {
+                return !in_array($k, $this->available, true);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }

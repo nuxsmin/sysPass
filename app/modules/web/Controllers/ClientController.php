@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -29,6 +29,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -58,10 +59,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var ClientService
-     */
-    protected $clientService;
+    protected ?ClientService $clientService = null;
 
     /**
      * Search action
@@ -72,15 +70,22 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
+     * @throws \JsonException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::CLIENT_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -96,23 +101,33 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $clientGrid = $this->dic->get(ClientGrid::class);
 
-        return $clientGrid->updatePager($clientGrid->getGrid($this->clientService->search($itemSearchData)), $itemSearchData);
+        return $clientGrid->updatePager(
+            $clientGrid->getGrid($this->clientService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Client'));
@@ -121,13 +136,19 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.client.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.client.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -146,15 +167,20 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $clientId = null)
+    protected function setViewData(?int $clientId = null): void
     {
         $this->view->addTemplate('client', 'itemshow');
 
-        $client = $clientId ? $this->clientService->getById($clientId) : new ClientData();
+        $client = $clientId
+            ? $this->clientService->getById($clientId)
+            : new ClientData();
 
         $this->view->assign('client', $client);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -164,8 +190,14 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->view->assign('readonly', false);
         }
 
-        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CLIENT, $clientId));
+        $this->view->assign(
+            'showViewCustomPass',
+            $this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW_PASS)
+        );
+        $this->view->assign(
+            'customFields',
+            $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $clientId)
+        );
     }
 
     /**
@@ -174,14 +206,18 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Client'));
@@ -190,13 +226,19 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.client.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.client.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -210,41 +252,63 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->clientService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->clientService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::CLIENT, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
-                $this->eventDispatcher->notifyEvent('delete.client.selection',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Clients deleted')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.client.selection',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Clients deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clients deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Clients deleted')
+                );
             }
             $this->clientService->delete($id);
 
-            $this->deleteCustomFieldsForItem(Acl::CLIENT, $id);
+            $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.client',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Client deleted'))
-                    ->addDetail(__u('Client'), $id))
+            $this->eventDispatcher->notifyEvent(
+                'delete.client',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Client deleted'))
+                        ->addDetail(__u('Client'), $id)
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client deleted'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Client deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -254,37 +318,54 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new ClientForm($this->dic);
-            $form->validate(Acl::CLIENT_CREATE);
+            $form->validate(ActionsInterface::CLIENT_CREATE);
 
             $itemData = $form->getItemData();
 
             $id = $this->clientService->create($itemData);
 
-            $this->eventDispatcher->notifyEvent('create.client',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'create.client',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Client added'))
-                        ->addDetail(__u('Client'), $itemData->getName()))
+                        ->addDetail(__u('Client'), $itemData->getName())
+                )
             );
 
-            $this->addCustomFieldsForItem(Acl::CLIENT, $id, $this->request);
+            $this->addCustomFieldsForItem(
+                ActionsInterface::CLIENT,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client added'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Client added')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -298,35 +379,52 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new ClientForm($this->dic, $id);
-            $form->validate(Acl::CLIENT_EDIT);
+            $form->validate(ActionsInterface::CLIENT_EDIT);
 
             $this->clientService->update($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('edit.client',
-                new Event($this,
+            $this->eventDispatcher->notifyEvent(
+                'edit.client',
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('Client updated'))
-                        ->addDetail(__u('Client'), $id))
+                        ->addDetail(__u('Client'), $id)
+                )
             );
 
-            $this->updateCustomFieldsForItem(Acl::CLIENT, $id, $this->request);
+            $this->updateCustomFieldsForItem(
+                ActionsInterface::CLIENT,
+                $id,
+                $this->request
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Client updated')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -340,12 +438,16 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::CLIENT_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Client'));
@@ -353,13 +455,19 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.client', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.client',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -373,7 +481,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

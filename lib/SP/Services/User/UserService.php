@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -52,21 +52,12 @@ final class UserService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
-    /**
-     * @var UserPassService
-     */
-    protected $userPassService;
+    protected ?UserRepository $userRepository = null;
+    protected ?UserPassService $userPassService = null;
 
-    /**
-     * @param UserData $userData
-     *
-     * @return UserLoginResponse
-     */
-    public static function mapUserLoginResponse(UserData $userData)
+    public static function mapUserLoginResponse(
+        UserData $userData
+    ): UserLoginResponse
     {
         return (new UserLoginResponse())->setId($userData->getId())
             ->setName($userData->getName())
@@ -94,15 +85,17 @@ final class UserService extends Service
 
     /**
      * Returns user's preferences object
-     *
-     * @param string $preferences
-     *
-     * @return UserPreferencesData
      */
-    public static function getUserPreferences($preferences)
+    public static function getUserPreferences(
+        ?string $preferences
+    ): UserPreferencesData
     {
         if (!empty($preferences)) {
-            return Util::unserialize(UserPreferencesData::class, $preferences, 'SP\UserPreferences');
+            return Util::unserialize(
+                UserPreferencesData::class,
+                $preferences,
+                'SP\UserPreferences'
+            );
         }
 
         return new UserPreferencesData();
@@ -111,14 +104,11 @@ final class UserService extends Service
     /**
      * Actualiza el último inicio de sesión del usuario en la BBDD.
      *
-     * @param $id int El id del usuario
-     *
-     * @return int
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function updateLastLoginById($id)
+    public function updateLastLoginById(int $id): int
     {
         $result = $this->userRepository->updateLastLoginById($id);
 
@@ -130,13 +120,10 @@ final class UserService extends Service
     }
 
     /**
-     * @param $login
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function checkExistsByLogin($login)
+    public function checkExistsByLogin(string $login): bool
     {
         return $this->userRepository->checkExistsByLogin($login);
     }
@@ -144,12 +131,9 @@ final class UserService extends Service
     /**
      * Returns the item for given id
      *
-     * @param int $id
-     *
-     * @return UserData
      * @throws SPException
      */
-    public function getById($id)
+    public function getById(int $id): UserData
     {
         $result = $this->userRepository->getById($id);
 
@@ -163,12 +147,11 @@ final class UserService extends Service
     /**
      * Returns the item for given id
      *
-     * @param $login
-     *
-     * @return UserData
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getByLogin($login)
+    public function getByLogin(string $login): UserData
     {
         $result = $this->userRepository->getByLogin($login);
 
@@ -182,34 +165,38 @@ final class UserService extends Service
     /**
      * Deletes an item
      *
-     * @param $id
-     *
-     * @return UserService
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function delete($id)
+    public function delete(int $id): UserService
     {
         if ($this->userRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('User not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('User not found'),
+                SPException::INFO
+            );
         }
 
         return $this;
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return int
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (($count = $this->userRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the users'), ServiceException::WARNING);
+        $count = $this->userRepository->deleteByIdBatch($ids);
+
+        if ($count !== count($ids)) {
+            throw new ServiceException(
+                __u('Error while deleting the users'),
+                SPException::WARNING
+            );
         }
 
         return $count;
@@ -218,23 +205,20 @@ final class UserService extends Service
     /**
      * Creates an item
      *
-     * @param UserLoginRequest $userLoginRequest
-     *
-     * @return int
      * @throws SPException
      */
-    public function createOnLogin(UserLoginRequest $userLoginRequest)
+    public function createOnLogin(UserLoginRequest $userLoginRequest): int
     {
         $userData = new UserData();
         $userData->setLogin($userLoginRequest->getLogin());
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
-        $userData->setIsLdap($userLoginRequest->getisLdap());
+        $userData->setIsLdap($userLoginRequest->getisLdap() ?? false);
         $userData->setPass($userLoginRequest->getPassword());
 
         $configData = $this->config->getConfigData();
 
-        if ($userLoginRequest->getisLdap() === 1) {
+        if ($userLoginRequest->getisLdap() === true) {
             $userData->setUserGroupId($configData->getLdapDefaultGroup());
             $userData->setUserProfileId($configData->getLdapDefaultProfile());
         } else {
@@ -248,12 +232,9 @@ final class UserService extends Service
     /**
      * Creates an item
      *
-     * @param UserData $itemData
-     *
-     * @return int
      * @throws SPException
      */
-    public function create(UserData $itemData)
+    public function create(UserData $itemData): int
     {
         $itemData->setPass(Hash::hashKey($itemData->getPass()));
 
@@ -263,17 +244,20 @@ final class UserService extends Service
     /**
      * Creates an item
      *
-     * @param UserData $itemData
-     * @param string   $userPass
-     * @param string   $masterPass
-     *
-     * @return int
      * @throws SPException
      * @throws CryptoException
      */
-    public function createWithMasterPass(UserData $itemData, $userPass, $masterPass)
+    public function createWithMasterPass(
+        UserData $itemData,
+        string   $userPass,
+        string   $masterPass
+    ): int
     {
-        $response = $this->userPassService->createMasterPass($masterPass, $itemData->getLogin(), $userPass);
+        $response = $this->userPassService->createMasterPass(
+            $masterPass,
+            $itemData->getLogin(),
+            $userPass
+        );
 
         $itemData->setMPass($response->getCryptMasterPass());
         $itemData->setMKey($response->getCryptSecuredKey());
@@ -286,76 +270,74 @@ final class UserService extends Service
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
-     *
-     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $searchData): QueryResult
     {
-        return $this->userRepository->search($SearchData);
+        return $this->userRepository->search($searchData);
     }
 
     /**
      * Updates an item
-     *
-     * @param UserData $itemData
      *
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update($itemData)
+    public function update(UserData $userData): void
     {
-        if ($this->userRepository->update($itemData) === 0) {
+        $update = $this->userRepository->update($userData);
+
+        if ($update === 0) {
             throw new ServiceException(__u('Error while updating the user'));
         }
     }
 
     /**
-     * Updates an user's pass
-     *
-     * @param int    $userId
-     * @param string $pass
+     * Updates a user's pass
      *
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function updatePass($userId, $pass)
+    public function updatePass(int $userId, string $pass): void
     {
         $passRequest = new UpdatePassRequest(Hash::hashKey($pass));
-        $passRequest->setIsChangePass(0);
-        $passRequest->setIsChangedPass(1);
+        $passRequest->setIsChangePass(false);
+        $passRequest->setIsChangedPass(true);
 
-        if ($this->userRepository->updatePassById($userId, $passRequest) === 0) {
+        $updatePassById = $this->userRepository->updatePassById(
+            $userId,
+            $passRequest
+        );
+
+        if ($updatePassById === 0) {
             throw new ServiceException(__u('Error while updating the password'));
         }
     }
 
     /**
-     * @param                     $userId
-     * @param UserPreferencesData $userPreferencesData
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updatePreferencesById($userId, UserPreferencesData $userPreferencesData)
+    public function updatePreferencesById(
+        int                 $userId,
+        UserPreferencesData $userPreferencesData
+    ): int
     {
-        return $this->userRepository->updatePreferencesById($userId, $userPreferencesData);
+        return $this->userRepository->updatePreferencesById(
+            $userId,
+            $userPreferencesData
+        );
     }
 
     /**
-     * @param UserLoginRequest $userLoginRequest
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateOnLogin(UserLoginRequest $userLoginRequest)
+    public function updateOnLogin(UserLoginRequest $userLoginRequest): int
     {
         $userData = new UserData();
         $userData->setLogin($userLoginRequest->getLogin());
@@ -374,74 +356,76 @@ final class UserService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
-        return $this->userRepository->getBasicInfo()->getDataAsArray();
+        return $this->userRepository
+            ->getBasicInfo()
+            ->getDataAsArray();
     }
 
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @param $groupId
-     *
-     * @return array
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getUserEmailForGroup($groupId)
+    public function getUserEmailForGroup(int $groupId): array
     {
-        return $this->userRepository->getUserEmailForGroup($groupId)->getDataAsArray();
+        return $this->userRepository
+            ->getUserEmailForGroup($groupId)
+            ->getDataAsArray();
     }
 
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      *
      * @TODO create unit test
      */
-    public function getUserEmailForAll()
+    public function getUserEmailForAll(): array
     {
-        return $this->userRepository->getUserEmail()->getDataAsArray();
+        return $this->userRepository
+            ->getUserEmail()
+            ->getDataAsArray();
     }
 
 
     /**
      * Return the email of the given user's id
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      * @TODO create unit test
      */
-    public function getUserEmailById(array $ids)
+    public function getUserEmailById(array $ids): array
     {
-        return $this->userRepository->getUserEmailById($ids)->getDataAsArray();
+        return $this->userRepository
+            ->getUserEmailById($ids)
+            ->getDataAsArray();
     }
 
     /**
      * Returns the usage of the given user's id
      *
-     * @param int $id
-     *
-     * @return array
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageForUser($id)
+    public function getUsageForUser(int $id): array
     {
-        return $this->userRepository->getUsageForUser($id)->getDataAsArray();
+        return $this->userRepository
+            ->getUsageForUser($id)
+            ->getDataAsArray();
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->userRepository = $this->dic->get(UserRepository::class);
         $this->userPassService = $this->dic->get(UserPassService::class);

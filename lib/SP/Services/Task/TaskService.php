@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Task;
@@ -41,41 +41,25 @@ final class TaskService extends Service
     /**
      * Time for waiting to initialization
      */
-    const STARTUP_WAIT_TIME = 5;
+    private const STARTUP_WAIT_TIME = 5;
     /**
      * Initialization attempts
      */
-    const STARTUP_WAIT_COUNT = 30;
-    /**
-     * @var Closure
-     */
-    private $messagePusher;
-    /**
-     * @var Task
-     */
-    private $task;
-    /**
-     * @var string
-     */
-    private $taskDirectory;
-    /**
-     * @var string
-     */
-    private $taskId;
-    /**
-     * @var FileHandler
-     */
-    private $taskFile;
+    private const STARTUP_WAIT_COUNT = 30;
+
+    private ?Closure $messagePusher = null;
+    private ?Task $task = null;
+    private ?string $taskDirectory = null;
+    private ?string $taskId = null;
+    private ?FileHandler $taskFile = null;
 
     /**
      * Track task status
      *
-     * @param string  $taskId
-     * @param Closure $messagePusher
-     *
-     * @throws ServiceException
+     * @throws \JsonException
+     * @throws \SP\Services\ServiceException
      */
-    public function trackStatus($taskId, Closure $messagePusher)
+    public function trackStatus(string $taskId, Closure $messagePusher): void
     {
         $this->taskId = $taskId;
         $this->taskDirectory = Util::getTempDir();
@@ -109,12 +93,15 @@ final class TaskService extends Service
 
     /**
      * Get a lock for task execution
-     *
-     * @return bool
      */
-    private function getLock()
+    private function getLock(): bool
     {
-        $lockFile = new FileHandler($this->taskDirectory . DIRECTORY_SEPARATOR . $this->taskId . '.lock');
+        $lockFile = new FileHandler(
+            $this->taskDirectory .
+            DIRECTORY_SEPARATOR .
+            $this->taskId .
+            '.lock'
+        );
 
         try {
             if ($lockFile->getFileTime() + (self::STARTUP_WAIT_COUNT * self::STARTUP_WAIT_TIME) < time()) {
@@ -137,10 +124,8 @@ final class TaskService extends Service
 
     /**
      * Check whether the task's file has been registered
-     *
-     * @return bool
      */
-    private function checkTaskRegistered()
+    private function checkTaskRegistered(): bool
     {
         if (is_object($this->task)) {
             logger('Task detected: ' . $this->task->getTaskId());
@@ -149,7 +134,12 @@ final class TaskService extends Service
         }
 
         try {
-            $this->taskFile = new FileHandler($this->taskDirectory . DIRECTORY_SEPARATOR . $this->taskId . '.task');
+            $this->taskFile = new FileHandler(
+                $this->taskDirectory .
+                DIRECTORY_SEPARATOR .
+                $this->taskId .
+                '.task'
+            );
             $this->taskFile->checkFileExists();
             $this->task = unserialize($this->taskFile->readToString());
 
@@ -161,8 +151,10 @@ final class TaskService extends Service
 
     /**
      * Read a task status and send it back to the browser (messagePusher)
+     *
+     * @throws \JsonException
      */
-    private function readTaskStatus()
+    private function readTaskStatus(): void
     {
         logger('Tracking task status: ' . $this->task->getTaskId());
 
@@ -180,7 +172,10 @@ final class TaskService extends Service
                     $this->messagePusher->call($this, $id, $content);
                     $id++;
                 } else {
-                    $message = TaskFactory::createMessage($this->task->getTaskId(), __('Waiting for progress updating ...'));
+                    $message = TaskFactory::createMessage(
+                        $this->task->getTaskId(),
+                        __('Waiting for progress updating ...')
+                    );
 
                     logger($message->getTask());
 
@@ -198,8 +193,10 @@ final class TaskService extends Service
                 $this->messagePusher->call(
                     $this,
                     $id,
-                    TaskFactory::createMessage($this->task->getTaskId(), $e->getMessage())
-                        ->composeJson()
+                    TaskFactory::createMessage(
+                        $this->task->getTaskId(),
+                        $e->getMessage()
+                    )->composeJson()
                 );
 
                 $failCount++;
@@ -212,7 +209,7 @@ final class TaskService extends Service
     /**
      *  Check whether the task's output file exists
      */
-    private function checkTaskFile()
+    private function checkTaskFile(): bool
     {
         try {
             $this->taskFile->checkFileExists();

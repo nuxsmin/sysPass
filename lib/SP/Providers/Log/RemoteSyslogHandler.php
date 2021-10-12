@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\InvalidClassException;
 use SplSubject;
@@ -73,18 +71,15 @@ final class RemoteSyslogHandler extends LoggerBase
      * @throws InvalidClassException
      * @since 5.1.0
      */
-    public function update(SplSubject $subject)
+    public function update(SplSubject $subject): void
     {
         $this->updateEvent('update', new Event($subject));
     }
 
     /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         parent::initialize($dic);
 
@@ -101,6 +96,4 @@ final class RemoteSyslogHandler extends LoggerBase
             )
         );
     }
-
-
 }

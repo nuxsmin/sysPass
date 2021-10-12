@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage\File;
@@ -32,27 +32,14 @@ namespace SP\Storage\File;
  */
 abstract class FileCacheBase implements FileCacheInterface
 {
-    /**
-     * @var FileHandler
-     */
-    protected $path;
+    protected FileHandler $path;
 
-    /**
-     * FileCacheBase constructor.
-     *
-     * @param string $path
-     */
     public function __construct(string $path)
     {
         $this->path = new FileHandler($path);
     }
 
-    /**
-     * @param $path
-     *
-     * @return FileCacheBase
-     */
-    public static function factory($path): FileCacheBase
+    public static function factory(string $path): FileCacheBase
     {
         return new static($path);
     }
@@ -60,12 +47,9 @@ abstract class FileCacheBase implements FileCacheInterface
     /**
      * Returns if the file is expired adding time to modification date
      *
-     * @param int $time
-     *
-     * @return bool
      * @throws FileException
      */
-    public function isExpired($time = 86400): bool
+    public function isExpired(int $time = 86400): bool
     {
         $this->path->checkFileExists();
 
@@ -75,32 +59,32 @@ abstract class FileCacheBase implements FileCacheInterface
     /**
      * Returns if the file is expired adding time to modification date
      *
-     * @param int $date
-     *
-     * @return bool
      * @throws FileException
      */
     public function isExpiredDate(int $date): bool
     {
         $this->path->checkFileExists();
 
-        return (int)$date > $this->path->getFileTime();
+        return $date > $this->path->getFileTime();
     }
 
     /**
      * @throws FileException
      */
-    public function createPath()
+    public function createPath(): void
     {
         $path = dirname($this->path->getFile());
 
-        if (!is_dir($path) && mkdir($path, 0700, true) === false) {
-            throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
+        if (!is_dir($path)
+            && !mkdir($path, 0700, true)
+            && !is_dir($path)) {
+            throw new FileException(
+                sprintf(__('Unable to create the directory (%s)'), $path)
+            );
         }
     }
 
     /**
-     * @return FileCacheInterface
      * @throws FileException
      */
     public function delete(): FileCacheInterface
@@ -110,9 +94,6 @@ abstract class FileCacheBase implements FileCacheInterface
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function exists(): bool
     {
         return file_exists($this->path->getFile());

@@ -91,11 +91,8 @@ class TrackServiceTest extends DatabaseTestCase
      */
     public function testAdd()
     {
-        $data = new TrackRequest();
+        $data = new TrackRequest(time(), __METHOD__, 1);
         $data->setTrackIp('192.168.0.1');
-        $data->userId = 1;
-        $data->time = time();
-        $data->source = __METHOD__;
 
         $this->assertEquals(7, self::$service->add($data));
 
@@ -116,10 +113,7 @@ class TrackServiceTest extends DatabaseTestCase
      */
     public function testAddNoAddress()
     {
-        $data = new TrackRequest();
-        $data->userId = 1;
-        $data->time = time();
-        $data->source = __METHOD__;
+        $data = new TrackRequest(time(), __METHOD__, 1);
 
         $this->expectException(ServiceException::class);
 
@@ -189,10 +183,8 @@ class TrackServiceTest extends DatabaseTestCase
      */
     public function testGetTracksForClientFromTime()
     {
-        $data = new TrackRequest();
+        $data = new TrackRequest(1529272367, 'login');
         $data->setTrackIp('172.22.0.1');
-        $data->time = 1529272367;
-        $data->source = 'login';
 
         $this->assertEquals(3, self::$service->getTracksForClientFromTime($data));
 

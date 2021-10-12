@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Upgrade;
@@ -42,70 +42,79 @@ use SP\Util\Util;
  */
 final class UpgradePublicLink extends Service
 {
-    /**
-     * @var Database
-     */
-    private $db;
+    private ?Database $db = null;
 
     /**
      * upgrade_300_18010101
      */
-    public function upgrade_300_18010101()
+    public function upgrade_300_18010101(): void
     {
-        $this->eventDispatcher->notifyEvent('upgrade.publicLink.start',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.publicLink.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Public links update'))
                 ->addDescription(__FUNCTION__))
         );
 
         try {
-            $this->transactionAware(function () {
-                $publicLinkService = $this->dic->get(PublicLinkService::class);
+            $this->transactionAware(
+                function () {
+                    $publicLinkService = $this->dic->get(PublicLinkService::class);
 
-                $queryData = new QueryData();
-                $queryData->setQuery('SELECT id, `data` FROM PublicLink');
+                    $queryData = new QueryData();
+                    $queryData->setQuery('SELECT id, `data` FROM PublicLink');
 
-                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
-                    /** @var PublickLinkOldData $data */
-                    $data = Util::unserialize(PublickLinkOldData::class, $item->data, 'SP\DataModel\PublicLinkData');
+                    foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                        /** @var PublickLinkOldData $data */
+                        $data = Util::unserialize(
+                            PublickLinkOldData::class,
+                            $item->data,
+                            PublicLinkData::class
+                        );
 
-                    $itemData = new PublicLinkData();
-                    $itemData->setId($item->id);
-                    $itemData->setItemId($data->getItemId());
-                    $itemData->setHash($data->getLinkHash());
-                    $itemData->setUserId($data->getUserId());
-                    $itemData->setTypeId($data->getTypeId());
-                    $itemData->setNotify($data->isNotify());
-                    $itemData->setDateAdd($data->getDateAdd());
-                    $itemData->setDateExpire($data->getDateExpire());
-                    $itemData->setCountViews($data->getCountViews());
-                    $itemData->setMaxCountViews($data->getCountViews());
-                    $itemData->setUseInfo($data->getUseInfo());
-                    $itemData->setData($data->getData());
+                        $itemData = new PublicLinkData();
+                        $itemData->setId($item->id);
+                        $itemData->setItemId($data->getItemId());
+                        $itemData->setHash($data->getLinkHash());
+                        $itemData->setUserId($data->getUserId());
+                        $itemData->setTypeId($data->getTypeId());
+                        $itemData->setNotify($data->isNotify());
+                        $itemData->setDateAdd($data->getDateAdd());
+                        $itemData->setDateExpire($data->getDateExpire());
+                        $itemData->setCountViews($data->getCountViews());
+                        $itemData->setMaxCountViews($data->getCountViews());
+                        $itemData->setUseInfo($data->getUseInfo());
+                        $itemData->setData($data->getData());
 
-                    $publicLinkService->update($itemData);
+                        $publicLinkService->update($itemData);
 
-                    $this->eventDispatcher->notifyEvent('upgrade.publicLink.process',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Link updated'))
-                            ->addDetail(__u('Link'), $item->id))
-                    );
+                        $this->eventDispatcher->notifyEvent(
+                            'upgrade.publicLink.process',
+                            new Event($this, EventMessage::factory()
+                                ->addDescription(__u('Link updated'))
+                                ->addDetail(__u('Link'), $item->id))
+                        );
+                    }
                 }
-            });
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.publicLink.end',
+        $this->eventDispatcher->notifyEvent(
+            'upgrade.publicLink.end',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Public links update'))
                 ->addDescription(__FUNCTION__))
         );
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->db = $this->dic->get(Database::class);
     }

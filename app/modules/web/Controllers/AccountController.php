@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -33,7 +33,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextBase;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -80,34 +80,34 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var AccountService
-     */
-    protected $accountService;
-    /**
-     * @var ThemeIcons
-     */
-    protected $icons;
+    protected ?AccountService $accountService = null;
+    protected ?ThemeIcons $icons = null;
 
     /**
      * Index action
      *
      * @throws ContainerExceptionInterface
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         try {
             $accountSearchHelper = $this->dic->get(AccountSearchHelper::class);
             $accountSearchHelper->getSearchBox();
             $accountSearchHelper->getAccountSearch();
 
-            $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.search',
+                new Event($this)
+            );
 
             $this->view();
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             ErrorUtil::showExceptionInView($this->view, $e);
         }
@@ -117,14 +117,18 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function searchAction()
+    public function searchAction(): ?bool
     {
         try {
             $accountSearchHelper = $this->dic->get(AccountSearchHelper::class);
             $accountSearchHelper->getAccountSearch();
 
-            $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.search',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData([
                 'html' => $this->render()
@@ -132,7 +136,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -146,7 +153,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): void
     {
         try {
             $this->view->addTemplate('account');
@@ -159,7 +166,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
-            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_VIEW);
+            $accountHelper->setViewForAccount(
+                $accountDetailsResponse,
+                ActionsInterface::ACCOUNT_VIEW
+            );
 
             $this->view->assign('title',
                 [
@@ -171,7 +181,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->accountService->incrementViewCounter($id);
 
-            $this->eventDispatcher->notifyEvent('show.account', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -181,7 +194,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -201,7 +217,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewLinkAction(string $hash)
+    public function viewLinkAction(string $hash): void
     {
         try {
             $layoutHelper = $this->dic->get(LayoutHelper::class);
@@ -219,10 +235,16 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->accountService->incrementDecryptCounter($publicLinkData->getItemId());
 
                 /** @var Vault $vault */
-                $vault = unserialize($publicLinkData->getData());
+                $vault = unserialize(
+                    $publicLinkData->getData(),
+                    ['allowed_classes' => [Vault::class]]
+                );
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(AccountExtData::class, $vault->getData($publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey()));
+                $accountData = Util::unserialize(
+                    AccountExtData::class,
+                    $vault->getData($publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey())
+                );
 
                 $this->view->assign('title',
                     [
@@ -233,25 +255,36 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 );
 
                 $this->view->assign('isView', true);
-                $this->view->assign('useImage', $this->configData->isPublinksImageEnabled() || $this->configData->isAccountPassToImage());
+                $this->view->assign('useImage',
+                    $this->configData->isPublinksImageEnabled()
+                    || $this->configData->isAccountPassToImage());
 
                 if ($this->view->useImage) {
                     $imageUtil = $this->dic->get(ImageUtil::class);
-                    $this->view->assign('accountPassImage', $imageUtil->convertText($accountData->getPass()));
+                    $this->view->assign(
+                        'accountPassImage',
+                        $imageUtil->convertText($accountData->getPass())
+                    );
                 } else {
-                    $this->view->assign('copyPassRoute', Acl::getActionRoute(Acl::ACCOUNT_VIEW_PASS));
+                    $this->view->assign(
+                        'copyPassRoute',
+                        Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS)
+                    );
                 }
 
                 $this->view->assign('accountData', $accountData);
 
-                $clientAddress = $this->configData->isDemoEnabled() ? '***' : $this->request->getClientAddress(true);
+                $clientAddress = $this->configData->isDemoEnabled()
+                    ? '***'
+                    : $this->request->getClientAddress(true);
 
                 $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
                 $deepLink = new Uri($baseUrl);
                 $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId());
 
-                $this->eventDispatcher->notifyEvent('show.account.link',
+                $this->eventDispatcher->notifyEvent(
+                    'show.account.link',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Link viewed'))
                         ->addDetail(__u('Account'), $accountData->getName())
@@ -264,14 +297,22 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                         ->addExtra('notify', $publicLinkData->isNotify()))
                 );
             } else {
-                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, true, 'account-link');
+                ErrorUtil::showErrorInView(
+                    $this->view,
+                    ErrorUtil::ERR_PAGE_NO_PERMISSION,
+                    true,
+                    'account-link'
+                );
             }
 
             $this->view();
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account-link');
         }
@@ -280,11 +321,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Create action
      */
-    public function createAction()
+    public function createAction(): void
     {
         try {
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForBlank(Acl::ACCOUNT_CREATE);
+            $accountHelper->setViewForBlank(ActionsInterface::ACCOUNT_CREATE);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -296,7 +337,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
             $this->view->assign('formRoute', 'account/saveCreate');
 
-            $this->eventDispatcher->notifyEvent('show.account.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.create',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -324,7 +368,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function copyAction(int $id)
+    public function copyAction(int $id): void
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -334,7 +378,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->withTagsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_COPY);
+            $accountHelper->setViewForAccount(
+                $accountDetailsResponse,
+                ActionsInterface::ACCOUNT_COPY
+            );
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -346,7 +393,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
             $this->view->assign('formRoute', 'account/saveCopy');
 
-            $this->eventDispatcher->notifyEvent('show.account.copy', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.copy',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -356,7 +406,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -376,7 +429,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function editAction(int $id)
+    public function editAction(int $id): void
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -386,7 +439,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->withTagsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_EDIT);
+            $accountHelper->setViewForAccount(
+                $accountDetailsResponse,
+                ActionsInterface::ACCOUNT_EDIT
+            );
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -400,7 +456,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->accountService->incrementViewCounter($id);
 
-            $this->eventDispatcher->notifyEvent('show.account.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.edit',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -410,7 +469,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -428,7 +490,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int|null $id Account's ID
      *
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): void
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -437,7 +499,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->withUserGroupsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_DELETE);
+            $accountHelper->setViewForAccount(
+                $accountDetailsResponse,
+                ActionsInterface::ACCOUNT_DELETE
+            );
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -449,7 +514,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
             $this->view->assign('formRoute', 'account/saveDelete');
 
-            $this->eventDispatcher->notifyEvent('show.account.delete', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.delete',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -459,7 +527,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -479,7 +550,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function editPassAction(int $id)
+    public function editPassAction(int $id): void
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -488,7 +559,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->withUserGroupsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_EDIT_PASS);
+            $accountHelper->setViewForAccount(
+                $accountDetailsResponse,
+                ActionsInterface::ACCOUNT_EDIT_PASS
+            );
 
             $this->view->addTemplate('account-editpass');
             $this->view->assign('title',
@@ -500,7 +574,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
             $this->view->assign('formRoute', 'account/saveEditPass');
 
-            $this->eventDispatcher->notifyEvent('show.account.editpass', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.editpass',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -510,7 +587,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -518,7 +598,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->upgradeView();
             }
 
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-editpass');
+            ErrorUtil::showExceptionInView(
+                $this->view,
+                $e,
+                'account-editpass'
+            );
         }
     }
 
@@ -530,14 +614,17 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewHistoryAction(int $id)
+    public function viewHistoryAction(int $id): void
     {
         try {
             $accountHistoryService = $this->dic->get(AccountHistoryService::class);
             $accountHistoryData = $accountHistoryService->getById($id);
 
             $accountHistoryHelper = $this->dic->get(AccountHistoryHelper::class);
-            $accountHistoryHelper->setView($accountHistoryData, Acl::ACCOUNT_HISTORY_VIEW);
+            $accountHistoryHelper->setView(
+                $accountHistoryData,
+                ActionsInterface::ACCOUNT_HISTORY_VIEW
+            );
 
             $this->view->addTemplate('account-history');
 
@@ -551,7 +638,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->view->assign('formRoute', 'account/saveRestore');
 
-            $this->eventDispatcher->notifyEvent('show.account.history', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.history',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -561,7 +651,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -569,7 +662,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->upgradeView();
             }
 
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-history');
+            ErrorUtil::showExceptionInView(
+                $this->view,
+                $e,
+                'account-history'
+            );
         }
     }
 
@@ -581,17 +678,23 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function requestAccessAction(int $id)
+    public function requestAccessAction(int $id): void
     {
         try {
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
-            $accountHelper->setViewForRequest($this->accountService->getById($id), Acl::ACCOUNT_REQUEST);
+            $accountHelper->setViewForRequest(
+                $this->accountService->getById($id),
+                ActionsInterface::ACCOUNT_REQUEST
+            );
 
             $this->view->addTemplate('account-request');
             $this->view->assign('formRoute', 'account/saveRequest');
 
-            $this->eventDispatcher->notifyEvent('show.account.request', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.account.request',
+                new Event($this)
+            );
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -601,7 +704,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             if ($this->isAjax === false
                 && !$this->view->isUpgraded()
@@ -609,7 +715,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->upgradeView();
             }
 
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-request');
+            ErrorUtil::showExceptionInView(
+                $this->view,
+                $e,
+                'account-request'
+            );
         }
     }
 
@@ -620,10 +730,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $parentId
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewPassAction(int $id, int $parentId = 0)
+    public function viewPassAction(int $id, int $parentId = 0): ?bool
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
@@ -632,7 +743,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $passwordPreset = $this->getPasswordPreset();
             $useImage = $this->configData->isAccountPassToImage()
-                || $passwordPreset !== null && $passwordPreset->isUseImage();
+                || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
             $this->view->assign('isLinked', $parentId > 0);
 
@@ -640,7 +751,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->accountService->incrementDecryptCounter($id);
 
-            $this->eventDispatcher->notifyEvent('show.account.pass',
+            $this->eventDispatcher->notifyEvent(
+                'show.account.pass',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Password viewed'))
                     ->addDetail(__u('Account'), $account->getName()))
@@ -650,7 +762,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -682,10 +797,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewPassHistoryAction(int $id)
+    public function viewPassHistoryAction(int $id): ?bool
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
@@ -694,13 +810,14 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $passwordPreset = $this->getPasswordPreset();
             $useImage = $this->configData->isAccountPassToImage()
-                || $passwordPreset !== null && $passwordPreset->isUseImage();
+                || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
             $this->view->assign('isLinked', 0);
 
             $data = $accountPassHelper->getPasswordView($account, $useImage);
 
-            $this->eventDispatcher->notifyEvent('show.account.pass.history',
+            $this->eventDispatcher->notifyEvent(
+                'show.account.pass.history',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Password viewed'))
                     ->addDetail(__u('Account'), $account->getName()))
@@ -710,7 +827,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -732,7 +852,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ServiceException
      * @throws SPException
      */
-    public function copyPassAction(int $id)
+    public function copyPassAction(int $id): bool
     {
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
@@ -742,7 +862,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             'accpass' => $accountPassHelper->getPasswordClear($account),
         ];
 
-        $this->eventDispatcher->notifyEvent('copy.account.pass',
+        $this->eventDispatcher->notifyEvent(
+            'copy.account.pass',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Password copied'))
                 ->addDetail(__u('Account'), $account->getName()))
@@ -767,7 +888,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ServiceException
      * @throws SPException
      */
-    public function copyPassHistoryAction(int $id)
+    public function copyPassHistoryAction(int $id): bool
     {
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
@@ -777,7 +898,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             'accpass' => $accountPassHelper->getPasswordClear($account),
         ];
 
-        $this->eventDispatcher->notifyEvent('copy.account.pass.history',
+        $this->eventDispatcher->notifyEvent(
+            'copy.account.pass.history',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Password copied'))
                 ->addDetail(__u('Account'), $account->getName()))
@@ -789,40 +911,49 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveCopyAction()
+    public function saveCopyAction(): void
     {
         $this->saveCreateAction();
     }
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): ?bool
     {
         try {
             $form = new AccountForm($this->dic);
-            $form->validate(Acl::ACCOUNT_CREATE);
+            $form->validate(ActionsInterface::ACCOUNT_CREATE);
 
             $accountId = $this->accountService->create($form->getItemData());
 
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($accountId)
+                ->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('create.account',
+            $this->eventDispatcher->notifyEvent(
+                'create.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Account created'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId, $this->request);
+            $this->addCustomFieldsForItem(
+                ActionsInterface::ACCOUNT,
+                $accountId,
+                $this->request
+            );
 
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $accountId,
-                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_EDIT)
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account created')
@@ -832,7 +963,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -846,32 +980,40 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): ?bool
     {
         try {
             $form = new AccountForm($this->dic, $id);
-            $form->validate(Acl::ACCOUNT_EDIT);
+            $form->validate(ActionsInterface::ACCOUNT_EDIT);
 
             $itemData = $form->getItemData();
 
             $this->accountService->update($itemData);
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($id)
+                ->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('edit.account',
+            $this->eventDispatcher->notifyEvent(
+                'edit.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Account updated'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
+            $this->updateCustomFieldsForItem(
+                ActionsInterface::ACCOUNT,
+                $id,
+                $this->request
+            );
 
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account updated')
@@ -881,7 +1023,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -893,20 +1038,24 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveEditPassAction(int $id): bool
     {
         try {
             $form = new AccountForm($this->dic, $id);
-            $form->validate(Acl::ACCOUNT_EDIT_PASS);
+            $form->validate(ActionsInterface::ACCOUNT_EDIT_PASS);
 
             $this->accountService->editPassword($form->getItemData());
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($id)
+                ->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('edit.account.pass',
+            $this->eventDispatcher->notifyEvent(
+                'edit.account.pass',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Password updated'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
@@ -916,7 +1065,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Password updated')
@@ -926,7 +1075,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -939,17 +1091,21 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id        Account's ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveEditRestoreAction(int $historyId, int $id): bool
     {
         try {
             $this->accountService->editRestore($historyId, $id);
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($id)
+                ->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent('edit.account.restore',
+            $this->eventDispatcher->notifyEvent(
+                'edit.account.restore',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Account restored'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
@@ -959,7 +1115,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account restored')
@@ -967,7 +1123,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -979,44 +1138,40 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveDeleteAction(int $id): bool
     {
         try {
-            if ($id === null) {
-                $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notifyEvent(
-                    'delete.account.selection',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Accounts removed')))
-                );
-
-                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
-
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
-            }
-
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService
+                ->getById($id)
+                ->getAccountVData();
 
             $this->accountService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.account',
+            $this->eventDispatcher->notifyEvent(
+                'delete.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Account removed'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
+            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Account removed')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -1028,8 +1183,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
     public function saveRequestAction(int $id): bool
     {
@@ -1062,15 +1218,18 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addExtra('accountId', $id)
                     ->addExtra('whoId', $this->userData->getId())
                     ->setExtra('userId', $usersId)
-                    ->setExtra('email', array_map(function ($value) {
-                        return $value->email;
-                    }, $userService->getUserEmailById($usersId))))
+                    ->setExtra('email', array_map(
+                            static function ($value) {
+                                return $value->email;
+                            },
+                            $userService->getUserEmailById($usersId))
+                    ))
             );
 
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT)
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Request done')
@@ -1080,7 +1239,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -1094,14 +1256,14 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws AuthException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         if ($this->actionName !== 'viewLinkAction') {
             $this->checkLoggedIn();
         }
 
         if (DEBUG === true
-            && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED
+            && $this->session->getAppStatus() === ContextBase::APP_STATUS_RELOADED
         ) {
             $this->session->resetAppStatus();
 

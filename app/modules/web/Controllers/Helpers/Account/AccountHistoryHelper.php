@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
@@ -55,30 +55,12 @@ use SP\Services\User\UpdatedMasterPassException;
  */
 final class AccountHistoryHelper extends HelperBase
 {
-    /**
-     * @var Acl
-     */
-    protected $acl;
-    /**
-     * @var AccountHistoryService
-     */
-    protected $accountHistoryService;
-    /**
-     * @var int
-     */
-    protected $accountId;
-    /**
-     * @var int
-     */
-    protected $actionId;
-    /**
-     * @var int
-     */
-    protected $accountHistoryId;
-    /**
-     * @var AccountAcl
-     */
-    protected $accountAcl;
+    protected ?Acl $acl = null;
+    protected ?AccountHistoryService $accountHistoryService = null;
+    protected ?int $accountId = null;
+    protected ?int $actionId = null;
+    protected ?int $accountHistoryId = null;
+    protected ?AccountAcl $accountAcl = null;
 
     /**
      * @param AccountHistoryData $accountHistoryData
@@ -94,7 +76,10 @@ final class AccountHistoryHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function setView(AccountHistoryData $accountHistoryData, int $actionId)
+    public function setView(
+        AccountHistoryData $accountHistoryData,
+        int                $actionId
+    ): void
     {
         $this->actionId = $actionId;
         $this->accountHistoryId = $accountHistoryData->getId();
@@ -110,28 +95,50 @@ final class AccountHistoryHelper extends HelperBase
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('accountId', $this->accountId);
 
-        $this->view->assign('historyData',
+        $this->view->assign(
+            'historyData',
             SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
                 ->getItemsFromArraySelected([$this->accountHistoryId]));
 
-        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
-        $this->view->assign('accountPassDateChange', date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0));
-        $this->view->assign('categories',
+        $this->view->assign(
+            'accountPassDate',
+            date('Y-m-d H:i:s', $accountHistoryData->getPassDate())
+        );
+        $this->view->assign(
+            'accountPassDateChange',
+            date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0)
+        );
+        $this->view->assign(
+            'categories',
             SelectItemAdapter::factory(CategoryService::getItemsBasic())
-                ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()]));
-        $this->view->assign('clients',
+                ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()])
+        );
+        $this->view->assign(
+            'clients',
             SelectItemAdapter::factory(ClientService::getItemsBasic())
-                ->getItemsFromModelSelected([$accountHistoryData->getClientId()]));
-        $this->view->assign('isModified', strtotime($accountHistoryData->getDateEdit()) !== false);
+                ->getItemsFromModelSelected([$accountHistoryData->getClientId()])
+        );
+        $this->view->assign(
+            'isModified',
+            strtotime($accountHistoryData->getDateEdit()) !== false
+        );
 
         $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
 
-        $accountActionsDto = new AccountActionsDto($this->accountId, $this->accountHistoryId, 0);
+        $accountActionsDto = new AccountActionsDto(
+            $this->accountId,
+            $this->accountHistoryId,
+            0
+        );
 
-        $this->view->assign('accountActions',
-            $accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto));
-        $this->view->assign('accountActionsMenu',
-            $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto));
+        $this->view->assign(
+            'accountActions',
+            $accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto)
+        );
+        $this->view->assign(
+            'accountActionsMenu',
+            $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto)
+        );
     }
 
     /**
@@ -142,16 +149,16 @@ final class AccountHistoryHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    protected function checkActionAccess()
+    protected function checkActionAccess(): void
     {
         if (!$this->acl->checkUserAccess($this->actionId)) {
-            throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
+            throw new UnauthorizedPageException(SPException::INFO);
         }
 
         if (!$this->dic->get(MasterPassService::class)
             ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
         ) {
-            throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
+            throw new UpdatedMasterPassException(SPException::INFO);
         }
     }
 
@@ -166,7 +173,7 @@ final class AccountHistoryHelper extends HelperBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function checkAccess(AccountHistoryData $accountHistoryData)
+    protected function checkAccess(AccountHistoryData $accountHistoryData): void
     {
         $acccountAclDto = AccountAclDto::makeFromAccountHistory(
             $accountHistoryData,
@@ -190,7 +197,7 @@ final class AccountHistoryHelper extends HelperBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->acl = $this->dic->get(Acl::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);

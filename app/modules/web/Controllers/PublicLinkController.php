@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -31,6 +31,7 @@ use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -62,29 +63,32 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var PublicLinkService
-     */
-    protected $publicLinkService;
+    protected ?PublicLinkService $publicLinkService = null;
 
     /**
      * Search action
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign(
+            'index',
+            $this->request->analyzeInt('activetab', 0)
+        );
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -100,23 +104,33 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $publicLinkGrid = $this->dic->get(PublicLinkGrid::class);
 
-        return $publicLinkGrid->updatePager($publicLinkGrid->getGrid($this->publicLinkService->search($itemSearchData)), $itemSearchData);
+        return $publicLinkGrid->updatePager(
+            $publicLinkGrid->getGrid($this->publicLinkService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function createAction()
+    public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Public Link'));
@@ -125,13 +139,19 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.publicLink.create',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -145,22 +165,37 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @throws ContainerExceptionInterface
      * @throws SPException
      */
-    protected function setViewData(?int $publicLinkId = null)
+    protected function setViewData(?int $publicLinkId = null): void
     {
         $this->view->addTemplate('public_link', 'itemshow');
 
-        $publicLink = $publicLinkId ? $this->publicLinkService->getById($publicLinkId) : new PublicLinkListData();
+        $publicLink = $publicLinkId
+            ? $this->publicLinkService->getById($publicLinkId)
+            : new PublicLinkListData();
 
         $this->view->assign('publicLink', $publicLink);
-        $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo()));
-        $this->view->assign('accounts', SelectItemAdapter::factory($this->dic->get(AccountService::class)->getForUser())->getItemsFromModelSelected([$publicLink->getItemId()]));
+        $this->view->assign(
+            'usageInfo',
+            unserialize($publicLink->getUseInfo())
+        );
+        $this->view->assign(
+            'accounts',
+            SelectItemAdapter::factory($this->dic->get(AccountService::class)->getForUser())
+                ->getItemsFromModelSelected([$publicLink->getItemId()])
+        );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
+        $this->view->assign(
+            'nextAction',
+            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+        );
 
         if ($this->view->isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
-            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($baseUrl, $publicLink->getHash()));
+            $this->view->assign(
+                'publicLinkURL',
+                PublicLinkService::getLinkForHash($baseUrl, $publicLink->getHash())
+            );
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
@@ -175,25 +210,38 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function refreshAction(int $id)
+    public function refreshAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_REFRESH)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->publicLinkService->refresh($id);
 
-            $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'edit.publicLink.refresh',
+                new Event($this)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Link updated')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -207,12 +255,16 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function editAction(int $id)
+    public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_EDIT)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('Edit Public Link'));
@@ -221,13 +273,19 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.publicLink.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.publicLink.edit',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -241,42 +299,70 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
-    public function deleteAction(?int $id = null)
+    public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_DELETE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             if ($id === null) {
-                $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->publicLinkService
+                    ->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::PUBLICLINK, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.publicLink.selection',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Links deleted')))
+                $this->deleteCustomFieldsForItem(
+                    ActionsInterface::PUBLICLINK,
+                    $id
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Links deleted'));
-            } else {
-                $this->publicLinkService->delete($id);
-
-                $this->deleteCustomFieldsForItem(Acl::PUBLICLINK, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.publicLink',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Link deleted'))
-                        ->addDetail(__u('Link'), $id))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.publicLink.selection',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Links deleted'))
+                    )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link deleted'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Links deleted')
+                );
             }
+
+            $this->publicLinkService->delete($id);
+
+            $this->deleteCustomFieldsForItem(
+                ActionsInterface::PUBLICLINK,
+                $id
+            );
+
+            $this->eventDispatcher->notifyEvent(
+                'delete.publicLink',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Link deleted'))
+                        ->addDetail(__u('Link'), $id)
+                )
+            );
+
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Link deleted')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -284,30 +370,43 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateAction()
+    public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $form = new PublicLinkForm($this->dic);
-            $form->validate(Acl::PUBLICLINK_CREATE);
+            $form->validate(ActionsInterface::PUBLICLINK_CREATE);
 
             $this->publicLinkService->create($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.publicLink', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'create.publicLink',
+                new Event($this)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Link created')
+            );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -320,14 +419,18 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @param int $notify
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function saveCreateFromAccountAction(int $accountId, int $notify)
+    public function saveCreateFromAccountAction(int $accountId, int $notify): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $publicLinkData = new PublicLinkData();
@@ -338,13 +441,22 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->publicLinkService->create($publicLinkData);
 
-            $this->eventDispatcher->notifyEvent('create.publicLink.account', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'create.publicLink.account',
+                new Event($this)
+            );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Link created')
+            );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -355,7 +467,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      *
      * @param int $id
      */
-    public function saveEditAction(int $id)
+    public function saveEditAction(int $id): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -366,14 +478,18 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_VIEW)) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('View Link'));
@@ -381,13 +497,19 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.publicLink', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.publicLink',
+                new Event($this)
+            );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -401,7 +523,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

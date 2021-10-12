@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
@@ -43,10 +43,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class UserGroupGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -73,7 +70,8 @@ final class UserGroupGrid extends GridBase
                 ->setName(__('Delete Selected'))
                 ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
-            true);
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -137,7 +135,10 @@ final class UserGroupGrid extends GridBase
         $gridActionSearch->setName('frmSearchGroup');
         $gridActionSearch->setTitle(__('Search for Group'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::GROUP_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -155,7 +156,10 @@ final class UserGroupGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_CREATE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::GROUP_CREATE)
+        );
 
         return $gridAction;
     }
@@ -172,7 +176,10 @@ final class UserGroupGrid extends GridBase
         $gridAction->setTitle(__('View Group'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_VIEW));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::GROUP_VIEW)
+        );
 
         return $gridAction;
     }
@@ -189,7 +196,10 @@ final class UserGroupGrid extends GridBase
         $gridAction->setTitle(__('Edit Group'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_EDIT));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::GROUP_EDIT)
+        );
 
         return $gridAction;
     }
@@ -206,7 +216,10 @@ final class UserGroupGrid extends GridBase
         $gridAction->setTitle(__('Delete Group'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_DELETE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(ActionsInterface::GROUP_DELETE)
+        );
 
         return $gridAction;
     }

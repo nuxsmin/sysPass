@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -31,112 +31,31 @@ namespace SP\Services\Account;
  */
 final class AccountRequest
 {
-    /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var int
-     */
-    public $clientId;
-    /**
-     * @var int
-     */
-    public $categoryId;
-    /**
-     * @var string
-     */
-    public $login;
-    /**
-     * @var string
-     */
-    public $url;
-    /**
-     * @var string
-     */
-    public $notes;
-    /**
-     * @var int
-     */
-    public $userId;
-    /**
-     * @var int
-     */
-    public $userGroupId;
-    /**
-     * @var int
-     */
-    public $userEditId;
-    /**
-     * @var int
-     */
-    public $otherUserEdit;
-    /**
-     * @var int
-     */
-    public $otherUserGroupEdit;
-    /**
-     * @var string
-     */
-    public $pass;
-    /**
-     * @var string
-     */
-    public $key;
-    /**
-     * @var int
-     */
-    public $isPrivate;
-    /**
-     * @var int
-     */
-    public $isPrivateGroup;
-    /**
-     * @var int
-     */
-    public $passDateChange;
-    /**
-     * @var int
-     */
-    public $parentId;
-    /**
-     * @var array
-     */
-    public $usersView;
-    /**
-     * @var array
-     */
-    public $usersEdit;
-    /**
-     * @var array
-     */
-    public $userGroupsView;
-    /**
-     * @var array
-     */
-    public $userGroupsEdit;
-    /**
-     * @var array
-     */
-    public $tags;
-    /**
-     * @var bool
-     */
-    public $changeOwner = false;
-    /**
-     * @var bool
-     */
-    public $changeUserGroup = false;
-    /**
-     * @var bool
-     */
-    public $changePermissions = false;
-    /**
-     * @var bool
-     */
-    public $updateTags = false;
+    public ?int $id = null;
+    public ?string $name = null;
+    public ?int $clientId = null;
+    public ?int $categoryId = null;
+    public ?string $login = null;
+    public ?string $url = null;
+    public ?string $notes = null;
+    public ?int $userId = null;
+    public ?int $userGroupId = null;
+    public ?int $userEditId = null;
+    public ?int $otherUserEdit = null;
+    public ?int $otherUserGroupEdit = null;
+    public ?string $pass = null;
+    public ?string $key = null;
+    public ?int $isPrivate = null;
+    public ?int $isPrivateGroup = null;
+    public ?int $passDateChange = null;
+    public ?int $parentId = null;
+    public ?array $usersView = null;
+    public ?array $usersEdit = null;
+    public ?array $userGroupsView = null;
+    public ?array $userGroupsEdit = null;
+    public ?array $tags = null;
+    public ?bool $changeOwner = false;
+    public ?bool $changeUserGroup = false;
+    public ?bool $changePermissions = false;
+    public ?bool $updateTags = false;
 }

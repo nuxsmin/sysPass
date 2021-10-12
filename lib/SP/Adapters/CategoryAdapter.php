@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Adapters;
 
 use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Util\Link;
@@ -45,12 +44,12 @@ final class CategoryAdapter extends AdapterBase
     ];
 
     /**
-     * @param CategoryData $data
-     *
-     * @return Collection
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Services\ServiceException
      */
-    public function includeCustomFields(CategoryData $data)
+    public function includeCustomFields(CategoryData $data): Collection
     {
         return $this->collection(
             $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $data->id),
@@ -58,15 +57,10 @@ final class CategoryAdapter extends AdapterBase
         );
     }
 
-    /**
-     * @param CategoryData $data
-     *
-     * @return array
-     */
     public function transform(CategoryData $data): array
     {
         return [
-            'id' => (int)$data->getId(),
+            'id' => $data->getId(),
             'name' => $data->getName(),
             'description' => $data->getDescription(),
             'customFields' => null,

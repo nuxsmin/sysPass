@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -29,12 +29,11 @@ use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -59,6 +58,7 @@ final class ConfigLdapController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function saveAction(): bool
     {
@@ -74,8 +74,14 @@ final class ConfigLdapController extends SimpleControllerBase
             $ldapParams = $this->getLdapParamsFromRequest();
 
             // Valores para la configuración de LDAP
-            if ($ldapEnabled && !($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
+            if ($ldapEnabled
+                && !($ldapParams->getServer()
+                    || $ldapParams->getSearchBase()
+                    || $ldapParams->getBindDn())) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('Missing LDAP parameters')
+                );
             }
 
             if ($ldapEnabled) {
@@ -108,16 +114,28 @@ final class ConfigLdapController extends SimpleControllerBase
 
                 $eventMessage->addDescription(__u('LDAP disabled'));
             } else {
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('No changes')
+                );
             }
 
-            return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-                $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
-            });
+            return $this->saveConfig(
+                $configData,
+                $this->config,
+                function () use ($eventMessage) {
+                    $this->eventDispatcher->notifyEvent(
+                        'save.config.ldap',
+                        new Event($this, $eventMessage)
+                    );
+                });
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -131,13 +149,13 @@ final class ConfigLdapController extends SimpleControllerBase
     {
         $data = LdapParams::getServerAndPort($this->request->analyzeString('ldap_server'));
 
-        if ($data === false) {
+        if (count($data) === 0) {
             throw new ValidationException(__u('Wrong LDAP parameters'));
         }
 
         $params = new LdapParams();
         $params->setServer($data['server']);
-        $params->setPort(isset($data['port']) ? $data['port'] : 389);
+        $params->setPort($data['port'] ?? 389);
         $params->setSearchBase($this->request->analyzeString('ldap_base'));
         $params->setGroup($this->request->analyzeString('ldap_group'));
         $params->setBindDn($this->request->analyzeString('ldap_binduser'));
@@ -156,6 +174,7 @@ final class ConfigLdapController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function checkAction(): bool
     {
@@ -191,7 +210,10 @@ final class ConfigLdapController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -201,6 +223,7 @@ final class ConfigLdapController extends SimpleControllerBase
      * @return bool
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public function checkImportAction(): bool
     {
@@ -243,7 +266,10 @@ final class ConfigLdapController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -254,12 +280,16 @@ final class ConfigLdapController extends SimpleControllerBase
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws \JsonException
      */
     public function importAction(): bool
     {
         try {
             if ($this->configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_WARNING,
+                    __u('Ey, this is a DEMO!!')
+                );
             }
 
             $ldapImportParams = new LdapImportParams();
@@ -284,9 +314,13 @@ final class ConfigLdapController extends SimpleControllerBase
 
             $ldapParams = $this->getLdapParamsFromRequest();
 
-            $this->eventDispatcher->notifyEvent('import.ldap.start',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('LDAP Import')))
+            $this->eventDispatcher->notifyEvent(
+                'import.ldap.start',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('LDAP Import'))
+                )
             );
 
             $userLdapService = $this->dic->get(LdapImportService::class);
@@ -296,9 +330,13 @@ final class ConfigLdapController extends SimpleControllerBase
                 $userLdapService->importGroups($ldapParams, $ldapImportParams);
             }
 
-            $this->eventDispatcher->notifyEvent('import.ldap.end',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Import finished')))
+            $this->eventDispatcher->notifyEvent(
+                'import.ldap.end',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Import finished'))
+                )
             );
 
             if ($userLdapService->getTotalObjects() === 0) {
@@ -317,35 +355,36 @@ final class ConfigLdapController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @return bool
-     * @throws SessionTimeout
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @return void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_LDAP);
+            $this->checkAccess(ActionsInterface::CONFIG_LDAP);
 
             $this->extensionChecker->checkLdapAvailable(true);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        } catch (UnauthorizedPageException | CheckException $e) {
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
-            return $this->returnJsonResponseException($e);
-        } catch (CheckException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
-
-        return true;
     }
 }

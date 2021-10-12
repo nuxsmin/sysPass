@@ -1,16 +1,15 @@
 <?php
 /**
- * @var ThemeIcons $icons
- * @var ConfigData $configData
- * @var callable   $_getvar
- * @var Template   $this
+ * @var ThemeIcons                     $icons
+ * @var \SP\Config\ConfigDataInterface $configData
+ * @var callable                       $_getvar
+ * @var Template                       $this
  */
 ?>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">info</i>
-    <?php use SP\Config\ConfigData;
-    use SP\Core\UI\ThemeIcons;
+    <?php use SP\Core\UI\ThemeIcons;
     use SP\Html\Html;
     use SP\Mvc\View\Template;
     use SP\Plugin\PluginInterface;

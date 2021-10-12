@@ -208,7 +208,7 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $users = self::$repository->getByIdBatch([1, 2, 10]);
+        $users = self::$repository->getByIdBatch([1, 2, 10])->getDataAsArray();
 
         $this->assertCount(2, $users);
         $this->assertInstanceOf(UserData::class, $users[0]);

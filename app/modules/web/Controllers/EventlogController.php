@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
@@ -50,10 +50,7 @@ final class EventlogController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    /**
-     * @var EventlogService
-     */
-    protected $eventLogService;
+    protected ?EventlogService $eventLogService = null;
 
     /**
      * indexAction
@@ -64,9 +61,9 @@ final class EventlogController extends ControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
-        if (!$this->acl->checkUserAccess(Acl::EVENTLOG)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::EVENTLOG)) {
             return;
         }
 
@@ -88,27 +85,36 @@ final class EventlogController extends ControllerBase
      */
     protected function getSearchGrid(): EventlogController
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
 
         $eventlogGrid = $this->dic->get(EventlogGrid::class);
 
-        return $eventlogGrid->updatePager($eventlogGrid->getGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
+        return $eventlogGrid->updatePager(
+            $eventlogGrid->getGrid($this->eventLogService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**
      * searchAction
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+        if (!$this->acl->checkUserAccess(ActionsInterface::EVENTLOG_SEARCH)) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table-simple', 'grid');
@@ -120,18 +126,26 @@ final class EventlogController extends ControllerBase
     /**
      * @return bool
      * @throws DependencyException
-     * @throws NotFoundException
+     * @throws NotFoundException|\JsonException
      */
     public function clearAction(): bool
     {
         try {
             $this->eventLogService->clear();
 
-            $this->eventDispatcher->notifyEvent('clear.eventlog',
-                new Event($this, EventMessage::factory()->addDescription(__u('Event log cleared')))
+            $this->eventDispatcher->notifyEvent(
+                'clear.eventlog',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Event log cleared'))
+                )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Event log cleared'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Event log cleared')
+            );
         } catch (Exception $e) {
             processException($e);
 
@@ -145,7 +159,7 @@ final class EventlogController extends ControllerBase
      * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->checkLoggedIn();
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Config;
@@ -29,6 +29,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\Config\ConfigRepository;
@@ -43,25 +44,24 @@ use SP\Services\ServiceException;
  */
 final class ConfigService extends Service
 {
-    /**
-     * @var ConfigRepository
-     */
-    protected $configRepository;
+    protected ?ConfigRepository $configRepository = null;
 
     /**
-     * @param string $param
-     * @param mixed  $default
-     *
-     * @return mixed
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getByParam($param, $default = null)
+    public function getByParam(string $param, $default = null)
     {
         try {
             $result = $this->configRepository->getByParam($param);
         } catch (Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                null,
+                $e->getCode(),
+                $e
+            );
         }
 
 
@@ -82,46 +82,45 @@ final class ConfigService extends Service
     }
 
     /**
-     * @param ConfigData $configData
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ConfigData $configData)
+    public function create(ConfigData $configData): int
     {
         return $this->configRepository->create($configData);
     }
 
     /**
-     * @param ConfigRequest $configRequest
-     *
      * @throws ServiceException
      */
-    public function saveBatch(ConfigRequest $configRequest)
+    public function saveBatch(ConfigRequest $configRequest): void
     {
         try {
-            $this->transactionAware(function () use ($configRequest) {
-                foreach ($configRequest->getData() as $param => $value) {
-                    $this->save($param, $value);
+            $this->transactionAware(
+                function () use ($configRequest) {
+                    foreach ($configRequest->getData() as $param => $value) {
+                        $this->save($param, $value);
+                    }
                 }
-            });
+            );
         } catch (Exception $e) {
             processException($e);
 
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
+            throw new ServiceException(
+                $e->getMessage(),
+                SPException::ERROR,
+                null,
+                $e->getCode(),
+                $e
+            );
         }
     }
 
     /**
-     * @param string $param
-     * @param string $value
-     *
-     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function save($param, $value)
+    public function save(string $param, $value): bool
     {
         if (!$this->configRepository->has($param)) {
             return $this->configRepository->create(new ConfigData($param, $value));
@@ -137,23 +136,22 @@ final class ConfigService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->configRepository->getAll()->getDataAsArray();
     }
 
     /**
-     * @param $param
-     *
-     * @return void
-     * @throws ConstraintException
-     * @throws NoSuchItemException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function deleteByParam($param)
+    public function deleteByParam(string $param): void
     {
         if ($this->configRepository->deleteByParam($param) === 0) {
-            throw new NoSuchItemException(sprintf(__('Parameter not found (%s)'), $param));
+            throw new NoSuchItemException(
+                sprintf(__('Parameter not found (%s)'), $param)
+            );
         }
     }
 
@@ -161,7 +159,7 @@ final class ConfigService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->configRepository = $this->dic->get(ConfigRepository::class);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
@@ -41,7 +41,7 @@ final class IndexController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         if ($this->session->isLoggedIn() === false
             || $this->session->getAuthCompleted() === false
@@ -49,7 +49,8 @@ final class IndexController extends ControllerBase
             $this->router->response()
                 ->redirect('index.php?r=login');
         } else {
-            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
+            $this->dic->get(LayoutHelper::class)
+                ->getFullLayout('main', $this->acl);
 
             $this->view();
         }
@@ -58,7 +59,7 @@ final class IndexController extends ControllerBase
     /**
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         // TODO: Implement initialize() method.
     }

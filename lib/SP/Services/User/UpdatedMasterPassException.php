@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\User;
@@ -37,13 +37,19 @@ final class UpdatedMasterPassException extends SPException
     /**
      * SPException constructor.
      *
-     * @param string    $type
-     * @param int       $code
-     * @param Exception $previous
+     * @param string          $type
+     * @param int             $code
+     * @param \Exception|null $previous
      */
-    public function __construct($type, $code = 0, Exception $previous = null)
+    public function __construct(string $type, int $code = 0, Exception $previous = null)
     {
-        parent::__construct(__u('Master password updated'), $type, __u('Please, restart the session for update it'), $code, $previous);
+        parent::__construct(
+            __u('Master password updated'),
+            $type,
+            __u('Please, restart the session for update it'),
+            $code,
+            $previous
+        );
     }
 
 }

@@ -29,6 +29,7 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Services\ServiceException;
@@ -84,7 +85,7 @@ class ConfigBackupServiceTest extends TestCase
     /**
      * @depends testBackup
      *
-     * @param ConfigData $configData
+     * @param ConfigDataInterface $configData
      *
      * @throws DependencyException
      * @throws NotFoundException
@@ -92,7 +93,7 @@ class ConfigBackupServiceTest extends TestCase
      * @throws ServiceException
      * @throws FileException
      */
-    public function testRestore(ConfigData $configData)
+    public function testRestore(ConfigDataInterface $configData)
     {
         $dic = setupContext();
 

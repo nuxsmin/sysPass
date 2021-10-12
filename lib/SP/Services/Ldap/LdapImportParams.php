@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Ldap;
@@ -31,28 +31,10 @@ namespace SP\Services\Ldap;
  */
 final class LdapImportParams
 {
-    /**
-     * @var int
-     */
-    public $defaultUserGroup;
-    /**
-     * @var int
-     */
-    public $defaultUserProfile;
-    /**
-     * @var string
-     */
-    public $loginAttribute;
-    /**
-     * @var string
-     */
-    public $userNameAttribute;
-    /**
-     * @var string
-     */
-    public $userGroupNameAttribute;
-    /**
-     * @var string
-     */
-    public $filter;
+    public ?int $defaultUserGroup = null;
+    public ?int $defaultUserProfile = null;
+    public ?string $loginAttribute = null;
+    public ?string $userNameAttribute = null;
+    public ?string $userGroupNameAttribute = null;
+    public ?string $filter = null;
 }

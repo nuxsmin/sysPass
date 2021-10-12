@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\CustomField;
@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services
  */
-final class CustomFieldRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -49,11 +49,11 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @param CustomFieldData $itemData
      *
-     * @return bool
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $query = /** @lang SQL */
             'UPDATE CustomFieldData SET
@@ -85,7 +85,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function checkExists($itemData)
+    public function checkExists(CustomFieldData $itemData): bool
     {
         $query = /** @lang SQL */
             'SELECT id
@@ -110,9 +110,9 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @param $id
      *
-     * @return mixed
+     * @return void
      */
-    public function delete($id)
+    public function delete($id): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -126,7 +126,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         $query = /** @lang SQL */
             'INSERT INTO CustomFieldData SET itemId = ?, moduleId = ?, definitionId = ?, `data` = ?, `key` = ?';
@@ -154,7 +154,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldData($itemId, $moduleId)
+    public function deleteCustomFieldData(int $itemId, int $moduleId): int
     {
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldData
@@ -171,15 +171,19 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
-     * @param int $id
-     * @param int $moduleId
-     * @param int $definitionId
+     * @param int      $id
+     * @param int      $moduleId
+     * @param int|null $definitionId
      *
      * @return int
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteCustomFieldDataForDefinition($id, $moduleId, $definitionId)
+    public function deleteCustomFieldDataForDefinition(
+        int  $id,
+        int  $moduleId,
+        ?int $definitionId
+    ): int
     {
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldData
@@ -203,7 +207,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldDefinitionData($definitionId)
+    public function deleteCustomFieldDefinitionData(int $definitionId): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId = ?');
@@ -221,9 +225,9 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
+    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds): int
     {
-        if (empty($definitionIds)) {
+        if (count($definitionIds) === 0) {
             return 0;
         }
 
@@ -244,9 +248,9 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldDataBatch(array $ids, $moduleId)
+    public function deleteCustomFieldDataBatch(array $ids, int $moduleId): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -270,7 +274,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function getById($id)
+    public function getById(int $id): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -282,7 +286,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldData::class);
@@ -298,7 +302,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllEncrypted()
+    public function getAllEncrypted(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldData::class);
@@ -314,7 +318,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
         throw new RuntimeException('Not implemented');
     }
@@ -326,7 +330,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
         throw new RuntimeException('Not implemented');
     }
@@ -338,7 +342,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -346,11 +350,11 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return void
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData): void
     {
         throw new RuntimeException('Not implemented');
     }
@@ -358,14 +362,14 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
     /**
      * Returns the module's item for given id
      *
-     * @param $moduleId
-     * @param $itemId
+     * @param int      $moduleId
+     * @param int|null $itemId
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForModuleAndItemId($moduleId, $itemId)
+    public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT CFD.name AS definitionName,
@@ -400,7 +404,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -412,7 +416,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      *
      * @return void
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }

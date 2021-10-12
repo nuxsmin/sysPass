@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\EventLog;
@@ -46,7 +46,7 @@ final class EventlogRepository extends Repository
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function clear()
+    public function clear(): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('TRUNCATE TABLE EventLog');
@@ -64,14 +64,14 @@ final class EventlogRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setSelect('id, FROM_UNIXTIME(date) AS date, action, level, login, ipAddress, description');
         $queryData->setFrom('EventLog');
         $queryData->setOrder('id DESC');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('action LIKE ? OR login LIKE ? OR ipAddress LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -94,7 +94,7 @@ final class EventlogRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(EventlogData $eventlogData)
+    public function create(EventlogData $eventlogData): int
     {
         $sql = 'INSERT INTO EventLog SET
                 `date` = UNIX_TIMESTAMP(),

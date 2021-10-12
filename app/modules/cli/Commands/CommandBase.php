@@ -26,7 +26,7 @@ namespace SP\Modules\Cli\Commands;
 
 use Psr\Log\LoggerInterface;
 use SP\Config\Config;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -37,29 +37,11 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 abstract class CommandBase extends Command
 {
-    /**
-     * @var string[]
-     */
     public static array $envVarsMapping = [];
-    /**
-     * @var LoggerInterface
-     */
     protected LoggerInterface $logger;
-    /**
-     * @var Config
-     */
     protected Config $config;
-    /**
-     * @var ConfigData
-     */
-    protected ConfigData $configData;
+    protected ConfigDataInterface $configData;
 
-    /**
-     * CommandBase constructor.
-     *
-     * @param LoggerInterface $logger
-     * @param Config          $config
-     */
     public function __construct(
         LoggerInterface $logger,
         Config          $config
@@ -73,9 +55,6 @@ abstract class CommandBase extends Command
     }
 
     /**
-     * @param string         $option
-     * @param InputInterface $input
-     *
      * @return array|false|mixed|string
      */
     protected static function getEnvVarOrOption(
@@ -88,8 +67,6 @@ abstract class CommandBase extends Command
     }
 
     /**
-     * @param string $option
-     *
      * @return string|false
      */
     protected static function getEnvVarForOption(string $option)
@@ -98,9 +75,6 @@ abstract class CommandBase extends Command
     }
 
     /**
-     * @param string         $argument
-     * @param InputInterface $input
-     *
      * @return array|false|mixed|string
      */
     protected static function getEnvVarOrArgument(

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
 
 use SP\Bootstrap;
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Http\Uri;
 
@@ -37,20 +37,11 @@ use SP\Http\Uri;
  */
 final class Link
 {
-    /**
-     * @param int        $itemId
-     * @param int        $actionId
-     * @param ConfigData $configData
-     *
-     * @param bool  $useUI
-     *
-     * @return string
-     */
     public static function getDeepLink(
-        int $itemId,
-        int $actionId,
-        ConfigData $configData,
-        bool $useUI = false
+        int                 $itemId,
+        int                 $actionId,
+        ConfigDataInterface $configData,
+        bool                $useUI = false
     ): string
     {
         $route = Acl::getActionRoute($actionId) . '/' . $itemId;

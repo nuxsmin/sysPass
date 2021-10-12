@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -45,27 +45,16 @@ use SP\Util\Util;
  */
 final class AccountCryptService extends Service
 {
-    /**
-     * @var AccountService
-     */
-    private $accountService;
-    /**
-     * @var AccountHistoryService
-     */
-    private $accountHistoryService;
-    /**
-     * @var UpdateMasterPassRequest
-     */
-    private $request;
+    private ?AccountService $accountService = null;
+    private ?AccountHistoryService $accountHistoryService = null;
+    private ?UpdateMasterPassRequest $request = null;
 
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
-     * @param UpdateMasterPassRequest $updateMasterPassRequest
-     *
      * @throws ServiceException
      */
-    public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest)
+    public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
         $this->request = $updateMasterPassRequest;
 
@@ -103,20 +92,17 @@ final class AccountCryptService extends Service
 
             throw new ServiceException(
                 __u('Error while updating the accounts\' passwords'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 null,
                 $e->getCode(),
                 $e);
         }
     }
 
-    /**
-     * @param array    $accounts
-     * @param callable $passUpdater
-     *
-     * @return EventMessage
-     */
-    private function processAccounts(array $accounts, callable $passUpdater)
+    private function processAccounts(
+        array    $accounts,
+        callable $passUpdater
+    ): EventMessage
     {
         set_time_limit(0);
 
@@ -215,11 +201,11 @@ final class AccountCryptService extends Service
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
-     * @param UpdateMasterPassRequest $updateMasterPassRequest
-     *
      * @throws ServiceException
      */
-    public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest)
+    public function updateHistoryMasterPassword(
+        UpdateMasterPassRequest $updateMasterPassRequest
+    ): void
     {
         $this->request = $updateMasterPassRequest;
 
@@ -269,7 +255,7 @@ final class AccountCryptService extends Service
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->accountService = $this->dic->get(AccountService::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);

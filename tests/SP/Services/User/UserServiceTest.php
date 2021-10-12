@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
@@ -52,10 +53,10 @@ use function SP\Tests\setupContext;
  */
 class UserServiceTest extends DatabaseTestCase
 {
-    const CURRENT_MASTERPASS = '12345678900';
+    private const CURRENT_MASTERPASS = '12345678900';
 
     /**
-     * @var ConfigData
+     * @var ConfigDataInterface
      */
     private static $configData;
 
@@ -79,7 +80,7 @@ class UserServiceTest extends DatabaseTestCase
         // Inicializar el servicio
         self::$service = $dic->get(UserService::class);
 
-        self::$configData = $dic->get(ConfigData::class);
+        self::$configData = $dic->get(ConfigDataInterface::class);
     }
 
     /**
@@ -135,7 +136,7 @@ class UserServiceTest extends DatabaseTestCase
         $data->setLogin('test_ldap');
         $data->setEmail('test_ldap@email.com');
         $data->setPassword('test123ldap');
-        $data->setIsLdap(1);
+        $data->setIsLdap(true);
 
         $result = self::$service->createOnLogin($data);
 
@@ -690,7 +691,7 @@ class UserServiceTest extends DatabaseTestCase
         $data = new UserLoginRequest();
         $data->setName('prueba');
         $data->setEmail('prueba@syspass.org');
-        $data->setIsLdap(1);
+        $data->setIsLdap(true);
         $data->setLogin('demo');
         $data->setPassword('test123');
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Notification;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
@@ -45,7 +43,7 @@ final class NotificationHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
+    public const EVENTS = [
         'request.account',
         'show.account.link'
     ];
@@ -53,11 +51,11 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @var NotificationService
      */
-    private $notificationService;
+    private NotificationService $notificationService;
     /**
      * @var string
      */
-    private $events;
+    private string $events;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -91,7 +89,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      * @return void
      * @since 5.1.0
      */
-    public function update(SplSubject $subject)
+    public function update(SplSubject $subject): void
     {
         $this->updateEvent('update', new Event($subject));
     }
@@ -102,7 +100,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
      */
-    public function updateEvent(string $eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event): void
     {
         switch ($eventType) {
             case 'request.account':
@@ -117,10 +115,10 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function requestAccountNotification(Event $event)
+    private function requestAccountNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
+        $data = $eventMessage !== null ? $eventMessage->getExtra() : [];
 
         foreach ($data['userId'] as $userId) {
             $notificationData = new NotificationData();
@@ -136,7 +134,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param NotificationData $notificationData
      */
-    private function notify(NotificationData $notificationData)
+    private function notify(NotificationData $notificationData): void
     {
         try {
             $this->notificationService->create($notificationData);
@@ -148,10 +146,10 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function showAccountLinkNotification(Event $event)
+    private function showAccountLinkNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
+        $data = $eventMessage !== null ? $eventMessage->getExtra() : [];
 
         if ($data['notify'][0] === true) {
             $notificationData = new NotificationData();
@@ -165,12 +163,9 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param ContainerInterface $dic
      */
-    protected function initialize(Container $dic)
+    protected function initialize(ContainerInterface $dic): void
     {
         $this->notificationService = $dic->get(NotificationService::class);
 

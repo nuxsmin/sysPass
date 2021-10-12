@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -37,18 +37,20 @@ use SP\DataModel\FileData;
  */
 final class FileUtil
 {
-    const IMAGE_MIME = ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'];
+    private const IMAGE_MIME = [
+        'image/jpeg',
+        'image/png',
+        'image/bmp',
+        'image/gif'
+    ];
 
     /**
      * Removes a directory in a recursive way
      *
-     * @param $dir
-     *
-     * @return bool
-     * @throws FileNotFoundException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @see https://stackoverflow.com/a/7288067
      */
-    public static function rmdir_recursive($dir): bool
+    public static function rmdir_recursive(string $dir): bool
     {
         if (!is_dir($dir)) {
             throw new FileNotFoundException('Directory does not exist');
@@ -72,13 +74,12 @@ final class FileUtil
         return rmdir($dir);
     }
 
-    /**
-     * @param FileData $fileData
-     *
-     * @return bool
-     */
     public static function isImage(FileData $fileData): bool
     {
-        return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
+        return in_array(
+            strtolower($fileData->getType()),
+            self::IMAGE_MIME,
+            true
+        );
     }
 }

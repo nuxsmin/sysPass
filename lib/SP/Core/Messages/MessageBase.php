@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
@@ -31,93 +31,52 @@ namespace SP\Core\Messages;
  */
 abstract class MessageBase implements MessageInterface
 {
-    /**
-     * @var string
-     */
-    protected $title;
-    /**
-     * @var array
-     */
-    protected $footer = [];
-    /**
-     * @var array
-     */
-    protected $description = [];
+    protected string $title = '';
+    protected array $footer = [];
+    protected array $description = [];
 
-    /**
-     * @return static
-     */
-    public static function factory()
+    public static function factory(): MessageBase
     {
         return new static();
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     *
-     * @return MessageBase
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): MessageBase
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @param FormatterInterface $formatter
-     * @param bool               $translate
-     *
-     * @return string
-     */
-    public abstract function getDescription(FormatterInterface $formatter, $translate = false): string;
+    abstract public function getDescription(
+        FormatterInterface $formatter,
+        bool               $translate
+    ): string;
 
-    /**
-     * @param array $description
-     *
-     * @return MessageBase
-     */
-    public function setDescription(array $description)
+    public function setDescription(array $description): MessageBase
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * @param string $description
-     *
-     * @return MessageBase
-     */
-    public function addDescription(string $description)
+    public function addDescription(string $description): MessageBase
     {
         $this->description[] = $description;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getFooter()
+    public function getFooter(): array
     {
         return $this->footer;
     }
 
-    /**
-     * @param array $footer
-     *
-     * @return MessageBase
-     */
-    public function setFooter(array $footer)
+    public function setFooter(array $footer): MessageBase
     {
         $this->footer = $footer;
 

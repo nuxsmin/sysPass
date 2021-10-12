@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\Notification;
@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Notification
  */
-final class NotificationRepository extends Repository implements RepositoryItemInterface
+final class NotificationRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -54,7 +54,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): QueryResult
     {
         $query = /** @lang SQL */
             'INSERT INTO Notification 
@@ -91,7 +91,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         $query = /** @lang SQL */
             'UPDATE Notification 
@@ -125,13 +125,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id = ? AND sticky = 0 LIMIT 1');
@@ -144,13 +144,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteAdmin($id)
+    public function deleteAdmin(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id = ? LIMIT 1');
@@ -169,9 +169,9 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteAdminBatch(array $ids)
+    public function deleteAdminBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -192,7 +192,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id, 
@@ -223,7 +223,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -255,9 +255,9 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return new QueryResult();
         }
 
@@ -292,9 +292,9 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -311,7 +311,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      *
      * @param $id int
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -321,7 +321,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -331,7 +331,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      *
      * @param mixed $itemData
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         throw new RuntimeException('Not implemented');
     }
@@ -345,7 +345,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
@@ -380,7 +380,10 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult
+    public function searchForUserId(
+        ItemSearchData $itemSearchData,
+        int            $userId
+    ): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
@@ -394,7 +397,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
             ->addFilter('(userId IS NULL AND onlyAdmin = 0)')
             ->addFilter('sticky = 1');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere(
                 '(type LIKE ? OR component LIKE ? OR description LIKE ?) AND '
                 . $queryCondition->getFilters(QueryCondition::CONDITION_OR)
@@ -425,7 +428,10 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchForAdmin(ItemSearchData $itemSearchData, int $userId)
+    public function searchForAdmin(
+        ItemSearchData $itemSearchData,
+        int            $userId
+    ): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
@@ -439,7 +445,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
             ->addFilter('onlyAdmin = 1')
             ->addFilter('sticky = 1');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere(
                 '(type LIKE ? OR component LIKE ? OR description LIKE ?) AND '
                 . $queryCondition->getFilters(QueryCondition::CONDITION_OR)
@@ -464,13 +470,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     /**
      * Marcar una notificación como leída
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function setCheckedById($id)
+    public function setCheckedById(int $id): int
     {
         $query = /** @lang SQL */
             'UPDATE Notification SET checked = 1 WHERE id = ? LIMIT 1';
@@ -486,14 +492,14 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
-     * @param $component
-     * @param $userId
+     * @param string $component
+     * @param int    $userId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForUserIdByDate($component, $userId)
+    public function getForUserIdByDate(string $component, int $userId): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -521,13 +527,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getAllForUserId($id)
+    public function getAllForUserId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -554,13 +560,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getAllActiveForUserId($id)
+    public function getAllActiveForUserId(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,
@@ -588,13 +594,13 @@ final class NotificationRepository extends Repository implements RepositoryItemI
     }
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getAllActiveForAdmin($id)
+    public function getAllActiveForAdmin(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT id,

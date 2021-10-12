@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use Klein\Klein;
 use League\Fractal\Manager;
 use Psr\Container\ContainerInterface;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
@@ -49,62 +47,23 @@ use SP\Services\ServiceException;
  */
 abstract class ControllerBase
 {
-    const SEARCH_COUNT_ITEMS = 25;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var string
-     */
-    protected $controllerName;
-    /**
-     * @var
-     */
-    protected $actionName;
-    /**
-     * @var StatelessContext
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var ApiService
-     */
-    protected $apiService;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Manager
-     */
-    protected $fractal;
-    /**
-     * @var Acl
-     */
-    protected $acl;
-    /**
-     * @var bool
-     */
-    private $isAuthenticated = false;
+    protected const SEARCH_COUNT_ITEMS = 25;
+    protected ContainerInterface $dic;
+    protected string $controllerName;
+    protected string $actionName;
+    protected StatelessContext $context;
+    protected EventDispatcher $eventDispatcher;
+    protected ApiService $apiService;
+    protected Klein $router;
+    protected ConfigDataInterface $configData;
+    protected Manager $fractal;
+    protected Acl $acl;
+    private bool $isAuthenticated = false;
 
-    /**
-     * Constructor
-     *
-     * @param Container $container
-     * @param string    $actionName
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    public final function __construct(Container $container, string $actionName)
+    final public function __construct(
+        ContainerInterface $container,
+        string             $actionName
+    )
     {
         $this->dic = $container;
         $this->context = $container->get(StatelessContext::class);
@@ -123,31 +82,21 @@ abstract class ControllerBase
         }
     }
 
-    /**
-     * @return string
-     */
     final protected function getControllerName(): string
     {
         $class = static::class;
 
-        return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
+        return substr(
+            $class,
+            strrpos($class, '\\') + 1,
+            -strlen('Controller')) ?: '';
     }
 
     /**
-     * @return bool
-     */
-    protected function isAuthenticated(): bool
-    {
-        return $this->isAuthenticated;
-    }
-
-    /**
-     * @param int $actionId
-     *
      * @throws SPException
      * @throws ServiceException
      */
-    final protected function setupApi(int $actionId)
+    final protected function setupApi(int $actionId): void
     {
         $this->apiService->setup($actionId);
 
@@ -158,17 +107,20 @@ abstract class ControllerBase
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
-     *
-     * @param ApiResponse $apiResponse
      */
-    final protected function returnResponse(ApiResponse $apiResponse)
+    final protected function returnResponse(ApiResponse $apiResponse): void
     {
         try {
             if ($this->isAuthenticated === false) {
                 throw new SPException(__u('Unauthorized access'));
             }
 
-            $this->sendJsonResponse(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
+            $this->sendJsonResponse(
+                JsonRpcResponse::getResponse(
+                    $apiResponse,
+                    $this->apiService->getRequestId()
+                )
+            );
         } catch (SPException $e) {
             processException($e);
 
@@ -178,20 +130,20 @@ abstract class ControllerBase
 
     /**
      * Returns a JSON response back to the browser
-     *
-     * @param string $response
      */
-    final private function sendJsonResponse(string $response)
+    private function sendJsonResponse(string $response): void
     {
         $json = Json::factory($this->router->response());
         $json->returnRawJson($response);
     }
 
-    /**
-     * @param Exception $e
-     */
-    final protected function returnResponseException(Exception $e)
+    final protected function returnResponseException(Exception $e): void
     {
-        $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
+        $this->sendJsonResponse(
+            JsonRpcResponse::getResponseException(
+                $e,
+                $this->apiService->getRequestId()
+            )
+        );
     }
 }

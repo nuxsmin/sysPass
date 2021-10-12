@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Repositories\UserGroup;
@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
-use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
@@ -41,20 +41,20 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\UserGroup
  */
-final class UserGroupRepository extends Repository implements RepositoryItemInterface
+final class UserGroupRepository extends Repository implements RepositoryInterface
 {
     use RepositoryItemTrait;
 
     /**
      * Deletes an item
      *
-     * @param $id
+     * @param int $id
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($id)
+    public function delete(int $id): int
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserGroup WHERE id = ? LIMIT 1');
@@ -73,7 +73,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkInUse($id)
+    public function checkInUse(int $id): bool
     {
         $query = /** @lang SQL */
             'SELECT userGroupId
@@ -84,7 +84,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([(int)$id, (int)$id]);
+        $queryData->setParams([$id, $id]);
 
         return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
@@ -98,7 +98,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsage($id)
+    public function getUsage(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT userGroupId, "User" AS ref
@@ -129,7 +129,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageByUsers($id)
+    public function getUsageByUsers(int $id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT U.id, login, `name`, ref
@@ -150,7 +150,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParams([(int)$id, (int)$id]);
+        $queryData->addParams([$id, $id]);
 
         return $this->db->doSelect($queryData);
     }
@@ -164,7 +164,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById($id)
+    public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -183,7 +183,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName($name)
+    public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -200,7 +200,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -214,14 +214,14 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      *
      * @param array $ids
      *
-     * @return UserGroupData[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByIdBatch(array $ids)
+    public function getByIdBatch(array $ids): QueryResult
     {
-        if (empty($ids)) {
-            return [];
+        if (count($ids) === 0) {
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -232,21 +232,21 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids)
+    public function deleteByIdBatch(array $ids): int
     {
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             return 0;
         }
 
@@ -266,7 +266,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData)
+    public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -274,7 +274,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         $queryData->setFrom('UserGroup');
         $queryData->setOrder('name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -300,7 +300,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData)
+    public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated group name'));
@@ -326,7 +326,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData)
+    public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?)');
@@ -345,7 +345,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update($itemData)
+    public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
             throw new DuplicatedItemException(__u('Duplicated group name'));
@@ -372,7 +372,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData)
+    public function checkDuplicatedOnUpdate($itemData): bool
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?) AND id <> ?');

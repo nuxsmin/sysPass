@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\CustomField;
@@ -41,10 +41,7 @@ final class CustomFieldTypeService extends Service
 {
     use ServiceItemTrait;
 
-    /**
-     * @var CustomFieldTypeRepository
-     */
-    protected $customFieldTypeRepository;
+    protected ?CustomFieldTypeRepository $customFieldTypeRepository = null;
 
     /**
      * Get all items from the service's repository
@@ -53,7 +50,7 @@ final class CustomFieldTypeService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic()
+    public function getAllBasic(): array
     {
         return $this->getAll();
     }
@@ -65,20 +62,17 @@ final class CustomFieldTypeService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->customFieldTypeRepository->getAll()->getDataAsArray();
     }
 
     /**
-     * @param $id
-     *
-     * @return mixed
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
         $result = $this->customFieldTypeRepository->getById($id);
 
@@ -89,7 +83,7 @@ final class CustomFieldTypeService extends Service
         return $result->getData();
     }
 
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->customFieldTypeRepository = $this->dic->get(CustomFieldTypeRepository::class);
     }

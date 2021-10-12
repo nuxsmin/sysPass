@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -36,12 +36,12 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
  */
 final class PasswordUtil
 {
-    const CHARS = 'abcdefghijklmnopqrstuwxyz';
-    const CHARS_SPECIAL = '@$%&/()!_:.;{}^-';
-    const CHARS_NUMBER = '0123456789';
-    const FLAG_PASSWORD_NUMBER = 2;
-    const FLAG_PASSWORD_SPECIAL = 4;
-    const FLAG_PASSWORD_STRENGTH = 8;
+    private const CHARS = 'abcdefghijklmnopqrstuwxyz';
+    private const CHARS_SPECIAL = '@$%&/()!_:.;{}^-';
+    private const CHARS_NUMBER = '0123456789';
+    public const FLAG_PASSWORD_NUMBER = 2;
+    public const FLAG_PASSWORD_SPECIAL = 4;
+    public const FLAG_PASSWORD_STRENGTH = 8;
 
     /**
      * Generate a ramdom password
@@ -50,11 +50,17 @@ final class PasswordUtil
      * @param int|null $flags  Password chars included and checking strength flags
      *
      * @return string
+     * @throws \Exception
      */
-    public static function randomPassword(int $length = 16, int $flags = null): string
+    public static function randomPassword(
+        int $length = 16,
+        int $flags = null
+    ): string
     {
         if ($flags === null) {
-            $flags = self::FLAG_PASSWORD_SPECIAL | self::FLAG_PASSWORD_NUMBER | self::FLAG_PASSWORD_STRENGTH;
+            $flags = self::FLAG_PASSWORD_SPECIAL
+                | self::FLAG_PASSWORD_NUMBER
+                | self::FLAG_PASSWORD_STRENGTH;
         }
 
         $useSpecial = ($flags & self::FLAG_PASSWORD_SPECIAL) > 0;
@@ -72,13 +78,14 @@ final class PasswordUtil
 
         /**
          * @return array
+         * @throws \Exception
          */
-        $passGen = function () use ($alphabet, $length) {
+        $passGen = static function () use ($alphabet, $length) {
             $pass = [];
             $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
 
             for ($i = 0; $i < $length; $i++) {
-                $n = mt_rand(0, $alphaLength);
+                $n = random_int(0, $alphaLength);
                 $pass[] = $alphabet[$n];
             }
 
@@ -107,11 +114,6 @@ final class PasswordUtil
         return implode($passGen());
     }
 
-    /**
-     * @param array $pass
-     *
-     * @return array
-     */
     public static function checkStrength(array $pass): array
     {
         $charsUpper = strtoupper(self::CHARS);
@@ -132,7 +134,6 @@ final class PasswordUtil
      *
      * @param int $length opcional, con la longitud de la cadena
      *
-     * @return string
      * @throws EnvironmentIsBrokenException
      */
     public static function generateRandomBytes(int $length = 30): string

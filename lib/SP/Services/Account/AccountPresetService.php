@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
 
-use SP\Config\ConfigData;
+use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
@@ -42,36 +42,25 @@ use SP\Services\ItemPreset\ItemPresetService;
  */
 final class AccountPresetService
 {
-    /**
-     * @var ItemPresetService
-     */
-    private $itemPresetService;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
+    private ItemPresetService $itemPresetService;
+    private ConfigDataInterface $configData;
 
-    /**
-     * AccountPreset constructor.
-     *
-     * @param ItemPresetService $itemPresetService
-     * @param ConfigData        $configData
-     */
-    public function __construct(ItemPresetService $itemPresetService, ConfigData $configData)
+    public function __construct(
+        ItemPresetService   $itemPresetService,
+        ConfigDataInterface $configData
+    )
     {
         $this->itemPresetService = $itemPresetService;
         $this->configData = $configData;
     }
 
     /**
-     * @param AccountRequest $accountRequest
-     *
      * @throws ValidationException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    public function checkPasswordPreset(AccountRequest $accountRequest)
+    public function checkPasswordPreset(AccountRequest $accountRequest): void
     {
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
 
