@@ -79,6 +79,11 @@ abstract class ContextBase implements ContextInterface
             : $this->trasient->get($key, $default);
     }
 
+    public function isInitialized(): bool
+    {
+        return $this->context !== null;
+    }
+
     /**
      * @throws ContextException
      */
@@ -123,7 +128,9 @@ abstract class ContextBase implements ContextInterface
     {
         $this->checkContext();
 
-        return is_numeric($default) ? (int)$this->context->get($key, $default) : $this->context->get($key, $default);
+        return is_numeric($default)
+            ? (int)$this->context->get($key, $default)
+            : $this->context->get($key, $default);
     }
 
     /**

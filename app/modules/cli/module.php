@@ -22,5 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+use function DI\create;
+
 const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
+
+return [
+    LoggerInterface::class => static fn(Logger $logger) => $logger->pushHandler(new StreamHandler(LOG_FILE)),
+    Application::class => create(Application::class),
+    OutputInterface::class => create(ConsoleOutput::class)
+        ->constructor(OutputInterface::VERBOSITY_NORMAL, true),
+    InputInterface::class => create(ArgvInput::class)
+];

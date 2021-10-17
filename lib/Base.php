@@ -45,18 +45,19 @@ $memInit = memory_get_usage();
 
 require __DIR__ . DS . 'BaseFunctions.php';
 require VENDOR_PATH . DS . 'autoload.php';
-require __DIR__ . DS . 'SplClassLoader.php';
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
 
 defined('APP_MODULE') || define('APP_MODULE', 'web');
-define('DEBUG', getenv('DEBUG') || false);
+define('DEBUG', getenv('DEBUG'));
+define('IS_TESTING',
+    getenv('IS_TESTING')
+        ?: defined('TEST_ROOT'));
 
 define('CONFIG_PATH',
     getenv('CONFIG_PATH')
         ?: APP_PATH . DS . 'config');
-
 
 // Setup config files
 const OLD_CONFIG_FILE = CONFIG_PATH . DS . 'config.php';
@@ -73,6 +74,7 @@ define('MIMETYPES_FILE',
 define('LOG_FILE',
     getenv('LOG_FILE')
         ?: CONFIG_PATH . DS . 'syspass.log');
+
 const LOCK_FILE = CONFIG_PATH . DS . '.lock';
 
 // Setup application paths
@@ -87,13 +89,17 @@ define('TMP_PATH',
         ?: APP_PATH . DS . 'temp');
 
 try {
-    $builder = new ContainerBuilder();
-    $builder->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies');
-    $builder->addDefinitions(BASE_PATH . DS . 'Definitions.php');
+    $moduleDefinitions = initModule(APP_MODULE);
 
-    initModule(APP_MODULE, $builder);
+    $dic = (new ContainerBuilder)
+        ->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies')
+        ->addDefinitions(
+            BASE_PATH . DS . 'Definitions.php',
+            $moduleDefinitions
+        )
+        ->build();
 
-    Bootstrap::run($builder->build());
+    Bootstrap::run($dic);
 } catch (Exception $e) {
     processException($e);
 

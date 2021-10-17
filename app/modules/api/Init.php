@@ -25,10 +25,7 @@
 namespace SP\Modules\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Psr\Container\ContainerInterface;
-use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
@@ -130,6 +127,10 @@ final class Init extends ModuleBase
      */
     private function checkUpgrade(): void
     {
+        if (IS_TESTING) {
+            return;
+        }
+
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 
         if ($this->configData->getUpgradeKey()

@@ -51,8 +51,8 @@ final class ConfigController extends ControllerBase
 
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 
-            $this->dic->get(FileBackupService::class)
-                ->doBackup($path);
+            $backupService = $this->dic->get(FileBackupService::class);
+            $backupService->doBackup($path);
 
             $this->eventDispatcher->notifyEvent(
                 'run.backup.end',
@@ -64,9 +64,24 @@ final class ConfigController extends ControllerBase
                 )
             );
 
+            $backupFiles = [
+                'files' => [
+                    'app' => FileBackupService::getAppBackupFilename(
+                        $path,
+                        $backupService->getHash(),
+                        true
+                    ),
+                    'db' => FileBackupService::getDbBackupFilename(
+                        $path,
+                        $backupService->getHash(),
+                        true
+                    )
+                ]
+            ];
+
             $this->returnResponse(
                 ApiResponse::makeSuccess(
-                    $path,
+                    $backupFiles,
                     null,
                     __('Backup process finished')
                 )
@@ -99,8 +114,9 @@ final class ConfigController extends ControllerBase
                 )
             );
 
-            $this->dic->get(XmlExportService::class)
-                ->doExport($path, $password);
+            $exportService = $this->dic->get(XmlExportService::class);
+            $exportService->doExport($path, $password);
+
 
             $this->eventDispatcher->notifyEvent(
                 'run.export.end',
@@ -111,9 +127,15 @@ final class ConfigController extends ControllerBase
                 )
             );
 
+            $exportFiles = [
+                'files' => [
+                    'xml' => $exportService->getExportFile()
+                ]
+            ];
+
             $this->returnResponse(
                 ApiResponse::makeSuccess(
-                    $path,
+                    $exportFiles,
                     null,
                     __('Export process finished')
                 )

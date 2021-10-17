@@ -66,7 +66,10 @@ final class ClientController extends ControllerBase
 
             $clientData = $this->clientService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.client', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'show.client',
+                new Event($this)
+            );
 
             $this->eventDispatcher->notifyEvent(
                 'show.client',
@@ -85,7 +88,10 @@ final class ClientController extends ControllerBase
 
             $out = $this->fractal
                 ->createData(
-                    new Item($clientData, new ClientAdapter($this->configData)));
+                    new Item(
+                        $clientData,
+                        new ClientAdapter($this->configData)
+                    ));
 
             if ($customFields) {
                 $this->apiService->requireMasterPass();
@@ -116,6 +122,8 @@ final class ClientController extends ControllerBase
             $clientData->setIsGlobal($this->apiService->getParamInt('global'));
 
             $id = $this->clientService->create($clientData);
+
+            $clientData->setId($id);
 
             $this->eventDispatcher->notifyEvent(
                 'create.client',
@@ -234,7 +242,10 @@ final class ClientController extends ControllerBase
             $itemSearchData->setSeachString($this->apiService->getParamString('text'));
             $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
 
-            $this->eventDispatcher->notifyEvent('search.client', new Event($this));
+            $this->eventDispatcher->notifyEvent(
+                'search.client',
+                new Event($this)
+            );
 
             $this->returnResponse(
                 ApiResponse::makeSuccess(
@@ -249,9 +260,7 @@ final class ClientController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize(): void
     {

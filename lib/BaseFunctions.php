@@ -22,12 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Core\Exceptions\SPException;
+
 /**
  * [type] [caller] data
  */
-
-use DI\ContainerBuilder;
-
 const LOG_FORMAT = "[%s] [%s] %s";
 /**
  * [timestamp] [type] [caller] data
@@ -54,47 +53,27 @@ function logger($data, ?string $type = 'DEBUG')
 
     $date = date('Y-m-d H:i:s');
     $caller = getLastCaller();
-
-    if (is_scalar($data)) {
-        $line = sprintf(
-            LOG_FORMAT_OWN,
-            $date,
-            $type,
-            $data,
-            $caller
-        );
-    } else {
-        $line = sprintf(
-            LOG_FORMAT_OWN,
-            $date,
-            $type,
-            print_r($data, true),
-            $caller
-        );
-    }
+    $line = sprintf(
+        LOG_FORMAT_OWN,
+        $date,
+        $type,
+        is_scalar($data) ? $data : print_r($data, true),
+        $caller
+    );
 
     $useOwn = (!defined('LOG_FILE')
-        || !error_log($line, 3, LOG_FILE)
+        || !@error_log($line, 3, LOG_FILE)
     );
 
     if ($useOwn === false) {
-        if (is_scalar($data)) {
-            $line = sprintf(
-                LOG_FORMAT,
-                $type,
-                $data,
-                $caller
-            );
-        } else {
-            $line = sprintf(
-                LOG_FORMAT,
-                $type,
-                print_r($data, true),
-                $caller
-            );
-        }
+        $line = sprintf(
+            LOG_FORMAT,
+            $type,
+            is_scalar($data) ? $data : print_r($data, true),
+            $caller
+        );
 
-        error_log($line);
+        @error_log($line);
     }
 }
 
@@ -176,7 +155,7 @@ function formatStackTrace(Throwable $e): string
  *
  * @param \Exception $exception
  */
-function processException(\Exception $exception)
+function processException(Exception $exception)
 {
     logger(sprintf(
         "%s\n%s",
@@ -278,29 +257,28 @@ function getElapsedTime(float $from): float
 
 /**
  * Inicializar módulo
+ *
+ * @throws \SP\Core\Exceptions\SPException
  */
-function initModule(string $module, ?ContainerBuilder $builder = null)
+function initModule(string $module): array
 {
-    $dir = dir(MODULES_PATH);
+    logger(sprintf('Initializing module: %s', $module));
 
-    while (false !== ($entry = $dir->read())) {
-        if ($entry === $module) {
-            $moduleFile = MODULES_PATH . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'module.php';
-            $definitionsFile = MODULES_PATH . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'definitions.php';
+    $moduleFile = MODULES_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'module.php';
 
-            if (file_exists($moduleFile)) {
-                require $moduleFile;
-            }
+    if (is_dir(MODULES_PATH) && file_exists($moduleFile)) {
+        $definitions = require $moduleFile;
 
-            if ($builder !== null && file_exists($definitionsFile)) {
-                $definitions = require $definitionsFile;
-
-                $builder->addDefinitions($definitions);
-            }
+        if (is_array($definitions)) {
+            return $definitions;
         }
+    } else {
+        throw new SPException('Either module dir or module file don\'t exist');
     }
 
-    $dir->close();
+    logger(sprintf('No definitions found for module: %s', $module));
+
+    return [];
 }
 
 /**

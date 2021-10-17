@@ -53,6 +53,17 @@ final class DatabaseConnectionData
             ->setDbSocket($configData->getDbSocket());
     }
 
+    public static function getFromEnvironment(): DatabaseConnectionData
+    {
+        return (new self())
+            ->setDbHost(getenv('DB_SERVER'))
+            ->setDbName(getenv('DB_NAME'))
+            ->setDbUser(getenv('DB_USER'))
+            ->setDbPass(getenv('DB_PASS'))
+            ->setDbPort((int)getenv('DB_PORT'))
+            ->setDbSocket(getenv('DB_SOCKET'));
+    }
+
     public function refreshFromConfig(
         ConfigDataInterface $configData
     ): DatabaseConnectionData

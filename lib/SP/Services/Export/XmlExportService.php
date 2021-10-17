@@ -100,7 +100,7 @@ final class XmlExportService extends Service
     private function setExportPath(string $exportPath): void
     {
         if (!is_dir($exportPath)
-            && !mkdir($exportPath, 0700, true)
+            && !@mkdir($exportPath, 0700, true)
             && !is_dir($exportPath)
         ) {
             throw new ServiceException(sprintf(

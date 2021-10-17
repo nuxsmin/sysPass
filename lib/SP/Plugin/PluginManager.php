@@ -84,32 +84,29 @@ final class PluginManager
      */
     public static function getPlugins(): array
     {
-        if (is_dir(PLUGINS_PATH)) {
-            $dir = dir(PLUGINS_PATH);
-            $plugins = [];
+        $plugins = [];
 
-            if ($dir) {
-                while (false !== ($entry = $dir->read())) {
-                    $pluginDir = PLUGINS_PATH . DIRECTORY_SEPARATOR . $entry;
-                    $pluginFile = $pluginDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Plugin.php';
+        if (is_dir(PLUGINS_PATH)
+            && ($dir = dir(PLUGINS_PATH))) {
 
-                    if (strpos($entry, '.') === false
-                        && is_dir($pluginDir)
-                        && file_exists($pluginFile)
-                    ) {
-                        logger(sprintf('Plugin found: %s', $pluginDir));
+            while (false !== ($entry = $dir->read())) {
+                $pluginDir = PLUGINS_PATH . DS . $entry;
+                $pluginFile = $pluginDir . DS . 'src' . DS . 'lib' . DS . 'Plugin.php';
 
-                        $plugins[$entry] = require $pluginDir . DIRECTORY_SEPARATOR . 'base.php';
-                    }
+                if (strpos($entry, '.') === false
+                    && is_dir($pluginDir)
+                    && file_exists($pluginFile)
+                ) {
+                    logger(sprintf('Plugin found: %s', $pluginDir));
+
+                    $plugins[$entry] = require $pluginDir . DS . 'base.php';
                 }
-
-                $dir->close();
             }
 
-            return $plugins;
+            $dir->close();
         }
 
-        return [];
+        return $plugins;
     }
 
     /**

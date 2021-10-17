@@ -67,9 +67,11 @@ final class Filter
     /**
      * @param string|int $value
      */
-    public static function getInt($value): int
+    public static function getInt($value): ?int
     {
-        return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+        $filterVar = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+
+        return is_numeric($filterVar) ? (int)$filterVar : null;
     }
 
     public static function getString(?string $value): string

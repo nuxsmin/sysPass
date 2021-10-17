@@ -96,7 +96,7 @@ abstract class Cookie
     protected function setCookie(string $data): bool
     {
         // Do not try to set cookies when testing
-        if (APP_MODULE === 'tests') {
+        if (IS_TESTING) {
             return true;
         }
 

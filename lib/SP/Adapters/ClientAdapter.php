@@ -63,7 +63,7 @@ final class ClientAdapter extends AdapterBase
             'id' => $data->getId(),
             'name' => $data->getName(),
             'description' => $data->getDescription(),
-            'global' => $data->isGlobal,
+            'isGlobal' => $data->isGlobal,
             'customFields' => null,
             'links' => [
                 [

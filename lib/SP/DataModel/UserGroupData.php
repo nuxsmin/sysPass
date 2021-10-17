@@ -33,83 +33,47 @@ defined('APP_ROOT') || die();
  */
 class UserGroupData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id = 0;
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var string
-     */
-    public $description;
-    /**
-     * @var array
-     */
-    public $users;
+    public int $id = 0;
+    public string $name;
+    public ?string $description = null;
+    public ?array $users = null;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
-        $this->id = (int)$id;
+        $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return array
-     */
-    public function getUsers()
+    public function getUsers(): ?array
     {
         return $this->users;
     }
 
-    /**
-     * @param array $users
-     */
-    public function setUsers($users)
+    public function setUsers(?array $users): void
     {
         $this->users = $users;
     }

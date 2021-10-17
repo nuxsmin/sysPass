@@ -67,10 +67,12 @@ final class CategoryAdapter extends AdapterBase
             'links' => [
                 [
                     'rel' => 'self',
-                    'uri' => Link::getDeepLink($data->getId(),
+                    'uri' => Link::getDeepLink(
+                        $data->getId(),
                         ActionsInterface::CATEGORY_VIEW,
                         $this->configData,
-                        true)
+                        true
+                    )
                 ]
             ],
         ];

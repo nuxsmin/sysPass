@@ -99,10 +99,12 @@ final class AccountAdapter extends AdapterBase
             'links' => [
                 [
                     'rel' => 'self',
-                    'uri' => Link::getDeepLink($account->getId(),
+                    'uri' => Link::getDeepLink(
+                        $account->getId(),
                         ActionsInterface::ACCOUNT_VIEW,
                         $this->configData,
-                        true)
+                        true
+                    )
                 ]
             ],
         ];

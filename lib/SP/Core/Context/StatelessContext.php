@@ -97,11 +97,11 @@ final class StatelessContext extends ContextBase
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param ProfileData $ProfileData
+     * @param ProfileData $profileData
      */
-    public function setUserProfile(ProfileData $ProfileData): void
+    public function setUserProfile(ProfileData $profileData): void
     {
-        $this->setContextKey('userProfile', $ProfileData);
+        $this->setContextKey('userProfile', $profileData);
     }
 
     /**
@@ -126,10 +126,8 @@ final class StatelessContext extends ContextBase
 
     /**
      * Establecer el lenguaje de la sesión
-     *
-     * @param $locale
      */
-    public function setLocale($locale): void
+    public function setLocale(string $locale): void
     {
         $this->setContextKey('locale', $locale);
     }

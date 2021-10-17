@@ -39,24 +39,24 @@ use SP\Storage\Database\MySQLHandler;
 use SP\Util\FileUtil;
 
 define('DEBUG', true);
-
-define('APP_MODULE', 'tests');
-
+define('IS_TESTING', true);
 define('APP_ROOT', dirname(__DIR__, 2));
 define('TEST_ROOT', dirname(__DIR__));
+
+const APP_DEFINITIONS_FILE = APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php';
+
 define('RESOURCE_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
 define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
-
+define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'locales');
 define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'modules');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
 define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 define('BACKUP_PATH', TMP_PATH);
-
+define('PLUGINS_PATH', TMP_PATH);
 define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
-
 define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('FIXTURE_FILES', [
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
@@ -68,9 +68,9 @@ define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
-print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
-print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
-print 'SELF_IP_ADDRESS=' . SELF_IP_ADDRESS . PHP_EOL;
+logger('APP_ROOT=' . APP_ROOT);
+logger('TEST_ROOT=' . TEST_ROOT);
+logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
 
 // Setup directories
 recreateDir(TMP_PATH);
@@ -88,22 +88,13 @@ if (is_dir(CONFIG_PATH)
  * Función para llamadas a gettext
  */
 if (!function_exists('\gettext')) {
-    /**
-     *
-     * @param $str
-     *
-     * @return string
-     */
-    function gettext($str): string
+    function gettext(string $str): string
     {
         return $str;
     }
 }
 
-/**
- * @return string
- */
-function getRealIpAddress()
+function getRealIpAddress(): string
 {
     return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
 }
@@ -119,10 +110,9 @@ function setupContext(): Container
 {
     // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
     // para la aplicación
-    $builder = new ContainerBuilder();
-//    $builder->setDefinitionCache(new ArrayCache());
-    $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
-    $dic = $builder->build();
+    $dic = (new ContainerBuilder())
+        ->addDefinitions(APP_DEFINITIONS_FILE)
+        ->build();
 
     // Inicializar el contexto
     $context = $dic->get(ContextInterface::class);
@@ -148,62 +138,38 @@ function setupContext(): Container
     return $dic;
 }
 
-/**
- * @param DatabaseConnectionData|null $connectionData
- *
- * @return MySQLHandler
- */
-function getDbHandler(DatabaseConnectionData $connectionData = null): MySQLHandler
+function getDbHandler(?DatabaseConnectionData $connectionData = null): MySQLHandler
 {
     if ($connectionData === null) {
         // Establecer configuración de conexión con la BBDD
-        $connectionData = (new DatabaseConnectionData())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbName(getenv('DB_NAME'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'));
+        $connectionData = DatabaseConnectionData::getFromEnvironment();
     }
 
     return new MySQLHandler($connectionData);
 }
 
-/**
- * @param $dir
- * @param $file
- *
- * @return string
- */
-function getResource($dir, $file): string
+function getResource(string $dir, string $file): string
 {
     return file_get_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
 }
 
-/**
- * @param $dir
- * @param $file
- * @param $data
- *
- * @return string
- */
-function saveResource($dir, $file, $data): string
+function saveResource(string $dir, string $file, string $data): string
 {
     return file_put_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }
 
 /**
- * @param $dir
- *
  * @throws FileNotFoundException
  */
-function recreateDir($dir)
+function recreateDir(string $dir)
 {
     if (is_dir($dir)) {
-        print 'Deleting ' . $dir . PHP_EOL;
+        logger('Deleting ' . $dir);
 
         FileUtil::rmdir_recursive($dir);
     }
 
-    print 'Creating ' . $dir . PHP_EOL;
+    logger('Creating ' . $dir . PHP_EOL);
 
     if (!mkdir($dir) && !is_dir($dir)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));

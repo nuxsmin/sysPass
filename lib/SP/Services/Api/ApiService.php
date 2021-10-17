@@ -263,9 +263,15 @@ final class ApiService extends Service
         string $param,
         bool   $required = false,
                $default = null
-    ): int
+    ): ?int
     {
-        return Filter::getInt($this->getParam($param, $required, $default));
+        $value = $this->getParam($param, $required, $default);
+
+        if (null !== $value) {
+            return Filter::getInt($value);
+        }
+
+        return $default;
     }
 
     /**
@@ -275,9 +281,15 @@ final class ApiService extends Service
         string $param,
         bool   $required = false,
                $default = null
-    ): string
+    ): ?string
     {
-        return Filter::getString($this->getParam($param, $required, $default));
+        $value = $this->getParam($param, $required, $default);
+
+        if (null !== $value) {
+            return Filter::getString($value);
+        }
+
+        return $default;
     }
 
     /**
@@ -286,13 +298,13 @@ final class ApiService extends Service
     public function getParamArray(
         string $param,
         bool   $required = false,
-               $default = null):
-    ?array
+               $default = null
+    ): ?array
     {
-        $array = $this->getParam($param, $required, $default);
+        $value = $this->getParam($param, $required, $default);
 
-        if ($array !== null) {
-            return Filter::getArray($array);
+        if (null !== $value) {
+            return Filter::getArray($value);
         }
 
         return null;
@@ -305,9 +317,15 @@ final class ApiService extends Service
         string $param,
         bool   $required = false,
                $default = null
-    ): string
+    ): ?string
     {
-        return Filter::getRaw($this->getParam($param, $required, $default));
+        $value = $this->getParam($param, $required, $default);
+
+        if (null !== $value) {
+            return Filter::getRaw($value);
+        }
+
+        return $default;
     }
 
     /**

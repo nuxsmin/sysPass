@@ -184,6 +184,10 @@ final class Language
      */
     public function setAppLocales(): void
     {
+        if (!$this->context->isInitialized()) {
+            return;
+        }
+
         if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
             self::setLocales($this->configData->getSiteLang());
 

@@ -101,7 +101,10 @@ final class CategoryService extends Service
     public function delete(int $id): CategoryService
     {
         if ($this->categoryRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(
+                __u('Category not found'),
+                SPException::INFO
+            );
         }
 
         return $this;

@@ -41,8 +41,6 @@ final class ApiRequest
     /**
      * ApiRequest constructor.
      *
-     * @param string|null $request
-     *
      * @throws \SP\Services\Api\ApiRequestException
      */
     public function __construct(?string $request = null)

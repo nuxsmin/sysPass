@@ -38,12 +38,25 @@ trait DatabaseTrait
     protected static function getRowCount(string $table): int
     {
         if (!self::$conn) {
-            return 0;
+            self::setConnection();
         }
 
         $sql = sprintf('SELECT count(*) FROM `%s`', $table);
 
         return (int)self::$conn->query($sql)->fetchColumn();
+    }
+
+    protected static function setConnection(): void
+    {
+        if (!self::$conn) {
+            try {
+                self::$conn = getDbHandler()->getConnection();
+            } catch (DatabaseException $e) {
+                processException($e);
+
+                exit(1);
+            }
+        }
     }
 
     protected static function loadFixtures(): void
@@ -88,15 +101,16 @@ trait DatabaseTrait
 
             printf('Fixtures loaded from: %s' . PHP_EOL, $file);
         }
+    }
 
+    protected static function truncateTable(string $table): void
+    {
         if (!self::$conn) {
-            try {
-                self::$conn = getDbHandler()->getConnection();
-            } catch (DatabaseException $e) {
-                processException($e);
-
-                exit(1);
-            }
+            self::setConnection();
         }
+
+        $sql = sprintf('TRUNCATE TABLE `%s`', $table);
+
+        self::$conn->exec($sql);
     }
 }

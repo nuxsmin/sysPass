@@ -93,6 +93,8 @@ final class UserGroupController extends ControllerBase
 
             $id = $this->userGroupService->create($userGroupData);
 
+            $userGroupData->setId($id);
+
             $this->eventDispatcher->notifyEvent(
                 'create.userGroup',
                 new Event($this, EventMessage::factory()

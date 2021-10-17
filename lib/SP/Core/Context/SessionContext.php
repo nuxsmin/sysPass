@@ -346,10 +346,8 @@ final class SessionContext extends ContextBase
 
     /**
      * Establecer el lenguaje de la sesión
-     *
-     * @param $locale
      */
-    public function setLocale($locale): void
+    public function setLocale(string $locale): void
     {
         $this->setContextKey('locale', $locale);
     }
@@ -480,7 +478,11 @@ final class SessionContext extends ContextBase
     public function initialize(): void
     {
         // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
+        if (headers_sent($filename, $line)
+            || @session_start() === false) {
+
+            logger(sprintf('Headers sent in %s:%d file', $filename, $line));
+
             throw new ContextException(__u('Session cannot be initialized'));
         }
 

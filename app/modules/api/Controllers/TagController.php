@@ -87,6 +87,8 @@ final class TagController extends ControllerBase
 
             $id = $this->tagService->create($tagData);
 
+            $tagData->setId($id);
+
             $this->eventDispatcher->notifyEvent(
                 'create.tag',
                 new Event(

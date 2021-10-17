@@ -125,7 +125,7 @@ final class Installer extends Service
                 __u('An user with database administrative rights'));
         }
 
-        if (APP_MODULE !== 'tests'
+        if (IS_TESTING
             && empty($this->installData->getDbAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database password'),
@@ -207,7 +207,7 @@ final class Installer extends Service
         if (strpos('localhost', $this->installData->getDbHost()) === false
             && strpos('127.0.0.1', $this->installData->getDbHost()) === false
         ) {
-            if (APP_MODULE === 'tests') {
+            if (defined('SELF_IP_ADDRESS')) {
                 $address = SELF_IP_ADDRESS;
             } else {
                 $address = $this->request->getServer('SERVER_ADDR');

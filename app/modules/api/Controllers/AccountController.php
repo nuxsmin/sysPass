@@ -228,7 +228,10 @@ final class AccountController extends ControllerBase
             $accountRequest->userId = $this->apiService->getParamInt('userId', false, $userData->getId());
             $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
 
-            $accountRequest->tags = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
+            $accountRequest->tags = array_map(
+                'intval',
+                $this->apiService->getParamArray('tagsId', false, [])
+            );
             $accountRequest->pass = $this->apiService->getParamRaw('pass', true);
 
             $this->accountPresetService->checkPasswordPreset($accountRequest);
@@ -287,7 +290,10 @@ final class AccountController extends ControllerBase
             $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false);
             $accountRequest->userEditId = $this->context->getUserData()->getId();
 
-            $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
+            $tagsId = array_map(
+                'intval',
+                $this->apiService->getParamArray('tagsId', false, [])
+            );
 
             if (count($tagsId) !== 0) {
                 $accountRequest->updateTags = true;
@@ -412,9 +418,7 @@ final class AccountController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize(): void
     {

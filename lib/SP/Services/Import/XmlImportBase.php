@@ -29,7 +29,6 @@ use DOMElement;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\ConfigData;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
@@ -70,7 +69,7 @@ abstract class XmlImportBase
         $this->importParams = $importParams;
         $this->xmlDOM = $xmlFileImport->getXmlDOM();
 
-        $this->configData = $dic->get(ConfigData::class);
+        $this->configData = $dic->get(ConfigDataInterface::class);
         $this->accountService = $dic->get(AccountService::class);
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);

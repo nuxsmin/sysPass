@@ -28,10 +28,9 @@ use Exception;
 use Klein\Klein;
 use League\Fractal\Manager;
 use Psr\Container\ContainerInterface;
-use SP\Config\ConfigData;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
-use SP\Core\Context\StatelessContext;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
@@ -48,10 +47,11 @@ use SP\Services\ServiceException;
 abstract class ControllerBase
 {
     protected const SEARCH_COUNT_ITEMS = 25;
+
     protected ContainerInterface $dic;
     protected string $controllerName;
     protected string $actionName;
-    protected StatelessContext $context;
+    protected ContextInterface $context;
     protected EventDispatcher $eventDispatcher;
     protected ApiService $apiService;
     protected Klein $router;
@@ -66,8 +66,8 @@ abstract class ControllerBase
     )
     {
         $this->dic = $container;
-        $this->context = $container->get(StatelessContext::class);
-        $this->configData = $container->get(ConfigData::class);
+        $this->context = $container->get(ContextInterface::class);
+        $this->configData = $container->get(ConfigDataInterface::class);
         $this->eventDispatcher = $container->get(EventDispatcher::class);
         $this->router = $container->get(Klein::class);
         $this->apiService = $container->get(ApiService::class);
@@ -133,8 +133,8 @@ abstract class ControllerBase
      */
     private function sendJsonResponse(string $response): void
     {
-        $json = Json::factory($this->router->response());
-        $json->returnRawJson($response);
+        Json::factory($this->router->response())
+            ->returnRawJson($response);
     }
 
     final protected function returnResponseException(Exception $e): void

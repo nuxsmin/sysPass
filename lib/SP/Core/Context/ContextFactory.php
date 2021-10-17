@@ -22,40 +22,19 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Http;
-
-use SP\Config\ConfigDataInterface;
+namespace SP\Core\Context;
 
 /**
- * Class Client
  *
- * @package SP\Http
  */
-final class Client
+final class ContextFactory
 {
-    public static function getOptions(ConfigDataInterface $configData): array
+    public static function getForModule(string $module): ContextInterface
     {
-        $options = [
-            'timeout' => 10,
-            'version' => 1.1
-        ];
-
-        if ($configData->isProxyEnabled()) {
-            $options['proxy'] = sprintf(
-                'tcp://%s:%d',
-                $configData->getProxyServer(),
-                $configData->getProxyPort()
-            );
-
-            if (!empty($configData->getProxyUser())
-                && !empty($configData->getProxyPass())) {
-                $options['auth'] = [
-                    $configData->getProxyUser(),
-                    $configData->getProxyPass()
-                ];
-            }
+        if ($module === 'web') {
+            return new SessionContext();
         }
 
-        return $options;
+        return new StatelessContext();
     }
 }

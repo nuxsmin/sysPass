@@ -74,27 +74,41 @@ abstract class LoggerBase extends Provider implements EventReceiver
     {
         $this->language->setAppLocales();
 
-        $userLogin = $this->context->getUserData()->getLogin() ?: 'N/A';
+        $userLogin = 'N/A';
+
+        if ($this->context->isInitialized()) {
+            $userLogin = $this->context->getUserData()->getLogin() ?? 'N/A';
+        }
+
         $source = $event->getSource();
 
         if ($source instanceof Exception) {
-            $this->logger->error($eventType,
+            $this->logger->error(
+                $eventType,
                 $this->formatContext(
                     __($source->getMessage()),
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $this->logger->debug($eventType,
+            $this->logger->debug(
+                $eventType,
                 $this->formatContext(
                     $eventMessage->composeText(' | '),
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         } else {
-            $this->logger->debug($eventType,
+            $this->logger->debug(
+                $eventType,
                 $this->formatContext(
                     'N/A',
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         }
 
         $this->language->unsetAppLocales();

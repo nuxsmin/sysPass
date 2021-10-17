@@ -52,7 +52,8 @@ defined('APP_ROOT') || die();
  */
 final class FileBackupService extends Service
 {
-    private const BACKUP_EXCLUDE_REGEX = '#^(?!.*(backup|cache|temp|vendor|tests))(.*)$#i';
+    private const BACKUP_INCLUDE_REGEX = /** @lang RegExp */
+        '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
 
     private ?ConfigDataInterface $configData = null;
     private ?string $path = null;
@@ -120,7 +121,7 @@ final class FileBackupService extends Service
     private function checkBackupDir(): void
     {
         if (is_dir($this->path) === false
-            && !@mkdir($concurrentDirectory = $this->path, 0750)
+            && !@mkdir($concurrentDirectory = $this->path, 0750, true)
             && !is_dir($concurrentDirectory)
         ) {
             throw new ServiceException(
@@ -213,7 +214,9 @@ final class FileBackupService extends Service
         if ($tables === '*') {
             $resTables = DatabaseUtil::TABLES;
         } else {
-            $resTables = is_array($tables) ? $tables : explode(',', $tables);
+            $resTables = is_array($tables)
+                ? $tables
+                : explode(',', $tables);
         }
 
         $lineSeparator = PHP_EOL . PHP_EOL;
@@ -338,7 +341,7 @@ final class FileBackupService extends Service
 
         $archive = new ArchiveHandler($this->backupFileApp, $this->extensionChecker);
 
-        $archive->compressDirectory(APP_ROOT, self::BACKUP_EXCLUDE_REGEX);
+        $archive->compressDirectory(APP_ROOT, self::BACKUP_INCLUDE_REGEX);
 
         return true;
     }

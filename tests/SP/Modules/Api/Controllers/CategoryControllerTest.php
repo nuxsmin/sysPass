@@ -24,8 +24,8 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Tests\Modules\Api\ApiTest;
-use SP\Tests\WebTestCase;
+use SP\Core\Acl\ActionsInterface;
+use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
 /**
@@ -33,174 +33,364 @@ use stdClass;
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
-class CategoryControllerTest extends WebTestCase
+class CategoryControllerTest extends ApiTestCase
 {
+    private const PARAMS = [
+        'name' => 'API Category',
+        'description' => "API test\ndescription"
+    ];
+
     /**
-     * @return int
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testCreateAction()
+    public function testCreateAction(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/create',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'name' => 'API Category',
-                'description' => "API test\ndescription"
-            ],
-            'id' => 1
-        ];
+        $response = $this->createCategory(self::PARAMS);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNull($response->result->count);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals(4, $response->result->itemId);
+        $this->assertEquals('Category added', $response->result->resultMessage);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals(5, $result->result->itemId);
-        $this->assertEquals('Category added', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
+        $resultItem = $response->result->result;
 
-        return $result->result->itemId;
+        $this->assertEquals($response->result->itemId, $resultItem->id);
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
     }
 
     /**
-     * @depends testCreateAction
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    private function createCategory(?array $params = null): stdClass
+    {
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_CREATE,
+            $params ?? self::PARAMS
+        );
+
+        return self::processJsonResponse($api);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testCreateActionDuplicated(): void
+    {
+        $response = $this->createCategory(['name' => 'web']);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Duplicated category', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testCreateActionRequiredParameter(): void
+    {
+        $params = self::PARAMS;
+        unset($params['name']);
+
+        $response = $this->createCategory($params);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testViewAction(): void
+    {
+        $response = $this->createCategory(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result->data;
+
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
+        $this->assertNull($resultItem->customFields);
+        $this->assertIsArray($resultItem->links);
+        $this->assertEquals('self', $resultItem->links[0]->rel);
+        $this->assertNotEmpty($resultItem->links[0]->uri);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testViewActionNonExistant(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_VIEW,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Category not found', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditAction(): void
+    {
+        $response = $this->createCategory(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'API test edit',
+            'description' => "API test\ndescription\nedit"
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals('Category updated', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result->data;
+
+        $this->assertEquals($params['name'], $resultItem->name);
+        $this->assertEquals($params['description'], $resultItem->description);
+        $this->assertNull($resultItem->customFields);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionDuplicated(): void
+    {
+        $response = $this->createCategory(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'web'
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Duplicated category name', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionRequiredParameters(): void
+    {
+        $response = $this->createCategory(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionNonExistant(): void
+    {
+        $params = [
+            'id' => 10,
+            'name' => 'API test edit',
+            'description' => "API test\ndescription\nedit"
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(0, $response->result->count);
+    }
+
+    /**
+     * @dataProvider searchProvider
      *
-     * @param $id
+     * @throws \DI\DependencyException
+     * @throws \JsonException
+     * @throws \DI\NotFoundException
      */
-    public function testViewAction($id)
+    public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/view',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id
-            ],
-            'id' => 1
-        ];
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_SEARCH,
+            $filter
+        );
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $response = self::processJsonResponse($api);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->result->id);
-        $this->assertEquals('API Category', $result->result->result->name);
-        $this->assertEquals("API test\ndescription", $result->result->result->description);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals($resultsCount, $response->result->count);
+        $this->assertCount($resultsCount, $response->result->result);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testEditAction($id)
+    public function testDeleteAction(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/edit',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-                'name' => 'API category edit',
-                'description' => "API test\ndescription\nedit"
-            ],
-            'id' => 1
-        ];
+        $response = $this->createCategory();
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $id = $response->result->itemId;
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Category updated', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
-    }
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_DELETE,
+            ['id' => $id]
+        );
 
-    public function testSearchAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN
-            ],
-            'id' => 1
-        ];
+        $response = self::processJsonResponse($api);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(5, $result->result->count);
-        $this->assertCount(5, $result->result->result);
-
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'count' => 1
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-    }
-
-    public function testSearchByTextAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'text' => 'API category edit'
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-        $this->assertEquals('API category edit', $result->result->result[0]->name);
-        $this->assertEquals("API test\ndescription\nedit", $result->result->result[0]->description);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals('Category deleted', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testDeleteAction($id)
+    public function testDeleteActionNonExistant(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'category/delete',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_DELETE,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Category not found', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testDeleteActionRequiredParameters(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CATEGORY_DELETE,
+            []
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    public function searchProvider(): array
+    {
+        return [
+            [
+                [],
+                3
             ],
-            'id' => 1
+            [
+                ['count' => 1],
+                1
+            ],
+            [
+                ['text' => 'Linux'],
+                1
+            ],
+            [
+                ['text' => 'Windows'],
+                0
+            ]
         ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Category deleted', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
     }
 }

@@ -24,8 +24,8 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Tests\Modules\Api\ApiTest;
-use SP\Tests\WebTestCase;
+use SP\Core\Acl\ActionsInterface;
+use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
 /**
@@ -33,48 +33,141 @@ use stdClass;
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
-class ConfigControllerTest extends WebTestCase
+class ConfigControllerTest extends ApiTestCase
 {
-    public function testExportAction()
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testExportAction(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'config/export',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN
-            ],
-            'id' => 1
-        ];
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_EXPORT_RUN,
+            []
+        );
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $response = self::processJsonResponse($api);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals('/var/www/html/sysPass/app/backup', $result->result->result);
-        $this->assertEquals('Export process finished', $result->result->resultMessage);
-        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertEquals('Export process finished', $response->result->resultMessage);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNotEmpty($response->result->result->files->xml);
+        $this->assertFileExists($response->result->result->files->xml);
     }
 
-    public function testBackupAction()
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testExportActionCustomPath(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'config/backup',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN
-            ],
-            'id' => 1
-        ];
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_EXPORT_RUN,
+            [
+                'path' => TMP_PATH . '/export/custom/path'
+            ]
+        );
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $response = self::processJsonResponse($api);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals(0, $result->result->itemId);
-        $this->assertEquals('/var/www/html/sysPass/app/backup', $result->result->result);
-        $this->assertEquals('Backup process finished', $result->result->resultMessage);
-        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertEquals('Export process finished', $response->result->resultMessage);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNotEmpty($response->result->result->files->xml);
+        $this->assertFileExists($response->result->result->files->xml);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testExportActionInvalidPath(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_EXPORT_RUN,
+            [
+                'path' => '/export/custom/path'
+            ]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertStringContainsString('Unable to create the directory', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testBackupAction(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_BACKUP_RUN,
+            []
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertEquals('Backup process finished', $response->result->resultMessage);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNotEmpty($response->result->result->files->app);
+        $this->assertNotEmpty($response->result->result->files->db);
+        $this->assertFileExists($response->result->result->files->app);
+        $this->assertFileExists($response->result->result->files->db);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testBackupActionInvalidPath(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_BACKUP_RUN,
+            [
+                'path' => '/backup/custom/path'
+            ]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertStringContainsString('Unable to create the backups directory', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testBackupActionCustomPath(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::CONFIG_BACKUP_RUN,
+            [
+                'path' => TMP_PATH . '/backup/custom/path'
+            ]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertEquals('Backup process finished', $response->result->resultMessage);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNotEmpty($response->result->result->files->app);
+        $this->assertNotEmpty($response->result->result->files->db);
+        $this->assertFileExists($response->result->result->files->app);
+        $this->assertFileExists($response->result->result->files->db);
     }
 }

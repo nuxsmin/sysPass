@@ -225,7 +225,11 @@ final class AccountSearchFilter
 
         $orderDir = $this->sortOrder === self::SORT_DIR_ASC ? 'ASC' : 'DESC';
 
-        return sprintf('%s %s', implode(',', $orderKey), $orderDir);
+        return sprintf(
+            '%s %s',
+            implode(',', $orderKey),
+            $orderDir
+        );
     }
 
     public function isSortViews(): bool

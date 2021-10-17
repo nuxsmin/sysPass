@@ -195,8 +195,6 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
     /**
      * Migrar valores de configuración.
-     *
-     * @throws FileException
      */
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {

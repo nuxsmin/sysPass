@@ -28,32 +28,24 @@ use SP\DataModel\AccountVData;
 use SP\DataModel\ItemData;
 
 /**
- * Class AccountDto
- *
- * @package SP\DataModel\Dto
+ * Class AccountDetailsResponse
  */
 class AccountDetailsResponse
 {
-    /**
-     * @var int
-     */
-    private $id;
-    /**
-     * @var AccountVData
-     */
-    private $accountVData;
+    private int $id;
+    private AccountVData $accountVData;
     /**
      * @var ItemData[] Los usuarios secundarios de la cuenta.
      */
-    private $users = [];
+    private array $users = [];
     /**
      * @var ItemData[] Los grupos secundarios de la cuenta.
      */
-    private $userGroups = [];
+    private array $userGroups = [];
     /**
      * @var ItemData[] Las etiquetas de la cuenta.
      */
-    private $tags = [];
+    private array $tags = [];
 
     /**
      * AccountDetailsResponse constructor.
@@ -61,7 +53,7 @@ class AccountDetailsResponse
      * @param int          $id
      * @param AccountVData $accountVData
      */
-    public function __construct($id, AccountVData $accountVData)
+    public function __construct(int $id, AccountVData $accountVData)
     {
         $this->id = $id;
         $this->accountVData = $accountVData;
@@ -70,7 +62,7 @@ class AccountDetailsResponse
     /**
      * @return ItemData[]
      */
-    public function getUsers()
+    public function getUsers(): array
     {
         return $this->users;
     }
@@ -78,7 +70,7 @@ class AccountDetailsResponse
     /**
      * @param ItemData[] $users
      */
-    public function setUsers(array $users)
+    public function setUsers(array $users): void
     {
         $this->users = $users;
     }
@@ -86,7 +78,7 @@ class AccountDetailsResponse
     /**
      * @return ItemData[]
      */
-    public function getUserGroups()
+    public function getUserGroups(): array
     {
         return $this->userGroups;
     }
@@ -94,7 +86,7 @@ class AccountDetailsResponse
     /**
      * @param ItemData[] $userGroups
      */
-    public function setUserGroups(array $userGroups)
+    public function setUserGroups(array $userGroups): void
     {
         $this->userGroups = $userGroups;
     }
@@ -102,7 +94,7 @@ class AccountDetailsResponse
     /**
      * @return ItemData[]
      */
-    public function getTags()
+    public function getTags(): array
     {
         return $this->tags;
     }
@@ -110,7 +102,7 @@ class AccountDetailsResponse
     /**
      * @param ItemData[] $tags
      */
-    public function setTags(array $tags)
+    public function setTags(array $tags): void
     {
         $this->tags = $tags;
     }
@@ -118,7 +110,7 @@ class AccountDetailsResponse
     /**
      * @return AccountVData
      */
-    public function getAccountVData()
+    public function getAccountVData(): AccountVData
     {
         return $this->accountVData;
     }
@@ -126,7 +118,7 @@ class AccountDetailsResponse
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

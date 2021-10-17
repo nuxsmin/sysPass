@@ -703,7 +703,9 @@ final class AccountRepository extends Repository implements RepositoryInterface
             );
 
             if (QueryCondition::CONDITION_AND === $accountSearchFilter->getFilterOperator()) {
-                $queryData->setGroupBy('Account.id HAVING COUNT(DISTINCT AccountToTag.tagId) = ' . count($accountSearchFilter->getTagsId()));
+                $groupBy = sprintf('Account.id HAVING COUNT(DISTINCT AccountToTag.tagId) = %d', count($accountSearchFilter->getTagsId()));
+
+                $queryData->setGroupBy($groupBy);
             }
         }
 

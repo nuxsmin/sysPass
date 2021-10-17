@@ -328,7 +328,7 @@ final class FileHandler
      */
     public function delete(): FileHandler
     {
-        if (@unlink($this->file) === false) {
+        if (file_exists($this->file) && @unlink($this->file) === false) {
             throw new FileException(sprintf(
                 __('Unable to delete file (%s)'),
                 $this->file

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         backupGlobals="false"
          backupStaticAttributes="false"
          bootstrap="./SP/bootstrap.php"
          colors="true"
@@ -7,7 +8,25 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">../lib/SP</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">../lib/SP/DataModel</directory>
+            <directory suffix=".php">../lib/SP/Providers</directory>
+            <directory suffix=".php">../lib/SP/Html/Assets</directory>
+            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+            <file>../lib/SP/Config/ConfigData.php</file>
+        </exclude>
+        <report>
+            <clover outputFile="./_output/coverage-clover.xml"/>
+            <text outputFile="php://stdout" showUncoveredFiles="true"
+                  showOnlySummary="true"/>
+        </report>
+    </coverage>
     <testsuites>
         <testsuite name="core">
             <directory suffix=".php">./SP</directory>
@@ -20,20 +39,5 @@
             <directory suffix=".php">./SP/Modules/Cli</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../lib/SP</directory>
-            <exclude>
-                <directory suffix=".php">../lib/SP/DataModel</directory>
-                <directory suffix=".php">../lib/SP/Providers</directory>
-                <directory suffix=".php">../lib/SP/Html/Assets</directory>
-                <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
-                <file>../lib/SP/Config/ConfigData.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="./_output/coverage-clover.xml"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" showOnlySummary="true" />
-    </logging>
+    <logging/>
 </phpunit>

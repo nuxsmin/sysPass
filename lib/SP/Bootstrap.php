@@ -33,10 +33,8 @@ use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Config\ConfigUtil;
-use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Language;
@@ -93,18 +91,15 @@ final class Bootstrap
 
     /**
      * Bootstrap constructor.
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
-    private function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
         self::$container = $container;
 
         // Set the default language
         Language::setLocales('en_US');
 
-        $this->configData = $container->get(Config::class)->getConfigData();
+        $this->configData = $container->get(ConfigDataInterface::class);
         $this->router = $container->get(Klein::class);
         $this->request = $container->get(Request::class);
 
@@ -209,14 +204,14 @@ final class Bootstrap
 
                 logger('Routing call: ' . $controllerClass . '::' . $method);
 
-                return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
+                return call_user_func([new $controllerClass(self::$container, $method), $method]);
             } catch (\Exception $e) {
                 processException($e);
 
                 /** @var Response $response */
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
-                return $response->body(JsonRpcResponse::getResponseException($e, 0));
 
+                return $response->body(JsonRpcResponse::getResponseException($e, 0));
             } finally {
                 $this->router->skipRemaining();
             }
@@ -233,13 +228,11 @@ final class Bootstrap
     }
 
     /**
-     * @throws ConfigException
-     * @throws Core\Exceptions\CheckException
-     * @throws InitializationException
-     * @throws Services\Upgrade\UpgradeException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws Storage\File\FileException
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Core\Exceptions\ConfigException
+     * @throws \SP\Core\Exceptions\InitializationException
+     * @throws \SP\Services\Upgrade\UpgradeException
+     * @throws \SP\Storage\File\FileException
      */
     protected function initializeCommon(): void
     {
@@ -323,7 +316,10 @@ final class Bootstrap
             Debug::enable();
         } else {
             error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-            ini_set('display_errors', 0);
+
+            if (!headers_sent()) {
+                ini_set('display_errors', 0);
+            }
         }
 
         if (!file_exists(LOG_FILE)
@@ -337,9 +333,11 @@ final class Bootstrap
             date_default_timezone_set('UTC');
         }
 
-        // Avoid PHP session cookies from JavaScript
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_handler', 'files');
+        if (!headers_sent()) {
+            // Avoid PHP session cookies from JavaScript
+            ini_set('session.cookie_httponly', '1');
+            ini_set('session.save_handler', 'files');
+        }
     }
 
     /**
@@ -365,11 +363,8 @@ final class Bootstrap
     /**
      * Cargar la configuración
      *
-     * @throws ConfigException
-     * @throws Services\Upgrade\UpgradeException
-     * @throws Storage\File\FileException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \SP\Core\Exceptions\ConfigException
+     * @throws \SP\Services\Upgrade\UpgradeException
      */
     private function initConfig(): void
     {
@@ -381,14 +376,17 @@ final class Bootstrap
     /**
      * Comprobar la versión de configuración y actualizarla
      *
-     * @throws Services\Upgrade\UpgradeException
-     * @throws Storage\File\FileException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \SP\Services\Upgrade\UpgradeException
      */
     private function checkConfigVersion(): void
     {
-        if (file_exists(OLD_CONFIG_FILE)) {
+        // Do not check config version when testing
+        if (IS_TESTING) {
+            return;
+        }
+
+        if (defined('OLD_CONFIG_FILE')
+            && file_exists(OLD_CONFIG_FILE)) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
             $upgradeConfigService->upgradeOldConfigFile(VersionUtil::getVersionStringNormalized());
         }
@@ -483,11 +481,7 @@ final class Bootstrap
 
     protected function initializePluginClasses(): void
     {
-        $loader = require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-        foreach (PluginManager::getPlugins() as $base) {
-            $loader->addPsr4($base['namespace'], $base['dir']);
-        }
+        PluginManager::getPlugins();
     }
 
     public static function getContainer(): ContainerInterface
@@ -531,5 +525,10 @@ final class Bootstrap
             default;
                 throw new InitializationException('Unknown module');
         }
+    }
+
+    public function getRouter(): Klein
+    {
+        return $this->router;
     }
 }

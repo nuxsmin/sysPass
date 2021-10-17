@@ -40,87 +40,65 @@ interface ContextInterface
      */
     public function initialize();
 
+    public function isInitialized(): bool;
+
     /**
      * Establecer la hora de carga de la configuración
-     *
-     * @param int $time
      */
     public function setConfigTime(int $time);
 
     /**
      * Devolver la hora de carga de la configuración
-     *
-     * @return int
      */
     public function getConfigTime(): int;
 
     /**
      * Establece los datos del usuario en la sesión.
-     *
-     * @param UserLoginResponse|null $userLoginResponse
      */
     public function setUserData(?UserLoginResponse $userLoginResponse = null);
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
-     *
-     * @return ProfileData|null
      */
     public function getUserProfile(): ?ProfileData;
 
     /**
      * Establece el objeto de perfil de usuario en la sesión.
-     *
-     * @param ProfileData $ProfileData
      */
-    public function setUserProfile(ProfileData $ProfileData);
+    public function setUserProfile(ProfileData $profileData);
 
     /**
      * Returns if user is logged in
-     *
-     * @return bool
      */
     public function isLoggedIn(): bool;
 
     /**
      * Devuelve los datos del usuario en la sesión.
-     *
-     * @return UserLoginResponse
      */
     public function getUserData(): UserLoginResponse;
 
     /**
      * Establecer el lenguaje de la sesión
-     *
-     * @param $locale
      */
-    public function setLocale($locale);
+    public function setLocale(string $locale);
 
     /**
      * Devuelve el lenguaje de la sesión
-     *
-     * @return string|null
      */
     public function getLocale(): ?string;
 
     /**
      * Devuelve el estado de la aplicación
-     *
-     * @return bool|null
      */
     public function getAppStatus(): ?bool;
 
     /**
      * Establecer el estado de la aplicación
-     *
-     * @param string $status
      */
     public function setAppStatus(string $status);
 
     /**
      * Reset del estado de la aplicación
-     *
-     * @return bool|null
      */
     public function resetAppStatus(): ?bool;
 
@@ -136,7 +114,6 @@ interface ContextInterface
      * @param string $key
      * @param mixed  $value
      *
-     * @return mixed
      * @throws ContextException
      */
     public function setTrasientKey(string $key, $value);
@@ -154,8 +131,6 @@ interface ContextInterface
 
     /**
      * Sets a temporary master password
-     *
-     * @param string $password
      */
     public function setTemporaryMasterPass(string $password);
 
@@ -163,16 +138,8 @@ interface ContextInterface
      * @param string $pluginName
      * @param string $key
      * @param mixed  $value
-     *
-     * @return mixed
      */
     public function setPluginKey(string $pluginName, string $key, $value);
 
-    /**
-     * @param string $pluginName
-     * @param string $key
-     *
-     * @return mixed
-     */
     public function getPluginKey(string $pluginName, string $key);
 }

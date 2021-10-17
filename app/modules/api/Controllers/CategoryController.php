@@ -24,15 +24,12 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use League\Fractal\Resource\Item;
 use SP\Adapters\CategoryAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
@@ -64,8 +61,6 @@ final class CategoryController extends ControllerBase
             $id = $this->apiService->getParamInt('id', true);
             $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $adapter = new CategoryAdapter($this->configData);
-
             $categoryData = $this->categoryService->getById($id);
 
             $this->eventDispatcher->notifyEvent(
@@ -80,8 +75,10 @@ final class CategoryController extends ControllerBase
             );
 
             $out = $this->fractal
-                ->createData(
-                    new Item($categoryData, new CategoryAdapter($this->configData)));
+                ->createData(new Item(
+                    $categoryData,
+                    new CategoryAdapter($this->configData)
+                ));
 
             if ($customFields) {
                 $this->apiService->requireMasterPass();
@@ -111,6 +108,8 @@ final class CategoryController extends ControllerBase
             $categoryData->setDescription($this->apiService->getParamString('description'));
 
             $id = $this->categoryService->create($categoryData);
+
+            $categoryData->setId($id);
 
             $this->eventDispatcher->notifyEvent(
                 'create.category',
@@ -245,9 +244,7 @@ final class CategoryController extends ControllerBase
     /**
      * initialize
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize(): void
     {

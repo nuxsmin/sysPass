@@ -47,9 +47,9 @@ final class Link
         $route = Acl::getActionRoute($actionId) . '/' . $itemId;
 
         if ($useUI) {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . '/index.php';
+            $baseUrl = ($configData->getApplicationUrl() ?? Bootstrap::$WEBURI) . '/index.php';
         } else {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($configData->getApplicationUrl() ?? Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
         }
 
         $uri = new Uri($baseUrl);

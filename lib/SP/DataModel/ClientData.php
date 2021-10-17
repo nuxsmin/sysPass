@@ -33,110 +33,65 @@ defined('APP_ROOT') || die();
  */
 class ClientData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id = 0;
-    /**
-     * @var string
-     */
-    public $name = '';
-    /**
-     * @var string
-     */
-    public $description = '';
-    /**
-     * @var string
-     */
-    public $hash = '';
-    /**
-     * @var int
-     */
-    public $isGlobal = 0;
+    public ?int $id = null;
+    public ?string $name = null;
+    public ?string $description = null;
+    public ?string $hash = null;
+    public ?int $isGlobal = null;
 
-    /**
-     * CustomerData constructor.
-     *
-     * @param int    $id
-     * @param string $name
-     * @param string $description
-     */
-    public function __construct($id = null, $name = null, $description = null)
+    public function __construct(
+        ?int    $id = null,
+        ?string $name = null,
+        ?string $description = null
+    )
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
-        $this->id = (int)$id;
+        $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): ?string
     {
         return $this->hash;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsGlobal()
+    public function getIsGlobal(): ?int
     {
-        return (int)$this->isGlobal;
+        return $this->isGlobal;
     }
 
-    /**
-     * @param int $isGlobal
-     */
-    public function setIsGlobal($isGlobal)
+    public function setIsGlobal(?int $isGlobal): void
     {
-        $this->isGlobal = (int)$isGlobal;
+        $this->isGlobal = $isGlobal;
     }
 }

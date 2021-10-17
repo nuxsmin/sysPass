@@ -57,19 +57,18 @@ final class Config
     private ContainerInterface $dic;
 
     /**
-     * Config constructor.
-     *
      * @throws ConfigException
      */
     public function __construct(
         XmlFileStorageInterface $fileStorage,
         FileCacheInterface      $fileCache,
+        ContextInterface        $context,
         ContainerInterface      $dic
     )
     {
         $this->fileCache = $fileCache;
         $this->fileStorage = $fileStorage;
-        $this->context = $dic->get(ContextInterface::class);
+        $this->context = $context;
         $this->dic = $dic;
 
         $this->initialize();
@@ -176,8 +175,7 @@ final class Config
     ): Config
     {
         if ($backup) {
-            $this->dic->get(ConfigBackupService::class)
-                ->backup($configData);
+            $this->dic->get(ConfigBackupService::class)->backup($configData);
         }
 
         $configSaver = $this->context->getUserData()->getLogin()

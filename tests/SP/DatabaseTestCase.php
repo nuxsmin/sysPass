@@ -26,6 +26,8 @@ namespace SP\Tests;
 
 use PHPUnit\Framework\TestCase;
 
+define('APP_MODULE', 'web-test');
+
 /**
  * Class DatabaseBaseTest
  *

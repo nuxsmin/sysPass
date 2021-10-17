@@ -34,6 +34,9 @@ use SP\Core\Context\ContextInterface;
 use SP\Storage\Database\DBStorageInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use function SP\Tests\getDbHandler;
+use const SP\Tests\APP_DEFINITIONS_FILE;
+
+define('APP_MODULE', 'cli');
 
 /**
  * Class CliTestCase
@@ -57,8 +60,8 @@ abstract class CliTestCase extends TestCase
 
         $builder = new ContainerBuilder();
         $builder->addDefinitions(
-            APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php',
-            MODULES_PATH . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'definitions.php'
+            APP_DEFINITIONS_FILE,
+            MODULES_PATH . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'module.php'
         );
 
         self::$dic = $builder->build();

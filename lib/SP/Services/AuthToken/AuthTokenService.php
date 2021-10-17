@@ -169,7 +169,7 @@ final class AuthTokenService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData): int
+    public function create(AuthTokenData $itemData): int
     {
         return $this->authTokenRepository->create($this->injectSecureData($itemData));
     }

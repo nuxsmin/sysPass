@@ -24,8 +24,8 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Tests\Modules\Api\ApiTest;
-use SP\Tests\WebTestCase;
+use SP\Core\Acl\ActionsInterface;
+use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
 /**
@@ -33,236 +33,407 @@ use stdClass;
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
-class UserGroupControllerTest extends WebTestCase
+class UserGroupControllerTest extends ApiTestCase
 {
-    /**
-     * @return int
-     */
-    public function testCreateAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/create',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'name' => 'API UserGroup',
-                'description' => "API test\ndescription",
-                'usersId' => [1]
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals(2, $result->result->itemId);
-        $this->assertEquals('Group added', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
-
-        return $result->result->itemId;
-    }
+    private const PARAMS = [
+        'name' => 'API UserGroup',
+        'description' => "API test\ndescription",
+        'usersId' => [3, 4]
+    ];
 
     /**
-     * @depends testCreateAction
-     *
-     * @param $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testViewAction($id)
+    public function testCreateAction(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/view',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id
-            ],
-            'id' => 1
-        ];
+        $response = $this->createUserGroup(self::PARAMS);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNull($response->result->count);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals(7, $response->result->itemId);
+        $this->assertEquals('Group added', $response->result->resultMessage);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->result->id);
-        $this->assertEquals('API UserGroup', $result->result->result->name);
-        $this->assertEquals("API test\ndescription", $result->result->result->description);
-        $this->assertArrayHasKey(0, $result->result->result->users);
-        $this->assertEquals(1, $result->result->result->users[0]);
+        $resultItem = $response->result->result;
+
+        $this->assertEquals($response->result->itemId, $resultItem->id);
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
+        $this->assertCount(2, $resultItem->users);
+        $this->assertEquals(self::PARAMS['usersId'][0], $resultItem->users[0]);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testEditAction($id)
+    private function createUserGroup(?array $params = null): stdClass
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/edit',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-                'name' => 'API UserGroup edit',
-            ],
-            'id' => 1
-        ];
+        $api = $this->callApi(
+            ActionsInterface::GROUP_CREATE,
+            $params ?? self::PARAMS
+        );
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Group updated', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
+        return self::processJsonResponse($api);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
-     *
-     * @return int
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testEditActionNoUsers($id)
+    public function testCreateActionInvalidUser(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/edit',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-                'name' => 'API UserGroup edit',
-                'usersId' => []
-            ],
-            'id' => 1
-        ];
+        $params = self::PARAMS;
+        $params['usersId'] = [10];
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $response = $this->createUserGroup($params);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Group updated', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
-
-        return $id;
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Integrity constraint', $response->error->message);
     }
 
     /**
-     * @depends testEditActionNoUsers
-     *
-     * @param $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testViewActionNoUsers($id)
+    public function testCreateActionRequiredParameters(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/view',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id
-            ],
-            'id' => 1
-        ];
+        $params = self::PARAMS;
+        unset($params['name']);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $response = $this->createUserGroup($params);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->result->id);
-        $this->assertEquals('API UserGroup edit', $result->result->result->name);
-        $this->assertEmpty($result->result->result->description);
-        $this->assertCount(0, $result->result->result->users);
-    }
-
-    public function testSearchAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(2, $result->result->count);
-        $this->assertCount(2, $result->result->result);
-
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'count' => 1
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-    }
-
-    public function testSearchByTextAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'text' => 'API UserGroup edit'
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-        $this->assertEquals('API UserGroup edit', $result->result->result[0]->name);
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
      */
-    public function testDeleteAction($id)
+    public function testCreateActionDuplicatedName(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'userGroup/delete',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-            ],
-            'id' => 1
+        $params = self::PARAMS;
+        $params['name'] = 'Admins';
+
+        $response = $this->createUserGroup($params);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Duplicated group name', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testViewAction(): void
+    {
+        $response = $this->createUserGroup(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result;
+
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
+        $this->assertCount(2, $resultItem->users);
+        $this->assertEquals(self::PARAMS['usersId'][0], $resultItem->users[0]);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testViewActionNonExistant(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::GROUP_VIEW,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Group not found', $response->error->message);
+    }
+
+    /**
+     * @dataProvider getGroupUsers
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditAction(array $users, int $usersCount): void
+    {
+        $response = $this->createUserGroup(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'API test edit',
+            'description' => "API test\ndescription",
+            'usersId' => $users
         ];
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $api = $this->callApi(
+            ActionsInterface::GROUP_EDIT,
+            $params
+        );
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Group deleted', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals('Group updated', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result;
+
+        $this->assertEquals($params['name'], $resultItem->name);
+        $this->assertEquals($params['description'], $resultItem->description);
+        $this->assertCount($usersCount, $resultItem->users);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionInvalidUser(): void
+    {
+        $response = $this->createUserGroup(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'API test edit',
+            'description' => "API test\ndescription",
+            'usersId' => [10]
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Integrity constraint', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionRequiredParameters(): void
+    {
+        $response = $this->createUserGroup(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testEditActionNonExistant(): void
+    {
+        $params = [
+            'id' => 10,
+            'name' => 'API test edit'
+        ];
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(0, $response->result->count);
+    }
+
+    /**
+     * @dataProvider searchProvider
+     *
+     * @throws \DI\DependencyException
+     * @throws \JsonException
+     * @throws \DI\NotFoundException
+     */
+    public function testSearchActionByFilter(array $filter, int $resultsCount): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::GROUP_SEARCH,
+            $filter
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals($resultsCount, $response->result->count);
+        $this->assertCount($resultsCount, $response->result->result);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testDeleteAction(): void
+    {
+        $response = $this->createUserGroup();
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            ActionsInterface::GROUP_DELETE,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals('Group deleted', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testDeleteActionNonExistant(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::GROUP_DELETE,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Group not found', $response->error->message);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \JsonException
+     */
+    public function testDeleteActionRequiredParameters(): void
+    {
+        $api = $this->callApi(
+            ActionsInterface::GROUP_DELETE,
+            []
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    public function searchProvider(): array
+    {
+        return [
+            [
+                [],
+                6
+            ],
+            [
+                ['count' => 1],
+                1
+            ],
+            [
+                ['text' => 'Demo'],
+                1
+            ],
+            [
+                ['text' => 'Test'],
+                3
+            ],
+            [
+                ['text' => 'Grupo'],
+                1
+            ]
+        ];
+    }
+
+    public function getGroupUsers(): array
+    {
+        return [
+            [
+                [2, 3, 4],
+                3
+            ],
+            [
+                [2, 3],
+                2
+            ],
+            [
+                [],
+                0
+            ],
+        ];
     }
 }

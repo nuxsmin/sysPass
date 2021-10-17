@@ -72,7 +72,8 @@ class FileCachePackedTest extends TestCase
      */
     public function testDeleteInvalid()
     {
-        $this->expectException(FileException::class);
+        $this->expectNotToPerformAssertions();
+
         $cache = new FileCachePacked(self::CACHE_FILE);
         $cache->delete();
     }

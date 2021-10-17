@@ -121,19 +121,18 @@ final class Request
         return $realPath;
     }
 
-    /**
-     * @return array|string
-     */
-    public function getClientAddress(bool $fullForwarded = false)
+    public function getClientAddress(bool $fullForwarded = false): string
     {
-        if (APP_MODULE === 'tests') {
+        if (IS_TESTING) {
             return '127.0.0.1';
         }
 
         $forwarded = $this->getForwardedFor();
 
         if ($forwarded !== null) {
-            return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
+            return $fullForwarded
+                ? implode(',', $forwarded)
+                : $forwarded[0];
         }
 
         return $this->request->server()->get('REMOTE_ADDR', '');
