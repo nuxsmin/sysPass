@@ -290,7 +290,10 @@ abstract class DataGridBase implements DataGridInterface
      */
     protected function checkTemplate(string $template, ?string $base = null): string
     {
-        $template = null === $base ? $template . '.inc' : $base . DIRECTORY_SEPARATOR . $template . '.inc';
+        $template = null === $base
+            ? $template . '.inc'
+            : $base . DIRECTORY_SEPARATOR . $template . '.inc';
+
         $file = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {

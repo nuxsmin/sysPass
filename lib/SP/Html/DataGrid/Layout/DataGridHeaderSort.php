@@ -50,7 +50,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
     /**
      * @return DataGridSortInterface[]|null
      */
-    public function getSortFields(): ?array
+    public function getSortFields(): ?object
     {
         return $this->sortFields;
     }
@@ -58,7 +58,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
     /**
      * @return DataGridActionInterface[]|null
      */
-    public function getActions(): ?array
+    public function getActions(): ?object
     {
         return $this->actions;
     }

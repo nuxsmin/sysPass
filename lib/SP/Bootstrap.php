@@ -232,7 +232,6 @@ final class Bootstrap
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Exceptions\InitializationException
      * @throws \SP\Services\Upgrade\UpgradeException
-     * @throws \SP\Storage\File\FileException
      */
     protected function initializeCommon(): void
     {

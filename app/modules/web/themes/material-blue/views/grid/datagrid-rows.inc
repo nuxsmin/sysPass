@@ -34,7 +34,7 @@ if (!isset($data)) {
                     $value = $rowSrc['filter']($value);
                 endif;
 
-                if ($value !== ''):
+                if (!empty($value)):
                     if ($rowSrc['truncate'] === true):
                         $value = Html::truncate($value, 150 / $numFields);
                     endif;

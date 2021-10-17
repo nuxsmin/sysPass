@@ -81,6 +81,7 @@ final class LoginService extends Service
     private const STATUS_PASS = 0;
     private const STATUS_NONE = 100;
 
+    private ?AuthProvider $authProvider = null;
     private ?UserLoginData $userLoginData = null;
     private ?ConfigDataInterface $configData = null;
     private ?ThemeInterface $theme = null;
@@ -110,8 +111,22 @@ final class LoginService extends Service
      */
     public function doLogin(): LoginResponse
     {
-        $this->userLoginData->setLoginUser($this->request->analyzeString('user'));
-        $this->userLoginData->setLoginPass($this->request->analyzeEncrypted('pass'));
+        $user = $this->request->analyzeString('user');
+        $pass = $this->request->analyzeEncrypted('pass');
+
+        if (empty($user) || empty($pass)) {
+            $this->addTracking();
+
+            throw new AuthException(
+                __u('Wrong login'),
+                SPException::INFO,
+                __FUNCTION__,
+                self::STATUS_INVALID_LOGIN
+            );
+        }
+
+        $this->userLoginData->setLoginUser($user);
+        $this->userLoginData->setLoginPass($pass);
 
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
@@ -124,8 +139,7 @@ final class LoginService extends Service
             );
         }
 
-        $result = $this->dic->get(AuthProvider::class)
-            ->doAuth($this->userLoginData);
+        $result = $this->authProvider->doAuth($this->userLoginData);
 
         if ($result !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
@@ -451,6 +465,7 @@ final class LoginService extends Service
         $this->request = $this->dic->get(Request::class);
         $this->userLoginData = new UserLoginData();
         $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
+        $this->authProvider = $this->dic->get(AuthProvider::class);
     }
 
     /**

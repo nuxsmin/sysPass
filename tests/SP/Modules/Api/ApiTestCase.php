@@ -160,7 +160,8 @@ abstract class ApiTestCase extends TestCase
                             ->setDbHost($databaseConnectionData->getDbHost())
                             ->setDbName($databaseConnectionData->getDbName())
                             ->setDbUser($databaseConnectionData->getDbUser())
-                            ->setDbPass($databaseConnectionData->getDbPass());
+                            ->setDbPass($databaseConnectionData->getDbPass())
+                            ->setInstalled(true);
 
                         // Update ConfigData instance
                         $config->updateConfig($configData);

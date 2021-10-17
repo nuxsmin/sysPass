@@ -37,13 +37,6 @@ final class AccountActionsDto
     private ?int $publicLinkId = null;
     private ?int $publicLinkCreatorId = null;
 
-    /**
-     * AccountActionsDto constructor.
-     *
-     * @param int|null $accountId
-     * @param int|null $accountHistoryId
-     * @param int|null $accountParentId
-     */
     public function __construct(
         ?int $accountId,
         ?int $accountHistoryId = null,
@@ -54,73 +47,46 @@ final class AccountActionsDto
         $this->accountParentId = $accountParentId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAccountId(): ?int
     {
         return $this->accountId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAccountHistoryId(): ?int
     {
         return $this->accountHistoryId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAccountParentId(): ?int
     {
         return $this->accountParentId;
     }
 
-    /**
-     * @return bool
-     */
     public function isHistory(): bool
     {
         return $this->accountHistoryId !== null && $this->accountHistoryId > 0;
     }
 
-    /**
-     * @return bool
-     */
     public function isLinked(): bool
     {
         return $this->accountParentId !== null && $this->accountParentId > 0;
     }
 
-    /**
-     * @return int
-     */
-    public function getPublicLinkId(): int
+    public function getPublicLinkId(): ?int
     {
         return $this->publicLinkId;
     }
 
-    /**
-     * @param int $publicLinkId
-     */
     public function setPublicLinkId(int $publicLinkId): void
     {
         $this->publicLinkId = $publicLinkId;
     }
 
-    /**
-     * @return int|null
-     */
     public function getPublicLinkCreatorId(): ?int
     {
         return $this->publicLinkCreatorId;
     }
 
-    /**
-     * @param int $publicLinkCreatorId
-     */
     public function setPublicLinkCreatorId(int $publicLinkCreatorId): void
     {
         $this->publicLinkCreatorId = $publicLinkCreatorId;

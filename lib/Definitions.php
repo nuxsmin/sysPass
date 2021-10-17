@@ -37,6 +37,7 @@ use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Http\Client;
 use SP\Http\Request;
+use SP\Providers\Auth\AuthProvider;
 use SP\Services\Account\AccountAclService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\DBStorageInterface;
@@ -95,5 +96,6 @@ return [
     AccountAclService::class => autowire(AccountAclService::class),
     \GuzzleHttp\Client::class => create(GuzzleHttp\Client::class)
         ->constructor(factory([Client::class, 'getOptions'])),
-    CSRF::class => autowire(CSRF::class)
+    CSRF::class => autowire(CSRF::class),
+    AuthProvider::class => autowire(AuthProvider::class)->lazy()
 ];

@@ -207,7 +207,7 @@ final class AccountSearchHelper extends HelperBase
 
         $dataGrid = new DataGrid($this->view->getTheme());
         $dataGrid->setId('gridSearch');
-        $dataGrid->setDataHeaderTemplate('search-header');
+        $dataGrid->setDataHeaderTemplate('account/search-header');
         $dataGrid->setDataRowTemplate(
             'search-rows',
             $this->view->getBase()
@@ -386,8 +386,8 @@ final class AccountSearchHelper extends HelperBase
         $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));
         $accountSearchFilter->setLimitCount($this->request->analyzeInt('rpp', $limitCount));
         $accountSearchFilter->setGlobalSearch($this->request->analyzeBool('gsearch', false));
-        $accountSearchFilter->setClientId($this->request->analyzeInt('client', 0));
-        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category', 0));
+        $accountSearchFilter->setClientId($this->request->analyzeInt('client'));
+        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category'));
         $accountSearchFilter->setTagsId($this->request->analyzeArray('tags', null, []));
         $accountSearchFilter->setSearchFavorites($this->request->analyzeBool('searchfav', false));
         $accountSearchFilter->setTxtSearch($this->request->analyzeString('search'));

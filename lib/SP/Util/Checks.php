@@ -45,6 +45,6 @@ final class Checks
     public static function checkPhpVersion(): bool
     {
         return PHP_VERSION_ID >= 70400
-            && PHP_VERSION_ID <= 80000;
+            && PHP_VERSION_ID < 81000;
     }
 }

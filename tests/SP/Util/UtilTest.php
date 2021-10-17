@@ -67,7 +67,7 @@ class UtilTest extends TestCase
     {
         $upload = ini_set('upload_max_filesize', '30M');
         $post = ini_set('post_max_size', '10M');
-        $memory = ini_set('memory_limit', 15728640);
+        $memory = ini_set('memory_limit', 52428800);
 
         if ($upload !== false
             && $post !== false
