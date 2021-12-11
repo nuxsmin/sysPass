@@ -145,7 +145,8 @@ final class AuthProvider extends Provider
             ->setGroup($this->configData->getLdapGroup())
             ->setBindDn($this->configData->getLdapBindUser())
             ->setBindPass($this->configData->getLdapBindPass())
-            ->setType($this->configData->getLdapType());
+            ->setType($this->configData->getLdapType())
+            ->setTlsEnabled($this->configData->isLdapTlsEnabled());
 
         return new LdapAuth(
             Ldap::factory(
