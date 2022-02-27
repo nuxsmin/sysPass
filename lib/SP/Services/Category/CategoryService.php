@@ -82,12 +82,12 @@ final class CategoryService extends Service
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName(string $name): CategoryData
+    public function getByName(string $name): ?CategoryData
     {
         $result = $this->categoryRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Category not found'), SPException::INFO);
         }
 
         return $result->getData();

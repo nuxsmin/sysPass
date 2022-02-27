@@ -121,7 +121,6 @@ final class TemporaryMasterPassService extends Service
     public function checkTempMasterPass(string $pass): bool
     {
         try {
-            $isValid = false;
             $passMaxTime = (int)$this->configService->getByParam(self::PARAM_MAX_TIME);
 
             // Comprobar si el tiempo de validez o los intentos se han superado
@@ -135,7 +134,7 @@ final class TemporaryMasterPassService extends Service
                     )
                 );
 
-                return $isValid;
+                return false;
             }
 
             $passTime = (int)$this->configService->getByParam(self::PARAM_TIME);
@@ -146,7 +145,7 @@ final class TemporaryMasterPassService extends Service
             ) {
                 $this->expire();
 
-                return $isValid;
+                return false;
             }
 
             $isValid = Hash::checkHashKey(

@@ -32,7 +32,7 @@ namespace SP\Services\Auth;
 final class LoginResponse
 {
     private int $status;
-    private ?string $redirect = null;
+    private ?string $redirect;
 
     /**
      * LoginResponse constructor.

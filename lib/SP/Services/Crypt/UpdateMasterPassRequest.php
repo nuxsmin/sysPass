@@ -37,7 +37,7 @@ final class UpdateMasterPassRequest
 {
     private string $currentMasterPass;
     private string $newMasterPass;
-    private ?Task $task = null;
+    private ?Task $task;
     private string $hash;
     private string $currentHash;
 

@@ -83,7 +83,7 @@ final class TagService extends Service
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): TagData
+    public function getByName(string $name): ?TagData
     {
         $result = $this->tagRepository->getByName($name);
 

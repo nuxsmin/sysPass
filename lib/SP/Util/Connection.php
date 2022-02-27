@@ -34,7 +34,7 @@ use SP\Core\Exceptions\SPException;
 final class Connection implements ConnectionInterface
 {
     /**
-     * @var resource
+     * @var resource|false
      */
     protected $socket;
 

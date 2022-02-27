@@ -369,6 +369,7 @@ final class Request
             return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
         }
 
+        /** @noinspection HttpUrlsUsage */
         $protocol = 'http://';
 
         // We got called directly

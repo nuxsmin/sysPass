@@ -87,9 +87,11 @@ final class ClientService extends Service
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName(string $name): ClientData
+    public function getByName(string $name): ?ClientData
     {
-        if (($result = $this->clientRepository->getByName($name))->getNumRows() === 0) {
+        $result = $this->clientRepository->getByName($name);
+
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(
                 __u('Client not found'),
                 SPException::INFO

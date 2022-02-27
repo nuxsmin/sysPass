@@ -56,10 +56,6 @@ final class Xml
      */
     public function printXml(string $description, int $status = 1): void
     {
-        if (!is_string($description)) {
-            return;
-        }
-
         $xml[] = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
         $xml[] = '<root>';
         $xml[] = '<status>' . $status . '</status>';

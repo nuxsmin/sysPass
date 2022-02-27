@@ -35,7 +35,7 @@ use SP\Core\Exceptions\SPException;
 final class Event
 {
     private object $source;
-    private ?EventMessage $eventMessage = null;
+    private ?EventMessage $eventMessage;
 
     /**
      * Event constructor.

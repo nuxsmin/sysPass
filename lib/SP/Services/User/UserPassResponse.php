@@ -34,7 +34,7 @@ final class UserPassResponse
     private int $status;
     private ?string $cryptMasterPass = null;
     private ?string $cryptSecuredKey = null;
-    private ?string $clearMasterPass = null;
+    private ?string $clearMasterPass;
 
     /**
      * UserPassResponse constructor.

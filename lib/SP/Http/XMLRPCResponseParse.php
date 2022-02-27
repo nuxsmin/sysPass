@@ -197,9 +197,7 @@ abstract class XMLRPCResponseParse
                 if ($data instanceof DOMElement && $data->nodeName === 'value') {
                     $values = $this->parseValues($data);
 
-                    if (is_array($values)) {
-                        $arrayData[] = $values;
-                    }
+                    $arrayData[] = $values;
                 }
             }
         }
@@ -249,11 +247,7 @@ abstract class XMLRPCResponseParse
              * @var $fault DOMElement
              */
             if ($fault instanceof DOMElement && $fault->nodeName === 'value') {
-                $values = $this->parseValues($fault);
-
-                if (is_array($values)) {
-                    return $values;
-                }
+                return $this->parseValues($fault);
             }
         }
 

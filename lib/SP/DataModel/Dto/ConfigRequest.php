@@ -53,7 +53,7 @@ class ConfigRequest
      */
     public function get($param)
     {
-        return isset($this->data[$param]) ? $this->data[$param] : null;
+        return $this->data[$param] ?? null;
     }
 
     /**

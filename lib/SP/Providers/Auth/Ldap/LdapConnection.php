@@ -190,7 +190,7 @@ final class LdapConnection implements LdapConnectionInterface
             return $server . ':' . $port;
         }
 
-        if ($port === 389 || $port === null) {
+        if ($port === 389) {
             return 'ldap://' . $server;
         }
 
