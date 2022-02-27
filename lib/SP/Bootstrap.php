@@ -228,6 +228,8 @@ final class Bootstrap
     }
 
     /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\CheckException
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Exceptions\InitializationException
@@ -362,6 +364,8 @@ final class Bootstrap
     /**
      * Cargar la configuración
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Services\Upgrade\UpgradeException
      */
@@ -375,6 +379,8 @@ final class Bootstrap
     /**
      * Comprobar la versión de configuración y actualizarla
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Services\Upgrade\UpgradeException
      */
     private function checkConfigVersion(): void

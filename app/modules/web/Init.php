@@ -107,14 +107,19 @@ final class Init extends ModuleBase
     /**
      * Initialize Web App
      *
+     * @param string $controller
+     *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \JsonException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InitializationException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Storage\File\FileException
+     * @throws \Exception
      */
     public function initialize(string $controller): void
     {
