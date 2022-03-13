@@ -15,10 +15,11 @@ jobs:
     name: Build & Test ${{ matrix.php }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     env:
-      DB_SERVER: mariadb
+      DB_SERVER: 127.0.0.1
       DB_NAME: syspass
       DB_USER: syspass
       DB_PASS: syspass
+      DB_PORT: 3306
     services:
       mariadb:
         image: mariadb:10.3
@@ -28,7 +29,7 @@ jobs:
           MYSQL_DATABASE: ${{ env.DB_NAME }}
           MYSQL_ROOT_PASSWORD: ${{ env.DB_PASS }}
         ports:
-          - 3306
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v1
@@ -65,8 +66,6 @@ jobs:
             --prefer-dist
 
       - name: Setup database
-        env:
-          DB_PORT: ${{ job.services.mariadb.ports[3306] }}
         run: |
           set -euo pipefail
           
@@ -79,7 +78,6 @@ jobs:
       - uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          DB_PORT: ${{ job.services.mariadb.ports[3306] }}
           XDEBUG_MODE: coverage
         with:
           coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
