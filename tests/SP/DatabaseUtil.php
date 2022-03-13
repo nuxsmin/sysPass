@@ -56,8 +56,8 @@ class DatabaseUtil
         $conn = self::getConnection();
         $conn->exec(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
 
-        // Long hostname returned on Travis CI
-        if (getenv('TRAVIS') === false) {
+        // Long hostname returned on CI/CD tests
+        if (strlen(SELF_HOSTNAME) < 60) {
             $conn->exec(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
         }
 
