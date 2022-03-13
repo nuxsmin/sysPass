@@ -72,8 +72,8 @@ jobs:
           MYSQL_OPTS="-h ${DB_SERVER} -P ${DB_PORT} -u ${DB_USER} -p${DB_PASS}"
           
           mysql ${MYSQL_OPTS} -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
-          mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
-          mysql ${MYSQL_OPTS} ${$DB_NAME} < ./schemas/dbstructure.sql
+          mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+          mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
 
       - uses: paambaati/codeclimate-action@v3.0.0
         env:
