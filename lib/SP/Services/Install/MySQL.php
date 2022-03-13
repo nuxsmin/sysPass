@@ -309,14 +309,14 @@ final class MySQL implements DatabaseSetupInterface
                 $this->installData->getDbName()
             ));
             $dbc->exec(sprintf(
-                'DROP USER %s@%s',
+                'DROP USER IF EXISTS %s@%s',
                 $dbc->quote($this->configData->getDbUser()),
                 $dbc->quote($this->installData->getDbAuthHost())
             ));
 
             if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
                 $dbc->exec(sprintf(
-                    'DROP USER %s@%s',
+                    'DROP USER IF EXISTS %s@%s',
                     $dbc->quote($this->configData->getDbUser()),
                     $dbc->quote($this->installData->getDbAuthHostDns())
                 ));
