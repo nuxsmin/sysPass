@@ -300,18 +300,13 @@ final class Template
      * Overloading para eliminar una variable del array de variables de la plantilla pasado como
      * atributo dinámico de la clase
      */
-    public function __unset(string $name): Template
+    public function __unset(string $name): void
     {
         if (!$this->vars->exists($name)) {
             logger(sprintf(__('Unable to unset "%s" variable'), $name));
-
-//            throw new InvalidArgumentException(sprintf(__('Unable to unset "%s" variable'), $name));
-            return $this;
+        } else {
+            $this->vars->remove($name);
         }
-
-        $this->vars->remove($name);
-
-        return $this;
     }
 
     /**
