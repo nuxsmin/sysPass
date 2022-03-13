@@ -17,15 +17,13 @@ jobs:
     env:
       DB_SERVER: 127.0.0.1
       DB_NAME: syspass
-      DB_USER: syspass
+      DB_USER: root
       DB_PASS: syspass
       DB_PORT: 3306
     services:
       mariadb:
         image: mariadb:10.3
         env:
-          MYSQL_USER: ${{ env.DB_USER }}
-          MYSQL_PASSWORD: ${{ env.DB_PASS }}
           MYSQL_DATABASE: ${{ env.DB_NAME }}
           MYSQL_ROOT_PASSWORD: ${{ env.DB_PASS }}
         ports:
