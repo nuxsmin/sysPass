@@ -76,7 +76,7 @@ jobs:
           mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
           mysql ${MYSQL_OPTS} ${$DB_NAME} < ./schemas/dbstructure.sql
 
-      - uses: paambaati/codeclimate-action@v2.2.4
+      - uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           DB_PORT: ${{ job.services.mariadb.ports[3306] }}
