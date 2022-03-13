@@ -67,8 +67,8 @@ class MySQLTest extends TestCase
         $params->setDbHost(getenv('DB_SERVER'));
         $params->setDbAuthHost(SELF_IP_ADDRESS);
 
-        // Long hostname returned on Travis CI
-        if (getenv('TRAVIS') === false) {
+        // Long hostname returned by CI/CD tests
+        if (strlen(SELF_HOSTNAME) < 60) {
             $params->setDbAuthHostDns(SELF_HOSTNAME);
         } else {
             $params->setDbAuthHostDns('localhost');

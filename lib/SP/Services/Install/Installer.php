@@ -219,7 +219,12 @@ final class Installer extends Service
                 $this->installData->setDbAuthHost('%');
             } else {
                 $this->installData->setDbAuthHost($address);
-                $this->installData->setDbAuthHostDns(gethostbyaddr($address));
+
+                $dnsHostname = gethostbyaddr($address);
+
+                if (strlen($dnsHostname) < 60) {
+                    $this->installData->setDbAuthHostDns($dnsHostname);
+                }
             }
 
         } else {
