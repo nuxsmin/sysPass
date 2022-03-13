@@ -2,20 +2,13 @@ name: Feature Build & Test
 
 on:
   push:
-    branches:
-      - master
-    tags:
-      - '!*' # Do not execute on tags
+    branches: [ master ]
     paths:
-      - lib/*
-      - app/*
-      - tests/*
-      - '*.json'
+      - '!*.md'
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
     paths:
-      - '!*.MD'
+      - '!*.md'
 
 jobs:
   test:
