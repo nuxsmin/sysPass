@@ -350,9 +350,9 @@ interface ConfigDataInterface
     public function setCheckUpdates(?bool $checkUpdates): ConfigDataInterface;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getConfigHash();
+    public function getConfigHash(): ?string;
 
     /**
      * Generates a hash from current config options
@@ -891,9 +891,9 @@ interface ConfigDataInterface
     public function jsonSerialize();
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getConfigSaver();
+    public function getConfigSaver(): ?string;
 
     /**
      * @param string|null $configSaver

@@ -86,7 +86,7 @@ class DatabaseUtil
     {
         try {
             self::getConnection()
-                ->exec(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
+                ->exec(sprintf('DROP USER IF EXISTS \'%s\'@\'%s\'', $user, $host));
         } catch (Exception $e) {
             processException($e);
         }
