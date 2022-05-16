@@ -24,17 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
-use Klein\Klein;
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
-use SP\Core\Acl\Acl;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Events\EventDispatcher;
+use Closure;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Http\Request;
 use SP\Mvc\Controller\ControllerTrait;
 
@@ -45,34 +37,23 @@ trait WebControllerTrait
 {
     use ControllerTrait;
 
-    protected ?string $controllerName = null;
-    protected ?EventDispatcher $eventDispatcher = null;
-    protected ?Config $config = null;
-    protected ?SessionContext $session = null;
-    protected ?ThemeInterface $theme = null;
-    protected ?string $actionName = null;
-    protected ?Klein $router = null;
-    protected ?Acl $acl = null;
-    protected ConfigDataInterface $configData;
-    protected ?Request $request = null;
-    protected ?PhpExtensionChecker $extensionChecker = null;
     private bool $setup = false;
 
     /**
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
      */
-    final protected function getSignedUriFromRequest(): ?string
+    final protected function getSignedUriFromRequest(Request $request): ?string
     {
         if (!$this->setup) {
             return null;
         }
 
-        $from = $this->request->analyzeString('from');
+        $from = $request->analyzeString('from');
 
         if ($from) {
             try {
-                $this->request->verifySignature(
+                $request->verifySignature(
                     $this->configData->getPasswordSalt(),
                     'from'
                 );
@@ -86,20 +67,23 @@ trait WebControllerTrait
         return $from;
     }
 
-    private function setUp(ContainerInterface $dic): void
+    /**
+     * @throws \JsonException
+     * @throws SessionTimeout
+     */
+    private function handleSessionTimeout(Closure $checker): void
     {
-        $this->controllerName = $this->getControllerName();
+        if ($checker->call($this) === true) {
+            $this->sessionLogout(
+                $this->request,
+                function ($redirect) {
+                    $this->router->response()
+                        ->redirect($redirect)
+                        ->send(true);
+                }
+            );
 
-        $this->config = $dic->get(Config::class);
-        $this->configData = $this->config->getConfigData();
-        $this->session = $dic->get(ContextInterface::class);
-        $this->theme = $dic->get(ThemeInterface::class);
-        $this->eventDispatcher = $dic->get(EventDispatcher::class);
-        $this->router = $dic->get(Klein::class);
-        $this->request = $dic->get(Request::class);
-        $this->acl = $dic->get(Acl::class);
-        $this->extensionChecker = $dic->get(PhpExtensionChecker::class);
-
-        $this->setup = true;
+            throw new SessionTimeout();
+        }
     }
 }

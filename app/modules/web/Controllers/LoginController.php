@@ -25,16 +25,26 @@
 namespace SP\Modules\Web\Controllers;
 
 use Exception;
+use Klein\Klein;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
+use SP\Config\Config;
+use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextBase;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Core\PhpExtensionChecker;
 use SP\Core\SessionUtil;
+use SP\Core\UI\ThemeInterface;
+use SP\Http\Request;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\View\Template;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Auth\LoginService;
 
 /**
@@ -46,6 +56,40 @@ final class LoginController extends ControllerBase
 {
     use JsonTrait;
 
+    private LoginService $loginService;
+
+    public function __construct(
+        EventDispatcher $eventDispatcher,
+        Config $config,
+        ContextInterface $session,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        Request $request,
+        PhpExtensionChecker $extensionChecker,
+        Template $template,
+        Browser $browser,
+        LayoutHelper $layoutHelper,
+        LoginService $loginService
+    ) {
+        parent::__construct(
+            $eventDispatcher,
+            $config,
+            $session,
+            $theme,
+            $router,
+            $acl,
+            $request,
+            $extensionChecker,
+            $template,
+            $browser,
+            $layoutHelper
+        );
+
+        $this->loginService = $loginService;
+    }
+
+
     /**
      * Login action
      *
@@ -56,12 +100,10 @@ final class LoginController extends ControllerBase
     public function loginAction(): bool
     {
         try {
-            $loginService = $this->dic->get(LoginService::class);
+            $from = $this->getSignedUriFromRequest($this->request);
+            $this->loginService->setFrom($from);
 
-            $from = $this->getSignedUriFromRequest();
-            $loginService->setFrom($from);
-
-            $loginResponmse = $loginService->doLogin();
+            $loginResponse = $this->loginService->doLogin();
 
             $this->checkForwarded();
 
@@ -88,7 +130,7 @@ final class LoginController extends ControllerBase
 
             return $this->returnJsonResponseData([
                 'url' => $this->session->getTrasientKey('redirect')
-                    ?: $loginResponmse->getRedirect()
+                    ?: $loginResponse->getRedirect(),
             ]);
         } catch (Exception $e) {
             processException($e);
@@ -137,8 +179,8 @@ final class LoginController extends ControllerBase
                     EventMessage::factory()
                         ->addDescription(__u('Logout session'))
                         ->addDetail(__u('User'), $this->session->getUserData()->getLogin())
-                        ->addDetail(__u('Inactive time'), $inactiveTime . ' min.')
-                        ->addDetail(__u('Total time'), $totalTime . ' min.')
+                        ->addDetail(__u('Inactive time'), $inactiveTime.' min.')
+                        ->addDetail(__u('Total time'), $totalTime.' min.')
                 )
             );
 
@@ -146,8 +188,7 @@ final class LoginController extends ControllerBase
 
             $this->session->setAppStatus(ContextBase::APP_STATUS_LOGGEDOUT);
 
-            $layoutHelper = $this->dic->get(LayoutHelper::class);
-            $layoutHelper->getCustomLayout('logout', 'logout');
+            $this->layoutHelper->getCustomLayout('logout', 'logout');
 
             $this->view();
         } else {
@@ -157,14 +198,12 @@ final class LoginController extends ControllerBase
 
     /**
      * Index action
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function indexAction(): void
     {
-        $this->dic->get(LayoutHelper::class)
-            ->getCustomLayout('index', 'login');
+        SessionUtil::cleanSession();
+
+        $this->layoutHelper->getCustomLayout('index', 'login');
 
         $this->view->assign(
             'mailEnabled',
@@ -174,13 +213,5 @@ final class LoginController extends ControllerBase
         $this->prepareSignedUriOnView();
 
         $this->view();
-    }
-
-    /**
-     * @return void
-     */
-    protected function initialize(): void
-    {
-        // TODO: Implement initialize() method.
     }
 }

@@ -24,16 +24,23 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
+use SP\Config\Config;
+use SP\Core\Acl\Acl;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
 use SP\Http\JsonResponse;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Mvc\View\Template;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 
@@ -46,28 +53,57 @@ final class InstallController extends ControllerBase
 {
     use JsonTrait;
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
+    private Installer $installer;
+
+    public function __construct(
+        EventDispatcher $eventDispatcher,
+        Config $config,
+        ContextInterface $session,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        Request $request,
+        PhpExtensionChecker $extensionChecker,
+        Template $template,
+        Browser $browser,
+        LayoutHelper $layoutHelper,
+        Installer $installer
+    ) {
+        parent::__construct(
+            $eventDispatcher,
+            $config,
+            $session,
+            $theme,
+            $router,
+            $acl,
+            $request,
+            $extensionChecker,
+            $template,
+            $browser,
+            $layoutHelper
+        );
+
+        $this->installer = $installer;
+    }
+
     public function indexAction(): void
     {
         if ($this->configData->isInstalled()) {
             $this->router->response()
                 ->redirect('index.php?r=login');
+
             return;
         }
 
-        $layoutHelper = $this->dic->get(LayoutHelper::class);
-        $layoutHelper->getPublicLayout('index', 'install');
+        $this->layoutHelper->getPublicLayout('index', 'install');
 
         $errors = [];
 
-        foreach ($this->dic->get(PhpExtensionChecker::class)->getMissing() as $module) {
-            $error[] = [
-                'type' => SPException::WARNING,
+        foreach ($this->extensionChecker->getMissing() as $module) {
+            $errors[] = [
+                'type'        => SPException::WARNING,
                 'description' => sprintf('%s (%s)', __('Module unavailable'), $module),
-                'hint' => __('Without this module the application could not run correctly')
+                'hint'        => __('Without this module the application could not run correctly'),
             ];
         }
 
@@ -83,8 +119,6 @@ final class InstallController extends ControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \JsonException
      */
     public function installAction(): bool
@@ -101,7 +135,7 @@ final class InstallController extends ControllerBase
         $installData->setHostingMode($this->request->analyzeBool('hostingmode', false));
 
         try {
-            $this->dic->get(Installer::class)->run($installData);
+            $this->installer->run($installData);
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,
@@ -112,13 +146,5 @@ final class InstallController extends ControllerBase
 
             return $this->returnJsonResponseException($e);
         }
-    }
-
-    /**
-     * @return void
-     */
-    protected function initialize(): void
-    {
-        // TODO: Implement initialize() method.
     }
 }

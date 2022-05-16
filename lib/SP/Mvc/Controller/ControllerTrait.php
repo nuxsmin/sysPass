@@ -43,6 +43,9 @@ use SP\Util\Util;
  */
 trait ControllerTrait
 {
+    protected ConfigDataInterface $configData;
+    protected string              $controllerName;
+
     protected function getControllerName(): string
     {
         $class = static::class;
@@ -56,11 +59,9 @@ trait ControllerTrait
      * @throws \JsonException
      */
     protected function sessionLogout(
-        Request             $request,
-        ConfigDataInterface $configData,
-        Closure             $onRedirect
-    ): void
-    {
+        Request $request,
+        Closure $onRedirect
+    ): void {
         if ($request->isJson()) {
             $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
             $jsonResponse->setStatus(10);
@@ -76,11 +77,11 @@ trait ControllerTrait
                 $route = $request->analyzeString('r');
                 $hash = $request->analyzeString('h');
 
-                $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
+                $uri = new Uri(Bootstrap::$WEBROOT.Bootstrap::$SUBURI);
                 $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {
-                    $key = $configData->getPasswordSalt();
+                    $key = $this->configData->getPasswordSalt();
                     $request->verifySignature($key);
 
                     $uri->addParam('from', $route);

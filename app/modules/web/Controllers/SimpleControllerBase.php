@@ -24,10 +24,19 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Klein\Klein;
 use Psr\Container\ContainerInterface;
+use SP\Bootstrap;
+use SP\Config\Config;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 
 /**
@@ -39,49 +48,65 @@ abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
+    // TODO: remove when controllers are ready
     protected ContainerInterface $dic;
 
+    protected EventDispatcher     $eventDispatcher;
+    protected Config              $config;
+    protected ContextInterface    $session;
+    protected ThemeInterface      $theme;
+    protected Klein               $router;
+    protected Acl                 $acl;
+    protected Request             $request;
+    protected PhpExtensionChecker $extensionChecker;
+
     /**
-     * SimpleControllerBase constructor.
-     *
+     * @throws \SP\Core\Exceptions\SessionTimeout
      * @throws \JsonException
      */
     public function __construct(
-        ContainerInterface $container,
-        string             $actionName
-    )
-    {
-        $this->dic = $container;
-        $this->actionName = $actionName;
+        EventDispatcher $eventDispatcher,
+        Config $config,
+        ContextInterface $session,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        Request $request,
+        PhpExtensionChecker $extensionChecker
+    ) {
+        // TODO: remove when controllers are ready
+        $this->dic = Bootstrap::getContainer();
 
-        $this->setUp($container);
+        $this->controllerName = $this->getControllerName();
+        $this->configData = $config->getConfigData();
+        $this->eventDispatcher = $eventDispatcher;
+        $this->config = $config;
+        $this->session = $session;
+        $this->theme = $theme;
+        $this->router = $router;
+        $this->acl = $acl;
+        $this->request = $request;
+        $this->extensionChecker = $extensionChecker;
 
+        $this->setup = true;
+
+        // TODO: call handleSessionTimeout from controller::initialize directly
         try {
-            $this->initialize();
+            if (method_exists($this, 'initialize')) {
+                $this->initialize();
+            }
         } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout();
+            $this->handleSessionTimeout(
+                function () {
+                    return true;
+                }
+            );
 
             throw $sessionTimeout;
         }
     }
 
     abstract protected function initialize(): void;
-
-    /**
-     * @throws \JsonException
-     */
-    public function handleSessionTimeout(): void
-    {
-        $this->sessionLogout(
-            $this->request,
-            $this->configData,
-            function ($redirect) {
-                $this->router->response()
-                    ->redirect($redirect)
-                    ->send(true);
-            }
-        );
-    }
 
     /**
      * Comprobaciones
