@@ -96,6 +96,5 @@ return [
     AccountAclService::class   => autowire(AccountAclService::class),
     \GuzzleHttp\Client::class  => create(GuzzleHttp\Client::class)
         ->constructor(factory([Client::class, 'getOptions'])),
-    CSRF::class                => autowire(CSRF::class),
-    AuthProvider::class        => autowire(AuthProvider::class)->lazy(),
+    CSRF::class                => autowire(CSRF::class)
 ];

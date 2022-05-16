@@ -25,8 +25,10 @@
 namespace SP\Providers\Acl;
 
 use Exception;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\SPException;
 use SP\Providers\EventsTrait;
@@ -50,17 +52,26 @@ final class AclHandler extends Provider implements EventReceiver
         'edit.user',
         'edit.userGroup',
         'delete.user',
-        'delete.user.selection'
+        'delete.user.selection',
     ];
 
-    /**
-     * @var string
-     */
-    private string $events;
-    /**
-     * @var ContainerInterface
-     */
-    private ContainerInterface $dic;
+    private string             $events;
+    private UserProfileService $userProfileService;
+    private UserGroupService   $userGroupService;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        UserProfileService $userProfileService,
+        UserGroupService $userGroupService
+    ) {
+        $this->userProfileService = $userProfileService;
+        $this->userGroupService = $userGroupService;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
+
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -87,7 +98,7 @@ final class AclHandler extends Provider implements EventReceiver
      *
      * @link  https://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -103,8 +114,8 @@ final class AclHandler extends Provider implements EventReceiver
     /**
      * Evento de actualización
      *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param  string  $eventType  Nombre del evento
+     * @param  Event  $event  Objeto del evento
      *
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -125,9 +136,6 @@ final class AclHandler extends Provider implements EventReceiver
         }
     }
 
-    /**
-     * @param Event $event
-     */
     private function processUserProfile(Event $event): void
     {
         try {
@@ -140,9 +148,7 @@ final class AclHandler extends Provider implements EventReceiver
             $extra = $eventMessage->getExtra();
 
             if (isset($extra['userProfileId'])) {
-                $userProfileService = $this->dic->get(UserProfileService::class);
-
-                foreach ($userProfileService->getUsersForProfile($extra['userProfileId'][0]) as $user) {
+                foreach ($this->userProfileService->getUsersForProfile($extra['userProfileId'][0]) as $user) {
                     AccountAclService::clearAcl($user->id);
                 }
             }
@@ -152,8 +158,6 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Event $event
-     *
      * @throws \SP\Core\Exceptions\SPException
      */
     private function processUser(Event $event): void
@@ -173,9 +177,6 @@ final class AclHandler extends Provider implements EventReceiver
         }
     }
 
-    /**
-     * @param Event $event
-     */
     private function processUserGroup(Event $event): void
     {
         try {
@@ -188,9 +189,7 @@ final class AclHandler extends Provider implements EventReceiver
             $extra = $eventMessage->getExtra();
 
             if (isset($extra['userGroupId'])) {
-                $userGroupService = $this->dic->get(UserGroupService::class);
-
-                foreach ($userGroupService->getUsageByUsers($extra['userGroupId'][0]) as $user) {
+                foreach ($this->userGroupService->getUsageByUsers($extra['userGroupId'][0]) as $user) {
                     AccountAclService::clearAcl($user->id);
                 }
             }
@@ -199,12 +198,8 @@ final class AclHandler extends Provider implements EventReceiver
         }
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        $this->dic = $dic;
         $this->events = $this->parseEventsToRegex(self::EVENTS);
     }
 }

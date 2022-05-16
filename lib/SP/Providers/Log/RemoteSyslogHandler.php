@@ -26,7 +26,6 @@ namespace SP\Providers\Log;
 
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
-use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\InvalidClassException;
 use SplSubject;
@@ -63,7 +62,7 @@ final class RemoteSyslogHandler extends LoggerBase
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -76,13 +75,8 @@ final class RemoteSyslogHandler extends LoggerBase
         $this->updateEvent('update', new Event($subject));
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        parent::initialize($dic);
-
         $configData = $this->config->getConfigData();
 
         $this->logger->pushHandler(
@@ -95,5 +89,7 @@ final class RemoteSyslogHandler extends LoggerBase
                 'syspass'
             )
         );
+
+        parent::initialize();
     }
 }

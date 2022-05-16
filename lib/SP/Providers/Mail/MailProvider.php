@@ -26,8 +26,10 @@ namespace SP\Providers\Mail;
 
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
 use SP\Core\AppInfoInterface;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Providers\Provider;
 
@@ -38,19 +40,24 @@ use SP\Providers\Provider;
  */
 final class MailProvider extends Provider
 {
-    /**
-     * @var  PHPMailer
-     */
     private PHPMailer $mailer;
-    /**
-     * @var bool
-     */
-    private bool $debug = false;
+    private bool      $debug = false;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        PHPMailer $mailer
+    ) {
+        $this->mailer = $mailer;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
 
     /**
      * Inicializar la clase PHPMailer.
      *
-     * @param MailParams $mailParams
+     * @param  MailParams  $mailParams
      *
      * @return PHPMailer
      * @throws MailProviderException
@@ -108,18 +115,15 @@ final class MailProvider extends Provider
     }
 
     /**
-     * @param bool $debug
+     * @param  bool  $debug
      */
     public function setDebug(bool $debug)
     {
         $this->debug = $debug;
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        $this->mailer = $dic->get(PHPMailer::class);
+        // TODO: Implement initialize() method.
     }
 }

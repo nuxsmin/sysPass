@@ -69,17 +69,11 @@ final class Bootstrap
      * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
      */
     public static string $WEBURI = '';
-    /**
-     * @var string
-     */
     public static string $SUBURI = '';
     /**
      * @var mixed
      */
     public static $LOCK;
-    /**
-     * @var bool Indica si la versión de PHP es correcta
-     */
     public static bool                $checkPhpVersion = false;
     private static ContainerInterface $container;
     private Klein                     $router;
@@ -369,21 +363,19 @@ final class Bootstrap
         if (defined('DEBUG') && DEBUG) {
             /** @noinspection ForgottenDebugOutputInspection */
             Debug::enable();
+        } elseif (!defined('DEBUG')
+              && ($this->router->request()->cookies()->get('XDEBUG_SESSION')
+                || $this->configData->isDebug())
+        ) {
+            define('DEBUG', true);
+
+            /** @noinspection ForgottenDebugOutputInspection */
+            Debug::enable();
         } else {
-            if (!defined('DEBUG')
-                && ($this->router->request()->cookies()->get('XDEBUG_SESSION')
-                    || $this->configData->isDebug())
-            ) {
-                define('DEBUG', true);
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
 
-                /** @noinspection ForgottenDebugOutputInspection */
-                Debug::enable();
-            } else {
-                error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-
-                if (!headers_sent()) {
-                    ini_set('display_errors', 0);
-                }
+            if (!headers_sent()) {
+                ini_set('display_errors', 0);
             }
         }
 

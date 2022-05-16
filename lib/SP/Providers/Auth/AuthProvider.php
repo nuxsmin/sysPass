@@ -24,7 +24,9 @@
 
 namespace SP\Providers\Auth;
 
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserLoginData;
@@ -50,12 +52,27 @@ class AuthProvider extends Provider
     /**
      * @var callable[]
      */
-    protected array $auths = [];
+    protected array    $auths = [];
+    protected Browser  $browser;
+    protected Database $database;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        Browser $browser,
+        Database $database
+    ) {
+        $this->browser = $browser;
+        $this->database = $database;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
 
     /**
      * Probar los métodos de autentificación
      *
-     * @param UserLoginData $userLoginData
+     * @param  UserLoginData  $userLoginData
      *
      * @return false|AuthResult[]
      */
@@ -75,23 +92,21 @@ class AuthProvider extends Provider
     }
 
     /**
-     * Auth constructor.
-     *
-     * @param ContainerInterface $dic
+     * Auth initializer
      *
      * @throws AuthException
      */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
         $configData = $this->config->getConfigData();
 
         if ($configData->isAuthBasicEnabled()) {
             $this->registerAuth(
-                function (UserLoginData $userLoginData) use ($dic) {
-                    $dic->get(Browser::class)
-                        ->authenticate($userLoginData);
+                function (UserLoginData $userLoginData) {
+                    $this->browser->authenticate($userLoginData);
                 },
-                'authBrowser');
+                'authBrowser'
+            );
         }
 
         if ($configData->isLdapEnabled()) {
@@ -116,11 +131,13 @@ class AuthProvider extends Provider
                     $ldapParams->setFilterUserAttributes($configData->getLdapFilterUserAttributes());
                     $ldapParams->setFilterGroupAttributes($configData->getLdapFilterGroupAttributes());
 
+                    // TODO: Use IoC??
                     $ldapAuth = new LdapAuth(
                         Ldap::factory(
                             $ldapParams,
                             $this->eventDispatcher,
-                            $configData->isDebug()),
+                            $configData->isDebug()
+                        ),
                         $this->eventDispatcher,
                         $configData
                     );
@@ -140,13 +157,13 @@ class AuthProvider extends Provider
 
                     return $ldapAuthData;
                 },
-                'authLdap');
+                'authLdap'
+            );
         }
 
         $this->registerAuth(
-            function (UserLoginData $userLoginData) use ($dic) {
-                return $dic->get(Database::class)
-                    ->authenticate($userLoginData);
+            function (UserLoginData $userLoginData) {
+                return $this->database->authenticate($userLoginData);
             },
             'authDatabase'
         );
@@ -155,17 +172,19 @@ class AuthProvider extends Provider
     /**
      * Registrar un método de autentificación primarios
      *
-     * @param callable $auth Función de autentificación
-     * @param string   $name
+     * @param  callable  $auth  Función de autentificación
+     * @param  string  $name
      *
      * @throws AuthException
      */
     private function registerAuth(callable $auth, string $name): void
     {
         if (array_key_exists($name, $this->auths)) {
-            throw new AuthException(__u('Authentication already initialized'),
+            throw new AuthException(
+                __u('Authentication already initialized'),
                 SPException::ERROR,
-                __FUNCTION__);
+                __FUNCTION__
+            );
         }
 
         $this->auths[$name] = $auth;

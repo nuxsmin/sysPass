@@ -25,11 +25,13 @@
 namespace SP\Modules\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Psr\Container\ContainerInterface;
-use SP\Core\Context\StatelessContext;
+use Klein\Klein;
+use SP\Core\Application;
 use SP\Core\Exceptions\InitializationException;
+use SP\Core\HttpModuleBase;
 use SP\Core\Language;
-use SP\Core\ModuleBase;
+use SP\Core\ProvidersHelper;
+use SP\Http\Request;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
@@ -40,20 +42,28 @@ use SP\Util\HttpUtil;
 /**
  * Class Init
  */
-final class Init extends ModuleBase
+final class Init extends HttpModuleBase
 {
-    protected StatelessContext $context;
-    protected Language $language;
+    private Language     $language;
+    private DatabaseUtil $databaseUtil;
 
-    /**
-     * Module constructor.
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
+    public function __construct(
+        Application $application,
+        ProvidersHelper $providersHelper,
+        Request $request,
+        Klein $router,
+        Language $language,
+        DatabaseUtil $databaseUtil
+    ) {
+        parent::__construct(
+            $application,
+            $providersHelper,
+            $request,
+            $router
+        );
 
-        $this->context = $container->get(StatelessContext::class);
-        $this->language = $container->get(Language::class);
+        $this->language = $language;
+        $this->databaseUtil = $databaseUtil;
     }
 
     /**
@@ -83,21 +93,19 @@ final class Init extends ModuleBase
         $this->checkInstalled();
 
         // Checks if maintenance mode is turned on
-        if ($this->checkMaintenanceMode($this->context)) {
+        if ($this->checkMaintenanceMode()) {
             throw new InitializationException('Maintenance mode');
         }
 
         // Checks if upgrade is needed
         $this->checkUpgrade();
 
-        $databaseUtil = $this->container->get(DatabaseUtil::class);
-
         // Checks if the database is set up
-        if (!$databaseUtil->checkDatabaseConnection()) {
+        if (!$this->databaseUtil->checkDatabaseConnection()) {
             throw new InitializationException('Database connection error');
         }
 
-        if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+        if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
             throw new InitializationException('Database checking error');
         }
 
@@ -134,8 +142,8 @@ final class Init extends ModuleBase
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 
         if ($this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
+            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion())
+                || UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
         ) {
             $this->config->generateUpgradeKey();
 

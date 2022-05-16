@@ -35,7 +35,6 @@ use SP\Config\ConfigDataInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -72,25 +71,25 @@ final class LoginService extends Service
     /**
      * Estados
      */
-    private const STATUS_INVALID_LOGIN = 1;
-    private const STATUS_INVALID_MASTER_PASS = 2;
-    private const STATUS_USER_DISABLED = 3;
-    private const STATUS_NEED_OLD_PASS = 5;
+    private const STATUS_INVALID_LOGIN         = 1;
+    private const STATUS_INVALID_MASTER_PASS   = 2;
+    private const STATUS_USER_DISABLED         = 3;
+    private const STATUS_NEED_OLD_PASS         = 5;
     private const STATUS_MAX_ATTEMPTS_EXCEEDED = 6;
-    private const STATUS_PASS_RESET = 7;
-    private const STATUS_PASS = 0;
-    private const STATUS_NONE = 100;
+    private const STATUS_PASS_RESET            = 7;
+    private const STATUS_PASS                  = 0;
+    private const STATUS_NONE                  = 100;
 
-    private ?AuthProvider $authProvider = null;
-    private ?UserLoginData $userLoginData = null;
-    private ?ConfigDataInterface $configData = null;
-    private ?ThemeInterface $theme = null;
-    private ?UserService $userService = null;
-    private ?Language $language = null;
-    private ?TrackService $trackService = null;
-    private ?TrackRequest $trackRequest = null;
-    private ?string $from = null;
-    private ?Request $request = null;
+    private ?AuthProvider        $authProvider  = null;
+    private ?UserLoginData       $userLoginData = null;
+    private ?ConfigDataInterface $configData    = null;
+    private ?ThemeInterface      $theme         = null;
+    private ?UserService         $userService   = null;
+    private ?Language            $language      = null;
+    private ?TrackService        $trackService  = null;
+    private ?TrackRequest        $trackRequest  = null;
+    private ?string              $from          = null;
+    private ?Request             $request       = null;
 
     /**
      * Ejecutar las acciones de login
@@ -222,9 +221,11 @@ final class LoginService extends Service
             if ($userLoginResponse->getIsDisabled()) {
                 $this->eventDispatcher->notifyEvent(
                     'login.checkUser.disabled',
-                    new Event($this, EventMessage::factory()
+                    new Event(
+                        $this, EventMessage::factory()
                         ->addDescription(__u('User disabled'))
-                        ->addDetail(__u('User'), $userLoginResponse->getLogin()))
+                        ->addDetail(__u('User'), $userLoginResponse->getLogin())
+                    )
                 );
 
                 $this->addTracking();
@@ -241,8 +242,10 @@ final class LoginService extends Service
             if ($userLoginResponse->getIsChangePass()) {
                 $this->eventDispatcher->notifyEvent(
                     'login.checkUser.changePass',
-                    new Event($this, EventMessage::factory()
-                        ->addDetail(__u('User'), $userLoginResponse->getLogin()))
+                    new Event(
+                        $this, EventMessage::factory()
+                        ->addDetail(__u('User'), $userLoginResponse->getLogin())
+                    )
                 );
 
                 $hash = PasswordUtil::generateRandomBytes(16);
@@ -251,7 +254,7 @@ final class LoginService extends Service
                     ->add($userLoginResponse->getId(), $hash);
 
                 $uri = new Uri('index.php');
-                $uri->addParam('r', 'userPassReset/reset/' . $hash);
+                $uri->addParam('r', 'userPassReset/reset/'.$hash);
 
                 return new LoginResponse(
                     self::STATUS_PASS_RESET,
@@ -284,8 +287,10 @@ final class LoginService extends Service
                 if ($temporaryMasterPass->checkTempMasterPass($masterPass)) {
                     $this->eventDispatcher->notifyEvent(
                         'login.masterPass.temporary',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Using temporary password')))
+                        new Event(
+                            $this, EventMessage::factory()
+                            ->addDescription(__u('Using temporary password'))
+                        )
                     );
 
                     $masterPass = $temporaryMasterPass->getUsingKey($masterPass);
@@ -293,12 +298,15 @@ final class LoginService extends Service
 
                 if ($userPassService->updateMasterPassOnLogin(
                         $masterPass,
-                        $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
+                        $this->userLoginData
+                    )->getStatus() !== UserPassService::MPASS_OK
                 ) {
                     $this->eventDispatcher->notifyEvent(
                         'login.masterPass',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Wrong master password')))
+                        new Event(
+                            $this, EventMessage::factory()
+                            ->addDescription(__u('Wrong master password'))
+                        )
                     );
 
                     $this->addTracking();
@@ -313,55 +321,64 @@ final class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent(
                     'login.masterPass',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Master password updated')))
-                );
-            } else if ($oldPass) {
-                if ($userPassService->updateMasterPassFromOldPass(
-                        $oldPass,
-                        $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
-                ) {
-                    $this->eventDispatcher->notifyEvent(
-                        'login.masterPass',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Wrong master password')))
-                    );
-
-                    $this->addTracking();
-
-                    throw new AuthException(
-                        __u('Wrong master password'),
-                        SPException::INFO,
-                        null,
-                        self::STATUS_INVALID_MASTER_PASS
-                    );
-                }
-
-                $this->eventDispatcher->notifyEvent(
-                    'login.masterPass',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Master password updated')))
+                    new Event(
+                        $this, EventMessage::factory()
+                        ->addDescription(__u('Master password updated'))
+                    )
                 );
             } else {
-                switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {
-                    case UserPassService::MPASS_CHECKOLD:
-                        throw new AuthException(
-                            __u('Your previous password is needed'),
-                            SPException::INFO,
-                            null,
-                            self::STATUS_NEED_OLD_PASS
+                if ($oldPass) {
+                    if ($userPassService->updateMasterPassFromOldPass(
+                            $oldPass,
+                            $this->userLoginData
+                        )->getStatus() !== UserPassService::MPASS_OK
+                    ) {
+                        $this->eventDispatcher->notifyEvent(
+                            'login.masterPass',
+                            new Event(
+                                $this, EventMessage::factory()
+                                ->addDescription(__u('Wrong master password'))
+                            )
                         );
-                    case UserPassService::MPASS_NOTSET:
-                    case UserPassService::MPASS_CHANGED:
-                    case UserPassService::MPASS_WRONG:
+
                         $this->addTracking();
 
                         throw new AuthException(
-                            __u('The Master Password either is not saved or is wrong'),
+                            __u('Wrong master password'),
                             SPException::INFO,
                             null,
                             self::STATUS_INVALID_MASTER_PASS
                         );
+                    }
+
+                    $this->eventDispatcher->notifyEvent(
+                        'login.masterPass',
+                        new Event(
+                            $this, EventMessage::factory()
+                            ->addDescription(__u('Master password updated'))
+                        )
+                    );
+                } else {
+                    switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {
+                        case UserPassService::MPASS_CHECKOLD:
+                            throw new AuthException(
+                                __u('Your previous password is needed'),
+                                SPException::INFO,
+                                null,
+                                self::STATUS_NEED_OLD_PASS
+                            );
+                        case UserPassService::MPASS_NOTSET:
+                        case UserPassService::MPASS_CHANGED:
+                        case UserPassService::MPASS_WRONG:
+                            $this->addTracking();
+
+                            throw new AuthException(
+                                __u('The Master Password either is not saved or is wrong'),
+                                SPException::INFO,
+                                null,
+                                self::STATUS_INVALID_MASTER_PASS
+                            );
+                    }
                 }
             }
         } catch (CryptoException $e) {
@@ -412,8 +429,10 @@ final class LoginService extends Service
 
         $this->eventDispatcher->notifyEvent(
             'login.session.load',
-            new Event($this, EventMessage::factory()
-                ->addDetail(__u('User'), $userLoginResponse->getLogin()))
+            new Event(
+                $this, EventMessage::factory()
+                ->addDetail(__u('User'), $userLoginResponse->getLogin())
+            )
         );
     }
 
@@ -443,7 +462,7 @@ final class LoginService extends Service
     }
 
     /**
-     * @param string|null $from
+     * @param  string|null  $from
      */
     public function setFrom(?string $from): void
     {
@@ -451,9 +470,10 @@ final class LoginService extends Service
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize(): void
     {
@@ -466,12 +486,14 @@ final class LoginService extends Service
         $this->userLoginData = new UserLoginData();
         $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
         $this->authProvider = $this->dic->get(AuthProvider::class);
+
+        $this->authProvider->initialize();
     }
 
     /**
      * Autentificación LDAP
      *
-     * @param LdapAuthData $authData
+     * @param  LdapAuthData  $authData
      *
      * @return bool
      * @throws SPException
@@ -565,7 +587,8 @@ final class LoginService extends Service
 
         $this->eventDispatcher->notifyEvent(
             'login.auth.ldap',
-            new Event($this, EventMessage::factory()
+            new Event(
+                $this, EventMessage::factory()
                 ->addDetail(__u('Type'), __FUNCTION__)
                 ->addDetail(__u('LDAP Server'), $authData->getServer())
             )
@@ -610,7 +633,7 @@ final class LoginService extends Service
     /**
      * Autentificación en BD
      *
-     * @param DatabaseAuthData $authData
+     * @param  DatabaseAuthData  $authData
      *
      * @return bool
      * @throws SPException
@@ -663,7 +686,7 @@ final class LoginService extends Service
     /**
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
-     * @param BrowserAuthData $authData
+     * @param  BrowserAuthData  $authData
      *
      * @return bool
      * @throws AuthException

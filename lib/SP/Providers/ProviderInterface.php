@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,19 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Context;
+namespace SP\Providers;
+
 
 /**
- * ContextFactory
+ * ProviderInterface
  */
-final class ContextFactory
+interface ProviderInterface
 {
-    public static function getForModule(string $module): ContextInterface
-    {
-        if ($module === 'web') {
-            return new SessionContext();
-        }
-
-        return new StatelessContext();
-    }
+    public function initialize(): void;
 }

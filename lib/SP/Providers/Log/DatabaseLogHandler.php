@@ -25,8 +25,10 @@
 namespace SP\Providers\Log;
 
 use Exception;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
@@ -46,25 +48,30 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    /**
-     * @var EventlogService
-     */
     private EventlogService $eventlogService;
-    /**
-     * @var string
-     */
-    private string $events;
-    /**
-     * @var Language
-     */
-    private Language $language;
+    private Language        $language;
+    private string          $events;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        EventlogService $eventlogService,
+        Language $language
+    ) {
+        $this->eventlogService = $eventlogService;
+        $this->language = $language;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
+
 
     /**
      * Receive update from subject
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -80,8 +87,8 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     /**
      * Evento de actualización
      *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param  string  $eventType  Nombre del evento
+     * @param  Event  $event  Objeto del evento
      *
      * @throws InvalidClassException
      */
@@ -105,7 +112,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
             $hint = $source->getHint();
 
             if ($hint !== null) {
-                $eventlogData->setDescription(__($source->getMessage()) . PHP_EOL . $hint);
+                $eventlogData->setDescription(__($source->getMessage()).PHP_EOL.$hint);
             } else {
                 $eventlogData->setDescription(__($source->getMessage()));
             }
@@ -145,14 +152,8 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         return LogInterface::EVENTS;
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        $this->language = $dic->get(Language::class);
-        $this->eventlogService = $dic->get(EventlogService::class);
-
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
         if (count($configEvents) === 0) {

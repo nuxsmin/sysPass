@@ -24,7 +24,6 @@
 
 namespace SP\Providers;
 
-use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
@@ -34,36 +33,23 @@ use SP\Core\Events\EventDispatcher;
  *
  * @package SP\Providers
  */
-abstract class Provider
+abstract class Provider implements ProviderInterface
 {
-    public const STATUS_INTERNAL_ERROR = 1000;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ContextInterface
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected Config           $config;
+    protected ContextInterface $context;
+    protected EventDispatcher  $eventDispatcher;
 
     /**
      * Provider constructor.
      *
-     * @param ContainerInterface $dic
+     * @param  Config  $config
+     * @param  ContextInterface  $context
+     * @param  EventDispatcher  $eventDispatcher
      */
-    final public function __construct(ContainerInterface $dic)
+    public function __construct(Config $config, ContextInterface $context, EventDispatcher $eventDispatcher)
     {
-        $this->config = $dic->get(Config::class);
-        $this->context = $dic->get(ContextInterface::class);
-        $this->eventDispatcher = $dic->get(EventDispatcher::class);
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize($dic);
-        }
+        $this->config = $config;
+        $this->context = $context;
+        $this->eventDispatcher = $eventDispatcher;
     }
 }

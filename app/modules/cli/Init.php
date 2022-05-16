@@ -24,15 +24,12 @@
 
 namespace SP\Modules\Cli;
 
-use Psr\Container\ContainerInterface;
-use SP\Core\Context\StatelessContext;
+use SP\Core\Application;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
-use SP\Modules\Cli\Commands\BackupCommand;
-use SP\Modules\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
-use SP\Modules\Cli\Commands\InstallCommand;
+use SP\Core\ProvidersHelper;
 use SP\Util\VersionUtil;
-use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,25 +40,32 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class Init extends ModuleBase
 {
-    private const CLI_COMMANDS = [
-        InstallCommand::class,
-        BackupCommand::class,
-        UpdateMasterPasswordCommand::class
-    ];
-    protected StatelessContext $context;
-    protected Language $language;
-    protected Application $application;
+    private Language           $language;
+    private InputInterface     $input;
+    private OutputInterface    $output;
+    private ConsoleApplication $consoleApplication;
+    private CliCommandHelper   $cliCommandHelper;
 
-    /**
-     * Module constructor.
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
+    public function __construct(
+        Application $application,
+        ProvidersHelper $providersHelper,
+        Language $language,
+        ConsoleApplication $consoleApplication,
+        InputInterface $input,
+        OutputInterface $output,
+        CliCommandHelper $cliCommandHelper
+    ) {
+        $this->language = $language;
+        $this->consoleApplication = $consoleApplication;
+        $this->input = $input;
+        $this->output = $output;
+        $this->cliCommandHelper = $cliCommandHelper;
 
-        $this->context = $container->get(StatelessContext::class);
-        $this->language = $container->get(Language::class);
-        $this->application = $container->get(Application::class);
+        parent::__construct(
+            $application,
+            $providersHelper
+        );
+
     }
 
     /**
@@ -89,16 +93,13 @@ final class Init extends ModuleBase
      */
     private function initCli(): void
     {
-        $this->application->setName('sysPass CLI');
-        $this->application->setVersion(implode('.', VersionUtil::getVersionArray()));
+        $this->consoleApplication->setName('sysPass CLI');
+        $this->consoleApplication->setVersion(implode('.', VersionUtil::getVersionArray()));
+        $this->consoleApplication->addCommands($this->cliCommandHelper->getCommands());
 
-        foreach (self::CLI_COMMANDS as $command) {
-            $this->application->add($this->container->get($command));
-        }
-
-        $this->application->run(
-            $this->container->get(InputInterface::class),
-            $this->container->get(OutputInterface::class)
+        $this->consoleApplication->run(
+            $this->input,
+            $this->output
         );
     }
 }

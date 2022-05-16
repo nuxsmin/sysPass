@@ -26,10 +26,10 @@ namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Exception;
-use Psr\Container\ContainerInterface;
+use Klein\Klein;
 use SP\Bootstrap;
+use SP\Core\Application;
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\CSRF;
@@ -40,11 +40,13 @@ use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\HttpModuleBase;
 use SP\Core\Language;
-use SP\Core\ModuleBase;
+use SP\Core\ProvidersHelper;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Http\Address;
+use SP\Http\Request;
 use SP\Plugin\PluginManager;
 use SP\Services\Crypt\SecureSessionService;
 use SP\Services\ItemPreset\ItemPresetInterface;
@@ -60,7 +62,7 @@ use SP\Util\HttpUtil;
 /**
  * Class Init
  */
-final class Init extends ModuleBase
+final class Init extends HttpModuleBase
 {
     /**
      * List of controllers that don't need to perform fully initialization
@@ -73,46 +75,60 @@ final class Init extends ModuleBase
         'status',
         'upgrade',
         'error',
-        'task'
+        'task',
     ];
     /**
      * List of controllers that don't need to update the user's session activity
      */
     private const NO_SESSION_ACTIVITY = ['items', 'login'];
-    private CSRF $csrf;
-    private SessionContext $context;
-    private ThemeInterface $theme;
-    private Language $language;
+    private CSRF                 $csrf;
+    private ThemeInterface       $theme;
+    private Language             $language;
     private SecureSessionService $secureSessionService;
-    private PluginManager $pluginManager;
-    private ItemPresetService $itemPresetService;
-    private bool $isIndex = false;
+    private PluginManager        $pluginManager;
+    private ItemPresetService    $itemPresetService;
+    private DatabaseUtil         $databaseUtil;
+    private UserProfileService   $userProfileService;
+    private bool                 $isIndex = false;
 
-    /**
-     * Init constructor.
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
+    public function __construct(
+        Application $application,
+        ProvidersHelper $providersHelper,
+        Request $request,
+        Klein $router,
+        CSRF $csrf,
+        ThemeInterface $theme,
+        Language $language,
+        SecureSessionService $secureSessionService,
+        PluginManager $pluginManager,
+        ItemPresetService $itemPresetService,
+        DatabaseUtil $databaseUtil,
+        UserProfileService $userProfileService
+    ) {
+        parent::__construct(
+            $application,
+            $providersHelper,
+            $request,
+            $router
+        );
 
-        $this->context = $container->get(ContextInterface::class);
-        $this->theme = $container->get(ThemeInterface::class);
-        $this->language = $container->get(Language::class);
-        $this->secureSessionService = $container->get(SecureSessionService::class);
-        $this->pluginManager = $container->get(PluginManager::class);
-        $this->itemPresetService = $container->get(ItemPresetService::class);
-        $this->csrf = $container->get(CSRF::class);
+        $this->csrf = $csrf;
+        $this->theme = $theme;
+        $this->language = $language;
+        $this->secureSessionService = $secureSessionService;
+        $this->pluginManager = $pluginManager;
+        $this->itemPresetService = $itemPresetService;
+        $this->databaseUtil = $databaseUtil;
+        $this->userProfileService = $userProfileService;
     }
 
     /**
      * Initialize Web App
      *
-     * @param string $controller
+     * @param  string  $controller
      *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \JsonException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InitializationException
      * @throws \SP\Core\Exceptions\QueryException
@@ -152,8 +168,6 @@ final class Init extends ModuleBase
         HttpUtil::checkHttps($this->configData, $this->request);
 
         if (in_array($controller, self::PARTIAL_INIT, true) === false) {
-            $databaseUtil = $this->container->get(DatabaseUtil::class);
-
             // Checks if sysPass is installed
             if (!$this->checkInstalled()) {
                 logger('Not installed', 'ERROR');
@@ -166,7 +180,7 @@ final class Init extends ModuleBase
             }
 
             // Checks if the database is set up
-            if (!$databaseUtil->checkDatabaseConnection()) {
+            if (!$this->databaseUtil->checkDatabaseConnection()) {
                 logger('Database connection error', 'ERROR');
 
                 $this->router->response()
@@ -177,7 +191,7 @@ final class Init extends ModuleBase
             }
 
             // Checks if maintenance mode is turned on
-            if ($this->checkMaintenanceMode($this->context)) {
+            if ($this->checkMaintenanceMode()) {
                 logger('Maintenance mode', 'INFO');
 
                 $this->router->response()
@@ -201,7 +215,7 @@ final class Init extends ModuleBase
             }
 
             // Checks if the database is set up
-            if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
                 logger('Database checking error', 'ERROR');
 
                 $this->router->response()
@@ -229,9 +243,10 @@ final class Init extends ModuleBase
 
                 // Recargar los permisos del perfil de usuario
                 $this->context->setUserProfile(
-                    $this->container->get(UserProfileService::class)
-                        ->getById($this->context->getUserData()
-                            ->getUserProfileId())->getProfile());
+                    $this->userProfileService
+                        ->getById($this->context->getUserData()->getUserProfileId())
+                        ->getProfile()
+                );
             }
 
             if (!$this->csrf->check()) {
@@ -280,7 +295,7 @@ final class Init extends ModuleBase
     private function checkInstalled(): bool
     {
         return $this->configData->isInstalled()
-            && $this->router->request()->param('r') !== 'install/index';
+               && $this->router->request()->param('r') !== 'install/index';
     }
 
     /**
@@ -293,8 +308,8 @@ final class Init extends ModuleBase
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 
         return $this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
+               || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion())
+                   || UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
     }
 
     /**
@@ -325,17 +340,20 @@ final class Init extends ModuleBase
             if ($sidStartTime === 0) {
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-            } else if (!$inMaintenance
-                && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
-                && $this->context->isLoggedIn()
-            ) {
-                try {
-                    CryptSession::reKey($this->context);
-                } catch (CryptoException $e) {
-                    logger($e->getMessage());
+            } else {
+                if (!$inMaintenance
+                    && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
+                    && $this->context->isLoggedIn()
+                ) {
+                    try {
+                        CryptSession::reKey($this->context);
+                    } catch (CryptoException $e) {
+                        logger($e->getMessage());
 
-                    SessionContext::restart();
-                    return;
+                        SessionContext::restart();
+
+                        return;
+                    }
                 }
             }
 
@@ -357,7 +375,7 @@ final class Init extends ModuleBase
                 $userTimeout = $this->getSessionTimeoutForUser($timeout)
                     ?: $this->configData->getSessionTimeout();
 
-                logger('Session timeout: ' . $userTimeout);
+                logger('Session timeout: '.$userTimeout);
 
                 return $this->context->setSessionTimeout($userTimeout);
             }
@@ -382,7 +400,11 @@ final class Init extends ModuleBase
             if ($itemPreset !== null) {
                 $sessionTimeout = $itemPreset->hydrate(SessionTimeout::class);
 
-                if (Address::check($this->request->getClientAddress(), $sessionTimeout->getAddress(), $sessionTimeout->getMask())) {
+                if (Address::check(
+                    $this->request->getClientAddress(),
+                    $sessionTimeout->getAddress(),
+                    $sessionTimeout->getMask()
+                )) {
                     return $sessionTimeout->getTimeout();
                 }
             }

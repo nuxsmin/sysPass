@@ -25,8 +25,10 @@
 namespace SP\Providers\Notification;
 
 use Exception;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
 use SP\Providers\EventsTrait;
@@ -45,17 +47,22 @@ final class NotificationHandler extends Provider implements EventReceiver
 
     public const EVENTS = [
         'request.account',
-        'show.account.link'
+        'show.account.link',
     ];
 
-    /**
-     * @var NotificationService
-     */
     private NotificationService $notificationService;
-    /**
-     * @var string
-     */
-    private string $events;
+    private string              $events;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        NotificationService $notificationService
+    ) {
+        $this->notificationService = $notificationService;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -82,7 +89,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -97,8 +104,8 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * Evento de actualización
      *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param  string  $eventType  Nombre del evento
+     * @param  Event  $event  Objeto del evento
      */
     public function updateEvent(string $eventType, Event $event): void
     {
@@ -113,7 +120,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Event $event
+     * @param  Event  $event
      */
     private function requestAccountNotification(Event $event): void
     {
@@ -132,7 +139,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param NotificationData $notificationData
+     * @param  NotificationData  $notificationData
      */
     private function notify(NotificationData $notificationData): void
     {
@@ -144,7 +151,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param Event $event
+     * @param  Event  $event
      */
     private function showAccountLinkNotification(Event $event): void
     {
@@ -162,13 +169,8 @@ final class NotificationHandler extends Provider implements EventReceiver
         }
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        $this->notificationService = $dic->get(NotificationService::class);
-
         $this->events = $this->parseEventsToRegex(self::EVENTS);
     }
 }

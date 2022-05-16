@@ -25,8 +25,10 @@
 namespace SP\Providers\Mail;
 
 use Exception;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
@@ -52,7 +54,7 @@ final class MailHandler extends Provider implements EventReceiver
         'save.',
         'import.ldap.end',
         'run.backup.end',
-        'run.import.end'
+        'run.import.end',
     ];
 
     public const EVENTS_FIXED = [
@@ -63,21 +65,25 @@ final class MailHandler extends Provider implements EventReceiver
         'request.account',
         'edit.user.password',
         'save.config.',
-        'create.tempMasterPassword'
+        'create.tempMasterPassword',
     ];
 
-    /**
-     * @var MailService
-     */
     private MailService $mailService;
-    /**
-     * @var string
-     */
-    private string $events;
-    /**
-     * @var Request
-     */
-    private Request $request;
+    private Request     $request;
+    private string      $events;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        MailService $mailService,
+        Request $request
+    ) {
+        $this->mailService = $mailService;
+        $this->request = $request;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -104,7 +110,7 @@ final class MailHandler extends Provider implements EventReceiver
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -119,8 +125,8 @@ final class MailHandler extends Provider implements EventReceiver
     /**
      * Evento de actualización
      *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param  string  $eventType  Nombre del evento
+     * @param  Event  $event  Objeto del evento
      */
     public function updateEvent(string $eventType, Event $event): void
     {
@@ -193,14 +199,8 @@ final class MailHandler extends Provider implements EventReceiver
         }
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        $this->mailService = $dic->get(MailService::class);
-        $this->request = $dic->get(Request::class);
-
         $configEvents = $this->config->getConfigData()->getMailEvents();
 
         if (count($configEvents) === 0) {

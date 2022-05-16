@@ -25,7 +25,6 @@
 namespace SP\Providers\Log;
 
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
-use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\InvalidClassException;
 use SplSubject;
@@ -62,7 +61,7 @@ final class SyslogHandler extends LoggerBase
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -76,12 +75,11 @@ final class SyslogHandler extends LoggerBase
     }
 
     /**
-     * @param ContainerInterface $dic
      */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        parent::initialize($dic);
-
         $this->logger->pushHandler(new MSyslogHandler('syspass'));
+
+        parent::initialize();
     }
 }

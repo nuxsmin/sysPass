@@ -26,8 +26,10 @@ namespace SP\Providers\Log;
 
 use Exception;
 use Monolog\Logger;
-use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Language;
@@ -44,29 +46,44 @@ abstract class LoggerBase extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    public const MESSAGE_FORMAT = 'event="%s";address="%s";user="%s";message="%s"';
-    /**
-     * @var Logger
-     */
-    protected Logger $logger;
-    /**
-     * @var Request
-     */
-    protected Request $request;
-    /**
-     * @var string
-     */
-    protected string $events;
-    /**
-     * @var Language
-     */
+    protected Logger   $logger;
     protected Language $language;
+    protected Request  $request;
+    protected string   $events;
+
+    public function __construct(
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        Logger $logger,
+        Language $language,
+        Request $request
+    ) {
+        $this->logger = $logger;
+        $this->language = $language;
+        $this->request = $request;
+
+        parent::__construct($config, $context, $eventDispatcher);
+    }
+
+    /**
+     */
+    public function initialize(): void
+    {
+        $configEvents = $this->config->getConfigData()->getLogEvents();
+
+        if (count($configEvents) === 0) {
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
+        } else {
+            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
+        }
+    }
 
     /**
      * Evento de actualización
      *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param  string  $eventType  Nombre del evento
+     * @param  Event  $event  Objeto del evento
      *
      * @throws InvalidClassException
      */
@@ -115,9 +132,9 @@ abstract class LoggerBase extends Provider implements EventReceiver
     }
 
     /**
-     * @param string $message
-     * @param string $address
-     * @param string $user
+     * @param  string  $message
+     * @param  string  $address
+     * @param  string  $user
      *
      * @return array
      */
@@ -125,32 +142,12 @@ abstract class LoggerBase extends Provider implements EventReceiver
         string $message,
         string $address,
         string $user
-    ): array
-    {
+    ): array {
         return [
             'message' => trim($message),
-            'user' => trim($user),
+            'user'    => trim($user),
             'address' => trim($address),
-            'caller' => getLastCaller(4)
+            'caller'  => getLastCaller(4),
         ];
-    }
-
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
-    {
-        $this->language = $dic->get(Language::class);
-        $this->request = $dic->get(Request::class);
-
-        $configEvents = $this->config->getConfigData()->getLogEvents();
-
-        if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
-        } else {
-            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
-        }
-
-        $this->logger = $dic->get(Logger::class);
     }
 }

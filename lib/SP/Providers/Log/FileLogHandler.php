@@ -26,7 +26,6 @@ namespace SP\Providers\Log;
 
 
 use Monolog\Handler\StreamHandler;
-use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Providers\EventsTrait;
@@ -66,7 +65,7 @@ final class FileLogHandler extends LoggerBase
      *
      * @link  http://php.net/manual/en/splobserver.update.php
      *
-     * @param SplSubject $subject <p>
+     * @param  SplSubject  $subject  <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
      *
@@ -74,18 +73,15 @@ final class FileLogHandler extends LoggerBase
      * @throws InvalidClassException
      * @since 5.1.0
      */
-    public function update(SplSubject $subject)
+    public function update(SplSubject $subject): void
     {
         $this->updateEvent('update', new Event($subject));
     }
 
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize(ContainerInterface $dic): void
+    public function initialize(): void
     {
-        parent::initialize($dic);
-
         $this->logger->pushHandler(new StreamHandler(LOG_FILE));
+
+        parent::initialize();
     }
 }
