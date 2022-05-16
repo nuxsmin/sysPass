@@ -30,9 +30,9 @@ use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
@@ -81,7 +81,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     use JsonTrait, ItemTrait;
 
     protected ?AccountService $accountService = null;
-    protected ?ThemeIcons $icons = null;
+    protected ?ThemeIcons     $icons          = null;
 
     /**
      * Index action
@@ -131,7 +131,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             return $this->returnJsonResponseData([
-                'html' => $this->render()
+                'html' => $this->render(),
             ]);
         } catch (Exception $e) {
             processException($e);
@@ -148,7 +148,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * View action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -171,11 +171,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ActionsInterface::ACCOUNT_VIEW
             );
 
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleNormal',
-                    'name' => __('Account Details'),
-                    'icon' => $this->icons->getIconView()->getIcon()
+                    'name'  => __('Account Details'),
+                    'icon'  => $this->icons->getIconView()->getIcon(),
                 ]
             );
 
@@ -212,7 +213,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * View public link action
      *
-     * @param string $hash Link's hash
+     * @param  string  $hash  Link's hash
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -246,18 +247,21 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     $vault->getData($publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey())
                 );
 
-                $this->view->assign('title',
+                $this->view->assign(
+                    'title',
                     [
                         'class' => 'titleNormal',
-                        'name' => __('Account Details'),
-                        'icon' => $this->icons->getIconView()->getIcon()
+                        'name'  => __('Account Details'),
+                        'icon'  => $this->icons->getIconView()->getIcon(),
                     ]
                 );
 
                 $this->view->assign('isView', true);
-                $this->view->assign('useImage',
+                $this->view->assign(
+                    'useImage',
                     $this->configData->isPublinksImageEnabled()
-                    || $this->configData->isAccountPassToImage());
+                    || $this->configData->isAccountPassToImage()
+                );
 
                 if ($this->view->useImage) {
                     $imageUtil = $this->dic->get(ImageUtil::class);
@@ -278,14 +282,15 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ? '***'
                     : $this->request->getClientAddress(true);
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
                 $deepLink = new Uri($baseUrl);
-                $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId());
+                $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW).'/'.$accountData->getId());
 
                 $this->eventDispatcher->notifyEvent(
                     'show.account.link',
-                    new Event($this, EventMessage::factory()
+                    new Event(
+                        $this, EventMessage::factory()
                         ->addDescription(__u('Link viewed'))
                         ->addDetail(__u('Account'), $accountData->getName())
                         ->addDetail(__u('Client'), $accountData->getClientName())
@@ -294,7 +299,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                         ->addDetail(__u('IP'), $clientAddress)
                         ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
                         ->addExtra('userId', $publicLinkData->getUserId())
-                        ->addExtra('notify', $publicLinkData->isNotify()))
+                        ->addExtra('notify', $publicLinkData->isNotify())
+                    )
                 );
             } else {
                 ErrorUtil::showErrorInView(
@@ -328,11 +334,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $accountHelper->setViewForBlank(ActionsInterface::ACCOUNT_CREATE);
 
             $this->view->addTemplate('account');
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleGreen',
-                    'name' => __('New Account'),
-                    'icon' => $this->icons->getIconAdd()->getIcon()
+                    'name'  => __('New Account'),
+                    'icon'  => $this->icons->getIconAdd()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveCreate');
@@ -363,7 +370,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Copy action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -384,11 +391,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             $this->view->addTemplate('account');
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleGreen',
-                    'name' => __('New Account'),
-                    'icon' => $this->icons->getIconAdd()->getIcon()
+                    'name'  => __('New Account'),
+                    'icon'  => $this->icons->getIconAdd()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveCopy');
@@ -424,7 +432,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Edit action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -445,11 +453,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             $this->view->addTemplate('account');
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleOrange',
-                    'name' => __('Edit Account'),
-                    'icon' => $this->icons->getIconEdit()->getIcon()
+                    'name'  => __('Edit Account'),
+                    'icon'  => $this->icons->getIconEdit()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveEdit');
@@ -487,7 +496,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Delete action
      *
-     * @param int|null $id Account's ID
+     * @param  int|null  $id  Account's ID
      *
      */
     public function deleteAction(?int $id = null): void
@@ -505,11 +514,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             $this->view->addTemplate('account');
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleRed',
-                    'name' => __('Remove Account'),
-                    'icon' => $this->icons->getIconDelete()->getIcon()
+                    'name'  => __('Remove Account'),
+                    'icon'  => $this->icons->getIconDelete()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveDelete');
@@ -545,7 +555,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -565,11 +575,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             $this->view->addTemplate('account-editpass');
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleOrange',
-                    'name' => __('Edit Account Password'),
-                    'icon' => $this->icons->getIconEditPass()->getIcon()
+                    'name'  => __('Edit Account Password'),
+                    'icon'  => $this->icons->getIconEditPass()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveEditPass');
@@ -609,7 +620,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -628,11 +639,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->view->addTemplate('account-history');
 
-            $this->view->assign('title',
+            $this->view->assign(
+                'title',
                 [
                     'class' => 'titleNormal',
-                    'name' => __('Account Details'),
-                    'icon' => 'access_time'
+                    'name'  => __('Account Details'),
+                    'icon'  => 'access_time',
                 ]
             );
 
@@ -673,7 +685,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -726,8 +738,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Display account's password
      *
-     * @param int $id Account's ID
-     * @param int $parentId
+     * @param  int  $id  Account's ID
+     * @param  int  $parentId
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -743,7 +755,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $passwordPreset = $this->getPasswordPreset();
             $useImage = $this->configData->isAccountPassToImage()
-                || ($passwordPreset !== null && $passwordPreset->isUseImage());
+                        || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
             $this->view->assign('isLinked', $parentId > 0);
 
@@ -753,9 +765,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'show.account.pass',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Password viewed'))
-                    ->addDetail(__u('Account'), $account->getName()))
+                    ->addDetail(__u('Account'), $account->getName())
+                )
             );
 
             return $this->returnJsonResponseData($data);
@@ -794,7 +808,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Display account's password
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -810,7 +824,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $passwordPreset = $this->getPasswordPreset();
             $useImage = $this->configData->isAccountPassToImage()
-                || ($passwordPreset !== null && $passwordPreset->isUseImage());
+                        || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
             $this->view->assign('isLinked', 0);
 
@@ -818,9 +832,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'show.account.pass.history',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Password viewed'))
-                    ->addDetail(__u('Account'), $account->getName()))
+                    ->addDetail(__u('Account'), $account->getName())
+                )
             );
 
             return $this->returnJsonResponseData($data);
@@ -839,7 +855,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Copy account's password
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws Helpers\HelperException
@@ -864,9 +880,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
         $this->eventDispatcher->notifyEvent(
             'copy.account.pass',
-            new Event($this, EventMessage::factory()
+            new Event(
+                $this, EventMessage::factory()
                 ->addDescription(__u('Password copied'))
-                ->addDetail(__u('Account'), $account->getName()))
+                ->addDetail(__u('Account'), $account->getName())
+            )
         );
 
         return $this->returnJsonResponseData($data);
@@ -875,7 +893,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Copy account's password
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws Helpers\HelperException
@@ -900,9 +918,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
         $this->eventDispatcher->notifyEvent(
             'copy.account.pass.history',
-            new Event($this, EventMessage::factory()
+            new Event(
+                $this, EventMessage::factory()
                 ->addDescription(__u('Password copied'))
-                ->addDetail(__u('Account'), $account->getName()))
+                ->addDetail(__u('Account'), $account->getName())
+            )
         );
 
         return $this->returnJsonResponseData($data);
@@ -938,10 +958,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'create.account',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Account created'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
             $this->addCustomFieldsForItem(
@@ -952,8 +974,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId' => $accountId,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT)
+                    'itemId'     => $accountId,
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account created')
@@ -975,7 +997,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves edit action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws DependencyException
@@ -998,10 +1020,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Account updated'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
             $this->updateCustomFieldsForItem(
@@ -1012,8 +1036,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'itemId'     => $id,
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account updated')
@@ -1035,7 +1059,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves edit action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -1056,16 +1080,18 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.pass',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Password updated'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'itemId'     => $id,
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Password updated')
@@ -1087,8 +1113,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves restore action
      *
-     * @param int $historyId Account's history ID
-     * @param int $id        Account's ID
+     * @param  int  $historyId  Account's history ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -1106,16 +1132,18 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.restore',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Account restored'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'itemId'     => $id,
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account restored')
@@ -1135,7 +1163,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves delete action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -1153,10 +1181,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent(
                 'delete.account',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Account removed'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                )
             );
 
             $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
@@ -1180,7 +1210,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves a request action
      *
-     * @param int $id Account's ID
+     * @param  int  $id  Account's ID
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -1198,19 +1228,24 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
-            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
             $deepLink = new Uri($baseUrl);
-            $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $id);
+            $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW).'/'.$id);
 
             $usersId = [$accountDetails->userId, $accountDetails->userEditId];
 
             $userService = $this->dic->get(UserService::class);
 
-            $this->eventDispatcher->notifyEvent('request.account',
-                new Event($this, EventMessage::factory()
+            $this->eventDispatcher->notifyEvent(
+                'request.account',
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Request'))
-                    ->addDetail(__u('Requester'), sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin()))
+                    ->addDetail(
+                        __u('Requester'),
+                        sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin())
+                    )
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail(__u('Description'), $description)
@@ -1218,18 +1253,22 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addExtra('accountId', $id)
                     ->addExtra('whoId', $this->userData->getId())
                     ->setExtra('userId', $usersId)
-                    ->setExtra('email', array_map(
+                    ->setExtra(
+                        'email',
+                        array_map(
                             static function ($value) {
                                 return $value->email;
                             },
-                            $userService->getUserEmailById($usersId))
-                    ))
+                            $userService->getUserEmailById($usersId)
+                        )
+                    )
+                )
             );
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
+                    'itemId'     => $id,
+                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Request done')

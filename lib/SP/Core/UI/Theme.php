@@ -24,9 +24,9 @@
 
 namespace SP\Core\UI;
 
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
@@ -42,37 +42,36 @@ defined('APP_ROOT') || die();
  */
 final class Theme implements ThemeInterface
 {
-    public const ICONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'icons.cache';
+    public const ICONS_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'icons.cache';
     /**
      * Cache expire time
      */
     public const CACHE_EXPIRE = 86400;
-    private string $themeUri = '';
-    private string $themePath = '';
-    private string $themePathFull = '';
-    private string $themeName = '';
-    private string $viewsPath = '';
-    private ?ThemeIcons $icons = null;
+    private string              $themeUri      = '';
+    private string              $themePath     = '';
+    private string              $themePathFull = '';
+    private string              $themeName     = '';
+    private string              $viewsPath     = '';
+    private ?ThemeIcons         $icons         = null;
     private ConfigDataInterface $configData;
-    private ContextInterface $context;
-    private string $module;
-    private FileCacheInterface $fileCache;
+    private ContextInterface    $context;
+    private string              $module;
+    private FileCacheInterface  $fileCache;
 
     /**
      * Theme constructor.
      *
-     * @param string             $module
-     * @param Config             $config
-     * @param ContextInterface   $context
-     * @param FileCacheInterface $fileCache
+     * @param  string  $module
+     * @param  Config  $config
+     * @param  ContextInterface  $context
+     * @param  FileCacheInterface  $fileCache
      */
     public function __construct(
-        string             $module,
-        Config             $config,
-        ContextInterface   $context,
+        string $module,
+        Config $config,
+        ContextInterface $context,
         FileCacheInterface $fileCache
-    )
-    {
+    ) {
         $this->configData = $config->getConfigData();
         $this->context = $context;
         $this->fileCache = $fileCache;
@@ -82,7 +81,7 @@ final class Theme implements ThemeInterface
     /**
      * Inicializar el tema visual a utilizar
      *
-     * @param bool $force Forzar la detección del tema para los inicios de sesión
+     * @param  bool  $force  Forzar la detección del tema para los inicios de sesión
      *
      * @throws InvalidClassException
      */
@@ -93,10 +92,10 @@ final class Theme implements ThemeInterface
                 $this->themeName = $this->getUserTheme() ?: $this->getGlobalTheme();
             }
 
-            $this->themeUri = Bootstrap::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
-            $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH) . DIRECTORY_SEPARATOR . $this->themeName;
-            $this->themePathFull = VIEW_PATH . DIRECTORY_SEPARATOR . $this->themeName;
-            $this->viewsPath = $this->themePathFull . DIRECTORY_SEPARATOR . 'views';
+            $this->themeUri = BootstrapBase::$WEBURI.'/app/modules/'.$this->module.'themes'.$this->themeName;
+            $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH).DIRECTORY_SEPARATOR.$this->themeName;
+            $this->themePathFull = VIEW_PATH.DIRECTORY_SEPARATOR.$this->themeName;
+            $this->viewsPath = $this->themePathFull.DIRECTORY_SEPARATOR.'views';
 
             $this->initIcons();
         }
@@ -148,7 +147,7 @@ final class Theme implements ThemeInterface
      */
     private function saveIcons(): void
     {
-        $iconsClass = $this->themePathFull . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.php';
+        $iconsClass = $this->themePathFull.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Icons.php';
 
         if (file_exists($iconsClass)) {
             if (!($this->icons = require $iconsClass) instanceof ThemeIcons) {
@@ -176,7 +175,7 @@ final class Theme implements ThemeInterface
 
         while (false !== ($themeDir = $themesDirs->read())) {
             if ($themeDir !== '.' && $themeDir !== '..') {
-                $themeFile = VIEW_PATH . DIRECTORY_SEPARATOR . $themeDir . DIRECTORY_SEPARATOR . 'index.php';
+                $themeFile = VIEW_PATH.DIRECTORY_SEPARATOR.$themeDir.DIRECTORY_SEPARATOR.'index.php';
 
                 if (file_exists($themeFile)) {
                     $themeInfo = require $themeFile;
@@ -204,7 +203,7 @@ final class Theme implements ThemeInterface
      */
     public function getThemeInfo(): array
     {
-        $themeFile = $this->themePathFull . DIRECTORY_SEPARATOR . 'index.php';
+        $themeFile = $this->themePathFull.DIRECTORY_SEPARATOR.'index.php';
 
         if (file_exists($themeFile)) {
             $themeInfo = include $themeFile;

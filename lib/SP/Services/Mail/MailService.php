@@ -26,8 +26,8 @@ namespace SP\Services\Mail;
 
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use SP\Bootstrap;
 use SP\Core\AppInfoInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -61,7 +61,9 @@ final class MailService extends Service
 
             $mailMessage = new MailMessage();
             $mailMessage->setTitle(__u('Mail test'));
-            $mailMessage->addDescription(__u('This is a test email in order to verify that the configuration is working right.'));
+            $mailMessage->addDescription(
+                __u('This is a test email in order to verify that the configuration is working right.')
+            );
             $mailMessage->setFooter($this->getEmailFooter());
 
             $mailer->isHTML();
@@ -82,7 +84,8 @@ final class MailService extends Service
                 SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
-                $e);
+                $e
+            );
         }
     }
 
@@ -99,7 +102,7 @@ final class MailService extends Service
                 AppInfoInterface::APP_NAME,
                 AppInfoInterface::APP_DESC
             ),
-            Html::anchorText(Bootstrap::$WEBURI)
+            Html::anchorText(BootstrapBase::$WEBURI),
         ];
     }
 
@@ -118,9 +121,9 @@ final class MailService extends Service
     }
 
     /**
-     * @param string       $subject
-     * @param array|string $to
-     * @param MailMessage  $mailMessage
+     * @param  string  $subject
+     * @param  array|string  $to
+     * @param  MailMessage  $mailMessage
      *
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \SP\Services\ServiceException
@@ -152,8 +155,10 @@ final class MailService extends Service
         try {
             $this->mailer->send();
 
-            $this->eventDispatcher->notifyEvent('send.mail',
-                new Event($this, EventMessage::factory()
+            $this->eventDispatcher->notifyEvent(
+                'send.mail',
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('Email sent'))
                     ->addDetail(
                         __u('Recipient'),
@@ -166,7 +171,8 @@ final class MailService extends Service
                                 $this->mailer->getToAddresses()
                             )
                         )
-                    ))
+                    )
+                )
             );
         } catch (Exception $e) {
             processException($e);
@@ -185,11 +191,10 @@ final class MailService extends Service
      * @throws \SP\Services\ServiceException
      */
     public function sendBatch(
-        string      $subject,
-        array       $to,
+        string $subject,
+        array $to,
         MailMessage $mailMessage
-    ): void
-    {
+    ): void {
         $this->mailer->isHTML();
 
         foreach ($to as $address) {

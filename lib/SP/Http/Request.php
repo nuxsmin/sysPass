@@ -27,7 +27,7 @@ namespace SP\Http;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
@@ -47,10 +47,10 @@ final class Request
     public const SECURE_DIRS = ['css', 'js'];
 
     private HeaderDataCollection $headers;
-    private \Klein\Request $request;
-    private DataCollection $params;
-    private ?string $method = null;
-    private ?bool $https = null;
+    private \Klein\Request       $request;
+    private DataCollection       $params;
+    private ?string              $method = null;
+    private ?bool                $https  = null;
 
     /**
      * Request constructor.
@@ -82,17 +82,16 @@ final class Request
     private function detectHttps(): void
     {
         $this->https = Util::boolval($this->request->server()->get('HTTPS', 'off'))
-            || $this->request->server()->get('SERVER_PORT', 0) === 443;
+                       || $this->request->server()->get('SERVER_PORT', 0) === 443;
     }
 
     /**
      * Devuelve un nombre de archivo seguro
      */
     public static function getSecureAppFile(
-        string  $file,
+        string $file,
         ?string $base = null
-    ): string
-    {
+    ): string {
         return basename(self::getSecureAppPath($file, $base));
     }
 
@@ -100,17 +99,16 @@ final class Request
      * Devolver una ruta segura para
      */
     public static function getSecureAppPath(
-        string  $path,
+        string $path,
         ?string $base = null
-    ): string
-    {
+    ): string {
         if ($base === null) {
             $base = APP_ROOT;
         } elseif (!in_array(basename($base), self::SECURE_DIRS, true)) {
             return '';
         }
 
-        $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
+        $realPath = realpath($base.DIRECTORY_SEPARATOR.$path);
 
         if ($realPath === false
             || strpos($realPath, $base) !== 0
@@ -147,8 +145,8 @@ final class Request
         // Forwarded: for=12.34.56.78;host=example.com;proto=https, for=23.45.67.89
         $forwarded = $this->headers->get('HTTP_FORWARDED');
 
-        if ($forwarded !== null &&
-            preg_match_all(
+        if ($forwarded !== null
+            && preg_match_all(
                 '/for="?\[?([\w.:]+)]?"?/',
                 $forwarded,
                 $matches
@@ -190,10 +188,9 @@ final class Request
     }
 
     public function analyzeEmail(
-        string  $param,
+        string $param,
         ?string $default = null
-    ): ?string
-    {
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -214,7 +211,7 @@ final class Request
 
         try {
             // Desencriptar con la clave RSA
-            $clearData = Bootstrap::getContainer()->get(CryptPKI::class)
+            $clearData = BootstrapBase::getContainer()->get(CryptPKI::class)
                 ->decryptRSA(base64_decode($encryptedData));
 
             // Desencriptar con la clave RSA
@@ -233,10 +230,9 @@ final class Request
     }
 
     public function analyzeString(
-        string  $param,
+        string $param,
         ?string $default = null
-    ): ?string
-    {
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -245,10 +241,9 @@ final class Request
     }
 
     public function analyzeUnsafeString(
-        string  $param,
+        string $param,
         ?string $default = null
-    ): ?string
-    {
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -257,17 +252,17 @@ final class Request
     }
 
     /**
-     * @param string        $param
-     * @param callable|null $mapper
-     * @param null          $default
+     * @param  string  $param
+     * @param  callable|null  $mapper
+     * @param  null  $default
      *
      * @return array|null
      */
     public function analyzeArray(
-        string   $param,
+        string $param,
         callable $mapper = null,
-                 $default = null): ?array
-    {
+        $default = null
+    ): ?array {
         $requestValue = $this->params->get($param);
 
         if (is_array($requestValue)) {
@@ -295,7 +290,7 @@ final class Request
     public function isAjax(): bool
     {
         return $this->headers->get('X-Requested-With') === 'XMLHttpRequest'
-            || $this->analyzeInt('isAjax', 0) === 1;
+               || $this->analyzeInt('isAjax', 0) === 1;
     }
 
     public function analyzeInt(string $param, ?int $default = null): ?int
@@ -322,8 +317,8 @@ final class Request
     }
 
     /**
-     * @param string      $key
-     * @param string|null $param Checks the signature only for the given param
+     * @param  string  $key
+     * @param  string|null  $param  Checks the signature only for the given param
      *
      * @throws SPException
      */
@@ -336,7 +331,7 @@ final class Request
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = str_replace('&h=' . $hash, '', $this->request->uri());
+                $uri = str_replace('&h='.$hash, '', $this->request->uri());
                 $uri = substr($uri, strpos($uri, '?') + 1);
             } else {
                 $uri = $this->params->get($param, '');
@@ -366,7 +361,7 @@ final class Request
         $forwarded = $this->getForwardedData() ?? $this->getXForwardedData();
 
         if (null !== $forwarded) {
-            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
+            return strtolower($forwarded['proto'].'://'.$forwarded['host']);
         }
 
         /** @noinspection HttpUrlsUsage */
@@ -377,7 +372,7 @@ final class Request
             $protocol = 'https://';
         }
 
-        return $protocol . $this->request->server()->get('HTTP_HOST');
+        return $protocol.$this->request->server()->get('HTTP_HOST');
     }
 
     /**
@@ -400,7 +395,7 @@ final class Request
             $data = [
                 'host ' => $matches['host'][1] ?? null,
                 'proto' => $matches['proto'][1] ?? null,
-                'for' => $this->getForwardedFor()
+                'for'   => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty
@@ -430,7 +425,7 @@ final class Request
             $data = [
                 'host' => trim(str_replace('"', '', $forwardedHost)),
                 'proto' => trim(str_replace('"', '', $forwardedProto)),
-                'for' => $this->getForwardedFor()
+                'for' => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty

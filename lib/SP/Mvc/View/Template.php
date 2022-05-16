@@ -26,7 +26,7 @@ namespace SP\Mvc\View;
 
 defined('APP_ROOT') || die();
 
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\ThemeInterface;
 use SP\Http\Uri;
@@ -43,24 +43,24 @@ use SP\Http\Uri;
 final class Template
 {
     public const TEMPLATE_EXTENSION = '.inc';
-    public const PARTIALS_DIR = '_partials';
-    public const LAYOUTS_DIR = '_layouts';
+    public const PARTIALS_DIR       = '_partials';
+    public const LAYOUTS_DIR        = '_layouts';
 
     protected ThemeInterface $theme;
     /**
      * @var array List of templates to load into the view
      */
-    private array $templates = [];
+    private array                 $templates = [];
     private TemplateVarCollection $vars;
     /**
      * @var string Base path for imcluding templates
      */
     private string $base;
-    private array $contentTemplates = [];
-    private bool $upgraded = false;
+    private array  $contentTemplates = [];
+    private bool   $upgraded         = false;
 
     /**
-     * @param ThemeInterface $theme
+     * @param  ThemeInterface  $theme
      */
     public function __construct(ThemeInterface $theme)
     {
@@ -71,14 +71,13 @@ final class Template
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string      $name Con el nombre del archivo de plantilla
-     * @param string|null $base Directorio base para la plantilla
+     * @param  string  $name  Con el nombre del archivo de plantilla
+     * @param  string|null  $base  Directorio base para la plantilla
      */
     public function addContentTemplate(
-        string  $name,
+        string $name,
         ?string $base = null
-    ): string
-    {
+    ): string {
         try {
             $template = $this->checkTemplate($name, $base);
             $this->setContentTemplate($template, $name);
@@ -92,28 +91,28 @@ final class Template
     /**
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
-     * @param string      $template Con el nombre del archivo
-     * @param string|null $base     Directorio base para la plantilla
+     * @param  string  $template  Con el nombre del archivo
+     * @param  string|null  $base  Directorio base para la plantilla
      *
      * @return string La ruta al archivo de la plantilla
      *
      * @throws FileNotFoundException
      */
     private function checkTemplate(
-        string  $template,
+        string $template,
         ?string $base = null
-    ): string
-    {
+    ): string {
         $base = $base ?? $this->base;
 
         if ($base === null) {
-            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+            $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
         } elseif (strpos($base, APP_ROOT) === 0
-            && is_dir($base)
+                  && is_dir($base)
         ) {
-            $templateFile = $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+            $templateFile = $base.DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
         } else {
-            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+            $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$base.DIRECTORY_SEPARATOR.$template
+                            .self::TEMPLATE_EXTENSION;
         }
 
         if (!is_readable($templateFile)) {
@@ -130,8 +129,8 @@ final class Template
     /**
      * Añadir un nuevo archivo de plantilla al array de plantillas de contenido
      *
-     * @param string $file Con el nombre del archivo
-     * @param string $name Nombre de la plantilla
+     * @param  string  $file  Con el nombre del archivo
+     * @param  string  $name  Nombre de la plantilla
      */
     private function setContentTemplate(string $file, string $name): void
     {
@@ -161,9 +160,9 @@ final class Template
     /**
      * Removes a template from the stack
      *
-     * @param string $src Source template
-     * @param string $dst Destination template
-     * @param string $base
+     * @param  string  $src  Source template
+     * @param  string  $dst  Destination template
+     * @param  string  $base
      *
      * @return mixed|string
      */
@@ -191,8 +190,8 @@ final class Template
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string      $name Con el nombre del archivo de plantilla
-     * @param string|null $base Directorio base para la plantilla
+     * @param  string  $name  Con el nombre del archivo de plantilla
+     * @param  string|null  $base  Directorio base para la plantilla
      *
      * @return string
      */
@@ -211,8 +210,8 @@ final class Template
     /**
      * Añadir un nuevo archivo de plantilla al array de plantillas
      *
-     * @param string $file Con el nombre del archivo
-     * @param string $name Nombre de la plantilla
+     * @param  string  $file  Con el nombre del archivo
+     * @param  string  $name  Nombre de la plantilla
      */
     private function setTemplate(string $file, string $name): void
     {
@@ -222,7 +221,7 @@ final class Template
     /**
      * Añadir una nueva plantilla dentro de una plantilla
      *
-     * @param string $file Con el nombre del archivo de plantilla
+     * @param  string  $file  Con el nombre del archivo de plantilla
      *
      * @return bool
      */
@@ -234,8 +233,8 @@ final class Template
     /**
      * Añadir una nueva plantilla dentro de una plantilla
      *
-     * @param string      $file Con el nombre del archivo de plantilla
-     * @param string|null $base Directorio base para la plantilla
+     * @param  string  $file  Con el nombre del archivo de plantilla
+     * @param  string|null  $base  Directorio base para la plantilla
      *
      * @return bool
      */
@@ -260,8 +259,8 @@ final class Template
      * Overloading para añadir nuevas variables en al array de variables dela plantilla
      * pasadas como atributos dinámicos de la clase
      *
-     * @param string $name  Nombre del atributo
-     * @param string $value Valor del atributo
+     * @param  string  $name  Nombre del atributo
+     * @param  string  $value  Valor del atributo
      */
     public function __set(string $name, string $value)
     {
@@ -287,7 +286,7 @@ final class Template
      * Overloading para comprobar si el atributo solicitado está declarado como variable
      * en el array de variables de la plantilla.
      *
-     * @param string $name Nombre del atributo
+     * @param  string  $name  Nombre del atributo
      *
      * @return bool
      */
@@ -337,7 +336,7 @@ final class Template
         };
 
         $_getRoute = static function ($path) use ($configData) {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
             $uri = new Uri($baseUrl);
             $uri->addParam('r', $path);
@@ -358,20 +357,19 @@ final class Template
     /**
      * Anexar el valor de la variable al array de la misma en el array de variables
      *
-     * @param string      $name  nombre de la variable
-     * @param mixed       $value valor de la variable
-     * @param string|null $scope string ámbito de la variable
-     * @param int|null    $index string índice del array
+     * @param  string  $name  nombre de la variable
+     * @param  mixed  $value  valor de la variable
+     * @param  string|null  $scope  string ámbito de la variable
+     * @param  int|null  $index  string índice del array
      */
     public function append(
-        string  $name,
-                $value,
+        string $name,
+        $value,
         ?string $scope = null,
-        int     $index = null
-    ): void
-    {
+        int $index = null
+    ): void {
         if (null !== $scope) {
-            $name = $scope . '_' . $name;
+            $name = $scope.'_'.$name;
         }
 
         $var = $this->vars->get($name, []);
@@ -462,18 +460,17 @@ final class Template
     /**
      * Crear la variable y asignarle un valor en el array de variables
      *
-     * @param string      $name  nombre de la variable
-     * @param mixed       $value valor de la variable
-     * @param string|null $scope string ámbito de la variable
+     * @param  string  $name  nombre de la variable
+     * @param  mixed  $value  valor de la variable
+     * @param  string|null  $scope  string ámbito de la variable
      */
     public function assign(
-        string  $name,
-                $value = '',
+        string $name,
+        $value = '',
         ?string $scope = null
-    ): void
-    {
+    ): void {
         if (null !== $scope) {
-            $name = $scope . '_' . $name;
+            $name = $scope.'_'.$name;
         }
 
         $this->vars->set($name, $value);

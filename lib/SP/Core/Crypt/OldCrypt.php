@@ -24,8 +24,8 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Bootstrap;
 use SP\Config\ConfigDataInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 use SP\Util\Checks;
 
@@ -43,8 +43,8 @@ final class OldCrypt
     /**
      * Generar un hash de una clave utilizando un salt.
      *
-     * @param string $pwd        con la clave a 'hashear'
-     * @param bool   $prefixSalt Añadir el salt al hash
+     * @param  string  $pwd  con la clave a 'hashear'
+     * @param  bool  $prefixSalt  Añadir el salt al hash
      *
      * @return string con el hash de la clave
      */
@@ -53,21 +53,21 @@ final class OldCrypt
         $salt = self::makeHashSalt();
         $hash = crypt($pwd, $salt);
 
-        return ($prefixSalt === true) ? $salt . $hash : $hash;
+        return ($prefixSalt === true) ? $salt.$hash : $hash;
     }
 
     /**
      * Crear un salt utilizando mcrypt.
      *
-     * @param string $salt
-     * @param bool   $random
+     * @param  string  $salt
+     * @param  bool  $random
      *
      * @return string con el salt creado
      */
     public static function makeHashSalt($salt = null, $random = true)
     {
         /** @var ConfigDataInterface $ConfigData */
-        $ConfigData = Bootstrap::getContainer()['configData'];
+        $ConfigData = BootstrapBase::getContainer()['configData'];
 
         if ($random === true) {
             $salt = bin2hex(self::getIV());
@@ -77,7 +77,7 @@ final class OldCrypt
             $salt = $ConfigData->getPasswordSalt();
         }
 
-        return '$2y$07$' . substr($salt, 0, 22) . '$';
+        return '$2y$07$'.substr($salt, 0, 22).'$';
     }
 
     /**
@@ -118,8 +118,8 @@ final class OldCrypt
     /**
      * Generar la clave maestra encriptada con una clave
      *
-     * @param string $customPwd con la clave a encriptar
-     * @param string $masterPwd con la clave maestra
+     * @param  string  $customPwd  con la clave a encriptar
+     * @param  string  $masterPwd  con la clave maestra
      *
      * @return array con la clave encriptada
      */
@@ -134,9 +134,9 @@ final class OldCrypt
     /**
      * Encriptar datos con la clave maestra.
      *
-     * @param string $strValue    con los datos a encriptar
-     * @param string $strPassword con la clave maestra
-     * @param string $cryptIV     con el IV
+     * @param  string  $strValue  con los datos a encriptar
+     * @param  string  $strPassword  con la clave maestra
+     * @param  string  $cryptIV  con el IV
      *
      * @return string con los datos encriptados
      */
@@ -158,8 +158,8 @@ final class OldCrypt
     /**
      * Encriptar datos. Devuelve un array con los datos encriptados y el IV.
      *
-     * @param mixed  $data string Los datos a encriptar
-     * @param string $pwd  La clave de encriptación
+     * @param  mixed  $data  string Los datos a encriptar
+     * @param  string  $pwd  La clave de encriptación
      *
      * @return array
      * @throws SPException
@@ -210,8 +210,8 @@ final class OldCrypt
      * Generar datos encriptados.
      * Esta función llama a los métodos privados para encriptar datos.
      *
-     * @param string $data      con los datos a encriptar
-     * @param string $masterPwd con la clave maestra
+     * @param  string  $data  con los datos a encriptar
+     * @param  string  $masterPwd  con la clave maestra
      *
      * @return bool
      */
@@ -225,9 +225,9 @@ final class OldCrypt
     /**
      * Desencriptar datos con la clave maestra.
      *
-     * @param string $cryptData Los datos a desencriptar
-     * @param string $cryptIV   con el IV
-     * @param string $password  La clave maestra
+     * @param  string  $cryptData  Los datos a desencriptar
+     * @param  string  $cryptIV  con el IV
+     * @param  string  $password  La clave maestra
      *
      * @return string con los datos desencriptados
      */
@@ -250,8 +250,8 @@ final class OldCrypt
     /**
      * Generar una key para su uso con el algoritmo AES
      *
-     * @param string $string La cadena de la que deriva la key
-     * @param null   $salt   El salt utilizado
+     * @param  string  $string  La cadena de la que deriva la key
+     * @param  null  $salt  El salt utilizado
      *
      * @return string
      */

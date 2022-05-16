@@ -27,7 +27,7 @@ namespace SP\Mvc\Controller;
 use Defuse\Crypto\Exception\CryptoException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
@@ -53,7 +53,7 @@ trait ItemTrait
      */
     protected function getCustomFieldsForItem(int $moduleId, ?int $itemId): array
     {
-        $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+        $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
         $customFields = [];
 
         foreach ($customFieldService->getForModuleAndItemId($moduleId, $itemId) as $item) {
@@ -93,9 +93,9 @@ trait ItemTrait
     /**
      * Añadir los campos personalizados del elemento
      *
-     * @param int       $moduleId
-     * @param int|int[] $itemId
-     * @param Request   $request
+     * @param  int  $moduleId
+     * @param  int|int[]  $itemId
+     * @param  Request  $request
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -104,10 +104,10 @@ trait ItemTrait
      * @throws \SP\Services\ServiceException
      */
     protected function addCustomFieldsForItem(
-        int     $moduleId,
-                $itemId,
-        Request $request): void
-    {
+        int $moduleId,
+        $itemId,
+        Request $request
+    ): void {
         $customFields = $request->analyzeArray(
             'customfield',
             function ($values) {
@@ -121,7 +121,7 @@ trait ItemTrait
         );
 
         if (!empty($customFields)) {
-            $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+            $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
 
             try {
                 foreach ($customFields as $id => $value) {
@@ -142,8 +142,8 @@ trait ItemTrait
     /**
      * Eliminar los campos personalizados del elemento
      *
-     * @param int       $moduleId
-     * @param int|int[] $itemId
+     * @param  int  $moduleId
+     * @param  int|int[]  $itemId
      *
      * @throws SPException
      * @throws ContainerExceptionInterface
@@ -151,7 +151,7 @@ trait ItemTrait
      */
     protected function deleteCustomFieldsForItem(int $moduleId, $itemId): void
     {
-        $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+        $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
 
         if (is_array($itemId)) {
             $customFieldService->deleteCustomFieldDataBatch($itemId, $moduleId);
@@ -163,20 +163,19 @@ trait ItemTrait
     /**
      * Actualizar los campos personalizados del elemento
      *
-     * @param int       $moduleId
-     * @param int|int[] $itemId
-     * @param Request   $request
+     * @param  int  $moduleId
+     * @param  int|int[]  $itemId
+     * @param  Request  $request
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function updateCustomFieldsForItem(
-        int     $moduleId,
-                $itemId,
+        int $moduleId,
+        $itemId,
         Request $request
-    ): void
-    {
+    ): void {
         $customFields = $request->analyzeArray(
             'customfield',
             function ($values) {
@@ -190,7 +189,7 @@ trait ItemTrait
         );
 
         if (!empty($customFields)) {
-            $customFieldService = Bootstrap::getContainer()
+            $customFieldService = BootstrapBase::getContainer()
                 ->get(CustomFieldService::class);
 
             try {
@@ -215,10 +214,9 @@ trait ItemTrait
      * Returns search data object for the current request
      */
     protected function getSearchData(
-        int     $limitCount,
+        int $limitCount,
         Request $request
-    ): ItemSearchData
-    {
+    ): ItemSearchData {
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setSeachString($request->analyzeString('search'));
         $itemSearchData->setLimitStart($request->analyzeInt('start', 0));

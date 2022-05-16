@@ -29,10 +29,10 @@ defined('APP_ROOT') || die();
 use Exception;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
@@ -97,7 +97,7 @@ abstract class ControllerBase
         LayoutHelper $layoutHelper
     ) {
         // TODO: remove when controllers are ready
-        $this->dic = Bootstrap::getContainer();
+        $this->dic = BootstrapBase::getContainer();
 
         $this->controllerName = $this->getControllerName();
         $this->configData = $config->getConfigData();

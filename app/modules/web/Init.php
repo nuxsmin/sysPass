@@ -27,8 +27,8 @@ namespace SP\Modules\Web;
 use Defuse\Crypto\Exception\CryptoException;
 use Exception;
 use Klein\Klein;
-use SP\Bootstrap;
 use SP\Core\Application;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -271,7 +271,7 @@ final class Init extends HttpModuleBase
     private function initSession(bool $encrypt = false): void
     {
         if ($encrypt === true
-            && Bootstrap::$checkPhpVersion
+            && BootstrapBase::$checkPhpVersion
             && ($key = $this->secureSessionService->getKey(UUIDCookie::factory($this->request))) !== false) {
             session_set_save_handler(new CryptSessionHandler($key), true);
         }

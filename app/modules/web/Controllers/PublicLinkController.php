@@ -29,7 +29,6 @@ use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
-use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
@@ -160,7 +159,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Sets view data for displaying public link's data
      *
-     * @param int|null $publicLinkId
+     * @param  int|null  $publicLinkId
      *
      * @throws ContainerExceptionInterface
      * @throws SPException
@@ -190,7 +189,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         );
 
         if ($this->view->isView === true) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI).Bootstrap::$SUBURI;
 
             $this->view->assign(
                 'publicLinkURL',
@@ -207,7 +206,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Create action
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -250,7 +249,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Edit action
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return bool
      * @throws DependencyException
@@ -269,7 +268,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->view->assign('header', __('Edit Public Link'));
             $this->view->assign('isView', false);
-            $this->view->assign('route', 'publicLink/saveEdit/' . $id);
+            $this->view->assign('route', 'publicLink/saveEdit/'.$id);
 
             $this->setViewData($id);
 
@@ -294,7 +293,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Delete action
      *
-     * @param int|null $id
+     * @param  int|null  $id
      *
      * @return bool
      * @throws DependencyException
@@ -415,8 +414,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Saves create action
      *
-     * @param int $accountId
-     * @param int $notify
+     * @param  int  $accountId
+     * @param  int  $notify
      *
      * @return bool
      * @throws \DI\DependencyException
@@ -465,7 +464,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Saves edit action
      *
-     * @param int $id
+     * @param  int  $id
      */
     public function saveEditAction(int $id): void
     {
@@ -475,7 +474,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * View action
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return bool
      * @throws \DI\DependencyException

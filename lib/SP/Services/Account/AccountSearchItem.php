@@ -26,8 +26,8 @@ namespace SP\Services\Account;
 
 defined('APP_ROOT') || die();
 
-use SP\Bootstrap;
 use SP\Config\ConfigDataInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
 use SP\Html\Html;
@@ -40,21 +40,21 @@ use SP\Services\PublicLink\PublicLinkService;
  */
 final class AccountSearchItem
 {
-    public static bool $accountLink = false;
-    public static bool $topNavbar = false;
-    public static bool $optionalActions = false;
-    public static bool $showTags = false;
-    public static bool $requestEnabled = true;
-    public static bool $wikiEnabled = false;
-    public static bool $dokuWikiEnabled = false;
+    public static bool $accountLink       = false;
+    public static bool $topNavbar         = false;
+    public static bool $optionalActions   = false;
+    public static bool $showTags          = false;
+    public static bool $requestEnabled    = true;
+    public static bool $wikiEnabled       = false;
+    public static bool $dokuWikiEnabled   = false;
     public static bool $publicLinkEnabled = false;
-    public static bool $isDemoMode = false;
+    public static bool $isDemoMode        = false;
 
     protected AccountSearchVData $accountSearchVData;
-    protected ?string $color = null;
-    protected ?string $link = null;
-    protected bool $favorite = false;
-    protected int $textMaxLength = 60;
+    protected ?string            $color         = null;
+    protected ?string            $link          = null;
+    protected bool               $favorite      = false;
+    protected int                $textMaxLength = 60;
     /**
      * @var ItemData[]|null
      */
@@ -66,16 +66,15 @@ final class AccountSearchItem
     /**
      * @var ItemData[]|null
      */
-    protected ?array $userGroups = null;
+    protected ?array            $userGroups = null;
     private ConfigDataInterface $configData;
-    private AccountAcl $accountAcl;
+    private AccountAcl          $accountAcl;
 
     public function __construct(
-        AccountSearchVData  $accountSearchVData,
-        AccountAcl          $accountAcl,
+        AccountSearchVData $accountSearchVData,
+        AccountAcl $accountAcl,
         ConfigDataInterface $configData
-    )
-    {
+    ) {
         $this->accountSearchVData = $accountSearchVData;
         $this->accountAcl = $accountAcl;
         $this->configData = $configData;
@@ -96,10 +95,15 @@ final class AccountSearchItem
         return !$this->accountAcl->isShow() && self::$requestEnabled;
     }
 
+    public function isShow(): bool
+    {
+        return $this->accountAcl->isShow();
+    }
+
     public function isShowCopyPass(): bool
     {
         return $this->accountAcl->isShowViewPass()
-            && !$this->configData->isAccountPassToImage();
+               && !$this->configData->isAccountPassToImage();
     }
 
     public function isShowViewPass(): bool
@@ -140,7 +144,7 @@ final class AccountSearchItem
     public function getClientLink(): ?string
     {
         return self::$wikiEnabled
-            ? $this->configData->getWikiSearchurl() . $this->accountSearchVData->getClientName()
+            ? $this->configData->getWikiSearchurl().$this->accountSearchVData->getClientName()
             : null;
     }
 
@@ -149,7 +153,7 @@ final class AccountSearchItem
         if (self::$publicLinkEnabled
             && $this->accountSearchVData->getPublicLinkHash() !== null
         ) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
             return PublicLinkService::getLinkForHash($baseUrl, $this->accountSearchVData->getPublicLinkHash());
         }
@@ -180,8 +184,8 @@ final class AccountSearchItem
     public function getAccesses(): array
     {
         $accesses = [
-            '(G*) <em>' . $this->accountSearchVData->getUserGroupName() . '</em>',
-            '(U*) <em>' . $this->accountSearchVData->getUserLogin() . '</em>'
+            '(G*) <em>'.$this->accountSearchVData->getUserGroupName().'</em>',
+            '(U*) <em>'.$this->accountSearchVData->getUserLogin().'</em>',
         ];
 
         $userLabel = $this->accountSearchVData->getOtherUserEdit() === 1 ? 'U+' : 'U';
@@ -211,11 +215,6 @@ final class AccountSearchItem
         return $this->configData->isFilesEnabled()
             ? $this->accountSearchVData->getNumFiles()
             : 0;
-    }
-
-    public function isShow(): bool
-    {
-        return $this->accountAcl->isShow();
     }
 
     public function isShowView(): bool
@@ -258,12 +257,12 @@ final class AccountSearchItem
     public function isPasswordExpired(): bool
     {
         return $this->configData->isAccountExpireEnabled()
-            && $this->accountSearchVData->getPassDateChange() > 0
-            && time() > $this->accountSearchVData->getPassDateChange();
+               && $this->accountSearchVData->getPassDateChange() > 0
+               && time() > $this->accountSearchVData->getPassDateChange();
     }
 
     /**
-     * @param ItemData[] $userGroups
+     * @param  ItemData[]  $userGroups
      */
     public function setUserGroups(array $userGroups): void
     {
@@ -271,7 +270,7 @@ final class AccountSearchItem
     }
 
     /**
-     * @param ItemData[] $users
+     * @param  ItemData[]  $users
      */
     public function setUsers(array $users): void
     {
@@ -287,7 +286,7 @@ final class AccountSearchItem
     }
 
     /**
-     * @param ItemData[] $tags
+     * @param  ItemData[]  $tags
      */
     public function setTags(array $tags): void
     {
@@ -297,8 +296,8 @@ final class AccountSearchItem
     public function isWikiMatch(string $wikiFilter): bool
     {
         return preg_match(
-                '/^' . $wikiFilter . '/i',
-                $this->accountSearchVData->getName()
-            ) === 1;
+                   '/^'.$wikiFilter.'/i',
+                   $this->accountSearchVData->getName()
+               ) === 1;
     }
 }

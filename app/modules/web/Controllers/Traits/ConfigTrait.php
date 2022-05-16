@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Http\JsonResponse;
 use SP\Util\Util;
 
@@ -49,10 +49,9 @@ trait ConfigTrait
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
-        Config              $config,
-        callable            $onSuccess = null
-    ): bool
-    {
+        Config $config,
+        callable $onSuccess = null
+    ): bool {
         try {
             if ($configData->isDemoEnabled()) {
                 return $this->returnJsonResponse(
@@ -63,7 +62,7 @@ trait ConfigTrait
 
             $config->saveConfig($configData);
 
-            if (Bootstrap::$LOCK !== false
+            if (BootstrapBase::$LOCK !== false
                 && $configData->isMaintenance() === false) {
                 Util::unlockApp();
             }

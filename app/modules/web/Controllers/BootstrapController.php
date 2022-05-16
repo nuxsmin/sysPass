@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Plugin\PluginManager;
@@ -54,29 +54,29 @@ final class BootstrapController extends SimpleControllerBase
     public function getEnvironmentAction(): bool
     {
         $checkStatus = $this->session->getAuthCompleted()
-            && ($this->session->getUserData()->getIsAdminApp()
-                || $this->configData->isDemoEnabled());
+                       && ($this->session->getUserData()->getIsAdminApp()
+                           || $this->configData->isDemoEnabled());
 
         $data = [
-            'lang' => $this->getJsLang(),
-            'locale' => $this->configData->getSiteLang(),
-            'app_root' => Bootstrap::$WEBURI,
-            'max_file_size' => $this->configData->getFilesAllowedSize(),
-            'check_updates' => $checkStatus && $this->configData->isCheckUpdates(),
-            'check_notices' => $checkStatus && $this->configData->isCheckNotices(),
+            'lang'                => $this->getJsLang(),
+            'locale'              => $this->configData->getSiteLang(),
+            'app_root'            => BootstrapBase::$WEBURI,
+            'max_file_size'       => $this->configData->getFilesAllowedSize(),
+            'check_updates'       => $checkStatus && $this->configData->isCheckUpdates(),
+            'check_notices'       => $checkStatus && $this->configData->isCheckNotices(),
             'check_notifications' => $this->getNotificationsEnabled(),
-            'timezone' => date_default_timezone_get(),
-            'debug' => DEBUG || $this->configData->isDebug(),
-            'cookies_enabled' => $this->getCookiesEnabled(),
-            'plugins' => $this->getPlugins(),
-            'loggedin' => $this->session->isLoggedIn(),
+            'timezone'            => date_default_timezone_get(),
+            'debug'               => DEBUG || $this->configData->isDebug(),
+            'cookies_enabled'     => $this->getCookiesEnabled(),
+            'plugins'             => $this->getPlugins(),
+            'loggedin'            => $this->session->isLoggedIn(),
             'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
-            'pki_key' => $this->getPublicKey(),
-            'pki_max_size' => CryptPKI::getMaxDataSize(),
+            'pki_key'             => $this->getPublicKey(),
+            'pki_max_size'        => CryptPKI::getMaxDataSize(),
             'import_allowed_mime' => ImportService::ALLOWED_MIME,
-            'files_allowed_mime' => $this->configData->getFilesAllowedMime(),
-            'session_timeout' => $this->configData->getSessionTimeout(),
-            'csrf' => $this->getCSRF()
+            'files_allowed_mime'  => $this->configData->getFilesAllowedMime(),
+            'session_timeout'     => $this->configData->getSessionTimeout(),
+            'csrf'                => $this->getCSRF(),
         ];
 
         return $this->returnJsonResponseData($data);
@@ -87,7 +87,7 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getJsLang(): array
     {
-        return require RESOURCES_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
+        return require RESOURCES_PATH.DIRECTORY_SEPARATOR.'strings.js.inc';
     }
 
     /**
@@ -111,9 +111,9 @@ final class BootstrapController extends SimpleControllerBase
     private function getCookiesEnabled(): bool
     {
         return $this->router
-                ->request()
-                ->cookies()
-                ->get(session_name()) !== null;
+                   ->request()
+                   ->cookies()
+                   ->get(session_name()) !== null;
     }
 
     /**
@@ -138,7 +138,7 @@ final class BootstrapController extends SimpleControllerBase
     private function getAuthBasicAutologinEnabled(): bool
     {
         return $this->dic->get(Browser::class)->getServerAuthUser() !== null
-            && $this->configData->isAuthBasicAutoLoginEnabled();
+               && $this->configData->isAuthBasicAutoLoginEnabled();
     }
 
     /**

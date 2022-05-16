@@ -24,7 +24,7 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Http\Request;
 
 /**
@@ -106,6 +106,6 @@ abstract class Cookie
             return false;
         }
 
-        return setcookie($this->cookieName, $data, 0, Bootstrap::$WEBROOT);
+        return setcookie($this->cookieName, $data, 0, BootstrapBase::$WEBROOT);
     }
 }

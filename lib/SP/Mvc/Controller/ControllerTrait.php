@@ -25,8 +25,8 @@
 namespace SP\Mvc\Controller;
 
 use Closure;
-use SP\Bootstrap;
 use SP\Config\ConfigDataInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
@@ -77,7 +77,7 @@ trait ControllerTrait
                 $route = $request->analyzeString('r');
                 $hash = $request->analyzeString('h');
 
-                $uri = new Uri(Bootstrap::$WEBROOT.Bootstrap::$SUBURI);
+                $uri = new Uri(BootstrapBase::$WEBROOT.BootstrapBase::$SUBURI);
                 $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {

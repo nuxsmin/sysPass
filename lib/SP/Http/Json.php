@@ -27,7 +27,7 @@ namespace SP\Http;
 use JsonException;
 use Klein\Klein;
 use Klein\Response;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 
 
@@ -40,7 +40,7 @@ final class Json
 {
     public const SAFE = [
         'from' => ['\\', '"', '\''],
-        'to' => ['\\', '\"', '\\\'']
+        'to'   => ['\\', '\"', '\\\''],
     ];
 
     private Response $response;
@@ -63,9 +63,11 @@ final class Json
      */
     public static function fromDic(): Json
     {
-        return new self(Bootstrap::getContainer()
-            ->get(Klein::class)
-            ->response());
+        return new self(
+            BootstrapBase::getContainer()
+                ->get(Klein::class)
+                ->response()
+        );
     }
 
     /**
@@ -114,7 +116,7 @@ final class Json
     /**
      * Devuelve una respuesta en formato JSON
      *
-     * @param string $data JSON string
+     * @param  string  $data  JSON string
      *
      * @return bool
      */
@@ -151,8 +153,8 @@ final class Json
     /**
      * Devuelve una cadena en formato JSON
      *
-     * @param mixed $data
-     * @param int   $flags JSON_* flags
+     * @param  mixed  $data
+     * @param  int  $flags  JSON_* flags
      *
      * @throws SPException
      */

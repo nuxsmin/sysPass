@@ -28,11 +28,11 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -70,21 +70,21 @@ final class AccountHelper extends HelperBase
 {
     use ItemTrait;
 
-    private ?Acl $acl = null;
-    private ?AccountService $accountService = null;
+    private ?Acl                   $acl                   = null;
+    private ?AccountService        $accountService        = null;
     private ?AccountHistoryService $accountHistoryService = null;
-    private ?PublicLinkService $publicLinkService = null;
-    private ?ItemPresetService $itemPresetService = null;
-    private ?int $actionId = null;
-    private ?AccountAcl $accountAcl = null;
-    private ?int $accountId = null;
-    private bool $isView = false;
+    private ?PublicLinkService     $publicLinkService     = null;
+    private ?ItemPresetService     $itemPresetService     = null;
+    private ?int                   $actionId              = null;
+    private ?AccountAcl            $accountAcl            = null;
+    private ?int                   $accountId             = null;
+    private bool                   $isView                = false;
 
     /**
      * Sets account's view variables
      *
-     * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int                    $actionId
+     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  int  $actionId
      *
      * @throws AccountPermissionException
      * @throws SPException
@@ -95,9 +95,8 @@ final class AccountHelper extends HelperBase
      */
     public function setViewForAccount(
         AccountDetailsResponse $accountDetailsResponse,
-        int                    $actionId
-    ): void
-    {
+        int $actionId
+    ): void {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
         $this->actionId = $actionId;
 
@@ -152,38 +151,51 @@ final class AccountHelper extends HelperBase
             )
         );
 
-        $this->view->assign('otherUsersView',
+        $this->view->assign(
+            'otherUsersView',
             $selectUsers->getItemsFromModelSelected($usersView)
         );
-        $this->view->assign('otherUsersEdit',
+        $this->view->assign(
+            'otherUsersEdit',
             $selectUsers->getItemsFromModelSelected($usersEdit)
         );
-        $this->view->assign('otherUserGroupsView',
+        $this->view->assign(
+            'otherUserGroupsView',
             $selectUserGroups->getItemsFromModelSelected($userGroupsView)
         );
-        $this->view->assign('otherUserGroupsEdit',
+        $this->view->assign(
+            'otherUserGroupsEdit',
             $selectUserGroups->getItemsFromModelSelected($userGroupsEdit)
         );
-        $this->view->assign('users',
+        $this->view->assign(
+            'users',
             $selectUsers->getItemsFromModelSelected([$accountData->getUserId()])
         );
-        $this->view->assign('userGroups',
+        $this->view->assign(
+            'userGroups',
             $selectUserGroups->getItemsFromModelSelected([$accountData->getUserGroupId()])
         );
-        $this->view->assign('tags',
-            $selectTags->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags()))
+        $this->view->assign(
+            'tags',
+            $selectTags->getItemsFromModelSelected(
+                SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())
+            )
         );
-        $this->view->assign('historyData',
+        $this->view->assign(
+            'historyData',
             SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
                 ->getItemsFromArray()
         );
-        $this->view->assign('isModified',
+        $this->view->assign(
+            'isModified',
             strtotime($accountData->getDateEdit()) !== false
         );
-        $this->view->assign('maxFileSize',
+        $this->view->assign(
+            'maxFileSize',
             round($this->configData->getFilesAllowedSize() / 1024, 1)
         );
-        $this->view->assign('filesAllowedExts',
+        $this->view->assign(
+            'filesAllowedExts',
             implode(',', $this->configData->getFilesAllowedExts())
         );
 
@@ -194,16 +206,19 @@ final class AccountHelper extends HelperBase
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
                 $baseUrl = ($this->configData->getApplicationUrl()
-                        ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+                        ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
-                $this->view->assign('publicLinkUrl',
+                $this->view->assign(
+                    'publicLinkUrl',
                     PublicLinkService::getLinkForHash(
                         $baseUrl,
                         $publicLinkData->getHash()
                     )
                 );
-                $this->view->assign('publicLinkId',
-                    $publicLinkData->getId());
+                $this->view->assign(
+                    'publicLinkId',
+                    $publicLinkData->getId()
+                );
             } catch (NoSuchItemException $e) {
                 $this->view->assign('publicLinkId', 0);
                 $this->view->assign('publicLinkUrl', null);
@@ -220,14 +235,14 @@ final class AccountHelper extends HelperBase
         $this->view->assign(
             'allowPrivate',
             ($userProfileData->isAccPrivate()
-                && $accountData->getUserId() === $userData->getId())
+             && $accountData->getUserId() === $userData->getId())
             || $userData->getIsAdminApp()
         );
 
         $this->view->assign(
             'allowPrivateGroup',
             ($userProfileData->isAccPrivateGroup()
-                && $accountData->getUserGroupId() === $userData->getUserGroupId())
+             && $accountData->getUserGroupId() === $userData->getUserGroupId())
             || $userData->getIsAdminApp()
         );
 
@@ -294,7 +309,7 @@ final class AccountHelper extends HelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param AccountDetailsResponse $accountDetailsResponse
+     * @param  AccountDetailsResponse  $accountDetailsResponse
      *
      * @return AccountAcl
      * @throws AccountPermissionException
@@ -335,7 +350,8 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign('accountIsHistory', false);
 
-        $this->view->assign('customFields',
+        $this->view->assign(
+            'customFields',
             $this->getCustomFieldsForItem(
                 ActionsInterface::ACCOUNT,
                 $this->accountId
@@ -344,13 +360,17 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign(
             'categories',
-            SelectItemAdapter::factory($this->dic->get(CategoryService::class)
-                ->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory(
+                $this->dic->get(CategoryService::class)
+                    ->getAllBasic()
+            )->getItemsFromModel()
         );
         $this->view->assign(
             'clients',
-            SelectItemAdapter::factory($this->dic->get(ClientService::class)
-                ->getAllForUser())->getItemsFromModel()
+            SelectItemAdapter::factory(
+                $this->dic->get(ClientService::class)
+                    ->getAllForUser()
+            )->getItemsFromModel()
         );
         $this->view->assign(
             'mailRequestEnabled',
@@ -428,7 +448,7 @@ final class AccountHelper extends HelperBase
     /**
      * Sets account's view for a blank form
      *
-     * @param int $actionId
+     * @param  int  $actionId
      *
      * @return void
      * @throws \DI\DependencyException
@@ -460,13 +480,15 @@ final class AccountHelper extends HelperBase
 
         $accountPrivate = new AccountPrivate();
 
-        if ($itemPresetPrivate = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)) {
+        if ($itemPresetPrivate =
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)) {
             $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?: $accountPrivate;
         }
 
         $accountPermission = new AccountPermission();
 
-        if ($itemPresetPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)) {
+        if ($itemPresetPermission =
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)) {
             $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class) ?: $accountPermission;
         }
 
@@ -539,8 +561,8 @@ final class AccountHelper extends HelperBase
     /**
      * Sets account's view variables
      *
-     * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int                    $actionId
+     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  int  $actionId
      *
      * @return bool
      * @throws NoSuchItemException
@@ -552,9 +574,8 @@ final class AccountHelper extends HelperBase
      */
     public function setViewForRequest(
         AccountDetailsResponse $accountDetailsResponse,
-        int                    $actionId
-    ): bool
-    {
+        int $actionId
+    ): bool {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
         $this->actionId = $actionId;
         $this->accountAcl = new AccountAcl($actionId);
@@ -575,11 +596,13 @@ final class AccountHelper extends HelperBase
         $this->view->assign(
             'accountActions',
             $this->dic->get(AccountActionsHelper::class)
-                ->getActionsForAccount($this->accountAcl,
+                ->getActionsForAccount(
+                    $this->accountAcl,
                     new AccountActionsDto(
                         $this->accountId,
                         null,
-                        $accountData->getParentId())
+                        $accountData->getParentId()
+                    )
                 )
         );
 
@@ -587,7 +610,7 @@ final class AccountHelper extends HelperBase
     }
 
     /**
-     * @param bool $isView
+     * @param  bool  $isView
      */
     public function setIsView(bool $isView): void
     {

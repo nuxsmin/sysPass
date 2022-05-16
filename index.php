@@ -22,11 +22,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapWeb;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'web';
 
 $dic = require APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Base.php';
 
-Bootstrap::runWeb($dic);
+BootstrapWeb::run($dic);

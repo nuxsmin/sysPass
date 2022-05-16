@@ -27,7 +27,7 @@ namespace SP\Services\UserPassRecover;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -64,7 +64,9 @@ final class UserPassRecoverService extends Service
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(Html::anchorText(Bootstrap::$WEBURI . '/index.php?r=userPassReset/reset/' . $hash));
+        $mailMessage->addDescription(
+            Html::anchorText(BootstrapBase::$WEBURI.'/index.php?r=userPassReset/reset/'.$hash)
+        );
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
 
@@ -79,7 +81,8 @@ final class UserPassRecoverService extends Service
     {
         if ($this->userPassRecoverRepository->toggleUsedByHash(
                 $hash,
-                time() - self::MAX_PASS_RECOVER_TIME) === 0
+                time() - self::MAX_PASS_RECOVER_TIME
+            ) === 0
         ) {
             throw new ServiceException(
                 __u('Wrong hash or expired'),

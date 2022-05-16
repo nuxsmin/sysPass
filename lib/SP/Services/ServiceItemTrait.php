@@ -26,7 +26,7 @@ namespace SP\Services;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\DataModelInterface;
 
 /**
@@ -45,7 +45,7 @@ trait ServiceItemTrait
      */
     public static function getItemsBasic(): array
     {
-        return Bootstrap::getContainer()
+        return BootstrapBase::getContainer()
             ->get(static::class)
             ->getAllBasic();
     }

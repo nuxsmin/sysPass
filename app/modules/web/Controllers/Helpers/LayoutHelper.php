@@ -26,10 +26,10 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\AppInfoInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -47,14 +47,14 @@ use SP\Util\VersionUtil;
  */
 final class LayoutHelper extends HelperBase
 {
-    protected ?bool $loggedIn = null;
-    protected ?ThemeInterface $theme = null;
+    protected ?bool           $loggedIn = null;
+    protected ?ThemeInterface $theme    = null;
 
     /**
      * Sets a full layout page
      *
-     * @param string   $page Page/view name
-     * @param Acl|null $acl
+     * @param  string  $page  Page/view name
+     * @param  Acl|null  $acl
      *
      * @return LayoutHelper
      */
@@ -90,7 +90,7 @@ final class LayoutHelper extends HelperBase
      */
     public function initBody(): void
     {
-        $baseUrl = $this->configData->getApplicationUrl() ?? Bootstrap::$WEBURI;
+        $baseUrl = $this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI;
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
@@ -98,9 +98,9 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', Installer::VERSION_TEXT);
-        $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
-        $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
-        $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
+        $this->view->assign('logo_icon', $baseUrl.'/public/images/logo_icon.png');
+        $this->view->assign('logo_no_bg_color', $baseUrl.'/public/images/logo_full_nobg_outline_color.png');
+        $this->view->assign('logo_no_bg', $baseUrl.'/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
 
@@ -128,7 +128,7 @@ final class LayoutHelper extends HelperBase
     protected function getResourcesLinks(): void
     {
         $version = VersionUtil::getVersionStringNormalized();
-        $baseUrl = ($this->configData->getApplicationUrl() ?? Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+        $baseUrl = ($this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
         $jsUri = new Uri($baseUrl);
         $jsUri->addParam('_r', 'resource/js');
@@ -151,7 +151,7 @@ final class LayoutHelper extends HelperBase
 
         if (isset($themeInfo['js'])) {
             $jsUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'js')
+                ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'js')
                 ->addParam('f', implode(',', $themeInfo['js']));
 
             $this->view->append(
@@ -172,7 +172,7 @@ final class LayoutHelper extends HelperBase
 
         $cssUri = (new Uri($baseUrl))
             ->addParam('_r', 'resource/css')
-            ->addParam('_v', md5($version . $resultsAsCards));
+            ->addParam('_v', md5($version.$resultsAsCards));
 
         $this->view->append(
             'cssLinks',
@@ -189,7 +189,7 @@ final class LayoutHelper extends HelperBase
             }
 
             $cssUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'css')
+                ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'css')
                 ->addParam('f', implode(',', $themeInfo['css']));
 
             $this->view->append(
@@ -203,14 +203,14 @@ final class LayoutHelper extends HelperBase
 
         foreach ($loadedPlugins as $plugin) {
             $base = str_replace(APP_ROOT, '', $plugin->getBase());
-            $base .= DIRECTORY_SEPARATOR . 'public';
+            $base .= DIRECTORY_SEPARATOR.'public';
 
             $jsResources = $plugin->getJsResources();
             $cssResources = $plugin->getCssResources();
 
             if (count($jsResources) > 0) {
                 $jsUri->resetParams()
-                    ->addParam('b', $base . DIRECTORY_SEPARATOR . 'js')
+                    ->addParam('b', $base.DIRECTORY_SEPARATOR.'js')
                     ->addParam('f', implode(',', $jsResources));
 
                 $this->view->append(
@@ -221,7 +221,7 @@ final class LayoutHelper extends HelperBase
 
             if (count($cssResources) > 0) {
                 $cssUri->resetParams()
-                    ->addParam('b', $base . DIRECTORY_SEPARATOR . 'css')
+                    ->addParam('b', $base.DIRECTORY_SEPARATOR.'css')
                     ->addParam('f', implode(',', $cssResources));
 
                 $this->view->append(
@@ -283,7 +283,7 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para mostrar el menú de acciones
      *
-     * @param Acl $acl
+     * @param  Acl  $acl
      */
     public function getMenu(Acl $acl): void
     {
@@ -296,8 +296,8 @@ final class LayoutHelper extends HelperBase
         $actionSearch->setIcon($icons->getIconSearch());
         $actionSearch->setData([
             'historyReset' => 1,
-            'view' => 'search',
-            'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
+            'view'         => 'search',
+            'route'        => Acl::getActionRoute(ActionsInterface::ACCOUNT),
         ]);
 
         $actions[] = $actionSearch;
@@ -309,8 +309,8 @@ final class LayoutHelper extends HelperBase
             $actionNewAccount->setIcon($icons->getIconAdd());
             $actionNewAccount->setData([
                 'historyReset' => 0,
-                'view' => 'account',
-                'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE)
+                'view'         => 'account',
+                'route'        => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE),
             ]);
 
             $actions[] = $actionNewAccount;
@@ -323,8 +323,8 @@ final class LayoutHelper extends HelperBase
             $actionAccessManager->setIcon($icons->getIconAccount());
             $actionAccessManager->setData([
                 'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+                'view'         => 'datatabs',
+                'route'        => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE),
             ]);
 
             $actions[] = $actionAccessManager;
@@ -337,8 +337,8 @@ final class LayoutHelper extends HelperBase
             $actionItemManager->setIcon($icons->getIconGroup());
             $actionItemManager->setData([
                 'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+                'view'         => 'datatabs',
+                'route'        => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE),
             ]);
 
             $actions[] = $actionItemManager;
@@ -351,8 +351,8 @@ final class LayoutHelper extends HelperBase
             $actionSecurityManager->setIcon($icons->getIconByName('security'));
             $actionSecurityManager->setData([
                 'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE)
+                'view'         => 'datatabs',
+                'route'        => Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE),
             ]);
 
             $actions[] = $actionSecurityManager;
@@ -365,8 +365,8 @@ final class LayoutHelper extends HelperBase
             $actionPlugins->setIcon($icons->getIconByName('extension'));
             $actionPlugins->setData([
                 'historyReset' => 1,
-                'view' => 'plugin',
-                'route' => Acl::getActionRoute(ActionsInterface::PLUGIN)
+                'view'         => 'plugin',
+                'route'        => Acl::getActionRoute(ActionsInterface::PLUGIN),
             ]);
 
             $actions[] = $actionPlugins;
@@ -379,8 +379,8 @@ final class LayoutHelper extends HelperBase
             $actionConfigManager->setIcon($icons->getIconSettings());
             $actionConfigManager->setData([
                 'historyReset' => 1,
-                'view' => 'config',
-                'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
+                'view'         => 'config',
+                'route'        => Acl::getActionRoute(ActionsInterface::CONFIG),
             ]);
 
             $actions[] = $actionConfigManager;
@@ -393,8 +393,8 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a full layout page
      *
-     * @param string $template
-     * @param string $page Page/view name
+     * @param  string  $template
+     * @param  string  $page  Page/view name
      *
      * @return LayoutHelper
      */
@@ -413,16 +413,15 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a custom layout page
      *
-     * @param string $template
-     * @param string $page Page/view name
+     * @param  string  $template
+     * @param  string  $page  Page/view name
      *
      * @return LayoutHelper
      */
     public function getCustomLayout(
         string $template,
         string $page = ''
-    ): LayoutHelper
-    {
+    ): LayoutHelper {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
 

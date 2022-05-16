@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use Klein\Klein;
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Http\Request;
 use SP\Util\Util;
 
@@ -58,13 +58,13 @@ abstract class HttpModuleBase extends ModuleBase
     protected function checkMaintenanceMode(): bool
     {
         if ($this->configData->isMaintenance()) {
-            Bootstrap::$LOCK = Util::getAppLock();
+            BootstrapBase::$LOCK = Util::getAppLock();
 
             return !$this->request->isAjax()
-                   || !(Bootstrap::$LOCK !== false
-                        && Bootstrap::$LOCK->userId > 0
+                   || !(BootstrapBase::$LOCK !== false
+                        && BootstrapBase::$LOCK->userId > 0
                         && $this->context->isLoggedIn()
-                        && Bootstrap::$LOCK->userId === $this->context->getUserData()->getId());
+                        && BootstrapBase::$LOCK->userId === $this->context->getUserData()->getId());
         }
 
         return false;

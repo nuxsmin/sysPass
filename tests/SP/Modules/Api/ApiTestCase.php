@@ -25,15 +25,16 @@
 namespace SP\Tests\Modules\Api;
 
 use DI\ContainerBuilder;
+use Klein\Klein;
 use Klein\Request;
 use Klein\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Bootstrap\BootstrapApi;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\AuthTokenData;
 use SP\Services\Api\ApiRequest;
@@ -58,33 +59,33 @@ abstract class ApiTestCase extends TestCase
     use DatabaseTrait;
 
     private const METHOD_ACTION_MAP = [
-        ActionsInterface::ACCOUNT_CREATE => 'account/create',
-        ActionsInterface::ACCOUNT_VIEW => 'account/view',
+        ActionsInterface::ACCOUNT_CREATE    => 'account/create',
+        ActionsInterface::ACCOUNT_VIEW      => 'account/view',
         ActionsInterface::ACCOUNT_VIEW_PASS => 'account/viewPass',
         ActionsInterface::ACCOUNT_EDIT_PASS => 'account/editPass',
-        ActionsInterface::ACCOUNT_EDIT => 'account/edit',
-        ActionsInterface::ACCOUNT_SEARCH => 'account/search',
-        ActionsInterface::ACCOUNT_DELETE => 'account/delete',
-        ActionsInterface::CATEGORY_VIEW => 'category/view',
-        ActionsInterface::CATEGORY_CREATE => 'category/create',
-        ActionsInterface::CATEGORY_EDIT => 'category/edit',
-        ActionsInterface::CATEGORY_DELETE => 'category/delete',
-        ActionsInterface::CATEGORY_SEARCH => 'category/search',
-        ActionsInterface::CLIENT_VIEW => 'client/view',
-        ActionsInterface::CLIENT_CREATE => 'client/create',
-        ActionsInterface::CLIENT_EDIT => 'client/edit',
-        ActionsInterface::CLIENT_DELETE => 'client/delete',
-        ActionsInterface::CLIENT_SEARCH => 'client/search',
-        ActionsInterface::TAG_VIEW => 'tag/view',
-        ActionsInterface::TAG_CREATE => 'tag/create',
-        ActionsInterface::TAG_EDIT => 'tag/edit',
-        ActionsInterface::TAG_DELETE => 'tag/delete',
-        ActionsInterface::TAG_SEARCH => 'tag/search',
-        ActionsInterface::GROUP_VIEW => 'userGroup/view',
-        ActionsInterface::GROUP_CREATE => 'userGroup/create',
-        ActionsInterface::GROUP_EDIT => 'userGroup/edit',
-        ActionsInterface::GROUP_DELETE => 'userGroup/delete',
-        ActionsInterface::GROUP_SEARCH => 'userGroup/search',
+        ActionsInterface::ACCOUNT_EDIT      => 'account/edit',
+        ActionsInterface::ACCOUNT_SEARCH    => 'account/search',
+        ActionsInterface::ACCOUNT_DELETE    => 'account/delete',
+        ActionsInterface::CATEGORY_VIEW     => 'category/view',
+        ActionsInterface::CATEGORY_CREATE   => 'category/create',
+        ActionsInterface::CATEGORY_EDIT     => 'category/edit',
+        ActionsInterface::CATEGORY_DELETE   => 'category/delete',
+        ActionsInterface::CATEGORY_SEARCH   => 'category/search',
+        ActionsInterface::CLIENT_VIEW       => 'client/view',
+        ActionsInterface::CLIENT_CREATE     => 'client/create',
+        ActionsInterface::CLIENT_EDIT       => 'client/edit',
+        ActionsInterface::CLIENT_DELETE     => 'client/delete',
+        ActionsInterface::CLIENT_SEARCH     => 'client/search',
+        ActionsInterface::TAG_VIEW          => 'tag/view',
+        ActionsInterface::TAG_CREATE        => 'tag/create',
+        ActionsInterface::TAG_EDIT          => 'tag/edit',
+        ActionsInterface::TAG_DELETE        => 'tag/delete',
+        ActionsInterface::TAG_SEARCH        => 'tag/search',
+        ActionsInterface::GROUP_VIEW        => 'userGroup/view',
+        ActionsInterface::GROUP_CREATE      => 'userGroup/create',
+        ActionsInterface::GROUP_EDIT        => 'userGroup/edit',
+        ActionsInterface::GROUP_DELETE      => 'userGroup/delete',
+        ActionsInterface::GROUP_SEARCH      => 'userGroup/search',
         ActionsInterface::CONFIG_BACKUP_RUN => 'config/backup',
         ActionsInterface::CONFIG_EXPORT_RUN => 'config/export',
     ];
@@ -95,9 +96,8 @@ abstract class ApiTestCase extends TestCase
      */
     protected static function processJsonResponse(
         Response $response,
-        bool     $exceptionOnError = true
-    ): stdClass
-    {
+        bool $exceptionOnError = true
+    ): stdClass {
         if ($exceptionOnError && $response->status()->getCode() !== 200) {
             throw new RuntimeException($response->status()->getMessage());
         }
@@ -132,7 +132,7 @@ abstract class ApiTestCase extends TestCase
             ->addDefinitions(
                 APP_DEFINITIONS_FILE,
                 [
-                    ApiRequest::class => function (ContainerInterface $c) use ($actionId, $params) {
+                    ApiRequest::class          => function (ContainerInterface $c) use ($actionId, $params) {
                         $token = self::createApiToken(
                             $c->get(AuthTokenService::class),
                             $actionId
@@ -140,20 +140,20 @@ abstract class ApiTestCase extends TestCase
 
                         $data = [
                             'jsonrpc' => '2.0',
-                            'method' => self::METHOD_ACTION_MAP[$actionId],
-                            'params' => array_merge(
+                            'method'  => self::METHOD_ACTION_MAP[$actionId],
+                            'params'  => array_merge(
                                 [
                                     'authToken' => $token->getToken(),
                                     'tokenPass' => self::AUTH_TOKEN_PASS,
                                 ],
                                 $params
                             ),
-                            'id' => 1
+                            'id'      => 1,
                         ];
 
                         return new ApiRequest(json_encode($data, JSON_THROW_ON_ERROR));
                     },
-                    DBStorageInterface::class => create(MySQLHandler::class)
+                    DBStorageInterface::class  => create(MySQLHandler::class)
                         ->constructor($databaseConnectionData),
                     ConfigDataInterface::class => static function (Config $config) use ($databaseConnectionData) {
                         $configData = $config->getConfigData()
@@ -167,7 +167,7 @@ abstract class ApiTestCase extends TestCase
                         $config->updateConfig($configData);
 
                         return $configData;
-                    }
+                    },
                 ]
             )
             ->build();
@@ -183,20 +183,23 @@ abstract class ApiTestCase extends TestCase
             [],
             [],
             [
-                'HTTP_HOST' => 'localhost:8080',
-                'HTTP_ACCEPT' => 'application/json, text/javascript, */*; q=0.01',
-                'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
+                'HTTP_HOST'            => 'localhost:8080',
+                'HTTP_ACCEPT'          => 'application/json, text/javascript, */*; q=0.01',
+                'HTTP_USER_AGENT'      => 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
                 'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.5',
                 'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
-                'REQUEST_URI' => '/api.php',
-                'REQUEST_METHOD' => 'POST',
-                'HTTP_CONTENT_TYPE' => 'application/json'
+                'REQUEST_URI'          => '/api.php',
+                'REQUEST_METHOD'       => 'POST',
+                'HTTP_CONTENT_TYPE'    => 'application/json',
             ],
             [],
             null
         );
 
-        $router = (new Bootstrap($dic))->getRouter();
+        $router = $dic->get(Klein::class);
+        $request = $dic->get(\SP\Http\Request::class);
+
+        $bs = new BootstrapApi(self::$configData, $router, $request);
         $router->dispatch($request, null, false);
 
         return $router->response();
@@ -211,9 +214,8 @@ abstract class ApiTestCase extends TestCase
      */
     private static function createApiToken(
         AuthTokenService $service,
-        int              $actionId
-    ): AuthTokenData
-    {
+        int $actionId
+    ): AuthTokenData {
         $data = new AuthTokenData();
         $data->setActionId($actionId);
         $data->setCreatedBy(1);

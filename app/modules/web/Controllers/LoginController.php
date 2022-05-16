@@ -28,7 +28,6 @@ use Exception;
 use Klein\Klein;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextBase;

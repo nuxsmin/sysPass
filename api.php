@@ -22,11 +22,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Bootstrap;
+use SP\Core\Bootstrap\BootstrapApi;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'api';
 
 $dic = require APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Base.php';
 
-Bootstrap::runApi($dic);
+BootstrapApi::run($dic);
