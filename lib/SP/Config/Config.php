@@ -26,7 +26,6 @@ namespace SP\Config;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use Psr\Container\ContainerInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
@@ -47,29 +46,28 @@ final class Config
     /**
      * Cache file name
      */
-    public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
-    private static int $timeUpdated;
-    private ContextInterface $context;
-    private bool $configLoaded = false;
-    private ?ConfigDataInterface $configData = null;
+    public const CONFIG_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'config.cache';
+    private static int              $timeUpdated;
+    private ContextInterface        $context;
+    private bool                    $configLoaded = false;
+    private ?ConfigDataInterface    $configData   = null;
     private XmlFileStorageInterface $fileStorage;
-    private FileCacheInterface $fileCache;
-    private ContainerInterface $dic;
+    private FileCacheInterface      $fileCache;
+    private ConfigBackupService     $configBackupService;
 
     /**
      * @throws ConfigException
      */
     public function __construct(
         XmlFileStorageInterface $fileStorage,
-        FileCacheInterface      $fileCache,
-        ContextInterface        $context,
-        ContainerInterface      $dic
-    )
-    {
+        FileCacheInterface $fileCache,
+        ContextInterface $context,
+        ConfigBackupService $configBackupService
+    ) {
         $this->fileCache = $fileCache;
         $this->fileStorage = $fileStorage;
         $this->context = $context;
-        $this->dic = $dic;
+        $this->configBackupService = $configBackupService;
 
         $this->initialize();
     }
@@ -89,6 +87,7 @@ final class Config
                     if ($this->configData->count() === 0) {
                         $this->fileCache->delete();
                         $this->initialize();
+
                         return;
                     }
 
@@ -117,11 +116,13 @@ final class Config
             } catch (Exception $e) {
                 processException($e);
 
-                throw new ConfigException($e->getMessage(),
+                throw new ConfigException(
+                    $e->getMessage(),
                     SPException::CRITICAL,
                     null,
                     $e->getCode(),
-                    $e);
+                    $e
+                );
             }
         }
     }
@@ -153,7 +154,7 @@ final class Config
         $configData = new ConfigData();
 
         foreach ($items as $item => $value) {
-            $methodName = 'set' . ucfirst($item);
+            $methodName = 'set'.ucfirst($item);
 
             if (method_exists($configData, $methodName)) {
                 $configData->$methodName($value);
@@ -167,15 +168,18 @@ final class Config
     /**
      * Guardar la configuración
      *
-     * @throws FileException
+     * @param  \SP\Config\ConfigDataInterface  $configData
+     * @param  bool|null  $backup
+     *
+     * @return \SP\Config\Config
+     * @throws \SP\Storage\File\FileException
      */
     public function saveConfig(
         ConfigDataInterface $configData,
-        ?bool               $backup = true
-    ): Config
-    {
+        ?bool $backup = true
+    ): Config {
         if ($backup) {
-            $this->dic->get(ConfigBackupService::class)->backup($configData);
+            $this->configBackupService->backup($configData);
         }
 
         $configSaver = $this->context->getUserData()->getLogin()

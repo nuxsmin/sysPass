@@ -26,11 +26,10 @@
 namespace SP\Services\Install;
 
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use SP\Config\Config;
+use SP\Config\ConfigData as ConfigSettings;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Crypt\Hash;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\QueryException;
@@ -42,38 +41,56 @@ use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
 use SP\Http\Request;
 use SP\Services\Config\ConfigService;
-use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\Database;
-use SP\Storage\Database\DBStorageInterface;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
 
 /**
- * Esta clase es la encargada de instalar sysPass.
+ * Installer class
  */
-final class Installer extends Service
+final class Installer
 {
     /**
      * sysPass' version and build number
      */
-    public const VERSION = [3, 2, 2];
+    public const VERSION      = [3, 2, 2];
     public const VERSION_TEXT = '3.2';
-    public const BUILD = 21031301;
+    public const BUILD        = 21031301;
 
-    private ?DatabaseSetupInterface $dbs = null;
-    private ?Request $request = null;
-    private ?InstallData $installData = null;
-    private ?ConfigDataInterface $configData = null;
+    private DatabaseSetupInterface $databaseSetup;
+    private Request                $request;
+    private Config                 $config;
+    private UserService            $userService;
+    private UserGroupService       $userGroupService;
+    private UserProfileService     $userProfileService;
+    private ConfigService          $configService;
+    private ?InstallData           $installData = null;
+
+    public function __construct(
+        DatabaseSetupInterface $databaseSetup,
+        Request $request,
+        Config $config,
+        UserService $userService,
+        UserGroupService $userGroupService,
+        UserProfileService $userProfileService,
+        ConfigService $configService
+    ) {
+        $this->databaseSetup = $databaseSetup;
+        $this->request = $request;
+        $this->config = $config;
+        $this->userService = $userService;
+        $this->userGroupService = $userGroupService;
+        $this->userProfileService = $userProfileService;
+        $this->configService = $configService;
+    }
+
 
     /**
      * @throws InvalidArgumentException
      * @throws SPException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function run(InstallData $installData): Installer
     {
@@ -94,35 +111,40 @@ final class Installer extends Service
             throw new InvalidArgumentException(
                 __u('Please, enter the admin username'),
                 SPException::ERROR,
-                __u('Admin user to log into the application'));
+                __u('Admin user to log into the application')
+            );
         }
 
         if (empty($this->installData->getAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the admin\'s password'),
                 SPException::ERROR,
-                __u('Application administrator\'s password'));
+                __u('Application administrator\'s password')
+            );
         }
 
         if (empty($this->installData->getMasterPassword())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the Master Password'),
                 SPException::ERROR,
-                __u('Master password to encrypt the passwords'));
+                __u('Master password to encrypt the passwords')
+            );
         }
 
         if (strlen($this->installData->getMasterPassword()) < 11) {
             throw new InvalidArgumentException(
                 __u('Master password too short'),
                 SPException::CRITICAL,
-                __u('The Master Password length need to be at least 11 characters'));
+                __u('The Master Password length need to be at least 11 characters')
+            );
         }
 
         if (empty($this->installData->getDbAdminUser())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database user'),
                 SPException::CRITICAL,
-                __u('An user with database administrative rights'));
+                __u('An user with database administrative rights')
+            );
         }
 
         if (IS_TESTING
@@ -130,58 +152,55 @@ final class Installer extends Service
             throw new InvalidArgumentException(
                 __u('Please, enter the database password'),
                 SPException::ERROR,
-                __u('Database administrator\'s password'));
+                __u('Database administrator\'s password')
+            );
         }
 
         if (empty($this->installData->getDbName())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database name'),
                 SPException::ERROR,
-                __u('Application database name. eg. syspass'));
+                __u('Application database name. eg. syspass')
+            );
         }
 
         if (substr_count($this->installData->getDbName(), '.') >= 1) {
             throw new InvalidArgumentException(
                 __u('Database name cannot contain "."'),
                 SPException::CRITICAL,
-                __u('Please, remove dots in database name'));
+                __u('Please, remove dots in database name')
+            );
         }
 
         if (empty($this->installData->getDbHost())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database server'),
                 SPException::ERROR,
-                __u('Server where the database will be installed'));
+                __u('Server where the database will be installed')
+            );
         }
     }
 
     /**
-     * Iniciar instalación.
-     *
      * @throws SPException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ConstraintException
      * @throws QueryException
      */
     private function install(): void
     {
         $this->setupDbHost();
-        $this->setupConfig();
-        $this->setupDb();
 
-        $this->updateConnectionData();
+        $configData = $this->setupConfig();
+
+        $this->setupDb($configData);
         $this->saveMasterPassword();
         $this->createAdminAccount();
 
-        $version = VersionUtil::getVersionStringNormalized();
+        $this->configService->create(new ConfigData('version', VersionUtil::getVersionStringNormalized()));
 
-        $this->dic->get(ConfigService::class)
-            ->create(new ConfigData('version', $version));
+        $configData->setInstalled(true);
 
-        $this->configData->setInstalled(true);
-
-        $this->config->saveConfig($this->configData, false);
+        $this->config->saveConfig($configData, false);
     }
 
     /**
@@ -190,9 +209,10 @@ final class Installer extends Service
     private function setupDbHost(): void
     {
         if (preg_match(
-            '/^(?:(?P<host>.*):(?P<port>\d{1,5}))|^(?:unix:(?P<socket>.*))/',
+            '/^(?P<host>.*):(?P<port>\d{1,5})|^unix:(?P<socket>.*)/',
             $this->installData->getDbHost(),
-            $match)
+            $match
+        )
         ) {
             if (!empty($match['socket'])) {
                 $this->installData->setDbSocket($match['socket']);
@@ -204,9 +224,10 @@ final class Installer extends Service
             $this->installData->setDbPort(3306);
         }
 
-        if (strpos('localhost', $this->installData->getDbHost()) === false
-            && strpos('127.0.0.1', $this->installData->getDbHost()) === false
+        if (strpos($this->installData->getDbHost(), 'localhost') === false
+            && strpos($this->installData->getDbHost(), '127.0.0.1') === false
         ) {
+            // Use real IP address when unitary testing, because no HTTP request is performed
             if (defined('SELF_IP_ADDRESS')) {
                 $address = SELF_IP_ADDRESS;
             } else {
@@ -226,7 +247,6 @@ final class Installer extends Service
                     $this->installData->setDbAuthHostDns($dnsHostname);
                 }
             }
-
         } else {
             $this->installData->setDbAuthHost('localhost');
         }
@@ -235,89 +255,61 @@ final class Installer extends Service
     /**
      * Setup sysPass config data
      */
-    private function setupConfig(): void
+    private function setupConfig(): ConfigDataInterface
     {
-        // Sets version and remove upgrade key
-        $this->configData->setConfigVersion(VersionUtil::getVersionStringNormalized());
-        $this->configData->setDatabaseVersion(VersionUtil::getVersionStringNormalized());
-        $this->configData->setUpgradeKey(null);
+        $configData = new ConfigSettings();
+        $configData->setConfigVersion(VersionUtil::getVersionStringNormalized())
+            ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
+            ->setUpgradeKey(null)
+            ->setDbHost($this->installData->getDbHost())
+            ->setDbSocket($this->installData->getDbSocket())
+            ->setDbPort($this->installData->getDbPort())
+            ->setDbName($this->installData->getDbName())
+            ->setSiteLang($this->installData->getSiteLang());
 
-        // Set DB connection info
-        $this->configData->setDbHost($this->installData->getDbHost());
-        $this->configData->setDbSocket($this->installData->getDbSocket());
-        $this->configData->setDbPort($this->installData->getDbPort());
-        $this->configData->setDbName($this->installData->getDbName());
+        $this->config->updateConfig($configData);
 
-        // Set site config
-        $this->configData->setSiteLang($this->installData->getSiteLang());
-
-        $this->config->updateConfig($this->configData);
+        return $configData;
     }
 
     /**
-     * @throws SPException
+     * @param  ConfigDataInterface  $configData
      */
-    private function setupDb(string $type = 'mysql'): void
+    private function setupDb(ConfigDataInterface $configData): void
     {
-        if ($type === 'mysql') {
-            $this->dbs = new MySQL($this->installData, $this->configData);
-        }
-
-        // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
         if ($this->installData->isHostingMode()) {
-            // Guardar el usuario/clave de conexión a la BD
-            $this->configData->setDbUser($this->installData->getDbAdminUser());
-            $this->configData->setDbPass($this->installData->getDbAdminPass());
+            // Save DB connection user and pass
+            $configData->setDbUser($this->installData->getDbAdminUser());
+            $configData->setDbPass($this->installData->getDbAdminPass());
         } else {
-            $this->dbs->setupDbUser();
+            [$user, $pass] = $this->databaseSetup->setupDbUser();
+
+            $configData->setDbUser($user);
+            $configData->setDbPass($pass);
         }
 
-        $this->dbs->createDatabase();
-        $this->dbs->createDBStructure();
-        $this->dbs->checkConnection();
-    }
+        $this->config->updateConfig($configData);
 
-    /**
-     * Setup database connection for sysPass.
-     *
-     * Updates the database storage interface in the dependency container
-     */
-    private function updateConnectionData(): void
-    {
-        // Ugly things...
-        $this->dic->set(
-            DBStorageInterface::class,
-            $this->dbs->createDbHandlerFromInstaller()
-        );
-        $this->dic->set(
-            Database::class,
-            new Database(
-                $this->dic->get(DBStorageInterface::class),
-                $this->dic->get(EventDispatcher::class)
-            )
-        );
+        $this->databaseSetup->createDatabase();
+        $this->databaseSetup->createDBStructure();
+        $this->databaseSetup->checkConnection();
     }
 
     /**
      * Saves the master password metadata
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function saveMasterPassword(): void
     {
         try {
-            // This service needs to be called after a successful database setup, since
-            // DI container stores the definition on its first call, so it would contain
-            // an incomplete database setup
-            $configService = $this->dic->get(ConfigService::class);
-
-            $configService->create(
+            $this->configService->create(
                 new ConfigData(
                     'masterPwd',
                     Hash::hashKey($this->installData->getMasterPassword())
                 )
             );
-            $configService->create(
+            $this->configService->create(
                 new ConfigData(
                     'lastupdatempass',
                     time()
@@ -326,7 +318,7 @@ final class Installer extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->dbs->rollback();
+            $this->databaseSetup->rollback();
 
             throw new SPException(
                 $e->getMessage(),
@@ -339,12 +331,7 @@ final class Installer extends Service
     }
 
     /**
-     * Crear el usuario admin de sysPass.
-     * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
-     *
      * @throws SPException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     private function createAdminAccount(): void
     {
@@ -357,19 +344,14 @@ final class Installer extends Service
             $userProfileData->setName('Admin');
             $userProfileData->setProfile(new ProfileData());
 
-            $userService = $this->dic->get(UserService::class);
-            $userGroupService = $this->dic->get(UserGroupService::class);
-            $userProfileService = $this->dic->get(UserProfileService::class);
-
-            // Datos del usuario
             $userData = new UserData();
-            $userData->setUserGroupId($userGroupService->create($userGroupData));
-            $userData->setUserProfileId($userProfileService->create($userProfileData));
+            $userData->setUserGroupId($this->userGroupService->create($userGroupData));
+            $userData->setUserProfileId($this->userProfileService->create($userProfileData));
             $userData->setLogin($this->installData->getAdminLogin());
             $userData->setName('sysPass Admin');
             $userData->setIsAdminApp(1);
 
-            $id = $userService->createWithMasterPass(
+            $id = $this->userService->createWithMasterPass(
                 $userData,
                 $this->installData->getAdminPass(),
                 $this->installData->getMasterPassword()
@@ -381,7 +363,7 @@ final class Installer extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->dbs->rollback();
+            $this->databaseSetup->rollback();
 
             throw new SPException(
                 $e->getMessage(),
@@ -391,11 +373,5 @@ final class Installer extends Service
                 $e
             );
         }
-    }
-
-    protected function initialize(): void
-    {
-        $this->configData = $this->config->getConfigData();
-        $this->request = $this->dic->get(Request::class);
     }
 }

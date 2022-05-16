@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,295 +19,425 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Install;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use PHPUnit\Framework\TestCase;
-use SP\Config\Config;
-use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
-use SP\Services\Crypt\MasterPassService;
+use SP\Http\Request;
+use SP\Services\Config\ConfigService;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
-use SP\Storage\Database\DBStorageInterface;
-use SP\Tests\DatabaseUtil;
-use SP\Util\PasswordUtil;
-use function SP\Tests\getResource;
-use function SP\Tests\recreateDir;
-use function SP\Tests\saveResource;
-use function SP\Tests\setupContext;
+use SP\Services\Install\MySQL;
+use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserProfile\UserProfileService;
+use SP\Tests\UnitaryTestCase;
+use SP\Util\VersionUtil;
+
+define('APP_MODULE', 'web-test');
 
 /**
  * Class InstallerTest
  *
  * @package SP\Tests\Services\Install
  */
-class InstallerTest extends TestCase
+class InstallerTest extends UnitaryTestCase
 {
-    const DB_NAME = 'syspass-test-install';
-
-    private static $currentConfig;
-
     /**
-     * @var Container
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Install\MySQL
      */
-    private static $dic;
-
+    private $mysqlSetup;
     /**
-     * @throws ContextException
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\User\UserService
      */
-    public static function setUpBeforeClass(): void
-    {
-        self::$dic = setupContext();
-
-        self::$currentConfig = getResource('config', 'config.xml');
-    }
-
+    private $userService;
     /**
-     * This method is called after the last test of this test class is run.
+     * @var \PHPUnit\Framework\MockObject\Stub|\SP\Http\Request
      */
-    public static function tearDownAfterClass(): void
-    {
-        saveResource('config', 'config.xml', self::$currentConfig);
-        recreateDir(CACHE_PATH);
-    }
+    private $request;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Config\ConfigService
+     */
+    private $configService;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\UserGroup\UserGroupService
+     */
+    private $userGroupService;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\UserProfile\UserProfileService
+     */
+    private $userProfileService;
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function testRun()
+    public function testRunIsSuccessful(): void
     {
-        $params = new InstallData();
-        $params->setDbAdminUser(getenv('DB_USER'));
-        $params->setDbAdminPass(getenv('DB_PASS'));
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost(getenv('DB_SERVER'));
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $installer = self::$dic->get(Installer::class);
+        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->mysqlSetup->expects($this->once())->method('createDatabase');
+        $this->mysqlSetup->expects($this->once())->method('createDBStructure');
+        $this->mysqlSetup->expects($this->once())->method('checkConnection');
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+        $this->configService->expects($this->exactly(3))->method('create');
+        $this->userGroupService->expects($this->once())->method('create');
+        $this->userProfileService->expects($this->once())->method('create');
+
+        $params = $this->getInstallData();
+
+        $installer = $this->getDefaultInstaller();
+
         $installer->run($params);
 
-        $configData = self::$dic->get(Config::class)->getConfigData();
+        $configData = $this->config->getConfigData();
 
         $this->assertEquals($params->getDbName(), $configData->getDbName());
         $this->assertEquals($params->getDbHost(), $configData->getDbHost());
         $this->assertEquals(3306, $configData->getDbPort());
-        $this->assertTrue(preg_match('/sp_\w+/', $configData->getDbUser()) === 1);
-        $this->assertNotEmpty($configData->getDbPass());
+        $this->assertEquals($expectedDbSetup[0], $configData->getDbUser());
+        $this->assertEquals($expectedDbSetup[1], $configData->getDbPass());
         $this->assertEquals($params->getSiteLang(), $configData->getSiteLang());
-
-        $this->assertTrue(self::$dic->get(MasterPassService::class)->checkMasterPassword($params->getMasterPassword()));
-
-        DatabaseUtil::dropDatabase(self::DB_NAME);
-
-        DatabaseUtil::dropUser($configData->getDbUser(), $params->getDbAuthHost());
-
-        if ($params->getDbAuthHostDns()) {
-            DatabaseUtil::dropUser($configData->getDbUser(), $params->getDbAuthHostDns());
-        }
+        $this->assertEquals(VersionUtil::getVersionStringNormalized(), $configData->getConfigVersion());
+        $this->assertEquals(VersionUtil::getVersionStringNormalized(), $configData->getDatabaseVersion());
+        $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
+        $this->assertNull($configData->getUpgradeKey());
+        $this->assertNull($configData->getDbSocket());
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
+     * @return \SP\Services\Install\InstallData
      */
-    public function testFailDbHostName()
+    private function getInstallData(): InstallData
     {
         $params = new InstallData();
-        $params->setDbAdminUser(getenv('DB_USER'));
-        $params->setDbAdminPass(getenv('DB_PASS'));
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost('fail');
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $params->setDbAdminUser(self::$faker->userName);
+        $params->setDbAdminPass(self::$faker->password);
+        $params->setDbName(self::$faker->colorName);
+        $params->setDbHost(self::$faker->domainName);
+        $params->setAdminLogin(self::$faker->userName);
+        $params->setAdminPass(self::$faker->password);
+        $params->setMasterPassword(self::$faker->password(11));
+        $params->setSiteLang(self::$faker->languageCode);
 
-        $installer = self::$dic->get(Installer::class);
+        return $params;
+    }
 
-        $this->expectException(SPException::class);
-        $this->expectExceptionCode(2002);
+    /**
+     * @return \SP\Services\Install\Installer
+     */
+    private function getDefaultInstaller(): Installer
+    {
+        return new Installer(
+            $this->mysqlSetup,
+            $this->request,
+            $this->config,
+            $this->userService,
+            $this->userGroupService,
+            $this->userProfileService,
+            $this->configService
+        );
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testSocketIsUsedForDBConnection(): void
+    {
+        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
+        $dbSocket = 'unix:/path/to/socket';
+
+        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        $params = $this->getInstallData();
+        $params->setDbHost($dbSocket);
+
+        $installer = $this->getDefaultInstaller();
 
         $installer->run($params);
+
+        $configData = $this->config->getConfigData();
+
+        $this->assertEquals(str_replace('unix:', '', $dbSocket), $configData->getDbSocket());
+        $this->assertEquals($dbSocket, $configData->getDbHost());
+        $this->assertEquals(0, $configData->getDbPort());
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function testFailDbHostIp()
+    public function testLocalhostIsUsedForDBConnection(): void
     {
-        $params = new InstallData();
-        $params->setDbAdminUser(getenv('DB_USER'));
-        $params->setDbAdminPass(getenv('DB_PASS'));
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost('192.168.0.1');
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $installer = self::$dic->get(Installer::class);
+        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
-        $this->expectException(SPException::class);
-        $this->expectExceptionCode(2002);
+        $params = $this->getInstallData();
+        $params->setDbHost('localhost');
+
+        $installer = $this->getDefaultInstaller();
 
         $installer->run($params);
+
+        $this->assertEquals($params->getDbHost(), $params->getDbAuthHost());
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function testFailDbHostPort()
+    public function testHostAndPortAreUsedForDBConnection(): void
     {
-        $params = new InstallData();
-        $params->setDbAdminUser(getenv('DB_USER'));
-        $params->setDbAdminPass(getenv('DB_PASS'));
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost(getenv('DB_SERVER') . ':3307');
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $installer = self::$dic->get(Installer::class);
+        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
-        $this->expectException(SPException::class);
-        $this->expectExceptionCode(2002);
+        $params = $this->getInstallData();
+        $params->setDbHost('host:3307');
+
+        $installer = $this->getDefaultInstaller();
 
         $installer->run($params);
+
+        $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
+        $this->assertEquals('host', $params->getDbHost());
+        $this->assertEquals(3307, $params->getDbPort());
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function testFailDbUser()
+    public function testHostingModeIsUsed(): void
     {
-        $params = new InstallData();
-        $params->setDbAdminUser('toor');
-        $params->setDbAdminPass(getenv('DB_PASS'));
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost(getenv('DB_SERVER'));
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $this->mysqlSetup->expects($this->never())->method('setupDbUser');
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
-        $installer = self::$dic->get(Installer::class);
-
-        $this->expectException(SPException::class);
-        $this->expectExceptionCode(1045);
-
-        $installer->run($params);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
-     */
-    public function testFailDbPass()
-    {
-        $params = new InstallData();
-        $params->setDbAdminUser(getenv('DB_USER'));
-        $params->setDbAdminPass('test');
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost(getenv('DB_SERVER'));
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
-
-        $installer = self::$dic->get(Installer::class);
-
-        $this->expectException(SPException::class);
-        $this->expectExceptionCode(1045);
-
-        $installer->run($params);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
-     * @throws InvalidArgumentException
-     * @throws SPException
-     */
-    public function testHostingMode()
-    {
-        $pass = PasswordUtil::randomPassword();
-        $host = getenv('DB_SERVER');
-
-        DatabaseUtil::dropDatabase(self::DB_NAME);
-        DatabaseUtil::createDatabase(self::DB_NAME);
-        DatabaseUtil::createUser('syspass_user', $pass, self::DB_NAME, $host);
-
-        $params = new InstallData();
-        $params->setDbAdminUser('syspass_user');
-        $params->setDbAdminPass($pass);
-        $params->setDbName(self::DB_NAME);
-        $params->setDbHost($host);
-        $params->setAdminLogin('admin');
-        $params->setAdminPass('syspass_admin');
-        $params->setMasterPassword('00123456789');
-        $params->setSiteLang('en_US');
+        $params = $this->getInstallData();
         $params->setHostingMode(true);
 
-        $installer = self::$dic->get(Installer::class);
+        $installer = $this->getDefaultInstaller();
+
         $installer->run($params);
 
-        $databaseUtil = new \SP\Storage\Database\DatabaseUtil(self::$dic->get(DBStorageInterface::class));
+        $configData = $this->config->getConfigData();
 
-        $this->assertTrue($databaseUtil->checkDatabaseTables(self::DB_NAME));
-
-        $configData = self::$dic->get(Config::class)->getConfigData();
-
-        $this->assertEquals($params->getDbName(), $configData->getDbName());
-        $this->assertEquals($params->getDbHost(), $configData->getDbHost());
-        $this->assertEquals(3306, $configData->getDbPort());
-        $this->assertNotEmpty($configData->getDbPass());
-        $this->assertEquals($params->getSiteLang(), $configData->getSiteLang());
-
-        $this->assertTrue(self::$dic->get(MasterPassService::class)->checkMasterPassword($params->getMasterPassword()));
-
-        DatabaseUtil::dropDatabase(self::DB_NAME);
-        DatabaseUtil::dropUser('syspass_user', SELF_IP_ADDRESS);
-        DatabaseUtil::dropUser('syspass_user', SELF_HOSTNAME);
-        DatabaseUtil::dropUser('syspass_user', $host);
+        $this->assertEquals($params->getDbAdminUser(), $configData->getDbUser());
+        $this->assertEquals($params->getDbAdminPass(), $configData->getDbPass());
     }
 
-    protected function tearDown(): void
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testAdminUserIsNotCreated(): void
     {
-        @unlink(CONFIG_FILE);
+        $this->mysqlSetup->expects($this->once())->method('rollback');
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(0);
+
+        $params = $this->getInstallData();
+        $params->setHostingMode(true);
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Error while creating \'admin\' user');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testConfigIsNotSaved(): void
+    {
+        $this->configService->method('create')->willThrowException(new \Exception('Create exception'));
+        $this->mysqlSetup->expects($this->once())->method('rollback');
+        $this->userService->expects($this->never())->method('createWithMasterPass');
+
+        $params = $this->getInstallData();
+        $params->setHostingMode(true);
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Create exception');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testAdminLoginIsNotBlank(): void
+    {
+        $params = $this->getInstallData();
+        $params->setAdminLogin('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the admin username');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testAdminPassIsNotBlank(): void
+    {
+        $params = $this->getInstallData();
+        $params->setAdminPass('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the admin\'s password');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testMasterPasswordIsNotBlank(): void
+    {
+        $params = $this->getInstallData();
+        $params->setMasterPassword('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the Master Password');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testMasterPasswordLengthIsWrong(): void
+    {
+        $params = $this->getInstallData();
+        $params->setMasterPassword(self::$faker->password(1, 10));
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Master password too short');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testDbAdminUserIsWrong(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbAdminUser('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the database user');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testDbAdminPassIsWrong(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbAdminPass('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the database password');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testDbNameIsBlank(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbName('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the database name');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testDbNameIsWrong(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbName('test.db');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Database name cannot contain "."');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     **/
+    public function testDbHostIsBlank(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbHost('');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Please, enter the database server');
+
+        $installer->run($params);
+    }
+
+    protected function setUp(): void
+    {
+        $this->mysqlSetup = $this->createMock(MySQL::class);
+        $this->userService = $this->createMock(UserService::class);
+        $this->request = $this->createStub(Request::class);
+        $this->configService = $this->createMock(ConfigService::class);
+        $this->userGroupService = $this->createMock(UserGroupService::class);
+        $this->userProfileService = $this->createMock(UserProfileService::class);
+
+        parent::setUp();
     }
 }

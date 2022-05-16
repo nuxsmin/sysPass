@@ -46,6 +46,7 @@ final class InstallData
     private ?string $dbAuthHost = null;
     private ?string $dbAuthHostDns = null;
     private string $siteLang = 'en_US';
+    private string $backendType = 'mysql';
 
     public function getDbUser(): ?string
     {
@@ -195,5 +196,15 @@ final class InstallData
     public function setDbSocket(string $dbSocket): void
     {
         $this->dbSocket = $dbSocket;
+    }
+
+    public function getBackendType(): string
+    {
+        return $this->backendType;
+    }
+
+    public function setBackendType(string $backendType): void
+    {
+        $this->backendType = $backendType;
     }
 }

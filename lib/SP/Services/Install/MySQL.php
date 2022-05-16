@@ -43,9 +43,10 @@ use SP\Util\PasswordUtil;
  */
 final class MySQL implements DatabaseSetupInterface
 {
-    protected InstallData $installData;
-    protected ConfigDataInterface $configData;
-    protected ?MySQLHandler $mysqlHandler = null;
+    private InstallData $installData;
+
+    private ?MySQLHandler       $mysqlHandler = null;
+    private ConfigDataInterface $configData;
 
     /**
      * MySQL constructor.
@@ -53,10 +54,9 @@ final class MySQL implements DatabaseSetupInterface
      * @throws SPException
      */
     public function __construct(
-        InstallData         $installData,
+        InstallData $installData,
         ConfigDataInterface $configData
-    )
-    {
+    ) {
         $this->installData = $installData;
         $this->configData = $configData;
 
@@ -98,8 +98,9 @@ final class MySQL implements DatabaseSetupInterface
 
     /**
      * @throws SPException
+     * @throws \Exception
      */
-    public function setupDbUser()
+    public function setupDbUser(): array
     {
         $user = substr(uniqid('sp_', true), 0, 16);
         $pass = PasswordUtil::randomPassword();
@@ -112,7 +113,7 @@ final class MySQL implements DatabaseSetupInterface
             $sth->execute([
                 $user,
                 $this->installData->getDbAuthHost(),
-                $this->installData->getDbAuthHostDns()
+                $this->installData->getDbAuthHostDns(),
             ]);
 
             // Si no existe el usuario, se intenta crear
@@ -131,9 +132,7 @@ final class MySQL implements DatabaseSetupInterface
             );
         }
 
-        // Guardar el nuevo usuario/clave de conexión a la BD
-        $this->configData->setDbUser($user);
-        $this->configData->setDbPass($pass);
+        return [$user, $pass];
     }
 
     /**
@@ -156,20 +155,24 @@ final class MySQL implements DatabaseSetupInterface
             $dbc = $this->mysqlHandler->getConnectionSimple();
 
             $dbc->exec(
-                sprintf($query,
+                sprintf(
+                    $query,
                     $dbc->quote($user),
                     $dbc->quote($this->installData->getDbAuthHost()),
-                    $dbc->quote($pass))
+                    $dbc->quote($pass)
+                )
             );
 
             if (!empty($this->installData->getDbAuthHostDns())
                 && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
             ) {
                 $dbc->exec(
-                    sprintf($query,
+                    sprintf(
+                        $query,
                         $dbc->quote($user),
                         $this->installData->getDbAuthHostDns(),
-                        $dbc->quote($pass))
+                        $dbc->quote($pass)
+                    )
                 );
             }
 
@@ -207,10 +210,12 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 $dbc = $this->mysqlHandler->getConnectionSimple();
 
-                $dbc->exec(sprintf(
-                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
-                    $this->installData->getDbName()
-                ));
+                $dbc->exec(
+                    sprintf(
+                        'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                        $this->installData->getDbName()
+                    )
+                );
             } catch (PDOException $e) {
                 throw new SPException(
                     sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
@@ -224,21 +229,25 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@%s';
 
-                $dbc->exec(sprintf(
+                $dbc->exec(
+                    sprintf(
                         $query,
                         $this->installData->getDbName(),
                         $dbc->quote($this->configData->getDbUser()),
-                        $dbc->quote($this->installData->getDbAuthHost()))
+                        $dbc->quote($this->installData->getDbAuthHost())
+                    )
                 );
 
                 if (!empty($this->installData->getDbAuthHostDns())
                     && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
                 ) {
-                    $dbc->exec(sprintf(
+                    $dbc->exec(
+                        sprintf(
                             $query,
                             $this->installData->getDbName(),
                             $dbc->quote($this->configData->getDbUser()),
-                            $dbc->quote($this->installData->getDbAuthHostDns()))
+                            $dbc->quote($this->installData->getDbAuthHostDns())
+                        )
                     );
                 }
 
@@ -260,10 +269,12 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 // Commprobar si existe al seleccionarla
                 $this->mysqlHandler->getConnectionSimple()
-                    ->exec(sprintf(
-                        'USE `%s`',
-                        $this->installData->getDbName()
-                    ));
+                    ->exec(
+                        sprintf(
+                            'USE `%s`',
+                            $this->installData->getDbName()
+                        )
+                    );
             } catch (PDOException $e) {
                 throw new SPException(
                     __u('The database does not exist'),
@@ -297,29 +308,37 @@ final class MySQL implements DatabaseSetupInterface
 
         if ($this->installData->isHostingMode()) {
             foreach (DatabaseUtil::TABLES as $table) {
-                $dbc->exec(sprintf(
-                    'DROP TABLE IF EXISTS `%s`.`%s`',
-                    $this->installData->getDbName(),
-                    $table
-                ));
+                $dbc->exec(
+                    sprintf(
+                        'DROP TABLE IF EXISTS `%s`.`%s`',
+                        $this->installData->getDbName(),
+                        $table
+                    )
+                );
             }
         } else {
-            $dbc->exec(sprintf(
-                'DROP DATABASE IF EXISTS `%s`',
-                $this->installData->getDbName()
-            ));
-            $dbc->exec(sprintf(
-                'DROP USER IF EXISTS %s@%s',
-                $dbc->quote($this->configData->getDbUser()),
-                $dbc->quote($this->installData->getDbAuthHost())
-            ));
-
-            if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                $dbc->exec(sprintf(
+            $dbc->exec(
+                sprintf(
+                    'DROP DATABASE IF EXISTS `%s`',
+                    $this->installData->getDbName()
+                )
+            );
+            $dbc->exec(
+                sprintf(
                     'DROP USER IF EXISTS %s@%s',
                     $dbc->quote($this->configData->getDbUser()),
-                    $dbc->quote($this->installData->getDbAuthHostDns())
-                ));
+                    $dbc->quote($this->installData->getDbAuthHost())
+                )
+            );
+
+            if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                $dbc->exec(
+                    sprintf(
+                        'DROP USER IF EXISTS %s@%s',
+                        $dbc->quote($this->configData->getDbUser()),
+                        $dbc->quote($this->installData->getDbAuthHostDns())
+                    )
+                );
             }
         }
 
@@ -338,9 +357,15 @@ final class MySQL implements DatabaseSetupInterface
             $dbc->exec(sprintf('USE `%s`', $this->installData->getDbName()));
         } catch (PDOException $e) {
             throw new SPException(
-                sprintf(__('Error while selecting \'%s\' database (%s)'), $this->installData->getDbName(), $e->getMessage()),
+                sprintf(
+                    __('Error while selecting \'%s\' database (%s)'),
+                    $this->installData->getDbName(),
+                    $e->getMessage()
+                ),
                 SPException::CRITICAL,
-                __u('Unable to use the database to create the structure. Please check the permissions and it does not exist.'),
+                __u(
+                    'Unable to use the database to create the structure. Please check the permissions and it does not exist.'
+                ),
                 $e->getCode(),
                 $e
             );
@@ -349,8 +374,8 @@ final class MySQL implements DatabaseSetupInterface
         try {
             $parser = new MySQLFileParser(
                 new FileHandler(
-                    SQL_PATH .
-                    DIRECTORY_SEPARATOR .
+                    SQL_PATH.
+                    DIRECTORY_SEPARATOR.
                     'dbstructure.sql'
                 )
             );

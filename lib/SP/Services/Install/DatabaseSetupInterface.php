@@ -41,17 +41,14 @@ interface DatabaseSetupInterface
      */
     public function connectDatabase();
 
-    /**
-     * @return mixed
-     */
-    public function setupDbUser();
+    public function setupDbUser(): array;
 
     /**
      * Crear el usuario para conectar con la base de datos.
      * Esta función crea el usuario para conectar con la base de datos.
      *
-     * @param string $user
-     * @param string $pass
+     * @param  string  $user
+     * @param  string  $pass
      */
     public function createDBUser(string $user, string $pass);
 

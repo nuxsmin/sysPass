@@ -10,6 +10,9 @@
          processIsolation="false"
          stopOnFailure="false"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <extensions>
+        <extension class="SP\Tests\BypassFinalHook"/>
+    </extensions>
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">../lib/SP</directory>
