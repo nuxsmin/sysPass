@@ -25,12 +25,12 @@
 namespace SP\Services\Config;
 
 use Exception;
+use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Repositories\NoSuchItemException;
-use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\File\FileException;
 use SP\Util\Util;
@@ -39,10 +39,19 @@ use SP\Util\Util;
  * Class ConfigBackupService
  *
  * @package SP\Services\Config
+ *
+ * TODO: restore final??
  */
-final class ConfigBackupService extends Service
+class ConfigBackupService
 {
-    protected ?ConfigService $configService = null;
+    private ConfigService $configService;
+    private Config        $config;
+
+    public function __construct(ConfigService $configService, Config $config)
+    {
+        $this->configService = $configService;
+        $this->config = $config;
+    }
 
     /**
      * @throws SPException
@@ -105,10 +114,5 @@ final class ConfigBackupService extends Service
 
             throw new ServiceException(__u('Unable to restore the configuration'));
         }
-    }
-
-    protected function initialize(): void
-    {
-        $this->configService = $this->dic->get(ConfigService::class);
     }
 }
