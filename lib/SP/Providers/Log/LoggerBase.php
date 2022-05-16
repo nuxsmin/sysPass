@@ -49,7 +49,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
     protected Logger   $logger;
     protected Language $language;
     protected Request  $request;
-    protected string   $events;
+    protected ?string  $events = null;
 
     public function __construct(
         Config $config,
@@ -77,6 +77,8 @@ abstract class LoggerBase extends Provider implements EventReceiver
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
+
+        $this->initialized = true;
     }
 
     /**

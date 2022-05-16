@@ -208,5 +208,7 @@ final class MailHandler extends Provider implements EventReceiver
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, self::EVENTS_FIXED));
         }
+
+        $this->initialized = true;
     }
 }

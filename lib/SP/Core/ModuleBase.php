@@ -59,56 +59,38 @@ abstract class ModuleBase
         $this->providersHelper = $providersHelper;
     }
 
+    abstract public function initialize(string $controller);
+
     /**
      * Initializes event handlers
      */
-    protected function initEventHandlers(): void
+    protected function initEventHandlers(bool $partialInit = false): void
     {
         if (DEBUG || $this->configData->isDebug()) {
-            $handler = $this->providersHelper->getFileLogHandler();
-            $handler->initialize();
+            $this->eventDispatcher->attach($this->providersHelper->getFileLogHandler());
+        }
 
-            $this->eventDispatcher->attach($handler);
+        if ($partialInit) {
+            return;
         }
 
         if ($this->configData->isLogEnabled()) {
-            $handler = $this->providersHelper->getDatabaseLogHandler();
-            $handler->initialize();
-
-            $this->eventDispatcher->attach($handler);
+            $this->eventDispatcher->attach($this->providersHelper->getDatabaseLogHandler());
         }
 
         if ($this->configData->isMailEnabled()) {
-            $handler = $this->providersHelper->getMailHandler();
-            $handler->initialize();
-
-            $this->eventDispatcher->attach($handler);
+            $this->eventDispatcher->attach($this->providersHelper->getMailHandler());
         }
 
         if ($this->configData->isSyslogEnabled()) {
-            $handler = $this->providersHelper->getSyslogHandler();
-            $handler->initialize();
-
-            $this->eventDispatcher->attach($handler);
+            $this->eventDispatcher->attach($this->providersHelper->getSyslogHandler());
         }
 
         if ($this->configData->isSyslogRemoteEnabled()) {
-            $handler = $this->providersHelper->getRemoteSyslogHandler();
-            $handler->initialize();
-
-            $this->eventDispatcher->attach($handler);
+            $this->eventDispatcher->attach($this->providersHelper->getRemoteSyslogHandler());
         }
 
-        $aclHandler = $this->providersHelper->getAclHandler();
-        $aclHandler->initialize();
-
-        $this->eventDispatcher->attach($aclHandler);
-
-        $notificationHandler = $this->providersHelper->getNotificationHandler();
-        $notificationHandler->initialize();
-
-        $this->eventDispatcher->attach($notificationHandler);
+        $this->eventDispatcher->attach($this->providersHelper->getAclHandler());
+        $this->eventDispatcher->attach($this->providersHelper->getNotificationHandler());
     }
-
-    abstract public function initialize(string $controller);
 }

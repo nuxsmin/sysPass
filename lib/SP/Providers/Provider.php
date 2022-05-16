@@ -38,6 +38,7 @@ abstract class Provider implements ProviderInterface
     protected Config           $config;
     protected ContextInterface $context;
     protected EventDispatcher  $eventDispatcher;
+    protected bool             $initialized = false;
 
     /**
      * Provider constructor.
@@ -51,5 +52,13 @@ abstract class Provider implements ProviderInterface
         $this->config = $config;
         $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInitialized(): bool
+    {
+        return $this->initialized;
     }
 }

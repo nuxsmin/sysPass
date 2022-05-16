@@ -28,12 +28,10 @@ use Exception;
 use Klein\Klein;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Config\Config;
 use SP\Core\Acl\Acl;
+use SP\Core\Application;
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\SessionUtil;
@@ -58,9 +56,7 @@ final class LoginController extends ControllerBase
     private LoginService $loginService;
 
     public function __construct(
-        EventDispatcher $eventDispatcher,
-        Config $config,
-        ContextInterface $session,
+        Application $application,
         ThemeInterface $theme,
         Klein $router,
         Acl $acl,
@@ -72,9 +68,7 @@ final class LoginController extends ControllerBase
         LoginService $loginService
     ) {
         parent::__construct(
-            $eventDispatcher,
-            $config,
-            $session,
+            $application,
             $theme,
             $router,
             $acl,

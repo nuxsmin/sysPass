@@ -24,11 +24,15 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
+use SP\Core\Acl\Acl;
+use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Browser\Browser;
@@ -44,12 +48,33 @@ final class BootstrapController extends SimpleControllerBase
 {
     use JsonTrait;
 
+    private CryptPKI      $cryptPKI;
+    private PluginManager $pluginManager;
+    private Browser       $browser;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        Request $request,
+        PhpExtensionChecker $extensionChecker,
+        CryptPKI $cryptPKI,
+        PluginManager $pluginManager,
+        Browser $browser
+    ) {
+        $this->cryptPKI = $cryptPKI;
+        $this->pluginManager = $pluginManager;
+        $this->browser = $browser;
+
+        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+    }
+
     /**
      * Returns environment data
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \JsonException
      */
     public function getEnvironmentAction(): bool
     {
@@ -122,7 +147,7 @@ final class BootstrapController extends SimpleControllerBase
     private function getPlugins(): array
     {
         try {
-            return $this->dic->get(PluginManager::class)->getEnabledPlugins();
+            return $this->pluginManager->getEnabledPlugins();
         } catch (Exception $e) {
             processException($e);
         }
@@ -132,25 +157,21 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     private function getAuthBasicAutologinEnabled(): bool
     {
-        return $this->dic->get(Browser::class)->getServerAuthUser() !== null
+        return $this->browser->getServerAuthUser() !== null
                && $this->configData->isAuthBasicAutoLoginEnabled();
     }
 
     /**
      * @return string
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     private function getPublicKey(): string
     {
         try {
             return $this->session->getPublicKey()
-                ?: $this->dic->get(CryptPKI::class)->getPublicKey();
+                ?: $this->cryptPKI->getPublicKey();
         } catch (FileException $e) {
             processException($e);
 
@@ -168,13 +189,5 @@ final class BootstrapController extends SimpleControllerBase
         logger(sprintf('CSRF key (get): %s', $this->session->getCSRF()));
 
         return $this->session->getCSRF();
-    }
-
-    /**
-     * @return void
-     */
-    protected function initialize(): void
-    {
-        // TODO: Implement initialize() method.
     }
 }

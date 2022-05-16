@@ -161,5 +161,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
+
+        $this->initialized = true;
     }
 }

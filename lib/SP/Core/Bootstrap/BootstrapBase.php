@@ -37,10 +37,7 @@ use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
 use SP\Plugin\PluginManager;
-use SP\Services\Upgrade\UpgradeConfigService;
-use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
-use SP\Util\VersionUtil;
 use Symfony\Component\Debug\Debug;
 use Throwable;
 
@@ -72,18 +69,24 @@ abstract class BootstrapBase
     protected Klein                     $router;
     protected Request                   $request;
     protected ConfigDataInterface       $configData;
+    private UpgradeConfigChecker        $upgradeConfigChecker;
 
     /**
      * Bootstrap constructor.
      */
-    final public function __construct(ConfigDataInterface $configData, Klein $router, Request $request)
-    {
+    final public function __construct(
+        ConfigDataInterface $configData,
+        Klein $router,
+        Request $request,
+        UpgradeConfigChecker $upgradeConfigChecker
+    ) {
         // Set the default language
         Language::setLocales('en_US');
 
         $this->configData = $configData;
         $this->router = $router;
         $this->request = $request;
+        $this->upgradeConfigChecker = $upgradeConfigChecker;
 
         $this->initRouter();
         $this->configureRouter();
@@ -240,7 +243,7 @@ abstract class BootstrapBase
     /**
      * Establecer el nivel de logging
      */
-    final public function initPHPVars(): void
+    private function initPHPVars(): void
     {
         if (defined('DEBUG') && DEBUG) {
             /** @noinspection ForgottenDebugOutputInspection */
@@ -302,46 +305,14 @@ abstract class BootstrapBase
     /**
      * Cargar la configuración
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Services\Upgrade\UpgradeException
      */
     private function initConfig(): void
     {
-        $this->checkConfigVersion();
+        $this->upgradeConfigChecker->checkConfigVersion();
 
         ConfigUtil::checkConfigDir();
-    }
-
-    /**
-     * Comprobar la versión de configuración y actualizarla
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Upgrade\UpgradeException
-     */
-    private function checkConfigVersion(): void
-    {
-        // Do not check config version when testing
-        if (IS_TESTING) {
-            return;
-        }
-
-        if (defined('OLD_CONFIG_FILE')
-            && file_exists(OLD_CONFIG_FILE)) {
-            $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgradeOldConfigFile(VersionUtil::getVersionStringNormalized());
-        }
-
-        $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());
-
-        if ($this->configData->isInstalled()
-            && UpgradeConfigService::needsUpgrade($configVersion)
-        ) {
-            $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgrade($configVersion, $this->configData);
-        }
     }
 
     final protected function initializePluginClasses(): void

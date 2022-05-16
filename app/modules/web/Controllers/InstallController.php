@@ -26,10 +26,8 @@ namespace SP\Modules\Web\Controllers;
 
 use Exception;
 use Klein\Klein;
-use SP\Config\Config;
 use SP\Core\Acl\Acl;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
@@ -56,9 +54,7 @@ final class InstallController extends ControllerBase
     private Installer $installer;
 
     public function __construct(
-        EventDispatcher $eventDispatcher,
-        Config $config,
-        ContextInterface $session,
+        Application $application,
         ThemeInterface $theme,
         Klein $router,
         Acl $acl,
@@ -70,9 +66,7 @@ final class InstallController extends ControllerBase
         Installer $installer
     ) {
         parent::__construct(
-            $eventDispatcher,
-            $config,
-            $session,
+            $application,
             $theme,
             $router,
             $acl,

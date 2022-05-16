@@ -172,5 +172,6 @@ final class NotificationHandler extends Provider implements EventReceiver
     public function initialize(): void
     {
         $this->events = $this->parseEventsToRegex(self::EVENTS);
+        $this->initialized = true;
     }
 }

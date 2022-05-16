@@ -80,6 +80,10 @@ final class ProvidersHelper
      */
     public function getFileLogHandler(): FileLogHandler
     {
+        if (!$this->fileLogHandler->isInitialized()) {
+            $this->fileLogHandler->initialize();
+        }
+
         return $this->fileLogHandler;
     }
 
@@ -88,6 +92,10 @@ final class ProvidersHelper
      */
     public function getDatabaseLogHandler(): DatabaseLogHandler
     {
+        if (!$this->databaseLogHandler->isInitialized()) {
+            $this->databaseLogHandler->initialize();
+        }
+
         return $this->databaseLogHandler;
     }
 
@@ -96,6 +104,10 @@ final class ProvidersHelper
      */
     public function getMailHandler(): MailHandler
     {
+        if (!$this->mailHandler->isInitialized()) {
+            $this->mailHandler->initialize();
+        }
+
         return $this->mailHandler;
     }
 
@@ -104,6 +116,10 @@ final class ProvidersHelper
      */
     public function getSyslogHandler(): SyslogHandler
     {
+        if (!$this->syslogHandler->isInitialized()) {
+            $this->syslogHandler->initialize();
+        }
+
         return $this->syslogHandler;
     }
 
@@ -112,6 +128,10 @@ final class ProvidersHelper
      */
     public function getRemoteSyslogHandler(): RemoteSyslogHandler
     {
+        if (!$this->remoteSyslogHandler->isInitialized()) {
+            $this->remoteSyslogHandler->initialize();
+        }
+
         return $this->remoteSyslogHandler;
     }
 
@@ -120,6 +140,10 @@ final class ProvidersHelper
      */
     public function getAclHandler(): AclHandler
     {
+        if (!$this->aclHandler->isInitialized()) {
+            $this->aclHandler->initialize();
+        }
+
         return $this->aclHandler;
     }
 
@@ -128,6 +152,10 @@ final class ProvidersHelper
      */
     public function getNotificationHandler(): NotificationHandler
     {
+        if (!$this->notificationHandler->isInitialized()) {
+            $this->notificationHandler->initialize();
+        }
+
         return $this->notificationHandler;
     }
 }

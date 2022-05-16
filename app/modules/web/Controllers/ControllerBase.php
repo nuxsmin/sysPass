@@ -32,6 +32,7 @@ use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
+use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Hash;
@@ -84,9 +85,7 @@ abstract class ControllerBase
      * @throws \JsonException
      */
     public function __construct(
-        EventDispatcher $eventDispatcher,
-        Config $config,
-        ContextInterface $session,
+        Application $application,
         ThemeInterface $theme,
         Klein $router,
         Acl $acl,
@@ -100,10 +99,10 @@ abstract class ControllerBase
         $this->dic = BootstrapBase::getContainer();
 
         $this->controllerName = $this->getControllerName();
-        $this->configData = $config->getConfigData();
-        $this->eventDispatcher = $eventDispatcher;
-        $this->config = $config;
-        $this->session = $session;
+        $this->config = $application->getConfig();
+        $this->configData = $this->config->getConfigData();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->session = $application->getContext();
         $this->theme = $theme;
         $this->router = $router;
         $this->acl = $acl;

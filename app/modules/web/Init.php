@@ -167,7 +167,12 @@ final class Init extends HttpModuleBase
         // Comprobar si es necesario cambiar a HTTPS
         HttpUtil::checkHttps($this->configData, $this->request);
 
-        if (in_array($controller, self::PARTIAL_INIT, true) === false) {
+        $partialInit = in_array($controller, self::PARTIAL_INIT, true);
+
+        // Initialize event handlers
+        $this->initEventHandlers($partialInit);
+
+        if ($partialInit === false) {
             // Checks if sysPass is installed
             if (!$this->checkInstalled()) {
                 logger('Not installed', 'ERROR');
@@ -224,9 +229,6 @@ final class Init extends HttpModuleBase
 
                 return;
             }
-
-            // Initialize event handlers
-            $this->initEventHandlers();
 
             if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
                 // Initialize user session context
