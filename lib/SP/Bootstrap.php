@@ -506,7 +506,7 @@ final class Bootstrap
         return $bs;
     }
 
-    private function configureRouterForApi()
+    private function configureRouterForApi(): void
     {
         // Manage requests for api module
         $this->router->respond(
