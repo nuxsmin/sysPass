@@ -22,7 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Modules\Cli\Init as InitCli;
+
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'cli';
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
+$dic = require APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Base.php';
+
+logger('------------');
+logger('Boostrap:cli');
+
+$cli = $dic->get(InitCli::class);
+$cli->initialize('');

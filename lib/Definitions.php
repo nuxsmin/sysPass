@@ -24,7 +24,6 @@
 
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
-use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
@@ -39,6 +38,7 @@ use SP\Http\Client;
 use SP\Http\Request;
 use SP\Providers\Auth\AuthProvider;
 use SP\Services\Account\AccountAclService;
+use SP\Services\Config\ConfigBackupService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Storage\Database\MySQLHandler;
@@ -51,51 +51,51 @@ use function DI\factory;
 use function DI\get;
 
 return [
-    Request::class => create(Request::class)
+    Request::class             => create(Request::class)
         ->constructor(\Klein\Request::createFromGlobals()),
-    ContextInterface::class =>
+    ContextInterface::class    =>
         static fn() => ContextFactory::getForModule(APP_MODULE),
-    Config::class =>
-        static fn(ContainerInterface $c) => new Config(
+    Config::class              => create(Config::class)
+        ->constructor(
             new XmlHandler(new FileHandler(CONFIG_FILE)),
             new FileCache(Config::CONFIG_CACHE_FILE),
-            $c->get(ContextInterface::class),
-            $c
+            get(ContextInterface::class),
+            create(ConfigBackupService::class)->lazy()
         ),
     ConfigDataInterface::class =>
         static fn(Config $config) => $config->getConfigData(),
-    DBStorageInterface::class => create(MySQLHandler::class)
+    DBStorageInterface::class  => create(MySQLHandler::class)
         ->constructor(
             factory([DatabaseConnectionData::class, 'getFromConfig'])
         ),
-    Actions::class =>
+    Actions::class             =>
         static fn() => new Actions(
             new FileCache(Actions::ACTIONS_CACHE_FILE),
             new XmlHandler(new FileHandler(ACTIONS_FILE))
         ),
-    MimeTypes::class =>
+    MimeTypes::class           =>
         static fn() => new MimeTypes(
             new FileCache(MimeTypes::MIME_CACHE_FILE),
             new XmlHandler(new FileHandler(MIMETYPES_FILE))
         ),
-    Acl::class => autowire(Acl::class)
+    Acl::class                 => autowire(Acl::class)
         ->constructorParameter(
             'action',
             get(Actions::class)
         ),
-    ThemeInterface::class => autowire(Theme::class)
+    ThemeInterface::class      => autowire(Theme::class)
         ->constructorParameter('module', APP_MODULE)
         ->constructorParameter(
             'fileCache',
             new FileCache(Theme::ICONS_CACHE_FILE)
         ),
-    PHPMailer::class => create(PHPMailer::class)
+    PHPMailer::class           => create(PHPMailer::class)
         ->constructor(true),
-    Logger::class => create(Logger::class)
+    Logger::class              => create(Logger::class)
         ->constructor('syspass'),
-    AccountAclService::class => autowire(AccountAclService::class),
-    \GuzzleHttp\Client::class => create(GuzzleHttp\Client::class)
+    AccountAclService::class   => autowire(AccountAclService::class),
+    \GuzzleHttp\Client::class  => create(GuzzleHttp\Client::class)
         ->constructor(factory([Client::class, 'getOptions'])),
-    CSRF::class => autowire(CSRF::class),
-    AuthProvider::class => autowire(AuthProvider::class)->lazy()
+    CSRF::class                => autowire(CSRF::class),
+    AuthProvider::class        => autowire(AuthProvider::class)->lazy(),
 ];

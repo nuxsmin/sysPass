@@ -24,82 +24,97 @@
 
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
-use SP\Bootstrap;
 
 defined('APP_ROOT') || die();
 
 // Core PATHS
 const DS = DIRECTORY_SEPARATOR;
 const BASE_PATH = __DIR__;
-const APP_PATH = APP_ROOT . DS . 'app';
-const VENDOR_PATH = APP_ROOT . DS . 'vendor';
-const SQL_PATH = APP_ROOT . DS . 'schemas';
-const PUBLIC_PATH = APP_ROOT . DS . 'public';
-const XML_SCHEMA = SQL_PATH . DS . 'syspass.xsd';
-const RESOURCES_PATH = APP_PATH . DS . 'resources';
-const MODULES_PATH = APP_PATH . DS . 'modules';
-const LOCALES_PATH = APP_PATH . DS . 'locales';
+const APP_PATH = APP_ROOT.DS.'app';
+const VENDOR_PATH = APP_ROOT.DS.'vendor';
+const SQL_PATH = APP_ROOT.DS.'schemas';
+const PUBLIC_PATH = APP_ROOT.DS.'public';
+const XML_SCHEMA = SQL_PATH.DS.'syspass.xsd';
+const RESOURCES_PATH = APP_PATH.DS.'resources';
+const MODULES_PATH = APP_PATH.DS.'modules';
+const LOCALES_PATH = APP_PATH.DS.'locales';
 
 // Start tracking the memory used
 $memInit = memory_get_usage();
 
-require __DIR__ . DS . 'BaseFunctions.php';
-require VENDOR_PATH . DS . 'autoload.php';
+require __DIR__.DS.'BaseFunctions.php';
+require VENDOR_PATH.DS.'autoload.php';
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
 
 defined('APP_MODULE') || define('APP_MODULE', 'web');
 define('DEBUG', getenv('DEBUG'));
-define('IS_TESTING',
+define(
+    'IS_TESTING',
     getenv('IS_TESTING')
-        ?: defined('TEST_ROOT'));
+        ?: defined('TEST_ROOT')
+);
 
-define('CONFIG_PATH',
+define(
+    'CONFIG_PATH',
     getenv('CONFIG_PATH')
-        ?: APP_PATH . DS . 'config');
+        ?: APP_PATH.DS.'config'
+);
 
 // Setup config files
-const OLD_CONFIG_FILE = CONFIG_PATH . DS . 'config.php';
+const OLD_CONFIG_FILE = CONFIG_PATH.DS.'config.php';
 
-define('CONFIG_FILE',
+define(
+    'CONFIG_FILE',
     getenv('CONFIG_FILE')
-        ?: CONFIG_PATH . DS . 'config.xml');
-define('ACTIONS_FILE',
+        ?: CONFIG_PATH.DS.'config.xml'
+);
+define(
+    'ACTIONS_FILE',
     getenv('ACTIONS_FILE')
-        ?: RESOURCES_PATH . DS . 'actions.xml');
-define('MIMETYPES_FILE',
+        ?: RESOURCES_PATH.DS.'actions.xml'
+);
+define(
+    'MIMETYPES_FILE',
     getenv('MIMETYPES_FILE')
-        ?: RESOURCES_PATH . DS . 'mime.xml');
-define('LOG_FILE',
+        ?: RESOURCES_PATH.DS.'mime.xml'
+);
+define(
+    'LOG_FILE',
     getenv('LOG_FILE')
-        ?: CONFIG_PATH . DS . 'syspass.log');
+        ?: CONFIG_PATH.DS.'syspass.log'
+);
 
-const LOCK_FILE = CONFIG_PATH . DS . '.lock';
+const LOCK_FILE = CONFIG_PATH.DS.'.lock';
 
 // Setup application paths
-define('BACKUP_PATH',
+define(
+    'BACKUP_PATH',
     getenv('BACKUP_PATH')
-        ?: APP_PATH . DS . 'backup');
-define('CACHE_PATH',
+        ?: APP_PATH.DS.'backup'
+);
+define(
+    'CACHE_PATH',
     getenv('CACHE_PATH')
-        ?: APP_PATH . DS . 'cache');
-define('TMP_PATH',
+        ?: APP_PATH.DS.'cache'
+);
+define(
+    'TMP_PATH',
     getenv('TMP_PATH')
-        ?: APP_PATH . DS . 'temp');
+        ?: APP_PATH.DS.'temp'
+);
 
 try {
     $moduleDefinitions = initModule(APP_MODULE);
 
-    $dic = (new ContainerBuilder)
-        ->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies')
+    return (new ContainerBuilder)
+        ->writeProxiesToFile(true, CACHE_PATH.DS.'proxies')
         ->addDefinitions(
-            BASE_PATH . DS . 'Definitions.php',
+            BASE_PATH.DS.'Definitions.php',
             $moduleDefinitions
         )
         ->build();
-
-    Bootstrap::run($dic);
 } catch (Exception $e) {
     processException($e);
 
