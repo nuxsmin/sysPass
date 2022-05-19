@@ -37,7 +37,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
-          tools: phpunit
+          # tools: phpunit
           coverage: xdebug
         env:
           fail-fast: true
