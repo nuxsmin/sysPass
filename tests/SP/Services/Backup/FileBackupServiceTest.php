@@ -24,34 +24,69 @@
 
 namespace SP\Tests\Services\Backup;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use PHPUnit\Framework\TestCase;
-use SP\Core\Context\ContextException;
+use SP\Core\PhpExtensionChecker;
+use SP\Services\Backup\BackupFiles;
 use SP\Services\Backup\FileBackupService;
-use SP\Services\ServiceException;
-use function SP\Tests\setupContext;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DatabaseUtil;
+use SP\Storage\Database\MySQLHandler;
+use SP\Storage\File\ArchiveHandler;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class FileBackupServiceTest
  *
  * @package SP\Tests\Services\Backup
  */
-class FileBackupServiceTest extends TestCase
+class FileBackupServiceTest extends UnitaryTestCase
 {
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ContextException
-     * @throws ServiceException
-     */
-    public function testDoBackup()
-    {
-        $dic = setupContext();
-        $service = $dic->get(FileBackupService::class);
-        $service->doBackup(TMP_PATH);
+    private FileBackupService $fileBackupService;
+    private BackupFiles       $backupFiles;
 
-        $this->assertFileExists(FileBackupService::getAppBackupFilename(TMP_PATH, $service->getHash(), true));
-        $this->assertFileExists(FileBackupService::getDbBackupFilename(TMP_PATH, $service->getHash(), true));
+    /**
+     * @throws \SP\Services\ServiceException
+     */
+    public function testDoBackup(): void
+    {
+        $this->fileBackupService->doBackup(TMP_PATH, APP_ROOT);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConfigException
+     * @throws \SP\Core\Context\ContextException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $database = $this->createStub(Database::class);
+        $database->method('getDbHandler')->willReturn(
+            $this->createStub(MySQLHandler::class)
+        );
+
+        $archiveHandler = $this->createMock(ArchiveHandler::class);
+        $archiveHandler->expects(self::once())
+            ->method('compressFile')
+            ->withAnyParameters();
+        $archiveHandler->expects(self::once())
+            ->method('compressDirectory')
+            ->with(
+                APP_ROOT,
+                FileBackupService::BACKUP_INCLUDE_REGEX
+            );
+
+        $this->backupFiles = $this->getMockBuilder(BackupFiles::class)
+            ->onlyMethods(['getDbBackupArchiveHandler', 'getAppBackupArchiveHandler'])
+            ->setConstructorArgs([new PhpExtensionChecker()])
+            ->getMock();
+        $this->backupFiles->method('getDbBackupArchiveHandler')->willReturn($archiveHandler);
+        $this->backupFiles->method('getAppBackupArchiveHandler')->willReturn($archiveHandler);
+
+        $this->fileBackupService = new FileBackupService(
+            $this->application,
+            $database,
+            $this->createStub(DatabaseUtil::class),
+            $this->backupFiles
+        );
     }
 }

@@ -52,7 +52,7 @@ use SP\Providers\Mail\MailHandler;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountService;
 use SP\Services\Auth\AuthException;
-use SP\Services\Backup\FileBackupService;
+use SP\Services\Backup\BackupFiles;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Export\XmlExportService;
@@ -441,15 +441,17 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
         $backupAppFile = new FileHandler(
-            FileBackupService::getAppBackupFilename(
+            BackupFiles::getAppBackupFilename(
                 BACKUP_PATH,
-                $this->configData->getBackupHash() ?: '', true
+                $this->configData->getBackupHash() ?: '',
+                true
             )
         );
         $backupDbFile = new FileHandler(
-            FileBackupService::getDbBackupFilename(
+            BackupFiles::getDbBackupFilename(
                 BACKUP_PATH,
-                $this->configData->getBackupHash() ?: '', true
+                $this->configData->getBackupHash() ?: '',
+                true
             )
         );
         $exportFile = new FileHandler(

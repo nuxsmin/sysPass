@@ -29,7 +29,7 @@ use DI\NotFoundException;
 use SP\Config\Config;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Modules\Cli\Commands\BackupCommand;
-use SP\Services\Backup\FileBackupService;
+use SP\Services\Backup\BackupFiles;
 use SP\Tests\Modules\Cli\CliTestCase;
 use function SP\Tests\recreateDir;
 
@@ -96,14 +96,14 @@ class BackupCommandTest extends CliTestCase
         $configData = self::$dic->get(Config::class)->getConfigData();
 
         $this->assertFileExists(
-            FileBackupService::getAppBackupFilename(
+            BackupFiles::getAppBackupFilename(
                 TMP_PATH,
                 $configData->getBackupHash(),
                 true
             )
         );
         $this->assertFileExists(
-            FileBackupService::getDbBackupFilename(
+            BackupFiles::getDbBackupFilename(
                 TMP_PATH,
                 $configData->getBackupHash(),
                 true

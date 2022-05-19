@@ -31,6 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 use SP\Services\Api\ApiResponse;
+use SP\Services\Backup\BackupFiles;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
 
@@ -66,12 +67,12 @@ final class ConfigController extends ControllerBase
 
             $backupFiles = [
                 'files' => [
-                    'app' => FileBackupService::getAppBackupFilename(
+                    'app' => BackupFiles::getAppBackupFilename(
                         $path,
                         $backupService->getHash(),
                         true
                     ),
-                    'db' => FileBackupService::getDbBackupFilename(
+                    'db' => BackupFiles::getDbBackupFilename(
                         $path,
                         $backupService->getHash(),
                         true

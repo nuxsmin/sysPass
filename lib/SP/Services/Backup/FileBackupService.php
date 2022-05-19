@@ -26,16 +26,15 @@ namespace SP\Services\Backup;
 
 use Exception;
 use PDO;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use SP\Config\Config;
 use SP\Config\ConfigDataInterface;
 use SP\Core\AppInfoInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\PhpExtensionChecker;
-use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\DatabaseUtil;
@@ -50,53 +49,65 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de realizar la copia de sysPass.
  */
-final class FileBackupService extends Service
+final class FileBackupService
 {
-    private const BACKUP_INCLUDE_REGEX = /** @lang RegExp */
+    public const BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
 
-    private ?ConfigDataInterface $configData = null;
-    private ?string $path = null;
-    private ?string $backupFileApp = null;
-    private ?string $backupFileDb = null;
-    private ?PhpExtensionChecker $extensionChecker = null;
-    private ?string $hash = null;
+    private Database            $database;
+    private DatabaseUtil        $databaseUtil;
+    private EventDispatcher     $eventDispatcher;
+    private Config              $config;
+    private ConfigDataInterface $configData;
+    private BackupFiles         $backupFiles;
+    private ?string             $backupPath = null;
+
+    public function __construct(
+        Application $application,
+        Database $database,
+        DatabaseUtil $databaseUtil,
+        BackupFiles $backupFiles
+    ) {
+        $this->config = $application->getConfig();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->database = $database;
+        $this->databaseUtil = $databaseUtil;
+        $this->backupFiles = $backupFiles;
+
+        $this->configData = $this->config->getConfigData();
+    }
 
     /**
      * Realizar backup de la BBDD y aplicación.
      *
      * @throws ServiceException
      */
-    public function doBackup(string $path): void
+    public function doBackup(string $backupPath = BACKUP_PATH, string $applicationPath = APP_ROOT): void
     {
         set_time_limit(0);
 
-        $this->path = $path;
-
-        $this->checkBackupDir();
-
-        // Generar hash unico para evitar descargas no permitidas
-        $this->hash = sha1(uniqid('sysPassBackup', true));
-
-        $this->backupFileApp = self::getAppBackupFilename($path, $this->hash);
-        $this->backupFileDb = self::getDbBackupFilename($path, $this->hash);
+        $this->backupPath = $backupPath;
 
         try {
             $this->deleteOldBackups();
 
-            $this->eventDispatcher->notifyEvent('run.backup.start',
-                new Event($this,
-                    EventMessage::factory()->addDescription(__u('Make Backup'))));
+            $this->eventDispatcher->notifyEvent(
+                'run.backup.start',
+                new Event(
+                    $this,
+                    EventMessage::factory()->addDescription(__u('Make Backup'))
+                )
+            );
 
-            $this->backupTables(new FileHandler($this->backupFileDb));
+            $this->backupTables($this->backupFiles->getDbBackupFileHandler());
 
-            if (!$this->backupApp()
-                && !$this->backupAppLegacyLinux()
+            if (!$this->backupApp($applicationPath)
+                && !$this->backupAppLegacyLinux($applicationPath)
             ) {
                 throw new ServiceException(__u('Error while doing the backup in compatibility mode'));
             }
 
-            $this->configData->setBackupHash($this->hash);
+            $this->configData->setBackupHash($this->backupFiles->getHash());
             $this->config->saveConfig($this->configData);
         } catch (ServiceException $e) {
             throw $e;
@@ -114,72 +125,20 @@ final class FileBackupService extends Service
     }
 
     /**
-     * Comprobar y crear el directorio de backups.
-     *
-     * @throws ServiceException
-     */
-    private function checkBackupDir(): void
-    {
-        if (is_dir($this->path) === false
-            && !@mkdir($concurrentDirectory = $this->path, 0750, true)
-            && !is_dir($concurrentDirectory)
-        ) {
-            throw new ServiceException(
-                sprintf(__('Unable to create the backups directory ("%s")'), $this->path));
-        }
-
-        if (!is_writable($this->path)) {
-            throw new ServiceException(
-                __u('Please, check the backup directory permissions'));
-        }
-
-    }
-
-    public static function getAppBackupFilename(
-        string $path,
-        string $hash,
-        bool   $compressed = false
-    ): string
-    {
-        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_app-' . $hash;
-
-        if ($compressed) {
-            return $file . ArchiveHandler::COMPRESS_EXTENSION;
-        }
-
-        return $file;
-    }
-
-    public static function getDbBackupFilename(
-        string $path,
-        string $hash,
-        bool   $compressed = false
-    ): string
-    {
-        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $hash;
-
-        if ($compressed) {
-            return $file . ArchiveHandler::COMPRESS_EXTENSION;
-        }
-
-        return $file . '.sql';
-    }
-
-    /**
      * Eliminar las copias de seguridad anteriores
      */
     private function deleteOldBackups(): void
     {
-        $path = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME;
+        $path = $this->backupPath.DIRECTORY_SEPARATOR.AppInfoInterface::APP_NAME;
 
         array_map(
             static function ($file) {
                 return @unlink($file);
             },
             array_merge(
-                glob($path . '_db-*'),
-                glob($path . '_app-*'),
-                glob($path . '*.sql')
+                glob($path.'_db-*'),
+                glob($path.'_app-*'),
+                glob($path.'*.sql')
             )
         );
     }
@@ -196,71 +155,63 @@ final class FileBackupService extends Service
      */
     private function backupTables(
         FileHandler $fileHandler,
-        string      $tables = '*'
-    ): void
-    {
-        $this->eventDispatcher->notifyEvent('run.backup.process',
-            new Event($this,
-                EventMessage::factory()->addDescription(__u('Copying database')))
+    ): void {
+        $this->eventDispatcher->notifyEvent(
+            'run.backup.process',
+            new Event(
+                $this,
+                EventMessage::factory()->addDescription(__u('Copying database'))
+            )
         );
 
         $fileHandler->open('w');
 
-        $db = $this->dic->get(Database::class);
-        $databaseUtil = $this->dic->get(DatabaseUtil::class);
-
         $queryData = new QueryData();
 
-        if ($tables === '*') {
-            $resTables = DatabaseUtil::TABLES;
-        } else {
-            $resTables = is_array($tables)
-                ? $tables
-                : explode(',', $tables);
-        }
+        $tables = DatabaseUtil::TABLES;
 
-        $lineSeparator = PHP_EOL . PHP_EOL;
+        $lineSeparator = PHP_EOL.PHP_EOL;
 
-        $dbname = $db->getDbHandler()->getDatabaseName();
+        $dbname = $this->database->getDbHandler()->getDatabaseName();
 
-        $sqlOut = '-- ' . PHP_EOL;
-        $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (START)' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL;
-        $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL;
-        $sqlOut .= 'SET AUTOCOMMIT = 0;' . PHP_EOL;
-        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 0;' . PHP_EOL;
-        $sqlOut .= 'SET UNIQUE_CHECKS = 0;' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL;
-        $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
-        $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
+        $sqlOut = '-- '.PHP_EOL;
+        $sqlOut .= '-- sysPass DB dump generated on '.time().' (START)'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL;
+        $sqlOut .= '-- Please, do not alter this file, it could break your DB'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL;
+        $sqlOut .= 'SET AUTOCOMMIT = 0;'.PHP_EOL;
+        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 0;'.PHP_EOL;
+        $sqlOut .= 'SET UNIQUE_CHECKS = 0;'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL;
+        $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `'.$dbname.'`;'.PHP_EOL.PHP_EOL;
+        $sqlOut .= 'USE `'.$dbname.'`;'.PHP_EOL.PHP_EOL;
 
         $fileHandler->write($sqlOut);
 
         $sqlOutViews = '';
         // Recorrer las tablas y almacenar los datos
-        foreach ($resTables as $table) {
-            $tableName = is_object($table) ? $table->{'Tables_in_' . $dbname} : $table;
+        foreach ($tables as $table) {
+            $tableName = is_object($table) ? $table->{'Tables_in_'.$dbname} : $table;
 
-            $queryData->setQuery('SHOW CREATE TABLE ' . $tableName);
+            $queryData->setQuery('SHOW CREATE TABLE '.$tableName);
 
             // Consulta para crear la tabla
-            $txtCreate = $db->doQuery($queryData)->getData();
+            $txtCreate = $this->database->doQuery($queryData)->getData();
 
             if (isset($txtCreate->{'Create Table'})) {
-                $sqlOut = '-- ' . PHP_EOL;
-                $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
-                $sqlOut .= '-- ' . PHP_EOL;
-                $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
-                $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
+                $sqlOut = '-- '.PHP_EOL;
+                $sqlOut .= '-- Table '.strtoupper($tableName).PHP_EOL;
+                $sqlOut .= '-- '.PHP_EOL;
+                $sqlOut .= 'DROP TABLE IF EXISTS `'.$tableName.'`;'.PHP_EOL.PHP_EOL;
+                $sqlOut .= $txtCreate->{'Create Table'}.';'.PHP_EOL.PHP_EOL;
 
                 $fileHandler->write($sqlOut);
             } elseif (isset($txtCreate->{'Create View'})) {
-                $sqlOutViews .= '-- ' . PHP_EOL;
-                $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
-                $sqlOutViews .= '-- ' . PHP_EOL;
-                $sqlOutViews .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
-                $sqlOutViews .= $txtCreate->{'Create View'} . ';' . PHP_EOL . PHP_EOL;
+                $sqlOutViews .= '-- '.PHP_EOL;
+                $sqlOutViews .= '-- View '.strtoupper($tableName).PHP_EOL;
+                $sqlOutViews .= '-- '.PHP_EOL;
+                $sqlOutViews .= 'DROP TABLE IF EXISTS `'.$tableName.'`;'.PHP_EOL.PHP_EOL;
+                $sqlOutViews .= $txtCreate->{'Create View'}.';'.PHP_EOL.PHP_EOL;
             }
 
             $fileHandler->write($lineSeparator);
@@ -270,28 +221,28 @@ final class FileBackupService extends Service
         $fileHandler->write($sqlOutViews);
 
         // Guardar los datos
-        foreach ($resTables as $tableName) {
+        foreach ($tables as $tableName) {
             // No guardar las vistas!
             if (strrpos($tableName, '_v') !== false) {
                 continue;
             }
 
-            $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
+            $queryData->setQuery('SELECT * FROM `'.$tableName.'`');
 
             // Consulta para obtener los registros de la tabla
-            $queryRes = $db->doQueryRaw($queryData, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL], false);
+            $queryRes = $this->database->doQueryRaw($queryData, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL], false);
 
             $numColumns = $queryRes->columnCount();
 
             while ($row = $queryRes->fetch(PDO::FETCH_NUM)) {
-                $fileHandler->write('INSERT INTO `' . $tableName . '` VALUES(');
+                $fileHandler->write('INSERT INTO `'.$tableName.'` VALUES(');
 
                 $field = 1;
                 foreach ($row as $value) {
                     if (is_numeric($value)) {
                         $fileHandler->write($value);
                     } elseif ($value) {
-                        $fileHandler->write($databaseUtil->escape($value));
+                        $fileHandler->write($this->databaseUtil->escape($value));
                     } else {
                         $fileHandler->write(null);
                     }
@@ -303,25 +254,24 @@ final class FileBackupService extends Service
                     $field++;
                 }
 
-                $fileHandler->write(');' . PHP_EOL);
+                $fileHandler->write(');'.PHP_EOL);
             }
         }
 
-        $sqlOut = '-- ' . PHP_EOL;
-        $sqlOut .= 'SET AUTOCOMMIT = 1;' . PHP_EOL;
-        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 1;' . PHP_EOL;
-        $sqlOut .= 'SET UNIQUE_CHECKS = 1;' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL;
-        $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL;
-        $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-        $sqlOut .= '-- ' . PHP_EOL . PHP_EOL;
+        $sqlOut = '-- '.PHP_EOL;
+        $sqlOut .= 'SET AUTOCOMMIT = 1;'.PHP_EOL;
+        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 1;'.PHP_EOL;
+        $sqlOut .= 'SET UNIQUE_CHECKS = 1;'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL;
+        $sqlOut .= '-- sysPass DB dump generated on '.time().' (END)'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL;
+        $sqlOut .= '-- Please, do not alter this file, it could break your DB'.PHP_EOL;
+        $sqlOut .= '-- '.PHP_EOL.PHP_EOL;
 
         $fileHandler->write($sqlOut);
         $fileHandler->close();
 
-        $archive = new ArchiveHandler($fileHandler->getFile(), $this->extensionChecker);
-        $archive->compressFile($fileHandler->getFile());
+        $this->backupFiles->getDbBackupArchiveHandler()->compressFile($fileHandler->getFile());
 
         $fileHandler->delete();
     }
@@ -332,16 +282,17 @@ final class FileBackupService extends Service
      * @throws CheckException
      * @throws FileException
      */
-    private function backupApp(): bool
+    private function backupApp(string $directory): bool
     {
-        $this->eventDispatcher->notifyEvent('run.backup.process',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Copying application')))
+        $this->eventDispatcher->notifyEvent(
+            'run.backup.process',
+            new Event(
+                $this, EventMessage::factory()
+                ->addDescription(__u('Copying application'))
+            )
         );
 
-        $archive = new ArchiveHandler($this->backupFileApp, $this->extensionChecker);
-
-        $archive->compressDirectory(APP_ROOT, self::BACKUP_INCLUDE_REGEX);
+        $this->backupFiles->getAppBackupArchiveHandler()->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
 
         return true;
     }
@@ -351,7 +302,7 @@ final class FileBackupService extends Service
      *
      * @throws ServiceException
      */
-    private function backupAppLegacyLinux(): int
+    private function backupAppLegacyLinux(string $directory): int
     {
         if (Checks::checkIsWindows()) {
             throw new ServiceException(
@@ -360,17 +311,20 @@ final class FileBackupService extends Service
             );
         }
 
-        $this->eventDispatcher->notifyEvent('run.backup.process',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Copying application')))
+        $this->eventDispatcher->notifyEvent(
+            'run.backup.process',
+            new Event(
+                $this, EventMessage::factory()
+                ->addDescription(__u('Copying application'))
+            )
         );
 
         $command = sprintf(
             'tar czf %s%s %s --exclude "%s" 2>&1',
-            $this->backupFileApp,
+            $this->backupFiles->getAppBackupFileHandler()->getFile(),
             ArchiveHandler::COMPRESS_EXTENSION,
-            BASE_PATH,
-            $this->path
+            $directory,
+            $this->backupPath
         );
         exec($command, $resOut, $resBakApp);
 
@@ -379,16 +333,6 @@ final class FileBackupService extends Service
 
     public function getHash(): string
     {
-        return $this->hash;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function initialize(): void
-    {
-        $this->configData = $this->config->getConfigData();
-        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
+        return $this->backupFiles->getHash();
     }
 }

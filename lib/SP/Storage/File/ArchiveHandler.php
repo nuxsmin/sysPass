@@ -27,7 +27,6 @@ namespace SP\Storage\File;
 
 use Phar;
 use PharData;
-use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
 
 /**
@@ -39,16 +38,18 @@ final class ArchiveHandler
 {
     public const COMPRESS_EXTENSION = '.tar.gz';
 
-    private PhpExtensionChecker $extensionChecker;
-    private FileHandler $archive;
+    private PharData $archive;
 
+    /**
+     * @throws \SP\Core\Exceptions\CheckException
+     */
     public function __construct(
-        string              $archive,
+        string $archive,
         PhpExtensionChecker $extensionChecker
-    )
-    {
-        $this->extensionChecker = $extensionChecker;
-        $this->archive = new FileHandler(self::makeArchiveName($archive));
+    ) {
+        $extensionChecker->checkPharAvailable(true);
+
+        $this->archive = new PharData(self::makeArchiveName($archive));
     }
 
     private static function makeArchiveName(string $archive): string
@@ -61,51 +62,40 @@ final class ArchiveHandler
 
         if (is_file($archive)) {
             return substr(
-                    $archive,
-                    0,
-                    strrpos($archive, '.')
-                ) . $archiveExtension;
+                       $archive,
+                       0,
+                       strrpos($archive, '.') ?: strlen($archive)
+                   ).$archiveExtension;
         }
 
-        return $archive . $archiveExtension;
+        return $archive.$archiveExtension;
     }
 
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @throws CheckException
      * @throws FileException
      */
-    public function compressDirectory(
-        string  $directory,
-        ?string $regex = null
-    ): void
+    public function compressDirectory(string $directory, ?string $regex = null): void
     {
-        $this->extensionChecker->checkPharAvailable(true);
-
-        $archive = new PharData($this->archive->getFile());
-        $archive->buildFromDirectory($directory, $regex);
-        $archive->compress(Phar::GZ);
+        $this->archive->buildFromDirectory($directory, $regex);
+        $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
-        $this->archive->delete();
+        (new FileHandler($this->archive->getPath()))->delete();
     }
 
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @throws CheckException
      * @throws FileException
      */
     public function compressFile(string $file): void
     {
-        $this->extensionChecker->checkPharAvailable(true);
-
-        $archive = new PharData($this->archive->getFile());
-        $archive->addFile($file, basename($file));
-        $archive->compress(Phar::GZ);
+        $this->archive->addFile($file, basename($file));
+        $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
-        $this->archive->delete();
+        (new FileHandler($this->archive->getPath()))->delete();
     }
 }

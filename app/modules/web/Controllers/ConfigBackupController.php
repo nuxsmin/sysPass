@@ -35,6 +35,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Services\Backup\BackupFiles;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
@@ -244,7 +245,7 @@ final class ConfigBackupController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = FileBackupService::getAppBackupFilename(
+            $filePath = BackupFiles::getAppBackupFilename(
                 BACKUP_PATH,
                 $this->configData->getBackupHash(),
                 true
@@ -299,7 +300,7 @@ final class ConfigBackupController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = FileBackupService::getDbBackupFilename(
+            $filePath = BackupFiles::getDbBackupFilename(
                 BACKUP_PATH,
                 $this->configData->getBackupHash(),
                 true

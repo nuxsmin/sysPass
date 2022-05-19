@@ -50,7 +50,7 @@
     "fzaninotto/faker": "1.9.x-dev",
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v4.1",
-    "dg/bypass-finals": "^v1.3.1"
+    "dg/bypass-finals": "^v1.3"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.2",
