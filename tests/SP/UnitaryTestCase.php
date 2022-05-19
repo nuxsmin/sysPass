@@ -25,6 +25,7 @@
 namespace SP\Tests;
 
 
+use DG\BypassFinals;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
@@ -48,6 +49,9 @@ abstract class UnitaryTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
+        BypassFinals::enable();
+        BypassFinals::setWhitelist([APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'*']);
+
         self::$faker = Factory::create();
 
         parent::setUpBeforeClass();

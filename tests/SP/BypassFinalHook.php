@@ -34,7 +34,7 @@ final class BypassFinalHook implements BeforeTestHook
 {
     public function executeBeforeTest(string $test): void
     {
-        BypassFinals::enable();
-        BypassFinals::setWhitelist([APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'*']);
+//        BypassFinals::enable();
+//        BypassFinals::setWhitelist([APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'*']);
     }
 }
