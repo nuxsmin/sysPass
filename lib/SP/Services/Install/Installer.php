@@ -164,7 +164,7 @@ final class Installer
             );
         }
 
-        if (substr_count($this->installData->getDbName(), '.') >= 1) {
+        if (substr_count($this->installData->getDbName(), '.') > 0) {
             throw new InvalidArgumentException(
                 __u('Database name cannot contain "."'),
                 SPException::CRITICAL,
