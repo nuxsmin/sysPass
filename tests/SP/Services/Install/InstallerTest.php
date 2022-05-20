@@ -24,6 +24,7 @@
 
 namespace SP\Tests\Services\Install;
 
+use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
@@ -36,8 +37,6 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Tests\UnitaryTestCase;
 use SP\Util\VersionUtil;
-
-define('APP_MODULE', 'web-test');
 
 /**
  * Class InstallerTest
@@ -261,7 +260,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testConfigIsNotSaved(): void
     {
-        $this->configService->method('create')->willThrowException(new \Exception('Create exception'));
+        $this->configService->method('create')->willThrowException(new Exception('Create exception'));
         $this->databaseSetup->expects($this->once())->method('rollback');
         $this->userService->expects($this->never())->method('createWithMasterPass');
 
