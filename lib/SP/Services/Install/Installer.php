@@ -310,6 +310,7 @@ final class Installer
 
         $this->config->updateConfig($configData);
 
+        $this->databaseSetup->connectDatabase();
         $this->databaseSetup->createDatabase();
         $this->databaseSetup->createDBStructure();
         $this->databaseSetup->checkConnection();

@@ -28,9 +28,9 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Services\Config\ConfigService;
+use SP\Services\Install\DatabaseSetupInterface;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
-use SP\Services\Install\MySQL;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
@@ -47,9 +47,9 @@ define('APP_MODULE', 'web-test');
 class InstallerTest extends UnitaryTestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Install\MySQL
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Install\DatabaseSetupInterface
      */
-    private $mysqlSetup;
+    private $databaseSetup;
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\User\UserService
      */
@@ -79,10 +79,11 @@ class InstallerTest extends UnitaryTestCase
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
-        $this->mysqlSetup->expects($this->once())->method('createDatabase');
-        $this->mysqlSetup->expects($this->once())->method('createDBStructure');
-        $this->mysqlSetup->expects($this->once())->method('checkConnection');
+        $this->databaseSetup->expects($this->once())->method('connectDatabase');
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->databaseSetup->expects($this->once())->method('createDatabase');
+        $this->databaseSetup->expects($this->once())->method('createDBStructure');
+        $this->databaseSetup->expects($this->once())->method('checkConnection');
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
         $this->configService->expects($this->exactly(3))->method('create');
         $this->userGroupService->expects($this->once())->method('create');
@@ -92,7 +93,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -151,7 +152,7 @@ class InstallerTest extends UnitaryTestCase
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
         $dbSocket = 'unix:/path/to/socket';
 
-        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
         $params = $this->getInstallData();
@@ -159,7 +160,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -176,7 +177,7 @@ class InstallerTest extends UnitaryTestCase
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
         $params = $this->getInstallData();
@@ -184,7 +185,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
 
         $this->assertEquals($params->getDbHost(), $params->getDbAuthHost());
     }
@@ -197,7 +198,7 @@ class InstallerTest extends UnitaryTestCase
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
 
-        $this->mysqlSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
         $params = $this->getInstallData();
@@ -205,7 +206,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
 
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertEquals('host', $params->getDbHost());
@@ -218,7 +219,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testHostingModeIsUsed(): void
     {
-        $this->mysqlSetup->expects($this->never())->method('setupDbUser');
+        $this->databaseSetup->expects($this->never())->method('setupDbUser');
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
 
         $params = $this->getInstallData();
@@ -226,7 +227,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -240,7 +241,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testAdminUserIsNotCreated(): void
     {
-        $this->mysqlSetup->expects($this->once())->method('rollback');
+        $this->databaseSetup->expects($this->once())->method('rollback');
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(0);
 
         $params = $this->getInstallData();
@@ -251,7 +252,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Error while creating \'admin\' user');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -261,7 +262,7 @@ class InstallerTest extends UnitaryTestCase
     public function testConfigIsNotSaved(): void
     {
         $this->configService->method('create')->willThrowException(new \Exception('Create exception'));
-        $this->mysqlSetup->expects($this->once())->method('rollback');
+        $this->databaseSetup->expects($this->once())->method('rollback');
         $this->userService->expects($this->never())->method('createWithMasterPass');
 
         $params = $this->getInstallData();
@@ -272,7 +273,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Create exception');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -289,7 +290,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin username');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -306,7 +307,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin\'s password');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -323,7 +324,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the Master Password');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -340,7 +341,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Master password too short');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -357,7 +358,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database user');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -374,7 +375,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database password');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -391,7 +392,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database name');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -408,7 +409,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Database name cannot contain "."');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
     /**
@@ -425,15 +426,16 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database server');
 
-        $installer->run($this->mysqlSetup, $params);
+        $installer->run($this->databaseSetup, $params);
     }
 
-    /** @noinspection ClassMockingCorrectnessInspection
+    /**
+     * @noinspection ClassMockingCorrectnessInspection
      * @noinspection PhpUnitInvalidMockingEntityInspection
      */
     protected function setUp(): void
     {
-        $this->mysqlSetup = $this->createMock(MySQL::class);
+        $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
         $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(Request::class);
         $this->configService = $this->createMock(ConfigService::class);
