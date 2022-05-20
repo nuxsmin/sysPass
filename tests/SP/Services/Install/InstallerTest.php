@@ -429,6 +429,9 @@ class InstallerTest extends UnitaryTestCase
         $installer->run($params);
     }
 
+    /** @noinspection ClassMockingCorrectnessInspection
+     * @noinspection PhpUnitInvalidMockingEntityInspection
+     */
     protected function setUp(): void
     {
         $this->mysqlSetup = $this->createMock(MySQL::class);

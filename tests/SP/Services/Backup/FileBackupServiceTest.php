@@ -54,6 +54,8 @@ class FileBackupServiceTest extends UnitaryTestCase
     /**
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Context\ContextException
+     * @noinspection ClassMockingCorrectnessInspection
+     * @noinspection PhpUnitInvalidMockingEntityInspection
      */
     protected function setUp(): void
     {
