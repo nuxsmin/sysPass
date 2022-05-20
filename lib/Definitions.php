@@ -59,7 +59,7 @@ return [
             new XmlHandler(new FileHandler(CONFIG_FILE)),
             new FileCache(Config::CONFIG_CACHE_FILE),
             get(ContextInterface::class),
-            create(ConfigBackupService::class)->lazy()
+            autowire(ConfigBackupService::class)->lazy()
         ),
     ConfigDataInterface::class =>
         static fn(Config $config) => $config->getConfigData(),
