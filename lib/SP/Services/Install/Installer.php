@@ -44,6 +44,8 @@ use SP\Services\Config\ConfigService;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\MySQLHandler;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
@@ -60,17 +62,16 @@ final class Installer
     public const VERSION_TEXT = '3.2';
     public const BUILD        = 21031301;
 
-    private DatabaseSetupInterface $databaseSetup;
-    private Request                $request;
-    private Config                 $config;
-    private UserService            $userService;
-    private UserGroupService       $userGroupService;
-    private UserProfileService     $userProfileService;
-    private ConfigService          $configService;
-    private ?InstallData           $installData = null;
+    private Request                 $request;
+    private Config                  $config;
+    private UserService             $userService;
+    private UserGroupService        $userGroupService;
+    private UserProfileService      $userProfileService;
+    private ConfigService           $configService;
+    private ?DatabaseSetupInterface $databaseSetup = null;
+    private ?InstallData            $installData   = null;
 
     public function __construct(
-        DatabaseSetupInterface $databaseSetup,
         Request $request,
         Config $config,
         UserService $userService,
@@ -78,7 +79,6 @@ final class Installer
         UserProfileService $userProfileService,
         ConfigService $configService
     ) {
-        $this->databaseSetup = $databaseSetup;
         $this->request = $request;
         $this->config = $config;
         $this->userService = $userService;
@@ -87,13 +87,33 @@ final class Installer
         $this->configService = $configService;
     }
 
+    /**
+     * @param  \SP\Services\Install\InstallData  $installData
+     * @param $configData
+     *
+     * @return \SP\Services\Install\DatabaseSetupInterface
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function getDatabaseSetup(InstallData $installData, $configData): DatabaseSetupInterface
+    {
+        $connectionData = (new DatabaseConnectionData())
+            ->setDbHost($installData->getDbHost())
+            ->setDbPort($installData->getDbPort())
+            ->setDbSocket($installData->getDbSocket())
+            ->setDbUser($installData->getDbAdminUser())
+            ->setDbPass($installData->getDbAdminPass());
+
+        return new MySQL(new MySQLHandler($connectionData), $installData, $configData);
+    }
+
 
     /**
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function run(InstallData $installData): Installer
+    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): Installer
     {
+        $this->databaseSetup = $databaseSetup;
         $this->installData = $installData;
 
         $this->checkData();

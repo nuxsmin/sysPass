@@ -51,28 +51,29 @@ final class InstallCommand extends CommandBase
      * @var string[]
      */
     public static array $envVarsMapping = [
-        'adminLogin' => 'ADMIN_LOGIN',
-        'adminPassword' => 'ADMIN_PASSWORD',
-        'databaseHost' => 'DATABASE_HOST',
-        'databaseName' => 'DATABASE_NAME',
-        'databaseUser' => 'DATABASE_USER',
+        'adminLogin'       => 'ADMIN_LOGIN',
+        'adminPassword'    => 'ADMIN_PASSWORD',
+        'databaseHost'     => 'DATABASE_HOST',
+        'databaseName'     => 'DATABASE_NAME',
+        'databaseUser'     => 'DATABASE_USER',
         'databasePassword' => 'DATABASE_PASSWORD',
-        'masterPassword' => 'MASTER_PASSWORD',
-        'hostingMode' => 'HOSTING_MODE',
-        'language' => 'LANGUAGE',
-        'forceInstall' => 'FORCE_INSTALL',
-        'install' => 'INSTALL'
+        'masterPassword'   => 'MASTER_PASSWORD',
+        'hostingMode'      => 'HOSTING_MODE',
+        'language'         => 'LANGUAGE',
+        'forceInstall'     => 'FORCE_INSTALL',
+        'install'          => 'INSTALL',
     ];
     /**
      * @var string
      */
-    protected static $defaultName = 'sp:install';
+    protected static  $defaultName = 'sp:install';
     private Installer $installer;
 
-    public function __construct(LoggerInterface $logger,
-                                Config          $config,
-                                Installer       $installer)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        Config $config,
+        Installer $installer
+    ) {
         parent::__construct($logger, $config);
 
         $this->installer = $installer;
@@ -82,53 +83,74 @@ final class InstallCommand extends CommandBase
     {
         $this->setDescription(__('Install sysPass'))
             ->setHelp(__('This command installs sysPass'))
-            ->addArgument('adminLogin',
+            ->addArgument(
+                'adminLogin',
                 InputArgument::OPTIONAL,
-                __('Admin user to log into the application'))
-            ->addArgument('databaseHost',
+                __('Admin user to log into the application')
+            )
+            ->addArgument(
+                'databaseHost',
                 InputArgument::OPTIONAL,
-                __('Server name to install sysPass database'))
-            ->addArgument('databaseName',
+                __('Server name to install sysPass database')
+            )
+            ->addArgument(
+                'databaseName',
                 InputArgument::OPTIONAL,
-                __('Application database name. eg. syspass'))
-            ->addArgument('databaseUser',
+                __('Application database name. eg. syspass')
+            )
+            ->addArgument(
+                'databaseUser',
                 InputArgument::OPTIONAL,
-                __('An user with database administrative rights'))
-            ->addOption('databasePassword',
+                __('An user with database administrative rights')
+            )
+            ->addOption(
+                'databasePassword',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Database administrator\'s password'))
-            ->addOption('adminPassword',
+                __('Database administrator\'s password')
+            )
+            ->addOption(
+                'adminPassword',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Application administrator\'s password'))
-            ->addOption('masterPassword',
+                __('Application administrator\'s password')
+            )
+            ->addOption(
+                'masterPassword',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Master password to encrypt the data'))
-            ->addOption('hostingMode',
+                __('Master password to encrypt the data')
+            )
+            ->addOption(
+                'hostingMode',
                 null,
                 InputOption::VALUE_NONE,
-                __('It does not create or verify the user\'s permissions on the DB'))
-            ->addOption('language',
+                __('It does not create or verify the user\'s permissions on the DB')
+            )
+            ->addOption(
+                'language',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Sets the global app language. You can set a per user language on preferences'))
-            ->addOption('forceInstall',
+                __('Sets the global app language. You can set a per user language on preferences')
+            )
+            ->addOption(
+                'forceInstall',
                 null,
                 InputOption::VALUE_NONE,
-                __('Force sysPass installation'))
-            ->addOption('install',
+                __('Force sysPass installation')
+            )
+            ->addOption(
+                'install',
                 null,
                 InputOption::VALUE_NONE,
-                __('Skip asking to confirm the installation'));
+                __('Skip asking to confirm the installation')
+            );
     }
 
     protected function execute(
-        InputInterface  $input,
+        InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $style = new SymfonyStyle($input, $output);
 
         try {
@@ -143,7 +165,7 @@ final class InstallCommand extends CommandBase
                 return self::FAILURE;
             }
 
-            $this->installer->run($installData);
+            $this->installer->run(Installer::getDatabaseSetup($installData, $this->configData), $installData);
 
             $this->logger->info(__('Installation finished'));
 
@@ -174,8 +196,7 @@ final class InstallCommand extends CommandBase
     private function getInstallData(
         InputInterface $input,
         StyleInterface $style
-    ): InstallData
-    {
+    ): InstallData {
         $adminPassword = $this->getAdminPassword($input, $style);
         $masterPassword = $this->getMasterPassword($input, $style);
         $databasePassword = $this->getDatabasePassword($input, $style);
@@ -207,8 +228,7 @@ final class InstallCommand extends CommandBase
     private function getAdminPassword(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $option = 'adminPassword';
 
         $password =
@@ -236,7 +256,9 @@ final class InstallCommand extends CommandBase
 
             if ($password !== $passwordRepeat) {
                 throw new InstallError(__u('Passwords do not match'));
-            } elseif (null === $password || null === $passwordRepeat) {
+            }
+
+            if (null === $password || null === $passwordRepeat) {
                 throw new InstallError(sprintf(__u('%s cannot be blank'), 'Admin password'));
             }
         }
@@ -252,8 +274,7 @@ final class InstallCommand extends CommandBase
     private function getMasterPassword(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $password = self::getEnvVarOrOption('masterPassword', $input);
 
         if (empty($password)) {
@@ -276,7 +297,9 @@ final class InstallCommand extends CommandBase
 
             if ($password !== $passwordRepeat) {
                 throw new InstallError(__u('Passwords do not match'));
-            } elseif (null === $password || null === $passwordRepeat) {
+            }
+
+            if (null === $password || null === $passwordRepeat) {
                 throw new InstallError(sprintf(__u('%s cannot be blank'), 'Master password'));
             }
         }
@@ -290,8 +313,7 @@ final class InstallCommand extends CommandBase
     private function getDatabasePassword(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $password = self::getEnvVarOrOption('databasePassword', $input);
 
         if (empty($password)) {
@@ -309,8 +331,7 @@ final class InstallCommand extends CommandBase
     private function getLanguage(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $language = self::getEnvVarOrOption('language', $input);
 
         if (empty($language)) {
@@ -360,8 +381,7 @@ final class InstallCommand extends CommandBase
     private function getInstall(
         InputInterface $input,
         StyleInterface $style
-    ): bool
-    {
+    ): bool {
         $option = 'install';
 
         $envInstall = self::getEnvVarForOption($option);

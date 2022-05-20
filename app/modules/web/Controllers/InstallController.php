@@ -129,7 +129,7 @@ final class InstallController extends ControllerBase
         $installData->setHostingMode($this->request->analyzeBool('hostingmode', false));
 
         try {
-            $this->installer->run($installData);
+            $this->installer->run(Installer::getDatabaseSetup($installData, $this->configData), $installData);
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,

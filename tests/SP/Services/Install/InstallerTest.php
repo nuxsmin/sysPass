@@ -92,7 +92,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -133,7 +133,6 @@ class InstallerTest extends UnitaryTestCase
     private function getDefaultInstaller(): Installer
     {
         return new Installer(
-            $this->mysqlSetup,
             $this->request,
             $this->config,
             $this->userService,
@@ -160,7 +159,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -185,7 +184,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
 
         $this->assertEquals($params->getDbHost(), $params->getDbAuthHost());
     }
@@ -206,7 +205,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
 
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertEquals('host', $params->getDbHost());
@@ -227,7 +226,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
 
         $configData = $this->config->getConfigData();
 
@@ -252,7 +251,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Error while creating \'admin\' user');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -273,7 +272,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Create exception');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -290,7 +289,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin username');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -307,7 +306,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin\'s password');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -324,7 +323,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the Master Password');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -341,7 +340,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Master password too short');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -358,7 +357,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database user');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -375,7 +374,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database password');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -392,7 +391,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database name');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -409,7 +408,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Database name cannot contain "."');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /**
@@ -426,7 +425,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database server');
 
-        $installer->run($params);
+        $installer->run($this->mysqlSetup, $params);
     }
 
     /** @noinspection ClassMockingCorrectnessInspection
