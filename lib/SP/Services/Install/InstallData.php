@@ -31,42 +31,22 @@ namespace SP\Services\Install;
  */
 final class InstallData
 {
-    private ?string $dbUser = null;
-    private ?string $dbAdminUser = null;
-    private ?string $dbPass = null;
-    private ?string $dbAdminPass = null;
-    private string $dbName = 'syspass';
-    private string $dbHost = 'localhost';
-    private ?string $dbSocket = null;
-    private int $dbPort = 0;
-    private ?string $adminLogin = null;
-    private ?string $adminPass = null;
+    public const BACKEND_MYSQL = 'mysql';
+
+    private ?string $dbAdminUser    = null;
+    private ?string $dbAdminPass    = null;
+    private string  $dbName         = 'syspass';
+    private string  $dbHost         = 'localhost';
+    private ?string $dbSocket       = null;
+    private int     $dbPort         = 0;
+    private ?string $adminLogin     = null;
+    private ?string $adminPass      = null;
     private ?string $masterPassword = null;
-    private bool $hostingMode = false;
-    private ?string $dbAuthHost = null;
-    private ?string $dbAuthHostDns = null;
-    private string $siteLang = 'en_US';
-    private string $backendType = 'mysql';
-
-    public function getDbUser(): ?string
-    {
-        return $this->dbUser;
-    }
-
-    public function setDbUser(string $dbUser): void
-    {
-        $this->dbUser = $dbUser;
-    }
-
-    public function getDbPass(): ?string
-    {
-        return $this->dbPass;
-    }
-
-    public function setDbPass(string $dbPass): void
-    {
-        $this->dbPass = $dbPass;
-    }
+    private bool    $hostingMode    = false;
+    private ?string $dbAuthHost     = null;
+    private ?string $dbAuthHostDns  = null;
+    private string  $siteLang       = 'en_US';
+    private string  $backendType    = self::BACKEND_MYSQL;
 
     public function getDbName(): string
     {

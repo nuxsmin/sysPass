@@ -429,6 +429,30 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
+     * @throws \SP\Core\Exceptions\SPException
+     *
+     * @doesNotPerformAssertions
+     */
+    public function testGetDatabaseSetupIsSuccessful()
+    {
+        Installer::getDatabaseSetup($this->getInstallData(), $this->config->getConfigData());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testGetDatabaseSetupIsNotSuccessfulWithWrongBackend()
+    {
+        $installData = $this->getInstallData();
+        $installData->setBackendType('test');
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Unimplemented');
+
+        Installer::getDatabaseSetup($installData, $this->config->getConfigData());
+    }
+
+    /**
      * @noinspection ClassMockingCorrectnessInspection
      * @noinspection PhpUnitInvalidMockingEntityInspection
      */

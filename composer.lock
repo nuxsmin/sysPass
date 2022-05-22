@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c621fdf745779bfd4d70c03e177361c7",
+    "content-hash": "6fd1ed6990aa4d5a83ef253a9b84f18e",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
@@ -3973,6 +3973,49 @@
             },
             "abandoned": true,
             "time": "2020-12-11T09:59:14+00:00"
+        },
+        {
+            "name": "jimbojsb/pseudo",
+            "version": "0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jimbojsb/pseudo.git",
+                "reference": "d75d639baf6b5f0a770d0691607ffb7385ba3c10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jimbojsb/pseudo/zipball/d75d639baf6b5f0a770d0691607ffb7385ba3c10",
+                "reference": "d75d639baf6b5f0a770d0691607ffb7385ba3c10",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/php-sql-parser.php"
+                ],
+                "psr-0": {
+                    "Pseudo": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Butts",
+                    "email": "josh@joshbutts.com"
+                }
+            ],
+            "description": "PDO/MySQL Connection Mocking",
+            "support": {
+                "issues": "https://github.com/jimbojsb/pseudo/issues",
+                "source": "https://github.com/jimbojsb/pseudo/tree/0.5"
+            },
+            "time": "2021-09-27T03:12:35+00:00"
         },
         {
             "name": "myclabs/deep-copy",

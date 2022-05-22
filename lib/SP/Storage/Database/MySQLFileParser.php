@@ -54,7 +54,7 @@ final class MySQLFileParser implements DatabaseFileInterface
 
         $this->fileHandler->checkIsReadable();
 
-        $handle = $this->fileHandler->open('rb');
+        $handle = $this->fileHandler->open();
 
         while (($buffer = fgets($handle)) !== false) {
             $buffer = trim($buffer);
@@ -69,22 +69,24 @@ final class MySQLFileParser implements DatabaseFileInterface
                 // Checks if line is an SQL statement wrapped by a comment
                 if (preg_match('#^(?<stmt>/\*!\d+.*\*/)#', $buffer, $matches)) {
                     if (!$end) {
-                        $query .= $matches['stmt'] . PHP_EOL;
+                        $query .= $matches['stmt'].PHP_EOL;
                     } else {
-                        $queries[] = $query . $matches['stmt'];
+                        $queries[] = $query.$matches['stmt'];
 
                         $query = '';
                     }
-                } else if (!$end) {
-                    $query .= $buffer . PHP_EOL;
-                } else if (strpos($buffer, 'DELIMITER') === false) {
-                    $queries[] = $query .
-                        trim(substr_replace(
-                            $buffer,
-                            '',
-                            $length - $delimiterLength),
-                            $delimiterLength
-                        );
+                } elseif (!$end) {
+                    $query .= $buffer.PHP_EOL;
+                } elseif (strpos($buffer, 'DELIMITER') === false) {
+                    $queries[] = $query.
+                                 trim(
+                                     substr_replace(
+                                         $buffer,
+                                         '',
+                                         $length - $delimiterLength
+                                     ),
+                                     $delimiterLength
+                                 );
 
                     $query = '';
                 }

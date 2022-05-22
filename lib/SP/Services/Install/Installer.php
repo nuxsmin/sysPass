@@ -45,7 +45,10 @@ use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseUtil;
+use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\MySQLHandler;
+use SP\Storage\File\FileHandler;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
@@ -103,9 +106,22 @@ final class Installer
             ->setDbUser($installData->getDbAdminUser())
             ->setDbPass($installData->getDbAdminPass());
 
-        return new MySQL(new MySQLHandler($connectionData), $installData, $configData);
-    }
+        if ($installData->getBackendType() === 'mysql') {
+            $parser = new MySQLFileParser(
+                new FileHandler(
+                    SQL_PATH.
+                    DIRECTORY_SEPARATOR.
+                    'dbstructure.sql'
+                )
+            );
 
+            $mySQLHandler = new MySQLHandler($connectionData);
+
+            return new MySQL($mySQLHandler, $installData, $configData, $parser, new DatabaseUtil($mySQLHandler));
+        }
+
+        throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
+    }
 
     /**
      * @throws InvalidArgumentException

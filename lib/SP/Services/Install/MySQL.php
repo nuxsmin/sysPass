@@ -27,13 +27,10 @@ namespace SP\Services\Install;
 use PDOException;
 use SP\Config\ConfigDataInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseFileInterface;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\MySQLFileParser;
-use SP\Storage\Database\MySQLHandler;
 use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
 use SP\Util\PasswordUtil;
 
 /**
@@ -43,24 +40,28 @@ use SP\Util\PasswordUtil;
  */
 final class MySQL implements DatabaseSetupInterface
 {
-    private InstallData $installData;
-
-    private ?MySQLHandler       $mysqlHandler = null;
-    private ConfigDataInterface $configData;
+    private InstallData           $installData;
+    private DBStorageInterface    $DBStorage;
+    private ConfigDataInterface   $configData;
+    private DatabaseFileInterface $databaseFile;
+    private DatabaseUtil          $databaseUtil;
 
     /**
      * MySQL constructor.
      *
-     * @throws SPException
      */
     public function __construct(
+        DBStorageInterface $DBStorage,
         InstallData $installData,
-        ConfigDataInterface $configData
+        ConfigDataInterface $configData,
+        DatabaseFileInterface $databaseFile,
+        DatabaseUtil $databaseUtil
     ) {
         $this->installData = $installData;
         $this->configData = $configData;
-
-        $this->connectDatabase();
+        $this->DBStorage = $DBStorage;
+        $this->databaseFile = $databaseFile;
+        $this->databaseUtil = $databaseUtil;
     }
 
     /**
@@ -74,15 +75,7 @@ final class MySQL implements DatabaseSetupInterface
     public function connectDatabase(): void
     {
         try {
-            $dbc = (new DatabaseConnectionData())
-                ->setDbHost($this->installData->getDbHost())
-                ->setDbPort($this->installData->getDbPort())
-                ->setDbSocket($this->installData->getDbSocket())
-                ->setDbUser($this->installData->getDbAdminUser())
-                ->setDbPass($this->installData->getDbAdminPass());
-
-            $this->mysqlHandler = new MySQLHandler($dbc);
-            $this->mysqlHandler->getConnectionSimple();
+            $this->DBStorage->getConnectionSimple();
         } catch (SPException $e) {
             processException($e);
 
@@ -107,7 +100,7 @@ final class MySQL implements DatabaseSetupInterface
 
         try {
             // Comprobar si el usuario proporcionado existe
-            $sth = $this->mysqlHandler->getConnectionSimple()
+            $sth = $this->DBStorage->getConnectionSimple()
                 ->prepare('SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)');
 
             $sth->execute([
@@ -152,7 +145,7 @@ final class MySQL implements DatabaseSetupInterface
         try {
             $query = 'CREATE USER %s@%s IDENTIFIED BY %s';
 
-            $dbc = $this->mysqlHandler->getConnectionSimple();
+            $dbc = $this->DBStorage->getConnectionSimple();
 
             $dbc->exec(
                 sprintf(
@@ -199,7 +192,7 @@ final class MySQL implements DatabaseSetupInterface
     {
         if (!$this->installData->isHostingMode()) {
 
-            if ($this->checkDatabaseExist()) {
+            if ($this->checkDatabaseExists()) {
                 throw new SPException(
                     __u('The database already exists'),
                     SPException::ERROR,
@@ -208,7 +201,7 @@ final class MySQL implements DatabaseSetupInterface
             }
 
             try {
-                $dbc = $this->mysqlHandler->getConnectionSimple();
+                $dbc = $this->DBStorage->getConnectionSimple();
 
                 $dbc->exec(
                     sprintf(
@@ -266,45 +259,22 @@ final class MySQL implements DatabaseSetupInterface
                 );
             }
         } else {
-            try {
-                // Commprobar si existe al seleccionarla
-                $this->mysqlHandler->getConnectionSimple()
-                    ->exec(
-                        sprintf(
-                            'USE `%s`',
-                            $this->installData->getDbName()
-                        )
-                    );
-            } catch (PDOException $e) {
-                throw new SPException(
-                    __u('The database does not exist'),
-                    SPException::ERROR,
-                    __u('You need to create it and assign the needed permissions'),
-                    $e->getCode(),
-                    $e
-                );
-            }
+            $this->checkDatabase(__u('You need to create it and assign the needed permissions'));
         }
     }
 
-    /**
-     * @throws SPException
-     */
-    public function checkDatabaseExist(): bool
+    public function checkDatabaseExists(): bool
     {
-        $sth = $this->mysqlHandler->getConnectionSimple()
+        $sth = $this->DBStorage->getConnectionSimple()
             ->prepare('SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1');
         $sth->execute([$this->installData->getDbName()]);
 
         return (int)$sth->fetchColumn() === 1;
     }
 
-    /**
-     * @throws SPException
-     */
     public function rollback(): void
     {
-        $dbc = $this->mysqlHandler->getConnectionSimple();
+        $dbc = $this->DBStorage->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
             foreach (DatabaseUtil::TABLES as $table) {
@@ -346,15 +316,14 @@ final class MySQL implements DatabaseSetupInterface
     }
 
     /**
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function createDBStructure(): void
+    private function checkDatabase(string $exceptionHint): void
     {
         try {
-            $dbc = $this->mysqlHandler->getConnectionSimple();
-
-            // Usar la base de datos de sysPass
-            $dbc->exec(sprintf('USE `%s`', $this->installData->getDbName()));
+            $this->DBStorage
+                ->getConnectionSimple()
+                ->exec(sprintf('USE `%s`', $this->installData->getDbName()));
         } catch (PDOException $e) {
             throw new SPException(
                 sprintf(
@@ -363,24 +332,28 @@ final class MySQL implements DatabaseSetupInterface
                     $e->getMessage()
                 ),
                 SPException::CRITICAL,
-                __u(
-                    'Unable to use the database to create the structure. Please check the permissions and it does not exist.'
-                ),
+                $exceptionHint,
                 $e->getCode(),
                 $e
             );
         }
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function createDBStructure(): void
+    {
+        $this->checkDatabase(
+            __u(
+                'Unable to use the database to create the structure. Please check the permissions and it does not exist.'
+            )
+        );
 
         try {
-            $parser = new MySQLFileParser(
-                new FileHandler(
-                    SQL_PATH.
-                    DIRECTORY_SEPARATOR.
-                    'dbstructure.sql'
-                )
-            );
+            $dbc = $this->DBStorage->getConnectionSimple();
 
-            foreach ($parser->parse() as $query) {
+            foreach ($this->databaseFile->parse() as $query) {
                 $dbc->exec($query);
             }
         } catch (PDOException $e) {
@@ -417,9 +390,7 @@ final class MySQL implements DatabaseSetupInterface
      */
     public function checkConnection(): void
     {
-        $databaseUtil = new DatabaseUtil($this->mysqlHandler);
-
-        if (!$databaseUtil->checkDatabaseTables($this->installData->getDbName())) {
+        if (!$this->databaseUtil->checkDatabaseTables($this->installData->getDbName())) {
             $this->rollback();
 
             throw new SPException(
@@ -428,15 +399,5 @@ final class MySQL implements DatabaseSetupInterface
                 __u('Please, try the installation again')
             );
         }
-    }
-
-    public function getDbHandler(): DBStorageInterface
-    {
-        return $this->mysqlHandler;
-    }
-
-    public function createDbHandlerFromInstaller(): DBStorageInterface
-    {
-        return new MySQLHandler(DatabaseConnectionData::getFromConfig($this->configData));
     }
 }
