@@ -73,10 +73,21 @@ jobs:
           mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
           mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
 
-      - uses: paambaati/codeclimate-action@v3.0.0
+      - name: Unitary tests
+        uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core,unitary
+          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite unitary
           coverageLocations: ./tests/_output/coverage-clover.xml:clover
+
+      - name: Integration tests
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          XDEBUG_MODE: coverage
+        with:
+          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
+          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+
