@@ -153,9 +153,8 @@ final class FileBackupService
      * @throws \SP\Storage\Database\DatabaseException
      * @throws \SP\Storage\File\FileException
      */
-    private function backupTables(
-        FileHandler $fileHandler,
-    ): void {
+    private function backupTables(FileHandler $fileHandler): void
+    {
         $this->eventDispatcher->notifyEvent(
             'run.backup.process',
             new Event(
