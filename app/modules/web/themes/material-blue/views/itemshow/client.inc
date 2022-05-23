@@ -31,7 +31,7 @@ $client = $_getvar('client');
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $client->getName(); ?>">
+                               value="<?php echo htmlentities($client->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Client name'); ?></label>
                     </div>
@@ -45,7 +45,7 @@ $client = $_getvar('client');
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $client->getDescription(); ?>">
+                               value="<?php echo htmlentities($client->getDescription()); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Client description'); ?></label>
                     </div>

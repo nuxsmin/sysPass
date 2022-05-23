@@ -322,7 +322,7 @@ use SP\Mvc\View\Template;
                         <option
                                 value="<?php echo $userGroup->getId(); ?>"
                             <?php echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>>
-                            <?php echo $userGroup->getName(); ?>
+                            <?php echo htmlentities($userGroup->getName()); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -353,7 +353,7 @@ use SP\Mvc\View\Template;
                         <option
                                 value="<?php echo $userProfile->getId(); ?>"
                             <?php echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>>
-                            <?php echo $userProfile->getName(); ?>
+                            <?php echo htmlentities($userProfile->getName()); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -461,9 +461,9 @@ use SP\Mvc\View\Template;
                     <?php /** @var SelectItem $userAttribute */
                     foreach ($_getvar('userAttributes') as $userAttribute): ?>
                         <option
-                                value="<?php echo $userAttribute->getName(); ?>"
+                                value="<?php echo htmlentities($userAttribute->getName()); ?>"
                             <?php echo $userAttribute->isSelected() ? 'selected' : ''; ?>>
-                            <?php echo $userAttribute->getName(); ?>
+                            <?php echo htmlentities($userAttribute->getName()); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -495,9 +495,9 @@ use SP\Mvc\View\Template;
                     <?php /** @var SelectItem $groupAttribute */
                     foreach ($_getvar('groupAttributes') as $groupAttribute): ?>
                         <option
-                                value="<?php echo $groupAttribute->getName(); ?>"
+                                value="<?php echo htmlentities($groupAttribute->getName()); ?>"
                             <?php echo $groupAttribute->isSelected() ? 'selected' : ''; ?>>
-                            <?php echo $groupAttribute->getName(); ?>
+                            <?php echo htmlentities($groupAttribute->getName()); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

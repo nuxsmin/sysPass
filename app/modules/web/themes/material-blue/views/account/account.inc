@@ -140,7 +140,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             ? 'selected'
                                             : ''; ?>
                                     >
-                                        <?php echo $category->getName(); ?>
+                                        <?php echo htmlentities($category->getName()); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -275,7 +275,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     foreach ($_getvar('tags') as $tag): ?>
                                         <option value="<?php echo $tag->getId(); ?>"
                                             <?php echo $tag->isSelected() ? 'selected' : ''; ?>>
-                                            <?php echo $tag->getName(); ?>
+                                            <?php echo htmlentities($tag->getName()); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -301,7 +301,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             <?php /** @var SelectItem $tag */
                                             foreach ($_getvar('tags') as $tag): ?>
                                                 <?php if ($tag->isSelected()): ?>
-                                                    <span class="tag"><?php echo $tag->getName(); ?></span>
+                                                    <span class="tag"><?php echo htmlentities($tag->getName()); ?></span>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
                                         </div>
@@ -345,7 +345,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
                                                 value="<?php echo $history->getId(); ?>">
-                                            <?php echo $history->getName(); ?>
+                                            <?php echo htmlentities($history->getName()); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

@@ -100,7 +100,7 @@ $notification = $_getvar('notification');
                             <?php /** @var SelectItem $user */
                             foreach ($_getvar('users') as $user): ?>
                                 <option
-                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
+                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($user->getName()); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>

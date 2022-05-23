@@ -43,17 +43,17 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                title="<?php echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
-                                          class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
+                                          class="mdl-chip__contact mdl-color-text--white"><?php echo htmlentities(mb_ucfirst($accountSearchData->getClientName())); ?></span>
                                     <span class="mdl-chip__text"
-                                          title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
+                                          title="<?php echo htmlentities($accountSearchData->getClientName()); ?>"><?php echo htmlentities($accountSearchItem->getShortClientName()); ?></span>
                                 </span>
                             </a>
                         <?php else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
-                                      class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
+                                      class="mdl-chip__contact mdl-color-text--white"><?php echo htmlentities(mb_ucfirst($accountSearchData->getClientName())); ?></span>
                                 <span class="mdl-chip__text"
-                                      title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
+                                      title="<?php echo htmlentities($accountSearchData->getClientName()); ?>"><?php echo htmlentities($accountSearchItem->getShortClientName()); ?></span>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -70,20 +70,20 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-onclick="account/view"><?php echo $accountSearchData->getName(); ?></a>
                         <?php else: ?>
                             <div class="field-text">
-                                <?php echo $accountSearchData->getName(); ?>
+                                <?php echo htmlentities($accountSearchData->getName()); ?>
                             </div>
                         <?php endif; ?>
                     </div>
 
                     <div class="field-category field-text label-field">
                         <div class="field-name"><?php echo __('Category'); ?></div>
-                        <div class="field-text"><?php echo $accountSearchData->getCategoryName(); ?></div>
+                        <div class="field-text"><?php echo htmlentities($accountSearchData->getCategoryName()); ?></div>
                     </div>
 
                     <?php if ($accountSearchItem->isShow()): ?>
                         <div class="field-user field-text label-field">
                             <div class="field-name"><?php echo __('User'); ?></div>
-                            <div class="field-text"><?php echo $accountSearchItem->getShortLogin(); ?></div>
+                            <div class="field-text"><?php echo htmlentities($accountSearchItem->getShortLogin()); ?></div>
                         </div>
 
                         <div class="field-url field-text label-field">
@@ -105,7 +105,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <div class="tags-box">
                         <?php foreach ($accountSearchItem->getTags() as $tag): ?>
                             <span class="tag"
-                                  data-tag-id="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></span>
+                                  data-tag-id="<?php echo $tag->id; ?>"><?php echo htmlentities($tag->name); ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>

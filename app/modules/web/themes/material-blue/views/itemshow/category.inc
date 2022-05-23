@@ -31,7 +31,7 @@ $category = $_getvar('category');
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $category->getName(); ?>">
+                               value="<?php echo htmlentities($category->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Category name'); ?></label>
                     </div>
@@ -44,7 +44,7 @@ $category = $_getvar('category');
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $category->getDescription(); ?>">
+                               value="<?php echo htmlentities($category->getDescription()); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Category description'); ?></label>
                     </div>

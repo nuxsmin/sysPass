@@ -27,7 +27,7 @@ use SP\Mvc\View\Template;
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
-                                <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo $user->getName(); ?></option>
+                                <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($user->getName()); ?></option>
                         <?php endforeach; ?>
                     </select>
 
@@ -45,7 +45,7 @@ use SP\Mvc\View\Template;
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
-                                <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo $user->getName(); ?></option>
+                                <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($user->getName()); ?></option>
                         <?php endforeach; ?>
                     </select>
 
@@ -70,7 +70,7 @@ use SP\Mvc\View\Template;
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"
-                                <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo $userGroup->getName(); ?></option>
+                                <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($userGroup->getName()); ?></option>
                         <?php endforeach; ?>
                     </select>
 
@@ -88,7 +88,7 @@ use SP\Mvc\View\Template;
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"
-                                <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo $userGroup->getName(); ?></option>
+                                <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($userGroup->getName()); ?></option>
                         <?php endforeach; ?>
                     </select>
 

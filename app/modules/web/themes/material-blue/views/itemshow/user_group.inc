@@ -34,7 +34,7 @@ $group = $_getvar('group');
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $group->getName(); ?>">
+                               value="<?php echo htmlentities($group->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Group name'); ?></label>
                     </div>
@@ -48,7 +48,7 @@ $group = $_getvar('group');
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $group->getDescription(); ?>">
+                               value="<?php echo htmlspecialchars($group->getDescription()); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Group description'); ?></label>
                     </div>
@@ -68,7 +68,7 @@ $group = $_getvar('group');
                             <?php /** @var SelectItem $user */
                             foreach ($_getvar('users') as $user): ?>
                                 <option
-                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
+                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($user->getName()); ?></option>
                             <?php endforeach; ?>
                         </select>
                     <?php else: ?>
@@ -78,7 +78,7 @@ $group = $_getvar('group');
                                     <?php /** @var SelectItem $user */
                                     foreach ($_getvar('users') as $user): ?>
                                         <?php if ($user->isSelected()): ?>
-                                            <span class="tag"><?php echo $user->getName(); ?></span>
+                                            <span class="tag"><?php echo htmlentities($user->getName()); ?></span>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </div>
@@ -106,9 +106,9 @@ $group = $_getvar('group');
                                             <i class="material-icons mdl-list__item-icon"
                                                title="<?php echo __('User'); ?>">person</i>
                                             <?php if ($user->ref === 'UserGroup'): ?>
-                                                <?php printf('%s (%s)*', $user->name, $user->login); ?>
+                                                <?php printf('%s (%s)*', htmlentities($user->name), htmlentities($user->login)); ?>
                                             <?php else: ?>
-                                                <?php printf('%s (%s)', $user->name, $user->login); ?>
+                                                <?php printf('%s (%s)', htmlentities($user->name), htmlentities($user->login)); ?>
                                             <?php endif; ?>
                                         </span>
                                     </li>
