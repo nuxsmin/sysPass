@@ -35,7 +35,7 @@ $authToken = $_getvar('authToken');
                         <option value=""><?php echo __('Select User'); ?></option>
                         <?php /** @var SelectItem $user */
                         foreach ($_getvar('users') as $user): ?>
-                            <option value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $user->getName(), $user->getItemProperty('login')); ?></option>
+                            <option value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', htmlspecialchars($user->getName(), ENT_QUOTES), htmlspecialchars($user->getItemProperty('login'), ENT_QUOTES)); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -51,7 +51,7 @@ $authToken = $_getvar('authToken');
                         <option value=""><?php echo __('Select Action'); ?></option>
                         <?php /** @var SelectItem $action */
                         foreach ($_getvar('actions') as $action): ?>
-                            <option value="<?php echo $action->getId(); ?>" <?php echo $action->isSelected() ? 'selected' : ''; ?>><?php echo $action->getName(); ?></option>
+                            <option value="<?php echo $action->getId(); ?>" <?php echo $action->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($action->getName(), ENT_QUOTES); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

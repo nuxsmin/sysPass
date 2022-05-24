@@ -39,7 +39,7 @@ use SP\Services\Account\AccountAcl;
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Last Modification'); ?></div>
 
-                    <?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?>
+                    <?php printf('%s (%s)', $accountData->getDateEdit(), htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)); ?>
                 </td>
             </tr>
         <?php endif; ?>
@@ -49,7 +49,7 @@ use SP\Services\Account\AccountAcl;
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Owner'); ?></div>
 
-                <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
+                <?php echo htmlspecialchars($accountData->getUserName(), ENT_QUOTES) ?: htmlspecialchars($accountData->getUserLogin(), ENT_QUOTES); ?>
             </td>
         </tr>
         <tr>
@@ -57,7 +57,7 @@ use SP\Services\Account\AccountAcl;
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Main Group'); ?></div>
 
-                <?php echo $accountData->getUserGroupName(); ?>
+                <?php echo htmlspecialchars($accountData->getUserGroupName(), ENT_QUOTES); ?>
             </td>
         </tr>
 
@@ -75,7 +75,7 @@ use SP\Services\Account\AccountAcl;
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Editor'); ?></div>
 
-                    <?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?>
+                    <?php echo htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES) ?: htmlspecialchars($accountData->getUserEditLogin(), ENT_QUOTES); ?>
                 </td>
             </tr>
         <?php endif; ?>

@@ -82,8 +82,11 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="100"
-                                       value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>"
-                                    <?php echo $_getvar('readonly'); ?>>
+                                       value="<?php echo $gotData
+                                           ? htmlspecialchars($accountData->getName(), ENT_QUOTES)
+                                           : ''; ?>"
+                                    <?php echo $_getvar('readonly'); ?>
+                                >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Account name'); ?></label>
                             </div>
@@ -101,7 +104,13 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <?php /** @var SelectItem $client */
                                 foreach ($_getvar('clients') as $client): ?>
                                     <option
-                                            value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
+                                            value="<?php echo $client->getId(); ?>"
+                                        <?php echo ($gotData && $client->getId() === $accountData->getClientId())
+                                            ? 'selected'
+                                            : ''; ?>
+                                    >
+                                        <?php echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                             <?php if ($_getvar('addClientEnabled')): ?>
@@ -127,7 +136,13 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <?php /** @var SelectItem $category */
                                 foreach ($_getvar('categories') as $category): ?>
                                     <option
-                                            value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
+                                            value="<?php echo $category->getId(); ?>"
+                                        <?php echo ($gotData && $category->getId() === $accountData->getCategoryId())
+                                            ? 'selected'
+                                            : ''; ?>
+                                    >
+                                        <?php echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                             <?php if ($_getvar('addCategoryEnabled')): ?>
@@ -148,7 +163,11 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <input id="url" name="url" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255"
-                                       value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $_getvar('readonly'); ?>>
+                                       value="<?php echo $gotData
+                                           ? $accountData->getUrl()
+                                           : ''; ?>"
+                                    <?php echo $_getvar('readonly'); ?>
+                                >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Access URL or IP'); ?></label>
                             </div>
@@ -161,7 +180,11 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <input id="login" name="login" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo $gotData ? htmlentities($accountData->getLogin()) : ''; ?>" <?php echo $_getvar('readonly'); ?>>
+                                       value="<?php echo $gotData
+                                           ? htmlspecialchars($accountData->getLogin(), ENT_QUOTES)
+                                           : ''; ?>"
+                                    <?php echo $_getvar('readonly'); ?>
+                                >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Access user'); ?></label>
                             </div>
@@ -206,7 +229,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                                type="date"
                                                class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                                value="<?php echo $_getvar('accountPassDateChange'); ?>"
-                                               data-dst-unix="password_date_expire_unix" <?php echo $_getvar('readonly'); ?>>
+                                               data-dst-unix="password_date_expire_unix"
+                                            <?php echo $_getvar('readonly'); ?>
+                                        >
                                         <input type='hidden'
                                                name='password_date_expire_unix'
                                                value=""/>
@@ -228,7 +253,11 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 class="mdl-textfield__input mdl-color-text--indigo-400"
                                 rows="3" id="notes"
                                 name="notes"
-                                maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlspecialchars($accountData->getNotes(), ENT_QUOTES) : ''; ?></textarea>
+                                maxlength="5000" <?php echo $_getvar('readonly'); ?>>
+                            <?php echo $gotData
+                                ? htmlspecialchars($accountData->getNotes(), ENT_QUOTES)
+                                : ''; ?>
+                        </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
@@ -245,7 +274,10 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     <option value=""><?php echo __('Select Tags'); ?></option>
                                     <?php /** @var SelectItem $tag */
                                     foreach ($_getvar('tags') as $tag): ?>
-                                        <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
+                                        <option value="<?php echo $tag->getId(); ?>"
+                                            <?php echo $tag->isSelected() ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                                 <?php if ($_getvar('addTagEnabled')): ?>
@@ -255,7 +287,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        data-item-route="items/tags"
                                        data-item-dst="tags"
                                        data-item-id="0"
-                                       data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
+                                       data-onclick="appMgmt/show">
+                                        <?php echo $icons->getIconAdd()->getIcon(); ?>
+                                    </i>
                                 <?php endif; ?>
                                 <?php if ($_getvar('copyAction')): ?>
                                     <input type="hidden" name="tags_update"
@@ -268,7 +302,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             <?php /** @var SelectItem $tag */
                                             foreach ($_getvar('tags') as $tag): ?>
                                                 <?php if ($tag->isSelected()): ?>
-                                                    <span class="tag"><?php echo $tag->getName(); ?></span>
+                                                    <span class="tag"><?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></span>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
                                         </div>
@@ -312,7 +346,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     <?php /** @var SelectItem $history */
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
-                                                value="<?php echo $history->getId(); ?>"><?php echo $history->getName(); ?></option>
+                                                value="<?php echo $history->getId(); ?>">
+                                            <?php echo htmlspecialchars($history->getName(), ENT_QUOTES); ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
@@ -324,7 +360,10 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         && $accountData->getUserEditName()): ?>
                         <tr>
                             <td class="descField"><?php echo __('Last Modification'); ?></td>
-                            <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
+                            <td class="valField"><?php printf('%s (%s)',
+                                    $accountData->getDateEdit(),
+                                    htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)); ?>
+                            </td>
                         </tr>
                     <?php endif; ?>
 
@@ -344,18 +383,20 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         </tr>
                     <?php endif; ?>
 
-                    <tr>
-                        <td class="descField"><?php echo __('Direct Link'); ?></td>
-                        <td class="valField">
-                            <div class="lowres-title"><?php echo __('Direct Link'); ?></div>
+                    <?php if ($_getvar('accountId')): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Direct Link'); ?></td>
+                            <td class="valField">
+                                <div class="lowres-title"><?php echo __('Direct Link'); ?></div>
 
-                            <a href="<?php echo $_getvar('deepLink'); ?>"
-                               target="_blank"
-                               title="<?php echo __('Direct Link'); ?>">
-                                <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
-                            </a>
-                        </td>
-                    </tr>
+                                <a href="<?php echo $_getvar('deepLink'); ?>"
+                                   target="_blank"
+                                   title="<?php echo __('Direct Link'); ?>">
+                                    <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </table>
             </div>
 

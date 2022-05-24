@@ -17,7 +17,7 @@ use SP\Core\UI\ThemeIcons;
                 <li class="mdl-list__item">
                     <span class="btn-action mdl-list__item-primary-content">
                         <i class="material-icons mdl-list__item-icon">layers</i>
-                        <?php printf('%s (%s)', $account->name, $account->clientName); ?>
+                        <?php printf('%s (%s)', htmlspecialchars($account->name, ENT_QUOTES), htmlspecialchars($account->clientName, ENT_QUOTES)); ?>
                     </span>
                     <span class="list-actions">
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconEdit()->getClass(); ?>"

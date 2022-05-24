@@ -307,7 +307,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                     <?php /** @var SelectItem $userGroup */
                     foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
-                                value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
+                                value="<?php echo $userGroup->getId(); ?>"><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                     <?php endforeach; ?>
                 </select>
             </td>

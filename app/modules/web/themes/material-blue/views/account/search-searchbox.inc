@@ -44,7 +44,7 @@ $pager = $data->getPager();
                 <?php /** @var SelectItem $client */
                 foreach ($_getvar('clients') as $client): ?>
                     <option
-                            value="<?php echo $client->getId(); ?>" <?php echo $client->isSelected() ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
+                            value="<?php echo $client->getId(); ?>" <?php echo $client->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($client->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -54,7 +54,7 @@ $pager = $data->getPager();
                 <?php /** @var SelectItem $category */
                 foreach ($_getvar('categories') as $category): ?>
                     <option
-                            value="<?php echo $category->getId(); ?>" <?php echo $category->isSelected() ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
+                            value="<?php echo $category->getId(); ?>" <?php echo $category->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($category->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -135,7 +135,7 @@ $pager = $data->getPager();
                 <?php /** @var SelectItem $tag */
                 foreach ($_getvar('tags') as $tag): ?>
                     <option
-                            value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
+                            value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

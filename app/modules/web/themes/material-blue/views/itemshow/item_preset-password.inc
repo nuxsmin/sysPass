@@ -66,7 +66,7 @@ $password = $_getvar('password');
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="regex" name="regex" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="<?php echo htmlentities($password->getRegex()); ?>"/>
+                       value="<?php echo htmlspecialchars($password->getRegex(), ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="regex"><?php echo __('Regular Expression'); ?></label>
             </div>
