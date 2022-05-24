@@ -75,7 +75,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                class="btn-action"
                                data-action-route="<?php echo $_getvar('viewAccountRoute'); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
-                               data-onclick="account/view"><?php echo htmlspecialchars(accountSearchData->getName(), ENT_QUOTES); ?></a>
+                               data-onclick="account/view"><?php echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?></a>
                         <?php else: ?>
                             <div class="field-text">
                                 <?php echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>

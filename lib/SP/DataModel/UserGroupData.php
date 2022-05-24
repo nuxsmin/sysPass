@@ -33,10 +33,10 @@ defined('APP_ROOT') || die();
  */
 class UserGroupData extends DataModelBase implements DataModelInterface
 {
-    public int $id = 0;
-    public string $name;
+    public int     $id          = 0;
+    public ?string $name        = null;
     public ?string $description = null;
-    public ?array $users = null;
+    public ?array  $users       = null;
 
     public function getId(): int
     {
@@ -48,7 +48,7 @@ class UserGroupData extends DataModelBase implements DataModelInterface
         $this->id = $id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
