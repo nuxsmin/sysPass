@@ -81,7 +81,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="100"
                                        value="<?php echo $gotData
-                                           ? htmlentities($accountData->getName())
+                                           ? htmlspecialchars($accountData->getName(), ENT_QUOTES)
                                            : ''; ?>"
                                     <?php echo $_getvar('readonly'); ?>
                                 >
@@ -108,7 +108,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             ? 'selected'
                                             : ''; ?>
                                     >
-                                        <?php echo $client->getName(); ?>
+                                        <?php echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -140,7 +140,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             ? 'selected'
                                             : ''; ?>
                                     >
-                                        <?php echo htmlentities($category->getName()); ?>
+                                        <?php echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -180,7 +180,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php echo $gotData
-                                           ? htmlentities($accountData->getLogin())
+                                           ? htmlspecialchars($accountData->getLogin(), ENT_QUOTES)
                                            : ''; ?>"
                                     <?php echo $_getvar('readonly'); ?>
                                 >
@@ -275,7 +275,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     foreach ($_getvar('tags') as $tag): ?>
                                         <option value="<?php echo $tag->getId(); ?>"
                                             <?php echo $tag->isSelected() ? 'selected' : ''; ?>>
-                                            <?php echo htmlentities($tag->getName()); ?>
+                                            <?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -301,7 +301,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             <?php /** @var SelectItem $tag */
                                             foreach ($_getvar('tags') as $tag): ?>
                                                 <?php if ($tag->isSelected()): ?>
-                                                    <span class="tag"><?php echo htmlentities($tag->getName()); ?></span>
+                                                    <span class="tag"><?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></span>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
                                         </div>
@@ -345,7 +345,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
                                                 value="<?php echo $history->getId(); ?>">
-                                            <?php echo htmlentities($history->getName()); ?>
+                                            <?php echo htmlspecialchars($history->getName(), ENT_QUOTES); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -360,7 +360,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="descField"><?php echo __('Last Modification'); ?></td>
                             <td class="valField"><?php printf('%s (%s)',
                                     $accountData->getDateEdit(),
-                                    $accountData->getUserEditName()); ?>
+                                    htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)); ?>
                             </td>
                         </tr>
                     <?php endif; ?>

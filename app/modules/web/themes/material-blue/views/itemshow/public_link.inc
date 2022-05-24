@@ -35,7 +35,14 @@ $publicLink = $_getvar('publicLink');
                         <?php /** @var SelectItem $account */
                         foreach ($_getvar('accounts') as $account): ?>
                             <option
-                                    value="<?php echo $account->getId(); ?>" <?php echo $account->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', htmlentities($account->getName()), htmlentities($account->getItemProperty('clientName'))); ?></option>
+                                    value="<?php echo $account->getId(); ?>"
+                                <?php echo $account->isSelected() ? 'selected' : ''; ?>>
+                                <?php printf(
+                                        '%s (%s)',
+                                        htmlspecialchars($account->getName(), ENT_QUOTES),
+                                        htmlspecialchars($account->getItemProperty('clientName'), ENT_QUOTES)
+                                ); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>

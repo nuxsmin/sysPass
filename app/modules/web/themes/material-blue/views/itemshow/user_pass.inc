@@ -29,7 +29,7 @@ $user = $_getvar('user');
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlentities($user->getName()); ?>" readonly
+                               value="<?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>" readonly
                                disabled/>
                     </div>
                 </td>
@@ -41,7 +41,7 @@ $user = $_getvar('user');
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlentities($user->getLogin()); ?>"
+                               value="<?php echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
                                readonly disabled/>
                     </div>
                 </td>

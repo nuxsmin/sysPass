@@ -100,7 +100,7 @@ use SP\Mvc\View\Template;
                 <?php /** @var SelectItem $userGroup */
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
-                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo htmlentities($userGroup->getName()); ?></option>
+                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -126,7 +126,7 @@ use SP\Mvc\View\Template;
                 <?php /** @var SelectItem $userProfile */
                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                     <option
-                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo htmlentities($userProfile->getName()); ?></option>
+                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>

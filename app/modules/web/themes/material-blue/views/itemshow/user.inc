@@ -48,7 +48,7 @@ $user = $_getvar('user');
                                 <input id="name" name="name" type="text"
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       value="<?php echo htmlentities($user->getName()); ?>"
+                                       value="<?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>"
                                        maxlength="80" <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Full username'); ?></label>
@@ -63,7 +63,7 @@ $user = $_getvar('user');
                                 <input id="login" name="login" type="text"
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       value="<?php echo htmlentities($user->getLogin()); ?>"
+                                       value="<?php echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
                                        maxlength="80" <?php echo $user->isLdap() ? 'readonly' : $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
                                        for="login"><?php echo __('Session login'); ?></label>
@@ -83,7 +83,7 @@ $user = $_getvar('user');
                                     <input id="login_sso" name="login_sso"
                                            type="text"
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                                           value="<?php echo htmlentities($user->getSsoLogin()); ?>"
+                                           value="<?php echo htmlspecialchars($user->getSsoLogin(), ENT_QUOTES); ?>"
                                            maxlength="100" <?php echo $_getvar('readonly'); ?>>
                                     <label class="mdl-textfield__label"
                                            for="login_sso"><?php echo __('Session login with SSO'); ?></label>
@@ -99,7 +99,7 @@ $user = $_getvar('user');
                                 <input id="email" name="email" type="email"
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       value="<?php echo htmlentities($user->getEmail()); ?>"
+                                       value="<?php echo htmlspecialchars($user->getEmail(), ENT_QUOTES); ?>"
                                        maxlength="50" <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
                                        for="email"><?php echo __('Email address'); ?></label>
@@ -153,7 +153,7 @@ $user = $_getvar('user');
                                 <?php /** @var SelectItem $profile */
                                 foreach ($_getvar('profiles') as $profile): ?>
                                     <option
-                                            value="<?php echo $profile->getId(); ?>" <?php echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo htmlentities($profile->getName()); ?></option>
+                                            value="<?php echo $profile->getId(); ?>" <?php echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo htmlspecialchars($profile->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -171,7 +171,7 @@ $user = $_getvar('user');
                                 <?php /** @var SelectItem $group */
                                 foreach ($_getvar('groups') as $group): ?>
                                     <option
-                                            value="<?php echo $group->getId(); ?>" <?php echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo htmlentities($group->getName()); ?></option>
+                                            value="<?php echo $group->getId(); ?>" <?php echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo htmlspecialchars($group->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -183,7 +183,9 @@ $user = $_getvar('user');
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3"
                                   id="notes" name="notes"
-                                  maxlength="1000" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?></textarea>
+                                  maxlength="1000" <?php echo $_getvar('readonly'); ?>>
+                            <?php echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?>
+                        </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes'); ?></label>
                             </div>
@@ -338,7 +340,11 @@ $user = $_getvar('user');
                                                 title="<?php echo $item->ref; ?>">
                                                 <span class="mdl-list__item-primary-content">
                                                 <i class="material-icons mdl-list__item-icon"><?php echo $item->icon; ?></i>
-                                                    <?php printf('%s: %s', $item->ref, htmlentities($item->name) ?: $item->id); ?>
+                                                    <?php printf(
+                                                            '%s: %s',
+                                                            $item->ref,
+                                                            htmlspecialchars($item->name, ENT_QUOTES) ?: $item->id
+                                                    ); ?>
                                                 </span>
                                             </li>
                                         <?php endforeach; ?>

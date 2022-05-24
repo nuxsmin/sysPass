@@ -35,7 +35,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php if ($otherUser->isSkip()): continue; endif; ?>
                                         <option
                                                 value="<?php echo $otherUser->getId(); ?>"
-                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($otherUser->getName()); ?></option>
+                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <i class="material-icons select-icon"
@@ -48,7 +48,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php /** @var SelectItem $otherUser */
                                         foreach ($_getvar('otherUsersView') as $otherUser): ?>
                                             <?php if ($otherUser->isSelected()): ?>
-                                                <span class="tag"><?php echo htmlentities($otherUser->getName()); ?></span>
+                                                <span class="tag"><?php echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></span>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -68,7 +68,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php if ($otherUser->isSkip()): continue; endif; ?>
                                         <option
                                                 value="<?php echo $otherUser->getId(); ?>"
-                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($otherUser->getName()); ?></option>
+                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <i class="material-icons select-icon"
@@ -81,7 +81,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php /** @var SelectItem $otherUser */
                                         foreach ($_getvar('otherUsersEdit') as $otherUser): ?>
                                             <?php if ($otherUser->isSelected()): ?>
-                                                <span class="tag"><?php echo htmlentities($otherUser->getName()); ?></span>
+                                                <span class="tag"><?php echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></span>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -107,7 +107,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
                                         <option
                                                 value="<?php echo $otherUserGroup->getId(); ?>"
-                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($otherUserGroup->getName()); ?></option>
+                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <i class="material-icons select-icon"
@@ -120,7 +120,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php /** @var SelectItem $otherUserGroup */
                                         foreach ($_getvar('otherUserGroupsView') as $otherUserGroup): ?>
                                             <?php if ($otherUserGroup->isSelected()): ?>
-                                                <span class="tag"><?php echo htmlentities($otherUserGroup->getName()); ?></span>
+                                                <span class="tag"><?php echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></span>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -140,7 +140,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
                                         <option
                                                 value="<?php echo $otherUserGroup->getId(); ?>"
-                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlentities($otherUserGroup->getName()); ?></option>
+                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <i class="material-icons select-icon"
@@ -153,7 +153,7 @@ use SP\Services\Account\AccountAcl;
                                         <?php /** @var SelectItem $otherUserGroup */
                                         foreach ($_getvar('otherUserGroupsEdit') as $otherUserGroup): ?>
                                             <?php if ($otherUserGroup->isSelected()): ?>
-                                                <span class="tag"><?php echo htmlentities($otherUserGroup->getName()); ?></span>
+                                                <span class="tag"><?php echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></span>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -189,7 +189,7 @@ use SP\Services\Account\AccountAcl;
                         foreach ($_getvar('users') as $user): ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
-                                <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($user->getName()); ?></option>
+                                <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -213,7 +213,7 @@ use SP\Services\Account\AccountAcl;
                         foreach ($_getvar('userGroups') as $userGroup): ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"
-                                <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($userGroup->getName()); ?></option>
+                                <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

@@ -29,7 +29,7 @@ $accountData = $_getvar('accountData');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo htmlentities($accountData->getName()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Account name'); ?></label>
@@ -42,7 +42,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlentities($accountData->getClientName()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getClientName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php echo __('Client'); ?></label>
@@ -55,7 +55,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlentities($accountData->getCategoryName()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getCategoryName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="category"><?php echo __('Category'); ?></label>
@@ -68,7 +68,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getUrl(); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getUrl(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="url"><?php echo __('URL / IP'); ?></label>
@@ -81,7 +81,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlentities($accountData->getLogin()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getLogin(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('User'); ?></label>
@@ -97,7 +97,7 @@ $accountData = $_getvar('accountData');
                                 rows="3" id="notes"
                                 name="notes"
                                 maxlength="1000"
-                                readonly><?php echo htmlspecialchars($accountData->getNotes()); ?></textarea>
+                                readonly><?php echo htmlspecialchars($accountData->getNotes(), ENT_QUOTES); ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notes about the account'); ?></label>
                     </div>

@@ -55,7 +55,7 @@ $accountAcl = $_getvar('accountAcl');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo htmlentities($accountData->getName()); ?>"
+                                       value="<?php echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Account name'); ?></label>
@@ -73,7 +73,10 @@ $accountAcl = $_getvar('accountAcl');
                                 <?php /** @var SelectItem $client */
                                 foreach ($_getvar('clients') as $client): ?>
                                     <option
-                                            value="<?php echo $client->getId(); ?>" <?php echo $client->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($client->getName()); ?></option>
+                                            value="<?php echo $client->getId(); ?>"
+                                        <?php echo $client->isSelected() ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -90,7 +93,10 @@ $accountAcl = $_getvar('accountAcl');
                                 <?php /** @var SelectItem $category */
                                 foreach ($_getvar('categories') as $category): ?>
                                     <option
-                                            value="<?php echo $category->getId(); ?>" <?php echo $category->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($category->getName()); ?></option>
+                                            value="<?php echo $category->getId(); ?>"
+                                        <?php echo $category->isSelected() ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -116,7 +122,7 @@ $accountAcl = $_getvar('accountAcl');
                                 <input id="login" name="login" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50" tabindex="5"
-                                       value="<?php echo htmlentities($accountData->getLogin()); ?>"
+                                       value="<?php echo htmlspecialchars($accountData->getLogin(), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Access user'); ?></label>
@@ -147,7 +153,8 @@ $accountAcl = $_getvar('accountAcl');
                                 rows="3" id="notes"
                                 name="notes" tabindex="9"
                                 maxlength="5000"
-                                readonly><?php echo htmlspecialchars($accountData->getNotes()); ?></textarea>
+                                readonly><?php echo htmlspecialchars($accountData->getNotes(), ENT_QUOTES); ?>
+                        </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
@@ -168,7 +175,9 @@ $accountAcl = $_getvar('accountAcl');
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
                                                 value="<?php echo $history->getId(); ?>"
-                                            <?php echo $history->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($history->getName()); ?></option>
+                                            <?php echo $history->isSelected() ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($history->getName(), ENT_QUOTES); ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
@@ -177,7 +186,13 @@ $accountAcl = $_getvar('accountAcl');
 
                     <tr>
                         <td class="descField"><?php echo __('Last Modification'); ?></td>
-                        <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), htmlentities($accountData->getUserEditName()) ?: htmlentities($accountData->getUserEditLogin())); ?></td>
+                        <td class="valField">
+                            <?php printf(
+                                    '%s (%s)',
+                                    $accountData->getDateEdit(),
+                                    htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)
+                                ?: htmlspecialchars($accountData->getUserEditLogin(), ENT_QUOTES)); ?>
+                        </td>
                     </tr>
                 </table>
 

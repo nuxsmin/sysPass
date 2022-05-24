@@ -1,10 +1,10 @@
 <?php
 /**
- * @var  NotificationData              $notification
- * @var ThemeIcons                     $icons
+ * @var  NotificationData $notification
+ * @var ThemeIcons $icons
  * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
+ * @var callable $_getvar
+ * @var Template $this
  */
 
 use SP\Core\UI\ThemeIcons;
@@ -60,7 +60,8 @@ $notification = $_getvar('notification');
                             <input id="notification_date"
                                    name="notification_date" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo DateUtil::getDateFromUnix($notification->getDate()); ?>" <?php echo $_getvar('disabled'); ?>>
+                                   value="<?php echo DateUtil::getDateFromUnix($notification->getDate()); ?>"
+                                <?php echo $_getvar('disabled'); ?>>
                             <label class="mdl-textfield__label"
                                    for="notification_date"><?php echo __('Date'); ?></label>
                         </div>
@@ -76,13 +77,15 @@ $notification = $_getvar('notification');
                                     class="mdl-textfield__input mdl-color-text--indigo-400"
                                     type="text" rows="3"
                                     id="notification_description"
-                                    name="notification_description" <?php echo $_getvar('readonly'); ?>><?php echo $notification->getDescription(); ?></textarea>
+                                    name="notification_description" <?php echo $_getvar('readonly'); ?>>
+                                <?php echo htmlspecialchars($notification->getDescription(), ENT_QUOTES); ?>
+                            </textarea>
                             <label class="mdl-textfield__label"
                                    for="notification_description"><?php echo __('Description'); ?></label>
                         </div>
                     <?php else: ?>
                         <div class="notification-description">
-                            <?php echo $notification->getDescription(); ?>
+                            <?php echo htmlspecialchars($notification->getDescription(), ENT_QUOTES); ?>
                         </div>
                     <?php endif; ?>
                 </td>
@@ -99,8 +102,10 @@ $notification = $_getvar('notification');
                             <option value=""><?php echo __('Select User'); ?></option>
                             <?php /** @var SelectItem $user */
                             foreach ($_getvar('users') as $user): ?>
-                                <option
-                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlentities($user->getName()); ?></option>
+                                <option value="<?php echo $user->getId(); ?>"
+                                    <?php echo $user->isSelected() ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -114,7 +119,8 @@ $notification = $_getvar('notification');
                                title="<?php echo __('Global notification'); ?>">
                             <input type="checkbox" id="notification_sticky"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="notification_sticky" <?php echo $notification->isSticky() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
+                                   name="notification_sticky" <?php echo $notification->isSticky() ? 'checked'
+                                : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
                             <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
                         </label>
 
@@ -123,7 +129,9 @@ $notification = $_getvar('notification');
                                title="<?php echo __('Only for application administrators'); ?>">
                             <input type="checkbox" id="notification_onlyadmin"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="notification_onlyadmin" <?php echo $notification->isOnlyAdmin() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
+                                   name="notification_onlyadmin"
+                                <?php echo $notification->isOnlyAdmin() ? 'checked' : ' '; ?>
+                                <?php echo $_getvar('disabled'); ?>/>
                             <span class="mdl-switch__label"><?php echo __('Only Admins'); ?></span>
                         </label>
 
@@ -132,7 +140,9 @@ $notification = $_getvar('notification');
                                title="<?php echo __('Read'); ?>">
                             <input type="checkbox" id="notification_checkout"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="notification_checkout" <?php echo $notification->isChecked() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
+                                   name="notification_checkout"
+                                <?php echo $notification->isChecked() ? 'checked' : ' '; ?>
+                                <?php echo $_getvar('disabled'); ?>/>
                             <span class="mdl-switch__label"><?php echo __('Read'); ?></span>
                         </label>
                     </td>
@@ -145,7 +155,8 @@ $notification = $_getvar('notification');
     <?php if (!$_getvar('isView')): ?>
         <div class="action-in-box">
             <button
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave(
+                    )->getClassButton(); ?>"
                     form="frmNotices"
                     title="<?php echo $icons->getIconSave()->getTitle(); ?>">
                 <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>

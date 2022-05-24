@@ -40,7 +40,7 @@ use SP\Mvc\View\Template;
                 foreach ($_getvar('users') as $user): ?>
                     <option
                             value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>>
-                        <?php echo htmlentities($user->getName()); ?>
+                        <?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -68,7 +68,7 @@ use SP\Mvc\View\Template;
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
                             value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>>
-                        <?php echo htmlentities($userGroup->getName()); ?>
+                        <?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
