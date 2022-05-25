@@ -579,7 +579,7 @@ $profileData = $_getvar('profileData');
                         <input id="profile_name" name="profile_name" type="text"
                                required
                                class="mdl-textfield__input"
-                               value="<?php echo $profile->getName(); ?>"
+                               value="<?php echo htmlspecialchars($profile->getName(), ENT_QUOTES); ?>"
                                maxlength="50" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="profile_name"><?php echo __('Profile name'); ?></label>

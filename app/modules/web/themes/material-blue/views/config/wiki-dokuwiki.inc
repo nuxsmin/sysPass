@@ -181,7 +181,7 @@ use SP\Mvc\View\Template;
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getDokuwikiNamespace(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiNamespace(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_namespace"><?php echo __('Namespace'); ?></label>
                 </div>

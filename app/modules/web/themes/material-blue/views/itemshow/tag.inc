@@ -31,7 +31,7 @@ $tag = $_getvar('tag');
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $tag->getName(); ?>">
+                               value="<?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Tag name'); ?></label>
                     </div>
