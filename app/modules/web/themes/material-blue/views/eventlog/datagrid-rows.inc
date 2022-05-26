@@ -22,7 +22,7 @@ $data = $_getvar('data');
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
-                <?php $value = $rowSrc['filter'] !== null && $rowSrc['filter'] ? $rowSrc['filter']($value) : $value; ?>
+                <?php $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
                 <td class="cell-data"><?php echo $value !== '' ? $value : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
         </tr>
