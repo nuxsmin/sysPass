@@ -52,7 +52,9 @@ use SP\Mvc\View\Template;
                         <span class="mdl-list__item-primary-content">
                                 <span><?php echo __('Enable LDAP'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enable authentication against an LDAP server.'); ?>
+                                    <?php echo __('Enables authentication against an LDAP server.'); ?>
+                                    <br>
+                                    <?php echo __('This method will use MySQL as fallback.'); ?>
                                 </span>
                             </span>
                     </li>
@@ -69,28 +71,9 @@ use SP\Mvc\View\Template;
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Use TLS'); ?></span>
+                                <span>TLS</span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enable the connection over TLS.'); ?>
-                                </span>
-                            </span>
-                    </li>
-
-                    <li class="mdl-list__item mdl-list__item--two-line">
-                        <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                                   for="ldap_database_enabled">
-                                <input type="checkbox"
-                                       id="ldap_database_enabled"
-                                       class="mdl-switch__input"
-                                       name="ldap_database_enabled" <?php echo $configData->isLdapDatabaseEnabled() ? 'checked' : ''; ?>/>
-                            </label>
-                        </div>
-
-                        <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Database fallback'); ?></span>
-                                <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enable database backend as fallback when LDAP auth is not successful.'); ?>
+                                    <?php echo __('Enables the connection over TLS'); ?>
                                 </span>
                             </span>
                     </li>

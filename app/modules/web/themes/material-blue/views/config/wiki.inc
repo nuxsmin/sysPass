@@ -60,7 +60,7 @@ use SP\Mvc\View\Template;
                     </p>
 
                     <p>
-                        <?php __('Example:'); ?>
+                        <?php echo __('Example:'); ?>
                     </p>
 
                     <p>
