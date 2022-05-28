@@ -25,10 +25,8 @@
 namespace SP\Providers\Mail;
 
 use Exception;
-use SP\Config\Config;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
@@ -73,16 +71,14 @@ final class MailHandler extends Provider implements EventReceiver
     private string      $events;
 
     public function __construct(
-        Config $config,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        Application $application,
         MailService $mailService,
         Request $request
     ) {
         $this->mailService = $mailService;
         $this->request = $request;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
     /**

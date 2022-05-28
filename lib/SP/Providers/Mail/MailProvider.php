@@ -25,11 +25,9 @@
 namespace SP\Providers\Mail;
 
 use Exception;
+use PharIo\Manifest\Application;
 use PHPMailer\PHPMailer\PHPMailer;
-use SP\Config\Config;
 use SP\Core\AppInfoInterface;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Providers\Provider;
 
@@ -44,14 +42,12 @@ final class MailProvider extends Provider
     private bool      $debug = false;
 
     public function __construct(
-        Config $config,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        Application $application,
         PHPMailer $mailer
     ) {
         $this->mailer = $mailer;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
     /**

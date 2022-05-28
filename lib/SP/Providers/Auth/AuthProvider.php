@@ -25,6 +25,7 @@
 namespace SP\Providers\Auth;
 
 use SP\Config\Config;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
@@ -57,16 +58,14 @@ class AuthProvider extends Provider
     protected Database $database;
 
     public function __construct(
-        Config $config,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        Application $application,
         Browser $browser,
         Database $database
     ) {
         $this->browser = $browser;
         $this->database = $database;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
     /**

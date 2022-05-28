@@ -26,10 +26,8 @@ namespace SP\Providers\Log;
 
 use Exception;
 use Monolog\Logger;
-use SP\Config\Config;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Language;
@@ -52,9 +50,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
     protected ?string  $events = null;
 
     public function __construct(
-        Config $config,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        Application $application,
         Logger $logger,
         Language $language,
         Request $request
@@ -63,7 +59,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
         $this->language = $language;
         $this->request = $request;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
     /**

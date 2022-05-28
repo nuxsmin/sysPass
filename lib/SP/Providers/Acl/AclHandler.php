@@ -26,6 +26,7 @@ namespace SP\Providers\Acl;
 
 use Exception;
 use SP\Config\Config;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -60,16 +61,14 @@ final class AclHandler extends Provider implements EventReceiver
     private UserGroupService   $userGroupService;
 
     public function __construct(
-        Config $config,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        Application $application,
         UserProfileService $userProfileService,
         UserGroupService $userGroupService
     ) {
         $this->userProfileService = $userProfileService;
         $this->userGroupService = $userGroupService;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
 

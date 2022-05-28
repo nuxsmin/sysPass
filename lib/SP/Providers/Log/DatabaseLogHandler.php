@@ -25,7 +25,7 @@
 namespace SP\Providers\Log;
 
 use Exception;
-use SP\Config\Config;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -53,7 +53,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     private string          $events;
 
     public function __construct(
-        Config $config,
+        Application $application,
         ContextInterface $context,
         EventDispatcher $eventDispatcher,
         EventlogService $eventlogService,
@@ -62,7 +62,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         $this->eventlogService = $eventlogService;
         $this->language = $language;
 
-        parent::__construct($config, $context, $eventDispatcher);
+        parent::__construct($application);
     }
 
 

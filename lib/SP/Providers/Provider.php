@@ -25,6 +25,7 @@
 namespace SP\Providers;
 
 use SP\Config\Config;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 
@@ -43,15 +44,13 @@ abstract class Provider implements ProviderInterface
     /**
      * Provider constructor.
      *
-     * @param  Config  $config
-     * @param  ContextInterface  $context
-     * @param  EventDispatcher  $eventDispatcher
+     * @param  \SP\Core\Application  $application
      */
-    public function __construct(Config $config, ContextInterface $context, EventDispatcher $eventDispatcher)
+    public function __construct(Application $application)
     {
-        $this->config = $config;
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->config = $application->getConfig();
+        $this->context = $application->getContext();
+        $this->eventDispatcher = $application->getEventDispatcher();
     }
 
     /**
