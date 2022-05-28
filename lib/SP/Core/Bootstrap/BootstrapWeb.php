@@ -26,6 +26,7 @@ namespace SP\Core\Bootstrap;
 
 
 use Closure;
+use Exception;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -153,7 +154,7 @@ final class BootstrapWeb extends BootstrapBase
                 return call_user_func_array([$controller, $methodName], $methodParams);
             } catch (SessionTimeout $sessionTimeout) {
                 logger('Session timeout');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 /** @var Response $response */
