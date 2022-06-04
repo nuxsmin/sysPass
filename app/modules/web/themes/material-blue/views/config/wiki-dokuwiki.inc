@@ -87,7 +87,7 @@ use SP\Mvc\View\Template;
                     <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getDokuwikiUrl(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiUrl(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_url"><?php echo __('API URL'); ?></label>
                 </div>
@@ -118,7 +118,7 @@ use SP\Mvc\View\Template;
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getDokuwikiUrlBase(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiUrlBase(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_urlbase"><?php echo __('Base URL'); ?></label>
                 </div>
