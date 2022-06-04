@@ -74,7 +74,7 @@ use SP\Mvc\View\Template;
                 <input id="authbasic_domain" name="authbasic_domain" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo $configData->getAuthBasicDomain(); ?>">
+                       value="<?php echo htmlspecialchars($configData->getAuthBasicDomain(), ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php echo __('Domain name'); ?></label>
             </div>

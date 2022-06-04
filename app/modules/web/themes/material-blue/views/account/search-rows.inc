@@ -102,13 +102,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <div class="field-url field-text label-field">
                             <div class="field-name"><?php echo __('URL / IP'); ?></div>
                             <?php if ($accountSearchItem->isUrlIslink()): ?>
-                                <a href="<?php echo $accountSearchData->getUrl(); ?>"
+                                <a href="<?php echo urlencode($accountSearchData->getUrl()); ?>"
                                    target="_blank"
-                                   title="<?php printf(__('Open link to: %s'), $accountSearchData->getUrl()); ?>">
-                                    <?php echo $accountSearchItem->getShortUrl(); ?>
+                                   title="<?php printf(__('Open link to: %s'), htmlspecialchars($accountSearchData->getUrl(), ENT_QUOTES)); ?>">
+                                    <?php echo htmlspecialchars($accountSearchItem->getShortUrl(), ENT_QUOTES); ?>
                                 </a>
                             <?php else: ?>
-                                <div class="field-text"><?php echo $accountSearchItem->getShortUrl(); ?></div>
+                                <div class="field-text"><?php echo htmlspecialchars($accountSearchItem->getShortUrl(), ENT_QUOTES); ?></div>
                             <?php endif; ?>
                         </div>
                     <?php else: ?>

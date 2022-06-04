@@ -74,7 +74,7 @@ use SP\Mvc\View\Template;
                     <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getWikiSearchurl(); ?>">
+                           value="<?php echo htmlspecialchars($configData->getWikiSearchurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_searchurl"><?php echo __('Wiki search URL'); ?></label>
                 </div>
@@ -109,7 +109,7 @@ use SP\Mvc\View\Template;
                     <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getWikiPageurl(); ?>">
+                           value="<?php echo htmlspecialchars($configData->getWikiPageurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_pageurl"><?php echo __('Wiki page URL'); ?></label>
                 </div>

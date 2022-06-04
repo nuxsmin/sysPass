@@ -118,7 +118,7 @@ use SP\Mvc\View\Template;
                 <input id="app_url" name="app_url" type="url"
                        pattern="^https?://.*"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="<?php echo $configData->getApplicationUrl(); ?>"/>
+                       value="<?php echo htmlspecialchars($configData->getApplicationUrl(), ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="app_url"><?php echo __('Application URL'); ?></label>
             </div>
