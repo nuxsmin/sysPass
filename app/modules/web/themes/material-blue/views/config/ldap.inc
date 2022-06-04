@@ -124,7 +124,7 @@ use SP\Mvc\View\Template;
                     <input id="ldap_server" name="ldap_server" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getLdapServer(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getLdapServer(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_server"><?php echo __('Server'); ?></label>
                 </div>
@@ -156,7 +156,7 @@ use SP\Mvc\View\Template;
                     <input id="ldap_binduser" name="ldap_binduser" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getLdapBindUser(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getLdapBindUser(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_binduser"><?php echo __('User'); ?></label>
                 </div>
@@ -223,7 +223,7 @@ use SP\Mvc\View\Template;
                     <input id="ldap_base" name="ldap_base" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getLdapBase(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getLdapBase(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_base"><?php echo __('Search base'); ?></label>
                 </div>
@@ -259,7 +259,7 @@ use SP\Mvc\View\Template;
                     <input id="ldap_group" name="ldap_group" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getLdapGroup(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getLdapGroup(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_group"><?php echo __('Group'); ?></label>
                 </div>

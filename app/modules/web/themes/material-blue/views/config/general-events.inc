@@ -83,7 +83,7 @@ use SP\Mvc\View\Template;
                 <input id="remotesyslog_server" name="remotesyslog_server"
                        type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="<?php echo $configData->getSyslogServer(); ?>"/>
+                       value="<?php echo htmlspecialchars($configData->getSyslogServer(), ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="remotesyslog_server"><?php echo __('Hostname or IP address'); ?></label>
             </div>

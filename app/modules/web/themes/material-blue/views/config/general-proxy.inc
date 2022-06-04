@@ -49,7 +49,7 @@ use SP\Mvc\View\Template;
                 <input id="proxy_server" name="proxy_server" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo $configData->getProxyServer(); ?>">
+                       value="<?php echo htmlspecialchars($configData->getProxyServer(), ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_server"><?php echo __('Proxy server'); ?></label>
             </div>
@@ -80,7 +80,7 @@ use SP\Mvc\View\Template;
                 <input id="proxy_user" name="proxy_user" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo $configData->getProxyUser(); ?>">
+                       value="<?php echo htmlspecialchars($configData->getProxyUser(), ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_user"><?php echo __('Proxy server user'); ?></label>
             </div>
