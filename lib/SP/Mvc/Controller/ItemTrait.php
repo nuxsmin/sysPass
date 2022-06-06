@@ -213,10 +213,8 @@ trait ItemTrait
     /**
      * Returns search data object for the current request
      */
-    protected function getSearchData(
-        int $limitCount,
-        RequestInterface $request
-    ): ItemSearchData {
+    protected function getSearchData(int $limitCount, RequestInterface $request): ItemSearchData
+    {
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setSeachString($request->analyzeString('search'));
         $itemSearchData->setLimitStart($request->analyzeInt('start', 0));

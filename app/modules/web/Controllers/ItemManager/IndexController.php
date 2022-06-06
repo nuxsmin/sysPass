@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,17 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ItemManager;
 
-use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\AccountFileServiceInterface;
 use SP\Domain\Account\AccountHistoryServiceInterface;
@@ -43,7 +40,8 @@ use SP\Domain\CustomField\CustomFieldDefServiceInterface;
 use SP\Domain\ItemPreset\ItemPresetServiceInterface;
 use SP\Domain\Tag\TagServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Http\RequestInterface;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Controllers\Helpers;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
@@ -52,17 +50,15 @@ use SP\Modules\Web\Controllers\Helpers\Grid\CustomFieldGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ItemManagerController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ItemManagerController extends ControllerBase
+final class IndexController extends ControllerBase
 {
     protected ?ItemSearchData              $itemSearchData = null;
     private TabsGridHelper                 $tabsGridHelper;
@@ -85,14 +81,7 @@ final class ItemManagerController extends ControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
-        TemplateInterface $template,
-        BrowserAuthInterface $browser,
-        LayoutHelper $layoutHelper,
+        WebControllerHelper $webControllerHelper,
         Helpers\TabsGridHelper $tabsGridHelper,
         CategoryServiceInterface $categoryService,
         TagServiceInterface $tagService,
@@ -129,17 +118,7 @@ final class ItemManagerController extends ControllerBase
         $this->accountHistoryGrid = $accountHistoryGrid;
         $this->itemPresetGrid = $itemPresetGrid;
 
-        parent::__construct(
-            $application,
-            $theme,
-            $router,
-            $acl,
-            $request,
-            $extensionChecker,
-            $template,
-            $browser,
-            $layoutHelper
-        );
+        parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
     }

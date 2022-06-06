@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\Items;
 
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -40,6 +40,7 @@ use SP\Domain\Tag\Services\TagService;
 use SP\Html\Html;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use stdClass;
 

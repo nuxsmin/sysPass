@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,44 +22,84 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\AccessManager;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Services\PublicLinkService;
-use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Auth\Services\AuthTokenService;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Auth\AuthTokenServiceInterface;
+use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\User\UserServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
+use SP\Mvc\Controller\WebControllerHelper;
 
 /**
- * Class AccessManagerController
+ * Class IndexController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class AccessManagerController extends ControllerBase
+final class IndexController extends ControllerBase
 {
-    protected ?ItemSearchData $itemSearchData = null;
-    protected ?TabsGridHelper $tabsGridHelper = null;
+    protected ItemSearchData            $itemSearchData;
+    protected TabsGridHelper            $tabsGridHelper;
+    private UserGrid                    $userGrid;
+    private UserGroupGrid               $userGroupGrid;
+    private UserProfileGrid             $userProfileGrid;
+    private AuthTokenGrid               $authTokenGrid;
+    private PublicLinkGrid              $publicLinkGrid;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+    private AuthTokenServiceInterface   $authTokenService;
+    private PublicLinkServiceInterface  $publicLinkService;
+
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        TabsGridHelper $tabsGridHelper,
+        UserGrid $userGrid,
+        UserGroupGrid $userGroupGrid,
+        UserProfileGrid $userProfileGrid,
+        AuthTokenGrid $authTokenGrid,
+        PublicLinkGrid $publicLinkGrid,
+        UserServiceInterface $userService,
+        UserGroupServiceInterface $userGroupService,
+        UserProfileServiceInterface $userProfileService,
+        AuthTokenServiceInterface $authTokenService,
+        PublicLinkServiceInterface $publicLinkService
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->checkLoggedIn();
+
+        $this->userGrid = $userGrid;
+        $this->userGroupGrid = $userGroupGrid;
+        $this->userProfileGrid = $userProfileGrid;
+        $this->authTokenGrid = $authTokenGrid;
+        $this->publicLinkGrid = $publicLinkGrid;
+        $this->userService = $userService;
+        $this->userGroupService = $userGroupService;
+        $this->userProfileService = $userProfileService;
+        $this->authTokenService = $authTokenService;
+        $this->publicLinkService = $publicLinkService;
+        $this->tabsGridHelper = $tabsGridHelper;
+        $this->itemSearchData = new ItemSearchData();
+    }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -71,17 +111,12 @@ final class AccessManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getGridTabs(): void
     {
-        $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
-
-        $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
         if ($this->checkAccess(ActionsInterface::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
@@ -111,7 +146,8 @@ final class AccessManagerController extends ControllerBase
 
         $this->tabsGridHelper->renderTabs(
             Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE),
-            $this->request->analyzeInt('tabIndex', 0));
+            $this->request->analyzeInt('tabIndex', 0)
+        );
 
         $this->view();
     }
@@ -120,85 +156,60 @@ final class AccessManagerController extends ControllerBase
      * Returns users' data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getUsersList(): DataGridTab
     {
-        return $this->dic->get(UserGrid::class)
-            ->getGrid($this->dic->get(UserService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->userGrid->getGrid($this->userService->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users group data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getUsersGroupList(): DataGridTab
     {
-        return $this->dic->get(UserGroupGrid::class)
-            ->getGrid($this->dic->get(UserGroupService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->userGroupGrid->getGrid($this->userGroupService->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users profile data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getUsersProfileList(): DataGridTab
     {
-        return $this->dic->get(UserProfileGrid::class)
-            ->getGrid($this->dic->get(UserProfileService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->userProfileGrid->getGrid($this->userProfileService->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns API tokens data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getAuthTokensList(): DataGridTab
     {
-        return $this->dic->get(AuthTokenGrid::class)
-            ->getGrid($this->dic->get(AuthTokenService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->authTokenGrid->getGrid($this->authTokenService->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns public links data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getPublicLinksList(): DataGridTab
     {
-        return $this->dic->get(PublicLinkGrid::class)
-            ->getGrid($this->dic->get(PublicLinkService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->publicLinkGrid->getGrid($this->publicLinkService->search($this->itemSearchData))->updatePager();
     }
 
     /**
@@ -207,16 +218,5 @@ final class AccessManagerController extends ControllerBase
     public function getTabsGridHelper(): TabsGridHelper
     {
         return $this->tabsGridHelper;
-    }
-
-    /**
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
     }
 }

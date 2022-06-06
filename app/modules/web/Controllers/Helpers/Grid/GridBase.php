@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
+use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -34,7 +33,9 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\DataGrid\Layout\DataGridPager;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class GridBase
@@ -43,23 +44,36 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
  */
 abstract class GridBase extends HelperBase implements GridInterface
 {
-    protected ?float $queryTimeStart = null;
-    protected ?ThemeIcons $icons = null;
-    protected ?Acl $acl = null;
+    protected float      $queryTimeStart;
+    protected ThemeIcons $icons;
+    protected Acl        $acl;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        Acl $acl
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->queryTimeStart = microtime(true);
+        $this->acl = $acl;
+        $this->icons = $this->view->getTheme()->getIcons();
+    }
+
 
     /**
      * Actualizar los datos del paginador
      *
-     * @param DataGridInterface $dataGrid
-     * @param ItemSearchData    $itemSearchData
+     * @param  DataGridInterface  $dataGrid
+     * @param  ItemSearchData  $itemSearchData
      *
      * @return DataGridInterface
      */
     public function updatePager(
         DataGridInterface $dataGrid,
-        ItemSearchData    $itemSearchData
-    ): DataGridInterface
-    {
+        ItemSearchData $itemSearchData
+    ): DataGridInterface {
         $dataGrid->getPager()
             ->setLimitStart($itemSearchData->getLimitStart())
             ->setLimitCount($itemSearchData->getLimitCount())
@@ -73,14 +87,13 @@ abstract class GridBase extends HelperBase implements GridInterface
     /**
      * Devolver el paginador por defecto
      *
-     * @param DataGridActionSearch $sourceAction
+     * @param  DataGridActionSearch  $sourceAction
      *
      * @return DataGridPager
      */
     final protected function getPager(
         DataGridActionSearch $sourceAction
-    ): DataGridPager
-    {
+    ): DataGridPager {
         $gridPager = new DataGridPager();
         $gridPager->setSourceAction($sourceAction);
         $gridPager->setOnClickFunction('appMgmt/nav');
@@ -92,17 +105,6 @@ abstract class GridBase extends HelperBase implements GridInterface
         $gridPager->setIconLast($this->icons->getIconNavLast());
 
         return $gridPager;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    final protected function initialize(): void
-    {
-        $this->queryTimeStart = microtime(true);
-        $this->acl = $this->dic->get(Acl::class);
-        $this->icons = $this->view->getTheme()->getIcons();
     }
 
     /**

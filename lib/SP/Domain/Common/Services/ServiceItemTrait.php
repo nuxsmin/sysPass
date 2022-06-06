@@ -43,6 +43,7 @@ trait ServiceItemTrait
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      *
+     * @deprecated 
      * TODO: remove!!
      */
     public static function getItemsBasic(): array
