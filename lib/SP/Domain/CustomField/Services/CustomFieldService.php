@@ -34,9 +34,9 @@ use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\In\CustomFieldDefRepositoryInterface;
 use SP\Domain\CustomField\In\CustomFieldRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\CustomField\Repositories\CustomFieldRepository;
 
 /**
  * Class CustomFieldService
@@ -45,18 +45,18 @@ use SP\Infrastructure\CustomField\Repositories\CustomFieldRepository;
  */
 final class CustomFieldService extends Service implements CustomFieldServiceInterface
 {
-    protected CustomFieldRepository $customFieldRepository;
-    protected CustomFieldDefService $customFieldDefService;
+    protected CustomFieldRepositoryInterface    $customFieldRepository;
+    protected CustomFieldDefRepositoryInterface $customFieldDefRepository;
 
     public function __construct(
         Application $application,
         CustomFieldRepositoryInterface $customFieldRepository,
-        CustomFieldDefService $customFieldDefService
+        CustomFieldDefRepositoryInterface $customFieldDefRepository
     ) {
         parent::__construct($application);
 
         $this->customFieldRepository = $customFieldRepository;
-        $this->customFieldDefService = $customFieldDefService;
+        $this->customFieldDefRepository = $customFieldDefRepository;
     }
 
 
@@ -136,7 +136,7 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
             return $this->create($customFieldData);
         }
 
-        if ($this->customFieldDefService->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
+        if ($this->customFieldDefRepository->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
             $this->setSecureData($customFieldData);
         }
 
@@ -172,7 +172,7 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
             return true;
         }
 
-        if ($this->customFieldDefService->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
+        if ($this->customFieldDefRepository->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
             $this->setSecureData($customFieldData);
         }
 

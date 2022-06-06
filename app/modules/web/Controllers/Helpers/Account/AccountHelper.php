@@ -46,12 +46,11 @@ use SP\Domain\Account\PublicLinkServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\Category\Services\CategoryService;
 use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Client\Services\ClientService;
 use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Domain\ItemPreset\ItemPresetInterface;
-use SP\Domain\ItemPreset\Services\ItemPresetService;
+use SP\Domain\ItemPreset\ItemPresetServiceInterface;
 use SP\Domain\Tag\Services\TagService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Domain\User\Services\UserGroupService;
@@ -73,16 +72,17 @@ final class AccountHelper extends HelperBase
 {
     use ItemTrait;
 
-    private Acl                                        $acl;
-    private \SP\Domain\Account\AccountServiceInterface $accountService;
-    private AccountHistoryServiceInterface             $accountHistoryService;
-    private PublicLinkService              $publicLinkService;
-    private ItemPresetService              $itemPresetService;
+    private Acl                            $acl;
+    private AccountServiceInterface        $accountService;
+    private AccountHistoryServiceInterface $accountHistoryService;
+    private PublicLinkServiceInterface     $publicLinkService;
+    private ItemPresetServiceInterface     $itemPresetService;
     private MasterPassServiceInterface     $masterPassService;
-    private AccountActionsHelper                          $accountActionsHelper;
-    private \SP\Domain\Account\AccountAclServiceInterface $accountAclService;
-    private CategoryService                               $categoryService;
-    private ClientService                  $clientService;
+    private AccountActionsHelper           $accountActionsHelper;
+    private AccountAclServiceInterface     $accountAclService;
+    private CategoryServiceInterface       $categoryService;
+    private ClientServiceInterface         $clientService;
+    private CustomFieldServiceInterface    $customFieldService;
     private ?int                           $actionId   = null;
     private ?AccountAcl                    $accountAcl = null;
     private ?int                           $accountId  = null;
@@ -94,14 +94,15 @@ final class AccountHelper extends HelperBase
         RequestInterface $request,
         Acl $acl,
         AccountServiceInterface $accountService,
-        \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService,
+        AccountHistoryServiceInterface $accountHistoryService,
         PublicLinkServiceInterface $publicLinkService,
-        ItemPresetService $itemPresetService,
+        ItemPresetServiceInterface $itemPresetService,
         MasterPassServiceInterface $masterPassService,
         AccountActionsHelper $accountActionsHelper,
         AccountAclServiceInterface $accountAclService,
         CategoryServiceInterface $categoryService,
-        ClientServiceInterface $clientService
+        ClientServiceInterface $clientService,
+        CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $template, $request);
 
@@ -115,6 +116,7 @@ final class AccountHelper extends HelperBase
         $this->accountAclService = $accountAclService;
         $this->categoryService = $categoryService;
         $this->clientService = $clientService;
+        $this->customFieldService = $customFieldService;
 
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit', false);
@@ -385,7 +387,8 @@ final class AccountHelper extends HelperBase
             'customFields',
             $this->getCustomFieldsForItem(
                 ActionsInterface::ACCOUNT,
-                $this->accountId
+                $this->accountId,
+                $this->customFieldService
             )
         );
 

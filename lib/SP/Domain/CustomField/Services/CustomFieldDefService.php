@@ -35,8 +35,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\CustomField\CustomFieldDefServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Domain\CustomField\In\CustomFieldDefRepositoryInterface;
+use SP\Domain\CustomField\In\CustomFieldRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -51,19 +51,19 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     use ServiceItemTrait;
 
     protected CustomFieldDefRepositoryInterface $customFieldDefRepository;
-    protected CustomFieldServiceInterface       $customFieldService;
+    protected CustomFieldRepositoryInterface    $customFieldRepository;
     private DatabaseInterface                   $database;
 
     public function __construct(
         Application $application,
         CustomFieldDefRepositoryInterface $customFieldDefRepository,
-        CustomFieldServiceInterface $customFieldService,
+        CustomFieldRepositoryInterface $customFieldRepository,
         DatabaseInterface $database
     ) {
         parent::__construct($application);
 
         $this->customFieldDefRepository = $customFieldDefRepository;
-        $this->customFieldService = $customFieldService;
+        $this->customFieldRepository = $customFieldRepository;
         $this->database = $database;
     }
 
@@ -110,7 +110,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     {
         $this->transactionAware(
             function () use ($id) {
-                $this->customFieldService->deleteCustomFieldDefinitionData($id);
+                $this->customFieldRepository->deleteCustomFieldDefinitionData($id);
 
                 if ($this->customFieldDefRepository->delete($id) === 0) {
                     throw new NoSuchItemException(__u('Field not found'), SPException::INFO);
@@ -133,7 +133,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     {
         $this->transactionAware(
             function () use ($ids) {
-                $this->customFieldService->deleteCustomFieldDefinitionDataBatch($ids);
+                $this->customFieldRepository->deleteCustomFieldDefinitionDataBatch($ids);
 
                 if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
                     throw new ServiceException(
@@ -181,7 +181,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
 
                 // Delete the data used by the items using the previous definition
                 if ($customFieldDefinitionData->getModuleId() !== $itemData->moduleId) {
-                    $this->customFieldService->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
+                    $this->customFieldRepository->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
                 }
 
                 if ($this->customFieldDefRepository->update($itemData) !== 1) {
