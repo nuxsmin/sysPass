@@ -27,11 +27,7 @@ namespace SP\Domain\Client\In;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\ClientData;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\In\RepositoryInterface;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Mvc\Model\QueryCondition;
 

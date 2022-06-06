@@ -37,7 +37,7 @@ interface RepositoryInterface
     /**
      * Creates an item
      *
-     * @param mixed $itemData
+     * @param  mixed  $itemData
      *
      * @return mixed
      */
@@ -46,7 +46,7 @@ interface RepositoryInterface
     /**
      * Updates an item
      *
-     * @param mixed $itemData
+     * @param  mixed  $itemData
      *
      * @return mixed
      */
@@ -55,14 +55,14 @@ interface RepositoryInterface
     /**
      * Deletes an item
      *
-     * @param int $id
+     * @param  int  $id
      */
     public function delete(int $id);
 
     /**
      * Returns the item for given id
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return mixed
      */
@@ -76,7 +76,7 @@ interface RepositoryInterface
     /**
      * Returns all the items for given ids
      *
-     * @param array $ids
+     * @param  array  $ids
      *
      * @return QueryResult
      */
@@ -85,7 +85,7 @@ interface RepositoryInterface
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param  array  $ids
      *
      * @return int
      */
@@ -103,7 +103,7 @@ interface RepositoryInterface
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param mixed $itemData
+     * @param  mixed  $itemData
      *
      * @return bool
      */
@@ -112,7 +112,7 @@ interface RepositoryInterface
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param  mixed  $itemData
      *
      * @return bool
      */
@@ -121,7 +121,7 @@ interface RepositoryInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param  ItemSearchData  $itemSearchData
      *
      * @return mixed
      */

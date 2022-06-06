@@ -72,9 +72,9 @@ final class Installer implements InstallerInterface
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private Request           $request;
-    private ConfigFileService $config;
-    private UserService       $userService;
+    private Request                 $request;
+    private ConfigFileService       $config;
+    private UserService             $userService;
     private UserGroupService        $userGroupService;
     private UserProfileService      $userProfileService;
     private ConfigService           $configService;

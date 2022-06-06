@@ -107,7 +107,8 @@ final class ConfigUtil
             throw new ConfigException(
                 __u('\'/app/config\' directory permissions are wrong'),
                 SPException::ERROR,
-                sprintf(__('Current: %s - Needed: 750'), $configPerms));
+                sprintf(__('Current: %s - Needed: 750'), $configPerms)
+            );
         }
     }
 }

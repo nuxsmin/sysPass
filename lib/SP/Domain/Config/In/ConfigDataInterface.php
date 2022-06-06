@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -43,7 +43,7 @@ interface ConfigDataInterface
     public function getLogEvents(): array;
 
     /**
-     * @param array|null $logEvents
+     * @param  array|null  $logEvents
      *
      * @return ConfigDataInterface
      */
@@ -55,7 +55,7 @@ interface ConfigDataInterface
     public function isDokuwikiEnabled(): bool;
 
     /**
-     * @param bool|null $dokuwikiEnabled
+     * @param  bool|null  $dokuwikiEnabled
      *
      * @return $this
      */
@@ -67,7 +67,7 @@ interface ConfigDataInterface
     public function getDokuwikiUrl(): ?string;
 
     /**
-     * @param string|null $dokuwikiUrl
+     * @param  string|null  $dokuwikiUrl
      *
      * @return $this
      */
@@ -79,7 +79,7 @@ interface ConfigDataInterface
     public function getDokuwikiUrlBase(): ?string;
 
     /**
-     * @param string|null $dokuwikiUrlBase
+     * @param  string|null  $dokuwikiUrlBase
      *
      * @return $this
      */
@@ -91,7 +91,7 @@ interface ConfigDataInterface
     public function getDokuwikiUser(): ?string;
 
     /**
-     * @param string|null $dokuwikiUser
+     * @param  string|null  $dokuwikiUser
      *
      * @return $this
      */
@@ -103,7 +103,7 @@ interface ConfigDataInterface
     public function getDokuwikiPass(): ?string;
 
     /**
-     * @param string|null $dokuwikiPass
+     * @param  string|null  $dokuwikiPass
      *
      * @return $this
      */
@@ -115,7 +115,7 @@ interface ConfigDataInterface
     public function getDokuwikiNamespace(): ?string;
 
     /**
-     * @param string|null $dokuwikiNamespace
+     * @param  string|null  $dokuwikiNamespace
      *
      * @return $this
      */
@@ -127,7 +127,7 @@ interface ConfigDataInterface
     public function getLdapDefaultGroup(): int;
 
     /**
-     * @param int|null $ldapDefaultGroup
+     * @param  int|null  $ldapDefaultGroup
      *
      * @return $this
      */
@@ -139,7 +139,7 @@ interface ConfigDataInterface
     public function getLdapDefaultProfile(): int;
 
     /**
-     * @param int|null $ldapDefaultProfile
+     * @param  int|null  $ldapDefaultProfile
      *
      * @return $this
      */
@@ -151,7 +151,7 @@ interface ConfigDataInterface
     public function isProxyEnabled(): bool;
 
     /**
-     * @param boolean|null $proxyEnabled
+     * @param  boolean|null  $proxyEnabled
      *
      * @return $this
      */
@@ -163,7 +163,7 @@ interface ConfigDataInterface
     public function getProxyServer(): ?string;
 
     /**
-     * @param string|null $proxyServer
+     * @param  string|null  $proxyServer
      *
      * @return $this
      */
@@ -175,7 +175,7 @@ interface ConfigDataInterface
     public function getProxyPort(): int;
 
     /**
-     * @param int|null $proxyPort
+     * @param  int|null  $proxyPort
      *
      * @return $this
      */
@@ -187,7 +187,7 @@ interface ConfigDataInterface
     public function getProxyUser(): ?string;
 
     /**
-     * @param string|null $proxyUser
+     * @param  string|null  $proxyUser
      *
      * @return $this
      */
@@ -199,7 +199,7 @@ interface ConfigDataInterface
     public function getProxyPass(): ?string;
 
     /**
-     * @param string|null $proxyPass
+     * @param  string|null  $proxyPass
      *
      * @return $this
      */
@@ -211,7 +211,7 @@ interface ConfigDataInterface
     public function getPublinksMaxViews(): int;
 
     /**
-     * @param int|null $publinksMaxViews
+     * @param  int|null  $publinksMaxViews
      *
      * @return $this
      */
@@ -223,7 +223,7 @@ interface ConfigDataInterface
     public function getPublinksMaxTime(): int;
 
     /**
-     * @param int|null $publinksMaxTime
+     * @param  int|null  $publinksMaxTime
      *
      * @return $this
      */
@@ -235,7 +235,7 @@ interface ConfigDataInterface
     public function isSyslogEnabled(): bool;
 
     /**
-     * @param boolean|null $syslogEnabled
+     * @param  boolean|null  $syslogEnabled
      *
      * @return $this
      */
@@ -247,7 +247,7 @@ interface ConfigDataInterface
     public function isSyslogRemoteEnabled(): bool;
 
     /**
-     * @param boolean|null $syslogRemoteEnabled
+     * @param  boolean|null  $syslogRemoteEnabled
      *
      * @return $this
      */
@@ -259,7 +259,7 @@ interface ConfigDataInterface
     public function getSyslogServer(): ?string;
 
     /**
-     * @param string|null $syslogServer
+     * @param  string|null  $syslogServer
      *
      * @return $this
      */
@@ -271,7 +271,7 @@ interface ConfigDataInterface
     public function getSyslogPort(): int;
 
     /**
-     * @param int|null $syslogPort
+     * @param  int|null  $syslogPort
      *
      * @return $this
      */
@@ -283,7 +283,7 @@ interface ConfigDataInterface
     public function getBackupHash(): ?string;
 
     /**
-     * @param string|null $backup_hash
+     * @param  string|null  $backup_hash
      *
      * @return $this
      */
@@ -295,7 +295,7 @@ interface ConfigDataInterface
     public function getExportHash(): ?string;
 
     /**
-     * @param string|null $export_hash
+     * @param  string|null  $export_hash
      *
      * @return $this
      */
@@ -307,7 +307,7 @@ interface ConfigDataInterface
     public function getLdapBindUser(): ?string;
 
     /**
-     * @param string|null $ldapBindUser
+     * @param  string|null  $ldapBindUser
      *
      * @return $this
      */
@@ -319,7 +319,7 @@ interface ConfigDataInterface
     public function getAccountCount(): int;
 
     /**
-     * @param int|null $accountCount
+     * @param  int|null  $accountCount
      *
      * @return $this
      */
@@ -331,7 +331,7 @@ interface ConfigDataInterface
     public function isAccountLink(): bool;
 
     /**
-     * @param bool|null $accountLink
+     * @param  bool|null  $accountLink
      *
      * @return $this
      */
@@ -343,7 +343,7 @@ interface ConfigDataInterface
     public function isCheckUpdates(): bool;
 
     /**
-     * @param bool|null $checkUpdates
+     * @param  bool|null  $checkUpdates
      *
      * @return $this
      */
@@ -365,7 +365,7 @@ interface ConfigDataInterface
     public function getDbHost(): ?string;
 
     /**
-     * @param string|null $dbHost
+     * @param  string|null  $dbHost
      *
      * @return $this
      */
@@ -377,7 +377,7 @@ interface ConfigDataInterface
     public function getDbName(): ?string;
 
     /**
-     * @param string|null $dbName
+     * @param  string|null  $dbName
      *
      * @return $this
      */
@@ -389,7 +389,7 @@ interface ConfigDataInterface
     public function getDbPass(): ?string;
 
     /**
-     * @param string|null $dbPass
+     * @param  string|null  $dbPass
      *
      * @return $this
      */
@@ -401,7 +401,7 @@ interface ConfigDataInterface
     public function getDbUser(): ?string;
 
     /**
-     * @param string|null $dbUser
+     * @param  string|null  $dbUser
      *
      * @return $this
      */
@@ -413,7 +413,7 @@ interface ConfigDataInterface
     public function isDebug(): bool;
 
     /**
-     * @param bool|null $debug
+     * @param  bool|null  $debug
      *
      * @return $this
      */
@@ -425,7 +425,7 @@ interface ConfigDataInterface
     public function isDemoEnabled(): bool;
 
     /**
-     * @param bool|null $demoEnabled
+     * @param  bool|null  $demoEnabled
      *
      * @return $this
      */
@@ -442,7 +442,7 @@ interface ConfigDataInterface
     public function getFilesAllowedSize(): int;
 
     /**
-     * @param int|null $filesAllowedSize
+     * @param  int|null  $filesAllowedSize
      *
      * @return $this
      */
@@ -454,7 +454,7 @@ interface ConfigDataInterface
     public function isFilesEnabled(): bool;
 
     /**
-     * @param bool|null $filesEnabled
+     * @param  bool|null  $filesEnabled
      *
      * @return $this
      */
@@ -466,7 +466,7 @@ interface ConfigDataInterface
     public function isGlobalSearch(): bool;
 
     /**
-     * @param bool|null $globalSearch
+     * @param  bool|null  $globalSearch
      *
      * @return $this
      */
@@ -478,7 +478,7 @@ interface ConfigDataInterface
     public function isInstalled(): bool;
 
     /**
-     * @param bool|null $installed
+     * @param  bool|null  $installed
      *
      * @return $this
      */
@@ -490,7 +490,7 @@ interface ConfigDataInterface
     public function getLdapBase(): ?string;
 
     /**
-     * @param string|null $ldapBase
+     * @param  string|null  $ldapBase
      *
      * @return $this
      */
@@ -502,7 +502,7 @@ interface ConfigDataInterface
     public function isLdapEnabled(): bool;
 
     /**
-     * @param bool|null $ldapEnabled
+     * @param  bool|null  $ldapEnabled
      *
      * @return $this
      */
@@ -514,7 +514,7 @@ interface ConfigDataInterface
     public function getLdapGroup(): ?string;
 
     /**
-     * @param string|null $ldapGroup
+     * @param  string|null  $ldapGroup
      *
      * @return $this
      */
@@ -526,7 +526,7 @@ interface ConfigDataInterface
     public function getLdapServer(): ?string;
 
     /**
-     * @param string|null $ldapServer
+     * @param  string|null  $ldapServer
      *
      * @return $this
      */
@@ -538,7 +538,7 @@ interface ConfigDataInterface
     public function isLogEnabled(): bool;
 
     /**
-     * @param bool|null $logEnabled
+     * @param  bool|null  $logEnabled
      *
      * @return $this
      */
@@ -550,7 +550,7 @@ interface ConfigDataInterface
     public function isMailAuthenabled(): bool;
 
     /**
-     * @param bool|null $mailAuthenabled
+     * @param  bool|null  $mailAuthenabled
      *
      * @return $this
      */
@@ -562,7 +562,7 @@ interface ConfigDataInterface
     public function isMailEnabled(): bool;
 
     /**
-     * @param bool|null $mailEnabled
+     * @param  bool|null  $mailEnabled
      *
      * @return $this
      */
@@ -574,7 +574,7 @@ interface ConfigDataInterface
     public function getMailFrom(): ?string;
 
     /**
-     * @param string|null $mailFrom
+     * @param  string|null  $mailFrom
      *
      * @return $this
      */
@@ -586,7 +586,7 @@ interface ConfigDataInterface
     public function getMailPass(): ?string;
 
     /**
-     * @param string|null $mailPass
+     * @param  string|null  $mailPass
      *
      * @return $this
      */
@@ -598,7 +598,7 @@ interface ConfigDataInterface
     public function getMailPort(): int;
 
     /**
-     * @param int|null $mailPort
+     * @param  int|null  $mailPort
      *
      * @return $this
      */
@@ -610,7 +610,7 @@ interface ConfigDataInterface
     public function isMailRequestsEnabled(): bool;
 
     /**
-     * @param bool|null $mailRequestsEnabled
+     * @param  bool|null  $mailRequestsEnabled
      *
      * @return $this
      */
@@ -622,7 +622,7 @@ interface ConfigDataInterface
     public function getMailSecurity(): ?string;
 
     /**
-     * @param string|null $mailSecurity
+     * @param  string|null  $mailSecurity
      *
      * @return $this
      */
@@ -634,7 +634,7 @@ interface ConfigDataInterface
     public function getMailServer(): ?string;
 
     /**
-     * @param string|null $mailServer
+     * @param  string|null  $mailServer
      *
      * @return $this
      */
@@ -646,7 +646,7 @@ interface ConfigDataInterface
     public function getMailUser(): ?string;
 
     /**
-     * @param string|null $mailUser
+     * @param  string|null  $mailUser
      *
      * @return $this
      */
@@ -658,7 +658,7 @@ interface ConfigDataInterface
     public function isMaintenance(): bool;
 
     /**
-     * @param bool|null $maintenance
+     * @param  bool|null  $maintenance
      *
      * @return $this
      */
@@ -670,7 +670,7 @@ interface ConfigDataInterface
     public function getPasswordSalt(): ?string;
 
     /**
-     * @param string|null $passwordSalt
+     * @param  string|null  $passwordSalt
      *
      * @return $this
      */
@@ -682,7 +682,7 @@ interface ConfigDataInterface
     public function isResultsAsCards(): bool;
 
     /**
-     * @param bool|null $resultsAsCards
+     * @param  bool|null  $resultsAsCards
      *
      * @return $this
      */
@@ -694,7 +694,7 @@ interface ConfigDataInterface
     public function getSessionTimeout(): int;
 
     /**
-     * @param int|null $sessionTimeout
+     * @param  int|null  $sessionTimeout
      *
      * @return $this
      */
@@ -706,7 +706,7 @@ interface ConfigDataInterface
     public function getSiteLang(): ?string;
 
     /**
-     * @param string|null $siteLang
+     * @param  string|null  $siteLang
      *
      * @return $this
      */
@@ -718,7 +718,7 @@ interface ConfigDataInterface
     public function getSiteTheme(): string;
 
     /**
-     * @param string|null $siteTheme
+     * @param  string|null  $siteTheme
      *
      * @return $this
      */
@@ -730,7 +730,7 @@ interface ConfigDataInterface
     public function getConfigVersion(): ?string;
 
     /**
-     * @param string|null $configVersion
+     * @param  string|null  $configVersion
      *
      * @return $this
      */
@@ -742,7 +742,7 @@ interface ConfigDataInterface
     public function isWikiEnabled(): bool;
 
     /**
-     * @param bool|null $wikiEnabled
+     * @param  bool|null  $wikiEnabled
      *
      * @return $this
      */
@@ -754,7 +754,7 @@ interface ConfigDataInterface
     public function getWikiFilter(): array;
 
     /**
-     * @param array|null $wikiFilter
+     * @param  array|null  $wikiFilter
      *
      * @return $this
      */
@@ -766,7 +766,7 @@ interface ConfigDataInterface
     public function getWikiPageurl(): ?string;
 
     /**
-     * @param string|null $wikiPageurl
+     * @param  string|null  $wikiPageurl
      *
      * @return $this
      */
@@ -778,7 +778,7 @@ interface ConfigDataInterface
     public function getWikiSearchurl(): ?string;
 
     /**
-     * @param string|null $wikiSearchurl
+     * @param  string|null  $wikiSearchurl
      *
      * @return $this
      */
@@ -790,7 +790,7 @@ interface ConfigDataInterface
     public function getLdapBindPass(): ?string;
 
     /**
-     * @param string|null $ldapBindPass
+     * @param  string|null  $ldapBindPass
      *
      * @return $this
      */
@@ -802,7 +802,7 @@ interface ConfigDataInterface
     public function isPublinksImageEnabled(): bool;
 
     /**
-     * @param bool|null $publinksImageEnabled
+     * @param  bool|null  $publinksImageEnabled
      *
      * @return $this
      */
@@ -814,7 +814,7 @@ interface ConfigDataInterface
     public function isHttpsEnabled(): bool;
 
     /**
-     * @param bool|null $httpsEnabled
+     * @param  bool|null  $httpsEnabled
      *
      * @return $this
      */
@@ -826,7 +826,7 @@ interface ConfigDataInterface
     public function isCheckNotices(): bool;
 
     /**
-     * @param bool|null $checknotices
+     * @param  bool|null  $checknotices
      *
      * @return $this
      */
@@ -838,7 +838,7 @@ interface ConfigDataInterface
     public function isAccountPassToImage(): bool;
 
     /**
-     * @param bool|null $accountPassToImage
+     * @param  bool|null  $accountPassToImage
      *
      * @return $this
      */
@@ -850,7 +850,7 @@ interface ConfigDataInterface
     public function getUpgradeKey(): ?string;
 
     /**
-     * @param string|null $upgradeKey
+     * @param  string|null  $upgradeKey
      *
      * @return $this
      */
@@ -862,7 +862,7 @@ interface ConfigDataInterface
     public function getDbPort(): int;
 
     /**
-     * @param int|null $dbPort
+     * @param  int|null  $dbPort
      *
      * @return $this
      */
@@ -874,7 +874,7 @@ interface ConfigDataInterface
     public function isPublinksEnabled(): bool;
 
     /**
-     * @param bool|null $publinksEnabled
+     * @param  bool|null  $publinksEnabled
      *
      * @return $this
      */
@@ -896,7 +896,7 @@ interface ConfigDataInterface
     public function getConfigSaver(): ?string;
 
     /**
-     * @param string|null $configSaver
+     * @param  string|null  $configSaver
      *
      * @return $this
      */
@@ -908,7 +908,7 @@ interface ConfigDataInterface
     public function getDbSocket(): ?string;
 
     /**
-     * @param string|null $dbSocket
+     * @param  string|null  $dbSocket
      *
      * @return ConfigDataInterface
      */
@@ -920,7 +920,7 @@ interface ConfigDataInterface
     public function isEncryptSession(): bool;
 
     /**
-     * @param bool|null $encryptSession
+     * @param  bool|null  $encryptSession
      *
      * @return $this
      */
@@ -932,7 +932,7 @@ interface ConfigDataInterface
     public function isAccountFullGroupAccess(): bool;
 
     /**
-     * @param bool|null $accountFullGroupAccess
+     * @param  bool|null  $accountFullGroupAccess
      *
      * @return $this
      */
@@ -944,7 +944,7 @@ interface ConfigDataInterface
     public function isAuthBasicEnabled(): bool;
 
     /**
-     * @param bool|null $authBasicEnabled
+     * @param  bool|null  $authBasicEnabled
      */
     public function setAuthBasicEnabled(?bool $authBasicEnabled);
 
@@ -954,7 +954,7 @@ interface ConfigDataInterface
     public function getAuthBasicDomain(): ?string;
 
     /**
-     * @param string|null $authBasicDomain
+     * @param  string|null  $authBasicDomain
      *
      * @return ConfigDataInterface
      */
@@ -966,7 +966,7 @@ interface ConfigDataInterface
     public function isAuthBasicAutoLoginEnabled(): bool;
 
     /**
-     * @param bool|null $authBasicAutoLoginEnabled
+     * @param  bool|null  $authBasicAutoLoginEnabled
      *
      * @return ConfigDataInterface
      */
@@ -978,7 +978,7 @@ interface ConfigDataInterface
     public function getSsoDefaultGroup(): ?int;
 
     /**
-     * @param int|null $ssoDefaultGroup
+     * @param  int|null  $ssoDefaultGroup
      *
      * @return ConfigDataInterface
      */
@@ -990,7 +990,7 @@ interface ConfigDataInterface
     public function getSsoDefaultProfile(): ?int;
 
     /**
-     * @param int|null $ssoDefaultProfile
+     * @param  int|null  $ssoDefaultProfile
      *
      * @return ConfigDataInterface
      */
@@ -1002,7 +1002,7 @@ interface ConfigDataInterface
     public function getMailRecipients(): ?array;
 
     /**
-     * @param array|null $mailRecipients
+     * @param  array|null  $mailRecipients
      *
      * @return ConfigDataInterface
      */
@@ -1014,7 +1014,7 @@ interface ConfigDataInterface
     public function getMailEvents(): ?array;
 
     /**
-     * @param array|null $mailEvents
+     * @param  array|null  $mailEvents
      *
      * @return ConfigDataInterface
      */
@@ -1026,7 +1026,7 @@ interface ConfigDataInterface
     public function getDatabaseVersion(): string;
 
     /**
-     * @param string|null $databaseVersion
+     * @param  string|null  $databaseVersion
      *
      * @return ConfigDataInterface
      */
@@ -1038,7 +1038,7 @@ interface ConfigDataInterface
     public function getConfigDate(): int;
 
     /**
-     * @param int $configDate
+     * @param  int  $configDate
      *
      * @return $this
      */
@@ -1050,7 +1050,7 @@ interface ConfigDataInterface
     public function isAccountExpireEnabled(): bool;
 
     /**
-     * @param bool|null $accountExpireEnabled
+     * @param  bool|null  $accountExpireEnabled
      *
      * @return ConfigDataInterface
      */
@@ -1062,7 +1062,7 @@ interface ConfigDataInterface
     public function getAccountExpireTime(): int;
 
     /**
-     * @param int|null $accountExpireTime
+     * @param  int|null  $accountExpireTime
      *
      * @return ConfigDataInterface
      */
@@ -1074,7 +1074,7 @@ interface ConfigDataInterface
     public function isLdapTlsEnabled(): bool;
 
     /**
-     * @param bool|null $ldapTlsEnabled
+     * @param  bool|null  $ldapTlsEnabled
      *
      * @return ConfigDataInterface
      */
@@ -1086,7 +1086,7 @@ interface ConfigDataInterface
     public function getFilesAllowedMime(): array;
 
     /**
-     * @param array|null $filesAllowedMime
+     * @param  array|null  $filesAllowedMime
      *
      * @return ConfigDataInterface
      */
@@ -1098,7 +1098,7 @@ interface ConfigDataInterface
     public function getLdapType(): int;
 
     /**
-     * @param int|null $ldapType
+     * @param  int|null  $ldapType
      *
      * @return ConfigDataInterface
      */
@@ -1110,7 +1110,7 @@ interface ConfigDataInterface
     public function getAppVersion(): string;
 
     /**
-     * @param string|null $appVersion
+     * @param  string|null  $appVersion
      *
      * @return ConfigDataInterface
      */
@@ -1122,7 +1122,7 @@ interface ConfigDataInterface
     public function getApplicationUrl(): ?string;
 
     /**
-     * @param string|null $applicationUrl
+     * @param  string|null  $applicationUrl
      *
      * @return ConfigDataInterface
      */
@@ -1134,7 +1134,7 @@ interface ConfigDataInterface
     public function getLdapFilterUserObject(): ?string;
 
     /**
-     * @param string|null $filter
+     * @param  string|null  $filter
      *
      * @return ConfigDataInterface
      */
@@ -1146,7 +1146,7 @@ interface ConfigDataInterface
     public function getLdapFilterGroupObject(): ?string;
 
     /**
-     * @param string|null $filter
+     * @param  string|null  $filter
      *
      * @return ConfigDataInterface
      */
@@ -1158,7 +1158,7 @@ interface ConfigDataInterface
     public function getLdapFilterUserAttributes(): array;
 
     /**
-     * @param array|null $attributes
+     * @param  array|null  $attributes
      *
      * @return ConfigDataInterface
      */
@@ -1170,7 +1170,7 @@ interface ConfigDataInterface
     public function getLdapFilterGroupAttributes(): array;
 
     /**
-     * @param array|null $attributes
+     * @param  array|null  $attributes
      *
      * @return ConfigDataInterface
      */
@@ -1182,7 +1182,7 @@ interface ConfigDataInterface
     public function isLdapDatabaseEnabled(): bool;
 
     /**
-     * @param bool|null $ldapDatabaseEnabled
+     * @param  bool|null  $ldapDatabaseEnabled
      *
      * @return ConfigDataInterface
      */

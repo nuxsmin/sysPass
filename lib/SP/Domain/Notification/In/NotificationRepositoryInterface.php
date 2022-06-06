@@ -28,7 +28,6 @@ namespace SP\Domain\Notification\In;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\NotificationData;
 use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 

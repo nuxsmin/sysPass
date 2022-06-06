@@ -54,7 +54,7 @@ final class UserService extends Service implements UserServiceInterface
 {
     use ServiceItemTrait;
 
-    private UserRepository $userRepository;
+    private UserRepository  $userRepository;
     private UserPassService $userPassService;
 
     public function __construct(

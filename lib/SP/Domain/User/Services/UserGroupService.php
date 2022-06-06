@@ -51,9 +51,9 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
 {
     use ServiceItemTrait;
 
-    protected UserGroupRepository $userGroupRepository;
+    protected UserGroupRepository             $userGroupRepository;
     protected UserToUserGroupServiceInterface $userToUserGroupService;
-    private DatabaseInterface $database;
+    private DatabaseInterface                 $database;
 
     public function __construct(
         Application $application,

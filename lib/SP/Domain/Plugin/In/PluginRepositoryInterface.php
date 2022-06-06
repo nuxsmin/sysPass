@@ -27,11 +27,8 @@ namespace SP\Domain\Plugin\In;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 
 /**
  * Class PluginRepository

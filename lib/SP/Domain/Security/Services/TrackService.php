@@ -60,8 +60,11 @@ final class TrackService extends Service implements TrackServiceInterface
     private TrackRepository  $trackRepository;
     private RequestInterface $request;
 
-    public function __construct(Application $application, TrackRepositoryInterface $trackRepository, RequestInterface $request)
-    {
+    public function __construct(
+        Application $application,
+        TrackRepositoryInterface $trackRepository,
+        RequestInterface $request
+    ) {
         parent::__construct($application);
 
         $this->trackRepository = $trackRepository;

@@ -50,7 +50,7 @@ final class ClientService extends Service implements ClientServiceInterface
 {
     use ServiceItemTrait;
 
-    private ClientRepository $clientRepository;
+    private ClientRepository  $clientRepository;
     private AccountFilterUser $accountFilterUser;
 
     public function __construct(

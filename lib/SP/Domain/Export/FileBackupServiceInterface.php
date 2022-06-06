@@ -25,8 +25,6 @@
 namespace SP\Domain\Export;
 
 
-use SP\Domain\Common\Services\ServiceException;
-
 /**
  * Esta clase es la encargada de realizar la copia de sysPass.
  */

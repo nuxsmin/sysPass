@@ -26,7 +26,6 @@ namespace SP\Domain\Notification;
 
 
 use SP\Core\Messages\MailMessage;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Providers\Mail\MailParams;
 
 /**
