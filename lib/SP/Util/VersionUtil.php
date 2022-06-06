@@ -24,7 +24,7 @@
 
 namespace SP\Util;
 
-use SP\Services\Install\Installer;
+use SP\Domain\Install\Services\Installer;
 
 /**
  * Class VersionUtil
@@ -38,14 +38,14 @@ final class VersionUtil
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
+        return implode('', Installer::VERSION).'.'.Installer::BUILD;
     }
 
     /**
      * Compare versions
      *
-     * @param string       $currentVersion
-     * @param array|string $upgradeableVersion
+     * @param  string  $currentVersion
+     * @param  array|string  $upgradeableVersion
      *
      * @return bool True if $currentVersion is lower than $upgradeableVersion
      */
@@ -72,13 +72,13 @@ final class VersionUtil
         $versionRes = (int)$currentVersion < (int)$upgradeVersion;
 
         return (($versionRes && (int)$upgradeBuild === 0)
-            || ($versionRes && (int)$build < (int)$upgradeBuild));
+                || ($versionRes && (int)$build < (int)$upgradeBuild));
     }
 
     /**
      * Return a normalized version string to be compared
      *
-     * @param string|array $versionIn
+     * @param  string|array  $versionIn
      */
     public static function normalizeVersionForCompare($versionIn): string
     {
@@ -98,7 +98,7 @@ final class VersionUtil
                 $nomalizedVersion += (int)$value * (10 ** (3 - $key));
             }
 
-            return $nomalizedVersion . '.' . $build;
+            return $nomalizedVersion.'.'.$build;
         }
 
         return '';
@@ -123,7 +123,7 @@ final class VersionUtil
     /**
      * Devuelve la versión de sysPass.
      *
-     * @param bool $retBuild devolver el número de compilación
+     * @param  bool  $retBuild  devolver el número de compilación
      *
      * @return array con el número de versión
      */

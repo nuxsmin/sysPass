@@ -37,17 +37,17 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CategoryForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Auth\AuthException;
-use SP\Services\Category\CategoryService;
-use SP\Services\ServiceException;
 
 /**
  * Class CategoryController

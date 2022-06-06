@@ -27,15 +27,15 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Config\ConfigUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Notification\Services\MailService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
-use SP\Services\Mail\MailService;
 
 /**
  * Class ConfigMailController

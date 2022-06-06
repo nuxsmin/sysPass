@@ -24,10 +24,11 @@
 
 namespace SP\Core;
 
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 
 defined('APP_ROOT') || die();
 
@@ -36,7 +37,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-final class Language
+final class Language implements LanguageInterface
 {
     /**
      * Lenguaje del usuario
@@ -59,7 +60,7 @@ final class Language
     /**
      *  Available languages
      */
-    private static array $langs = [
+    private static array          $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
         'en_US' => 'English',
@@ -71,18 +72,18 @@ final class Language
         'nl_NL' => 'Nederlands',
         'pt_BR' => 'Português',
         'it_IT' => 'Italiano',
-        'da' => 'Dansk',
-        'fo' => 'Føroyskt mál',
+        'da'    => 'Dansk',
+        'fo'    => 'Føroyskt mál',
         'ja_JP' => '日本語',
     ];
     protected ConfigDataInterface $configData;
-    protected ContextInterface $context;
-    private Request $request;
+    protected ContextInterface    $context;
+    private Request               $request;
 
     /**
      * Language constructor.
      */
-    public function __construct(ContextInterface $session, Config $config, Request $request)
+    public function __construct(ContextInterface $session, ConfigInterface $config, RequestInterface $request)
     {
         $this->context = $session;
         $this->configData = $config->getConfigData();
@@ -102,7 +103,7 @@ final class Language
     /**
      * Establecer el lenguaje a utilizar
      *
-     * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
+     * @param  bool  $force  Forzar la detección del lenguaje para los inicios de sesión
      */
     public function setLanguage(bool $force = false): void
     {
@@ -162,16 +163,16 @@ final class Language
 
         self::$localeStatus = setlocale(LC_MESSAGES, $lang);
 
-        putenv('LANG=' . $lang);
-        putenv('LANGUAGE=' . $lang);
+        putenv('LANG='.$lang);
+        putenv('LANGUAGE='.$lang);
 
         $locale = setlocale(LC_ALL, $lang);
 
         if ($locale === false) {
             logger('Could not set locale', 'ERROR');
-            logger('Domain path: ' . LOCALES_PATH);
+            logger('Domain path: '.LOCALES_PATH);
         } else {
-            logger('Locale set to: ' . $locale);
+            logger('Locale set to: '.$locale);
         }
 
         bindtextdomain('messages', LOCALES_PATH);
@@ -205,13 +206,5 @@ final class Language
 
             self::$appSet = false;
         }
-    }
-
-    /**
-     * Comprobar si el archivo de lenguaje existe
-     */
-    private function checkLangFile(string $lang): bool
-    {
-        return file_exists(LOCALES_PATH . DIRECTORY_SEPARATOR . $lang);
     }
 }

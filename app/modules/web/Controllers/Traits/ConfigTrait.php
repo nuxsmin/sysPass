@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\JsonResponse;
 use SP\Util\Util;
 
@@ -49,7 +49,7 @@ trait ConfigTrait
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
-        Config $config,
+        ConfigInterface $config,
         callable $onSuccess = null
     ): bool {
         try {

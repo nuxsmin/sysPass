@@ -34,8 +34,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -48,7 +48,7 @@ use function SP\Tests\setupContext;
 class PublicLinkRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var PublicLinkRepository
+     * @var \SP\Infrastructure\Account\Repositories\PublicLinkRepository
      */
     private static $repository;
 

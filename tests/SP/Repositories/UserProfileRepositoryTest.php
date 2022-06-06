@@ -33,8 +33,9 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\UserProfile\UserProfileRepository;
+use SP\Domain\User\In\UserProfileRepositoryInterface;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\User\Repositories\UserProfileRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -49,7 +50,7 @@ use function SP\Tests\setupContext;
 class UserProfileRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var UserProfileRepository
+     * @var UserProfileRepositoryInterface
      */
     private static $repository;
 

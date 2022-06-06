@@ -32,10 +32,10 @@ use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\ProfileData;
-use SP\Services\User\UserLoginResponse;
-use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\MySQLHandler;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\MySQLHandler;
 use SP\Util\FileUtil;
 
 define('DEBUG', true);

@@ -32,8 +32,9 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Category\CategoryRepository;
-use SP\Repositories\DuplicatedItemException;
+use SP\Domain\Category\In\CategoryRepositoryInterface;
+use SP\Infrastructure\Category\Repositories\CategoryRepository;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -48,7 +49,7 @@ use function SP\Tests\setupContext;
 class CategoryRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var CategoryRepository
+     * @var CategoryRepositoryInterface
      */
     private static $repository;
 

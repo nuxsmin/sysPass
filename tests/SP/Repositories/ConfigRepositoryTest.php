@@ -30,7 +30,8 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
-use SP\Repositories\Config\ConfigRepository;
+use SP\Domain\Config\In\ConfigRepositoryInterface;
+use SP\Infrastructure\Config\Repositories\ConfigRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -42,7 +43,7 @@ use function SP\Tests\setupContext;
 class ConfigRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var ConfigRepository
+     * @var ConfigRepositoryInterface
      */
     private static $repository;
 

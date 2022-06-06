@@ -28,6 +28,8 @@ use Closure;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
@@ -35,11 +37,12 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountAcl;
-use SP\Services\Account\AccountAclService;
-use SP\Services\Account\AccountService;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Account\AccountAclServiceInterface;
+use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Account\Services\AccountAclService;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -50,38 +53,23 @@ use function SP\Tests\setupContext;
  */
 class AccountAclServiceTest extends DatabaseTestCase
 {
-    /**
-     * @var Closure
-     */
-    private static $service;
-    /**
-     * @var AccountService
-     */
-    private static $accountService;
-    /**
-     * @var StatelessContext
-     */
-    private static $context;
-    /**
-     * @var array
-     */
-    private static $actions = [
-        Acl::ACCOUNT_SEARCH,
-        Acl::ACCOUNT_VIEW,
-        Acl::ACCOUNT_VIEW_PASS,
-        Acl::ACCOUNT_HISTORY_VIEW,
-        Acl::ACCOUNT_CREATE,
-        Acl::ACCOUNT_EDIT,
-        Acl::ACCOUNT_EDIT_PASS,
-        Acl::ACCOUNT_EDIT_RESTORE,
-        Acl::ACCOUNT_COPY,
-        Acl::ACCOUNT_COPY_PASS,
-        Acl::ACCOUNT_DELETE
+    private static Closure           $service;
+    private static AccountService    $accountService;
+    private static StatelessContext  $context;
+    private static array             $actions = [
+        ActionsInterface::ACCOUNT_SEARCH,
+        ActionsInterface::ACCOUNT_VIEW,
+        ActionsInterface::ACCOUNT_VIEW_PASS,
+        ActionsInterface::ACCOUNT_HISTORY_VIEW,
+        ActionsInterface::ACCOUNT_CREATE,
+        ActionsInterface::ACCOUNT_EDIT,
+        ActionsInterface::ACCOUNT_EDIT_PASS,
+        ActionsInterface::ACCOUNT_EDIT_RESTORE,
+        ActionsInterface::ACCOUNT_COPY,
+        ActionsInterface::ACCOUNT_COPY_PASS,
+        ActionsInterface::ACCOUNT_DELETE,
     ];
-    /**
-     * @var AccountDetailsResponse
-     */
-    protected $account;
+    protected AccountDetailsResponse $account;
 
     /**
      * @throws NotFoundException
@@ -98,8 +86,8 @@ class AccountAclServiceTest extends DatabaseTestCase
 
         // Es necesario utilizar una función anónima para evitar la fijación
         // de los datos del contexto
-        self::$service = function () use ($dic) {
-            return new AccountAclService($dic);
+        self::$service = static function () use ($dic) {
+            return new AccountAclService($dic, $dic->get(Application::class));
         };
 
         self::$accountService = $dic->get(AccountService::class);
@@ -110,7 +98,7 @@ class AccountAclServiceTest extends DatabaseTestCase
      */
     public function testSaveAclInCache()
     {
-        /** @var AccountAclService $service */
+        /** @var AccountAclServiceInterface $service */
         $service = self::$service->call($this);
 
         $accountAcl = new AccountAcl(10);
@@ -150,7 +138,7 @@ class AccountAclServiceTest extends DatabaseTestCase
      */
     public function testClearAcl()
     {
-        /** @var AccountAclService $service */
+        /** @var \SP\Domain\Account\AccountAclServiceInterface $service */
         $service = self::$service->call($this);
 
         $accountAcl = new AccountAcl(10);
@@ -197,9 +185,9 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param bool          $should
+     * @param  bool  $should
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -244,16 +232,16 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param AccountAcl    $accountAclExample
+     * @param  AccountAcl  $accountAclExample
      *
      * @throws ConstraintException
      * @throws QueryException
      */
     private function checkForUserByExample(AccountAclDto $accountAclDto, AccountAcl $accountAclExample)
     {
-        /** @var AccountAclService $service */
+        /** @var AccountAclServiceInterface $service */
         $service = self::$service->call($this);
 
         foreach (self::$actions as $action) {
@@ -271,7 +259,10 @@ class AccountAclServiceTest extends DatabaseTestCase
             if ($action !== Acl::ACCOUNT_CREATE
                 && $action !== Acl::ACCOUNT_COPY_PASS
             ) {
-                $this->assertEquals($accountAclExample->checkAccountAccess($action), $accountAcl->checkAccountAccess($action));
+                $this->assertEquals(
+                    $accountAclExample->checkAccountAccess($action),
+                    $accountAcl->checkAccountAccess($action)
+                );
             }
 
             if ($action === Acl::ACCOUNT_VIEW
@@ -355,8 +346,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param     $userId
      * @param     $groupId
      *
-     * @param int $isAdminApp
-     * @param int $isAdminAcc
+     * @param  int  $isAdminApp
+     * @param  int  $isAdminAcc
      *
      * @return AccountAclDto
      * @throws ConstraintException
@@ -489,17 +480,21 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should  Sets view and edit status
-     * @param bool          $profile Sets profile action status
-     * @param bool          $acl     Sets ACL expected result
+     * @param  array  $should  Sets view and edit status
+     * @param  bool  $profile  Sets profile action status
+     * @param  bool  $acl  Sets ACL expected result
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkView(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkView(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -529,18 +524,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkViewPass(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkViewPass(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -570,18 +569,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDelete(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkDelete(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -611,18 +614,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkEditPass(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkEditPass(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -652,18 +659,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkEditAndRestore(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkEditAndRestore(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -696,18 +707,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkPermissions(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkPermissions(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -737,18 +752,22 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      *
-     * @param array         $should
+     * @param  array  $should
      *
-     * @param bool          $profile
-     * @param bool          $acl
+     * @param  bool  $profile
+     * @param  bool  $acl
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkViewFiles(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
-    {
+    private function checkViewFiles(
+        AccountAclDto $accountAclDto,
+        $should = ['view' => true, 'edit' => true],
+        $profile = true,
+        $acl = true
+    ) {
         $userProfile = self::$context
             ->getUserProfile()
             ->reset()
@@ -782,7 +801,7 @@ class AccountAclServiceTest extends DatabaseTestCase
      */
     public function testGetAclFromCache()
     {
-        /** @var AccountAclService $service */
+        /** @var AccountAclServiceInterface $service */
         $service = self::$service->call($this);
 
         $this->assertNull($service->getAclFromCache(1, 10));

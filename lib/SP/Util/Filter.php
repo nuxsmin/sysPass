@@ -65,7 +65,7 @@ final class Filter
     }
 
     /**
-     * @param string|int $value
+     * @param  string|int  $value
      */
     public static function getInt($value): ?int
     {
@@ -76,11 +76,7 @@ final class Filter
 
     public static function getString(?string $value): string
     {
-        return filter_var(
-            trim($value),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
-        );
+        return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }
 
     public static function getRaw(string $value): string

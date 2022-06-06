@@ -32,9 +32,9 @@ use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
+use SP\Domain\ItemPreset\ItemPresetInterface;
+use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Services\ItemPreset\ItemPresetRequest;
 
 /**
  * Class ItemsPresetForm

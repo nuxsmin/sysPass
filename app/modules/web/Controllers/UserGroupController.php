@@ -37,19 +37,19 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserGroupForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Auth\AuthException;
-use SP\Services\ServiceException;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
 
 /**
  * Class GroupController

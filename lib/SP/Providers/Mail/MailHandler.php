@@ -30,10 +30,12 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
+use SP\Domain\Notification\MailServiceInterface;
+use SP\Domain\Notification\Services\MailService;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\Mail\MailService;
 use SplSubject;
 
 /**
@@ -72,8 +74,8 @@ final class MailHandler extends Provider implements EventReceiver
 
     public function __construct(
         Application $application,
-        MailService $mailService,
-        Request $request
+        MailServiceInterface $mailService,
+        RequestInterface $request
     ) {
         $this->mailService = $mailService;
         $this->request = $request;

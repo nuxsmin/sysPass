@@ -31,7 +31,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\EventLog\EventlogRepository;
+use SP\Domain\Security\In\EventlogRepositoryInterface;
+use SP\Infrastructure\Security\Repositories\EventlogRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -46,7 +47,7 @@ use function SP\Tests\setupContext;
 class EventlogRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var EventlogRepository
+     * @var EventlogRepositoryInterface
      */
     private static $repository;
 

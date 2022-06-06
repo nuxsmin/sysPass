@@ -31,21 +31,22 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\UserGroup\UserToUserGroupService;
+use SP\Domain\User\Services\UserToUserGroupService;
+use SP\Domain\User\UserToUserGroupServiceInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
 /**
  * Class UserToUserGroupServiceTest
  *
- * @package SP\Tests\SP\Services\UserGroup
+ * @package SP\Tests\SP\Domain\Common\Services\UserGroup
  */
 class UserToUserGroupServiceTest extends DatabaseTestCase
 {
 
     /**
-     * @var UserToUserGroupService
+     * @var UserToUserGroupServiceInterface
      */
     private static $service;
 

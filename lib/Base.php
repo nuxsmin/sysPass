@@ -49,7 +49,7 @@ $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
 
 defined('APP_MODULE') || define('APP_MODULE', 'web');
-define('DEBUG', getenv('DEBUG'));
+define('DEBUG', (bool)getenv('DEBUG'));
 define(
     'IS_TESTING',
     getenv('IS_TESTING')
@@ -108,12 +108,15 @@ define(
 try {
     $moduleDefinitions = initModule(APP_MODULE);
 
-    return (new ContainerBuilder)
-        ->writeProxiesToFile(true, CACHE_PATH.DS.'proxies')
-        ->addDefinitions(
-            BASE_PATH.DS.'Definitions.php',
-            $moduleDefinitions
-        )
+    $containerBuilder = new ContainerBuilder;
+
+    if (!DEBUG) {
+        $containerBuilder->enableCompilation(CACHE_PATH);
+        $containerBuilder->writeProxiesToFile(true, CACHE_PATH.DS.'proxies');
+    }
+
+    return $containerBuilder
+        ->addDefinitions(BASE_PATH.DS.'Definitions.php', $moduleDefinitions)
         ->build();
 } catch (Exception $e) {
     processException($e);

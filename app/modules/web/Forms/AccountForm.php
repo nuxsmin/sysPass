@@ -24,14 +24,15 @@
 
 namespace SP\Modules\Web\Forms;
 
-use Psr\Container\ContainerInterface;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Services\Account\AccountPresetService;
-use SP\Services\Account\AccountRequest;
+use SP\Domain\Account\AccountPresetServiceInterface;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Http\RequestInterface;
 
 /**
  * Class AccountForm
@@ -40,13 +41,25 @@ use SP\Services\Account\AccountRequest;
  */
 final class AccountForm extends FormBase implements FormInterface
 {
-    protected ?AccountRequest $accountRequest = null;
-    private ?AccountPresetService $accountPresetService = null;
+    private AccountPresetServiceInterface $accountPresetService;
+    private AccountRequest                $accountRequest;
+
+    public function __construct(
+        Application $application,
+        RequestInterface $request,
+        AccountPresetServiceInterface $accountPresetService,
+        ?int $itemId = null
+    ) {
+        parent::__construct($application, $request, $itemId);
+
+        $this->accountPresetService = $accountPresetService;
+        $this->accountRequest = new AccountRequest();
+    }
 
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      *
      * @return AccountForm|FormInterface
      * @throws ValidationException
@@ -191,14 +204,8 @@ final class AccountForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?AccountRequest
+    public function getItemData(): AccountRequest
     {
         return $this->accountRequest;
-    }
-
-    protected function initialize(ContainerInterface $dic): void
-    {
-        $this->accountPresetService = $dic->get(AccountPresetService::class);
-        $this->accountRequest = new AccountRequest();
     }
 }

@@ -32,7 +32,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
-use SP\Repositories\Notification\NotificationRepository;
+use SP\Domain\Notification\In\NotificationRepositoryInterface;
+use SP\Infrastructure\Notification\Repositories\NotificationRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -44,7 +45,7 @@ use function SP\Tests\setupContext;
 class NotificationRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var NotificationRepository
+     * @var NotificationRepositoryInterface
      */
     private static $repository;
 

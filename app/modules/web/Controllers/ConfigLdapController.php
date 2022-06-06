@@ -36,14 +36,14 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Auth\Services\LdapCheckService;
+use SP\Domain\Import\Services\LdapImportParams;
+use SP\Domain\Import\Services\LdapImportService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapTypeInterface;
-use SP\Services\Ldap\LdapCheckService;
-use SP\Services\Ldap\LdapImportParams;
-use SP\Services\Ldap\LdapImportService;
 
 /**
  * Class ConfigLdapController

@@ -26,12 +26,13 @@ namespace SP\Modules\Cli\Commands;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Config\Config;
 use SP\Core\Exceptions\InstallError;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Language;
-use SP\Services\Install\InstallData;
-use SP\Services\Install\Installer;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Install\InstallerInterface;
+use SP\Domain\Install\Services\InstallData;
+use SP\Domain\Install\Services\Installer;
 use SP\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -71,8 +72,8 @@ final class InstallCommand extends CommandBase
 
     public function __construct(
         LoggerInterface $logger,
-        Config $config,
-        Installer $installer
+        ConfigInterface $config,
+        InstallerInterface $installer
     ) {
         parent::__construct($logger, $config);
 

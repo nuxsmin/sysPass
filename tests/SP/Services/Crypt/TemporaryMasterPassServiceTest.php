@@ -30,9 +30,8 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Crypt\TemporaryMasterPassService;
-use SP\Services\ServiceException;
+use SP\Domain\Crypt\Services\TemporaryMasterPassService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use function SP\Tests\setupContext;
 
 /**
@@ -47,7 +46,7 @@ class TemporaryMasterPassServiceTest extends TestCase
      */
     private $context;
     /**
-     * @var TemporaryMasterPassService
+     * @var \SP\Domain\Crypt\TemporaryMasterPassServiceInterface
      */
     private $service;
 
@@ -67,7 +66,7 @@ class TemporaryMasterPassServiceTest extends TestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCreate()
     {
@@ -86,7 +85,7 @@ class TemporaryMasterPassServiceTest extends TestCase
      *
      * @throws CryptoException
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testGetUsingKey($key)
     {
@@ -102,7 +101,7 @@ class TemporaryMasterPassServiceTest extends TestCase
      *
      * @param $key
      *
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCheckTempMasterPass($key)
     {
@@ -117,7 +116,7 @@ class TemporaryMasterPassServiceTest extends TestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testExpiredKey()
     {

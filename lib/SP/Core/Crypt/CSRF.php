@@ -25,16 +25,17 @@
 namespace SP\Core\Crypt;
 
 
-use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 
 /**
  * Class CSRF
  *
  * @package SP\Core\Crypt
  */
-final class CSRF
+class CSRF
 {
     private ContextInterface $context;
     private Request $request;
@@ -43,13 +44,13 @@ final class CSRF
     /**
      * CSRF constructor.
      *
-     * @param ContextInterface    $context
-     * @param Request             $request
-     * @param ConfigDataInterface $configData
+     * @param  ContextInterface  $context
+     * @param  RequestInterface  $request
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
      */
     public function __construct(
         ContextInterface    $context,
-        Request             $request,
+        RequestInterface $request,
         ConfigDataInterface $configData
     )
     {

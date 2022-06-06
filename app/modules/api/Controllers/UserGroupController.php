@@ -24,18 +24,15 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\User\Services\UserGroupService;
 use SP\Modules\Api\Controllers\Help\TagHelp;
-use SP\Services\Api\ApiResponse;
-use SP\Services\UserGroup\UserGroupService;
 
 /**
  * Class UserGroupController

@@ -30,9 +30,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\HttpModuleBase;
+use SP\Domain\Api\Services\ApiRequest;
+use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Modules\Api\Init as InitApi;
-use SP\Services\Api\ApiRequest;
-use SP\Services\Api\JsonRpcResponse;
 
 /**
  * Bootstrap API interface

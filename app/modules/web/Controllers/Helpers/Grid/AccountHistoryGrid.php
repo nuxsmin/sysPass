@@ -33,7 +33,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class AccountHistoryGrid

@@ -2,7 +2,7 @@
 /**
  * @var ThemeIcons                     $icons
  * @var callable                       $_getvar
- * @var \SP\Config\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
  * @var AccountSearchItem              $account
  * @var DataGridTab                    $data
  * @var DataGridActionBase             $actionMenu
@@ -12,9 +12,9 @@
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Html\DataGrid\Action\DataGridActionBase;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Services\Account\AccountSearchItem;
 use SP\Util\DateUtil;
 
 if (!isset($data)) {

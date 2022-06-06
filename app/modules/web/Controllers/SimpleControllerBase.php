@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Config\Config;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
@@ -37,7 +36,9 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 
 /**
@@ -52,9 +53,9 @@ abstract class SimpleControllerBase
     // TODO: remove when controllers are ready
     protected ContainerInterface $dic;
 
-    protected EventDispatcher     $eventDispatcher;
-    protected Config              $config;
-    protected ContextInterface    $session;
+    protected EventDispatcher   $eventDispatcher;
+    protected ConfigFileService $config;
+    protected ContextInterface  $session;
     protected ThemeInterface      $theme;
     protected Klein               $router;
     protected Acl                 $acl;
@@ -70,7 +71,7 @@ abstract class SimpleControllerBase
         ThemeInterface $theme,
         Klein $router,
         Acl $acl,
-        Request $request,
+        RequestInterface $request,
         PhpExtensionChecker $extensionChecker
     ) {
         // TODO: remove when controllers are ready

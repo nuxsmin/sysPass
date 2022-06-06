@@ -25,10 +25,11 @@
 namespace SP\Providers\Mail;
 
 use Exception;
-use PharIo\Manifest\Application;
-use PHPMailer\PHPMailer\PHPMailer;
 use SP\Core\AppInfoInterface;
+use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Providers\MailerInterface;
+use SP\Domain\Providers\MailProviderInterface;
 use SP\Providers\Provider;
 
 /**
@@ -36,57 +37,55 @@ use SP\Providers\Provider;
  *
  * @package SP\Providers\Mail
  */
-final class MailProvider extends Provider
+final class MailProvider extends Provider implements MailProviderInterface
 {
-    private PHPMailer $mailer;
-    private bool      $debug = false;
+    /**
+     * @var \SP\Domain\Providers\MailerInterface | \SP\Providers\Mail\PhpMailerWrapper
+     */
+    private MailerInterface $mailer;
+    private bool            $debug = false;
 
     public function __construct(
         Application $application,
-        PHPMailer $mailer
+        MailerInterface $mailer
     ) {
-        $this->mailer = $mailer;
-
         parent::__construct($application);
+
+        $this->mailer = $mailer;
     }
 
     /**
      * Inicializar la clase PHPMailer.
      *
-     * @param  MailParams  $mailParams
-     *
-     * @return PHPMailer
      * @throws MailProviderException
      */
-    public function getMailer(MailParams $mailParams): PHPMailer
+    public function getMailerFrom(MailParams $mailParams): MailerInterface
     {
         $appName = AppInfoInterface::APP_NAME;
+        $mailer = $this->mailer->getMailer();
 
         try {
-            $this->mailer->SMTPAutoTLS = false;
-            $this->mailer->isSMTP();
-            $this->mailer->CharSet = 'utf-8';
-            $this->mailer->Host = $mailParams->server;
-            $this->mailer->Port = $mailParams->port;
+            $mailer->set('SMTPAutoTLS', false);
+            $mailer->isSMTP();
+            $mailer->set('CharSet', 'utf-8');
+            $mailer->set('Host', $mailParams->server);
+            $mailer->set('Port', $mailParams->port);
+            $mailer->set('SMTPSecure', strtolower($mailParams->security));
 
             if ($mailParams->mailAuthenabled) {
-                $this->mailer->SMTPAuth = true;
-                $this->mailer->Username = $mailParams->user;
-                $this->mailer->Password = $mailParams->pass;
+                $mailer->set('SMTPAuth', true);
+                $mailer->set('Username', $mailParams->user);
+                $mailer->set('Password', $mailParams->pass);
             }
-
-            $this->mailer->SMTPSecure = strtolower($mailParams->security);
 
             if ($this->debug) {
-                $this->mailer->SMTPDebug = 2;
-                $this->mailer->Debugoutput = function ($str, $level) {
-                    logger($str, strtoupper($level));
-                };
+                $mailer->set('SMTPDebug', 2);
+                $mailer->set('Debugoutput', static fn($str, $level) => logger($str, strtoupper($level)));
             }
 
-            $this->mailer->setFrom($mailParams->from, $appName);
-            $this->mailer->addReplyTo($mailParams->from, $appName);
-            $this->mailer->WordWrap = 100;
+            $mailer->setFrom($mailParams->from, $appName);
+            $mailer->addReplyTo($mailParams->from, $appName);
+            $mailer->set('WordWrap', 100);
 
             return $this->mailer;
         } catch (Exception $e) {
@@ -113,7 +112,7 @@ final class MailProvider extends Provider
     /**
      * @param  bool  $debug
      */
-    public function setDebug(bool $debug)
+    public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
     }

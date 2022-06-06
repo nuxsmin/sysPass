@@ -31,6 +31,9 @@ namespace SP\Util;
  */
 final class Checks
 {
+    private const MIN_PHP_VERSION = 70400;
+    private const MAX_PHP_VERSION = 81000;
+
     /**
      * Comprobar si sysPass se ejecuta en W$indows.
      */
@@ -44,7 +47,6 @@ final class Checks
      */
     public static function checkPhpVersion(): bool
     {
-        return PHP_VERSION_ID >= 70400
-            && PHP_VERSION_ID < 81000;
+        return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
     }
 }

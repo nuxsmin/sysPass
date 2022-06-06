@@ -24,20 +24,17 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use Defuse\Crypto\Exception\CryptoException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\AccountPassData;
+use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\ServiceException;
+use SP\Mvc\View\TemplateInterface;
 use SP\Util\ImageUtil;
 
 /**
@@ -47,27 +44,44 @@ use SP\Util\ImageUtil;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    private ?Acl $acl = null;
+    private Acl                        $acl;
+    private ImageUtil                  $imageUtil;
+    private MasterPassServiceInterface $masterPassService;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        Acl $acl,
+        ImageUtil $imageUtil,
+        MasterPassServiceInterface $masterPassService
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->acl = $acl;
+        $this->imageUtil = $imageUtil;
+        $this->masterPassService = $masterPassService;
+    }
 
     /**
-     * @param AccountPassData $accountData
+     * @param  AccountPassData  $accountData
      *
-     * @param bool            $useImage
+     * @param  bool  $useImage
      *
      * @return array
-     * @throws HelperException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws CryptoException
-     * @throws FileNotFoundException
-     * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Modules\Web\Controllers\Helpers\HelperException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function getPasswordView(
         AccountPassData $accountData,
-        bool            $useImage
-    ): array
-    {
+        bool $useImage
+    ): array {
         $this->checkActionAccess();
 
         $this->view->addTemplate('viewpass');
@@ -78,15 +92,13 @@ final class AccountPasswordHelper extends HelperBase
         $pass = $this->getPasswordClear($accountData);
 
         if ($useImage) {
-            $imageUtil = $this->dic->get(ImageUtil::class);
-
             $this->view->assign(
                 'login',
-                $imageUtil->convertText($accountData->getLogin())
+                $this->imageUtil->convertText($accountData->getLogin())
             );
             $this->view->assign(
                 'pass',
-                $imageUtil->convertText($pass)
+                $this->imageUtil->convertText($pass)
             );
         } else {
             $this->view->assign('login', $accountData->getLogin());
@@ -98,7 +110,7 @@ final class AccountPasswordHelper extends HelperBase
 
         return [
             'useimage' => $useImage,
-            'html' => $this->view->render()
+            'html'     => $this->view->render(),
         ];
     }
 
@@ -115,25 +127,26 @@ final class AccountPasswordHelper extends HelperBase
     /**
      * Returns account's password
      *
-     * @param AccountPassData $accountData
+     * @param  AccountPassData  $accountData
      *
      * @return string
-     * @throws HelperException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws CryptoException
-     * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     * @throws \SP\Modules\Web\Controllers\Helpers\HelperException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function getPasswordClear(AccountPassData $accountData): string
     {
         $this->checkActionAccess();
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new HelperException(
                 __('Master password updated')
-                . '<br>'
-                . __('Please, restart the session for update it')
+                .'<br>'
+                .__('Please, restart the session for update it')
             );
         }
 
@@ -144,14 +157,5 @@ final class AccountPasswordHelper extends HelperBase
                 CryptSession::getSessionKey($this->context)
             )
         );
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(): void
-    {
-        $this->acl = $this->dic->get(Acl::class);
     }
 }

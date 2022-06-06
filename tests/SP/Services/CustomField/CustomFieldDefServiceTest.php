@@ -32,9 +32,9 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\CustomField\CustomFieldDefService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\CustomField\Services\CustomFieldDefService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -66,7 +66,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testDelete()
     {
@@ -192,7 +192,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testUpdate()
     {

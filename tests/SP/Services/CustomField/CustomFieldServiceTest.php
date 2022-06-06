@@ -34,9 +34,9 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\CustomField\CustomFieldService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\CustomField\Services\CustomFieldService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
 use function SP\Tests\setupContext;
@@ -49,7 +49,7 @@ use function SP\Tests\setupContext;
 class CustomFieldServiceTest extends DatabaseTestCase
 {
     /**
-     * @var CustomFieldService
+     * @var \SP\Domain\CustomField\CustomFieldServiceInterface
      */
     private static $service;
 
@@ -85,7 +85,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
      * @throws CryptoException
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testUpdateMasterPass()
     {

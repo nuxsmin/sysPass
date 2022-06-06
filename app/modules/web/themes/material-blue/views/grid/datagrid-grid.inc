@@ -1,18 +1,17 @@
 <?php
 /**
  * @var DataGridAction|DataGridActionSearch $action
- * @var SP\Html\DataGrid\DataGridTab        $data
- * @var ThemeIcons                          $icons
- * @var \SP\Config\ConfigDataInterface      $configData
- * @var callable                            $_getvar
- * @var Template                            $this
+ * @var SP\Html\DataGrid\DataGridTab $data
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
-use SP\Mvc\View\Template;
 
 if (!isset($data)) {
     $data = $_getvar('data');

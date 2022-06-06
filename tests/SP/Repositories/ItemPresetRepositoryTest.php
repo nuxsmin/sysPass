@@ -31,7 +31,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\ItemPreset\ItemPresetRepository;
+use SP\Domain\ItemPreset\In\ItemPresetRepositoryInterface;
+use SP\Infrastructure\ItemPreset\Repositories\ItemPresetRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -44,7 +45,7 @@ use function SP\Tests\setupContext;
 class ItemPresetRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var ItemPresetRepository
+     * @var ItemPresetRepositoryInterface
      */
     private static $repository;
 

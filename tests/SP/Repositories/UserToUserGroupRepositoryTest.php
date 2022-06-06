@@ -30,19 +30,20 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
-use SP\Repositories\UserGroup\UserToUserGroupRepository;
+use SP\Domain\User\In\UserToUserGroupRepositoryInterface;
+use SP\Infrastructure\User\Repositories\UserToUserGroupRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
 /**
  * Class UserToUserGroupRepositoryTest
  *
- * @package SP\Tests\SP\Repositories
+ * @package SP\Tests\SP\Infrastructure\Common\Repositories
  */
 class UserToUserGroupRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var UserToUserGroupRepository
+     * @var UserToUserGroupRepositoryInterface
      */
     private static $repository;
 

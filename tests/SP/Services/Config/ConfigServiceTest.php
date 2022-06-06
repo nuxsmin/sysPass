@@ -31,9 +31,10 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Config\ConfigService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Services\ConfigService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -45,7 +46,7 @@ use function SP\Tests\setupContext;
 class ConfigServiceTest extends DatabaseTestCase
 {
     /**
-     * @var ConfigService
+     * @var ConfigServiceInterface
      */
     private static $service;
 
@@ -113,7 +114,7 @@ class ConfigServiceTest extends DatabaseTestCase
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testSave()
     {
@@ -127,7 +128,7 @@ class ConfigServiceTest extends DatabaseTestCase
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCreate()
     {

@@ -34,12 +34,12 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Security\Services\EventlogService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Services\Auth\AuthException;
-use SP\Services\EventLog\EventlogService;
 
 /**
  * Class EventlogController

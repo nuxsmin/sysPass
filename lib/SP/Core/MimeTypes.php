@@ -24,16 +24,16 @@
 
 namespace SP\Core;
 
-use SP\Storage\File\FileCacheInterface;
-use SP\Storage\File\FileException;
-use SP\Storage\File\XmlFileStorageInterface;
+use SP\Infrastructure\File\FileCacheInterface;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\XmlFileStorageInterface;
 
 /**
  * Class Mime
  *
  * @package SP\Core
  */
-final class MimeTypes
+final class MimeTypes implements MimeTypesInterface
 {
     /**
      * Cache file name

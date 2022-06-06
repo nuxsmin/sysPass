@@ -25,10 +25,10 @@
 namespace SP\Tests\Services\Import;
 
 use PHPUnit\Framework\TestCase;
-use SP\Services\Import\FileImport;
-use SP\Services\Import\ImportException;
-use SP\Services\Import\XmlFileImport;
-use SP\Storage\File\FileException;
+use SP\Domain\Import\Services\FileImport;
+use SP\Domain\Import\Services\ImportException;
+use SP\Domain\Import\Services\XmlFileImport;
+use SP\Infrastructure\File\FileException;
 
 /**
  * Class XmlFileImportTest

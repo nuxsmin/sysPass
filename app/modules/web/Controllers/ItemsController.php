@@ -32,15 +32,15 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\DataModel\NotificationData;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Notification\Services\NotificationService;
+use SP\Domain\Tag\Services\TagService;
 use SP\Html\Html;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Account\AccountService;
-use SP\Services\Category\CategoryService;
-use SP\Services\Client\ClientService;
-use SP\Services\Notification\NotificationService;
-use SP\Services\Tag\TagService;
 use stdClass;
 
 /**

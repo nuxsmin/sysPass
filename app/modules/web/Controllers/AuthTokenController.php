@@ -37,6 +37,10 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
@@ -45,10 +49,6 @@ use SP\Modules\Web\Forms\AuthTokenForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Auth\AuthException;
-use SP\Services\AuthToken\AuthTokenService;
-use SP\Services\ServiceException;
-use SP\Services\User\UserService;
 
 /**
  * Class AuthTokenController
@@ -164,7 +164,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * @throws NotFoundException
      * @throws QueryException
      * @throws SPException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function setViewData(?int $authTokenId = null): void
     {

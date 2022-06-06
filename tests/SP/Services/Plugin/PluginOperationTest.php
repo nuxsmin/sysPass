@@ -32,10 +32,10 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Plugin\PluginOperation;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Plugin\PluginDataService;
-use SP\Services\ServiceException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -75,7 +75,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testUpdate()
     {
@@ -101,7 +101,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testUpdateUnknown()
     {
@@ -174,7 +174,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testGetUnknown()
     {

@@ -34,10 +34,11 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\User\UserLoginResponse;
-use SP\Services\User\UserPassService;
-use SP\Services\User\UserService;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Services\UserPassService;
+use SP\Domain\User\Services\UserService;
+use SP\Domain\User\UserPassServiceInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -57,7 +58,7 @@ class UserPassServiceTest extends DatabaseTestCase
     private static $getUserLoginResponse;
 
     /**
-     * @var UserPassService
+     * @var \SP\Domain\Services\UserPassServiceInterface
      */
     private static $service;
 

@@ -32,7 +32,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\User\Services\UserLoginResponse;
 use function SP\Tests\setupContext;
 
 /**

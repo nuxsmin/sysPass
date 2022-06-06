@@ -24,7 +24,7 @@
 
 namespace SP\Http;
 
-use SP\Config\ConfigDataInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 
 /**
  * Class Client
@@ -35,24 +35,13 @@ final class Client
 {
     public static function getOptions(ConfigDataInterface $configData): array
     {
-        $options = [
-            'timeout' => 10,
-            'version' => 1.1
-        ];
+        $options = ['timeout' => 10, 'version' => 1.1,];
 
         if ($configData->isProxyEnabled()) {
-            $options['proxy'] = sprintf(
-                'tcp://%s:%d',
-                $configData->getProxyServer(),
-                $configData->getProxyPort()
-            );
+            $options['proxy'] = sprintf('tcp://%s:%d', $configData->getProxyServer(), $configData->getProxyPort());
 
-            if (!empty($configData->getProxyUser())
-                && !empty($configData->getProxyPass())) {
-                $options['auth'] = [
-                    $configData->getProxyUser(),
-                    $configData->getProxyPass()
-                ];
+            if (!empty($configData->getProxyUser()) && !empty($configData->getProxyPass())) {
+                $options['auth'] = [$configData->getProxyUser(), $configData->getProxyPass()];
             }
         }
 

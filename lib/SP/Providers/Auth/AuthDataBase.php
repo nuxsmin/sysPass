@@ -42,7 +42,7 @@ abstract class AuthDataBase
     /**
      * @var bool
      */
-    protected bool $authenticated;
+    protected ?bool $authenticated;
     /**
      * @var int
      */
@@ -69,7 +69,7 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      */
     public function setName(string $name)
     {
@@ -85,7 +85,7 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param string $email
+     * @param  string  $email
      */
     public function setEmail(string $email): void
     {
@@ -101,13 +101,13 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param bool $authenticated
+     * @param  bool  $authenticated
      *
      * @return $this
      */
     public function setAuthenticated(?bool $authenticated = null): AuthDataBase
     {
-        $this->authenticated = $authenticated !== null ? (bool)$authenticated : null;
+        $this->authenticated = $authenticated;
 
         return $this;
     }
@@ -121,7 +121,7 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param string $server
+     * @param  string  $server
      */
     public function setServer(string $server)
     {
@@ -137,7 +137,7 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param int $statusCode
+     * @param  int  $statusCode
      */
     public function setStatusCode(int $statusCode): void
     {
@@ -157,7 +157,7 @@ abstract class AuthDataBase
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @param bool $authoritative
+     * @param  bool  $authoritative
      */
     public function setAuthoritative(bool $authoritative): void
     {
@@ -173,7 +173,7 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param bool $failed
+     * @param  bool  $failed
      */
     public function setFailed(bool $failed)
     {

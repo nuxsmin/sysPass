@@ -32,10 +32,10 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Category\CategoryService;
-use SP\Services\ServiceException;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -48,7 +48,7 @@ use function SP\Tests\setupContext;
 class CategoryServiceTest extends DatabaseTestCase
 {
     /**
-     * @var CategoryService
+     * @var \SP\Domain\Category\CategoryServiceInterface
      */
     private static $service;
 

@@ -36,9 +36,10 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\User\UserRepository;
-use SP\Services\User\UpdatePassRequest;
+use SP\Domain\User\In\UserRepositoryInterface;
+use SP\Domain\User\Services\UpdatePassRequest;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\User\Repositories\UserRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -54,7 +55,7 @@ class UserRepositoryTest extends DatabaseTestCase
 {
 
     /**
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
     private static $repository;
 

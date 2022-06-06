@@ -24,11 +24,12 @@
 
 namespace SP\Modules\Web\Forms;
 
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 
 /**
  * Class FormBase
@@ -37,33 +38,37 @@ use SP\Http\Request;
  */
 abstract class FormBase
 {
-    protected ?int $itemId;
-    protected Config $config;
+    protected ?int                $itemId;
+    protected ConfigFileService   $config;
     protected ConfigDataInterface $configData;
-    protected ContextInterface $context;
-    protected Request $request;
+    protected ContextInterface    $context;
+    protected Request             $request;
 
     /**
      * FormBase constructor.
      *
-     * @param ContainerInterface $container
-     * @param int|null           $itemId
+     * @param  \SP\Core\Application  $application
+     * @param  \SP\Http\RequestInterface  $request
+     * @param  int|null  $itemId
      */
     public function __construct(
-        ContainerInterface $container,
-        ?int               $itemId = null
-    )
-    {
-        $this->config = $container->get(Config::class);
+        Application $application,
+        RequestInterface $request,
+        ?int $itemId = null
+    ) {
+        $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->context = $container->get(ContextInterface::class);
-        $this->request = $container->get(Request::class);
-
+        $this->context = $application->getContext();
+        $this->request = $request;
         $this->itemId = $itemId;
+    }
 
-        if (method_exists($this, 'initialize')) {
-            $this->initialize($container);
-        }
+    /**
+     * @param  int  $itemId
+     */
+    public function setItemId(int $itemId): void
+    {
+        $this->itemId = $itemId;
     }
 
     /**

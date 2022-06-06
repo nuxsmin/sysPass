@@ -37,8 +37,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\AuthToken\AuthTokenRepository;
-use SP\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Auth\Repositories\AuthTokenRepository;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use SP\Util\Util;
@@ -56,7 +56,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     const AUTH_TOKEN_PASS = 123456;
 
     /**
-     * @var AuthTokenRepository
+     * @var \SP\Infrastructure\Auth\Repositories\AuthTokenRepository
      */
     private static $repository;
 

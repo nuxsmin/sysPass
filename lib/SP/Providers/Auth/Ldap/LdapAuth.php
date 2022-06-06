@@ -24,57 +24,36 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Config\ConfigDataInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\DataModel\UserLoginData;
-use SP\Providers\Auth\AuthInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 
 /**
  * Class LdapBase
  *
  * @package Auth\Ldap
  */
-final class LdapAuth implements AuthInterface
+final class LdapAuth implements LdapAuthInterface
 {
-    public const ACCOUNT_EXPIRED = 701;
-    public const ACCOUNT_NO_GROUPS = 702;
-
-    /**
-     * @var string
-     */
-    protected string $userLogin;
-    /**
-     * @var LdapAuthData
-     */
-    protected LdapAuthData $ldapAuthData;
-    /**
-     * @var EventDispatcher
-     */
-    protected EventDispatcher $eventDispatcher;
-    /**
-     * @var string
-     */
-    protected string $server;
-    /**
-     * @var LdapInterface
-     */
-    private LdapInterface $ldap;
-    /**
-     * @var ConfigDataInterface
-     */
+    protected string            $userLogin;
+    protected LdapAuthData      $ldapAuthData;
+    protected EventDispatcher   $eventDispatcher;
+    protected string            $server;
+    private LdapInterface       $ldap;
     private ConfigDataInterface $configData;
 
     /**
      * LdapBase constructor.
      *
-     * @param LdapInterface       $ldap
-     * @param EventDispatcher     $eventDispatcher
-     * @param ConfigDataInterface $configData
+     * @param  LdapInterface  $ldap
+     * @param  EventDispatcher  $eventDispatcher
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
      */
-    public function __construct(LdapInterface       $ldap,
-                                EventDispatcher     $eventDispatcher,
-                                ConfigDataInterface $configData)
-    {
+    public function __construct(
+        LdapInterface $ldap,
+        EventDispatcher $eventDispatcher,
+        ConfigDataInterface $configData
+    ) {
         $this->ldap = $ldap;
         $this->eventDispatcher = $eventDispatcher;
         $this->configData = $configData;
@@ -99,7 +78,7 @@ final class LdapAuth implements AuthInterface
     }
 
     /**
-     * @param string $userLogin
+     * @param  string  $userLogin
      */
     public function setUserLogin(string $userLogin): void
     {
@@ -109,7 +88,7 @@ final class LdapAuth implements AuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param UserLoginData $userLoginData Datos del usuario
+     * @param  UserLoginData  $userLoginData  Datos del usuario
      *
      * @return bool
      */
@@ -150,7 +129,7 @@ final class LdapAuth implements AuthInterface
     /**
      * Obtener los atributos del usuario.
      *
-     * @param string $userLogin
+     * @param  string  $userLogin
      *
      * @return LdapAuthData con los atributos disponibles y sus valores
      * @throws LdapException
@@ -163,9 +142,11 @@ final class LdapAuth implements AuthInterface
         if (!empty($attributes->get('fullname'))) {
             $this->ldapAuthData->setName($attributes->get('fullname'));
         } else {
-            $name = trim($attributes->get('name', '')
-                . ' '
-                . $attributes->get('sn', ''));
+            $name = trim(
+                $attributes->get('name', '')
+                .' '
+                .$attributes->get('sn', '')
+            );
 
             $this->ldapAuthData->setName($name);
         }

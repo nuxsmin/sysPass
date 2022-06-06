@@ -32,7 +32,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Account\AccountFileRepository;
+use SP\Domain\Account\In\AccountFileRepositoryInterface;
+use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -44,7 +45,7 @@ use function SP\Tests\setupContext;
 class AccountFileRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var AccountFileRepository
+     * @var \SP\Domain\Account\In\AccountFileRepositoryInterface
      */
     private static $repository;
 

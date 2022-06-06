@@ -27,13 +27,15 @@ namespace SP\Modules\Cli\Commands\Crypt;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Config\Config;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\Crypt\Services\MasterPassService;
+use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
-use SP\Services\Account\AccountService;
-use SP\Services\Config\ConfigService;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Util\Util;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,23 +58,24 @@ final class UpdateMasterPasswordCommand extends CommandBase
      */
     public static array $envVarsMapping = [
         'currentMasterPassword' => 'CURRENT_MASTER_PASSWORD',
-        'masterPassword' => 'MASTER_PASSWORD',
-        'update' => 'UPDATE',
+        'masterPassword'        => 'MASTER_PASSWORD',
+        'update'                => 'UPDATE',
     ];
     /**
      * @var string
      */
-    protected static $defaultName = 'sp:crypt:update-master-password';
-    private MasterPassService $masterPassService;
-    private ConfigService $configService;
+    protected static                                    $defaultName = 'sp:crypt:update-master-password';
+    private \SP\Domain\Crypt\MasterPassServiceInterface $masterPassService;
+    private ConfigService                               $configService;
     private AccountService $accountService;
 
-    public function __construct(MasterPassService $masterPassService,
-                                AccountService    $accountService,
-                                ConfigService     $configService,
-                                LoggerInterface   $logger,
-                                Config            $config)
-    {
+    public function __construct(
+        MasterPassServiceInterface $masterPassService,
+        AccountService $accountService,
+        ConfigServiceInterface $configService,
+        LoggerInterface $logger,
+        ConfigInterface $config
+    ) {
         $this->masterPassService = $masterPassService;
         $this->accountService = $accountService;
         $this->configService = $configService;
@@ -84,25 +87,30 @@ final class UpdateMasterPasswordCommand extends CommandBase
     {
         $this->setDescription(__('Update sysPass master password'))
             ->setHelp(__('This command updates sysPass master password for all the encrypted data'))
-            ->addOption('masterPassword',
+            ->addOption(
+                'masterPassword',
                 null,
                 InputOption::VALUE_REQUIRED,
-                __('The new master password to encrypt the data'))
-            ->addOption('currentMasterPassword',
+                __('The new master password to encrypt the data')
+            )
+            ->addOption(
+                'currentMasterPassword',
                 null,
                 InputOption::VALUE_REQUIRED,
-                __('The current master password'))
-            ->addOption('update',
+                __('The current master password')
+            )
+            ->addOption(
+                'update',
                 null,
                 InputOption::VALUE_NONE,
-                __('Skip asking to confirm the update'));
+                __('Skip asking to confirm the update')
+            );
     }
 
     protected function execute(
-        InputInterface  $input,
+        InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $style = new SymfonyStyle($input, $output);
 
         if (!$this->lock()) {
@@ -143,10 +151,12 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $style->warning(__('You should save the new password on a secure place'));
             $style->warning(__('All accounts passwords will be encrypted again.'));
             $style->warning(__('Users will need to enter the new Master Password.'));
-            $style->warning(printf(
-                __('It will be updated %s accounts. This process could take some time long.'),
-                $this->accountService->getTotalNumAccounts()
-            ));
+            $style->warning(
+                printf(
+                    __('It will be updated %s accounts. This process could take some time long.'),
+                    $this->accountService->getTotalNumAccounts()
+                )
+            );
             $style->newLine();
             $style->caution(__('This is a critical process, please do not cancel/close this CLI'));
 
@@ -194,8 +204,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
     private function getMasterPassword(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $password = self::getEnvVarOrOption('masterPassword', $input);
 
         if (empty($password)) {
@@ -232,8 +241,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
     private function getCurrentMasterPassword(
         InputInterface $input,
         StyleInterface $style
-    )
-    {
+    ) {
         $password = self::getEnvVarOrOption('currentMasterPassword', $input);
 
         if (empty($password)) {
@@ -265,8 +273,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     private function checkMasterPassword(string $password): void
     {
@@ -278,8 +286,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
     private function getUpdate(
         InputInterface $input,
         StyleInterface $style
-    ): bool
-    {
+    ): bool {
         $option = 'update';
 
         $envUpdate = self::getEnvVarForOption($option);

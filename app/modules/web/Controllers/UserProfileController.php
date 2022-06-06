@@ -38,17 +38,17 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserProfileService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserProfileForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Auth\AuthException;
-use SP\Services\ServiceException;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserProfileController

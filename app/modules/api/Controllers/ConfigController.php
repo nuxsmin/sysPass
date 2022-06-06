@@ -29,11 +29,11 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\InvalidClassException;
+use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\FileBackupService;
+use SP\Domain\Export\Services\XmlExportService;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
-use SP\Services\Api\ApiResponse;
-use SP\Services\Backup\BackupFiles;
-use SP\Services\Backup\FileBackupService;
-use SP\Services\Export\XmlExportService;
 
 /**
  * Class ConfigController

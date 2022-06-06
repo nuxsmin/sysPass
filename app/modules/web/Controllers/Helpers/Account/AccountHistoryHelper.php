@@ -24,29 +24,25 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
+use SP\Domain\Account\AccountAclServiceInterface;
+use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountAcl;
-use SP\Services\Account\AccountAclService;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Category\CategoryService;
-use SP\Services\Client\ClientService;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\ServiceException;
-use SP\Services\User\UpdatedMasterPassException;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class AccountHistoryHelper
@@ -55,34 +51,54 @@ use SP\Services\User\UpdatedMasterPassException;
  */
 final class AccountHistoryHelper extends HelperBase
 {
-    protected ?Acl $acl = null;
-    protected ?AccountHistoryService $accountHistoryService = null;
-    protected ?int $accountId = null;
-    protected ?int $actionId = null;
-    protected ?int $accountHistoryId = null;
-    protected ?AccountAcl $accountAcl = null;
+    private Acl                                               $acl;
+    private \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService;
+    private AccountActionsHelper                              $accountActionsHelper;
+    private MasterPassServiceInterface     $masterPassService;
+    private AccountAclServiceInterface     $accountAclService;
+    private ?int                           $accountId  = null;
+    private ?int                           $actionId   = null;
+    private ?AccountAcl                    $accountAcl = null;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        Acl $acl,
+        \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService,
+        AccountActionsHelper $accountActionsHelper,
+        MasterPassServiceInterface $masterPassService,
+        AccountAclServiceInterface $accountAclService
+    ) {
+        $this->acl = $acl;
+        $this->accountHistoryService = $accountHistoryService;
+        $this->accountActionsHelper = $accountActionsHelper;
+        $this->masterPassService = $masterPassService;
+        $this->accountAclService = $accountAclService;
+
+        parent::__construct($application, $template, $request);
+    }
+
 
     /**
-     * @param AccountHistoryData $accountHistoryData
-     * @param int                $actionId
+     * @param  AccountHistoryData  $accountHistoryData
+     * @param  int  $actionId
      *
-     * @throws AccountPermissionException
-     * @throws UnauthorizedPageException
-     * @throws UpdatedMasterPassException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Acl\AccountPermissionException
+     * @throws \SP\Core\Acl\UnauthorizedPageException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      */
     public function setView(
         AccountHistoryData $accountHistoryData,
-        int                $actionId
-    ): void
-    {
+        int $actionId
+    ): void {
         $this->actionId = $actionId;
-        $this->accountHistoryId = $accountHistoryData->getId();
         $this->accountId = $accountHistoryData->getAccountId();
 
         $this->checkActionAccess();
@@ -98,7 +114,8 @@ final class AccountHistoryHelper extends HelperBase
         $this->view->assign(
             'historyData',
             SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
-                ->getItemsFromArraySelected([$this->accountHistoryId]));
+                ->getItemsFromArraySelected([$accountHistoryData->getId()])
+        );
 
         $this->view->assign(
             'accountPassDate',
@@ -110,11 +127,13 @@ final class AccountHistoryHelper extends HelperBase
         );
         $this->view->assign(
             'categories',
+            // FIXME: use IoC
             SelectItemAdapter::factory(CategoryService::getItemsBasic())
                 ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()])
         );
         $this->view->assign(
             'clients',
+            // FIXME: use IoC
             SelectItemAdapter::factory(ClientService::getItemsBasic())
                 ->getItemsFromModelSelected([$accountHistoryData->getClientId()])
         );
@@ -123,31 +142,27 @@ final class AccountHistoryHelper extends HelperBase
             strtotime($accountHistoryData->getDateEdit()) !== false
         );
 
-        $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
-
         $accountActionsDto = new AccountActionsDto(
             $this->accountId,
-            $this->accountHistoryId,
+            $accountHistoryData->getId(),
             0
         );
 
         $this->view->assign(
             'accountActions',
-            $accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto)
+            $this->accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto)
         );
         $this->view->assign(
             'accountActionsMenu',
-            $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto)
+            $this->accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto)
         );
     }
 
     /**
-     * @throws UnauthorizedPageException
-     * @throws UpdatedMasterPassException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Core\Acl\UnauthorizedPageException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      */
     protected function checkActionAccess(): void
     {
@@ -155,9 +170,7 @@ final class AccountHistoryHelper extends HelperBase
             throw new UnauthorizedPageException(SPException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)
-            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
-        ) {
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new UpdatedMasterPassException(SPException::INFO);
         }
     }
@@ -165,11 +178,9 @@ final class AccountHistoryHelper extends HelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param AccountHistoryData $accountHistoryData
+     * @param  AccountHistoryData  $accountHistoryData
      *
      * @throws AccountPermissionException
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -181,25 +192,10 @@ final class AccountHistoryHelper extends HelperBase
             $this->accountHistoryService->getUserGroupsByAccountId($this->accountId)
         );
 
-        $this->accountAcl = $this->dic->get(AccountAclService::class)
-            ->getAcl($this->actionId, $acccountAclDto, true);
+        $this->accountAcl = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);
 
-        if ($this->accountAcl === null
-            || $this->accountAcl->checkAccountAccess($this->actionId) === false
-        ) {
+        if ($this->accountAcl->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(SPException::INFO);
         }
-    }
-
-    /**
-     * Initialize class
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function initialize(): void
-    {
-        $this->acl = $this->dic->get(Acl::class);
-        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
     }
 }

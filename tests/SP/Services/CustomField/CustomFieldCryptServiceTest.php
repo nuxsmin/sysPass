@@ -31,10 +31,11 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\CustomField\CustomFieldCryptService;
-use SP\Services\CustomField\CustomFieldService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\CustomField\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Services\CustomFieldCryptService;
+use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
 use function SP\Tests\setupContext;
@@ -47,11 +48,11 @@ use function SP\Tests\setupContext;
 class CustomFieldCryptServiceTest extends DatabaseTestCase
 {
     /**
-     * @var CustomFieldService
+     * @var \SP\Domain\CustomField\CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
-     * @var CustomFieldCryptService
+     * @var CustomFieldCryptServiceInterface
      */
     private static $service;
 
@@ -74,7 +75,7 @@ class CustomFieldCryptServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws CryptoException
      */
     public function testUpdateMasterPassword()

@@ -25,12 +25,12 @@
 namespace SP\Mvc\Controller;
 
 use Closure;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Util\Util;
 
@@ -53,13 +53,20 @@ trait ControllerTrait
         return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
     }
 
+    protected function getViewBaseName(): string
+    {
+        $parts = explode('\\', static::class);
+
+        return strtolower($parts[count($parts) - 2]);
+    }
+
     /**
      * Logout from current session
      *
      * @throws \JsonException
      */
     protected function sessionLogout(
-        Request $request,
+        RequestInterface $request,
         Closure $onRedirect
     ): void {
         if ($request->isJson()) {
@@ -110,7 +117,7 @@ trait ControllerTrait
      * @throws SPException
      * @deprecated
      */
-    protected function checkSecurityToken(string $previousToken, Request $request): void
+    protected function checkSecurityToken(string $previousToken, RequestInterface $request): void
     {
         if (isset($this->configData)
             && $request->analyzeString('h') !== null

@@ -1,19 +1,18 @@
 <?php
 /**
- * @var ThemeIcons                     $icons
- * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
- * @var SelectItem                     $client
- * @var SelectItem                     $category
- * @var SelectItem                     $user
- * @var SelectItem                     $userGroup
- * @var SelectItem                     $tag
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
+ * @var SelectItem $client
+ * @var SelectItem $category
+ * @var SelectItem $user
+ * @var SelectItem $userGroup
+ * @var SelectItem $tag
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\Template;
 
 ?>
 

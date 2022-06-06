@@ -34,8 +34,8 @@ final class DateUtil
     /**
      * Returns date string from UNIX timestamp
      *
-     * @param int|string $date
-     * @param string     $format
+     * @param  int|string  $date
+     * @param  string  $format
      *
      * @return false|string
      */

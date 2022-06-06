@@ -25,15 +25,13 @@
 namespace SP\Mvc\Controller;
 
 use Defuse\Crypto\Exception\CryptoException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
-use SP\Http\Request;
-use SP\Services\CustomField\CustomFieldItem;
-use SP\Services\CustomField\CustomFieldService;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Services\CustomFieldItem;
+use SP\Domain\CustomField\Services\CustomFieldService;
+use SP\Http\RequestInterface;
 use SP\Util\Filter;
 
 /**
@@ -49,11 +47,13 @@ trait ItemTrait
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
-    protected function getCustomFieldsForItem(int $moduleId, ?int $itemId): array
-    {
-        $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
+    protected function getCustomFieldsForItem(
+        int $moduleId,
+        ?int $itemId,
+        CustomFieldServiceInterface $customFieldService
+    ): array {
         $customFields = [];
 
         foreach ($customFieldService->getForModuleAndItemId($moduleId, $itemId) as $item) {
@@ -95,18 +95,19 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  Request  $request
+     * @param  RequestInterface  $request
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function addCustomFieldsForItem(
         int $moduleId,
         $itemId,
-        Request $request
+        RequestInterface $request,
+        CustomFieldServiceInterface $customFieldService
     ): void {
         $customFields = $request->analyzeArray(
             'customfield',
@@ -121,8 +122,6 @@ trait ItemTrait
         );
 
         if (!empty($customFields)) {
-            $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
-
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData = new CustomFieldData();
@@ -144,15 +143,17 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
+     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
      *
-     * @throws SPException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function deleteCustomFieldsForItem(int $moduleId, $itemId): void
-    {
-        $customFieldService = BootstrapBase::getContainer()->get(CustomFieldService::class);
-
+    protected function deleteCustomFieldsForItem(
+        int $moduleId,
+        $itemId,
+        CustomFieldServiceInterface $customFieldService
+    ): void {
         if (is_array($itemId)) {
             $customFieldService->deleteCustomFieldDataBatch($itemId, $moduleId);
         } else {
@@ -165,7 +166,8 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  Request  $request
+     * @param  RequestInterface  $request
+     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -174,7 +176,8 @@ trait ItemTrait
     protected function updateCustomFieldsForItem(
         int $moduleId,
         $itemId,
-        Request $request
+        RequestInterface $request,
+        CustomFieldServiceInterface $customFieldService
     ): void {
         $customFields = $request->analyzeArray(
             'customfield',
@@ -189,9 +192,6 @@ trait ItemTrait
         );
 
         if (!empty($customFields)) {
-            $customFieldService = BootstrapBase::getContainer()
-                ->get(CustomFieldService::class);
-
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData = new CustomFieldData();
@@ -215,7 +215,7 @@ trait ItemTrait
      */
     protected function getSearchData(
         int $limitCount,
-        Request $request
+        RequestInterface $request
     ): ItemSearchData {
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setSeachString($request->analyzeString('search'));
@@ -225,7 +225,7 @@ trait ItemTrait
         return $itemSearchData;
     }
 
-    protected function getItemsIdFromRequest(Request $request): ?array
+    protected function getItemsIdFromRequest(RequestInterface $request): ?array
     {
         return $request->analyzeArray('items');
     }

@@ -31,17 +31,17 @@ use Klein\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Bootstrap\BootstrapApi;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\AuthTokenData;
-use SP\Services\Api\ApiRequest;
-use SP\Services\AuthToken\AuthTokenService;
-use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\MySQLHandler;
+use SP\Domain\Api\Services\ApiRequest;
+use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\MySQLHandler;
 use SP\Tests\DatabaseTrait;
 use stdClass;
 use function DI\create;
@@ -155,7 +155,7 @@ abstract class ApiTestCase extends TestCase
                     },
                     DBStorageInterface::class  => create(MySQLHandler::class)
                         ->constructor($databaseConnectionData),
-                    ConfigDataInterface::class => static function (Config $config) use ($databaseConnectionData) {
+                    ConfigDataInterface::class => static function (ConfigInterface $config) use ($databaseConnectionData) {
                         $configData = $config->getConfigData()
                             ->setDbHost($databaseConnectionData->getDbHost())
                             ->setDbName($databaseConnectionData->getDbName())

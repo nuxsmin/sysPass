@@ -32,10 +32,10 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TrackData;
-use SP\Repositories\NoSuchItemException;
-use SP\Repositories\Track\TrackRequest;
-use SP\Services\ServiceException;
-use SP\Services\Track\TrackService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Security\Services\TrackService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -47,7 +47,7 @@ use function SP\Tests\setupContext;
 class TrackServiceTest extends DatabaseTestCase
 {
     /**
-     * @var TrackService
+     * @var \SP\Domain\Security\TrackServiceInterface
      */
     private static $service;
 
@@ -87,7 +87,7 @@ class TrackServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testAdd()
     {

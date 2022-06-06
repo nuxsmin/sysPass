@@ -40,15 +40,16 @@ use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountBulkRequest;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountPasswordRequest;
-use SP\Services\Account\AccountRequest;
-use SP\Services\Account\AccountSearchFilter;
-use SP\Services\Account\AccountService;
-use SP\Services\ServiceException;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\Services\AccountBulkRequest;
+use SP\Domain\Account\Services\AccountHistoryService;
+use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use stdClass;
@@ -63,7 +64,7 @@ class AccountServiceTest extends DatabaseTestCase
 {
     const SECURE_KEY_PASSWORD = '12345678900';
     /**
-     * @var AccountHistoryService
+     * @var AccountHistoryServiceInterface
      */
     protected static $accountHistoryService;
     /**
@@ -177,7 +178,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testDelete()
     {
@@ -292,7 +293,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws CryptoException
      */
     public function testGetPasswordEncrypted()
@@ -646,7 +647,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws SPException
      */
     public function testDeleteByIdBatch()

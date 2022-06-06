@@ -1,15 +1,14 @@
 <?php
 /**
- * @var AccountPrivate                 $private
- * @var ThemeIcons                     $icons
- * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
+ * @var AccountPrivate $private
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\Mvc\View\Template;
 
 $private = $_getvar('private');
 ?>

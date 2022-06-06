@@ -1,7 +1,7 @@
 <?php
 /**
  * @var ThemeIcons $icons
- * @var Template   $this
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;

@@ -26,7 +26,7 @@ namespace SP\Mvc\Controller;
 
 
 use SP\Core\Events\EventDispatcherInterface;
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Interface ExtensibleController
@@ -36,9 +36,9 @@ use SP\Mvc\View\Template;
 interface ExtensibleControllerInterface
 {
     /**
-     * @return Template
+     * @return TemplateInterface
      */
-    public function getView(): Template;
+    public function getView(): TemplateInterface;
 
     /**
      * @return void

@@ -27,15 +27,15 @@ namespace SP\Core\Context;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
-use SP\Services\Account\AccountSearchFilter;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\User\Services\UserLoginResponse;
 
 /**
  * Class Session
  *
  * @package SP\Core\Session
  */
-final class SessionContext extends ContextBase
+class SessionContext extends ContextBase
 {
     public const MAX_SID_TIME = 120;
 

@@ -31,7 +31,8 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
-use SP\Repositories\CustomField\CustomFieldRepository;
+use SP\Domain\CustomField\In\CustomFieldRepositoryInterface;
+use SP\Infrastructure\CustomField\Repositories\CustomFieldRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -43,7 +44,7 @@ use function SP\Tests\setupContext;
 class CustomFieldRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var CustomFieldRepository
+     * @var CustomFieldRepositoryInterface
      */
     private static $repository;
 

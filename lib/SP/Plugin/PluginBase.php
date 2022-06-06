@@ -29,8 +29,8 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
-use SP\Services\Plugin\PluginService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Plugin\Services\PluginService;
 
 /**
  * Class PluginBase

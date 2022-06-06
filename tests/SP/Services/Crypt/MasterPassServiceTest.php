@@ -32,12 +32,11 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountService;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\CustomField\CustomFieldService;
-use SP\Services\ServiceException;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Crypt\Services\MasterPassService;
+use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\CustomField\Services\CustomFieldService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
 use function SP\Tests\setupContext;
@@ -50,7 +49,7 @@ use function SP\Tests\setupContext;
 class MasterPassServiceTest extends DatabaseTestCase
 {
     /**
-     * @var CustomFieldService
+     * @var \SP\Domain\CustomField\CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
@@ -58,7 +57,7 @@ class MasterPassServiceTest extends DatabaseTestCase
      */
     private static $accountService;
     /**
-     * @var MasterPassService
+     * @var \SP\Domain\Crypt\MasterPassServiceInterface
      */
     private static $service;
 
@@ -178,7 +177,7 @@ class MasterPassServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCheckUserUpdateMPass()
     {
@@ -188,7 +187,7 @@ class MasterPassServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCheckMasterPassword()
     {

@@ -25,14 +25,14 @@
 namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\User\Services\UserLoginResponse;
 
 /**
  * Class ApiContext
  *
  * @package SP\Core\Context
  */
-final class StatelessContext extends ContextBase
+class StatelessContext extends ContextBase
 {
     /**
      * Establece los datos del usuario en la sesión.

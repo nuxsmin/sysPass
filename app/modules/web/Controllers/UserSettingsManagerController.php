@@ -32,12 +32,12 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Language;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\ExtensibleTabControllerInterface;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\Template;
-use SP\Services\Auth\AuthException;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class UserSettingsManagerController
@@ -119,9 +119,9 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     }
 
     /**
-     * @return Template
+     * @return TemplateInterface
      */
-    public function getView(): Template
+    public function getView(): TemplateInterface
     {
         return $this->view;
     }

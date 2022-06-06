@@ -36,18 +36,18 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\NotificationData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Notification\Services\NotificationService;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\NotificationForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Auth\AuthException;
-use SP\Services\Notification\NotificationService;
-use SP\Services\User\UserService;
 
 /**
  * Class NotificationController

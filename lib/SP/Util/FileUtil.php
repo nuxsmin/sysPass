@@ -41,7 +41,7 @@ final class FileUtil
         'image/jpeg',
         'image/png',
         'image/bmp',
-        'image/gif'
+        'image/gif',
     ];
 
     /**
@@ -59,7 +59,8 @@ final class FileUtil
         $it = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
                 $dir,
-                FilesystemIterator::SKIP_DOTS),
+                FilesystemIterator::SKIP_DOTS
+            ),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
@@ -76,10 +77,6 @@ final class FileUtil
 
     public static function isImage(FileData $fileData): bool
     {
-        return in_array(
-            strtolower($fileData->getType()),
-            self::IMAGE_MIME,
-            true
-        );
+        return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
     }
 }

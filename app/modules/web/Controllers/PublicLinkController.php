@@ -40,6 +40,9 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
@@ -48,9 +51,6 @@ use SP\Modules\Web\Forms\PublicLinkForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Account\AccountService;
-use SP\Services\Auth\AuthException;
-use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\PasswordUtil;
 
 /**

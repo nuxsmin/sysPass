@@ -2,7 +2,7 @@
 /**
  * @var ThemeIcons                     $icons
  * @var callable                       $_getvar
- * @var \SP\Config\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
  * @var FileData                       $file
  */
 

@@ -29,13 +29,13 @@ use Klein\Klein;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Container\ContainerInterface;
-use SP\Config\ConfigDataInterface;
-use SP\Config\ConfigUtil;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
-use SP\Http\Request;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigUtil;
+use SP\Http\RequestInterface;
 use SP\Plugin\PluginManager;
 use SP\Util\Checks;
 use Symfony\Component\Debug\Debug;
@@ -67,7 +67,7 @@ abstract class BootstrapBase
     public static bool                  $checkPhpVersion = false;
     protected static ContainerInterface $container;
     protected Klein                     $router;
-    protected Request                   $request;
+    protected RequestInterface          $request;
     protected ConfigDataInterface       $configData;
     private UpgradeConfigChecker        $upgradeConfigChecker;
 
@@ -77,7 +77,7 @@ abstract class BootstrapBase
     final public function __construct(
         ConfigDataInterface $configData,
         Klein $router,
-        Request $request,
+        RequestInterface $request,
         UpgradeConfigChecker $upgradeConfigChecker
     ) {
         // Set the default language
@@ -145,8 +145,17 @@ abstract class BootstrapBase
         return self::$container;
     }
 
-    final protected static function getClassFor(string $controllerName): string
+    final protected static function getClassFor(string $controllerName, ?string $actionName): string
     {
+        if ($actionName !== null) {
+            return sprintf(
+                'SP\Modules\%s\Controllers\%s\%sController',
+                ucfirst(APP_MODULE),
+                ucfirst($controllerName),
+                ucfirst($actionName)
+            );
+        }
+
         return sprintf(
             'SP\Modules\%s\Controllers\%sController',
             ucfirst(APP_MODULE),
@@ -170,7 +179,7 @@ abstract class BootstrapBase
      * @throws \SP\Core\Exceptions\CheckException
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Exceptions\InitializationException
-     * @throws \SP\Services\Upgrade\UpgradeException
+     * @throws \SP\Domain\Upgrade\Services\UpgradeException
      */
     final protected function initializeCommon(): void
     {
@@ -245,15 +254,7 @@ abstract class BootstrapBase
      */
     private function initPHPVars(): void
     {
-        if (defined('DEBUG') && DEBUG) {
-            /** @noinspection ForgottenDebugOutputInspection */
-            Debug::enable();
-        } elseif (!defined('DEBUG')
-                  && ($this->router->request()->cookies()->get('XDEBUG_SESSION')
-                      || $this->configData->isDebug())
-        ) {
-            define('DEBUG', true);
-
+        if (DEBUG) {
             /** @noinspection ForgottenDebugOutputInspection */
             Debug::enable();
         } else {
@@ -306,7 +307,7 @@ abstract class BootstrapBase
      * Cargar la configuración
      *
      * @throws \SP\Core\Exceptions\ConfigException
-     * @throws \SP\Services\Upgrade\UpgradeException
+     * @throws \SP\Domain\Upgrade\Services\UpgradeException
      */
     private function initConfig(): void
     {

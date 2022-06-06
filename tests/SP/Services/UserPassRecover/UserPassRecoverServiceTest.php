@@ -31,8 +31,9 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Services\ServiceException;
-use SP\Services\UserPassRecover\UserPassRecoverService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserPassRecoverService;
+use SP\Domain\User\UserPassRecoverServiceInterface;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -40,12 +41,12 @@ use function SP\Tests\setupContext;
 /**
  * Class UserPassRecoverServiceTest
  *
- * @package SP\Tests\SP\Services\UserPassRecover
+ * @package SP\Tests\SP\Domain\Common\Services\UserPassRecover
  */
 class UserPassRecoverServiceTest extends DatabaseTestCase
 {
     /**
-     * @var UserPassRecoverService
+     * @var \SP\Domain\User\UserPassRecoverServiceInterface
      */
     private static $service;
 

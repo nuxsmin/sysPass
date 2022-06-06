@@ -27,19 +27,28 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\Crypt\Services\MasterPassService;
+use SP\Domain\Crypt\Services\TemporaryMasterPassService;
+use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\TemporaryMasterPassServiceInterface;
+use SP\Domain\Task\Services\TaskFactory;
 use SP\Http\JsonResponse;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\Config\ConfigService;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\Crypt\TemporaryMasterPassService;
-use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\Task\TaskFactory;
 
 /**
  * Class ConfigEncryptionController
@@ -50,18 +59,36 @@ final class ConfigEncryptionController extends SimpleControllerBase
 {
     use JsonTrait;
 
+    private MasterPassServiceInterface $masterPassService;
+    private ConfigService              $configService;
+    private TemporaryMasterPassService $temporaryMasterPassService;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker,
+        MasterPassServiceInterface $masterPassService,
+        TemporaryMasterPassServiceInterface $temporaryMasterPassService,
+        ConfigServiceInterface $configService
+    ) {
+        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+
+        $this->masterPassService = $masterPassService;
+        $this->configService = $configService;
+        $this->temporaryMasterPassService = $temporaryMasterPassService;
+    }
+
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function saveAction(): bool
     {
-        $mastePassService = $this->dic->get(MasterPassService::class);
-
         $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');
         $newMasterPass = $this->request->analyzeEncrypted('new_masterpass');
         $newMasterPassR = $this->request->analyzeEncrypted('new_masterpass_repeat');
@@ -69,7 +96,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
         $noAccountPassChange = $this->request->analyzeBool('no_account_change', false);
         $taskId = $this->request->analyzeString('taskId');
 
-        if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
+        if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS_STICKY,
                 __u('Master password updated'),
@@ -105,7 +132,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
             );
         }
 
-        if (!$mastePassService->checkMasterPassword($currentMasterPass)) {
+        if (!$this->masterPassService->checkMasterPassword($currentMasterPass)) {
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
                 __u('The current master password does not match')
@@ -127,8 +154,6 @@ final class ConfigEncryptionController extends SimpleControllerBase
             );
         }
 
-        $configService = $this->dic->get(ConfigService::class);
-
         if (!$noAccountPassChange) {
             try {
                 $task = $taskId !== null
@@ -138,7 +163,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
                     $newMasterPass,
-                    $configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH),
+                    $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH),
                     $task
                 );
 
@@ -147,7 +172,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                     new Event($this)
                 );
 
-                $mastePassService->changeMasterPassword($request);
+                $this->masterPassService->changeMasterPassword($request);
 
                 $this->eventDispatcher->notifyEvent(
                     'update.masterPassword.end',
@@ -157,7 +182,8 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent(
-                    'exception', new Event($e)
+                    'exception',
+                    new Event($e)
                 );
 
                 return $this->returnJsonResponseException($e);
@@ -173,7 +199,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                     new Event($this)
                 );
 
-                $mastePassService->updateConfig(Hash::hashKey($newMasterPass));
+                $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
             } catch (Exception $e) {
                 processException($e);
 
@@ -214,8 +240,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 );
             }
 
-            $masterPassService = $this->dic->get(MasterPassService::class);
-            $masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
+            $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
             $this->eventDispatcher->notifyEvent(
                 'refresh.masterPassword.hash',
@@ -250,26 +275,26 @@ final class ConfigEncryptionController extends SimpleControllerBase
      * Create a temporary master pass
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function saveTempAction(): bool
     {
         try {
-            $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
-            $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
+            $key =
+                $this->temporaryMasterPassService->create(
+                    $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
+                );
 
             $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
             $sendEmail = $this->configData->isMailEnabled()
-                && $this->request->analyzeBool('temporary_masterpass_email');
+                         && $this->request->analyzeBool('temporary_masterpass_email');
 
             if ($sendEmail) {
                 try {
                     if ($groupId > 0) {
-                        $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
+                        $this->temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
                     } else {
-                        $temporaryMasterPassService->sendByEmailForAllUsers($key);
+                        $this->temporaryMasterPassService->sendByEmailForAllUsers($key);
                     }
 
                     return $this->returnJsonResponse(
@@ -311,8 +336,6 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      * @throws \SP\Core\Exceptions\SessionTimeout
      */

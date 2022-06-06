@@ -32,15 +32,16 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Install\InstallerInterface;
+use SP\Domain\Install\Services\InstallData;
+use SP\Domain\Install\Services\Installer;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\Template;
-use SP\Providers\Auth\Browser\Browser;
-use SP\Services\Install\InstallData;
-use SP\Services\Install\Installer;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
 /**
  * Class InstallController
@@ -58,12 +59,12 @@ final class InstallController extends ControllerBase
         ThemeInterface $theme,
         Klein $router,
         Acl $acl,
-        Request $request,
+        RequestInterface $request,
         PhpExtensionChecker $extensionChecker,
-        Template $template,
-        Browser $browser,
+        TemplateInterface $template,
+        BrowserAuthInterface $browser,
         LayoutHelper $layoutHelper,
-        Installer $installer
+        InstallerInterface $installer
     ) {
         parent::__construct(
             $application,

@@ -117,7 +117,7 @@ final class ImageUtil
         imagefilledrectangle($im, 0, 0, $width, 30, $bgColor);
 
         // Ruta de la fuente
-        $font = PUBLIC_PATH . '/vendor/fonts/NotoSans-Regular-webfont.ttf';
+        $font = PUBLIC_PATH.'/vendor/fonts/NotoSans-Regular-webfont.ttf';
 
         // Sombra
 //        imagettftext($im, 14, 0, 13, 23, $shadowColor, $font, $text);

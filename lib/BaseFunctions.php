@@ -31,7 +31,7 @@ const LOG_FORMAT = "[%s] [%s] %s";
 /**
  * [timestamp] [type] [caller] data
  */
-const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL;
+const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}'.PHP_EOL;
 
 /**
  * Basic logger to handle some debugging and exception messages.
@@ -42,10 +42,10 @@ const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' 
  *
  * A more advanced event logging should be handled through EventDispatcher
  *
- * @param mixed       $data
- * @param string|null $type
+ * @param  mixed  $data
+ * @param  string  $type
  */
-function logger($data, ?string $type = 'DEBUG')
+function logger($data, string $type = 'DEBUG')
 {
     if (!DEBUG && $type === 'DEBUG') {
         return;
@@ -62,7 +62,7 @@ function logger($data, ?string $type = 'DEBUG')
     );
 
     $useOwn = (!defined('LOG_FILE')
-        || !@error_log($line, 3, LOG_FILE)
+               || !@error_log($line, 3, LOG_FILE)
     );
 
     if ($useOwn === false) {
@@ -93,7 +93,7 @@ function getLastCaller(int $skip = 2): string
     $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
     if (isset($callers[$skip]['class'], $callers[$skip]['function'])) {
-        return $callers[$skip]['class'] . '::' . $callers[$skip]['function'];
+        return $callers[$skip]['class'].'::'.$callers[$skip]['function'];
     }
 
     return 'N/A';
@@ -153,22 +153,28 @@ function formatStackTrace(Throwable $e): string
 /**
  * Process an exception and log into the error log
  *
- * @param \Exception $exception
+ * @param  \Exception  $exception
  */
 function processException(Exception $exception)
 {
-    logger(sprintf(
-        "%s\n%s",
-        __($exception->getMessage()),
-        formatStackTrace($exception)),
-        'EXCEPTION');
+    logger(
+        sprintf(
+            "%s\n%s",
+            __($exception->getMessage()),
+            formatStackTrace($exception)
+        ),
+        'EXCEPTION'
+    );
 
     if (($previous = $exception->getPrevious()) !== null) {
-        logger(sprintf(
-            "(P) %s\n%s",
-            __($previous->getMessage()),
-            $previous->getTraceAsString()),
-            'EXCEPTION');
+        logger(
+            sprintf(
+                "(P) %s\n%s",
+                __($previous->getMessage()),
+                $previous->getTraceAsString()
+            ),
+            'EXCEPTION'
+        );
     }
 }
 
@@ -199,14 +205,14 @@ function formatTrace(array $trace): string
 /**
  * Alias gettext function
  *
- * @param string $message
- * @param bool   $translate Si es necesario traducir
+ * @param  string  $message
+ * @param  bool  $translate  Si es necesario traducir
  */
 function __(string $message, bool $translate = true): string
 {
     return $translate === true
-    && $message !== ''
-    && mb_strlen($message) < 4096
+           && $message !== ''
+           && mb_strlen($message) < 4096
         ? gettext($message)
         : $message;
 }
@@ -226,8 +232,8 @@ function __u(string $message): string
 function _t(string $domain, string $message, bool $translate = true): string
 {
     return $translate === true
-    && $message !== ''
-    && mb_strlen($message) < 4096
+           && $message !== ''
+           && mb_strlen($message) < 4096
         ? dgettext($domain, $message)
         : $message;
 }
@@ -264,7 +270,7 @@ function initModule(string $module): array
 {
     logger(sprintf('Initializing module: %s', $module));
 
-    $moduleFile = MODULES_PATH . DIRECTORY_SEPARATOR . $module . DIRECTORY_SEPARATOR . 'module.php';
+    $moduleFile = MODULES_PATH.DIRECTORY_SEPARATOR.$module.DIRECTORY_SEPARATOR.'module.php';
 
     if (is_dir(MODULES_PATH) && file_exists($moduleFile)) {
         $definitions = require $moduleFile;
@@ -287,9 +293,9 @@ function initModule(string $module): array
 function nDirname($dir, $levels)
 {
     if (version_compare(PHP_VERSION, '7.0') === -1) {
-        logger(realpath(dirname($dir) . str_repeat('../', $levels)));
+        logger(realpath(dirname($dir).str_repeat('../', $levels)));
 
-        return realpath(dirname($dir) . str_repeat('../', $levels));
+        return realpath(dirname($dir).str_repeat('../', $levels));
     }
 
     return dirname($dir, $levels);

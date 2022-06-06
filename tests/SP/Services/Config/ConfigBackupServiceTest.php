@@ -27,13 +27,13 @@ namespace SP\Tests\Services\Config;
 use DI\DependencyException;
 use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextException;
-use SP\Services\Config\ConfigBackupService;
-use SP\Services\ServiceException;
-use SP\Storage\File\FileException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigBackupService;
+use SP\Domain\Config\Services\ConfigFileService;
+use SP\Infrastructure\File\FileException;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
@@ -102,7 +102,7 @@ class ConfigBackupServiceTest extends TestCase
 
         $this->assertEquals($configData->getConfigVersion(), $data->getConfigVersion());
 
-        $config = $dic->get(Config::class)->loadConfigFromFile();
+        $config = $dic->get(ConfigFileService::class)->loadConfigFromFile();
 
         $this->assertEquals($config->getConfigVersion(), $data->getConfigVersion());
         $this->assertGreaterThanOrEqual($config->getConfigDate(), $data->getConfigDate());

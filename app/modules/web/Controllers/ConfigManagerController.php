@@ -39,7 +39,21 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\MimeTypes;
+use SP\Core\MimeTypesInterface;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Crypt\Services\TemporaryMasterPassService;
+use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\XmlExportService;
+use SP\Domain\Task\Services\Task;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Services\UserService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -49,21 +63,6 @@ use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountService;
-use SP\Services\Auth\AuthException;
-use SP\Services\Backup\BackupFiles;
-use SP\Services\Config\ConfigService;
-use SP\Services\Crypt\TemporaryMasterPassService;
-use SP\Services\Export\XmlExportService;
-use SP\Services\ServiceException;
-use SP\Services\Task\Task;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 /**
@@ -155,42 +154,51 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('general');
 
-        $template->assign('langs',
+        $template->assign(
+            'langs',
             SelectItemAdapter::factory(
                 Language::getAvailableLanguages()
             )->getItemsFromArraySelected([$this->configData->getSiteLang()])
         );
-        $template->assign('themes',
+        $template->assign(
+            'themes',
             SelectItemAdapter::factory(
                 $this->theme->getThemesAvailable()
             )->getItemsFromArraySelected([$this->configData->getSiteTheme()])
         );
-        $template->assign('isDemoMode',
+        $template->assign(
+            'isDemoMode',
             $this->configData->isDemoEnabled()
             && !$this->userData->getIsAdminApp()
         );
-        $template->assign('isDisabled',
+        $template->assign(
+            'isDisabled',
             $this->configData->isDemoEnabled()
             && !$this->userData->getIsAdminApp() ? 'disabled' : ''
         );
-        $template->assign('users',
+        $template->assign(
+            'users',
             SelectItemAdapter::factory(
                 UserService::getItemsBasic()
             )->getItemsFromModel()
         );
-        $template->assign('userGroups',
+        $template->assign(
+            'userGroups',
             SelectItemAdapter::factory(
                 UserGroupService::getItemsBasic()
             )->getItemsFromModel()
         );
-        $template->assign('userProfiles',
+        $template->assign(
+            'userProfiles',
             SelectItemAdapter::factory(
                 UserProfileService::getItemsBasic()
             )->getItemsFromModel()
         );
 
-        $template->assign('curlIsAvailable',
-            $this->extensionChecker->checkCurlAvailable());
+        $template->assign(
+            'curlIsAvailable',
+            $this->extensionChecker->checkCurlAvailable()
+        );
 
         $events = array_merge(
             LogInterface::EVENTS,
@@ -199,7 +207,8 @@ final class ConfigManagerController extends ControllerBase
 
         sort($events, SORT_STRING);
 
-        $template->assign('logEvents',
+        $template->assign(
+            'logEvents',
             SelectItemAdapter::factory($events)
                 ->getItemsFromArraySelected(
                     $this->configData->getLogEvents(),
@@ -230,7 +239,7 @@ final class ConfigManagerController extends ControllerBase
             static function ($value) {
                 return $value['type'];
             },
-            $this->dic->get(MimeTypes::class)->getMimeTypes()
+            $this->dic->get(MimeTypesInterface::class)->getMimeTypes()
         );
 
         $mimeTypes = SelectItemAdapter::factory(
@@ -280,23 +289,31 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('ldap');
 
-        $template->assign('ldapIsAvailable',
-            $this->extensionChecker->checkIsAvailable('ldap'));
-        $template->assign('userGroups',
+        $template->assign(
+            'ldapIsAvailable',
+            $this->extensionChecker->checkIsAvailable('ldap')
+        );
+        $template->assign(
+            'userGroups',
             SelectItemAdapter::factory(UserGroupService::getItemsBasic())
-                ->getItemsFromModel());
-        $template->assign('userProfiles',
+                ->getItemsFromModel()
+        );
+        $template->assign(
+            'userProfiles',
             SelectItemAdapter::factory(UserProfileService::getItemsBasic())
-                ->getItemsFromModel());
+                ->getItemsFromModel()
+        );
 
         $serverTypes = [
             LdapTypeInterface::LDAP_STD => 'Standard',
-            LdapTypeInterface::LDAP_ADS => 'Active Directory'
+            LdapTypeInterface::LDAP_ADS => 'Active Directory',
         ];
 
-        $template->assign('serverTypes',
+        $template->assign(
+            'serverTypes',
             SelectItemAdapter::factory($serverTypes)
-                ->getItemsFromArraySelected([$this->configData->getLdapType()]));
+                ->getItemsFromArraySelected([$this->configData->getLdapType()])
+        );
 
         $userAttributes = array_merge(
             LdapStd::DEFAULT_FILTER_USER_ATTRIBUTES,
@@ -304,9 +321,11 @@ final class ConfigManagerController extends ControllerBase
             $this->configData->getLdapFilterUserAttributes()
         );
 
-        $template->assign('userAttributes',
+        $template->assign(
+            'userAttributes',
             SelectItemAdapter::factory($userAttributes)
-                ->getItemsFromArraySelected($this->configData->getLdapFilterUserAttributes()));
+                ->getItemsFromArraySelected($this->configData->getLdapFilterUserAttributes())
+        );
 
         $groupAttributes = array_merge(
             LdapStd::DEFAULT_FILTER_GROUP_ATTRIBUTES,
@@ -314,9 +333,11 @@ final class ConfigManagerController extends ControllerBase
             $this->configData->getLdapFilterGroupAttributes()
         );
 
-        $template->assign('groupAttributes',
+        $template->assign(
+            'groupAttributes',
             SelectItemAdapter::factory($groupAttributes)
-                ->getItemsFromArraySelected($this->configData->getLdapFilterGroupAttributes()));
+                ->getItemsFromArraySelected($this->configData->getLdapFilterGroupAttributes())
+        );
 
         return new DataTab(__('LDAP'), $template);
     }
@@ -332,12 +353,14 @@ final class ConfigManagerController extends ControllerBase
         $template->addTemplate('mail');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
-        $template->assign('userGroups',
+        $template->assign(
+            'userGroups',
             SelectItemAdapter::factory(
                 UserGroupService::getItemsBasic()
             )->getItemsFromModel()
         );
-        $template->assign('userProfiles',
+        $template->assign(
+            'userProfiles',
             SelectItemAdapter::factory(
                 UserProfileService::getItemsBasic()
             )->getItemsFromModel()
@@ -370,7 +393,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function getEncryptionConfig(): DataTab
     {
@@ -457,7 +480,8 @@ final class ConfigManagerController extends ControllerBase
         $exportFile = new FileHandler(
             XmlExportService::getExportFilename(
                 BACKUP_PATH,
-                $this->configData->getExportHash() ?: '', true
+                $this->configData->getExportHash() ?: '',
+                true
             )
         );
 
@@ -482,12 +506,14 @@ final class ConfigManagerController extends ControllerBase
             $exportFile->checkFileExists();
 
             $template->assign('hasExport', true);
-            $template->assign('lastExportTime',
+            $template->assign(
+                'lastExportTime',
                 date('r', $exportFile->getFileTime())
             );
         } catch (FileException $e) {
             $template->assign('hasExport', false);
-            $template->assign('lastExportTime',
+            $template->assign(
+                'lastExportTime',
                 __('No export file found')
             );
         }
@@ -523,7 +549,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function getInfo(): DataTab
     {
@@ -536,7 +562,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('dbInfo', $databaseUtil->getDBinfo());
         $template->assign(
             'dbName',
-            $this->configData->getDbName() . '@' . $this->configData->getDbHost()
+            $this->configData->getDbName().'@'.$this->configData->getDbHost()
         );
         $template->assign(
             'configBackupDate',

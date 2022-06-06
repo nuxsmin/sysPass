@@ -33,7 +33,7 @@ use SessionHandler;
  *
  * @package SP\Core\Crypt
  */
-final class CryptSessionHandler extends SessionHandler
+class CryptSessionHandler extends SessionHandler
 {
     /**
      * @var bool Indica si la sesión está encriptada

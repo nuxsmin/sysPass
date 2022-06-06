@@ -47,7 +47,7 @@ final class ClientAdapter extends AdapterBase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function includeCustomFields(ClientData $data): Collection
     {

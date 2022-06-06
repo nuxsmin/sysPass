@@ -28,8 +28,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
-use SP\Storage\File\ArchiveHandler;
-use SP\Storage\File\FileException;
+use SP\Infrastructure\File\ArchiveHandler;
+use SP\Infrastructure\File\FileException;
 use UnexpectedValueException;
 
 /**

@@ -32,9 +32,9 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
+use SP\Infrastructure\Client\Repositories\ClientRepository;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Mvc\Model\QueryCondition;
-use SP\Repositories\Client\ClientRepository;
-use SP\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

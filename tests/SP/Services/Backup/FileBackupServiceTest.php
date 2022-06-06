@@ -25,12 +25,12 @@
 namespace SP\Tests\Services\Backup;
 
 use SP\Core\PhpExtensionChecker;
-use SP\Services\Backup\BackupFiles;
-use SP\Services\Backup\FileBackupService;
-use SP\Storage\Database\Database;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\Database\MySQLHandler;
-use SP\Storage\File\ArchiveHandler;
+use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\FileBackupService;
+use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\Database\MySQLHandler;
+use SP\Infrastructure\File\ArchiveHandler;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -44,7 +44,7 @@ class FileBackupServiceTest extends UnitaryTestCase
     private BackupFiles       $backupFiles;
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testDoBackup(): void
     {

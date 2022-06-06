@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Domain\ItemPreset\ItemPresetInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -33,8 +34,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class AccountDefaultPermissionGrid

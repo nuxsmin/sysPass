@@ -36,37 +36,32 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
  */
 final class PasswordUtil
 {
-    private const CHARS = 'abcdefghijklmnopqrstuwxyz';
-    private const CHARS_SPECIAL = '@$%&/()!_:.;{}^-';
-    private const CHARS_NUMBER = '0123456789';
-    public const FLAG_PASSWORD_NUMBER = 2;
-    public const FLAG_PASSWORD_SPECIAL = 4;
-    public const FLAG_PASSWORD_STRENGTH = 8;
+    private const CHARS                  = 'abcdefghijklmnopqrstuwxyz';
+    private const CHARS_SPECIAL          = '@$%&/()!_:.;{}^-';
+    private const CHARS_NUMBER           = '0123456789';
+    public const  FLAG_PASSWORD_NUMBER   = 2;
+    public const  FLAG_PASSWORD_SPECIAL  = 4;
+    public const  FLAG_PASSWORD_STRENGTH = 8;
 
     /**
      * Generate a ramdom password
      *
-     * @param int      $length Password length
-     * @param int|null $flags  Password chars included and checking strength flags
+     * @param  int  $length  Password length
+     * @param  int|null  $flags  Password chars included and checking strength flags
      *
      * @return string
      * @throws \Exception
      */
-    public static function randomPassword(
-        int $length = 16,
-        int $flags = null
-    ): string
+    public static function randomPassword(int $length = 16, int $flags = null): string
     {
         if ($flags === null) {
-            $flags = self::FLAG_PASSWORD_SPECIAL
-                | self::FLAG_PASSWORD_NUMBER
-                | self::FLAG_PASSWORD_STRENGTH;
+            $flags = self::FLAG_PASSWORD_SPECIAL | self::FLAG_PASSWORD_NUMBER | self::FLAG_PASSWORD_STRENGTH;
         }
 
         $useSpecial = ($flags & self::FLAG_PASSWORD_SPECIAL) > 0;
         $useNumbers = ($flags & self::FLAG_PASSWORD_NUMBER) > 0;
 
-        $alphabet = self::CHARS . strtoupper(self::CHARS);
+        $alphabet = self::CHARS.strtoupper(self::CHARS);
 
         if ($useSpecial) {
             $alphabet .= self::CHARS_SPECIAL;
@@ -132,7 +127,7 @@ final class PasswordUtil
     /**
      * Generar una cadena aleatoria usuando criptografía.
      *
-     * @param int $length opcional, con la longitud de la cadena
+     * @param  int  $length  opcional, con la longitud de la cadena
      *
      * @throws EnvironmentIsBrokenException
      */

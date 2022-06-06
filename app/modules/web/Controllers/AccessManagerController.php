@@ -33,6 +33,12 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
@@ -40,12 +46,6 @@ use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Services\Auth\AuthException;
-use SP\Services\AuthToken\AuthTokenService;
-use SP\Services\PublicLink\PublicLinkService;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class AccessManagerController

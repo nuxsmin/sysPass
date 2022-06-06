@@ -25,8 +25,8 @@
 namespace SP\Tests\Services\Api;
 
 use PHPUnit\Framework\TestCase;
-use SP\Services\Api\ApiRequest;
-use SP\Services\Api\ApiRequestException;
+use SP\Domain\Api\Services\ApiRequest;
+use SP\Domain\Api\Services\ApiRequestException;
 use function SP\Tests\getResource;
 
 /**

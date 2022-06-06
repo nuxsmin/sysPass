@@ -57,22 +57,21 @@ abstract class Ldap implements LdapInterface
     /**
      * LdapBase constructor.
      *
-     * @param LdapConnectionInterface $ldapConnection
-     * @param EventDispatcher         $eventDispatcher
-     *
-     * @throws LdapException
+     * @param  LdapConnectionInterface  $ldapConnection
+     * @param  \SP\Providers\Auth\Ldap\LdapActions  $ldapActions
+     * @param  EventDispatcher  $eventDispatcher
      */
-    public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
-    {
+    public function __construct(
+        LdapConnectionInterface $ldapConnection,
+        LdapActions $ldapActions,
+        EventDispatcher $eventDispatcher
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->ldapActions = $ldapActions;
         $this->ldapConnection = $ldapConnection;
-
         $this->ldapParams = $ldapConnection->getLdapParams();
         $this->server = $this->pickServer();
-
         $this->ldapConnection->setServer($this->server);
-
-        $this->eventDispatcher = $eventDispatcher;
-        $this->ldapActions = new LdapActions($ldapConnection, $eventDispatcher);
     }
 
     /**
@@ -83,27 +82,28 @@ abstract class Ldap implements LdapInterface
     abstract protected function pickServer(): string;
 
     /**
-     * @param LdapParams      $ldapParams
-     * @param EventDispatcher $eventDispatcher
-     * @param bool            $debug
+     * @param  LdapParams  $ldapParams
+     * @param  EventDispatcher  $eventDispatcher
+     * @param  bool  $debug
      *
      * @return LdapInterface
      * @throws LdapException
      */
     public static function factory(
-        LdapParams      $ldapParams,
+        LdapParams $ldapParams,
         EventDispatcher $eventDispatcher,
-        bool            $debug
-    ): LdapInterface
-    {
+        bool $debug
+    ): LdapInterface {
         $ldapConnection = new LdapConnection($ldapParams, $eventDispatcher, $debug);
         $ldapConnection->checkConnection();
 
+        $ldapActions = new LdapActions($ldapConnection, $eventDispatcher);
+
         switch ($ldapParams->getType()) {
             case LdapTypeInterface::LDAP_STD:
-                return new LdapStd($ldapConnection, $eventDispatcher);
+                return new LdapStd($ldapConnection, $ldapActions, $eventDispatcher);
             case LdapTypeInterface::LDAP_ADS:
-                return new LdapMsAds($ldapConnection, $eventDispatcher);
+                return new LdapMsAds($ldapConnection, $ldapActions, $eventDispatcher);
         }
 
         throw new LdapException(__u('LDAP type not set'));
@@ -129,8 +129,8 @@ abstract class Ldap implements LdapInterface
     }
 
     /**
-     * @param string|null $bindDn
-     * @param string|null $bindPass
+     * @param  string|null  $bindDn
+     * @param  string|null  $bindPass
      *
      * @return bool
      */

@@ -26,16 +26,16 @@ namespace SP\Core\Acl;
 
 use RuntimeException;
 use SP\DataModel\ActionData;
-use SP\Storage\File\FileCacheInterface;
-use SP\Storage\File\FileException;
-use SP\Storage\File\XmlFileStorageInterface;
+use SP\Infrastructure\File\FileCacheInterface;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\XmlFileStorageInterface;
 
 /**
  * Class Actions
  *
  * @package SP\Core\Acl
  */
-final class Actions
+class Actions
 {
     /**
      * Cache file name

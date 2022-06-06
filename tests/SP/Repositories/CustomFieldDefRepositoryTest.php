@@ -33,8 +33,9 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\CustomField\CustomFieldDefRepository;
-use SP\Repositories\NoSuchItemException;
+use SP\Domain\CustomField\In\CustomFieldDefRepositoryInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\CustomField\Repositories\CustomFieldDefRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -46,7 +47,7 @@ use function SP\Tests\setupContext;
 class CustomFieldDefRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var CustomFieldDefRepository
+     * @var CustomFieldDefRepositoryInterface
      */
     private static $repository;
 

@@ -31,11 +31,12 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountCryptService;
-use SP\Services\Account\AccountService;
-use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\ServiceException;
+use SP\Domain\Account\AccountCryptServiceInterface;
+use SP\Domain\Account\Services\AccountCryptService;
+use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -54,7 +55,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
      */
     private static $accountService;
     /**
-     * @var AccountCryptService
+     * @var AccountCryptServiceInterface
      */
     private static $service;
 
@@ -77,7 +78,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws CryptoException
      * @throws NoSuchItemException
      */

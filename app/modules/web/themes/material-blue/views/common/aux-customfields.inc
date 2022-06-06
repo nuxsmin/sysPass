@@ -1,14 +1,13 @@
 <?php
 /**
- * @var ThemeIcons        $icons
+ * @var ThemeIcons $icons
  * @var CustomFieldItem[] $customFields
- * @var callable          $_getvar
- * @var Template          $this
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
-use SP\Mvc\View\Template;
-use SP\Services\CustomField\CustomFieldItem;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 
 $customFields = $_getvar('customFields');
 

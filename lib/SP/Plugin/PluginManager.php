@@ -33,11 +33,13 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Repositories\NoSuchItemException;
-use SP\Repositories\Plugin\PluginModel;
-use SP\Services\Install\Installer;
-use SP\Services\Plugin\PluginDataService;
-use SP\Services\Plugin\PluginService;
+use SP\Domain\Install\Services\Installer;
+use SP\Domain\Plugin\PluginDataServiceInterface;
+use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Domain\Plugin\Services\PluginService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Util\VersionUtil;
 
 /**
@@ -45,7 +47,7 @@ use SP\Util\VersionUtil;
  *
  * @package SP\Plugin
  */
-final class PluginManager
+class PluginManager
 {
     private static ?array $pluginsAvailable;
     private ?array        $enabledPlugins = null;
@@ -61,13 +63,13 @@ final class PluginManager
     /**
      * PluginManager constructor.
      *
-     * @param  PluginService  $pluginService
-     * @param  PluginDataService  $pluginDataService
+     * @param  \SP\Domain\Plugin\PluginServiceInterface  $pluginService
+     * @param  PluginDataServiceInterface  $pluginDataService
      * @param  EventDispatcher  $eventDispatcher
      */
     public function __construct(
-        PluginService $pluginService,
-        PluginDataService $pluginDataService,
+        PluginServiceInterface $pluginService,
+        PluginDataServiceInterface $pluginDataService,
         EventDispatcher $eventDispatcher
     ) {
         $this->pluginService = $pluginService;

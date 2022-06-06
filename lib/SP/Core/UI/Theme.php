@@ -24,14 +24,14 @@
 
 namespace SP\Core\UI;
 
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Storage\File\FileCacheInterface;
-use SP\Storage\File\FileException;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Infrastructure\File\FileCacheInterface;
+use SP\Infrastructure\File\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -62,13 +62,13 @@ final class Theme implements ThemeInterface
      * Theme constructor.
      *
      * @param  string  $module
-     * @param  Config  $config
+     * @param  ConfigInterface  $config
      * @param  ContextInterface  $context
      * @param  FileCacheInterface  $fileCache
      */
     public function __construct(
         string $module,
-        Config $config,
+        ConfigInterface $config,
         ContextInterface $context,
         FileCacheInterface $fileCache
     ) {

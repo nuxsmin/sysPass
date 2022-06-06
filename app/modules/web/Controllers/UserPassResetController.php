@@ -34,14 +34,14 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Notification\Services\MailService;
+use SP\Domain\Security\Services\TrackService;
+use SP\Domain\User\Services\UserPassRecoverService;
+use SP\Domain\User\Services\UserService;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Repositories\Track\TrackRequest;
-use SP\Services\Mail\MailService;
-use SP\Services\Track\TrackService;
-use SP\Services\User\UserService;
-use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Util\ErrorUtil;
 
 /**
@@ -65,7 +65,7 @@ final class UserPassResetController extends ControllerBase
     public function indexAction(): void
     {
         $this->dic->get(LayoutHelper::class)
-            ->getCustomLayout('request', strtolower($this->controllerName));
+            ->getCustomLayout('request', strtolower($this->getViewBaseName()));
 
         if (!$this->configData->isMailEnabled()) {
             ErrorUtil::showErrorInView(
@@ -173,7 +173,7 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
-     * @param string|null $hash
+     * @param  string|null  $hash
      *
      * @throws DependencyException
      * @throws NotFoundException
@@ -181,7 +181,7 @@ final class UserPassResetController extends ControllerBase
     public function resetAction(?string $hash = null): void
     {
         $this->dic->get(LayoutHelper::class)
-            ->getCustomLayout('reset', strtolower($this->controllerName));
+            ->getCustomLayout('reset', strtolower($this->getViewBaseName()));
 
         if ($hash && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);
@@ -268,6 +268,6 @@ final class UserPassResetController extends ControllerBase
     protected function initialize(): void
     {
         $this->trackService = $this->dic->get(TrackService::class);
-        $this->trackRequest = $this->trackService->getTrackRequest($this->controllerName);
+        $this->trackRequest = $this->trackService->getTrackRequest($this->getViewBaseName());
     }
 }

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
-use SP\Services\AuthToken\AuthTokenService;
+use SP\Domain\Auth\Services\AuthTokenService;
 
 /**
  * Class ApiTokenForm

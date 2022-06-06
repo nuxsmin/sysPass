@@ -32,10 +32,11 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
-use SP\Repositories\Plugin\PluginModel;
-use SP\Services\Plugin\PluginService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Services\PluginService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -47,7 +48,7 @@ use function SP\Tests\setupContext;
 class PluginServiceTest extends DatabaseTestCase
 {
     /**
-     * @var PluginService
+     * @var PluginServiceInterface
      */
     private static $service;
 

@@ -32,10 +32,10 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Category\Services\CategoryService;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Services\Api\ApiResponse;
-use SP\Services\Category\CategoryService;
 use SP\Util\Util;
 
 

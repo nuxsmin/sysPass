@@ -24,10 +24,10 @@
 
 namespace SP\Core;
 
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFileService;
 
 /**
  * Class ModuleBase
@@ -36,7 +36,7 @@ use SP\Core\Events\EventDispatcher;
  */
 abstract class ModuleBase
 {
-    protected Config              $config;
+    protected ConfigFileService   $config;
     protected ConfigDataInterface $configData;
     protected ContextInterface    $context;
     private EventDispatcher       $eventDispatcher;

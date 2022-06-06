@@ -26,7 +26,7 @@ namespace SP\Core\Context;
 
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\User\Services\UserLoginResponse;
 
 /**
  * Class ContextInterface

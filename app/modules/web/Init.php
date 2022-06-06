@@ -42,21 +42,24 @@ use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\Core\ProvidersHelper;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemPreset\SessionTimeout;
+use SP\Domain\Crypt\SecureSessionServiceInterface;
+use SP\Domain\Crypt\Services\SecureSessionService;
+use SP\Domain\ItemPreset\ItemPresetInterface;
+use SP\Domain\ItemPreset\Services\ItemPresetService;
+use SP\Domain\Upgrade\Services\UpgradeAppService;
+use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
+use SP\Domain\Upgrade\Services\UpgradeUtil;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\UserProfileServiceInterface;
 use SP\Http\Address;
-use SP\Http\Request;
+use SP\Http\RequestInterface;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
 use SP\Plugin\PluginManager;
-use SP\Services\Crypt\SecureSessionService;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Services\ItemPreset\ItemPresetService;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
-use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\File\FileException;
 use SP\Util\HttpUtil;
 
 /**
@@ -94,16 +97,16 @@ final class Init extends HttpModuleBase
     public function __construct(
         Application $application,
         ProvidersHelper $providersHelper,
-        Request $request,
+        RequestInterface $request,
         Klein $router,
         CSRF $csrf,
         ThemeInterface $theme,
-        Language $language,
-        SecureSessionService $secureSessionService,
+        LanguageInterface $language,
+        SecureSessionServiceInterface $secureSessionService,
         PluginManager $pluginManager,
         ItemPresetService $itemPresetService,
         DatabaseUtil $databaseUtil,
-        UserProfileService $userProfileService
+        UserProfileServiceInterface $userProfileService
     ) {
         parent::__construct(
             $application,
@@ -133,8 +136,8 @@ final class Init extends HttpModuleBase
      * @throws \SP\Core\Exceptions\InitializationException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Storage\File\FileException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Infrastructure\File\FileException
      * @throws \Exception
      */
     public function initialize(string $controller): void

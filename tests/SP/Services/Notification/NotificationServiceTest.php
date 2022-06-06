@@ -33,10 +33,10 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Notification\NotificationService;
-use SP\Services\ServiceException;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Notification\Services\NotificationService;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -52,7 +52,7 @@ class NotificationServiceTest extends DatabaseTestCase
      */
     private static $context;
     /**
-     * @var NotificationService
+     * @var \SP\Domain\Notification\NotificationServiceInterface
      */
     private static $service;
 

@@ -104,9 +104,8 @@ final class BootstrapWeb extends BootstrapBase
                 }
 
                 $controllerName = $matches['controller'][0];
-                $methodName = empty($matches['action'][0])
-                    ? 'indexAction'
-                    : $matches['action'][0].'Action';
+                $actionName = empty($matches['action'][0]) ? 'index' : $matches['action'][0];
+                $methodName = sprintf('%sAction', $actionName);
                 $methodParams = empty($matches['params'][0])
                     ? []
                     : Filter::getArray(
@@ -119,7 +118,7 @@ final class BootstrapWeb extends BootstrapBase
                         )
                     );
 
-                $controllerClass = self::getClassFor($controllerName);
+                $controllerClass = self::getClassFor($controllerName, $actionName);
 
                 $this->initializePluginClasses();
 
@@ -162,7 +161,11 @@ final class BootstrapWeb extends BootstrapBase
                     $response->code(503);
                 }
 
-                return __($e->getMessage());
+                echo __($e->getMessage());
+
+                if (DEBUG) {
+                    echo $e->getTraceAsString();
+                }
             }
         };
     }

@@ -24,9 +24,9 @@
 
 namespace SP\Util;
 
-use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\Uri;
 
 /**

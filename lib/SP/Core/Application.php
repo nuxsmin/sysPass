@@ -25,28 +25,28 @@
 namespace SP\Core;
 
 
-use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\ConfigInterface;
 
 /**
  * The Application helper class. It holds all the needed dependencies for the application
  */
 final class Application
 {
-    private Config           $config;
+    private ConfigInterface  $config;
     private EventDispatcher  $eventDispatcher;
     private ContextInterface $context;
 
     /**
      * Module constructor.
      *
-     * @param  \SP\Config\Config  $config
-     * @param  \SP\Core\Events\EventDispatcher  $eventDispatcher
-     * @param  \SP\Core\Context\ContextInterface  $context
+     * @param  ConfigInterface  $config
+     * @param  EventDispatcher  $eventDispatcher
+     * @param  ContextInterface  $context
      */
     public function __construct(
-        Config $config,
+        ConfigInterface $config,
         EventDispatcher $eventDispatcher,
         ContextInterface $context
     ) {
@@ -55,25 +55,16 @@ final class Application
         $this->context = $context;
     }
 
-    /**
-     * @return \SP\Config\Config
-     */
-    public function getConfig(): Config
+    public function getConfig(): ConfigInterface
     {
         return $this->config;
     }
 
-    /**
-     * @return \SP\Core\Events\EventDispatcher
-     */
     public function getEventDispatcher(): EventDispatcher
     {
         return $this->eventDispatcher;
     }
 
-    /**
-     * @return \SP\Core\Context\ContextInterface
-     */
     public function getContext(): ContextInterface
     {
         return $this->context;

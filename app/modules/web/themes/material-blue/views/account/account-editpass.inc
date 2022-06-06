@@ -4,12 +4,12 @@
  * @var ThemeIcons                     $icons
  * @var AccountExtData                 $accountData
  * @var AccountAcl                     $accountAcl
- * @var \SP\Config\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
-use SP\Services\Account\AccountAcl;
+use SP\Domain\Account\Services\AccountAcl;
 
 /** @var AccountExtData $accountData */
 $accountData = $_getvar('accountData');

@@ -27,8 +27,9 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Config\Config;
-use SP\Services\Backup\FileBackupService;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Export\FileBackupServiceInterface;
+use SP\Domain\Export\Services\FileBackupService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,9 +55,10 @@ final class BackupCommand extends CommandBase
     protected static $defaultName = 'sp:backup';
     private FileBackupService $fileBackupService;
 
-    public function __construct(FileBackupService $fileBackupService,
+    public function __construct(
+        FileBackupServiceInterface $fileBackupService,
                                 LoggerInterface   $logger,
-                                Config            $config)
+                                ConfigInterface $config)
     {
         $this->fileBackupService = $fileBackupService;
 

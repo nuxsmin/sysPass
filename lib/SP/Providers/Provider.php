@@ -24,10 +24,10 @@
 
 namespace SP\Providers;
 
-use SP\Config\Config;
 use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\Services\ConfigFileService;
 
 /**
  * Class Service
@@ -36,8 +36,8 @@ use SP\Core\Events\EventDispatcher;
  */
 abstract class Provider implements ProviderInterface
 {
-    protected Config           $config;
-    protected ContextInterface $context;
+    protected ConfigFileService $config;
+    protected ContextInterface  $context;
     protected EventDispatcher  $eventDispatcher;
     protected bool             $initialized = false;
 

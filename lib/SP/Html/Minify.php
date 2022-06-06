@@ -36,7 +36,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-final class Minify
+class Minify
 {
     /**
      * Constantes para tipos de archivos
@@ -80,9 +80,6 @@ final class Minify
      * devuelve el código HTTP/304
      *
      * @param bool $disableMinify Deshabilitar minimizar
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function getMinified(bool $disableMinify = false): void
     {

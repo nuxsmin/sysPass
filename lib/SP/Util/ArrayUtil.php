@@ -34,25 +34,17 @@ final class ArrayUtil
     /**
      * Buscar un objeto en un array según el valor de una propiedad
      *
-     * @param array  $array
-     * @param string $property Nombre de la propiedad
-     * @param string $value    Valor de la propiedad
-     * @param null   $default  Valor por defecto
+     * @param  array  $array
+     * @param  string  $property  Nombre de la propiedad
+     * @param  string  $value  Valor de la propiedad
+     * @param  null  $default  Valor por defecto
      *
      * @return false|object
      */
-    public static function searchInObject(
-        array  $array,
-        string $property,
-        string $value,
-               $default = null
-    )
+    public static function searchInObject(array $array, string $property, string $value, $default = null)
     {
         foreach ($array as $object) {
-            if (is_object($object)
-                && isset($object->$property)
-                && $value == $object->$property
-            ) {
+            if (is_object($object) && isset($object->$property) && $value == $object->$property) {
                 return $object;
             }
         }
@@ -63,17 +55,13 @@ final class ArrayUtil
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array  $objectArray
-     * @param string $method
-     * @param mixed  $value
+     * @param  array  $objectArray
+     * @param  string  $method
+     * @param  mixed  $value
      *
      * @return bool
      */
-    public static function checkInObjectArrayMethod(
-        array  $objectArray,
-        string $method,
-               $value
-    ): bool
+    public static function checkInObjectArrayMethod(array $objectArray, string $method, $value): bool
     {
         foreach ($objectArray as $object) {
             if (is_callable([$object, $method]) && $object->$method() === $value) {
@@ -87,21 +75,14 @@ final class ArrayUtil
     /**
      * Comprobar si un valor existe en un array de objetos
      */
-    public static function checkInObjectArray(
-        array  $objectArray,
-        string $property,
-               $value
-    ): bool
+    public static function checkInObjectArray(array $objectArray, string $property, $value): bool
     {
         if (count($objectArray) === 0) {
             return false;
         }
 
         foreach ($objectArray as $object) {
-            if (is_object($object)
-                && isset($object->$property)
-                && $object->$property == $value
-            ) {
+            if (is_object($object) && isset($object->$property) && $object->$property == $value) {
                 return true;
             }
         }

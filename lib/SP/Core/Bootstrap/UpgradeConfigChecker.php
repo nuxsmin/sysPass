@@ -25,20 +25,21 @@
 namespace SP\Core\Bootstrap;
 
 
-use SP\Config\ConfigDataInterface;
-use SP\Services\Upgrade\UpgradeConfigService;
-use SP\Services\Upgrade\UpgradeUtil;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\UpgradeConfigService;
+use SP\Domain\Config\UpgradeConfigServiceInterface;
+use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Util\VersionUtil;
 
 /**
  * Upgrade the config whenever is needed
  */
-final class UpgradeConfigChecker
+class UpgradeConfigChecker
 {
     private UpgradeConfigService $upgradeConfigService;
     private ConfigDataInterface  $configData;
 
-    public function __construct(UpgradeConfigService $upgradeConfigService, ConfigDataInterface $configData)
+    public function __construct(UpgradeConfigServiceInterface $upgradeConfigService, ConfigDataInterface $configData)
     {
         $this->upgradeConfigService = $upgradeConfigService;
         $this->configData = $configData;
@@ -47,7 +48,7 @@ final class UpgradeConfigChecker
     /**
      * Comprobar la versión de configuración y actualizarla
      *
-     * @throws \SP\Services\Upgrade\UpgradeException
+     * @throws \SP\Domain\Upgrade\Services\UpgradeException
      */
     public function checkConfigVersion(): void
     {

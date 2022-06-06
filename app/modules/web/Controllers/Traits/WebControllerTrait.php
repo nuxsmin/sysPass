@@ -28,6 +28,7 @@ use Closure;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Mvc\Controller\ControllerTrait;
 
 /**
@@ -43,7 +44,7 @@ trait WebControllerTrait
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
      */
-    final protected function getSignedUriFromRequest(Request $request): ?string
+    final protected function getSignedUriFromRequest(RequestInterface $request): ?string
     {
         if (!$this->setup) {
             return null;

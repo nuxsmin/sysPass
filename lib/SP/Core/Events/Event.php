@@ -32,7 +32,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Core\Events
  */
-final class Event
+class Event
 {
     private object $source;
     private ?EventMessage $eventMessage;

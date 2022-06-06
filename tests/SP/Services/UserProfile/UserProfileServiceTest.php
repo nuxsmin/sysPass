@@ -33,10 +33,10 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\ServiceException;
-use SP\Services\UserProfile\UserProfileService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\UserProfileServiceInterface;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -44,12 +44,12 @@ use function SP\Tests\setupContext;
 /**
  * Class UserProfileServiceTest
  *
- * @package SP\Tests\SP\Services\UserProfile
+ * @package SP\Tests\SP\Domain\Common\Services\UserProfile
  */
 class UserProfileServiceTest extends DatabaseTestCase
 {
     /**
-     * @var UserProfileService
+     * @var UserProfileServiceInterface
      */
     private static $service;
 
@@ -66,7 +66,7 @@ class UserProfileServiceTest extends DatabaseTestCase
         self::$loadFixtures = true;
 
         // Inicializar el servicio
-        self::$service = $dic->get(UserProfileService::class);
+        self::$service = $dic->get(\SP\Domain\User\Services\UserProfileService::class);
     }
 
     /**

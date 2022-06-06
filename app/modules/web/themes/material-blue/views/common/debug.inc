@@ -1,8 +1,8 @@
 <?php
 /**
  * @var ThemeIcons $icons
- * @var callable   $_getvar
- * @var Template   $this
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;

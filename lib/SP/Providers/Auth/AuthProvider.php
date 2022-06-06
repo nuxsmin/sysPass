@@ -24,20 +24,14 @@
 
 namespace SP\Providers\Auth;
 
-use SP\Config\Config;
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserLoginData;
-use SP\Providers\Auth\Browser\Browser;
-use SP\Providers\Auth\Database\Database;
-use SP\Providers\Auth\Ldap\Ldap;
-use SP\Providers\Auth\Ldap\LdapAuth;
-use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Database\DatabaseAuthInterface;
+use SP\Providers\Auth\Ldap\LdapAuthInterface;
 use SP\Providers\Provider;
-use SP\Services\Auth\AuthException;
 
 defined('APP_ROOT') || die();
 
@@ -48,24 +42,23 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Providers\Auth
  */
-class AuthProvider extends Provider
+class AuthProvider extends Provider implements AuthProviderInterface
 {
     /**
      * @var callable[]
      */
-    protected array    $auths = [];
-    protected Browser  $browser;
-    protected Database $database;
+    protected array                 $auths       = [];
+    protected DatabaseAuthInterface $databaseAuth;
+    protected ?BrowserAuthInterface $browserAuth = null;
+    protected ?LdapAuthInterface    $ldapAuth    = null;
 
     public function __construct(
         Application $application,
-        Browser $browser,
-        Database $database
+        DatabaseAuthInterface $databaseAuth
     ) {
-        $this->browser = $browser;
-        $this->database = $database;
-
         parent::__construct($application);
+
+        $this->databaseAuth = $databaseAuth;
     }
 
     /**
@@ -99,58 +92,28 @@ class AuthProvider extends Provider
     {
         $configData = $this->config->getConfigData();
 
-        if ($configData->isAuthBasicEnabled()) {
+        if ($this->browserAuth && $configData->isAuthBasicEnabled()) {
             $this->registerAuth(
                 function (UserLoginData $userLoginData) {
-                    $this->browser->authenticate($userLoginData);
+                    $this->browserAuth->authenticate($userLoginData);
                 },
                 'authBrowser'
             );
         }
 
-        if ($configData->isLdapEnabled()) {
+        if ($this->ldapAuth && $configData->isLdapEnabled()) {
             $this->registerAuth(
-                function (UserLoginData $userLoginData) use ($configData) {
-                    $data = LdapParams::getServerAndPort($configData->getLdapServer());
+                function (UserLoginData $userLoginData) {
+                    $ldapAuthData = $this->ldapAuth->getLdapAuthData();
 
-                    if (count($data) === 0) {
-                        throw new ValidationException(__u('Wrong LDAP parameters'));
-                    }
-
-                    $ldapParams = new LdapParams();
-                    $ldapParams->setServer($data['server']);
-                    $ldapParams->setPort($data['port'] ?? 389);
-                    $ldapParams->setSearchBase($configData->getLdapBase());
-                    $ldapParams->setGroup($configData->getLdapGroup());
-                    $ldapParams->setBindDn($configData->getLdapBindUser());
-                    $ldapParams->setBindPass($configData->getLdapBindPass());
-                    $ldapParams->setType($configData->getLdapType());
-                    $ldapParams->setFilterUserObject($configData->getLdapFilterUserObject());
-                    $ldapParams->setFilterGroupObject($configData->getLdapFilterGroupObject());
-                    $ldapParams->setFilterUserAttributes($configData->getLdapFilterUserAttributes());
-                    $ldapParams->setFilterGroupAttributes($configData->getLdapFilterGroupAttributes());
-
-                    // TODO: Use IoC??
-                    $ldapAuth = new LdapAuth(
-                        Ldap::factory(
-                            $ldapParams,
-                            $this->eventDispatcher,
-                            $configData->isDebug()
-                        ),
-                        $this->eventDispatcher,
-                        $configData
-                    );
-
-                    $ldapAuthData = $ldapAuth->getLdapAuthData();
-
-                    $ldapAuthData->setAuthenticated($ldapAuth->authenticate($userLoginData));
+                    $ldapAuthData->setAuthenticated($this->ldapAuth->authenticate($userLoginData));
 
                     if ($ldapAuthData->getAuthenticated()) {
                         // Comprobamos si la cuenta está bloqueada o expirada
                         if ($ldapAuthData->getExpire() > 0) {
-                            $ldapAuthData->setStatusCode(LdapAuth::ACCOUNT_EXPIRED);
+                            $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_EXPIRED);
                         } elseif (!$ldapAuthData->isInGroup()) {
-                            $ldapAuthData->setStatusCode(LdapAuth::ACCOUNT_NO_GROUPS);
+                            $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_NO_GROUPS);
                         }
                     }
 
@@ -162,7 +125,7 @@ class AuthProvider extends Provider
 
         $this->registerAuth(
             function (UserLoginData $userLoginData) {
-                return $this->database->authenticate($userLoginData);
+                return $this->databaseAuth->authenticate($userLoginData);
             },
             'authDatabase'
         );
@@ -187,5 +150,15 @@ class AuthProvider extends Provider
         }
 
         $this->auths[$name] = $auth;
+    }
+
+    public function withLdapAuth(LdapAuthInterface $ldapAuth): void
+    {
+        $this->ldapAuth = $ldapAuth;
+    }
+
+    public function withBrowserAuth(BrowserAuthInterface $browserAuth): void
+    {
+        $this->browserAuth = $browserAuth;
     }
 }

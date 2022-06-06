@@ -29,11 +29,10 @@ use DI\NotFoundException;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
-use SP\Services\Export\VerifyResult;
-use SP\Services\Export\XmlVerifyService;
-use SP\Services\Import\ImportException;
-use SP\Services\ServiceException;
-use SP\Storage\File\FileException;
+use SP\Domain\Export\Services\VerifyResult;
+use SP\Domain\Export\Services\XmlVerifyService;
+use SP\Domain\Import\Services\ImportException;
+use SP\Infrastructure\File\FileException;
 use function SP\Tests\setupContext;
 
 /**
@@ -44,7 +43,7 @@ use function SP\Tests\setupContext;
 class XmlVerifyServiceTest extends TestCase
 {
     /**
-     * @var XmlVerifyService
+     * @var \SP\Domain\Export\XmlVerifyServiceInterface
      */
     private static $xmlVerifyService;
 
@@ -63,7 +62,7 @@ class XmlVerifyServiceTest extends TestCase
     /**
      * @throws FileException
      * @throws ImportException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testVerifyEncrypted()
     {
@@ -85,7 +84,7 @@ class XmlVerifyServiceTest extends TestCase
 
     /**
      * @throws FileException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws ImportException
      */
     public function testVerify()

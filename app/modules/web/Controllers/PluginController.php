@@ -35,17 +35,17 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Domain\Plugin\Services\PluginService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Plugin\PluginManager;
-use SP\Repositories\NoSuchItemException;
-use SP\Repositories\Plugin\PluginModel;
-use SP\Services\Auth\AuthException;
-use SP\Services\Plugin\PluginDataService;
-use SP\Services\Plugin\PluginService;
 
 /**
  * Class PluginController

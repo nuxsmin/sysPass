@@ -38,6 +38,12 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Notification\Services\MailService;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserPassRecoverService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
@@ -46,12 +52,6 @@ use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Auth\AuthException;
-use SP\Services\Mail\MailService;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserPassRecover\UserPassRecoverService;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserController
@@ -485,7 +485,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function checkChangeUserPass(int $userId, UserData $userData): void
     {

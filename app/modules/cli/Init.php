@@ -26,6 +26,7 @@ namespace SP\Modules\Cli;
 
 use SP\Core\Application;
 use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\Core\ModuleBase;
 use SP\Core\ProvidersHelper;
 use SP\Util\VersionUtil;
@@ -49,7 +50,7 @@ final class Init extends ModuleBase
     public function __construct(
         Application $application,
         ProvidersHelper $providersHelper,
-        Language $language,
+        LanguageInterface $language,
         ConsoleApplication $consoleApplication,
         InputInterface $input,
         OutputInterface $output,

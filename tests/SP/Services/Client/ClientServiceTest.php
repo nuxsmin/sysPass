@@ -34,11 +34,11 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Client\ClientService;
-use SP\Services\ServiceException;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -54,7 +54,7 @@ class ClientServiceTest extends DatabaseTestCase
      */
     private static $setupUser;
     /**
-     * @var ClientService
+     * @var \SP\Domain\Client\ClientServiceInterface
      */
     private static $service;
 

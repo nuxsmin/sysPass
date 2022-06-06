@@ -24,14 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -40,25 +39,29 @@ use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\Domain\Account\AccountAclServiceInterface;
+use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Category\CategoryServiceInterface;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Client\ClientServiceInterface;
+use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\ItemPreset\ItemPresetInterface;
+use SP\Domain\ItemPreset\Services\ItemPresetService;
+use SP\Domain\Tag\Services\TagService;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserService;
+use SP\Http\RequestInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountAcl;
-use SP\Services\Account\AccountAclService;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountService;
-use SP\Services\Category\CategoryService;
-use SP\Services\Client\ClientService;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Services\ItemPreset\ItemPresetService;
-use SP\Services\PublicLink\PublicLinkService;
-use SP\Services\ServiceException;
-use SP\Services\Tag\TagService;
-use SP\Services\User\UpdatedMasterPassException;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
+use SP\Mvc\View\TemplateInterface;
 use SP\Util\Link;
 
 /**
@@ -70,15 +73,54 @@ final class AccountHelper extends HelperBase
 {
     use ItemTrait;
 
-    private ?Acl                   $acl                   = null;
-    private ?AccountService        $accountService        = null;
-    private ?AccountHistoryService $accountHistoryService = null;
-    private ?PublicLinkService     $publicLinkService     = null;
-    private ?ItemPresetService     $itemPresetService     = null;
-    private ?int                   $actionId              = null;
-    private ?AccountAcl            $accountAcl            = null;
-    private ?int                   $accountId             = null;
-    private bool                   $isView                = false;
+    private Acl                                        $acl;
+    private \SP\Domain\Account\AccountServiceInterface $accountService;
+    private AccountHistoryServiceInterface             $accountHistoryService;
+    private PublicLinkService              $publicLinkService;
+    private ItemPresetService              $itemPresetService;
+    private MasterPassServiceInterface     $masterPassService;
+    private AccountActionsHelper                          $accountActionsHelper;
+    private \SP\Domain\Account\AccountAclServiceInterface $accountAclService;
+    private CategoryService                               $categoryService;
+    private ClientService                  $clientService;
+    private ?int                           $actionId   = null;
+    private ?AccountAcl                    $accountAcl = null;
+    private ?int                           $accountId  = null;
+    private bool                           $isView     = false;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        Acl $acl,
+        AccountServiceInterface $accountService,
+        \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService,
+        PublicLinkServiceInterface $publicLinkService,
+        ItemPresetService $itemPresetService,
+        MasterPassServiceInterface $masterPassService,
+        AccountActionsHelper $accountActionsHelper,
+        AccountAclServiceInterface $accountAclService,
+        CategoryServiceInterface $categoryService,
+        ClientServiceInterface $clientService
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->acl = $acl;
+        $this->accountService = $accountService;
+        $this->accountHistoryService = $accountHistoryService;
+        $this->publicLinkService = $publicLinkService;
+        $this->itemPresetService = $itemPresetService;
+        $this->masterPassService = $masterPassService;
+        $this->accountActionsHelper = $accountActionsHelper;
+        $this->accountAclService = $accountAclService;
+        $this->categoryService = $categoryService;
+        $this->clientService = $clientService;
+
+        $this->view->assign('changesHash');
+        $this->view->assign('chkUserEdit', false);
+        $this->view->assign('chkGroupEdit', false);
+    }
+
 
     /**
      * Sets account's view variables
@@ -111,6 +153,7 @@ final class AccountHelper extends HelperBase
             $accountData->getParentId()
         );
 
+        // FIXME: use IoC
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
@@ -205,8 +248,7 @@ final class AccountHelper extends HelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
-                $baseUrl = ($this->configData->getApplicationUrl()
-                        ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
                 $this->view->assign(
                     'publicLinkUrl',
@@ -265,18 +307,16 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
-
         $this->view->assign(
             'accountActions',
-            $accountActionsHelper->getActionsForAccount(
+            $this->accountActionsHelper->getActionsForAccount(
                 $this->accountAcl,
                 $accountActionsDto
             )
         );
         $this->view->assign(
             'accountActionsMenu',
-            $accountActionsHelper->getActionsGrouppedForAccount(
+            $this->accountActionsHelper->getActionsGrouppedForAccount(
                 $this->accountAcl,
                 $accountActionsDto
             )
@@ -289,9 +329,7 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function checkActionAccess(): void
     {
@@ -299,8 +337,7 @@ final class AccountHelper extends HelperBase
             throw new UnauthorizedPageException(SPException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)
-            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
         ) {
             throw new UpdatedMasterPassException(SPException::INFO);
         }
@@ -313,21 +350,17 @@ final class AccountHelper extends HelperBase
      *
      * @return AccountAcl
      * @throws AccountPermissionException
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function checkAccess(AccountDetailsResponse $accountDetailsResponse): AccountAcl
     {
-        $accountAcl = $this->dic->get(AccountAclService::class)
-            ->getAcl(
-                $this->actionId,
-                AccountAclDto::makeFromAccount($accountDetailsResponse)
-            );
+        $accountAcl = $this->accountAclService->getAcl(
+            $this->actionId,
+            AccountAclDto::makeFromAccount($accountDetailsResponse)
+        );
 
-        if ($accountAcl === null
-            || $accountAcl->checkAccountAccess($this->actionId) === false) {
+        if ($accountAcl->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(SPException::INFO);
         }
 
@@ -337,12 +370,10 @@ final class AccountHelper extends HelperBase
     /**
      * Sets account's view common data
      *
-     * @throws ConstraintException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     protected function setViewCommon(): void
     {
@@ -361,15 +392,13 @@ final class AccountHelper extends HelperBase
         $this->view->assign(
             'categories',
             SelectItemAdapter::factory(
-                $this->dic->get(CategoryService::class)
-                    ->getAllBasic()
+                $this->categoryService->getAllBasic()
             )->getItemsFromModel()
         );
         $this->view->assign(
             'clients',
             SelectItemAdapter::factory(
-                $this->dic->get(ClientService::class)
-                    ->getAllForUser()
+                $this->clientService->getAllForUser()
             )->getItemsFromModel()
         );
         $this->view->assign(
@@ -451,16 +480,14 @@ final class AccountHelper extends HelperBase
      * @param  int  $actionId
      *
      * @return void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Core\Acl\UnauthorizedPageException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Services\User\UpdatedMasterPassException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      */
     public function setViewForBlank(int $actionId): void
     {
@@ -492,6 +519,7 @@ final class AccountHelper extends HelperBase
             $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class) ?: $accountPermission;
         }
 
+        // FIXME: Use IoC
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
@@ -548,11 +576,10 @@ final class AccountHelper extends HelperBase
         $this->view->assign('gotData', false);
         $this->view->assign(
             'accountActions',
-            $this->dic->get(AccountActionsHelper::class)
-                ->getActionsForAccount(
-                    $this->accountAcl,
-                    new AccountActionsDto($this->accountId)
-                )
+            $this->accountActionsHelper->getActionsForAccount(
+                $this->accountAcl,
+                new AccountActionsDto($this->accountId)
+            )
         );
 
         $this->setViewCommon();
@@ -565,12 +592,10 @@ final class AccountHelper extends HelperBase
      * @param  int  $actionId
      *
      * @return bool
-     * @throws NoSuchItemException
-     * @throws UnauthorizedPageException
-     * @throws UpdatedMasterPassException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ServiceException
+     * @throws \SP\Core\Acl\UnauthorizedPageException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      */
     public function setViewForRequest(
         AccountDetailsResponse $accountDetailsResponse,
@@ -595,15 +620,14 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign(
             'accountActions',
-            $this->dic->get(AccountActionsHelper::class)
-                ->getActionsForAccount(
-                    $this->accountAcl,
-                    new AccountActionsDto(
-                        $this->accountId,
-                        null,
-                        $accountData->getParentId()
-                    )
+            $this->accountActionsHelper->getActionsForAccount(
+                $this->accountAcl,
+                new AccountActionsDto(
+                    $this->accountId,
+                    null,
+                    $accountData->getParentId()
                 )
+            )
         );
 
         return true;
@@ -615,22 +639,5 @@ final class AccountHelper extends HelperBase
     public function setIsView(bool $isView): void
     {
         $this->isView = $isView;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function initialize(): void
-    {
-        $this->acl = $this->dic->get(Acl::class);
-        $this->accountService = $this->dic->get(AccountService::class);
-        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
-        $this->publicLinkService = $this->dic->get(PublicLinkService::class);
-        $this->itemPresetService = $this->dic->get(ItemPresetService::class);
-
-        $this->view->assign('changesHash');
-        $this->view->assign('chkUserEdit', false);
-        $this->view->assign('chkGroupEdit', false);
     }
 }

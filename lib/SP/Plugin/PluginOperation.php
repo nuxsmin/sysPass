@@ -28,10 +28,11 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
-use SP\Repositories\NoSuchItemException;
-use SP\Repositories\Plugin\PluginDataModel;
-use SP\Services\Plugin\PluginDataService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Plugin\PluginDataServiceInterface;
+use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 /**
  * Class PluginOperation
@@ -46,11 +47,11 @@ final class PluginOperation
     /**
      * PluginOperation constructor.
      *
-     * @param PluginDataService $pluginDataService
-     * @param string            $pluginName
+     * @param  PluginDataServiceInterface  $pluginDataService
+     * @param  string  $pluginName
      */
     public function __construct(
-        PluginDataService $pluginDataService,
+        PluginDataServiceInterface $pluginDataService,
         string            $pluginName
     )
     {
@@ -92,7 +93,7 @@ final class PluginOperation
      */
     public function update(int $itemId, $data): int
     {
-        $itemData = new PluginDataModel();
+        $itemData = new \SP\Infrastructure\Plugin\Repositories\PluginDataModel();
         $itemData->setName($this->pluginName);
         $itemData->setItemId($itemId);
         $itemData->setData(serialize($data));

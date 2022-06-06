@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
-use SP\Services\PublicLink\PublicLinkService;
+use SP\Domain\Account\Services\PublicLinkService;
 
 /**
  * Class PublicLinkForm

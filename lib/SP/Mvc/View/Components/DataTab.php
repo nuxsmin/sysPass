@@ -25,7 +25,7 @@
 namespace SP\Mvc\View\Components;
 
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class DataTab
@@ -34,10 +34,10 @@ use SP\Mvc\View\Template;
  */
 final class DataTab
 {
-    protected string $title;
-    protected Template $template;
+    protected string            $title;
+    protected TemplateInterface $template;
 
-    public function __construct(string $title, Template $template)
+    public function __construct(string $title, TemplateInterface $template)
     {
         $this->title = $title;
         $this->template = $template;

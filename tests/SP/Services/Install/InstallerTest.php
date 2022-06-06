@@ -27,14 +27,15 @@ namespace SP\Tests\Services\Install;
 use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Install\Services\InstallData;
+use SP\Domain\Install\Services\Installer;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Services\UserService;
+use SP\Domain\User\UserProfileServiceInterface;
 use SP\Http\Request;
-use SP\Services\Config\ConfigService;
-use SP\Services\Install\DatabaseSetupInterface;
-use SP\Services\Install\InstallData;
-use SP\Services\Install\Installer;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
+use SP\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 use SP\Util\VersionUtil;
 
@@ -46,27 +47,27 @@ use SP\Util\VersionUtil;
 class InstallerTest extends UnitaryTestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Install\DatabaseSetupInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Install\DatabaseSetupInterface
      */
     private $databaseSetup;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\User\UserService
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Services\UserService
      */
     private $userService;
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub|\SP\Http\Request
+     * @var \PHPUnit\Framework\MockObject\Stub|RequestInterface
      */
     private $request;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\Config\ConfigService
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Config\ConfigServiceInterface
      */
     private $configService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\UserGroup\UserGroupService
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\UserGroupServiceInterface
      */
     private $userGroupService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Services\UserProfile\UserProfileService
+     * @var \PHPUnit\Framework\MockObject\MockObject|UserProfileServiceInterface
      */
     private $userProfileService;
 
@@ -110,7 +111,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Services\Install\InstallData
+     * @return \SP\Domain\Install\Services\InstallData
      */
     private function getInstallData(): InstallData
     {
@@ -128,9 +129,9 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Services\Install\Installer
+     * @return \SP\Domain\Install\InstallerInterface
      */
-    private function getDefaultInstaller(): Installer
+    private function getDefaultInstaller(): \SP\Domain\Install\InstallerInterface
     {
         return new Installer(
             $this->request,
@@ -458,7 +459,7 @@ class InstallerTest extends UnitaryTestCase
      */
     protected function setUp(): void
     {
-        $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
+        $this->databaseSetup = $this->createMock(\SP\Domain\Install\DatabaseSetupInterface::class);
         $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(Request::class);
         $this->configService = $this->createMock(ConfigService::class);

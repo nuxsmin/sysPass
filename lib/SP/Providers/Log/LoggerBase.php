@@ -31,7 +31,9 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 
@@ -52,8 +54,8 @@ abstract class LoggerBase extends Provider implements EventReceiver
     public function __construct(
         Application $application,
         Logger $logger,
-        Language $language,
-        Request $request
+        LanguageInterface $language,
+        RequestInterface $request
     ) {
         $this->logger = $logger;
         $this->language = $language;

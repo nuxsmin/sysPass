@@ -30,8 +30,9 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
-use SP\Repositories\Account\AccountToUserGroupRepository;
-use SP\Services\Account\AccountRequest;
+use SP\Domain\Account\In\AccountToUserGroupRepositoryInterface;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Infrastructure\Account\Repositories\AccountToUserGroupRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -45,7 +46,7 @@ use function SP\Tests\setupContext;
 class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var AccountToUserGroupRepository
+     * @var AccountToUserGroupRepositoryInterface
      */
     private static $repository;
 

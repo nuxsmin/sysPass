@@ -31,10 +31,10 @@ use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Services\UserService;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class ItemPresetHelper

@@ -39,8 +39,8 @@ final class Connection implements ConnectionInterface
     protected $socket;
 
     protected string $host;
-    protected int $port;
-    protected int $errorno = 0;
+    protected int    $port;
+    protected int    $errorno  = 0;
     protected string $errorstr = '';
 
     /**
@@ -70,10 +70,7 @@ final class Connection implements ConnectionInterface
         }
 
         if ($this->socket === false) {
-            throw new SPException(
-                $this->getSocketError(),
-                SPException::WARNING
-            );
+            throw new SPException($this->getSocketError(), SPException::WARNING);
         }
 
         stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
@@ -89,7 +86,7 @@ final class Connection implements ConnectionInterface
     private function getUDPSocket()
     {
         return stream_socket_client(
-            'udp://' . $this->host . ':' . $this->port,
+            'udp://'.$this->host.':'.$this->port,
             $this->errorno,
             $this->errorstr,
             self::SOCKET_TIMEOUT
@@ -104,7 +101,7 @@ final class Connection implements ConnectionInterface
     private function getTCPSocket()
     {
         return stream_socket_client(
-            'tcp://' . $this->host . ':' . $this->port,
+            'tcp://'.$this->host.':'.$this->port,
             $this->errorno,
             $this->errorstr,
             self::SOCKET_TIMEOUT
@@ -135,20 +132,13 @@ final class Connection implements ConnectionInterface
     public function send(string $message): int
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(
-                __u('Socket not initialized'),
-                SPException::WARNING
-            );
+            throw new SPException(__u('Socket not initialized'), SPException::WARNING);
         }
 
         $nBytes = @fwrite($this->socket, $message);
 
         if ($nBytes === false) {
-            throw new SPException(
-                __u('Error while sending the data'),
-                SPException::WARNING,
-                $this->getSocketError()
-            );
+            throw new SPException(__u('Error while sending the data'), SPException::WARNING, $this->getSocketError());
         }
 
         return $nBytes;

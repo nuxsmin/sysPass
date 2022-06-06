@@ -32,23 +32,22 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\ServiceException;
-use SP\Services\UserGroup\UserGroupService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
 /**
  * Class UserGroupServiceTest
  *
- * @package SP\Tests\SP\Services\UserGroup
+ * @package SP\Tests\SP\Domain\Common\Services\UserGroup
  */
 class UserGroupServiceTest extends DatabaseTestCase
 {
 
     /**
-     * @var UserGroupService
+     * @var \SP\Domain\User\UserGroupServiceInterface
      */
     private static $service;
 
@@ -65,7 +64,7 @@ class UserGroupServiceTest extends DatabaseTestCase
         self::$loadFixtures = true;
 
         // Inicializar el servicio
-        self::$service = $dic->get(UserGroupService::class);
+        self::$service = $dic->get(\SP\Domain\User\Services\UserGroupService::class);
     }
 
     /**
@@ -132,7 +131,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testDeleteByIdBatchUsed()
     {
@@ -145,7 +144,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testDeleteByIdBatchUnknown()
     {
@@ -173,7 +172,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testUpdateDuplicated()
     {
@@ -221,7 +220,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function testCreateDuplicated()
     {

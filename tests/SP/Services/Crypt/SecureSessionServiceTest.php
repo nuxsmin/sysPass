@@ -30,7 +30,7 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\UUIDCookie;
-use SP\Services\Crypt\SecureSessionService;
+use SP\Domain\Crypt\Services\SecureSessionService;
 use function SP\Tests\setupContext;
 
 /**

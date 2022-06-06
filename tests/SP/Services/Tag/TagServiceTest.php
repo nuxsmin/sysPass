@@ -32,10 +32,10 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\ServiceException;
-use SP\Services\Tag\TagService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Tag\Services\TagService;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -48,7 +48,7 @@ use function SP\Tests\setupContext;
 class TagServiceTest extends DatabaseTestCase
 {
     /**
-     * @var TagService
+     * @var \SP\Domain\Tag\TagServiceInterface
      */
     private static $service;
 

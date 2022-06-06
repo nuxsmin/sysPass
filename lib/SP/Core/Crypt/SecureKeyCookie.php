@@ -28,13 +28,14 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 
 /**
  * Class SecureKeyCookie
  *
  * @package SP\Core\Crypt
  */
-final class SecureKeyCookie extends Cookie
+class SecureKeyCookie extends Cookie
 {
     /**
      * Nombre de la cookie
@@ -46,7 +47,7 @@ final class SecureKeyCookie extends Cookie
     private ?Key $securedKey = null;
     private ?string $cypher = null;
 
-    public static function factory(Request $request): SecureKeyCookie
+    public static function factory(RequestInterface $request): SecureKeyCookie
     {
         $self = new self(self::COOKIE_NAME, $request);
         $self->cypher = $self->getCypher();

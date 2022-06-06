@@ -34,8 +34,9 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Account\AccountHistoryRepository;
-use SP\Services\Account\AccountPasswordRequest;
+use SP\Domain\Account\In\AccountHistoryRepositoryInterface;
+use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -48,7 +49,7 @@ use function SP\Tests\setupContext;
 class AccountHistoryRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var AccountHistoryRepository
+     * @var AccountHistoryRepositoryInterface
      */
     private static $repository;
 

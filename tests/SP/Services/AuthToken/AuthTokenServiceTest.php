@@ -38,10 +38,10 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\AuthToken\AuthTokenService;
-use SP\Services\ServiceException;
+use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
 use stdClass;
@@ -141,7 +141,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws CryptoException
      * @throws ConstraintException
      * @throws QueryException

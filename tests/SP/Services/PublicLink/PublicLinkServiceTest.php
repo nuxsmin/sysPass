@@ -28,7 +28,6 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\ConstraintException;
@@ -38,10 +37,12 @@ use SP\DataModel\AccountExtData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\PublicLink\PublicLinkService;
-use SP\Services\ServiceException;
+use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use SP\Util\Util;
@@ -59,7 +60,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
      */
     private static $salt;
     /**
-     * @var PublicLinkService
+     * @var PublicLinkServiceInterface
      */
     private static $service;
 

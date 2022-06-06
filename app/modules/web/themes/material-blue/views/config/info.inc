@@ -1,19 +1,18 @@
 <?php
 /**
- * @var ThemeIcons                     $icons
- * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 ?>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">info</i>
     <?php use SP\Core\UI\ThemeIcons;
+    use SP\Domain\Install\Services\Installer;
     use SP\Html\Html;
-    use SP\Mvc\View\Template;
     use SP\Plugin\PluginInterface;
-    use SP\Services\Install\Installer;
     use SP\Util\VersionUtil;
 
     echo __('Application Information'); ?>

@@ -26,17 +26,17 @@ namespace SP\Providers\Log;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\DataModel\EventlogData;
+use SP\Domain\Security\EventlogServiceInterface;
+use SP\Domain\Security\Services\EventlogService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\EventLog\EventlogService;
 use SplSubject;
 
 /**
@@ -54,10 +54,8 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 
     public function __construct(
         Application $application,
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
-        EventlogService $eventlogService,
-        Language $language
+        EventlogServiceInterface $eventlogService,
+        LanguageInterface $language
     ) {
         $this->eventlogService = $eventlogService;
         $this->language = $language;

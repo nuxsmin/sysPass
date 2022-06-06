@@ -26,7 +26,7 @@ namespace SP\Adapters;
 
 
 use League\Fractal\TransformerAbstract;
-use SP\Config\ConfigDataInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 
 /**
  * Class AdapterBase

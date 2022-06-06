@@ -33,13 +33,13 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Security\Services\EventlogService;
+use SP\Domain\Security\Services\TrackService;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Services\Auth\AuthException;
-use SP\Services\EventLog\EventlogService;
-use SP\Services\Track\TrackService;
 
 /**
  * Class SecurityManagerController

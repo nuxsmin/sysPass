@@ -24,9 +24,8 @@
 
 namespace SP\Util;
 
-use SP\Config\ConfigDataInterface;
-use SP\Html\Html;
-use SP\Http\Request;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Http\RequestInterface;
 
 /**
  * Class HttpUtil
@@ -38,45 +37,22 @@ final class HttpUtil
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS
      */
-    public static function checkHttps(
-        ConfigDataInterface $configData,
-        Request             $request
-    ): void
+    public static function checkHttps(ConfigDataInterface $configData, RequestInterface $request): void
     {
         if ($configData->isHttpsEnabled() && !$request->isHttps()) {
             $serverPort = $request->getServerPort();
 
-            $port = $serverPort !== 443 ? ':' . $serverPort : '';
-            $host = str_replace(
-                'http',
-                'https',
-                $request->getHttpHost()
+            $port = $serverPort !== 443 ? ':'.$serverPort : '';
+            $host = str_replace('http', 'https', $request->getHttpHost());
+
+            header(
+                sprintf(
+                    'Location: %s%s%s',
+                    $host,
+                    $port,
+                    $_SERVER['REQUEST_URI']
+                )
             );
-
-            header(sprintf(
-                'Location: %s%s%s',
-                $host,
-                $port,
-                $_SERVER['REQUEST_URI']
-            ));
         }
-    }
-
-    /**
-     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
-     */
-    public static function importUrlParamsToGet(): string
-    {
-        $params = [];
-
-        foreach ($_REQUEST as $param => $value) {
-            $param = Filter::getString($param);
-
-            if (strpos($param, 'g_') !== false) {
-                $params[] = substr($param, 2) . '=' . Html::sanitize($value);
-            }
-        }
-
-        return count($params) > 0 ? '?' . implode('&', $params) : '';
     }
 }

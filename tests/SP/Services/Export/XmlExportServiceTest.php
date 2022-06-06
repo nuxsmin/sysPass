@@ -28,11 +28,12 @@ use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Services\Export\VerifyResult;
-use SP\Services\Export\XmlExportService;
-use SP\Services\Export\XmlVerifyService;
-use SP\Services\ServiceException;
-use SP\Storage\File\FileException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Export\Services\VerifyResult;
+use SP\Domain\Export\Services\XmlExportService;
+use SP\Domain\Export\Services\XmlVerifyService;
+use SP\Domain\Export\XmlVerifyServiceInterface;
+use SP\Infrastructure\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -45,11 +46,11 @@ use function SP\Tests\setupContext;
 class XmlExportServiceTest extends DatabaseTestCase
 {
     /**
-     * @var XmlExportService
+     * @var \SP\Domain\Export\XmlExportServiceInterface
      */
     private static $xmlExportService;
     /**
-     * @var XmlVerifyService
+     * @var XmlVerifyServiceInterface
      */
     private static $xmlVerifyService;
 
@@ -71,7 +72,7 @@ class XmlExportServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws FileException
      */
     public function testDoExportWithoutPassword()
@@ -88,7 +89,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      *
      * @param $file
      *
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws FileException
      */
     private function verifyExportWithoutPassword($file)
@@ -120,7 +121,7 @@ class XmlExportServiceTest extends DatabaseTestCase
 
     /**
      * @throws CryptoException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws FileException
      */
     public function testDoExportWithPassword()
@@ -139,7 +140,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @param $password
      *
      * @throws CryptoException
-     * @throws ServiceException
+     * @throws \SP\Domain\Common\Services\ServiceException
      * @throws FileException
      */
     private function verifyExportWithPassword($file, $password)

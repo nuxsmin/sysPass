@@ -2,15 +2,15 @@
 /**
  * @var ThemeIcons                     $icons
  * @var callable                       $_getvar
- * @var \SP\Config\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
  * @var AccountSearchItem              $account
  * @var DataGrid                       $data
  */
 
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Html\DataGrid\DataGrid;
 use SP\Mvc\View\Components\SelectItem;
-use SP\Services\Account\AccountSearchItem;
 
 if (!isset($data)) {
     $data = $_getvar('data');

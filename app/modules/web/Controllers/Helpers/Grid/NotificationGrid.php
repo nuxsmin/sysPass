@@ -36,7 +36,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\Html;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 use SP\Util\DateUtil;
 
 /**

@@ -24,32 +24,34 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
+use Klein\Klein;
 use RuntimeException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
 use SP\DataModel\FileData;
+use SP\Domain\Account\AccountFileServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\Html;
 use SP\Http\JsonResponse;
+use SP\Http\RequestInterface;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
+use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Services\Account\AccountFileService;
-use SP\Services\Account\AccountService;
-use SP\Services\Auth\AuthException;
-use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Util\ErrorUtil;
 use SP\Util\FileUtil;
 
@@ -64,16 +66,43 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
     use JsonTrait, ItemTrait;
 
-    protected ?AccountFileService $accountFileService = null;
+    private AccountFileServiceInterface $accountFileService;
+    private AccountServiceInterface     $accountService;
+    private FileGrid                    $fileGrid;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker,
+        TemplateInterface $template,
+        BrowserAuthInterface $browser,
+        LayoutHelper $layoutHelper
+    ) {
+        parent::__construct(
+            $application,
+            $theme,
+            $router,
+            $acl,
+            $request,
+            $extensionChecker,
+            $template,
+            $browser,
+            $layoutHelper
+        );
+
+        $this->checkLoggedIn();
+    }
+
 
     /**
      * View action
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function viewAction(int $id): bool
@@ -92,10 +121,12 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 $this->eventDispatcher->notifyEvent(
                     'show.accountFile',
-                    new Event($this,
+                    new Event(
+                        $this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileData->getName()))
+                            ->addDetail(__u('File'), $fileData->getName())
+                    )
                 );
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -109,10 +140,12 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 $this->eventDispatcher->notifyEvent(
                     'show.accountFile',
-                    new Event($this,
+                    new Event(
+                        $this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileData->getName()))
+                            ->addDetail(__u('File'), $fileData->getName())
+                    )
                 );
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -137,7 +170,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Download action
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return string
      */
@@ -150,9 +183,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent(
                 'download.accountFile',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::factory()
                     ->addDescription(__u('File downloaded'))
-                    ->addDetail(__u('File'), $fileData->getName()))
+                    ->addDetail(__u('File'), $fileData->getName())
+                )
             );
 
             $response = $this->router->response();
@@ -196,11 +231,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Upload action
      *
-     * @param int $accountId
+     * @param  int  $accountId
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function uploadAction(int $accountId): bool
@@ -257,20 +290,19 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $this->accountFileService->create($fileData);
 
-            $account = $this->dic->get(AccountService::class)
-                ->getById($accountId)
-                ->getAccountVData();
+            $account = $this->accountService->getById($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'upload.accountFile',
-                new Event($this,
+                new Event(
+                    $this,
                     EventMessage::factory()
                         ->addDescription(__u('File saved'))
                         ->addDetail(__u('File'), $fileData->getName())
                         ->addDetail(__u('Account'), $account->getName())
                         ->addDetail(__u('Client'), $account->getClientName())
                         ->addDetail(__u('Type'), $fileData->getType())
-                        ->addDetail(__u('Size'), $fileData->getRoundSize() . 'KB')
+                        ->addDetail(__u('Size'), $fileData->getRoundSize().'KB')
                 )
             );
 
@@ -301,15 +333,14 @@ final class AccountFileController extends ControllerBase implements CrudControll
     }
 
     /**
-     * @param FileData    $fileData
-     *
-     * @param FileHandler $fileHandler
+     * @param  FileData  $fileData
+     * @param  FileHandlerInterface  $fileHandler
      *
      * @return string
      * @throws SPException
      * @throws FileException
      */
-    private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler): string
+    private function checkAllowedMimeType(FileData $fileData, FileHandlerInterface $fileHandler): string
     {
         if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime(), true)) {
             return $fileData->getType();
@@ -330,12 +361,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * Search action
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction(): bool
     {
@@ -359,10 +387,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * getSearchGrid
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return \SP\Html\DataGrid\DataGridInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid(): DataGridInterface
     {
@@ -371,10 +398,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->request
         );
 
-        $fileGrid = $this->dic->get(FileGrid::class);
-
-        return $fileGrid->updatePager(
-            $fileGrid->getGrid($this->accountFileService->search($itemSearchData)),
+        return $this->fileGrid->updatePager(
+            $this->fileGrid->getGrid($this->accountFileService->search($itemSearchData)),
             $itemSearchData
         );
     }
@@ -400,11 +425,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Delete action
      *
-     * @param int|null $id
+     * @param  int|null  $id
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function deleteAction(?int $id = null): bool
@@ -415,8 +438,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 $this->eventDispatcher->notifyEvent(
                     'delete.accountFile.selection',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Files deleted')))
+                    new Event(
+                        $this,
+                        EventMessage::factory()->addDescription(__u('Files deleted'))
+                    )
                 );
 
                 return $this->returnJsonResponse(0, __u('Files deleted'));
@@ -424,9 +449,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent(
                 'delete.accountFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('File deleted'))
-                    ->addDetail(__u('File'), $id))
+                new Event(
+                    $this,
+                    EventMessage::factory()->addDescription(__u('File deleted'))->addDetail(__u('File'), $id)
+                )
             );
 
             $this->accountFileService->delete($id);
@@ -465,14 +491,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      *
-     * @param int $accountId Account's ID
-     *
-     * @throws ContainerExceptionInterface
+     * @param  int  $accountId  Account's ID
      */
     public function listAction(int $accountId): void
     {
         if (!$this->configData->isFilesEnabled()) {
             echo __('Files management disabled');
+
             return;
         }
 
@@ -480,7 +505,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->view->addTemplate('files-list', 'account');
 
             $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
-            $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
+            $this->view->assign('files', $this->accountFileService->getByAccountId($accountId));
             $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
             $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
             $this->view->assign('fileDeleteRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
@@ -518,20 +543,5 @@ final class AccountFileController extends ControllerBase implements CrudControll
         }
 
         $this->view();
-    }
-
-    /**
-     * Initialize class
-     *
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
-
-        $this->accountFileService = $this->dic->get(AccountFileService::class);
     }
 }

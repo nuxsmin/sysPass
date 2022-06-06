@@ -2,15 +2,14 @@
 /**
  * @var  NotificationData $notification
  * @var ThemeIcons $icons
- * @var \SP\Config\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
  * @var callable $_getvar
- * @var Template $this
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\NotificationData;
 use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\Template;
 use SP\Util\DateUtil;
 
 $notification = $_getvar('notification');

@@ -24,76 +24,166 @@
 
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
+use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
+use SP\Core\Application;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\CSRF;
+use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\Core\MimeTypes;
+use SP\Core\MimeTypesInterface;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigBackupService;
+use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Providers\MailerInterface;
+use SP\Domain\Providers\MailProviderInterface;
 use SP\Http\Client;
 use SP\Http\Request;
-use SP\Services\Account\AccountAclService;
-use SP\Services\Config\ConfigBackupService;
-use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\MySQLHandler;
-use SP\Storage\File\FileCache;
-use SP\Storage\File\FileHandler;
-use SP\Storage\File\XmlHandler;
+use SP\Http\RequestInterface;
+use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\DatabaseInterface;
+use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\MySQLHandler;
+use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\XmlHandler;
+use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\AuthProvider;
+use SP\Providers\Auth\AuthProviderInterface;
+use SP\Providers\Auth\Browser\BrowserAuth;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Database\DatabaseAuth;
+use SP\Providers\Auth\Database\DatabaseAuthInterface;
+use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapAuth;
+use SP\Providers\Auth\Ldap\LdapAuthInterface;
+use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Mail\MailProvider;
+use SP\Providers\Mail\PhpMailerWrapper;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
 use function DI\get;
 
 return [
-    Request::class             => create(Request::class)
+    RequestInterface::class                          => create(Request::class)
         ->constructor(\Klein\Request::createFromGlobals()),
-    ContextInterface::class    =>
+    ContextInterface::class                          =>
         static fn() => ContextFactory::getForModule(APP_MODULE),
-    Config::class              => create(Config::class)
+    ConfigInterface::class                           => create(ConfigFileService::class)
         ->constructor(
-            new XmlHandler(new FileHandler(CONFIG_FILE)),
-            new FileCache(Config::CONFIG_CACHE_FILE),
+            create(XmlHandler::class)
+                ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
+            create(FileCache::class)->constructor(ConfigFileService::CONFIG_CACHE_FILE),
             get(ContextInterface::class),
             autowire(ConfigBackupService::class)->lazy()
         ),
-    ConfigDataInterface::class =>
-        static fn(Config $config) => $config->getConfigData(),
-    DBStorageInterface::class  => create(MySQLHandler::class)
-        ->constructor(
-            factory([DatabaseConnectionData::class, 'getFromConfig'])
-        ),
-    Actions::class             =>
+    ConfigDataInterface::class                       =>
+        static fn(ConfigInterface $config) => $config->getConfigData(),
+    DBStorageInterface::class                        => create(MySQLHandler::class)
+        ->constructor(factory([DatabaseConnectionData::class, 'getFromConfig'])),
+    Actions::class                                   =>
         static fn() => new Actions(
             new FileCache(Actions::ACTIONS_CACHE_FILE),
             new XmlHandler(new FileHandler(ACTIONS_FILE))
         ),
-    MimeTypes::class           =>
+    MimeTypesInterface::class                        =>
         static fn() => new MimeTypes(
             new FileCache(MimeTypes::MIME_CACHE_FILE),
             new XmlHandler(new FileHandler(MIMETYPES_FILE))
         ),
-    Acl::class                 => autowire(Acl::class)
+    Acl::class                                       => autowire(Acl::class)
         ->constructorParameter(
             'action',
             get(Actions::class)
         ),
-    ThemeInterface::class      => autowire(Theme::class)
+    ThemeInterface::class                            => autowire(Theme::class)
         ->constructorParameter('module', APP_MODULE)
         ->constructorParameter(
             'fileCache',
-            new FileCache(Theme::ICONS_CACHE_FILE)
+            create(FileCache::class)->constructor(Theme::ICONS_CACHE_FILE)
         ),
-    PHPMailer::class           => create(PHPMailer::class)
-        ->constructor(true),
-    Logger::class              => create(Logger::class)
+    TemplateInterface::class                         => autowire(Template::class),
+    DatabaseAuthInterface::class                     => autowire(DatabaseAuth::class),
+    BrowserAuthInterface::class                      => autowire(BrowserAuth::class),
+    LdapAuthInterface::class                         => autowire(LdapAuth::class)
+        ->constructorParameter(
+            'ldap',
+            factory([Ldap::class, 'factory'])
+                ->parameter('ldapParams', factory([LdapParams::class, 'getFrom']))
+        ),
+    AuthProviderInterface::class                     => static function (
+        ContainerInterface $c,
+        ConfigDataInterface $configData
+    ) {
+        $provider = new AuthProvider($c->get(Application::class), $c->get(DatabaseAuthInterface::class));
+
+        if ($configData->isLdapEnabled()) {
+            $provider->withLdapAuth($c->get(LdapAuthInterface::class));
+        }
+
+        if ($configData->isAuthBasicEnabled()) {
+            $provider->withBrowserAuth($c->get(BrowserAuthInterface::class));
+        }
+
+        return $provider;
+    },
+    Logger::class                                    => create(Logger::class)
         ->constructor('syspass'),
-    AccountAclService::class   => autowire(AccountAclService::class),
-    \GuzzleHttp\Client::class  => create(GuzzleHttp\Client::class)
+    \GuzzleHttp\Client::class                        => create(GuzzleHttp\Client::class)
         ->constructor(factory([Client::class, 'getOptions'])),
-    CSRF::class                => autowire(CSRF::class),
+    CSRF::class                                      => autowire(CSRF::class),
+    LanguageInterface::class                         => autowire(Language::class),
+    DatabaseInterface::class                         => autowire(Database::class),
+    MailProviderInterface::class                     => autowire(MailProvider::class),
+    MailerInterface::class                           => autowire(PhpMailerWrapper::class)->constructor(
+        create(PHPMailer::class)->constructor(true)
+    ),
+    'SP\Domain\Account\*ServiceInterface'            => autowire('SP\Domain\Account\Services\*Service'),
+    'SP\Domain\Account\In\*RepositoryInterface'      => autowire('SP\Infrastructure\Account\Repositories\*Repository'),
+    'SP\Domain\Category\*ServiceInterface'           => autowire('SP\Domain\Category\Services\*Service'),
+    'SP\Domain\Category\In\*RepositoryInterface'     => autowire('SP\Infrastructure\Category\Repositories\*Repository'),
+    'SP\Domain\Client\*ServiceInterface'             => autowire('SP\Domain\Client\Services\*Service'),
+    'SP\Domain\Client\In\*RepositoryInterface'       => autowire('SP\Infrastructure\Client\Repositories\*Repository'),
+    'SP\Domain\Tag\*ServiceInterface'                => autowire('SP\Domain\Tag\Services\*Service'),
+    'SP\Domain\Tag\In\*RepositoryInterface'          => autowire('SP\Infrastructure\Tag\Repositories\*Repository'),
+    'SP\Domain\User\*ServiceInterface'               => autowire('SP\Domain\User\Services\*Service'),
+    'SP\Domain\User\In\*RepositoryInterface'         => autowire('SP\Infrastructure\User\Repositories\*Repository'),
+    'SP\Domain\Auth\*ServiceInterface'               => autowire('SP\Domain\Auth\Services\*Service'),
+    'SP\Domain\Auth\In\*RepositoryInterface'         => autowire('SP\Infrastructure\Auth\Repositories\*Repository'),
+    'SP\Domain\CustomField\*ServiceInterface'        => autowire('SP\Domain\CustomField\Services\*Service'),
+    'SP\Domain\CustomField\In\*RepositoryInterface'  => autowire(
+        'SP\Infrastructure\CustomField\Repositories\*Repository'
+    ),
+    'SP\Domain\Export\*ServiceInterface'             => autowire('SP\Domain\Export\Services\*Service'),
+    'SP\Domain\Import\*ServiceInterface'             => autowire('SP\Domain\Import\Services\*Service'),
+    'SP\Domain\Crypt\*ServiceInterface'              => autowire('SP\Domain\Crypt\Services\*Service'),
+    'SP\Domain\Plugin\*ServiceInterface'             => autowire('SP\Domain\Plugin\Services\*Service'),
+    'SP\Domain\ItemPreset\*ServiceInterface'         => autowire('SP\Domain\ItemPreset\Services\*Service'),
+    'SP\Domain\ItemPreset\In\*RepositoryInterface'   => autowire(
+        'SP\Infrastructure\ItemPreset\Repositories\*Repository'
+    ),
+    'SP\Domain\Notification\*ServiceInterface'       => autowire('SP\Domain\Notification\Services\*Service'),
+    'SP\Domain\Notification\In\*RepositoryInterface' => autowire(
+        'SP\Infrastructure\Notification\Repositories\*Repository'
+    ),
+    'SP\Domain\Security\*ServiceInterface'           => autowire('SP\Domain\Security\Services\*Service'),
+    'SP\Domain\Security\In\*RepositoryInterface'     => autowire(
+        'SP\Infrastructure\Security\Repositories\*Repository'
+    ),
+    'SP\Domain\Config\*ServiceInterface'             => autowire('SP\Domain\Config\Services\*Service'),
+    'SP\Domain\Config\In\*RepositoryInterface'       => autowire(
+        'SP\Infrastructure\Config\Repositories\*Repository'
+    ),
+    'SP\Domain\Plugin\In\*RepositoryInterface'       => autowire(
+        'SP\Infrastructure\Plugin\Repositories\*Repository'
+    ),
 ];

@@ -24,16 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
+use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
-use SP\Mvc\View\Template;
+use SP\Http\RequestInterface;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class HelperBase
@@ -42,34 +40,31 @@ use SP\Mvc\View\Template;
  */
 abstract class HelperBase
 {
-    protected Template $view;
+    protected TemplateInterface   $view;
     protected ConfigDataInterface $configData;
-    protected ContextInterface $context;
-    protected EventDispatcher $eventDispatcher;
-    protected Config $config;
-    protected ContainerInterface $dic;
-    protected Request $request;
+    protected ContextInterface    $context;
+    protected EventDispatcher   $eventDispatcher;
+    protected ConfigFileService $config;
+    protected Request           $request;
 
     /**
      * Constructor
      *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param  \SP\Core\Application  $application
+     * @param  \SP\Mvc\View\TemplateInterface  $template
+     * @param  \SP\Http\RequestInterface  $request
      */
-    final public function __construct(
-        Template         $template,
-        Config           $config,
-        ContextInterface $context,
-        EventDispatcher  $eventDispatcher,
-        Container        $container)
-    {
-        $this->dic = $container;
-        $this->request = $this->dic->get(Request::class);
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request
+    ) {
+        $this->config = $application->getConfig();
+        $this->context = $application->getContext();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->request = $request;
+        $this->configData = $this->config->getConfigData();
         $this->view = $template;
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

@@ -29,7 +29,8 @@ use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Services\Account\AccountToFavoriteService;
+use SP\Domain\Account\AccountToFavoriteServiceInterface;
+use SP\Domain\Account\Services\AccountToFavoriteService;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -41,7 +42,7 @@ use function SP\Tests\setupContext;
 class AccountToFavoriteServiceTest extends DatabaseTestCase
 {
     /**
-     * @var AccountToFavoriteService
+     * @var AccountToFavoriteServiceInterface
      */
     private static $service;
 

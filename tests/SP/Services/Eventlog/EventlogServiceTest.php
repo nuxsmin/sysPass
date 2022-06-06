@@ -32,7 +32,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
-use SP\Services\EventLog\EventlogService;
+use SP\Domain\Security\EventlogServiceInterface;
+use SP\Domain\Security\Services\EventlogService;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -45,7 +46,7 @@ use function SP\Tests\setupContext;
 class EventlogServiceTest extends DatabaseTestCase
 {
     /**
-     * @var EventlogService
+     * @var EventlogServiceInterface
      */
     private static $service;
 

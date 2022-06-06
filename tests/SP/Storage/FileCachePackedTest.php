@@ -26,8 +26,8 @@ namespace SP\Tests\Storage;
 
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
-use SP\Storage\File\FileCachePacked;
-use SP\Storage\File\FileException;
+use SP\Infrastructure\File\FileCachePacked;
+use SP\Infrastructure\File\FileException;
 use stdClass;
 
 /**

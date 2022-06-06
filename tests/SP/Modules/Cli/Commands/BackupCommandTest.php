@@ -26,10 +26,10 @@ namespace SP\Tests\Modules\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Config\Config;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Export\Services\BackupFiles;
 use SP\Modules\Cli\Commands\BackupCommand;
-use SP\Services\Backup\BackupFiles;
 use SP\Tests\Modules\Cli\CliTestCase;
 use function SP\Tests\recreateDir;
 
@@ -93,7 +93,7 @@ class BackupCommandTest extends CliTestCase
 
     private function checkBackupFilesAreCreated(): void
     {
-        $configData = self::$dic->get(Config::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertFileExists(
             BackupFiles::getAppBackupFilename(

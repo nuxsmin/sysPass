@@ -24,6 +24,9 @@
 
 namespace SP\Providers\Auth\Ldap;
 
+use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Config\In\ConfigDataInterface;
+
 /**
  * Class LdapParams
  *
@@ -83,6 +86,33 @@ final class LdapParams
     protected array $filterGroupAttributes;
 
     /**
+     * @throws \SP\Core\Exceptions\ValidationException
+     */
+    public static function getFrom(ConfigDataInterface $configData): LdapParams
+    {
+        $data = self::getServerAndPort($configData->getLdapServer());
+
+        if (count($data) === 0) {
+            throw new ValidationException(__u('Wrong LDAP parameters'));
+        }
+
+        $ldapParams = new self();
+        $ldapParams->setServer($data['server']);
+        $ldapParams->setPort($data['port'] ?? 389);
+        $ldapParams->setSearchBase($configData->getLdapBase());
+        $ldapParams->setGroup($configData->getLdapGroup());
+        $ldapParams->setBindDn($configData->getLdapBindUser());
+        $ldapParams->setBindPass($configData->getLdapBindPass());
+        $ldapParams->setType($configData->getLdapType());
+        $ldapParams->setFilterUserObject($configData->getLdapFilterUserObject());
+        $ldapParams->setFilterGroupObject($configData->getLdapFilterGroupObject());
+        $ldapParams->setFilterUserAttributes($configData->getLdapFilterUserAttributes());
+        $ldapParams->setFilterGroupAttributes($configData->getLdapFilterGroupAttributes());
+
+        return $ldapParams;
+    }
+
+    /**
      * Devolver el puerto del servidor si está establecido
      *
      * @param $server
@@ -92,7 +122,8 @@ final class LdapParams
     public static function getServerAndPort($server): array
     {
         return preg_match(
-            '#' . self::REGEX_SERVER . '#i', $server,
+            '#'.self::REGEX_SERVER.'#i',
+            $server,
             $matches
         ) ? $matches : [];
     }
@@ -106,7 +137,7 @@ final class LdapParams
     }
 
     /**
-     * @param string|null $filterUserObject
+     * @param  string|null  $filterUserObject
      */
     public function setFilterUserObject(?string $filterUserObject = null): void
     {
@@ -124,7 +155,7 @@ final class LdapParams
     }
 
     /**
-     * @param string|null $filterGroupObject
+     * @param  string|null  $filterGroupObject
      */
     public function setFilterGroupObject(?string $filterGroupObject = null): void
     {
@@ -142,7 +173,7 @@ final class LdapParams
     }
 
     /**
-     * @param array|null $filterUserAttributes
+     * @param  array|null  $filterUserAttributes
      */
     public function setFilterUserAttributes(?array $filterUserAttributes = null): void
     {
@@ -158,7 +189,7 @@ final class LdapParams
     }
 
     /**
-     * @param array|null $filterGroupAttributes
+     * @param  array|null  $filterGroupAttributes
      */
     public function setFilterGroupAttributes(?array $filterGroupAttributes = null): void
     {
@@ -174,7 +205,7 @@ final class LdapParams
     }
 
     /**
-     * @param int $port
+     * @param  int  $port
      *
      * @return LdapParams
      */
@@ -194,13 +225,14 @@ final class LdapParams
     }
 
     /**
-     * @param string $searchBase
+     * @param  string  $searchBase
      *
      * @return LdapParams
      */
     public function setSearchBase(string $searchBase): LdapParams
     {
         $this->searchBase = $searchBase;
+
         return $this;
     }
 
@@ -213,13 +245,14 @@ final class LdapParams
     }
 
     /**
-     * @param string $bindDn
+     * @param  string  $bindDn
      *
      * @return LdapParams
      */
     public function setBindDn(string $bindDn): LdapParams
     {
         $this->bindDn = $bindDn;
+
         return $this;
     }
 
@@ -232,13 +265,14 @@ final class LdapParams
     }
 
     /**
-     * @param string $bindPass
+     * @param  string  $bindPass
      *
      * @return LdapParams
      */
     public function setBindPass(string $bindPass): LdapParams
     {
         $this->bindPass = $bindPass;
+
         return $this;
     }
 
@@ -251,7 +285,7 @@ final class LdapParams
     }
 
     /**
-     * @param string $group
+     * @param  string  $group
      *
      * @return LdapParams
      */
@@ -271,7 +305,7 @@ final class LdapParams
     }
 
     /**
-     * @param string $server
+     * @param  string  $server
      *
      * @return LdapParams
      */
@@ -291,7 +325,7 @@ final class LdapParams
     }
 
     /**
-     * @param int $type
+     * @param  int  $type
      *
      * @return LdapParams
      */
@@ -311,7 +345,7 @@ final class LdapParams
     }
 
     /**
-     * @param bool $tlsEnabled
+     * @param  bool  $tlsEnabled
      *
      * @return LdapParams
      */

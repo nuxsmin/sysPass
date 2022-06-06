@@ -1,16 +1,15 @@
 <?php
 /**
- * @var ItemPresetData                 $preset
- * @var ThemeIcons                     $icons
- * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
+ * @var ItemPresetData $preset
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemPresetData;
 use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\Template;
 
 $preset = $_getvar('preset');
 ?>

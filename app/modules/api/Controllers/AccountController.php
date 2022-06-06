@@ -24,25 +24,26 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
 use League\Fractal\Resource\Item;
 use SP\Adapters\AccountAdapter;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Domain\Account\AccountPresetServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Api\ApiServiceInterface;
+use SP\Domain\Api\Services\ApiResponse;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Model\QueryCondition;
-use SP\Services\Account\AccountPresetService;
-use SP\Services\Account\AccountRequest;
-use SP\Services\Account\AccountSearchFilter;
-use SP\Services\Account\AccountService;
-use SP\Services\Api\ApiResponse;
 use SP\Util\Util;
 
 /**
@@ -54,8 +55,24 @@ final class AccountController extends ControllerBase
 {
     use ItemTrait;
 
-    private ?AccountPresetService $accountPresetService = null;
-    private ?AccountService $accountService = null;
+    private AccountPresetServiceInterface $accountPresetService;
+    private AccountServiceInterface       $accountService;
+
+    public function __construct(
+        Application $application,
+        Klein $router,
+        ApiServiceInterface $apiService,
+        Acl $acl,
+        AccountPresetServiceInterface $accountPresetService,
+        AccountServiceInterface $accountService
+    ) {
+        $this->accountPresetService = $accountPresetService;
+        $this->accountService = $accountService;
+
+        parent::__construct($application, $router, $apiService, $acl);
+
+        $this->apiService->setHelpClass(AccountHelp::class);
+    }
 
     /**
      * viewAction
@@ -226,7 +243,8 @@ final class AccountController extends ControllerBase
             $userData = $this->context->getUserData();
 
             $accountRequest->userId = $this->apiService->getParamInt('userId', false, $userData->getId());
-            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
+            $accountRequest->userGroupId =
+                $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
 
             $accountRequest->tags = array_map(
                 'intval',
@@ -363,7 +381,9 @@ final class AccountController extends ControllerBase
             }
 
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
-            $accountSearchFilter->setSortOrder($this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT));
+            $accountSearchFilter->setSortOrder(
+                $this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT)
+            );
 
             $this->returnResponse(
                 ApiResponse::makeSuccess(
@@ -415,15 +435,5 @@ final class AccountController extends ControllerBase
 
             $this->returnResponseException($e);
         }
-    }
-
-    /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    protected function initialize(): void
-    {
-        $this->accountService = $this->dic->get(AccountService::class);
-        $this->accountPresetService = $this->dic->get(AccountPresetService::class);
-        $this->apiService->setHelpClass(AccountHelp::class);
     }
 }

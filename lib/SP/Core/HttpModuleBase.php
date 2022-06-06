@@ -27,6 +27,7 @@ namespace SP\Core;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 use SP\Util\Util;
 
 /**
@@ -40,7 +41,7 @@ abstract class HttpModuleBase extends ModuleBase
     public function __construct(
         Application $application,
         ProvidersHelper $providersHelper,
-        Request $request,
+        RequestInterface $request,
         Klein $router
     ) {
         $this->request = $request;

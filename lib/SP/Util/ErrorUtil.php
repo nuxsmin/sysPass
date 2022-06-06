@@ -29,8 +29,9 @@ use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Mvc\View\Template;
-use SP\Services\User\UpdatedMasterPassException;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class ErrorUtil
@@ -42,28 +43,27 @@ final class ErrorUtil
     /**
      * Constantes de errores
      */
-    public const ERR_UNAVAILABLE = 0;
-    public const ERR_ACCOUNT_NO_PERMISSION = 1;
-    public const ERR_PAGE_NO_PERMISSION = 2;
-    public const ERR_UPDATE_MPASS = 3;
+    public const ERR_UNAVAILABLE             = 0;
+    public const ERR_ACCOUNT_NO_PERMISSION   = 1;
+    public const ERR_PAGE_NO_PERMISSION      = 2;
+    public const ERR_UPDATE_MPASS            = 3;
     public const ERR_OPERATION_NO_PERMISSION = 4;
-    public const ERR_EXCEPTION = 5;
+    public const ERR_EXCEPTION               = 5;
 
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template    $view
-     * @param Exception   $e
-     * @param string|null $replace Template replacement
-     * @param bool        $render
+     * @param  TemplateInterface  $view
+     * @param  Exception  $e
+     * @param  string|null  $replace  Template replacement
+     * @param  bool  $render
      */
     public static function showExceptionInView(
-        Template  $view,
+        TemplateInterface $view,
         Exception $e,
-        ?string   $replace = null,
-        bool      $render = true
-    ): void
-    {
+        ?string $replace = null,
+        bool $render = true
+    ): void {
         switch (get_class($e)) {
             case UpdatedMasterPassException::class:
                 self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render, $replace);
@@ -82,28 +82,29 @@ final class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template    $view
-     * @param int         $type int con el tipo de error
-     * @param bool        $render
-     * @param string|null $replace
+     * @param  TemplateInterface  $view
+     * @param  int  $type  int con el tipo de error
+     * @param  bool  $render
+     * @param  string|null  $replace
      */
     public static function showErrorInView(
-        Template $view,
-        int      $type,
-        bool     $render = true,
-        ?string  $replace = null
-    ): void
-    {
+        TemplateInterface $view,
+        int $type,
+        bool $render = true,
+        ?string $replace = null
+    ): void {
         self::addErrorTemplate($view, $replace);
 
         $error = self::getErrorTypes($type);
 
-        $view->append('errors',
+        $view->append(
+            'errors',
             [
-                'type' => SPException::WARNING,
+                'type'        => SPException::WARNING,
                 'description' => $error['txt'],
-                'hint' => $error['hint']
-            ]);
+                'hint'        => $error['hint'],
+            ]
+        );
 
         if ($render) {
             try {
@@ -116,10 +117,7 @@ final class ErrorUtil
         }
     }
 
-    private static function addErrorTemplate(
-        Template $view,
-        string   $replace = null
-    ): void
+    private static function addErrorTemplate(TemplateInterface $view, string $replace = null): void
     {
         if ($replace === null) {
             $view->resetTemplates();
@@ -147,35 +145,35 @@ final class ErrorUtil
     protected static function getErrorTypes(int $type): array
     {
         $errorTypes = [
-            self::ERR_UNAVAILABLE => [
-                'txt' => __('Option unavailable'),
-                'hint' => __('Please contact to the administrator')
+            self::ERR_UNAVAILABLE             => [
+                'txt'  => __('Option unavailable'),
+                'hint' => __('Please contact to the administrator'),
             ],
-            self::ERR_ACCOUNT_NO_PERMISSION => [
-                'txt' => __('You don\'t have permission to access this account'),
-                'hint' => __('Please contact to the administrator')
+            self::ERR_ACCOUNT_NO_PERMISSION   => [
+                'txt'  => __('You don\'t have permission to access this account'),
+                'hint' => __('Please contact to the administrator'),
             ],
-            self::ERR_PAGE_NO_PERMISSION => [
-                'txt' => __('You don\'t have permission to access this page'),
-                'hint' => __('Please contact to the administrator')
+            self::ERR_PAGE_NO_PERMISSION      => [
+                'txt'  => __('You don\'t have permission to access this page'),
+                'hint' => __('Please contact to the administrator'),
             ],
             self::ERR_OPERATION_NO_PERMISSION => [
-                'txt' => __('You don\'t have permission to do this operation'),
-                'hint' => __('Please contact to the administrator')
+                'txt'  => __('You don\'t have permission to do this operation'),
+                'hint' => __('Please contact to the administrator'),
             ],
-            self::ERR_UPDATE_MPASS => [
-                'txt' => __('Master password updated'),
-                'hint' => __('Please, restart the session for update it')
+            self::ERR_UPDATE_MPASS            => [
+                'txt'  => __('Master password updated'),
+                'hint' => __('Please, restart the session for update it'),
             ],
-            self::ERR_EXCEPTION => [
-                'txt' => __('An exception occured'),
-                'hint' => __('Please contact to the administrator')
-            ]
+            self::ERR_EXCEPTION               => [
+                'txt'  => __('An exception occured'),
+                'hint' => __('Please contact to the administrator'),
+            ],
         ];
 
         return $errorTypes[$type] ?? [
-                'txt' => __('An exception occured'),
-                'hint' => __('Please contact to the administrator')
+                'txt'  => __('An exception occured'),
+                'hint' => __('Please contact to the administrator'),
             ];
     }
 }

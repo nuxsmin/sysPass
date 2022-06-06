@@ -1,7 +1,7 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\Exceptions\SPException;

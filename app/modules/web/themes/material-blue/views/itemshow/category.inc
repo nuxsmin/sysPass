@@ -1,15 +1,14 @@
 <?php
 /**
- * @var  CategoryData                  $category
- * @var ThemeIcons                     $icons
- * @var \SP\Config\ConfigDataInterface $configData
- * @var callable                       $_getvar
- * @var Template                       $this
+ * @var  CategoryData $category
+ * @var ThemeIcons $icons
+ * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\CategoryData;
-use SP\Mvc\View\Template;
 
 $category = $_getvar('category');
 ?>

@@ -27,11 +27,11 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
-use SP\Services\Account\AccountAcl;
-use SP\Services\Account\AccountSearchItem;
 
 /**
  * Class AccountIconsHelper
@@ -41,7 +41,7 @@ use SP\Services\Account\AccountSearchItem;
 final class AccountActionsHelper extends HelperBase
 {
     protected ?ThemeIcons $icons = null;
-    protected ?string $sk = null;
+    protected ?string     $sk    = null;
 
     /**
      * @return DataGridAction
@@ -75,16 +75,15 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl        $accountAcl
-     * @param AccountActionsDto $accountActionsDto
+     * @param  AccountAcl  $accountAcl
+     * @param  AccountActionsDto  $accountActionsDto
      *
      * @return DataGridAction[]
      */
     public function getActionsForAccount(
-        AccountAcl        $accountAcl,
+        AccountAcl $accountAcl,
         AccountActionsDto $accountActionsDto
-    ): array
-    {
+    ): array {
         $actions = [];
 
         $actionBack = $this->getBackAction();
@@ -294,16 +293,15 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl        $accountAcl
-     * @param AccountActionsDto $accountActionsDto
+     * @param  AccountAcl  $accountAcl
+     * @param  AccountActionsDto  $accountActionsDto
      *
      * @return DataGridAction[]
      */
     public function getActionsGrouppedForAccount(
-        AccountAcl        $accountAcl,
+        AccountAcl $accountAcl,
         AccountActionsDto $accountActionsDto
-    ): array
-    {
+    ): array {
         $userData = $this->context->getUserData();
 
         $actions = [];

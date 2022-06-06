@@ -26,6 +26,7 @@ namespace SP\Core\Crypt;
 
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Http\Request;
+use SP\Http\RequestInterface;
 
 /**
  * Class Cookie
@@ -40,10 +41,10 @@ abstract class Cookie
     /**
      * Cookie constructor.
      *
-     * @param string  $cookieName
-     * @param Request $request
+     * @param  string  $cookieName
+     * @param  RequestInterface  $request
      */
-    protected function __construct(string $cookieName, Request $request)
+    protected function __construct(string $cookieName, RequestInterface $request)
     {
         $this->cookieName = $cookieName;
         $this->request = $request;

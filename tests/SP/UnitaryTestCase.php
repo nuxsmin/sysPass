@@ -29,23 +29,23 @@ use DG\BypassFinals;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
-use SP\Config\Config;
 use SP\Core\Application;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
-use SP\Services\Config\ConfigBackupService;
-use SP\Services\User\UserLoginResponse;
-use SP\Storage\File\FileCache;
-use SP\Storage\File\XmlHandler;
+use SP\Domain\Config\Services\ConfigBackupService;
+use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\XmlHandler;
 
 /**
  * A class to test using a mocked Dependency Injection Container
  */
 abstract class UnitaryTestCase extends TestCase
 {
-    protected static Generator $faker;
-    protected Config           $config;
-    protected Application      $application;
+    protected static Generator  $faker;
+    protected ConfigFileService $config;
+    protected Application       $application;
 
     public static function setUpBeforeClass(): void
     {
@@ -82,7 +82,7 @@ abstract class UnitaryTestCase extends TestCase
         $context->initialize();
         $context->setUserData($userLogin);
 
-        $config = new Config(
+        $config = new ConfigFileService(
             $this->createStub(XmlHandler::class),
             $this->createStub(FileCache::class),
             $context,

@@ -33,8 +33,9 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
-use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\Tag\TagRepository;
+use SP\Domain\Tag\In\TagRepositoryInterface;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Tag\Repositories\TagRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -49,7 +50,7 @@ use function SP\Tests\setupContext;
 class TagRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var TagRepository
+     * @var TagRepositoryInterface
      */
     private static $repository;
 

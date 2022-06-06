@@ -30,13 +30,14 @@ use SP\Core\Application;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
+use SP\Core\LanguageInterface;
 use SP\Core\ProvidersHelper;
-use SP\Http\Request;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\File\FileException;
+use SP\Domain\Upgrade\Services\UpgradeAppService;
+use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
+use SP\Domain\Upgrade\Services\UpgradeUtil;
+use SP\Http\RequestInterface;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
 use SP\Util\HttpUtil;
 
 /**
@@ -50,9 +51,9 @@ final class Init extends HttpModuleBase
     public function __construct(
         Application $application,
         ProvidersHelper $providersHelper,
-        Request $request,
+        RequestInterface $request,
         Klein $router,
-        Language $language,
+        LanguageInterface $language,
         DatabaseUtil $databaseUtil
     ) {
         parent::__construct(
@@ -71,7 +72,7 @@ final class Init extends HttpModuleBase
      * @throws \JsonException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Core\Exceptions\InitializationException
-     * @throws \SP\Storage\File\FileException
+     * @throws \SP\Infrastructure\File\FileException
      */
     public function initialize(string $controller): void
     {

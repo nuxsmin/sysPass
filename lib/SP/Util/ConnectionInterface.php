@@ -31,8 +31,8 @@ namespace SP\Util;
  */
 interface ConnectionInterface
 {
-    public const TYPE_TCP = 1;
-    public const TYPE_UDP = 2;
+    public const TYPE_TCP       = 1;
+    public const TYPE_UDP       = 2;
     public const SOCKET_TIMEOUT = 10;
 
     /**

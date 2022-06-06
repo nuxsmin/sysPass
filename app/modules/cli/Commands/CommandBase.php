@@ -25,8 +25,9 @@
 namespace SP\Modules\Cli\Commands;
 
 use Psr\Log\LoggerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
+use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFileService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -38,13 +39,13 @@ use Symfony\Component\Console\Input\InputInterface;
 abstract class CommandBase extends Command
 {
     public static array $envVarsMapping = [];
-    protected LoggerInterface $logger;
-    protected Config $config;
+    protected LoggerInterface     $logger;
+    protected ConfigFileService   $config;
     protected ConfigDataInterface $configData;
 
     public function __construct(
         LoggerInterface $logger,
-        Config          $config
+        ConfigInterface $config
     )
     {
         $this->logger = $logger;

@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\User\Services\UserLoginResponse;
 
 /**
  * Class UserLoginData

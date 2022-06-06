@@ -24,9 +24,9 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Config\ConfigDataInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
@@ -66,7 +66,7 @@ final class OldCrypt
      */
     public static function makeHashSalt($salt = null, $random = true)
     {
-        /** @var ConfigDataInterface $ConfigData */
+        /** @var \SP\Domain\Config\In\ConfigDataInterface $ConfigData */
         $ConfigData = BootstrapBase::getContainer()['configData'];
 
         if ($random === true) {

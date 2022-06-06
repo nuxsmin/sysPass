@@ -25,13 +25,14 @@
 namespace SP\Providers\Notification;
 
 use Exception;
-use PharIo\Manifest\Application;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
+use SP\Domain\Notification\NotificationServiceInterface;
+use SP\Domain\Notification\Services\NotificationService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\Notification\NotificationService;
 use SplSubject;
 
 /**
@@ -53,7 +54,7 @@ final class NotificationHandler extends Provider implements EventReceiver
 
     public function __construct(
         Application $application,
-        NotificationService $notificationService
+        NotificationServiceInterface $notificationService
     ) {
         $this->notificationService = $notificationService;
 

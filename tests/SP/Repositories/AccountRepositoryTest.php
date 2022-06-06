@@ -36,11 +36,12 @@ use SP\DataModel\AccountData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\In\AccountRepositoryInterface;
+use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Mvc\Model\QueryCondition;
-use SP\Repositories\Account\AccountRepository;
-use SP\Services\Account\AccountPasswordRequest;
-use SP\Services\Account\AccountRequest;
-use SP\Services\Account\AccountSearchFilter;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;
@@ -56,7 +57,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 {
     const SECURE_KEY_PASSWORD = 'syspass123';
     /**
-     * @var AccountRepository
+     * @var AccountRepositoryInterface
      */
     private static $repository;
 

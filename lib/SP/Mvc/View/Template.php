@@ -40,11 +40,10 @@ use SP\Http\Uri;
  * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
  *
  */
-final class Template
+final class Template implements TemplateInterface
 {
     public const TEMPLATE_EXTENSION = '.inc';
     public const PARTIALS_DIR       = '_partials';
-    public const LAYOUTS_DIR        = '_layouts';
 
     protected ThemeInterface $theme;
     /**
@@ -74,14 +73,14 @@ final class Template
      * @param  string  $name  Con el nombre del archivo de plantilla
      * @param  string|null  $base  Directorio base para la plantilla
      */
-    public function addContentTemplate(
-        string $name,
-        ?string $base = null
-    ): string {
+    public function addContentTemplate(string $name, ?string $base = null): string
+    {
         try {
             $template = $this->checkTemplate($name, $base);
             $this->setContentTemplate($template, $name);
         } catch (FileNotFoundException $e) {
+            logger($e->getMessage(), 'WARN');
+
             return '';
         }
 
@@ -106,9 +105,7 @@ final class Template
 
         if ($base === null) {
             $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
-        } elseif (strpos($base, APP_ROOT) === 0
-                  && is_dir($base)
-        ) {
+        } elseif (strpos($base, APP_ROOT) === 0 && is_dir($base)) {
             $templateFile = $base.DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
         } else {
             $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$base.DIRECTORY_SEPARATOR.$template
@@ -140,7 +137,7 @@ final class Template
     /**
      * Removes a template from the stack
      */
-    public function removeTemplate(string $name): Template
+    public function removeTemplate(string $name): TemplateInterface
     {
         unset($this->templates[$name]);
 
@@ -150,7 +147,7 @@ final class Template
     /**
      * Removes a template from the stack
      */
-    public function removeContentTemplate(string $name): Template
+    public function removeContentTemplate(string $name): TemplateInterface
     {
         unset($this->contentTemplates[$name]);
 
@@ -386,7 +383,7 @@ final class Template
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetTemplates(): Template
+    public function resetTemplates(): TemplateInterface
     {
         $this->templates = [];
 
@@ -396,7 +393,7 @@ final class Template
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetContentTemplates(): Template
+    public function resetContentTemplates(): TemplateInterface
     {
         $this->contentTemplates = [];
 
@@ -444,7 +441,7 @@ final class Template
     /**
      * Assigns the current templates to contentTemplates
      */
-    public function upgrade(): Template
+    public function upgrade(): TemplateInterface
     {
         if (count($this->templates) > 0) {
             $this->contentTemplates = $this->templates;
@@ -464,11 +461,8 @@ final class Template
      * @param  mixed  $value  valor de la variable
      * @param  string|null  $scope  string ámbito de la variable
      */
-    public function assign(
-        string $name,
-        $value = '',
-        ?string $scope = null
-    ): void {
+    public function assign(string $name, $value = '', ?string $scope = null): void
+    {
         if (null !== $scope) {
             $name = $scope.'_'.$name;
         }

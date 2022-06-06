@@ -29,9 +29,9 @@ use DI\NotFoundException;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\User\Services\UserService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\User\UserService;
 
 /**
  * Class UserSettingsGeneralController

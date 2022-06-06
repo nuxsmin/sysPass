@@ -29,7 +29,8 @@ use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Services\Account\AccountToTagService;
+use SP\Domain\Account\AccountToTagServiceInterface;
+use SP\Domain\Account\Services\AccountToTagService;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -41,7 +42,7 @@ use function SP\Tests\setupContext;
 class AccountToTagServiceTest extends DatabaseTestCase
 {
     /**
-     * @var AccountToTagService
+     * @var AccountToTagServiceInterface
      */
     private static $service;
 

@@ -24,21 +24,18 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use League\Fractal\Resource\Item;
 use SP\Adapters\ClientAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Client\Services\ClientService;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Services\Api\ApiResponse;
-use SP\Services\Client\ClientService;
 use SP\Util\Util;
 
 /**

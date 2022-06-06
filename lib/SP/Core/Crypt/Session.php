@@ -32,7 +32,7 @@ use SP\Core\Context\SessionContext;
  *
  * @package SP\Core\Crypt
  */
-final class Session
+class Session
 {
     /**
      * Devolver la clave maestra de la sesión

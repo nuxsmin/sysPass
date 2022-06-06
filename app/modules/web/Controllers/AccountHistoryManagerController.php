@@ -24,23 +24,28 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
+use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountService;
-use SP\Services\Auth\AuthException;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
 /**
  * Class AccountHistoryManagerController
@@ -51,12 +56,46 @@ final class AccountHistoryManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    protected ?AccountHistoryService $accountHistoryService = null;
+    private AccountHistoryServiceInterface $accountHistoryService;
+    private AccountHistoryGrid             $accountHistoryGrid;
+    private AccountServiceInterface        $accountService;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker,
+        TemplateInterface $template,
+        BrowserAuthInterface $browser,
+        LayoutHelper $layoutHelper,
+        AccountHistoryServiceInterface $accountHistoryService,
+        Helpers\Grid\AccountHistoryGrid $accountHistoryGrid,
+        AccountServiceInterface $accountService
+    ) {
+        $this->accountHistoryService = $accountHistoryService;
+        $this->accountHistoryGrid = $accountHistoryGrid;
+        $this->accountService = $accountService;
+
+        parent::__construct(
+            $application,
+            $theme,
+            $router,
+            $acl,
+            $request,
+            $extensionChecker,
+            $template,
+            $browser,
+            $layoutHelper
+        );
+
+        $this->checkLoggedIn();
+    }
+
 
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -80,8 +119,6 @@ final class AccountHistoryManagerController extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -92,10 +129,8 @@ final class AccountHistoryManagerController extends ControllerBase
             $this->request
         );
 
-        $historyGrid = $this->dic->get(AccountHistoryGrid::class);
-
-        return $historyGrid->updatePager(
-            $historyGrid->getGrid($this->accountHistoryService->search($itemSearchData)),
+        return $this->accountHistoryGrid->updatePager(
+            $this->accountHistoryGrid->getGrid($this->accountHistoryService->search($itemSearchData)),
             $itemSearchData
         );
     }
@@ -103,11 +138,9 @@ final class AccountHistoryManagerController extends ControllerBase
     /**
      * Delete action
      *
-     * @param int|null $id
+     * @param  int|null  $id
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function deleteAction(?int $id = null): bool
@@ -164,11 +197,9 @@ final class AccountHistoryManagerController extends ControllerBase
     /**
      * Saves restore action
      *
-     * @param int $id Account's history ID
+     * @param  int  $id  Account's history ID
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function restoreAction(int $id): bool
@@ -176,12 +207,10 @@ final class AccountHistoryManagerController extends ControllerBase
         try {
             $accountDetails = $this->accountHistoryService->getById($id);
 
-            $accountService = $this->dic->get(AccountService::class);
-
             if ($accountDetails->isModify) {
-                $accountService->editRestore($id, $accountDetails->getAccountId());
+                $this->accountService->editRestore($id, $accountDetails->getAccountId());
             } else {
-                $accountService->createFromHistory($accountDetails);
+                $this->accountService->createFromHistory($accountDetails);
             }
 
             $this->eventDispatcher->notifyEvent(
@@ -209,20 +238,5 @@ final class AccountHistoryManagerController extends ControllerBase
 
             return $this->returnJsonResponseException($e);
         }
-    }
-
-    /**
-     * Initialize class
-     *
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
-
-        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
     }
 }

@@ -25,7 +25,7 @@
 namespace SP\Adapters;
 
 
-use SP\Services\CustomField\CustomFieldItem;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**
  * Class CustomFieldAdapter

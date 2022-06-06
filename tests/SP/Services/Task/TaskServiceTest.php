@@ -26,11 +26,11 @@ namespace SP\Tests\Services\Task;
 
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
-use SP\Services\ServiceException;
-use SP\Services\Task\Task;
-use SP\Services\Task\TaskFactory;
-use SP\Services\Task\TaskService;
-use SP\Storage\File\FileException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Task\Services\Task;
+use SP\Domain\Task\Services\TaskFactory;
+use SP\Domain\Task\Services\TaskService;
+use SP\Infrastructure\File\FileException;
 use function SP\Tests\setupContext;
 
 /**

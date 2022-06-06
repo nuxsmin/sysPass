@@ -32,6 +32,7 @@ use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class ErrorController
@@ -40,15 +41,15 @@ use SP\Mvc\View\Template;
  */
 final class ErrorController
 {
-    protected Template $view;
-    protected Klein $router;
-    protected LayoutHelper $layoutHelper;
+    protected TemplateInterface $view;
+    protected Klein             $router;
+    protected LayoutHelper      $layoutHelper;
 
     /**
      * ErrorController constructor.
      *
-     * @param Container $container
-     * @param string    $actionName
+     * @param  Container  $container
+     * @param  string  $actionName
      *
      * @throws DependencyException
      * @throws NotFoundException
@@ -98,9 +99,9 @@ final class ErrorController
         $this->view->append(
             'errors',
             [
-                'type' => SPException::WARNING,
+                'type'        => SPException::WARNING,
                 'description' => __('Application on maintenance'),
-                'hint' => __('It will be running shortly')
+                'hint'        => __('It will be running shortly'),
             ]
         );
 
@@ -117,9 +118,9 @@ final class ErrorController
         $this->view->append(
             'errors',
             [
-                'type' => SPException::CRITICAL,
+                'type'        => SPException::CRITICAL,
                 'description' => __('Error while checking the database'),
-                'hint' => __('Please contact to the administrator')
+                'hint'        => __('Please contact to the administrator'),
             ]
         );
 
@@ -136,9 +137,9 @@ final class ErrorController
         $this->view->append(
             'errors',
             [
-                'type' => SPException::CRITICAL,
+                'type'        => SPException::CRITICAL,
                 'description' => __('Unable to connect to DB'),
-                'hint' => __('Please contact to the administrator')
+                'hint'        => __('Please contact to the administrator'),
             ]
         );
 

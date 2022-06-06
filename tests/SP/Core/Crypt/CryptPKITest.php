@@ -29,7 +29,7 @@ use phpseclib\Crypt\RSA;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
-use SP\Storage\File\FileException;
+use SP\Infrastructure\File\FileException;
 use SP\Util\PasswordUtil;
 
 /**

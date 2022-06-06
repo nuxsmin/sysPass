@@ -24,35 +24,37 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\AccountSearchServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Services\AccountBulkRequest;
+use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Client\Services\ClientService;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Tag\Services\TagService;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
+use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Account\AccountBulkRequest;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountSearchFilter;
-use SP\Services\Account\AccountSearchService;
-use SP\Services\Account\AccountService;
-use SP\Services\Auth\AuthException;
-use SP\Services\Category\CategoryService;
-use SP\Services\Client\ClientService;
-use SP\Services\Tag\TagService;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Util\Util;
 
 /**
@@ -64,17 +66,55 @@ final class AccountManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    protected ?AccountService $accountService = null;
-    protected ?AccountSearchService $accountSearchService = null;
+    private AccountServiceInterface        $accountService;
+    private AccountSearchServiceInterface  $accountSearchService;
+    private AccountHistoryServiceInterface $accountHistoryService;
+    private AccountGrid                    $accountGrid;
+    private CustomFieldServiceInterface    $customFieldService;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker,
+        TemplateInterface $template,
+        BrowserAuthInterface $browser,
+        LayoutHelper $layoutHelper,
+        AccountServiceInterface $accountService,
+        AccountSearchServiceInterface $accountSearchService,
+        AccountHistoryServiceInterface $accountHistoryService,
+        Helpers\Grid\AccountGrid $accountGrid,
+        CustomFieldServiceInterface $customFieldService
+    ) {
+        $this->accountService = $accountService;
+        $this->accountSearchService = $accountSearchService;
+        $this->accountHistoryService = $accountHistoryService;
+        $this->accountGrid = $accountGrid;
+        $this->customFieldService = $customFieldService;
+
+        parent::__construct(
+            $application,
+            $theme,
+            $router,
+            $acl,
+            $request,
+            $extensionChecker,
+            $template,
+            $browser,
+            $layoutHelper
+        );
+
+        $this->checkLoggedIn();
+    }
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      * @throws \JsonException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction(): bool
     {
@@ -95,11 +135,10 @@ final class AccountManagerController extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @return \SP\Html\DataGrid\DataGridInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getSearchGrid(): DataGridInterface
     {
@@ -108,31 +147,31 @@ final class AccountManagerController extends ControllerBase
             $this->request
         );
 
-        $accountGrid = $this->dic->get(AccountGrid::class);
-
         $filter = new AccountSearchFilter();
         $filter->setLimitCount($itemSearchData->getLimitCount());
         $filter->setLimitStart($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $filter->setStringFilters($this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString()));
+            $filter->setStringFilters(
+                $this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString())
+            );
             $filter->setCleanTxtSearch($this->accountSearchService->getCleanString());
         }
 
-        return $accountGrid->updatePager(
-            $accountGrid->getGrid(
-                $this->accountService->getByFilter($filter)),
-            $itemSearchData);
+        return $this->accountGrid->updatePager(
+            $this->accountGrid->getGrid(
+                $this->accountService->getByFilter($filter)
+            ),
+            $itemSearchData
+        );
     }
 
     /**
      * Delete action
      *
-     * @param int|null $id
+     * @param  int|null  $id
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function deleteAction(?int $id = null): bool
@@ -141,7 +180,7 @@ final class AccountManagerController extends ControllerBase
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
                 $this->eventDispatcher->notifyEvent(
                     'delete.account.selection',
@@ -164,7 +203,7 @@ final class AccountManagerController extends ControllerBase
 
             $this->accountService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
             $this->eventDispatcher->notifyEvent(
                 'delete.account',
@@ -192,8 +231,6 @@ final class AccountManagerController extends ControllerBase
      * saveBulkEditAction
      *
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \JsonException
      */
     public function saveBulkEditAction(): bool
@@ -204,12 +241,12 @@ final class AccountManagerController extends ControllerBase
 
             $request = new AccountBulkRequest(
                 Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
-                $form->getItemData());
+                $form->getItemData()
+            );
             $request->setDeleteHistory($this->request->analyzeBool('delete_history', false));
 
             if ($request->isDeleteHistory()) {
-                $accountHistoryService = $this->dic->get(AccountHistoryService::class);
-                $accountHistoryService->deleteByAccountIdBatch($request->getItemsId());
+                $this->accountHistoryService->deleteByAccountIdBatch($request->getItemsId());
             }
 
             $this->accountService->updateBulk($request);
@@ -238,8 +275,6 @@ final class AccountManagerController extends ControllerBase
      * bulkEditAction
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     public function bulkEditAction(): bool
@@ -279,12 +314,12 @@ final class AccountManagerController extends ControllerBase
     {
         $this->view->addTemplate('account_bulkedit', 'itemshow');
 
-        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
 
+        // FIXME: Use IoC
         $clients = SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModel();
         $categories = SelectItemAdapter::factory(CategoryService::getItemsBasic())->getItemsFromModel();
         $tags = SelectItemAdapter::factory(TagService::getItemsBasic())->getItemsFromModel();
-
         $users = SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModel();
         $userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel();
 
@@ -302,21 +337,5 @@ final class AccountManagerController extends ControllerBase
             $this->view->assign('disabled', false);
             $this->view->assign('readonly', false);
         }
-    }
-
-    /**
-     * Initialize class
-     *
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
-
-        $this->accountService = $this->dic->get(AccountService::class);
-        $this->accountSearchService = $this->dic->get(AccountSearchService::class);
     }
 }

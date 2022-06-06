@@ -24,20 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\AppInfoInterface;
+use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Install\Services\Installer;
 use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Http\RequestInterface;
 use SP\Http\Uri;
+use SP\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
-use SP\Services\Install\Installer;
 use SP\Util\VersionUtil;
 
 /**
@@ -47,8 +48,29 @@ use SP\Util\VersionUtil;
  */
 final class LayoutHelper extends HelperBase
 {
-    protected ?bool           $loggedIn = null;
-    protected ?ThemeInterface $theme    = null;
+    private ThemeInterface $theme;
+    private CryptPKI       $cryptPKI;
+    private PluginManager  $pluginManager;
+    private bool           $loggedIn;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        ThemeInterface $theme,
+        CryptPKI $cryptPKI,
+        PluginManager $pluginManager
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->theme = $theme;
+        $this->cryptPKI = $cryptPKI;
+        $this->pluginManager = $pluginManager;
+        $this->loggedIn = $this->context->isLoggedIn();
+
+        $this->view->assign('loggedIn', $this->loggedIn);
+    }
+
 
     /**
      * Sets a full layout page
@@ -113,7 +135,7 @@ final class LayoutHelper extends HelperBase
 
         try {
             // Cargar la clave pública en la sesión
-            $this->context->setPublicKey($this->dic->get(CryptPKI::class)->getPublicKey());
+            $this->context->setPublicKey($this->cryptPKI->getPublicKey());
         } catch (SPException $e) {
             processException($e);
         }
@@ -199,7 +221,7 @@ final class LayoutHelper extends HelperBase
         }
 
         // Cargar los recursos de los plugins
-        $loadedPlugins = $this->dic->get(PluginManager::class)->getLoadedPlugins();
+        $loadedPlugins = $this->pluginManager->getLoadedPlugins();
 
         foreach ($loadedPlugins as $plugin) {
             $base = str_replace(APP_ROOT, '', $plugin->getBase());
@@ -418,10 +440,8 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getCustomLayout(
-        string $template,
-        string $page = ''
-    ): LayoutHelper {
+    public function getCustomLayout(string $template, string $page = ''): LayoutHelper
+    {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
 
@@ -429,18 +449,5 @@ final class LayoutHelper extends HelperBase
         $this->initBody();
 
         return $this;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function initialize(): void
-    {
-        $this->theme = $this->dic->get(ThemeInterface::class);
-
-        $this->loggedIn = $this->context->isLoggedIn();
-
-        $this->view->assign('loggedIn', $this->loggedIn);
     }
 }

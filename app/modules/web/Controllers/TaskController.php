@@ -26,10 +26,11 @@ namespace SP\Modules\Web\Controllers;
 
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Services\ServiceException;
-use SP\Services\Task\TaskFactory;
-use SP\Services\Task\TaskService;
-use SP\Storage\File\FileException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Task\Services\TaskFactory;
+use SP\Domain\Task\Services\TaskService;
+use SP\Domain\Task\TaskServiceInterface;
+use SP\Infrastructure\File\FileException;
 
 /**
  * Class TaskController
@@ -39,7 +40,7 @@ use SP\Storage\File\FileException;
 final class TaskController
 {
     /**
-     * @var TaskService
+     * @var TaskServiceInterface
      */
     private $taskService;
     /**

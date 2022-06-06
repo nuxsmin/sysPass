@@ -29,8 +29,6 @@ defined('APP_ROOT') || die();
 use Exception;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigDataInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -43,13 +41,16 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ProfileData;
-use SP\Http\Request;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\View\Template;
-use SP\Providers\Auth\Browser\Browser;
-use SP\Services\Auth\AuthException;
-use SP\Services\User\UserLoginResponse;
+use SP\Mvc\Controller\WebControllerHelper;
+use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
 /**
  * Clase base para los controladores
@@ -63,22 +64,21 @@ abstract class ControllerBase
     // TODO: remove when controllers are ready
     protected ContainerInterface $dic;
 
-    protected EventDispatcher     $eventDispatcher;
-    protected Config              $config;
-    protected ContextInterface    $session;
+    protected EventDispatcher   $eventDispatcher;
+    protected ConfigFileService $config;
+    protected ContextInterface  $session;
     protected ThemeInterface      $theme;
     protected Klein               $router;
     protected Acl                 $acl;
     protected ConfigDataInterface $configData;
-    protected Request             $request;
+    protected RequestInterface    $request;
     protected PhpExtensionChecker $extensionChecker;
-    protected Template            $view;
-    protected ?string             $actionName      = null;
+    protected TemplateInterface   $view;
     protected ?UserLoginResponse  $userData        = null;
     protected ?ProfileData        $userProfileData = null;
     protected bool                $isAjax;
     protected LayoutHelper        $layoutHelper;
-    private Browser               $browser;
+    private BrowserAuthInterface  $browser;
 
     /**
      * @throws \SP\Core\Exceptions\SessionTimeout
@@ -86,14 +86,7 @@ abstract class ControllerBase
      */
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        Request $request,
-        PhpExtensionChecker $extensionChecker,
-        Template $template,
-        Browser $browser,
-        LayoutHelper $layoutHelper
+        WebControllerHelper $webControllerHelper
     ) {
         // TODO: remove when controllers are ready
         $this->dic = BootstrapBase::getContainer();
@@ -103,16 +96,16 @@ abstract class ControllerBase
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
         $this->session = $application->getContext();
-        $this->theme = $theme;
-        $this->router = $router;
-        $this->acl = $acl;
-        $this->request = $request;
-        $this->extensionChecker = $extensionChecker;
-        $this->browser = $browser;
-        $this->layoutHelper = $layoutHelper;
+        $this->theme = $webControllerHelper->getTheme();
+        $this->router = $webControllerHelper->getRouter();
+        $this->acl = $webControllerHelper->getAcl();
+        $this->request = $webControllerHelper->getRequest();
+        $this->extensionChecker = $webControllerHelper->getExtensionChecker();
+        $this->browser = $webControllerHelper->getBrowser();
+        $this->layoutHelper = $webControllerHelper->getLayoutHelper();
+        $this->view = $webControllerHelper->getTemplate();
 
-        $this->view = $template;
-        $this->view->setBase(strtolower($this->controllerName));
+        $this->view->setBase($this->getViewBaseName());
         $this->isAjax = $this->request->isAjax();
 
         $loggedIn = $this->session->isLoggedIn();
@@ -132,14 +125,12 @@ abstract class ControllerBase
                 $this->initialize();
             }
         } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout(
-                function () {
-                    return true;
-                }
-            );
+            $this->handleSessionTimeout(static fn() => true);
 
             throw $sessionTimeout;
         }
+
+        logger(static::class);
     }
 
     /**
@@ -225,7 +216,7 @@ abstract class ControllerBase
 
         $this->view->assign(
             'contentPage',
-            $page ?: strtolower($this->controllerName)
+            $page ?: strtolower($this->getViewBaseName())
         );
 
         try {
@@ -258,7 +249,7 @@ abstract class ControllerBase
      * @param  bool  $requireAuthCompleted
      *
      * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Services\Auth\AuthException
+     * @throws \SP\Domain\Auth\Services\AuthException
      */
     protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {

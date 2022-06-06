@@ -28,12 +28,12 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Actions;
+use SP\Domain\Upgrade\Services\UpgradeAppService;
+use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Storage\File\FileException;
 
 /**
  * Class UpgradeController

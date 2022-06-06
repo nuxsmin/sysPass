@@ -25,7 +25,7 @@
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 
 defined('APP_ROOT') || die();
 

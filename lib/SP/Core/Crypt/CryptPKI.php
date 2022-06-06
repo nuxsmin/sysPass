@@ -28,15 +28,15 @@ defined('APP_ROOT') || die();
 
 use phpseclib\Crypt\RSA;
 use SP\Core\Exceptions\SPException;
-use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
  *
  * @package SP
  */
-final class CryptPKI
+class CryptPKI
 {
     public const KEY_SIZE = 1024;
     public const PUBLIC_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';

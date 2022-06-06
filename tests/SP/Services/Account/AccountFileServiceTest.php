@@ -34,9 +34,9 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountFileService;
-use SP\Services\ServiceException;
+use SP\Domain\Account\Services\AccountFileService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -48,7 +48,7 @@ use function SP\Tests\setupContext;
 class AccountFileServiceTest extends DatabaseTestCase
 {
     /**
-     * @var AccountFileService
+     * @var \SP\Domain\Services\AccountFileServiceInterface
      */
     private static $service;
 

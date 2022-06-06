@@ -31,7 +31,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Core\Context\ContextInterface;
-use SP\Storage\Database\DBStorageInterface;
+use SP\Infrastructure\Database\DBStorageInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use function SP\Tests\getDbHandler;
 use const SP\Tests\APP_DEFINITIONS_FILE;

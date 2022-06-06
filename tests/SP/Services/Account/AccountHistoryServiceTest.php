@@ -34,10 +34,11 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountPasswordRequest;
-use SP\Services\ServiceException;
+use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\Services\AccountHistoryService;
+use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -50,7 +51,7 @@ use function SP\Tests\setupContext;
 class AccountHistoryServiceTest extends DatabaseTestCase
 {
     /**
-     * @var AccountHistoryService
+     * @var AccountHistoryServiceInterface
      */
     private static $service;
 

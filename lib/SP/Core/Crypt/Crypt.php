@@ -34,7 +34,7 @@ use Defuse\Crypto\KeyProtectedByPassword;
  *
  * @package SP\Core\Crypt
  */
-final class Crypt
+class Crypt
 {
     /**
      * Encriptar datos con una clave segura

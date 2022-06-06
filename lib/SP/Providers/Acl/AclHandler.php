@@ -25,18 +25,17 @@
 namespace SP\Providers\Acl;
 
 use Exception;
-use SP\Config\Config;
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Account\Services\AccountAclService;
+use SP\Domain\User\Services\UserGroupService;
+use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\User\UserProfileServiceInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\Account\AccountAclService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
 use SplSubject;
 
 /**
@@ -62,8 +61,8 @@ final class AclHandler extends Provider implements EventReceiver
 
     public function __construct(
         Application $application,
-        UserProfileService $userProfileService,
-        UserGroupService $userGroupService
+        UserProfileServiceInterface $userProfileService,
+        UserGroupServiceInterface $userGroupService
     ) {
         $this->userProfileService = $userProfileService;
         $this->userGroupService = $userGroupService;

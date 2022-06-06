@@ -24,8 +24,8 @@
 
 namespace SP\Util;
 
-use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 
 defined('APP_ROOT') || die();
 
@@ -45,12 +45,12 @@ final class Util
         $file = 'syspass.test';
 
         $checkDir = static function ($dir) use ($file) {
-            if (file_exists($dir . DIRECTORY_SEPARATOR . $file)) {
+            if (file_exists($dir.DIRECTORY_SEPARATOR.$file)) {
                 return $dir;
             }
 
             if (is_dir($dir) || mkdir($dir) || is_dir($dir)) {
-                if (touch($dir . DIRECTORY_SEPARATOR . $file)) {
+                if (touch($dir.DIRECTORY_SEPARATOR.$file)) {
                     return $dir;
                 }
             }
@@ -80,9 +80,11 @@ final class Util
      */
     public static function getMaxUpload(): int
     {
-        return min(self::convertShortUnit(ini_get('upload_max_filesize')),
+        return min(
+            self::convertShortUnit(ini_get('upload_max_filesize')),
             self::convertShortUnit(ini_get('post_max_size')),
-            self::convertShortUnit(ini_get('memory_limit')));
+            self::convertShortUnit(ini_get('memory_limit'))
+        );
     }
 
     public static function convertShortUnit(string $value): int
@@ -106,8 +108,8 @@ final class Util
      * Also takes into account some text-based representations of true of false,
      * such as 'false','N','yes','on','off', etc.
      *
-     * @param mixed $in     The variable to check
-     * @param bool  $strict If set to false, consider everything that is not false to
+     * @param  mixed  $in  The variable to check
+     * @param  bool  $strict  If set to false, consider everything that is not false to
      *                      be true.
      *
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
@@ -139,9 +141,9 @@ final class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string        $dstClass Destination class name
-     * @param string|object $serialized
-     * @param string|null   $srcClass Old class name for removing from private methods
+     * @param  string  $dstClass  Destination class name
+     * @param  string|object  $serialized
+     * @param  string|null  $srcClass  Old class name for removing from private methods
      *
      * @return mixed
      */
@@ -169,11 +171,12 @@ final class Util
                 // If source class is set, it will try to clean up the class name from private methods
                 if ($srcClass !== null) {
                     $serialized = preg_replace_callback(
-                        '/:\d+:"\x00' . preg_quote($srcClass, '/') . '\x00(\w+)"/',
+                        '/:\d+:"\x00'.preg_quote($srcClass, '/').'\x00(\w+)"/',
                         static function ($matches) {
-                            return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
+                            return ':'.strlen($matches[1]).':"'.$matches[1].'"';
                         },
-                        $serialized);
+                        $serialized
+                    );
                 }
 
                 return self::castToClass($serialized, $dstClass);
@@ -199,7 +202,7 @@ final class Util
         return unserialize(
             preg_replace(
                 '/O:\d+:"[^"]++"/',
-                'O:' . strlen($class) . ':"' . $class . '"',
+                'O:'.strlen($class).':"'.$class.'"',
                 $cast
             )
         );
@@ -209,7 +212,7 @@ final class Util
      * Bloquear la aplicación
      *
      * @throws \JsonException
-     * @throws \SP\Storage\File\FileException
+     * @throws \SP\Infrastructure\File\FileException
      */
     public static function lockApp(int $userId, string $subject): void
     {
@@ -258,11 +261,7 @@ final class Util
      *
      * @return array Con el tiempo estimado y los elementos por segundo
      */
-    public static function getETA(
-        int $startTime,
-        int $numItems,
-        int $totalItems
-    ): array
+    public static function getETA(int $startTime, int $numItems, int $totalItems): array
     {
         if ($numItems > 0 && $totalItems > 0) {
             $runtime = time() - $startTime;
@@ -277,10 +276,7 @@ final class Util
     /**
      * Adaptador para convertir una cadena de IDs a un array
      */
-    public static function itemsIdAdapter(
-        string $itemsId,
-        string $delimiter = ','
-    ): array
+    public static function itemsIdAdapter(string $itemsId, string $delimiter = ','): array
     {
         return array_map(
             static function ($value) {

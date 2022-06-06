@@ -32,8 +32,9 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Plugin\PluginModel;
-use SP\Repositories\Plugin\PluginRepository;
+use SP\Domain\Plugin\In\PluginRepositoryInterface;
+use SP\Infrastructure\Plugin\Repositories\PluginModel;
+use SP\Infrastructure\Plugin\Repositories\PluginRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -45,7 +46,7 @@ use function SP\Tests\setupContext;
 class PluginRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var PluginRepository
+     * @var PluginRepositoryInterface
      */
     private static $repository;
 

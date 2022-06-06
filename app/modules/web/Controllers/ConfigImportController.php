@@ -35,11 +35,11 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Import\Services\FileImport;
+use SP\Domain\Import\Services\ImportParams;
+use SP\Domain\Import\Services\ImportService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\Import\FileImport;
-use SP\Services\Import\ImportParams;
-use SP\Services\Import\ImportService;
 
 /**
  * Class ConfigImportController

@@ -31,10 +31,6 @@ namespace SP\Http;
  */
 final class Message
 {
-    public const TYPE_OK = 0;
-    public const TYPE_ERROR = 1;
-    public const TYPE_WARNING = 2;
-
     protected int $type = 0;
     protected ?string $description = null;
     protected ?string $hint = null;
