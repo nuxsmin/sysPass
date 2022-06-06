@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigManager;
 
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -31,30 +31,31 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\AppInfoInterface;
+use SP\Core\Application;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\MimeTypesInterface;
-use SP\Domain\Account\Services\AccountService;
-use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Config\ConfigServiceInterface;
 use SP\Domain\Crypt\Services\TemporaryMasterPassService;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Domain\Export\Services\XmlExportService;
 use SP\Domain\Task\Services\Task;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\User\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
+use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
@@ -68,9 +69,44 @@ use SP\Util\Util;
 /**
  * Class ConfigManagerController
  */
-final class ConfigManagerController extends ControllerBase
+final class IndexController extends ControllerBase
 {
-    protected ?TabsHelper $tabsHelper = null;
+    protected TabsHelper                $tabsHelper;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+    private MimeTypesInterface          $mimeTypes;
+    private DatabaseUtil                $databaseUtil;
+    private ConfigServiceInterface      $configService;
+    private AccountServiceInterface     $accountService;
+    private PluginManager               $pluginManager;
+
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        TabsHelper $tabsHelper,
+        UserServiceInterface $userService,
+        UserGroupServiceInterface $userGroupService,
+        UserProfileServiceInterface $userProfileService,
+        MimeTypesInterface $mimeTypes,
+        DatabaseUtil $databaseUtil,
+        ConfigServiceInterface $configService,
+        AccountServiceInterface $accountService,
+        PluginManager $pluginManager
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->tabsHelper = $tabsHelper;
+        $this->userService = $userService;
+        $this->userGroupService = $userGroupService;
+        $this->userProfileService = $userProfileService;
+        $this->mimeTypes = $mimeTypes;
+        $this->databaseUtil = $databaseUtil;
+        $this->configService = $configService;
+        $this->accountService = $accountService;
+        $this->pluginManager = $pluginManager;
+    }
+
 
     /**
      * @throws ContainerExceptionInterface
@@ -91,8 +127,6 @@ final class ConfigManagerController extends ControllerBase
      */
     protected function getTabs(): void
     {
-        $this->tabsHelper = $this->dic->get(TabsHelper::class);
-
         if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
         }
@@ -144,9 +178,10 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws CheckException
+     * @return \SP\Mvc\View\Components\DataTab
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getConfigGeneral(): DataTab
     {
@@ -178,32 +213,20 @@ final class ConfigManagerController extends ControllerBase
         );
         $template->assign(
             'users',
-            SelectItemAdapter::factory(
-                UserService::getItemsBasic()
-            )->getItemsFromModel()
+            SelectItemAdapter::factory($this->userService->getAllBasic())->getItemsFromModel()
         );
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory(
-                UserGroupService::getItemsBasic()
-            )->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory(
-                UserProfileService::getItemsBasic()
-            )->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
         );
 
-        $template->assign(
-            'curlIsAvailable',
-            $this->extensionChecker->checkCurlAvailable()
-        );
+        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
 
-        $events = array_merge(
-            LogInterface::EVENTS,
-            $this->configData->getLogEvents()
-        );
+        $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
 
         sort($events, SORT_STRING);
 
@@ -220,33 +243,23 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws CheckException
-     * @throws SPException
+     * @return \SP\Mvc\View\Components\DataTab
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getAccountConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('accounts');
-        $template->assign(
-            'gdIsAvailable',
-            $this->extensionChecker->checkGdAvailable()
-        );
+        $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
 
         $mimeTypesAvailable = array_map(
-            static function ($value) {
-                return $value['type'];
-            },
-            $this->dic->get(MimeTypesInterface::class)->getMimeTypes()
+            static fn($value) => $value['type'],
+            $this->mimeTypes->getMimeTypes()
         );
 
         $mimeTypes = SelectItemAdapter::factory(
-            array_merge(
-                $mimeTypesAvailable,
-                $this->configData->getFilesAllowedMime()
-            )
+            array_merge($mimeTypesAvailable, $this->configData->getFilesAllowedMime())
         );
 
         $template->assign(
@@ -279,9 +292,10 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws CheckException
+     * @return \SP\Mvc\View\Components\DataTab
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getLdapConfig(): DataTab
     {
@@ -295,13 +309,11 @@ final class ConfigManagerController extends ControllerBase
         );
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
-                ->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory(UserProfileService::getItemsBasic())
-                ->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
         );
 
         $serverTypes = [
@@ -343,8 +355,9 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return \SP\Mvc\View\Components\DataTab
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getMailConfig(): DataTab
     {
@@ -355,23 +368,16 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('mailSecurity', ['SSL', 'TLS']);
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory(
-                UserGroupService::getItemsBasic()
-            )->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory(
-                UserProfileService::getItemsBasic()
-            )->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
         );
 
         $mailEvents = $this->configData->getMailEvents();
 
-        $events = array_merge(
-            MailHandler::EVENTS,
-            $mailEvents
-        );
+        $events = array_merge(MailHandler::EVENTS, $mailEvents);
 
         sort($events, SORT_STRING);
 
@@ -401,48 +407,39 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('encryption');
 
-        $numAccounts = $this->dic->get(AccountService::class)->getTotalNumAccounts();
+        $numAccounts = $this->accountService->getTotalNumAccounts();
         $template->assign('numAccounts', $numAccounts);
 
         if ($numAccounts > 150) {
-            $template->assign(
-                'taskId',
-                Task::genTaskId('masterpass')
-            );
+            $template->assign('taskId', Task::genTaskId('masterpass'));
         }
-
-        $configService = $this->dic->get(ConfigService::class);
 
         $template->assign(
             'lastUpdateMPass',
-            $configService->getByParam('lastupdatempass', 0)
+            $this->configService->getByParam('lastupdatempass', 0)
         );
 
         $template->assign(
             'tempMasterPassTime',
-            $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0)
         );
         $template->assign(
             'tempMasterMaxTime',
-            $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0)
         );
 
         $tempMasterAttempts = sprintf(
             '%d/%d',
-            $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
             TemporaryMasterPassService::MAX_ATTEMPTS
         );
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
-        $template->assign(
-            'tempMasterPass',
-            $this->session->getTemporaryMasterPass()
-        );
+        $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());
 
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
-                ->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
         );
 
         return new DataTab(__('Encryption'), $template);
@@ -522,8 +519,9 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return \SP\Mvc\View\Components\DataTab
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getImportConfig(): DataTab
     {
@@ -533,12 +531,12 @@ final class ConfigManagerController extends ControllerBase
 
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
+            SelectItemAdapter::factory($this->userGroupService->getAllBasic())
                 ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
         );
         $template->assign(
             'users',
-            SelectItemAdapter::factory(UserService::getItemsBasic())
+            SelectItemAdapter::factory($this->userService->getAllBasic())
                 ->getItemsFromModelSelected([$this->userData->getId()])
         );
 
@@ -546,10 +544,9 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws NoSuchItemException
+     * @return \SP\Mvc\View\Components\DataTab
      * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     protected function getInfo(): DataTab
     {
@@ -557,37 +554,23 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('info');
 
-        $databaseUtil = $this->dic->get(DatabaseUtil::class);
-
-        $template->assign('dbInfo', $databaseUtil->getDBinfo());
-        $template->assign(
-            'dbName',
-            $this->configData->getDbName().'@'.$this->configData->getDbHost()
-        );
+        $template->assign('dbInfo', $this->databaseUtil->getDBinfo());
+        $template->assign('dbName', $this->configData->getDbName().'@'.$this->configData->getDbHost());
         $template->assign(
             'configBackupDate',
-            date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0))
+            date('r', $this->configService->getByParam('config_backup_date', 0))
         );
-        $template->assign(
-            'plugins',
-            $this->dic->get(PluginManager::class)->getLoadedPlugins()
-        );
+        $template->assign('plugins', $this->pluginManager->getLoadedPlugins());
         $template->assign(
             'locale',
             Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed'))
         );
-        $template->assign(
-            'securedSession',
-            CryptSessionHandler::$isSecured
-        );
+        $template->assign('securedSession', CryptSessionHandler::$isSecured);
         $template->assign(
             'missingExtensions',
             $this->extensionChecker->getMissing()
         );
-        $template->assign(
-            'downloadRate',
-            round(Util::getMaxDownloadChunk() / 1024 / 1024)
-        );
+        $template->assign('downloadRate', round(Util::getMaxDownloadChunk() / 1024 / 1024));
 
         $isDemo = $this->configData->isDemoEnabled();
 
@@ -597,9 +580,7 @@ final class ConfigManagerController extends ControllerBase
         );
         $template->assign(
             'downloadLog',
-            !$isDemo
-            && is_readable(LOG_FILE)
-            && $this->userData->getIsAdminApp()
+            !$isDemo && is_readable(LOG_FILE) && $this->userData->getIsAdminApp()
         );
 
         return new DataTab(__('Information'), $template);
@@ -611,10 +592,8 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
+     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws \SP\Domain\Auth\Services\AuthException
      */
     protected function initialize(): void
     {

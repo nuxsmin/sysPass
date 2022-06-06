@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,38 +22,61 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\SecurityManager;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Security\Services\EventlogService;
-use SP\Domain\Security\Services\TrackService;
+use SP\Domain\Security\EventlogServiceInterface;
+use SP\Domain\Security\TrackServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
+use SP\Mvc\Controller\WebControllerHelper;
 
 /**
- * Class SecurityManagerController
+ * Class IndexController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SecurityManagerController extends ControllerBase
+final class IndexController extends ControllerBase
 {
-    protected ?ItemSearchData $itemSearchData = null;
-    protected ?TabsGridHelper $tabsGridHelper = null;
+    protected ItemSearchData         $itemSearchData;
+    protected TabsGridHelper         $tabsGridHelper;
+    private EventlogGrid             $eventlogGrid;
+    private TrackGrid                $trackGrid;
+    private EventlogServiceInterface $eventlogService;
+    private TrackServiceInterface    $trackService;
+
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        TabsGridHelper $tabsGridHelper,
+        EventlogGrid $eventlogGrid,
+        TrackGrid $trackGrid,
+        EventlogServiceInterface $eventlogService,
+        TrackServiceInterface $trackService
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->checkLoggedIn();
+
+        $this->tabsGridHelper = $tabsGridHelper;
+        $this->eventlogGrid = $eventlogGrid;
+        $this->trackGrid = $trackGrid;
+        $this->eventlogService = $eventlogService;
+        $this->trackService = $trackService;
+
+        $this->itemSearchData = new ItemSearchData();
+    }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -65,17 +88,12 @@ final class SecurityManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getGridTabs(): void
     {
-        $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
-
-        $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
         if ($this->checkAccess(ActionsInterface::EVENTLOG)
             && $this->configData->isLogEnabled()
@@ -104,34 +122,24 @@ final class SecurityManagerController extends ControllerBase
      * Returns eventlog data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getEventlogList(): DataGridTab
     {
-        return $this->dic->get(EventlogGrid::class)
-            ->getGrid($this->dic->get(EventlogService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->eventlogGrid->getGrid($this->eventlogService->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns tracks data tab
      *
      * @return DataGridTab
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
     protected function getTracksList(): DataGridTab
     {
-        return $this->dic->get(TrackGrid::class)
-            ->getGrid($this->dic->get(TrackService::class)
-                ->search($this->itemSearchData))
-            ->updatePager();
+        return $this->trackGrid->getGrid($this->trackService->search($this->itemSearchData))->updatePager();
     }
 
     /**
@@ -140,16 +148,5 @@ final class SecurityManagerController extends ControllerBase
     public function getTabsGridHelper(): TabsGridHelper
     {
         return $this->tabsGridHelper;
-    }
-
-    /**
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
     }
 }

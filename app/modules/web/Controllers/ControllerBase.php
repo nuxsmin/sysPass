@@ -125,7 +125,7 @@ abstract class ControllerBase
                 $this->initialize();
             }
         } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout(static fn() => true);
+            $this->handleSessionTimeout(fn() => true);
 
             throw $sessionTimeout;
         }
