@@ -40,7 +40,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return UserGroupForm|FormInterface
@@ -48,6 +48,10 @@ final class UserGroupForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::GROUP_CREATE:
             case ActionsInterface::GROUP_EDIT:

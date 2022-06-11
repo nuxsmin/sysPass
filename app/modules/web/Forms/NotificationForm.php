@@ -41,7 +41,7 @@ final class NotificationForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return NotificationForm|FormInterface
@@ -49,6 +49,10 @@ final class NotificationForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::NOTIFICATION_CREATE:
             case ActionsInterface::NOTIFICATION_EDIT:
@@ -79,9 +83,7 @@ final class NotificationForm extends FormBase implements FormInterface
         $this->notificationData->setUserId($this->request->analyzeInt('notification_user'));
         $this->notificationData->setChecked($this->request->analyzeBool('notification_checkout', false));
 
-        if ($this->notificationData->getUserId() === 0
-            && $this->context->getUserData()->getIsAdminApp()
-        ) {
+        if ($this->notificationData->getUserId() === 0 && $this->context->getUserData()->getIsAdminApp()) {
             $this->notificationData->setOnlyAdmin($this->request->analyzeBool('notification_onlyadmin', false));
             $this->notificationData->setSticky($this->request->analyzeBool('notification_sticky', false));
         }

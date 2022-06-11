@@ -41,7 +41,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return UserProfileForm|FormInterface
@@ -49,6 +49,10 @@ final class UserProfileForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::PROFILE_CREATE:
             case ActionsInterface::PROFILE_EDIT:
@@ -66,6 +70,19 @@ final class UserProfileForm extends FormBase implements FormInterface
      * @return void
      */
     protected function analyzeRequestData(): void
+    {
+        $profileData = $this->getProfileDataFromRequest();
+
+        $this->userProfileData = new UserProfileData();
+        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
+        $this->userProfileData->setId($this->itemId);
+        $this->userProfileData->setProfile($profileData);
+    }
+
+    /**
+     * @return \SP\DataModel\ProfileData
+     */
+    private function getProfileDataFromRequest(): ProfileData
     {
         $profileData = new ProfileData();
         $profileData->setAccAdd($this->request->analyzeBool('profile_accadd', false));
@@ -99,10 +116,7 @@ final class UserProfileForm extends FormBase implements FormInterface
         $profileData->setMgmTags($this->request->analyzeBool('profile_tags', false));
         $profileData->setEvl($this->request->analyzeBool('profile_eventlog', false));
 
-        $this->userProfileData = new UserProfileData();
-        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
-        $this->userProfileData->setId($this->itemId);
-        $this->userProfileData->setProfile($profileData);
+        return $profileData;
     }
 
     /**

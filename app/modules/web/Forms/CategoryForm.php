@@ -40,7 +40,7 @@ final class CategoryForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return CategoryForm|FormInterface
@@ -48,6 +48,10 @@ final class CategoryForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::CATEGORY_CREATE:
             case ActionsInterface::CATEGORY_EDIT:
@@ -67,12 +71,9 @@ final class CategoryForm extends FormBase implements FormInterface
     protected function analyzeRequestData(): void
     {
         $this->categoryData = new CategoryData();
-        $this->categoryData
-            ->setId($this->itemId);
-        $this->categoryData
-            ->setName($this->request->analyzeString('name'));
-        $this->categoryData
-            ->setDescription($this->request->analyzeString('description'));
+        $this->categoryData->setId($this->itemId);
+        $this->categoryData->setName($this->request->analyzeString('name'));
+        $this->categoryData->setDescription($this->request->analyzeString('description'));
     }
 
     /**

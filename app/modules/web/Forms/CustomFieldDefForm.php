@@ -40,7 +40,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return CustomFieldDefForm|FormInterface
@@ -48,6 +48,10 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::CUSTOMFIELD_CREATE:
             case ActionsInterface::CUSTOMFIELD_EDIT:

@@ -36,12 +36,12 @@ use SP\DataModel\UserData;
 final class UserForm extends FormBase implements FormInterface
 {
     protected ?UserData $userData = null;
-    protected int $isLdap = 0;
+    protected int       $isLdap   = 0;
 
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return UserForm|FormInterface
@@ -49,6 +49,10 @@ final class UserForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::USER_CREATE:
                 $this->analyzeRequestData();
@@ -133,8 +137,8 @@ final class UserForm extends FormBase implements FormInterface
     private function isDemo(): bool
     {
         return $this->configData->isDemoEnabled()
-            && $this->itemId === 2 // FIXME: Ugly!!
-            && $this->context->getUserData()->getIsAdminApp();
+               && $this->itemId === 2 // FIXME: Ugly!!
+               && $this->context->getUserData()->getIsAdminApp();
     }
 
     /**

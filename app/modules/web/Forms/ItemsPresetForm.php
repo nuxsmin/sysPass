@@ -103,28 +103,16 @@ final class ItemsPresetForm extends FormBase implements FormInterface
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
-                $this->itemPresetRequest = new ItemPresetRequest(
-                    $itemPresetData,
-                    $this->makePermissionPreset()
-                );
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
-                $this->itemPresetRequest = new ItemPresetRequest(
-                    $itemPresetData,
-                    $this->makePrivatePreset()
-                );
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
-                $this->itemPresetRequest = new ItemPresetRequest(
-                    $itemPresetData,
-                    $this->makeSessionTimeoutPreset()
-                );
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutPreset());
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
-                $this->itemPresetRequest = new ItemPresetRequest(
-                    $itemPresetData,
-                    $this->makePasswordPreset()
-                );
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
                 break;
             default:
                 throw new ValidationException(__u('Value type not set or incorrect'));
