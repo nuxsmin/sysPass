@@ -239,9 +239,11 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
     /**
      * Updates an item
      *
+     * @param  \SP\DataModel\CustomFieldData  $customFieldData
+     * @param  string  $masterPass
+     *
+     * @return int
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function updateMasterPass(CustomFieldData $customFieldData, string $masterPass): int
