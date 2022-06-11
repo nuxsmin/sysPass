@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,30 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigWiki;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
- * Class ConfigWikiController
+ * Class SaveController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ConfigWikiController extends SimpleControllerBase
+final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \JsonException
      */
     public function saveAction(): bool
@@ -53,18 +50,13 @@ final class ConfigWikiController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
 
-        // Wiki
         $wikiEnabled = $this->request->analyzeBool('wiki_enabled', false);
         $wikiSearchUrl = $this->request->analyzeString('wiki_searchurl');
         $wikiPageUrl = $this->request->analyzeString('wiki_pageurl');
         $wikiFilter = $this->request->analyzeString('wiki_filter');
 
-        // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
-                __u('Missing Wiki parameters')
-            );
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Wiki parameters'));
         }
 
         if ($wikiEnabled) {
@@ -80,24 +72,21 @@ final class ConfigWikiController extends SimpleControllerBase
             $configData->setWikiEnabled(false);
 
             $eventMessage->addDescription(__u('Wiki disabled'));
+        } else {
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
         }
 
         return $this->saveConfig(
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notifyEvent(
-                    'save.config.wiki',
-                    new Event($this, $eventMessage)
-                );
+                $this->eventDispatcher->notifyEvent('save.config.wiki', new Event($this, $eventMessage));
             }
         );
     }
 
     /**
      * @return void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      * @throws \SP\Core\Exceptions\SessionTimeout
      */
@@ -107,10 +96,7 @@ final class ConfigWikiController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_WIKI);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }
