@@ -25,16 +25,8 @@
 namespace SP\Modules\Web\Controllers\AccountFavorite;
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
-use SP\Domain\Account\AccountToFavoriteServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -42,26 +34,9 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class UnmarkController extends SimpleControllerBase
+final class UnmarkController extends AccountFavoriteBase
 {
     use JsonTrait;
-
-    private AccountToFavoriteServiceInterface $accountToFavoriteService;
-
-    public function __construct(
-        Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
-        AccountToFavoriteServiceInterface $accountToFavoriteService
-    ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
-
-        $this->accountToFavoriteService = $accountToFavoriteService;
-    }
-
 
     /**
      * @param  int  $accountId
