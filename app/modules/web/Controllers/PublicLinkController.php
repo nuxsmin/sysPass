@@ -384,7 +384,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             }
 
             $form = new PublicLinkForm($this->dic);
-            $form->validate(ActionsInterface::PUBLICLINK_CREATE);
+            $form->validateFor(ActionsInterface::PUBLICLINK_CREATE, null);
 
             $this->publicLinkService->create($form->getItemData());
 

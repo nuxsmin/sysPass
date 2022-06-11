@@ -318,7 +318,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             }
 
             $form = new CustomFieldDefForm($this->dic);
-            $form->validate(ActionsInterface::CUSTOMFIELD_CREATE);
+            $form->validateFor(ActionsInterface::CUSTOMFIELD_CREATE, null);
 
             $itemData = $form->getItemData();
 
@@ -373,7 +373,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             }
 
             $form = new CustomFieldDefForm($this->dic, $id);
-            $form->validate(ActionsInterface::CUSTOMFIELD_EDIT);
+            $form->validateFor(ActionsInterface::CUSTOMFIELD_EDIT, null);
 
             $itemData = $form->getItemData();
 

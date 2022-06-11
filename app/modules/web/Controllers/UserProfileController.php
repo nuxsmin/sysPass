@@ -350,7 +350,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             }
 
             $form = new UserProfileForm($this->dic);
-            $form->validate(ActionsInterface::PROFILE_CREATE);
+            $form->validateFor(ActionsInterface::PROFILE_CREATE, null);
 
             $profileData = $form->getItemData();
 
@@ -411,7 +411,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             }
 
             $form = new UserProfileForm($this->dic, $id);
-            $form->validate(ActionsInterface::PROFILE_EDIT);
+            $form->validateFor(ActionsInterface::PROFILE_EDIT, null);
 
             $profileData = $form->getItemData();
 

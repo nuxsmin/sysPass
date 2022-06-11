@@ -313,7 +313,7 @@ final class TagController extends ControllerBase implements CrudControllerInterf
             }
 
             $form = new TagForm($this->dic);
-            $form->validate(ActionsInterface::TAG_CREATE);
+            $form->validateFor(ActionsInterface::TAG_CREATE, null);
 
             $this->tagService->create($form->getItemData());
 
@@ -361,7 +361,7 @@ final class TagController extends ControllerBase implements CrudControllerInterf
             }
 
             $form = new TagForm($this->dic, $id);
-            $form->validate(ActionsInterface::TAG_EDIT);
+            $form->validateFor(ActionsInterface::TAG_EDIT, null);
 
             $this->tagService->update($form->getItemData());
 

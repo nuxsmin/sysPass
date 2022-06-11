@@ -36,12 +36,13 @@ interface FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
      * @return FormInterface
      * @throws ValidationException
      */
-    public function validate(int $action): FormInterface;
+    public function validateFor(int $action, ?int $id = null): FormInterface;
 
     /**
      * @return mixed

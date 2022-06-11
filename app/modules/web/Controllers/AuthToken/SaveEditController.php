@@ -56,8 +56,7 @@ final class SaveEditController extends AuthTokenSaveBase
                 );
             }
 
-            $this->form->setItemId($id);
-            $this->form->validate(ActionsInterface::AUTHTOKEN_EDIT);
+            $this->form->validateFor(ActionsInterface::AUTHTOKEN_EDIT, $id);
 
             if ($this->form->isRefresh()) {
                 $this->authTokenService->refreshAndUpdate($this->form->getItemData());

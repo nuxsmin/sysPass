@@ -332,7 +332,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             }
 
             $form = new CategoryForm($this->dic);
-            $form->validate(ActionsInterface::CATEGORY_CREATE);
+            $form->validateFor(ActionsInterface::CATEGORY_CREATE, null);
 
             $itemData = $form->getItemData();
 
@@ -393,7 +393,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             }
 
             $form = new CategoryForm($this->dic, $id);
-            $form->validate(Acl::CATEGORY_EDIT);
+            $form->validateFor(Acl::CATEGORY_EDIT, null);
 
             $itemData = $form->getItemData();
 

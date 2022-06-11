@@ -428,7 +428,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             }
 
             $form = new NotificationForm($this->dic);
-            $form->validate(ActionsInterface::NOTIFICATION_CREATE);
+            $form->validateFor(ActionsInterface::NOTIFICATION_CREATE, null);
 
             $this->notificationService->create($form->getItemData());
 
@@ -478,7 +478,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             }
 
             $form = new NotificationForm($this->dic, $id);
-            $form->validate(ActionsInterface::NOTIFICATION_EDIT);
+            $form->validateFor(ActionsInterface::NOTIFICATION_EDIT, null);
 
             $this->notificationService->update($form->getItemData());
 

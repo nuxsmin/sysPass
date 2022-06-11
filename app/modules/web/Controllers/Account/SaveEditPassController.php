@@ -72,8 +72,7 @@ final class SaveEditPassController extends AccountControllerBase
     public function saveEditPassAction(int $id): bool
     {
         try {
-            $this->accountForm->setItemId($id);
-            $this->accountForm->validate(ActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_EDIT_PASS, $id);
 
             $this->accountService->editPassword($this->accountForm->getItemData());
 

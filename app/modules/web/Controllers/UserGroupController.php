@@ -353,7 +353,7 @@ final class UserGroupController extends ControllerBase implements CrudController
             }
 
             $form = new UserGroupForm($this->dic);
-            $form->validate(ActionsInterface::GROUP_CREATE);
+            $form->validateFor(ActionsInterface::GROUP_CREATE, null);
 
             $groupData = $form->getItemData();
 
@@ -414,7 +414,7 @@ final class UserGroupController extends ControllerBase implements CrudController
             }
 
             $form = new UserGroupForm($this->dic, $id);
-            $form->validate(ActionsInterface::GROUP_EDIT);
+            $form->validateFor(ActionsInterface::GROUP_EDIT, null);
 
             $groupData = $form->getItemData();
 

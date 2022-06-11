@@ -73,7 +73,7 @@ final class SaveCreateController extends AccountControllerBase
     public function saveCreateAction(): ?bool
     {
         try {
-            $this->accountForm->validate(ActionsInterface::ACCOUNT_CREATE);
+            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_CREATE);
 
             $accountId = $this->accountService->create($this->accountForm->getItemData());
 

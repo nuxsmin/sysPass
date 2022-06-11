@@ -42,11 +42,12 @@ final class UserForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param int $action
+     * @param  int|null  $id
      *
      * @return UserForm|FormInterface
      * @throws ValidationException
      */
-    public function validate(int $action): FormInterface
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
         switch ($action) {
             case ActionsInterface::USER_CREATE:

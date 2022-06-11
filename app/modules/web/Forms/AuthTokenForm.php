@@ -37,18 +37,23 @@ use SP\Domain\Auth\Services\AuthTokenService;
 final class AuthTokenForm extends FormBase implements FormInterface
 {
     protected ?AuthTokenData $authTokenData = null;
-    protected bool $refresh = false;
+    protected bool           $refresh       = false;
 
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
      * @return AuthTokenForm|FormInterface
      * @throws ValidationException
      */
-    public function validate(int $action): FormInterface
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::AUTHTOKEN_CREATE:
             case ActionsInterface::AUTHTOKEN_EDIT:

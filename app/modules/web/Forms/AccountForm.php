@@ -60,6 +60,7 @@ final class AccountForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param  int  $action
+     * @param  int|null  $id
      *
      * @return AccountForm|FormInterface
      * @throws ValidationException
@@ -67,7 +68,7 @@ final class AccountForm extends FormBase implements FormInterface
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    public function validate(int $action): FormInterface
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACCOUNT_EDIT_PASS:

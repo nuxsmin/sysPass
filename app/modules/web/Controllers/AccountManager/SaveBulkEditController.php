@@ -79,7 +79,7 @@ final class SaveBulkEditController extends ControllerBase
     public function saveBulkEditAction(): bool
     {
         try {
-            $this->accountForm->validate(ActionsInterface::ACCOUNTMGR_BULK_EDIT);
+            $this->accountForm->validateFor(ActionsInterface::ACCOUNTMGR_BULK_EDIT, null);
 
             $request = new AccountBulkRequest(
                 Util::itemsIdAdapter($this->request->analyzeString('itemsId')),

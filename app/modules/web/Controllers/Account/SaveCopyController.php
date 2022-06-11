@@ -72,7 +72,7 @@ final class SaveCopyController extends AccountControllerBase
     public function saveCopyAction(): ?bool
     {
         try {
-            $this->accountForm->validate(ActionsInterface::ACCOUNT_CREATE);
+            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_CREATE);
 
             $accountId = $this->accountService->create($this->accountForm->getItemData());
 

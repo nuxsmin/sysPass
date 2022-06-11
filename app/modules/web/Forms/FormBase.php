@@ -64,11 +64,11 @@ abstract class FormBase
     }
 
     /**
-     * @param  int  $itemId
+     * @return int|null
      */
-    public function setItemId(int $itemId): void
+    public function getItemId(): ?int
     {
-        $this->itemId = $itemId;
+        return $this->itemId;
     }
 
     /**

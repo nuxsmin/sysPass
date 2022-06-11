@@ -51,7 +51,7 @@ final class SaveCreateController extends AuthTokenSaveBase
                 );
             }
 
-            $this->form->validate(ActionsInterface::AUTHTOKEN_CREATE);
+            $this->form->validateFor(ActionsInterface::AUTHTOKEN_CREATE);
 
             $id = $this->authTokenService->create($this->form->getItemData());
 

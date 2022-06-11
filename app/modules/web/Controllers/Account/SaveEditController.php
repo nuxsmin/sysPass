@@ -76,8 +76,7 @@ final class SaveEditController extends AccountControllerBase
     public function saveEditAction(int $id): ?bool
     {
         try {
-            $this->accountForm->setItemId($id);
-            $this->accountForm->validate(ActionsInterface::ACCOUNT_EDIT);
+            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_EDIT, $id);
 
             $itemData = $this->accountForm->getItemData();
 
