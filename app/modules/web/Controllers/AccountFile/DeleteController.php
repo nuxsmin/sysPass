@@ -25,39 +25,19 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\AccountFileServiceInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class DeleteController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class DeleteController extends ControllerBase
+final class DeleteController extends AccountFileBase
 {
-    private const MIME_VIEW = ['text/plain'];
-
     use JsonTrait, ItemTrait;
-
-    private AccountFileServiceInterface $accountFileService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountFileServiceInterface $accountFileService
-    ) {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
-    }
 
     /**
      * Delete action

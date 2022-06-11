@@ -25,38 +25,20 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\AccountFileServiceInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
 
 /**
- * Class AccountFileController
+ * Class DownloadController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class DownloadController extends ControllerBase
+final class DownloadController extends AccountFileBase
 {
     use JsonTrait;
-
-    private AccountFileServiceInterface $accountFileService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountFileServiceInterface $accountFileService
-    ) {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
-    }
-
+    
     /**
      * Download action
      *

@@ -27,11 +27,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\AccountFileServiceInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
 /**
@@ -39,22 +35,8 @@ use SP\Util\ErrorUtil;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ListController extends ControllerBase
+final class ListController extends AccountFileBase
 {
-    private AccountFileServiceInterface $accountFileService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountFileServiceInterface $accountFileService
-    ) {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
-    }
-
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      *

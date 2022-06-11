@@ -25,15 +25,11 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\AccountFileServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\FileUtil;
 
 /**
@@ -41,25 +37,11 @@ use SP\Util\FileUtil;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ViewController extends ControllerBase
+final class ViewController extends AccountFileBase
 {
     private const MIME_VIEW = ['text/plain'];
 
     use JsonTrait;
-
-    private AccountFileServiceInterface $accountFileService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountFileServiceInterface $accountFileService
-    ) {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
-    }
 
     /**
      * View action
