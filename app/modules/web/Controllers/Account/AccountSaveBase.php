@@ -25,53 +25,40 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 
-use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
+use SP\Domain\Account\AccountPresetServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Forms\AccountForm;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
- * SearchController
+ * Class AccountSaveBase
  */
-final class SearchController extends AccountControllerBase
+abstract class AccountSaveBase extends AccountControllerBase
 {
-    use JsonTrait;
+    use JsonTrait, ItemTrait;
 
-    private AccountSearchHelper $accountSearchHelper;
+    protected AccountServiceInterface     $accountService;
+    protected AccountForm                 $accountForm;
+    protected CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountSearchHelper $accountSearchHelper
+        AccountServiceInterface $accountService,
+        AccountPresetServiceInterface $accountPresetService,
+        CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct(
             $application,
             $webControllerHelper
         );
 
-        $this->accountSearchHelper = $accountSearchHelper;
-    }
-
-    /**
-     * @return bool
-     * @throws \JsonException
-     */
-    public function searchAction(): ?bool
-    {
-        try {
-            $this->accountSearchHelper->getAccountSearch();
-
-            $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        $this->accountService = $accountService;
+        $this->customFieldService = $customFieldService;
+        $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
     }
 }

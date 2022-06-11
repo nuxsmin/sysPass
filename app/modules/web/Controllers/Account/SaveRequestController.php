@@ -33,6 +33,7 @@ use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\User\UserServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Http\Uri;
@@ -40,17 +41,20 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class SaveRequestController
+ */
 final class SaveRequestController extends AccountControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private \SP\Domain\Account\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
     private UserServiceInterface                       $userService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\AccountServiceInterface $accountService,
+        AccountServiceInterface $accountService,
         UserServiceInterface $userService
     ) {
         parent::__construct(

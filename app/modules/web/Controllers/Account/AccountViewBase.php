@@ -24,53 +24,31 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
-use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
+use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Util\ErrorUtil;
 
 /**
- * Class IndexController
+ * A class for al viewable actions
  */
-final class IndexController extends AccountControllerBase
+abstract class AccountViewBase extends AccountControllerBase
 {
-    private AccountSearchHelper $accountSearchHelper;
+    protected AccountServiceInterface $accountService;
+    protected AccountHelper           $accountHelper;
+    protected ThemeIcons              $icons;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountSearchHelper $accountSearchHelper
+        AccountServiceInterface $accountService,
+        AccountHelper $accountHelper
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
+        parent::__construct($application, $webControllerHelper);
 
-        $this->accountSearchHelper = $accountSearchHelper;
-    }
-
-    /**
-     * Index action
-     *
-     */
-    public function indexAction(): void
-    {
-        try {
-            $this->accountSearchHelper->getSearchBox();
-            $this->accountSearchHelper->getAccountSearch();
-
-            $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
-
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            ErrorUtil::showExceptionInView($this->view, $e);
-        }
+        $this->accountService = $accountService;
+        $this->accountHelper = $accountHelper;
+        $this->icons = $this->theme->getIcons();
     }
 }

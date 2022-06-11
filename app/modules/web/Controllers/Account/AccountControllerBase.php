@@ -28,6 +28,9 @@ use SP\Core\Context\ContextBase;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Modules\Web\Controllers\ControllerBase;
 
+/**
+ * AccountControllerBase
+ */
 abstract class AccountControllerBase extends ControllerBase
 {
     private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
@@ -38,7 +41,7 @@ abstract class AccountControllerBase extends ControllerBase
      * @throws \SP\Core\Exceptions\SessionTimeout
      * @throws \SP\Domain\Auth\Services\AuthException
      */
-    protected function initialize(): void
+    final protected function initialize(): void
     {
         if (in_array(static::class, self::LOGIN_NOT_REQUIRED)) {
             $this->checkLoggedIn();

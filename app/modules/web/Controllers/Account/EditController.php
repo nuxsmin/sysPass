@@ -24,38 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
-final class EditController extends AccountControllerBase
+/**
+ * Class EditController
+ */
+final class EditController extends AccountViewBase
 {
-    private AccountHelper $accountHelper;
-    private ThemeIcons $icons;
-    private AccountServiceInterface $accountService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHelper $accountHelper,
-        \SP\Domain\Account\AccountServiceInterface $accountService
-    ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountHelper = $accountHelper;
-        $this->accountService = $accountService;
-        $this->icons = $this->theme->getIcons();
-    }
 
     /**
      * Edit action
@@ -96,10 +74,7 @@ final class EditController extends AccountControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             if ($this->isAjax === false && !$this->view->isUpgraded()) {
                 $this->upgradeView();

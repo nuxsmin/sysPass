@@ -37,6 +37,9 @@ use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class ViewPassController
+ */
 final class ViewPassController extends AccountControllerBase
 {
     use JsonTrait;

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
@@ -35,6 +34,9 @@ use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
+/**
+ * Class DeleteController
+ */
 final class DeleteController extends AccountControllerBase
 {
     private AccountHelper $accountHelper;

@@ -39,6 +39,9 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class SaveEditPassController
+ */
 final class SaveEditPassController extends AccountControllerBase
 {
     use JsonTrait;

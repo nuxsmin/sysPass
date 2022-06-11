@@ -37,12 +37,15 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class SaveDeleteController
+ */
 final class SaveDeleteController extends AccountControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private \SP\Domain\Account\AccountServiceInterface $accountService;
-    private CustomFieldServiceInterface                $customFieldService;
+    private AccountServiceInterface     $accountService;
+    private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
         Application $application,

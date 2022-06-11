@@ -24,48 +24,19 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Account\AccountPresetServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Modules\Web\Forms\AccountForm;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
 
-final class SaveCreateController extends AccountControllerBase
+/**
+ * Class SaveCreateController
+ */
+final class SaveCreateController extends AccountSaveBase
 {
-    use JsonTrait, ItemTrait;
-
-    private AccountServiceInterface     $accountService;
-    private AccountForm                 $accountForm;
-    private CustomFieldServiceInterface $customFieldService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
-        AccountPresetServiceInterface $accountPresetService,
-        CustomFieldServiceInterface $customFieldService
-    ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->customFieldService = $customFieldService;
-        $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
-    }
-
     /**
      * @return bool
      * @throws \JsonException

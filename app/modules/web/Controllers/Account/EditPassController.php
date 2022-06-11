@@ -24,41 +24,18 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
-final class EditPassController extends AccountControllerBase
+/**
+ * Class EditPassController
+ */
+final class EditPassController extends AccountViewBase
 {
-    private AccountHelper                              $accountHelper;
-    private ThemeIcons                                 $icons;
-    private \SP\Domain\Account\AccountServiceInterface $accountService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHelper $accountHelper,
-        AccountServiceInterface $accountService
-    ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountHelper = $accountHelper;
-        $this->accountService = $accountService;
-        $this->icons = $this->theme->getIcons();
-    }
-
     /**
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *

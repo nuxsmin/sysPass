@@ -36,6 +36,9 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class SaveEditRestoreController
+ */
 final class SaveEditRestoreController extends AccountControllerBase
 {
     use JsonTrait;
@@ -45,7 +48,7 @@ final class SaveEditRestoreController extends AccountControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\AccountServiceInterface $accountService
+        AccountServiceInterface $accountService
     ) {
         parent::__construct(
             $application,

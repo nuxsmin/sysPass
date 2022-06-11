@@ -24,36 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
-final class RequestAccessController extends AccountControllerBase
+/**
+ * Class RequestAccessController
+ */
+final class RequestAccessController extends AccountViewBase
 {
-    private AccountHelper           $accountHelper;
-    private AccountServiceInterface $accountService;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHelper $accountHelper,
-        AccountServiceInterface $accountService
-    ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountHelper = $accountHelper;
-        $this->accountService = $accountService;
-    }
-
     /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *

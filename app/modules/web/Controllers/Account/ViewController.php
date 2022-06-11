@@ -27,35 +27,14 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
-final class ViewController extends AccountControllerBase
+/**
+ * ViewController
+ */
+final class ViewController extends AccountViewBase
 {
-    private \SP\Domain\Account\AccountServiceInterface $accountService;
-    private AccountHelper                              $accountHelper;
-    private ThemeIcons                                 $icons;
-
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
-        AccountHelper $accountHelper
-    ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->accountHelper = $accountHelper;
-        $this->icons = $this->theme->getIcons();
-    }
 
     /**
      * View action
