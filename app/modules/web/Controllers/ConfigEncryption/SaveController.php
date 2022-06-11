@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,10 +22,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
-use DI\DependencyException;
-use DI\NotFoundException;
+
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
@@ -33,35 +32,29 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
 use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Config\Services\ConfigService;
 use SP\Domain\Crypt\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
-use SP\Domain\Crypt\Services\TemporaryMasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Domain\Crypt\TemporaryMasterPassServiceInterface;
+use SP\Domain\Task\Services\Task;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\RequestInterface;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
- * Class ConfigEncryptionController
- *
- * @package SP\Modules\Web\Controllers
+ * Class SaveController
  */
-final class ConfigEncryptionController extends SimpleControllerBase
+final class SaveController extends SimpleControllerBase
 {
     use JsonTrait;
 
     private MasterPassServiceInterface $masterPassService;
-    private ConfigService              $configService;
-    private TemporaryMasterPassService $temporaryMasterPassService;
+    private ConfigServiceInterface     $configService;
 
     public function __construct(
         Application $application,
@@ -71,14 +64,12 @@ final class ConfigEncryptionController extends SimpleControllerBase
         RequestInterface $request,
         PhpExtensionChecker $extensionChecker,
         MasterPassServiceInterface $masterPassService,
-        TemporaryMasterPassServiceInterface $temporaryMasterPassService,
         ConfigServiceInterface $configService
     ) {
         parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
 
         $this->masterPassService = $masterPassService;
         $this->configService = $configService;
-        $this->temporaryMasterPassService = $temporaryMasterPassService;
     }
 
     /**
@@ -94,7 +85,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
         $newMasterPassR = $this->request->analyzeEncrypted('new_masterpass_repeat');
         $confirmPassChange = $this->request->analyzeBool('confirm_masterpass_change', false);
         $noAccountPassChange = $this->request->analyzeBool('no_account_change', false);
-        $taskId = $this->request->analyzeString('taskId');
+
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             return $this->returnJsonResponse(
@@ -156,9 +147,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
         if (!$noAccountPassChange) {
             try {
-                $task = $taskId !== null
-                    ? TaskFactory::create(__FUNCTION__, $taskId)
-                    : null;
+                $task = $this->getTask();
 
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
@@ -167,24 +156,15 @@ final class ConfigEncryptionController extends SimpleControllerBase
                     $task
                 );
 
-                $this->eventDispatcher->notifyEvent(
-                    'update.masterPassword.start',
-                    new Event($this)
-                );
+                $this->eventDispatcher->notifyEvent('update.masterPassword.start', new Event($this));
 
                 $this->masterPassService->changeMasterPassword($request);
 
-                $this->eventDispatcher->notifyEvent(
-                    'update.masterPassword.end',
-                    new Event($this)
-                );
+                $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent(
-                    'exception',
-                    new Event($e)
-                );
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
                 return $this->returnJsonResponseException($e);
             } finally {
@@ -194,19 +174,13 @@ final class ConfigEncryptionController extends SimpleControllerBase
             }
         } else {
             try {
-                $this->eventDispatcher->notifyEvent(
-                    'update.masterPassword.hash',
-                    new Event($this)
-                );
+                $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
 
                 $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent(
-                    'exception',
-                    new Event($e)
-                );
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
@@ -223,115 +197,15 @@ final class ConfigEncryptionController extends SimpleControllerBase
     }
 
     /**
-     * Refresh master password hash
-     *
-     * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws \JsonException
+     * @throws \SP\Infrastructure\File\FileException
      */
-    public function refreshAction(): bool
+    private function getTask(): ?Task
     {
-        try {
-            if ($this->config->getConfigData()->isDemoEnabled()) {
-                return $this->returnJsonResponse(
-                    JsonResponse::JSON_WARNING,
-                    __u('Ey, this is a DEMO!!')
-                );
-            }
+        $taskId = $this->request->analyzeString('taskId');
 
-            $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
-
-            $this->eventDispatcher->notifyEvent(
-                'refresh.masterPassword.hash',
-                new Event(
-                    $this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Master password hash updated'))
-                )
-            );
-
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
-                __u('Master password hash updated')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
-
-
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
-                __u('Error while updating the master password hash')
-            );
-        }
-    }
-
-    /**
-     * Create a temporary master pass
-     *
-     * @return bool
-     * @throws \JsonException
-     */
-    public function saveTempAction(): bool
-    {
-        try {
-            $key =
-                $this->temporaryMasterPassService->create(
-                    $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
-                );
-
-            $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
-            $sendEmail = $this->configData->isMailEnabled()
-                         && $this->request->analyzeBool('temporary_masterpass_email');
-
-            if ($sendEmail) {
-                try {
-                    if ($groupId > 0) {
-                        $this->temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
-                    } else {
-                        $this->temporaryMasterPassService->sendByEmailForAllUsers($key);
-                    }
-
-                    return $this->returnJsonResponse(
-                        JsonResponse::JSON_SUCCESS,
-                        __u('Temporary password generated'),
-                        [__u('Email sent')]
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notifyEvent(
-                        'exception',
-                        new Event($e)
-                    );
-
-                    return $this->returnJsonResponse(
-                        JsonResponse::JSON_WARNING,
-                        __u('Temporary password generated'),
-                        [__u('Error while sending the email')]
-                    );
-                }
-            }
-
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
-                __u('Temporary password generated')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
-
-            return $this->returnJsonResponseException($e);
-        }
+        return $taskId !== null
+            ? TaskFactory::create(__FUNCTION__, $taskId)
+            : null;
     }
 
     /**
@@ -345,10 +219,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }
