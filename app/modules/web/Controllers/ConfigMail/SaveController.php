@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,34 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigMail;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Config\Services\ConfigUtil;
-use SP\Domain\Notification\Services\MailService;
 use SP\Http\JsonResponse;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
-use SP\Providers\Mail\MailParams;
 
 /**
- * Class ConfigMailController
+ * Class SaveController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ConfigMailController extends SimpleControllerBase
+final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \JsonException
      */
     public function saveAction(): bool
@@ -69,33 +63,24 @@ final class ConfigMailController extends SimpleControllerBase
         $mailAuth = $this->request->analyzeBool('mail_auth_enabled', false);
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
-        // Valores para la configuración del Correo
-        if ($mailEnabled
-            && (empty($mailServer) || empty($mailFrom))
+        if ($mailEnabled && (empty($mailServer) || empty($mailFrom))
         ) {
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
-                __u('Missing Mail parameters')
-            );
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
         if ($mailEnabled) {
-            $configData->setMailEnabled(true);
             $configData->setMailRequestsEnabled($mailRequests);
             $configData->setMailServer($mailServer);
             $configData->setMailPort($mailPort);
             $configData->setMailSecurity($mailSecurity);
             $configData->setMailFrom($mailFrom);
             $configData->setMailRecipients($mailRecipients);
+            $configData->setMailAuthenabled($mailAuth);
             $configData->setMailEvents(
-                $this->request->analyzeArray('mail_events',
-                    function ($items) {
-                        return ConfigUtil::eventsAdapter($items);
-                    }, [])
+                $this->request->analyzeArray('mail_events', fn($items) => ConfigUtil::eventsAdapter($items), [])
             );
 
             if ($mailAuth) {
-                $configData->setMailAuthenabled($mailAuth);
                 $configData->setMailUser($mailUser);
 
                 if ($mailPass !== '***') {
@@ -104,6 +89,7 @@ final class ConfigMailController extends SimpleControllerBase
             }
 
             if ($configData->isMailEnabled() === false) {
+                $configData->setMailEnabled(true);
                 $eventMessage->addDescription(__u('Mail enabled'));
             }
         } elseif ($configData->isMailEnabled()) {
@@ -113,89 +99,20 @@ final class ConfigMailController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Mail disabled'));
         } else {
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
-                __u('No changes')
-            );
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
         }
 
         return $this->saveConfig(
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notifyEvent(
-                    'save.config.mail',
-                    new Event($this, $eventMessage)
-                );
+                $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
             }
         );
     }
 
     /**
-     * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws \JsonException
-     */
-    public function checkAction(): bool
-    {
-        $mailParams = new MailParams();
-        $mailParams->server = $this->request->analyzeString('mail_server');
-        $mailParams->port = $this->request->analyzeInt('mail_port', 25);
-        $mailParams->security = $this->request->analyzeString('mail_security');
-        $mailParams->from = $this->request->analyzeEmail('mail_from');
-        $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_auth_enabled', false);
-        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
-
-        // Valores para la configuración del Correo
-        if (empty($mailParams->server)
-            || empty($mailParams->from)
-            || count($mailRecipients) === 0) {
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
-                __u('Missing Mail parameters')
-            );
-        }
-
-        if ($mailParams->mailAuthenabled) {
-            $mailParams->user = $this->request->analyzeString('mail_user');
-            $mailParams->pass = $this->request->analyzeEncrypted('mail_pass');
-        }
-
-        try {
-            $this->dic->get(MailService::class)->check($mailParams, $mailRecipients[0]);
-
-            $this->eventDispatcher->notifyEvent(
-                'send.mail.check',
-                new Event(
-                    $this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Email sent'))
-                        ->addDetail(__u('Recipient'), $mailRecipients[0])
-                )
-            );
-
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
-                __u('Email sent'),
-                [__u('Please, check your inbox')]
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
-
-            return $this->returnJsonResponseException($e);
-        }
-    }
-
-    /**
      * @return void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      * @throws \SP\Core\Exceptions\SessionTimeout
      */
@@ -205,10 +122,7 @@ final class ConfigMailController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_MAIL);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }
