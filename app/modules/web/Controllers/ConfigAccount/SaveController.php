@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigAccount;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Http\JsonResponse;
+use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
@@ -38,14 +38,14 @@ use SP\Modules\Web\Controllers\Traits\ConfigTrait;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ConfigAccountController extends SimpleControllerBase
+final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
+    private const MAX_FILES_SIZE = 16384;
+
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \JsonException
      */
     public function saveAction(): bool
@@ -54,7 +54,32 @@ final class ConfigAccountController extends SimpleControllerBase
 
         $eventMessage = EventMessage::factory();
 
-        // Accounts
+        try {
+            $this->handleAccountsConfig($configData);
+            $this->handleFilesConfig($configData, $eventMessage);
+            $this->handlePublicLinksConfig($configData, $eventMessage);
+        } catch (ValidationException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            $this->returnJsonResponseException($e);
+        }
+
+        return $this->saveConfig(
+            $configData,
+            $this->config,
+            function () use ($eventMessage) {
+                $this->eventDispatcher->notifyEvent('save.config.account', new Event($this, $eventMessage));
+            }
+        );
+    }
+
+    /**
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     *
+     * @return void
+     */
+    private function handleAccountsConfig(ConfigDataInterface $configData): void
+    {
         $configData->setGlobalSearch($this->request->analyzeBool('account_globalsearch_enabled', false));
         $configData->setAccountPassToImage($this->request->analyzeBool('account_passtoimage_enabled', false));
         $configData->setAccountLink($this->request->analyzeBool('account_link_enabled', false));
@@ -63,18 +88,24 @@ final class ConfigAccountController extends SimpleControllerBase
         $configData->setResultsAsCards($this->request->analyzeBool('account_resultsascards_enabled', false));
         $configData->setAccountExpireEnabled($this->request->analyzeBool('account_expire_enabled', false));
         $configData->setAccountExpireTime($this->request->analyzeInt('account_expire_time', 10368000) * 24 * 3600);
+    }
 
-        // Files
+    /**
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Core\Events\EventMessage  $eventMessage
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\ValidationException
+     */
+    private function handleFilesConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
+    {
         $filesEnabled = $this->request->analyzeBool('files_enabled', false);
 
         if ($filesEnabled) {
             $filesAllowedSize = $this->request->analyzeInt('files_allowed_size', 1024);
 
-            if ($filesAllowedSize > 16384) {
-                return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
-                    __u('Maximum size per file is 16MB')
-                );
+            if ($filesAllowedSize > self::MAX_FILES_SIZE) {
+                throw new ValidationException(__u('Maximum size per file is 16MB'));
             }
 
             $configData->setFilesEnabled(true);
@@ -89,8 +120,16 @@ final class ConfigAccountController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Files disabled'));
         }
+    }
 
-        // Public Links
+    /**
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Core\Events\EventMessage  $eventMessage
+     *
+     * @return void
+     */
+    private function handlePublicLinksConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
+    {
         $pubLinksEnabled = $this->request->analyzeBool('publiclinks_enabled', false);
 
         if ($pubLinksEnabled) {
@@ -107,24 +146,10 @@ final class ConfigAccountController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Public links disabled'));
         }
-
-
-        return $this->saveConfig(
-            $configData,
-            $this->config,
-            function () use ($eventMessage) {
-                $this->eventDispatcher->notifyEvent(
-                    'save.config.account',
-                    new Event($this, $eventMessage)
-                );
-            }
-        );
     }
 
     /**
      * @return void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      * @throws \SP\Core\Exceptions\SessionTimeout
      */
@@ -134,10 +159,7 @@ final class ConfigAccountController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_ACCOUNT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

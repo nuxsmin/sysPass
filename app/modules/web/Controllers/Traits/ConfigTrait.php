@@ -43,8 +43,6 @@ trait ConfigTrait
     /**
      * Guardar la configuración
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \JsonException
      */
     protected function saveConfig(
@@ -54,16 +52,12 @@ trait ConfigTrait
     ): bool {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(
-                    JsonResponse::JSON_WARNING,
-                    __u('Ey, this is a DEMO!!')
-                );
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $config->saveConfig($configData);
 
-            if (BootstrapBase::$LOCK !== false
-                && $configData->isMaintenance() === false) {
+            if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
                 Util::unlockApp();
             }
 
@@ -71,16 +65,14 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
-                __u('Configuration updated')
-            );
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
         } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
-                __u('Error while saving the configuration')
+                __u('Error while saving the configuration'),
+                [$e]
             );
         }
     }
