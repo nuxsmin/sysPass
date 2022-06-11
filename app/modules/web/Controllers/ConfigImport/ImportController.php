@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,69 +22,76 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Modules\Web\Controllers\ConfigImport;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use Klein\Klein;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Application;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\PhpExtensionChecker;
+use SP\Core\UI\ThemeInterface;
+use SP\Domain\Import\ImportServiceInterface;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportParams;
-use SP\Domain\Import\Services\ImportService;
 use SP\Http\JsonResponse;
+use SP\Http\RequestInterface;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
- * Class ConfigImportController
+ * Class ImportController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ConfigImportController extends SimpleControllerBase
+final class ImportController extends SimpleControllerBase
 {
     use JsonTrait;
 
+    private ImportServiceInterface $importService;
+
+    public function __construct(
+        Application $application,
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker,
+        ImportServiceInterface $importService
+    ) {
+        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+
+        $this->importService = $importService;
+    }
+
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws \JsonException
      */
     public function importAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(
-                JsonResponse::JSON_WARNING,
-                __u('Ey, this is a DEMO!!')
-            );
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
-
-        $importParams = new ImportParams();
-        $importParams->setDefaultUser($this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId()));
-        $importParams->setDefaultGroup($this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()));
-        $importParams->setImportPwd($this->request->analyzeEncrypted('importPwd'));
-        $importParams->setImportMasterPwd($this->request->analyzeEncrypted('importMasterPwd'));
-        $importParams->setCsvDelimiter($this->request->analyzeString('csvDelimiter'));
 
         try {
             $this->eventDispatcher->notifyEvent('run.import.start', new Event($this));
 
             SessionContext::close();
 
-            $counter = $this->dic->get(ImportService::class)
-                ->doImport($importParams, FileImport::fromRequest('inFile', $this->request));
+            $counter = $this->importService->doImport(
+                $this->getImportParams(),
+                FileImport::fromRequest('inFile', $this->request)
+            );
 
             $this->eventDispatcher->notifyEvent(
                 'run.import.end',
                 new Event(
                     $this,
-                    EventMessage::factory()
-                        ->addDetail(__u('Accounts imported'), $counter)
+                    EventMessage::factory()->addDetail(__u('Accounts imported'), $counter)
                 )
             );
 
@@ -104,21 +111,35 @@ final class ConfigImportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @return bool
-     * @throws SessionTimeout
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @return \SP\Domain\Import\Services\ImportParams
+     */
+    private function getImportParams(): ImportParams
+    {
+        $importParams = new ImportParams();
+        $importParams->setDefaultUser(
+            $this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId())
+        );
+        $importParams->setDefaultGroup(
+            $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId())
+        );
+        $importParams->setImportPwd($this->request->analyzeEncrypted('importPwd'));
+        $importParams->setImportMasterPwd($this->request->analyzeEncrypted('importMasterPwd'));
+        $importParams->setCsvDelimiter($this->request->analyzeString('csvDelimiter'));
+
+        return $importParams;
+    }
+
+    /**
+     * @return void
      * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function initialize(): void
     {
@@ -126,10 +147,7 @@ final class ConfigImportController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_IMPORT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent(
-                'exception',
-                new Event($e)
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }
