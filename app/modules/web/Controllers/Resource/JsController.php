@@ -24,21 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use Klein\Klein;
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Html\Minify;
-use SP\Http\RequestInterface;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
 
 /**
  * Class ResourceController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class JsController extends SimpleControllerBase
+final class JsController extends ResourceBase
 {
 
     private const JS_MIN_FILES     = [
@@ -65,24 +58,6 @@ final class JsController extends SimpleControllerBase
         'app-util.min.js',
         'app-main.min.js',
     ];
-
-    private Minify $minify;
-
-    public function __construct(
-        Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
-        Minify $minify
-    ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
-
-        $this->minify = $minify;
-
-        $this->request->verifySignature($this->configData->getPasswordSalt());
-    }
 
     /**
      * Returns JS resources
