@@ -48,7 +48,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param int $action
+     * @param  int  $action
      * @param  int|null  $id
      *
      * @return ItemsPresetForm|FormInterface
@@ -56,6 +56,10 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
             case ActionsInterface::ITEMPRESET_CREATE:
             case ActionsInterface::ITEMPRESET_EDIT:
