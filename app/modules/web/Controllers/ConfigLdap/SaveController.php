@@ -55,18 +55,14 @@ final class SaveController extends SimpleControllerBase
             $eventMessage = EventMessage::factory();
             $configData = $this->config->getConfigData();
 
-            // LDAP
             $ldapEnabled = $this->request->analyzeBool('ldap_enabled', false);
             $ldapDefaultGroup = $this->request->analyzeInt('ldap_defaultgroup');
             $ldapDefaultProfile = $this->request->analyzeInt('ldap_defaultprofile');
 
             $ldapParams = $this->getLdapParamsFromRequest($this->request);
 
-            // Valores para la configuración de LDAP
             if ($ldapEnabled
-                && !($ldapParams->getServer()
-                     || $ldapParams->getSearchBase()
-                     || $ldapParams->getBindDn())) {
+                && !($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
                 throw new ValidationException(SPException::ERROR, __u('Missing LDAP parameters'));
             }
 
