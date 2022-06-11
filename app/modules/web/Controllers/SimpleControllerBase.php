@@ -53,9 +53,9 @@ abstract class SimpleControllerBase
     // TODO: remove when controllers are ready
     protected ContainerInterface $dic;
 
-    protected EventDispatcher   $eventDispatcher;
-    protected ConfigFileService $config;
-    protected ContextInterface  $session;
+    protected EventDispatcher     $eventDispatcher;
+    protected ConfigFileService   $config;
+    protected ContextInterface    $session;
     protected ThemeInterface      $theme;
     protected Klein               $router;
     protected Acl                 $acl;
