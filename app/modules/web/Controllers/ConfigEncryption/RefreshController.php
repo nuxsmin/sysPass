@@ -26,8 +26,6 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
@@ -35,13 +33,11 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\MasterPassServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class RefreshController
@@ -54,14 +50,10 @@ final class RefreshController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         MasterPassServiceInterface $masterPassService
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->masterPassService = $masterPassService;
     }

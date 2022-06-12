@@ -24,16 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\Items;
 
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Domain\Account\AccountServiceInterface;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
+use SP\Mvc\Controller\SimpleControllerHelper;
 use stdClass;
 
 /**
@@ -45,14 +41,10 @@ final class AccountUserController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         AccountServiceInterface $accountService
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->checks();
 

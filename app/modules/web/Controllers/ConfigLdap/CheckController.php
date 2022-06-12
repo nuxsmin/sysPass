@@ -26,20 +26,16 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Domain\Auth\LdapCheckServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 
 /**
@@ -54,15 +50,11 @@ final class CheckController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         LdapCheckServiceInterface $ldapCheckService,
         TemplateInterface $template,
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->ldapCheckService = $ldapCheckService;
         $this->template = $template;

@@ -25,20 +25,16 @@
 namespace SP\Modules\Web\Controllers\UserSettingsGeneral;
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserService;
 use SP\Domain\User\UserServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SaveController
@@ -53,14 +49,10 @@ final class SaveController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         UserServiceInterface $userService
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->checks();
 

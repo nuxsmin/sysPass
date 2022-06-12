@@ -25,18 +25,14 @@
 namespace SP\Modules\Web\Controllers\Bootstrap;
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Domain\Import\Services\ImportService;
-use SP\Http\RequestInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
@@ -55,11 +51,7 @@ final class GetEnvironmentController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         CryptPKI $cryptPKI,
         PluginManager $pluginManager,
         BrowserAuthInterface $browser
@@ -68,7 +60,7 @@ final class GetEnvironmentController extends SimpleControllerBase
         $this->pluginManager = $pluginManager;
         $this->browser = $browser;
 
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
     }
 
     /**

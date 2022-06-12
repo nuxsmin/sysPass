@@ -26,15 +26,11 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Domain\Config\ConfigServiceInterface;
 use SP\Domain\Crypt\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
@@ -42,9 +38,9 @@ use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SaveController
@@ -58,15 +54,11 @@ final class SaveController extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         MasterPassServiceInterface $masterPassService,
         ConfigServiceInterface $configService
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->masterPassService = $masterPassService;
         $this->configService = $configService;

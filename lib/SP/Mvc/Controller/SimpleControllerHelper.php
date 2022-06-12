@@ -30,38 +30,30 @@ use SP\Core\Acl\Acl;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
 use SP\Http\RequestInterface;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
-use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
 /**
- * Class WebControllerHelper
+ * Class SimpleControllerHelper
  */
-final class WebControllerHelper
+final class SimpleControllerHelper
 {
-    private ThemeInterface       $theme;
-    private Klein                $router;
-    private Acl                  $acl;
-    private RequestInterface     $request;
-    private PhpExtensionChecker  $extensionChecker;
-    private TemplateInterface    $template;
-    private BrowserAuthInterface $browser;
-    private LayoutHelper         $layoutHelper;
+    private ThemeInterface      $theme;
+    private Klein               $router;
+    private Acl                 $acl;
+    private RequestInterface    $request;
+    private PhpExtensionChecker $extensionChecker;
 
     public function __construct(
-        SimpleControllerHelper $simpleControllerHelper,
-        TemplateInterface $template,
-        BrowserAuthInterface $browser,
-        LayoutHelper $layoutHelper
+        ThemeInterface $theme,
+        Klein $router,
+        Acl $acl,
+        RequestInterface $request,
+        PhpExtensionChecker $extensionChecker
     ) {
-        $this->theme = $simpleControllerHelper->getTheme();
-        $this->router = $simpleControllerHelper->getRouter();
-        $this->acl = $simpleControllerHelper->getAcl();
-        $this->request = $simpleControllerHelper->getRequest();
-        $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
-        $this->template = $template;
-        $this->browser = $browser;
-        $this->layoutHelper = $layoutHelper;
+        $this->theme = $theme;
+        $this->router = $router;
+        $this->acl = $acl;
+        $this->request = $request;
+        $this->extensionChecker = $extensionChecker;
     }
 
     public function getTheme(): ThemeInterface
@@ -87,20 +79,5 @@ final class WebControllerHelper
     public function getExtensionChecker(): PhpExtensionChecker
     {
         return $this->extensionChecker;
-    }
-
-    public function getTemplate(): TemplateInterface
-    {
-        return $this->template;
-    }
-
-    public function getBrowser(): BrowserAuthInterface
-    {
-        return $this->browser;
-    }
-
-    public function getLayoutHelper(): LayoutHelper
-    {
-        return $this->layoutHelper;
     }
 }

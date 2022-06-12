@@ -24,14 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
 use SP\Html\Minify;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class ResourceBase
@@ -42,14 +38,10 @@ abstract class ResourceBase extends SimpleControllerBase
 
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
+        SimpleControllerHelper $simpleControllerHelper,
         Minify $minify
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $simpleControllerHelper);
 
         $this->minify = $minify;
 

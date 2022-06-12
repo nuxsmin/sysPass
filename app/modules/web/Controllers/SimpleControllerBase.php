@@ -37,8 +37,8 @@ use SP\Core\UI\ThemeInterface;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase
@@ -65,17 +65,13 @@ abstract class SimpleControllerBase
      */
     public function __construct(
         Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker
+        SimpleControllerHelper $simpleControllerHelper
     ) {
-        $this->theme = $theme;
-        $this->router = $router;
-        $this->acl = $acl;
-        $this->request = $request;
-        $this->extensionChecker = $extensionChecker;
+        $this->theme = $simpleControllerHelper->getTheme();
+        $this->router = $simpleControllerHelper->getRouter();
+        $this->acl = $simpleControllerHelper->getAcl();
+        $this->request = $simpleControllerHelper->getRequest();
+        $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
         $this->controllerName = $this->getControllerName();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();

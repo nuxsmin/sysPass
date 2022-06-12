@@ -63,7 +63,7 @@ final class ImportController extends SimpleControllerBase
         PhpExtensionChecker $extensionChecker,
         LdapImportServiceInterface $ldapImportService
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $theme);
 
         $this->ldapImportService = $ldapImportService;
     }

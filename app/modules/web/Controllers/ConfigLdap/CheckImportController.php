@@ -62,7 +62,7 @@ final class CheckImportController extends SimpleControllerBase
         LdapCheckServiceInterface $ldapCheckService,
         TemplateInterface $template
     ) {
-        parent::__construct($application, $theme, $router, $acl, $request, $extensionChecker);
+        parent::__construct($application, $theme);
 
         $this->ldapCheckService = $ldapCheckService;
         $this->template = $template;
