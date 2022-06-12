@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 
@@ -87,8 +88,15 @@ final class UserGroupForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?UserGroupData
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getItemData(): UserGroupData
     {
+        if (null === $this->groupData) {
+            throw new SPException(__u('Group data not set'));
+        }
+
         return $this->groupData;
     }
 }
