@@ -96,6 +96,8 @@ final class IndexController extends ControllerBase
     ) {
         parent::__construct($application, $webControllerHelper);
 
+        $this->checkLoggedIn();
+
         $this->tabsHelper = $tabsHelper;
         $this->userService = $userService;
         $this->userGroupService = $userGroupService;
@@ -589,14 +591,5 @@ final class IndexController extends ControllerBase
     public function getTabsHelper(): TabsHelper
     {
         return $this->tabsHelper;
-    }
-
-    /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
-     */
-    protected function initialize(): void
-    {
-        $this->checkLoggedIn();
     }
 }

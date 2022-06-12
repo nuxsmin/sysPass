@@ -39,12 +39,10 @@ use SP\Util\Util;
  * Trait ControllerTrait
  *
  * @package SP\Mvc\Controller
- * @property ConfigDataInterface $configData
  */
 trait ControllerTrait
 {
-    protected ConfigDataInterface $configData;
-    protected string              $controllerName;
+    protected string $controllerName;
 
     protected function getControllerName(): string
     {
@@ -67,6 +65,7 @@ trait ControllerTrait
      */
     protected function sessionLogout(
         RequestInterface $request,
+        ConfigDataInterface $configData,
         Closure $onRedirect
     ): void {
         if ($request->isJson()) {
@@ -88,7 +87,7 @@ trait ControllerTrait
                 $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {
-                    $key = $this->configData->getPasswordSalt();
+                    $key = $configData->getPasswordSalt();
                     $request->verifySignature($key);
 
                     $uri->addParam('from', $route);
@@ -117,23 +116,18 @@ trait ControllerTrait
      * @throws SPException
      * @deprecated
      */
-    protected function checkSecurityToken(string $previousToken, RequestInterface $request): void
-    {
-        if (isset($this->configData)
-            && $request->analyzeString('h') !== null
-            && $request->analyzeString('from') === null
-        ) {
-            $request->verifySignature($this->configData->getPasswordSalt());
+    protected function checkSecurityToken(
+        string $previousToken,
+        RequestInterface $request,
+        ConfigDataInterface $configData
+    ): void {
+        if ($request->analyzeString('h') !== null && $request->analyzeString('from') === null) {
+            $request->verifySignature($configData->getPasswordSalt());
         } else {
             $sk = $request->analyzeString('sk');
 
             if (!$sk || $previousToken !== $sk) {
-                throw new SPException(
-                    __u('Invalid Action'),
-                    SPException::ERROR,
-                    null,
-                    1
-                );
+                throw new SPException(__u('Invalid Action'), SPException::ERROR, null, 1);
             }
         }
     }

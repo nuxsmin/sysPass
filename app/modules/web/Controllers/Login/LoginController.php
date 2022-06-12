@@ -25,8 +25,6 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
@@ -59,18 +57,16 @@ final class LoginController extends ControllerBase
         $this->loginService = $loginService;
     }
 
-
     /**
      * Login action
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return bool
      * @throws \JsonException
      */
     public function loginAction(): bool
     {
         try {
-            $from = $this->getSignedUriFromRequest($this->request);
+            $from = $this->getSignedUriFromRequest($this->request, $this->configData);
             $this->loginService->setFrom($from);
 
             $loginResponse = $this->loginService->doLogin();

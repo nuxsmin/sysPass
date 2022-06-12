@@ -34,6 +34,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
@@ -56,6 +57,7 @@ abstract class SimpleControllerBase
     protected Acl                 $acl;
     protected Request             $request;
     protected PhpExtensionChecker $extensionChecker;
+    protected ConfigDataInterface $configData;
 
     /**
      * @throws \SP\Core\Exceptions\SessionTimeout
@@ -69,32 +71,20 @@ abstract class SimpleControllerBase
         RequestInterface $request,
         PhpExtensionChecker $extensionChecker
     ) {
-        $this->controllerName = $this->getControllerName();
-        $this->config = $application->getConfig();
-        $this->configData = $this->config->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
-        $this->session = $application->getContext();
         $this->theme = $theme;
         $this->router = $router;
         $this->acl = $acl;
         $this->request = $request;
         $this->extensionChecker = $extensionChecker;
-
+        $this->controllerName = $this->getControllerName();
+        $this->config = $application->getConfig();
+        $this->configData = $this->config->getConfigData();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->session = $application->getContext();
         $this->setup = true;
 
-        // TODO: call handleSessionTimeout from controller::initialize directly
-        try {
-            if (method_exists($this, 'initialize')) {
-                $this->initialize();
-            }
-        } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout(
-                function () {
-                    return true;
-                }
-            );
-
-            throw $sessionTimeout;
+        if (method_exists($this, 'initialize')) {
+            $this->initialize();
         }
     }
 
@@ -102,12 +92,13 @@ abstract class SimpleControllerBase
      * Comprobaciones
      *
      * @throws SessionTimeout
+     * @throws \JsonException
      */
     protected function checks(): void
     {
-        if ($this->session->isLoggedIn() === false
-            || $this->session->getAuthCompleted() !== true
-        ) {
+        if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== true) {
+            $this->handleSessionTimeout();
+
             throw new SessionTimeout();
         }
 
@@ -121,9 +112,7 @@ abstract class SimpleControllerBase
      */
     protected function checkAccess(int $action): void
     {
-        if (!$this->acl->checkUserAccess($action)
-            && !$this->session->getUserData()->getIsAdminApp()
-        ) {
+        if (!$this->acl->checkUserAccess($action) && !$this->session->getUserData()->getIsAdminApp()) {
             throw new UnauthorizedPageException(SPException::INFO);
         }
     }

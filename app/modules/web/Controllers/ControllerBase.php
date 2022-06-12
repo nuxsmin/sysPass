@@ -28,10 +28,8 @@ defined('APP_ROOT') || die();
 
 use Exception;
 use Klein\Klein;
-use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
@@ -61,9 +59,6 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    // TODO: remove when controllers are ready
-    protected ContainerInterface $dic;
-
     protected EventDispatcher     $eventDispatcher;
     protected ConfigFileService   $config;
     protected ContextInterface    $session;
@@ -80,17 +75,10 @@ abstract class ControllerBase
     protected LayoutHelper        $layoutHelper;
     private BrowserAuthInterface  $browser;
 
-    /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \JsonException
-     */
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper
     ) {
-        // TODO: remove when controllers are ready
-        $this->dic = BootstrapBase::getContainer();
-
         $this->controllerName = $this->getControllerName();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
@@ -119,17 +107,6 @@ abstract class ControllerBase
 
         $this->setup = true;
 
-        // TODO: call handleSessionTimeout from controller::initialize directly
-        try {
-            if (method_exists($this, 'initialize')) {
-                $this->initialize();
-            }
-        } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout(fn() => true);
-
-            throw $sessionTimeout;
-        }
-
         logger(static::class);
     }
 
@@ -138,36 +115,19 @@ abstract class ControllerBase
      */
     private function setViewVars(bool $loggedIn = false): void
     {
-        $this->view->assign(
-            'timeStart',
-            $this->request->getServer('REQUEST_TIME_FLOAT')
-        );
+        $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
+        $this->view->assign('isDemo', $this->configData->isDemoEnabled());
+        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
+        $this->view->assign('configData', $this->configData);
 
         if ($loggedIn) {
             $this->view->assign('ctx_userId', $this->userData->getId());
-            $this->view->assign(
-                'ctx_userGroupId',
-                $this->userData->getUserGroupId()
-            );
-            $this->view->assign(
-                'ctx_userIsAdminApp',
-                $this->userData->getIsAdminApp()
-            );
-            $this->view->assign(
-                'ctx_userIsAdminAcc',
-                $this->userData->getIsAdminAcc()
-            );
+            $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
+            $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
+            $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
         }
 
-        $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign(
-            'themeUri',
-            $this->view->getTheme()->getThemeUri()
-        );
-        $this->view->assign('configData', $this->configData);
-
-        // Pass the action name to the template as a variable
         $this->view->assign('action', true);
     }
 
@@ -177,15 +137,11 @@ abstract class ControllerBase
     protected function view(): void
     {
         try {
-            $this->router->response()
-                ->body($this->view->render())
-                ->send();
+            $this->router->response()->body($this->view->render())->send();
         } catch (FileNotFoundException $e) {
             processException($e);
 
-            $this->router->response()
-                ->body(__($e->getMessage()))
-                ->send(true);
+            $this->router->response()->body(__($e->getMessage()))->send(true);
         }
     }
 
@@ -214,33 +170,13 @@ abstract class ControllerBase
             return;
         }
 
-        $this->view->assign(
-            'contentPage',
-            $page ?: strtolower($this->getViewBaseName())
-        );
+        $this->view->assign('contentPage', $page ?: strtolower($this->getViewBaseName()));
 
         try {
             $this->layoutHelper->getFullLayout('main', $this->acl);
         } catch (Exception $e) {
             processException($e);
         }
-    }
-
-    /**
-     * Obtener los datos para la vista de depuración
-     */
-    protected function getDebug(): void
-    {
-        global $memInit;
-
-        $this->view->addTemplate('debug', 'common');
-
-        $this->view->assign(
-            'time',
-            getElapsedTime($this->router->request()->server()->get('REQUEST_TIME_FLOAT'))
-        );
-        $this->view->assign('memInit', $memInit / 1000);
-        $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
 
     /**
@@ -253,8 +189,7 @@ abstract class ControllerBase
      */
     protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {
-        if ($this->session->isLoggedIn() === false
-            || $this->session->getAuthCompleted() !== $requireAuthCompleted
+        if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== $requireAuthCompleted
         ) {
             throw new SessionTimeout();
         }
@@ -284,10 +219,7 @@ abstract class ControllerBase
                 $this->request->verifySignature($this->configData->getPasswordSalt());
 
                 $this->view->assign('from', $from);
-                $this->view->assign(
-                    'from_hash',
-                    Hash::signMessage($from, $this->configData->getPasswordSalt())
-                );
+                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
             } catch (SPException $e) {
                 processException($e);
             }
@@ -301,7 +233,6 @@ abstract class ControllerBase
      */
     protected function checkAccess(int $action): bool
     {
-        return $this->userData->getIsAdminApp()
-               || $this->acl->checkUserAccess($action);
+        return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
     }
 }

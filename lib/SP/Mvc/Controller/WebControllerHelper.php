@@ -34,6 +34,9 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
+/**
+ * Class WebControllerHelper
+ */
 final class WebControllerHelper
 {
     private ThemeInterface       $theme;

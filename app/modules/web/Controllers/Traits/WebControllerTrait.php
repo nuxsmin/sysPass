@@ -24,10 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
-use Closure;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
-use SP\Http\Request;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Http\RequestInterface;
 use SP\Mvc\Controller\ControllerTrait;
 
@@ -44,8 +42,10 @@ trait WebControllerTrait
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
      */
-    final protected function getSignedUriFromRequest(RequestInterface $request): ?string
-    {
+    final protected function getSignedUriFromRequest(
+        RequestInterface $request,
+        ConfigDataInterface $configData
+    ): ?string {
         if (!$this->setup) {
             return null;
         }
@@ -54,10 +54,7 @@ trait WebControllerTrait
 
         if ($from) {
             try {
-                $request->verifySignature(
-                    $this->configData->getPasswordSalt(),
-                    'from'
-                );
+                $request->verifySignature($configData->getPasswordSalt(), 'from');
             } catch (SPException $e) {
                 processException($e);
 
@@ -70,21 +67,13 @@ trait WebControllerTrait
 
     /**
      * @throws \JsonException
-     * @throws SessionTimeout
      */
-    private function handleSessionTimeout(Closure $checker): void
+    private function handleSessionTimeout(): void
     {
-        if ($checker->call($this) === true) {
-            $this->sessionLogout(
-                $this->request,
-                function ($redirect) {
-                    $this->router->response()
-                        ->redirect($redirect)
-                        ->send(true);
-                }
-            );
-
-            throw new SessionTimeout();
-        }
+        $this->sessionLogout(
+            $this->request,
+            $this->configData,
+            fn($redirect) => $this->router->response()->redirect($redirect)->send(true)
+        );
     }
 }

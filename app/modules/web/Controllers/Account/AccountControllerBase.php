@@ -24,9 +24,11 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
+use SP\Core\Application;
 use SP\Core\Context\ContextBase;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Mvc\Controller\WebControllerHelper;
 
 /**
  * AccountControllerBase
@@ -36,12 +38,24 @@ abstract class AccountControllerBase extends ControllerBase
     private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
 
     /**
+     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws \JsonException
+     */
+    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->initialize();
+    }
+
+    /**
      * Initialize class
      *
      * @throws \SP\Core\Exceptions\SessionTimeout
      * @throws \SP\Domain\Auth\Services\AuthException
      */
-    final protected function initialize(): void
+    private function initialize(): void
     {
         if (in_array(static::class, self::LOGIN_NOT_REQUIRED)) {
             $this->checkLoggedIn();
