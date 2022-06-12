@@ -74,7 +74,7 @@ interface UserServiceInterface
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function getByLogin(string $login): ?UserData;
+    public function getByLogin(string $login): UserData;
 
     /**
      * Deletes an item

@@ -157,7 +157,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function getByLogin(string $login): ?UserData
+    public function getByLogin(string $login): UserData
     {
         $result = $this->userRepository->getByLogin($login);
 
