@@ -96,8 +96,6 @@ interface PublicLinkServiceInterface
     /**
      * @throws SPException
      * @throws CryptoException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ConstraintException
      * @throws QueryException
      */
