@@ -65,9 +65,5 @@ abstract class HelperBase
         $this->request = $request;
         $this->configData = $this->config->getConfigData();
         $this->view = $template;
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
     }
 }

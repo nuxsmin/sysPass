@@ -26,14 +26,34 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Account\AccountServiceInterface;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
+use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 
 /**
  * Class RequestAccessController
  */
-final class RequestAccessController extends AccountViewBase
+final class RequestAccessController extends ControllerBase
 {
+    private AccountRequestHelper    $accountRequestHelper;
+    private AccountServiceInterface $accountService;
+
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        AccountServiceInterface $accountService,
+        AccountRequestHelper $accountRequestHelper
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->accountRequestHelper = $accountRequestHelper;
+        $this->accountService = $accountService;
+    }
+
     /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
@@ -43,8 +63,8 @@ final class RequestAccessController extends AccountViewBase
     public function requestAccessAction(int $id): void
     {
         try {
-            $this->accountHelper->setIsView(true);
-            $this->accountHelper->setViewForRequest(
+            $this->accountRequestHelper->setIsView(true);
+            $this->accountRequestHelper->setViewForRequest(
                 $this->accountService->getById($id),
                 ActionsInterface::ACCOUNT_REQUEST
             );

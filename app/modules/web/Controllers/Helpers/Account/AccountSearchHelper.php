@@ -34,11 +34,12 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Account\AccountSearchServiceInterface;
 use SP\Domain\Account\Services\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
-use SP\Domain\Category\Services\CategoryService;
+use SP\Domain\Category\CategoryServiceInterface;
 use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Tag\Services\TagService;
+use SP\Domain\Tag\TagServiceInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGrid;
@@ -62,27 +63,37 @@ final class AccountSearchHelper extends HelperBase
      * @var bool Indica si el filtrado de cuentas está activo
      */
     private bool                          $filterOn            = false;
-    private int                           $queryTimeStart      = 0;
     private bool                          $isAjax              = false;
-    private bool                          $isIndex             = false;
+    private int                           $queryTimeStart;
+    private bool                          $isIndex;
     private ?AccountSearchFilter          $accountSearchFilter = null;
-    private ClientServiceInterface                           $clientService;
-    private \SP\Domain\Account\AccountSearchServiceInterface $accountSearchService;
-    private AccountActionsHelper                             $accountActionsHelper;
+    private ClientServiceInterface        $clientService;
+    private AccountSearchServiceInterface $accountSearchService;
+    private AccountActionsHelper          $accountActionsHelper;
+    private CategoryServiceInterface      $categoryService;
+    private TagServiceInterface           $tagService;
 
     public function __construct(
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
         ClientServiceInterface $clientService,
-        \SP\Domain\Account\AccountSearchServiceInterface $accountSearchService,
+        CategoryServiceInterface $categoryService,
+        TagServiceInterface $tagService,
+        AccountSearchServiceInterface $accountSearchService,
         AccountActionsHelper $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);
 
         $this->clientService = $clientService;
+        $this->categoryService = $categoryService;
+        $this->tagService = $tagService;
         $this->accountSearchService = $accountSearchService;
         $this->accountActionsHelper = $accountActionsHelper;
+
+        $this->queryTimeStart = microtime(true);
+        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(ActionsInterface::ACCOUNT);
+        $this->setVars();
     }
 
     /**
@@ -104,12 +115,12 @@ final class AccountSearchHelper extends HelperBase
         );
         $this->view->assign(
             'categories',
-            SelectItemAdapter::factory(CategoryService::getItemsBasic())
+            SelectItemAdapter::factory($this->categoryService->getAllBasic())
                 ->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()])
         );
         $this->view->assign(
             'tags',
-            SelectItemAdapter::factory(TagService::getItemsBasic())
+            SelectItemAdapter::factory($this->tagService->getAllBasic())
                 ->getItemsFromModelSelected($this->accountSearchFilter->getTagsId())
         );
     }
@@ -304,16 +315,6 @@ final class AccountSearchHelper extends HelperBase
             ->addSortField($gridSortUrl);
 
         return $gridHeaderSort;
-    }
-
-    /**
-     * Initialize
-     */
-    protected function initialize(): void
-    {
-        $this->queryTimeStart = microtime(true);
-        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(ActionsInterface::ACCOUNT);
-        $this->setVars();
     }
 
     /**

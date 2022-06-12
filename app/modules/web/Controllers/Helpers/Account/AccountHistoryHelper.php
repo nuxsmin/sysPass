@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -34,13 +33,12 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\Domain\Account\AccountAclServiceInterface;
+use SP\Domain\Account\AccountHistoryServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;
-use SP\Domain\Category\Services\CategoryService;
-use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Category\CategoryServiceInterface;
+use SP\Domain\Client\ClientServiceInterface;
 use SP\Domain\Crypt\MasterPassServiceInterface;
-use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Http\RequestInterface;
-use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
@@ -49,34 +47,33 @@ use SP\Mvc\View\TemplateInterface;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-final class AccountHistoryHelper extends HelperBase
+final class AccountHistoryHelper extends AccountHelperBase
 {
-    private Acl                                               $acl;
-    private \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService;
-    private AccountActionsHelper                              $accountActionsHelper;
-    private MasterPassServiceInterface     $masterPassService;
+    private AccountHistoryServiceInterface $accountHistoryService;
     private AccountAclServiceInterface     $accountAclService;
     private ?int                           $accountId  = null;
-    private ?int                           $actionId   = null;
     private ?AccountAcl                    $accountAcl = null;
+    private CategoryServiceInterface       $categoryService;
+    private ClientServiceInterface         $clientService;
 
     public function __construct(
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
         Acl $acl,
-        \SP\Domain\Account\AccountHistoryServiceInterface $accountHistoryService,
+        AccountHistoryServiceInterface $accountHistoryService,
         AccountActionsHelper $accountActionsHelper,
         MasterPassServiceInterface $masterPassService,
-        AccountAclServiceInterface $accountAclService
+        AccountAclServiceInterface $accountAclService,
+        CategoryServiceInterface $categoryService,
+        ClientServiceInterface $clientService
     ) {
-        $this->acl = $acl;
-        $this->accountHistoryService = $accountHistoryService;
-        $this->accountActionsHelper = $accountActionsHelper;
-        $this->masterPassService = $masterPassService;
-        $this->accountAclService = $accountAclService;
+        parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 
-        parent::__construct($application, $template, $request);
+        $this->accountHistoryService = $accountHistoryService;
+        $this->accountAclService = $accountAclService;
+        $this->categoryService = $categoryService;
+        $this->clientService = $clientService;
     }
 
 
@@ -84,15 +81,13 @@ final class AccountHistoryHelper extends HelperBase
      * @param  AccountHistoryData  $accountHistoryData
      * @param  int  $actionId
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Acl\AccountPermissionException
      * @throws \SP\Core\Acl\UnauthorizedPageException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \SP\Domain\User\Services\UpdatedMasterPassException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function setView(
         AccountHistoryData $accountHistoryData,
@@ -117,24 +112,19 @@ final class AccountHistoryHelper extends HelperBase
                 ->getItemsFromArraySelected([$accountHistoryData->getId()])
         );
 
-        $this->view->assign(
-            'accountPassDate',
-            date('Y-m-d H:i:s', $accountHistoryData->getPassDate())
-        );
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
         $this->view->assign(
             'accountPassDateChange',
             date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0)
         );
         $this->view->assign(
             'categories',
-            // FIXME: use IoC
-            SelectItemAdapter::factory(CategoryService::getItemsBasic())
+            SelectItemAdapter::factory($this->categoryService->getAllBasic())
                 ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()])
         );
         $this->view->assign(
             'clients',
-            // FIXME: use IoC
-            SelectItemAdapter::factory(ClientService::getItemsBasic())
+            SelectItemAdapter::factory($this->clientService->getAllBasic())
                 ->getItemsFromModelSelected([$accountHistoryData->getClientId()])
         );
         $this->view->assign(
@@ -156,23 +146,6 @@ final class AccountHistoryHelper extends HelperBase
             'accountActionsMenu',
             $this->accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto)
         );
-    }
-
-    /**
-     * @throws \SP\Core\Acl\UnauthorizedPageException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
-     */
-    protected function checkActionAccess(): void
-    {
-        if (!$this->acl->checkUserAccess($this->actionId)) {
-            throw new UnauthorizedPageException(SPException::INFO);
-        }
-
-        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
-            throw new UpdatedMasterPassException(SPException::INFO);
-        }
     }
 
     /**
