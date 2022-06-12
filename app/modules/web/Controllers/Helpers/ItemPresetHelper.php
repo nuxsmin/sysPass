@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
+use SP\Core\Application;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\DataModel\ItemPreset\AccountPermission;
@@ -31,10 +32,12 @@ use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\User\UserServiceInterface;
+use SP\Http\RequestInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class ItemPresetHelper
@@ -43,26 +46,37 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 final class ItemPresetHelper extends HelperBase
 {
-    private ?SelectItemAdapter $users = null;
-    private ?SelectItemAdapter $userGroups = null;
-    private ?SelectItemAdapter $userProfiles = null;
+    private ?SelectItemAdapter          $users      = null;
+    private ?SelectItemAdapter          $userGroups = null;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        UserServiceInterface $userService,
+        UserGroupServiceInterface $userGroupService,
+        UserProfileServiceInterface $userProfileService
+
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->userService = $userService;
+        $this->userGroupService = $userGroupService;
+        $this->userProfileService = $userProfileService;
+    }
 
     /**
      * @throws NoSuchPropertyException
      */
     public function makeAccountPermissionView(ItemPresetData $itemPresetData): void
     {
-        $accountPermission = $itemPresetData->hydrate(AccountPermission::class)
-            ?? new AccountPermission();
+        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?? new AccountPermission();
 
-        $this->view->assign(
-            'typeTemplate',
-            'item_preset-permission'
-        );
-        $this->view->assign(
-            'presetName',
-            __('Permission Preset')
-        );
+        $this->view->assign('typeTemplate', 'item_preset-permission');
+        $this->view->assign('presetName', __('Permission Preset'));
 
         $this->view->assign('permission', $accountPermission);
 
@@ -89,17 +103,10 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPrivateView(ItemPresetData $itemPresetData): void
     {
-        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class)
-            ?? new AccountPrivate();
+        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class) ?? new AccountPrivate();
 
-        $this->view->assign(
-            'typeTemplate',
-            'item_preset-private'
-        );
-        $this->view->assign(
-            'presetName',
-            __('Private Account Preset')
-        );
+        $this->view->assign('typeTemplate', 'item_preset-private');
+        $this->view->assign('presetName', __('Private Account Preset'));
 
         $this->view->assign('private', $accountPrivate);
     }
@@ -111,16 +118,10 @@ final class ItemPresetHelper extends HelperBase
     public function makeSessionTimeoutView(ItemPresetData $itemPresetData): void
     {
         $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class)
-            ?? new SessionTimeout($this->request->getClientAddress(), 3600);
+                          ?? new SessionTimeout($this->request->getClientAddress(), 3600);
 
-        $this->view->assign(
-            'typeTemplate',
-            'item_preset-session_timeout'
-        );
-        $this->view->assign(
-            'presetName',
-            __('Session Timeout Preset')
-        );
+        $this->view->assign('typeTemplate', 'item_preset-session_timeout');
+        $this->view->assign('presetName', __('Session Timeout Preset'));
 
         $this->view->assign('sessionTimeout', $sessionTimeout);
     }
@@ -130,31 +131,25 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPasswordView(ItemPresetData $itemPresetData): void
     {
-        $password = $itemPresetData->hydrate(Password::class)
-            ?? new Password;
+        $password = $itemPresetData->hydrate(Password::class) ?? new Password;
 
-        $this->view->assign(
-            'typeTemplate',
-            'item_preset-password'
-        );
-        $this->view->assign(
-            'presetName',
-            __('Account Password Preset')
-        );
+        $this->view->assign('typeTemplate', 'item_preset-password');
+        $this->view->assign('presetName', __('Account Password Preset'));
 
         $this->view->assign('password', $password);
 
-        $this->view->assign(
-            'expireTimeMultiplier',
-            Password::EXPIRE_TIME_MULTIPLIER
-        );
+        $this->view->assign('expireTimeMultiplier', Password::EXPIRE_TIME_MULTIPLIER);
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function setCommon(ItemPresetData $itemPresetData): void
     {
-        $this->users = SelectItemAdapter::factory(UserService::getItemsBasic());
-        $this->userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
-        $this->userProfiles = SelectItemAdapter::factory(UserProfileService::getItemsBasic());
+        $this->users = SelectItemAdapter::factory($this->userService->getAllBasic());
+        $this->userGroups = SelectItemAdapter::factory($this->userGroupService->getAllBasic());
+        $userProfiles = SelectItemAdapter::factory($this->userProfileService->getAllBasic());
 
         $this->view->assign(
             'users',
@@ -166,7 +161,7 @@ final class ItemPresetHelper extends HelperBase
         );
         $this->view->assign(
             'userProfiles',
-            $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()])
+            $userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()])
         );
     }
 }

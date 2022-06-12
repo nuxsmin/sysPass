@@ -156,18 +156,11 @@ final class LayoutHelper extends HelperBase
         $jsUri->addParam('_r', 'resource/js');
         $jsUri->addParam('_v', md5($version));
 
-        $this->view->append(
-            'jsLinks',
-            $jsUri->getUriSigned($this->configData->getPasswordSalt())
-        );
+        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
 
-        $jsUri->resetParams()
-            ->addParam('g', 1);
+        $jsUri->resetParams()->addParam('g', 1);
 
-        $this->view->append(
-            'jsLinks',
-            $jsUri->getUriSigned($this->configData->getPasswordSalt())
-        );
+        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
 
         $themeInfo = $this->theme->getThemeInfo();
 
@@ -176,10 +169,7 @@ final class LayoutHelper extends HelperBase
                 ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'js')
                 ->addParam('f', implode(',', $themeInfo['js']));
 
-            $this->view->append(
-                'jsLinks',
-                $jsUri->getUriSigned($this->configData->getPasswordSalt())
-            );
+            $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
         }
 
         $userPreferences = $this->context->getUserData()->getPreferences();
@@ -196,10 +186,7 @@ final class LayoutHelper extends HelperBase
             ->addParam('_r', 'resource/css')
             ->addParam('_v', md5($version.$resultsAsCards));
 
-        $this->view->append(
-            'cssLinks',
-            $cssUri->getUriSigned($this->configData->getPasswordSalt())
-        );
+        $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
 
         if (isset($themeInfo['css'])) {
             $themeInfo['css'][] = $resultsAsCards
@@ -214,10 +201,7 @@ final class LayoutHelper extends HelperBase
                 ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'css')
                 ->addParam('f', implode(',', $themeInfo['css']));
 
-            $this->view->append(
-                'cssLinks',
-                $cssUri->getUriSigned($this->configData->getPasswordSalt())
-            );
+            $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
         }
 
         // Cargar los recursos de los plugins
@@ -235,10 +219,7 @@ final class LayoutHelper extends HelperBase
                     ->addParam('b', $base.DIRECTORY_SEPARATOR.'js')
                     ->addParam('f', implode(',', $jsResources));
 
-                $this->view->append(
-                    'jsLinks',
-                    $jsUri->getUriSigned($this->configData->getPasswordSalt())
-                );
+                $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
             }
 
             if (count($cssResources) > 0) {
@@ -246,10 +227,7 @@ final class LayoutHelper extends HelperBase
                     ->addParam('b', $base.DIRECTORY_SEPARATOR.'css')
                     ->addParam('f', implode(',', $cssResources));
 
-                $this->view->append(
-                    'cssLinks',
-                    $cssUri->getUriSigned($this->configData->getPasswordSalt())
-                );
+                $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
             }
         }
     }
@@ -284,22 +262,10 @@ final class LayoutHelper extends HelperBase
         }
 
         $this->view->assign('ctx_userType', $userType);
-        $this->view->assign(
-            'ctx_userLogin',
-            mb_strtoupper($userData->getLogin())
-        );
-        $this->view->assign(
-            'ctx_userName',
-            $userData->getName() ?: mb_strtoupper($userData->getLogin())
-        );
-        $this->view->assign(
-            'ctx_userGroup',
-            $userData->getUserGroupName()
-        );
-        $this->view->assign(
-            'showPassIcon',
-            !($this->configData->isLdapEnabled() && $userData->getIsLdap())
-        );
+        $this->view->assign('ctx_userLogin', mb_strtoupper($userData->getLogin()));
+        $this->view->assign('ctx_userName', $userData->getName() ?: mb_strtoupper($userData->getLogin()));
+        $this->view->assign('ctx_userGroup', $userData->getUserGroupName());
+        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
     }
 
     /**
