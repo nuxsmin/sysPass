@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
@@ -129,8 +130,15 @@ final class UserProfileForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?UserProfileData
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getItemData(): UserProfileData
     {
+        if (null === $this->userProfileData) {
+            throw new SPException(__u('Profile data not set'));
+        }
+
         return $this->userProfileData;
     }
 }
