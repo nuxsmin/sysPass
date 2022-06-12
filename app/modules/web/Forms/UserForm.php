@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
 
@@ -180,8 +181,15 @@ final class UserForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?UserData
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getItemData(): UserData
     {
+        if (null === $this->userData) {
+            throw new SPException(__u('User data not set'));
+        }
+
         return $this->userData;
     }
 
