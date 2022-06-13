@@ -105,11 +105,7 @@ abstract class BootstrapBase
         });
 
         // Manage requests for options
-        $this->router->respond(
-            'OPTIONS',
-            null,
-            $this->manageCorsRequest()
-        );
+        $this->router->respond('OPTIONS', null, $this->manageCorsRequest());
     }
 
     private function manageCorsRequest(): Closure

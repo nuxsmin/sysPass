@@ -48,10 +48,8 @@ abstract class ModuleBase
      * @param  \SP\Core\Application  $application
      * @param  \SP\Core\ProvidersHelper  $providersHelper
      */
-    public function __construct(
-        Application $application,
-        ProvidersHelper $providersHelper
-    ) {
+    public function __construct(Application $application, ProvidersHelper $providersHelper)
+    {
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->context = $application->getContext();
@@ -59,7 +57,7 @@ abstract class ModuleBase
         $this->providersHelper = $providersHelper;
     }
 
-    abstract public function initialize(string $controller);
+    abstract public function initialize(string $controller): void;
 
     /**
      * Initializes event handlers

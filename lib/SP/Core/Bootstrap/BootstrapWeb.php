@@ -96,7 +96,7 @@ final class BootstrapWeb extends BootstrapBase
                 $route = Filter::getString($request->param('r', 'index/index'));
 
                 if (!preg_match_all(
-                    '#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#',
+                    '#(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#',
                     $route,
                     $matches
                 )) {
@@ -134,10 +134,7 @@ final class BootstrapWeb extends BootstrapBase
 
                 $this->initializeCommon();
 
-                // TODO: remove??
-                if (APP_MODULE === 'web') {
-                    $this->module->initialize($controllerName);
-                }
+                $this->module->initialize($controllerName);
 
                 logger(
                     sprintf(

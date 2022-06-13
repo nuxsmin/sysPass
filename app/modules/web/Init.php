@@ -29,6 +29,7 @@ use Exception;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -57,6 +58,7 @@ use SP\Domain\User\Services\UserProfileService;
 use SP\Domain\User\UserProfileServiceInterface;
 use SP\Http\Address;
 use SP\Http\RequestInterface;
+use SP\Http\Uri;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Plugin\PluginManager;
@@ -83,7 +85,14 @@ final class Init extends HttpModuleBase
     /**
      * List of controllers that don't need to update the user's session activity
      */
-    private const NO_SESSION_ACTIVITY = ['items', 'login'];
+    private const NO_SESSION_ACTIVITY             = ['items', 'login'];
+    public const  ROUTE_INSTALL                   = 'install/index';
+    public const  ROUTE_ERROR_DATABASE_CONNECTION = 'error/databaseConnection';
+    public const  ROUTE_ERROR_MAINTENANCE         = 'error/maintenanceError';
+    public const  ROUTE_ERROR_DATABASE            = 'error/databaseError';
+    public const  ROUTE_UPGRADE                   = 'upgrade/index';
+
+
     private CSRF                 $csrf;
     private ThemeInterface       $theme;
     private Language             $language;
@@ -180,33 +189,27 @@ final class Init extends HttpModuleBase
             if (!$this->checkInstalled()) {
                 logger('Not installed', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=install/index')
-                    ->send();
+                $this->router->response()->redirect(self::getUriFor(self::ROUTE_INSTALL))->send();
 
-                return;
+                throw new InitializationException('Not installed');
             }
 
             // Checks if the database is set up
             if (!$this->databaseUtil->checkDatabaseConnection()) {
                 logger('Database connection error', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/databaseConnection')
-                    ->send();
+                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
 
-                return;
+                throw new InitializationException('Database connection error');
             }
 
             // Checks if maintenance mode is turned on
             if ($this->checkMaintenanceMode()) {
                 logger('Maintenance mode', 'INFO');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/maintenanceError')
-                    ->send();
+                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
 
-                return;
+                throw new InitializationException('Maintenance mode');
             }
 
             // Checks if upgrade is needed
@@ -215,22 +218,18 @@ final class Init extends HttpModuleBase
 
                 $this->config->generateUpgradeKey();
 
-                $this->router->response()
-                    ->redirect('index.php?r=upgrade/index')
-                    ->send();
+                $this->router->response()->redirect(self::getUriFor(self::ROUTE_UPGRADE))->send();
 
-                return;
+                throw new InitializationException('Upgrade needed');
             }
 
             // Checks if the database is set up
             if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
                 logger('Database checking error', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/databaseError')
-                    ->send();
+                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_DATABASE))->send();
 
-                return;
+                throw new InitializationException('Database checking error');
             }
 
             if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
@@ -260,8 +259,6 @@ final class Init extends HttpModuleBase
 
             // Initialize CSRF
             $this->csrf->initialize();
-
-            return;
         }
 
         // Do not keep the PHP's session opened
@@ -285,9 +282,7 @@ final class Init extends HttpModuleBase
         try {
             $this->context->initialize();
         } catch (Exception $e) {
-            $this->router
-                ->response()
-                ->header('HTTP/1.1', '500 Internal Server Error');
+            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
             throw $e;
         }
@@ -332,9 +327,7 @@ final class Init extends HttpModuleBase
             && time() > ($lastActivity + $this->getSessionLifeTime())
         ) {
             if ($this->router->request()->cookies()->get(session_name()) !== null) {
-                $this->router
-                    ->response()
-                    ->cookie(session_name(), '', time() - 42000);
+                $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
             SessionContext::restart();
@@ -345,20 +338,18 @@ final class Init extends HttpModuleBase
             if ($sidStartTime === 0) {
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-            } else {
-                if (!$inMaintenance
-                    && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
-                    && $this->context->isLoggedIn()
-                ) {
-                    try {
-                        CryptSession::reKey($this->context);
-                    } catch (CryptoException $e) {
-                        logger($e->getMessage());
+            } elseif (!$inMaintenance
+                      && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
+                      && $this->context->isLoggedIn()
+            ) {
+                try {
+                    CryptSession::reKey($this->context);
+                } catch (CryptoException $e) {
+                    logger($e->getMessage());
 
-                        SessionContext::restart();
+                    SessionContext::restart();
 
-                        return;
-                    }
+                    return;
                 }
             }
 
@@ -377,8 +368,7 @@ final class Init extends HttpModuleBase
 
         try {
             if ($this->isIndex || $timeout === null) {
-                $userTimeout = $this->getSessionTimeoutForUser($timeout)
-                    ?: $this->configData->getSessionTimeout();
+                $userTimeout = $this->getSessionTimeoutForUser($timeout) ?: $this->configData->getSessionTimeout();
 
                 logger('Session timeout: '.$userTimeout);
 
@@ -416,5 +406,10 @@ final class Init extends HttpModuleBase
         }
 
         return $default;
+    }
+
+    private static function getUriFor(string $route): string
+    {
+        return (new Uri(BootstrapWeb::$WEBROOT))->addParam('r', $route)->getUri();
     }
 }

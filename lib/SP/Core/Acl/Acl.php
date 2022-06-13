@@ -37,27 +37,27 @@ defined('APP_ROOT') || die();
  */
 class Acl implements ActionsInterface
 {
-    protected static ?Actions $action;
-    private ContextInterface $context;
-    private EventDispatcher $eventDispatcher;
+    protected static ?Actions $actions = null;
+    private ContextInterface  $context;
+    private EventDispatcher   $eventDispatcher;
 
     /**
      * Acl constructor.
      *
-     * @param ContextInterface $context
-     * @param EventDispatcher  $eventDispatcher
-     * @param Actions|null     $action
+     * @param  ContextInterface  $context
+     * @param  EventDispatcher  $eventDispatcher
+     * @param  Actions|null  $actions
      */
     public function __construct(
         ContextInterface $context,
         EventDispatcher  $eventDispatcher,
-        Actions          $action = null
+        Actions $actions = null
     )
     {
         $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
 
-        self::$action = $action;
+        self::$actions = $actions;
     }
 
     /**
@@ -66,7 +66,7 @@ class Acl implements ActionsInterface
     public static function getActionRoute(string $actionId): string
     {
         try {
-            return self::$action !== null ? self::$action->getActionById($actionId)->getRoute() : '';
+            return self::$actions !== null ? self::$actions->getActionById($actionId)->getRoute() : '';
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
@@ -86,7 +86,7 @@ class Acl implements ActionsInterface
     public static function getActionInfo(int $actionId, bool $translate = true): string
     {
         try {
-            $text = self::$action->getActionById($actionId)->getText();
+            $text = self::$actions->getActionById($actionId)->getText();
 
             return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {
@@ -275,7 +275,7 @@ class Acl implements ActionsInterface
         }
 
         try {
-            $actionName = self::$action->getActionById($action)->getName();
+            $actionName = self::$actions->getActionById($action)->getName();
         } catch (ActionNotFoundException $e) {
             $actionName = __u('N/A');
         }
