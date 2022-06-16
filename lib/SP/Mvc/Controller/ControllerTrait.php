@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Mvc\Controller;
 
 use Closure;
+use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\In\ConfigDataInterface;
@@ -42,6 +43,7 @@ use SP\Util\Util;
  */
 trait ControllerTrait
 {
+    protected Klein  $router;
     protected string $controllerName;
 
     protected function getControllerName(): string
@@ -61,7 +63,11 @@ trait ControllerTrait
     /**
      * Logout from current session
      *
-     * @throws \JsonException
+     * @param  \SP\Http\RequestInterface  $request
+     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \Closure  $onRedirect
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function sessionLogout(
         RequestInterface $request,
@@ -72,7 +78,7 @@ trait ControllerTrait
             $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
             $jsonResponse->setStatus(10);
 
-            Json::fromDic()->returnJson($jsonResponse);
+            Json::factory($this->router->response())->returnJson($jsonResponse);
         } elseif ($request->isAjax()) {
             Util::logout();
         } else {
@@ -105,11 +111,11 @@ trait ControllerTrait
     /**
      * Acción no disponible
      *
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function invalidAction(): void
     {
-        Json::fromDic()->returnJson(new JsonResponse(__u('Invalid Action')));
+        Json::factory($this->router->response())->returnJson(new JsonResponse(__u('Invalid Action')));
     }
 
     /**

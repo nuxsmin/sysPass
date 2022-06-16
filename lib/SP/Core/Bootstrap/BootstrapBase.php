@@ -28,7 +28,10 @@ use Closure;
 use Klein\Klein;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -63,13 +66,14 @@ abstract class BootstrapBase
     /**
      * @var mixed
      */
-    public static                       $LOCK;
-    public static bool                  $checkPhpVersion = false;
-    protected static ContainerInterface $container;
-    protected Klein                     $router;
-    protected RequestInterface          $request;
-    protected ConfigDataInterface       $configData;
-    private UpgradeConfigChecker        $upgradeConfigChecker;
+    public static                 $LOCK;
+    public static bool            $checkPhpVersion = false;
+    protected Klein               $router;
+    protected RequestInterface    $request;
+    protected ConfigDataInterface $configData;
+    private ContainerInterface    $container;
+    private UpgradeConfigChecker  $upgradeConfigChecker;
+    private PhpExtensionChecker   $phpExtensionChecker;
 
     /**
      * Bootstrap constructor.
@@ -78,7 +82,9 @@ abstract class BootstrapBase
         ConfigDataInterface $configData,
         Klein $router,
         RequestInterface $request,
-        UpgradeConfigChecker $upgradeConfigChecker
+        UpgradeConfigChecker $upgradeConfigChecker,
+        PhpExtensionChecker $extensionChecker,
+        ContainerInterface $container
     ) {
         // Set the default language
         Language::setLocales('en_US');
@@ -87,6 +93,8 @@ abstract class BootstrapBase
         $this->router = $router;
         $this->request = $request;
         $this->upgradeConfigChecker = $upgradeConfigChecker;
+        $this->phpExtensionChecker = $extensionChecker;
+        $this->container = $container;
 
         $this->initRouter();
         $this->configureRouter();
@@ -122,8 +130,7 @@ abstract class BootstrapBase
     {
         $response->header(
             'Access-Control-Allow-Origin',
-            $this->configData->getApplicationUrl()
-            ?? $this->request->getHttpHost()
+            $this->configData->getApplicationUrl() ?? $this->request->getHttpHost()
         );
         $response->header(
             'Access-Control-Allow-Headers',
@@ -136,9 +143,13 @@ abstract class BootstrapBase
 
     abstract public static function run(ContainerInterface $container): BootstrapBase;
 
-    public static function getContainer(): ContainerInterface
+    /**
+     * @deprecated
+     * FIXME: delete
+     */
+    public static function getContainer()
     {
-        return self::$container;
+        return null;
     }
 
     final protected static function getClassFor(string $controllerName, ?string $actionName): string
@@ -170,8 +181,6 @@ abstract class BootstrapBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\CheckException
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Exceptions\InitializationException
@@ -192,7 +201,7 @@ abstract class BootstrapBase
         // Set application paths
         $this->initPaths();
 
-        self::$container->get(PhpExtensionChecker::class)->checkMandatory();
+        $this->phpExtensionChecker->checkMandatory();
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
@@ -315,5 +324,21 @@ abstract class BootstrapBase
     final protected function initializePluginClasses(): void
     {
         PluginManager::getPlugins();
+    }
+
+    /**
+     * @param  string  $class
+     *
+     * @return object
+     */
+    final protected function createObjectFor(string $class): object
+    {
+        try {
+            return $this->container->get($class);
+        } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+            processException($e);
+
+            throw new RuntimeException($e);
+        }
     }
 }

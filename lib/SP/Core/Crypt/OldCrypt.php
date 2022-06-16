@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\Core\Crypt;
 
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
@@ -67,7 +66,7 @@ final class OldCrypt
     public static function makeHashSalt($salt = null, $random = true)
     {
         /** @var \SP\Domain\Config\In\ConfigDataInterface $ConfigData */
-        $ConfigData = BootstrapBase::getContainer()['configData'];
+        $ConfigData = BootstrapBase::getContainer()['configData']; // FIXME
 
         if ($random === true) {
             $salt = bin2hex(self::getIV());

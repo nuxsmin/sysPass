@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
@@ -53,7 +52,6 @@ abstract class SimpleControllerBase
     protected ConfigFileService   $config;
     protected ContextInterface    $session;
     protected ThemeInterface      $theme;
-    protected Klein               $router;
     protected Acl                 $acl;
     protected Request             $request;
     protected PhpExtensionChecker $extensionChecker;
@@ -61,7 +59,6 @@ abstract class SimpleControllerBase
 
     /**
      * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \JsonException
      */
     public function __construct(
         Application $application,
@@ -87,8 +84,8 @@ abstract class SimpleControllerBase
     /**
      * Comprobaciones
      *
-     * @throws SessionTimeout
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function checks(): void
     {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -134,17 +134,13 @@ abstract class ControllerBase
      */
     private function sendJsonResponse(string $response): void
     {
-        Json::factory($this->router->response())
-            ->returnRawJson($response);
+        Json::factory($this->router->response())->returnRawJson($response);
     }
 
     final protected function returnResponseException(Exception $e): void
     {
         $this->sendJsonResponse(
-            JsonRpcResponse::getResponseException(
-                $e,
-                $this->apiService->getRequestId()
-            )
+            JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId())
         );
     }
 }

@@ -24,11 +24,6 @@
 
 namespace SP\Domain\Common\Services;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Bootstrap\BootstrapBase;
-use SP\DataModel\DataModelInterface;
-
 /**
  * Trait ServiceItemTrait
  *
@@ -36,23 +31,6 @@ use SP\DataModel\DataModelInterface;
  */
 trait ServiceItemTrait
 {
-    /**
-     * Returns service items for a select
-     *
-     * @return DataModelInterface[]
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     *
-     * @deprecated 
-     * TODO: remove!!
-     */
-    public static function getItemsBasic(): array
-    {
-        return BootstrapBase::getContainer()
-            ->get(static::class)
-            ->getAllBasic();
-    }
-
     /**
      * Get all items from the service's repository
      *

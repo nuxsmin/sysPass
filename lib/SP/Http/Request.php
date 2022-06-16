@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,6 @@ namespace SP\Http;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
@@ -46,8 +45,9 @@ class Request implements RequestInterface
      */
     public const SECURE_DIRS = ['css', 'js'];
 
-    private HeaderDataCollection $headers;
     private \Klein\Request       $request;
+    private CryptPKI             $cryptPKI;
+    private HeaderDataCollection $headers;
     private DataCollection       $params;
     private ?string              $method = null;
     private ?bool                $https  = null;
@@ -55,9 +55,10 @@ class Request implements RequestInterface
     /**
      * Request constructor.
      */
-    public function __construct(\Klein\Request $request)
+    public function __construct(\Klein\Request $request, CryptPKI $cryptPKI)
     {
         $this->request = $request;
+        $this->cryptPKI = $cryptPKI;
         $this->headers = $this->request->headers();
         $this->params = $this->getParamsByMethod();
         $this->detectHttps();
@@ -211,8 +212,7 @@ class Request implements RequestInterface
 
         try {
             // Desencriptar con la clave RSA
-            $clearData = BootstrapBase::getContainer()->get(CryptPKI::class)
-                ->decryptRSA(base64_decode($encryptedData));
+            $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
             // Desencriptar con la clave RSA
             if ($clearData === null) {

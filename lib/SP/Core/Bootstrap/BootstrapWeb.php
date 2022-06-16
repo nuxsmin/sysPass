@@ -27,7 +27,6 @@ namespace SP\Core\Bootstrap;
 
 use Closure;
 use Exception;
-use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -56,13 +55,11 @@ final class BootstrapWeb extends BootstrapBase
         logger('------------');
         logger('Boostrap:web');
 
-        // TODO: remove
-        self::$container = $container;
-
         try {
             /** @noinspection SelfClassReferencingInspection */
             $bs = $container->get(BootstrapWeb::class);
             $bs->module = $container->get(InitWeb::class);
+
             $bs->handleRequest();
 
             return $bs;
@@ -76,11 +73,7 @@ final class BootstrapWeb extends BootstrapBase
     protected function configureRouter(): void
     {
         // Manage requests for web module
-        $this->router->respond(
-            ['GET', 'POST'],
-            '@(?!/api\.php)',
-            $this->manageWebRequest()
-        );
+        $this->router->respond(['GET', 'POST'], '@(?!/api\.php)', $this->manageWebRequest());
     }
 
     private function manageWebRequest(): Closure
@@ -104,19 +97,11 @@ final class BootstrapWeb extends BootstrapBase
                 }
 
                 $controllerName = $matches['controller'][0];
-                $actionName = empty($matches['action'][0]) ? 'index' : $matches['action'][0];
+                $actionName = empty($matches['actions'][0]) ? 'index' : $matches['actions'][0];
                 $methodName = sprintf('%sAction', $actionName);
                 $methodParams = empty($matches['params'][0])
                     ? []
-                    : Filter::getArray(
-                        explode(
-                            '/',
-                            trim(
-                                $matches['params'][0],
-                                '/'
-                            )
-                        )
-                    );
+                    : Filter::getArray(explode('/', trim($matches['params'][0], '/')));
 
                 $controllerClass = self::getClassFor($controllerName, $actionName);
 
@@ -145,18 +130,13 @@ final class BootstrapWeb extends BootstrapBase
                     )
                 );
 
-                $controller = self::$container->get($controllerClass);
+                $controller = $this->createObjectFor($controllerClass);
 
                 return call_user_func_array([$controller, $methodName], $methodParams);
             } catch (SessionTimeout $sessionTimeout) {
                 logger('Session timeout');
             } catch (Exception $e) {
                 processException($e);
-
-                /** @var Response $response */
-                if ($response->status()->getCode() !== 404) {
-                    $response->code(503);
-                }
 
                 echo __($e->getMessage());
 

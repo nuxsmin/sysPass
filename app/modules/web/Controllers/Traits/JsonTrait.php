@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,23 +34,21 @@ use SP\Http\JsonResponse;
  * Trait JsonTrait
  *
  * @property SessionContext $session
+ * @property \Klein\Klein $router
  */
 trait JsonTrait
 {
     /**
      * Returns JSON response
      *
-     * @param int        $status      Status code
-     * @param string     $description Untranslated description string
-     * @param array|null $messages    Untranslated massages array of strings
+     * @param  int  $status  Status code
+     * @param  string  $description  Untranslated description string
+     * @param  array|null  $messages  Untranslated massages array of strings
      *
-     * @throws \JsonException
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function returnJsonResponse(
-        int    $status,
-        string $description,
-        ?array $messages = null
-    ): bool
+    protected function returnJsonResponse(int $status, string $description, ?array $messages = null): bool
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
@@ -60,19 +58,19 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return Json::fromDic()->returnJson($jsonResponse);
+        return Json::factory($this->router->response())->returnJson($jsonResponse);
     }
 
     /**
      * Returns JSON response
      *
-     * @param mixed       $data
-     * @param int         $status      Status code
-     * @param string|null $description Untranslated description string
-     * @param array|null  $messages
+     * @param  mixed  $data
+     * @param  int  $status  Status code
+     * @param  string|null  $description  Untranslated description string
+     * @param  array|null  $messages
      *
      * @return bool
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function returnJsonResponseData(
         $data,
@@ -93,29 +91,28 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return Json::fromDic()->returnJson($jsonResponse);
+        return Json::factory($this->router->response())->returnJson($jsonResponse);
     }
 
     /**
      * Returns JSON response
      *
-     * @throws \JsonException
+     * @param  \Exception  $exception
+     * @param  int  $status
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function returnJsonResponseException(
-        Exception $exception,
-        int       $status = JsonResponse::JSON_ERROR
-    ): bool
+    protected function returnJsonResponseException(Exception $exception, int $status = JsonResponse::JSON_ERROR): bool
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($exception->getMessage());
 
-        if ($exception instanceof SPException
-            && $exception->getHint() !== null
-        ) {
+        if ($exception instanceof SPException && $exception->getHint() !== null) {
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        return Json::fromDic()->returnJson($jsonResponse);
+        return Json::factory($this->router->response())->returnJson($jsonResponse);
     }
 }

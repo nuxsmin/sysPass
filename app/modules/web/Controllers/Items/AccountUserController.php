@@ -56,9 +56,9 @@ final class AccountUserController extends SimpleControllerBase
      *
      * @param  int|null  $accountId
      *
-     * @throws \JsonException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function accountsUserAction(?int $accountId = null): void
     {

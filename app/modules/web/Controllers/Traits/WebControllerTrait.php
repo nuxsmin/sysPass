@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -66,7 +66,7 @@ trait WebControllerTrait
     }
 
     /**
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function handleSessionTimeout(): void
     {

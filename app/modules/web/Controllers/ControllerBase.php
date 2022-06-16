@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use Exception;
-use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
@@ -63,7 +62,6 @@ abstract class ControllerBase
     protected ConfigFileService   $config;
     protected ContextInterface    $session;
     protected ThemeInterface      $theme;
-    protected Klein               $router;
     protected Acl                 $acl;
     protected ConfigDataInterface $configData;
     protected RequestInterface    $request;

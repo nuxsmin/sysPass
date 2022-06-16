@@ -36,6 +36,10 @@ abstract class ResourceBase extends SimpleControllerBase
 {
     protected Minify $minify;
 
+    /**
+     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,

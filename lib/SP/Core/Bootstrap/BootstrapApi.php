@@ -25,6 +25,7 @@
 namespace SP\Core\Bootstrap;
 
 use Closure;
+use Exception;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -51,9 +52,6 @@ final class BootstrapApi extends BootstrapBase
     {
         logger('------------');
         logger('Boostrap:api');
-
-        // TODO: remove
-        self::$container = $container;
 
         try {
             /** @noinspection SelfClassReferencingInspection */
@@ -85,11 +83,11 @@ final class BootstrapApi extends BootstrapBase
             try {
                 logger('API route');
 
-                $apiRequest = self::$container->get(ApiRequest::class);
+                $apiRequest = $this->createObjectFor(ApiRequest::class);
 
                 [$controllerName, $action] = explode('/', $apiRequest->getMethod());
 
-                $controllerClass = self::getClassFor($controllerName);
+                $controllerClass = self::getClassFor($controllerName, $action);
 
                 $method = $action.'Action';
 
@@ -118,8 +116,8 @@ final class BootstrapApi extends BootstrapBase
 
                 logger('Routing call: '.$controllerClass.'::'.$method);
 
-                return call_user_func([new $controllerClass(self::$container, $method), $method]);
-            } catch (\Exception $e) {
+                return call_user_func([$this->createObjectFor($controllerClass), $method]);
+            } catch (Exception $e) {
                 processException($e);
 
                 /** @var Response $response */

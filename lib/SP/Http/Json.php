@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,9 +25,7 @@
 namespace SP\Http;
 
 use JsonException;
-use Klein\Klein;
 use Klein\Response;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
 
 
@@ -59,18 +57,6 @@ final class Json
     }
 
     /**
-     * @return Json
-     */
-    public static function fromDic(): Json
-    {
-        return new self(
-            BootstrapBase::getContainer()
-                ->get(Klein::class)
-                ->response()
-        );
-    }
-
-    /**
      * Devuelve un array con las cadenas formateadas para JSON
      */
     public static function safeJson(&$data): string
@@ -78,7 +64,7 @@ final class Json
         if (is_array($data) || is_object($data)) {
             array_walk_recursive(
                 $data,
-                static function (&$value) {
+                static function ($value) {
                     if (is_object($value)) {
                         foreach ($value as $property => $v) {
                             if (is_string($v) && $v !== '') {
@@ -132,7 +118,10 @@ final class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @throws \JsonException
+     * @param  \SP\Http\JsonResponse  $jsonResponse
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function returnJson(JsonResponse $jsonResponse): bool
     {
@@ -144,7 +133,7 @@ final class Json
             $jsonResponse = new JsonResponse($e->getMessage());
             $jsonResponse->addMessage($e->getHint());
 
-            $this->response->body(json_encode($jsonResponse, JSON_THROW_ON_ERROR));
+            $this->response->body(self::getJson($jsonResponse));
         }
 
         return $this->response->send(true)->isSent();
@@ -160,17 +149,10 @@ final class Json
      */
     public static function getJson($data, int $flags = 0): string
     {
-
         try {
-            $json = json_encode($data, JSON_THROW_ON_ERROR | $flags);
+            return json_encode($data, JSON_THROW_ON_ERROR | $flags);
         } catch (JsonException $e) {
-            throw new SPException(
-                __u('Encoding error'),
-                SPException::CRITICAL,
-                json_last_error_msg()
-            );
+            throw new SPException(__u('Encoding error'), SPException::ERROR, $e->getMessage());
         }
-
-        return $json;
     }
 }

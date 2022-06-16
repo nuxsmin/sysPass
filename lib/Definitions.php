@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use Monolog\Logger;
@@ -30,6 +30,7 @@ use SP\Core\Acl\Actions;
 use SP\Core\Application;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CSRF;
 use SP\Core\Language;
 use SP\Core\LanguageInterface;
@@ -75,7 +76,7 @@ use function DI\get;
 
 return [
     RequestInterface::class                          => create(Request::class)
-        ->constructor(\Klein\Request::createFromGlobals()),
+        ->constructor(\Klein\Request::createFromGlobals(), autowire(CryptPKI::class)),
     ContextInterface::class                          =>
         static fn() => ContextFactory::getForModule(APP_MODULE),
     ConfigInterface::class                           => create(ConfigFileService::class)
@@ -101,10 +102,7 @@ return [
             new XmlHandler(new FileHandler(MIMETYPES_FILE))
         ),
     Acl::class                                       => autowire(Acl::class)
-        ->constructorParameter(
-            'action',
-            get(Actions::class)
-        ),
+        ->constructorParameter('actions', get(Actions::class)),
     ThemeInterface::class                            => autowire(Theme::class)
         ->constructorParameter('module', APP_MODULE)
         ->constructorParameter(
