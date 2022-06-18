@@ -32,7 +32,6 @@ use DOMXPath;
 use Exception;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\OldCrypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -159,11 +158,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                             $this->importParams->getImportPwd()
                         );
                     } else {
-                        $xmlDecrypted = OldCrypt::getDecrypt(
-                            base64_decode($node->nodeValue),
-                            base64_decode($node->getAttribute('iv')),
-                            $this->importParams->getImportPwd()
-                        );
+                        throw new ImportException(__u('The file was exported with an old sysPass version (<= 2.10).'));
                     }
                 }
             } catch (CryptoException $e) {

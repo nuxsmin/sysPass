@@ -26,7 +26,6 @@ namespace SP\Domain\Import\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\OldCrypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
@@ -103,11 +102,7 @@ trait ImportTrait
                     $this->importParams->getImportMasterPwd()
                 );
             } else {
-                $pass = OldCrypt::getDecrypt(
-                    $accountRequest->pass,
-                    $accountRequest->key,
-                    $this->importParams->getImportMasterPwd()
-                );
+                throw new ImportException(__u('The file was exported with an old sysPass version (<= 2.10).'));
             }
 
             $accountRequest->pass = $pass;

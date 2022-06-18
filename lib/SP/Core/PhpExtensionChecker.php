@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,7 +53,6 @@ final class PhpExtensionChecker
         'openssl' => true,
         'pcre' => true,
         'session' => true,
-        'mcrypt' => false,
         'gd' => false,
         'mbstring' => true,
         'pdo_mysql' => true,
