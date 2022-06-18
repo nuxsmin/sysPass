@@ -187,7 +187,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255"
                                        value="<?php echo $gotData
-                                           ? htmlspecialchars($accountData->getUrl(), ENT_QUOTES)
+                                           ? htmlspecialchars($accountData->getUrl())
                                            : ''; ?>"
                                     <?php echo $_getvar('readonly'); ?>
                                 >
