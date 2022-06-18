@@ -163,6 +163,7 @@ return [
     ),
     'SP\Domain\Export\*ServiceInterface'             => autowire('SP\Domain\Export\Services\*Service'),
     'SP\Domain\Import\*ServiceInterface'             => autowire('SP\Domain\Import\Services\*Service'),
+    'SP\Domain\Install\*ServiceInterface'            => autowire('SP\Domain\Install\Services\*Service'),
     'SP\Domain\Crypt\*ServiceInterface'              => autowire('SP\Domain\Crypt\Services\*Service'),
     'SP\Domain\Plugin\*ServiceInterface'             => autowire('SP\Domain\Plugin\Services\*Service'),
     'SP\Domain\ItemPreset\*ServiceInterface'         => autowire('SP\Domain\ItemPreset\Services\*Service'),

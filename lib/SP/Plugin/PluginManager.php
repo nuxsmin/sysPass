@@ -33,7 +33,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\Plugin\PluginDataServiceInterface;
 use SP\Domain\Plugin\PluginServiceInterface;
 use SP\Domain\Plugin\Services\PluginDataService;
@@ -209,7 +209,7 @@ class PluginManager
     public function checkCompatibility(PluginInterface $plugin): bool
     {
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
-        $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
+        $appVersion = implode('.', array_slice(InstallerService::VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion) === -1) {
             $this->pluginService->toggleEnabledByName(

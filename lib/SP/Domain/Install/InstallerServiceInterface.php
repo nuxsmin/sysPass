@@ -27,16 +27,16 @@ namespace SP\Domain\Install;
 
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Install\Services\InstallData;
+use SP\Domain\Install\In\InstallData;
 
 /**
  * Installer class
  */
-interface InstallerInterface
+interface InstallerServiceInterface
 {
     /**
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): InstallerInterface;
+    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): InstallerServiceInterface;
 }

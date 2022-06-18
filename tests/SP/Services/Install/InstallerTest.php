@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Services\ConfigService;
-use SP\Domain\Install\Services\InstallData;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\User\Services\UserGroupService;
 use SP\Domain\User\Services\UserProfileService;
 use SP\Domain\User\Services\UserService;
@@ -111,7 +111,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\Services\InstallData
+     * @return \SP\Domain\Install\In\InstallData
      */
     private function getInstallData(): InstallData
     {
@@ -129,11 +129,11 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\InstallerInterface
+     * @return \SP\Domain\Install\InstallerServiceInterface
      */
-    private function getDefaultInstaller(): \SP\Domain\Install\InstallerInterface
+    private function getDefaultInstaller(): \SP\Domain\Install\InstallerServiceInterface
     {
-        return new Installer(
+        return new InstallerService(
             $this->request,
             $this->config,
             $this->userService,
@@ -436,7 +436,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testGetDatabaseSetupIsSuccessful()
     {
-        Installer::getDatabaseSetup($this->getInstallData(), $this->config->getConfigData());
+        InstallerService::getDatabaseSetup($this->getInstallData(), $this->config->getConfigData());
     }
 
     /**
@@ -450,7 +450,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Unimplemented');
 
-        Installer::getDatabaseSetup($installData, $this->config->getConfigData());
+        InstallerService::getDatabaseSetup($installData, $this->config->getConfigData());
     }
 
     /**

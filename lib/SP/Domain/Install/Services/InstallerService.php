@@ -40,16 +40,12 @@ use SP\Domain\Config\Adapters\ConfigData as ConfigSettings;
 use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\ConfigServiceInterface;
 use SP\Domain\Config\In\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
-use SP\Domain\Config\Services\ConfigService;
 use SP\Domain\Install\DatabaseSetupInterface;
-use SP\Domain\Install\InstallerInterface;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\InstallerServiceInterface;
 use SP\Domain\User\UserGroupServiceInterface;
 use SP\Domain\User\UserProfileServiceInterface;
-use SP\Http\Request;
+use SP\Domain\User\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -63,7 +59,7 @@ defined('APP_ROOT') || die();
 /**
  * Installer class
  */
-final class Installer implements InstallerInterface
+final class InstallerService implements InstallerServiceInterface
 {
     /**
      * sysPass' version and build number
@@ -72,19 +68,19 @@ final class Installer implements InstallerInterface
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private Request                 $request;
-    private ConfigFileService       $config;
-    private UserService             $userService;
-    private UserGroupService        $userGroupService;
-    private UserProfileService      $userProfileService;
-    private ConfigService           $configService;
-    private ?DatabaseSetupInterface $databaseSetup = null;
-    private ?InstallData            $installData   = null;
+    private RequestInterface            $request;
+    private ConfigInterface             $config;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+    private ConfigServiceInterface      $configService;
+    private ?DatabaseSetupInterface     $databaseSetup = null;
+    private ?InstallData                $installData   = null;
 
     public function __construct(
         RequestInterface $request,
         ConfigInterface $config,
-        UserService $userService,
+        UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
         ConfigServiceInterface $configService
@@ -98,7 +94,7 @@ final class Installer implements InstallerInterface
     }
 
     /**
-     * @param  \SP\Domain\Install\Services\InstallData  $installData
+     * @param  \SP\Domain\Install\In\InstallData  $installData
      * @param $configData
      *
      * @return \SP\Domain\Install\DatabaseSetupInterface
@@ -118,7 +114,7 @@ final class Installer implements InstallerInterface
 
             $mySQLHandler = new MySQLHandler($connectionData);
 
-            return new MySQL($mySQLHandler, $installData, $configData, $parser, new DatabaseUtil($mySQLHandler));
+            return new MysqlService($mySQLHandler, $installData, $configData, $parser, new DatabaseUtil($mySQLHandler));
         }
 
         throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
@@ -128,7 +124,7 @@ final class Installer implements InstallerInterface
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): InstallerInterface
+    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): InstallerServiceInterface
     {
         $this->databaseSetup = $databaseSetup;
         $this->installData = $installData;

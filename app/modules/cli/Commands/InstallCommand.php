@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Cli\Commands;
@@ -30,9 +30,9 @@ use SP\Core\Exceptions\InstallError;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Language;
 use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Install\InstallerInterface;
-use SP\Domain\Install\Services\InstallData;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\InstallerServiceInterface;
+use SP\Domain\Install\Services\InstallerService;
 use SP\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,13 +67,13 @@ final class InstallCommand extends CommandBase
     /**
      * @var string
      */
-    protected static  $defaultName = 'sp:install';
-    private Installer $installer;
+    protected static         $defaultName = 'sp:install';
+    private InstallerService $installer;
 
     public function __construct(
         LoggerInterface $logger,
         ConfigInterface $config,
-        InstallerInterface $installer
+        InstallerServiceInterface $installer
     ) {
         parent::__construct($logger, $config);
 
@@ -166,7 +166,7 @@ final class InstallCommand extends CommandBase
                 return self::FAILURE;
             }
 
-            $this->installer->run(Installer::getDatabaseSetup($installData, $this->configData), $installData);
+            $this->installer->run(InstallerService::getDatabaseSetup($installData, $this->configData), $installData);
 
             $this->logger->info(__('Installation finished'));
 

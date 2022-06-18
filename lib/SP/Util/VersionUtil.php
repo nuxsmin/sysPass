@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Util;
 
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\Services\InstallerService;
 
 /**
  * Class VersionUtil
@@ -38,7 +38,7 @@ final class VersionUtil
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', Installer::VERSION).'.'.Installer::BUILD;
+        return implode('', InstallerService::VERSION).'.'.InstallerService::BUILD;
     }
 
     /**
@@ -129,10 +129,10 @@ final class VersionUtil
      */
     public static function getVersionArray(bool $retBuild = false): array
     {
-        $version = array_values(Installer::VERSION);
+        $version = array_values(InstallerService::VERSION);
 
         if ($retBuild === true) {
-            $version[] = Installer::BUILD;
+            $version[] = InstallerService::BUILD;
 
             return $version;
         }
@@ -145,6 +145,6 @@ final class VersionUtil
      */
     public static function getVersionArrayNormalized(): array
     {
-        return [implode('', Installer::VERSION), Installer::BUILD];
+        return [implode('', InstallerService::VERSION), InstallerService::BUILD];
     }
 }

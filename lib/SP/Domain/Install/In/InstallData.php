@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,9 +20,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-namespace SP\Domain\Install\Services;
+ */namespace SP\Domain\Install\In;
 
 /**
  * Class InstallData

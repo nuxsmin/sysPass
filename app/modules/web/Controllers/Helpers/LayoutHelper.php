@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\ThemeInterface;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\Services\InstallerService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\RequestInterface;
 use SP\Http\Uri;
@@ -119,7 +119,7 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
-        $this->view->assign('app_version', Installer::VERSION_TEXT);
+        $this->view->assign('app_version', InstallerService::VERSION_TEXT);
         $this->view->assign('logo_icon', $baseUrl.'/public/images/logo_icon.png');
         $this->view->assign('logo_no_bg_color', $baseUrl.'/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl.'/public/images/logo_full_nobg_outline.png');

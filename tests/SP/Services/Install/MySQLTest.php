@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Install;
@@ -27,8 +27,8 @@ namespace SP\Tests\Services\Install;
 use PDOException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\In\ConfigDataInterface;
-use SP\Domain\Install\Services\InstallData;
-use SP\Domain\Install\Services\MySQL;
+use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\Services\MysqlService;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DBStorageInterface;
@@ -43,9 +43,9 @@ use SP\Tests\UnitaryTestCase;
  */
 class MySQLTest extends UnitaryTestCase
 {
-    private DBStorageInterface    $DBStorage;
-    private MySQL                 $mysql;
-    private Pdo                   $pdo;
+    private DBStorageInterface $DBStorage;
+    private MysqlService       $mysql;
+    private Pdo                $pdo;
     private InstallData           $installData;
     private ConfigDataInterface   $configData;
     private DatabaseFileInterface $databaseFile;
@@ -761,13 +761,13 @@ class MySQLTest extends UnitaryTestCase
         $this->installData = $this->getInstallData();
         $this->configData = $this->config->getConfigData();
         $this->databaseUtil = $this->createMock(DatabaseUtil::class);
-        $this->mysql = new MySQL(
+        $this->mysql = new MysqlService(
             $this->DBStorage, $this->installData, $this->configData, $this->databaseFile, $this->databaseUtil
         );
     }
 
     /**
-     * @return \SP\Domain\Install\Services\InstallData
+     * @return \SP\Domain\Install\In\InstallData
      */
     private function getInstallData(): InstallData
     {

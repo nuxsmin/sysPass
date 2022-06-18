@@ -27,9 +27,9 @@ namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
 use SP\Core\Application;
-use SP\Domain\Install\InstallerInterface;
-use SP\Domain\Install\Services\InstallData;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\InstallerServiceInterface;
+use SP\Domain\Install\Services\InstallerService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -42,12 +42,12 @@ final class InstallController extends ControllerBase
 {
     use JsonTrait;
 
-    private InstallerInterface $installer;
+    private InstallerServiceInterface $installer;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerInterface $installer
+        InstallerServiceInterface $installer
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -63,7 +63,7 @@ final class InstallController extends ControllerBase
         $installData = $this->getInstallDataFromRequest();
 
         try {
-            $this->installer->run(Installer::getDatabaseSetup($installData, $this->configData), $installData);
+            $this->installer->run(InstallerService::getDatabaseSetup($installData, $this->configData), $installData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
         } catch (Exception $e) {
@@ -74,7 +74,7 @@ final class InstallController extends ControllerBase
     }
 
     /**
-     * @return \SP\Domain\Install\Services\InstallData
+     * @return \SP\Domain\Install\In\InstallData
      */
     private function getInstallDataFromRequest(): InstallData
     {

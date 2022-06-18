@@ -28,6 +28,7 @@ use PDOException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\Install\DatabaseSetupInterface;
+use SP\Domain\Install\In\InstallData;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DBStorageInterface;
@@ -39,7 +40,7 @@ use SP\Util\PasswordUtil;
  *
  * @package SP\Domain\Install\Services
  */
-final class MySQL implements DatabaseSetupInterface
+final class MysqlService implements DatabaseSetupInterface
 {
     private InstallData           $installData;
     private DBStorageInterface    $DBStorage;
