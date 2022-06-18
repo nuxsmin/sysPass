@@ -65,7 +65,6 @@
   },
   "config": {
     "classmap-authoritative": false,
-    "platform-check": false,
     "platform": {
       "php": "7.4"
     }
