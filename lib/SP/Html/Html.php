@@ -184,11 +184,19 @@ final class Html
      */
     public static function getSafeUrl(string $url): string
     {
-        if (preg_match('#^((?:https?|ftp|ssh|rdp)://[\w._-]+/)(.*)#', $url, $urlParts)
-            && count($urlParts) === 3) {
-            return $urlParts[1].urlencode($urlParts[2]);
+        $match = preg_match('#^(([a-z]+)://[\w._-]+)(?:/(.*))?#i', $url, $urlParts);
+
+        if ($match !== 1) {
+            return htmlspecialchars($url, ENT_QUOTES);
         }
 
-        return urlencode($url);
+        switch (count($urlParts)) {
+            case 3:
+                return htmlspecialchars($urlParts[1], ENT_QUOTES).'/'.urlencode($urlParts[2]);
+            case 2:
+                return htmlspecialchars($urlParts[1], ENT_QUOTES);
+            default:
+                return htmlspecialchars($url, ENT_QUOTES);
+        }
     }
 }

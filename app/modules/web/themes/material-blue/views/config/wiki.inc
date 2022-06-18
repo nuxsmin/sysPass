@@ -1,4 +1,27 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @var ThemeIcons $icons
  * @var ConfigData $configData
@@ -84,7 +107,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Wiki page URL'); ?>
                 <div id="help-wiki_pageurl"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wiki_pageurl">
                     <p>
@@ -119,7 +143,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Account name prefix'); ?>
                 <div id="help-wikifilter"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wikifilter">
                     <p>
