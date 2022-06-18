@@ -92,7 +92,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getUrl()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getUrl(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="url"><?php echo __('URL / IP'); ?></label>
@@ -105,7 +105,7 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getLogin()); ?>"
+                               value="<?php echo htmlspecialchars($accountData->getLogin(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('User'); ?></label>

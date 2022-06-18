@@ -133,7 +133,7 @@ $accountAcl = $_getvar('accountAcl');
                                 <input id="url" name="url" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255" tabindex="4"
-                                       value="<?php echo htmlspecialchars($accountData->getUrl()); ?>"
+                                       value="<?php echo htmlspecialchars($accountData->getUrl(), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Access URL or IP'); ?></label>

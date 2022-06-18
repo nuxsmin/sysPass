@@ -129,13 +129,14 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                    target="_blank"
                                    title="<?php printf(
                                        __('Open link to: %s'),
-                                       htmlspecialchars($accountSearchData->getUrl())
+                                       htmlspecialchars($accountSearchData->getUrl(), ENT_QUOTES)
                                    ); ?>">
-                                    <?php echo htmlspecialchars($accountSearchItem->getShortUrl()); ?>
+                                    <?php echo htmlspecialchars($accountSearchItem->getShortUrl(), ENT_QUOTES); ?>
                                 </a>
                             <?php else: ?>
                                 <div class="field-text"><?php echo htmlspecialchars(
-                                        $accountSearchItem->getShortUrl()
+                                        $accountSearchItem->getShortUrl(),
+                                        ENT_QUOTES
                                     ); ?></div>
                             <?php endif; ?>
                         </div>

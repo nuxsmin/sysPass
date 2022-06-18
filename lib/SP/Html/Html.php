@@ -187,16 +187,16 @@ final class Html
         $match = preg_match('#^(([a-z]+)://[\w._-]+)(?:/(.*))?#i', $url, $urlParts);
 
         if ($match !== 1) {
-            return htmlspecialchars($url);
+            return htmlspecialchars($url, ENT_QUOTES);
         }
 
         switch (count($urlParts)) {
             case 3:
-                return htmlspecialchars($urlParts[1]).'/'.urlencode($urlParts[2]);
+                return htmlspecialchars($urlParts[1], ENT_QUOTES).'/'.urlencode($urlParts[2]);
             case 2:
-                return htmlspecialchars($urlParts[1]);
+                return htmlspecialchars($urlParts[1], ENT_QUOTES);
             default:
-                return htmlspecialchars($url);
+                return htmlspecialchars($url, ENT_QUOTES);
         }
     }
 }
