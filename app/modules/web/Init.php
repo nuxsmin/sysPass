@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -86,7 +86,7 @@ final class Init extends HttpModuleBase
      * List of controllers that don't need to update the user's session activity
      */
     private const NO_SESSION_ACTIVITY             = ['items', 'login'];
-    public const  ROUTE_INSTALL                   = 'install/index';
+    public const  ROUTE_INSTALL                   = 'install';
     public const  ROUTE_ERROR_DATABASE_CONNECTION = 'error/databaseConnection';
     public const  ROUTE_ERROR_MAINTENANCE         = 'error/maintenanceError';
     public const  ROUTE_ERROR_DATABASE            = 'error/databaseError';

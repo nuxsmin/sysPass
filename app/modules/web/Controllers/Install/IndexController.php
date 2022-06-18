@@ -38,7 +38,9 @@ final class IndexController extends ControllerBase
 {
     public function indexAction(): void
     {
-        if ($this->configData->isInstalled()) {
+        $skipInstalled = $this->request->analyzeBool('skipInstalled', false);
+
+        if ($skipInstalled === false && $this->configData->isInstalled()) {
             $this->router->response()->redirect('index.php?r=login');
 
             return;
