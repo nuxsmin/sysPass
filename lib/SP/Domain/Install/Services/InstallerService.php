@@ -265,6 +265,7 @@ final class InstallerService implements InstallerServiceInterface
         $configData = $this->config->getConfigData()
             ->setConfigVersion(VersionUtil::getVersionStringNormalized())
             ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
+            ->setAppVersion(VersionUtil::getVersionStringNormalized())
             ->setUpgradeKey(null)
             ->setDbHost($this->installData->getDbHost())
             ->setDbSocket($this->installData->getDbSocket())

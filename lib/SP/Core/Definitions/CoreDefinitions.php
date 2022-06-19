@@ -63,6 +63,7 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
+use SP\Providers\Acl\AclHandler;
 use SP\Providers\Auth\AuthProvider;
 use SP\Providers\Auth\AuthProviderInterface;
 use SP\Providers\Auth\Browser\BrowserAuth;
@@ -73,9 +74,14 @@ use SP\Providers\Auth\Ldap\Ldap;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Log\FileLogHandler;
+use SP\Providers\Log\RemoteSyslogHandler;
+use SP\Providers\Log\SyslogHandler;
+use SP\Providers\Mail\MailHandler;
 use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\PhpMailerWrapper;
+use SP\Providers\Notification\NotificationHandler;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
@@ -133,8 +139,7 @@ final class CoreDefinitions
                 ),
             AuthProviderInterface::class  =>
                 static function (ContainerInterface $c, ConfigDataInterface $configData) {
-                    /** @var AuthProvider $provider */
-                    $provider = autowire(AuthProvider::class);
+                    $provider = $c->get(AuthProvider::class);
 
                     if ($configData->isLdapEnabled()) {
                         $provider->withLdapAuth($c->get(LdapAuthInterface::class));
@@ -166,15 +171,23 @@ final class CoreDefinitions
 
                 throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
             },
-            ProvidersHelper::class        => static function (ContainerInterface $c) {
+            ProvidersHelper::class        => factory(static function (ContainerInterface $c) {
                 $configData = $c->get(ConfigDataInterface::class);
 
                 if (!$configData->isInstalled()) {
                     return new ProvidersHelper($c->get(FileLogHandler::class));
                 }
 
-                return create(ProvidersHelper::class);
-            },
+                return new ProvidersHelper(
+                    $c->get(FileLogHandler::class),
+                    $c->get(DatabaseLogHandler::class),
+                    $c->get(MailHandler::class),
+                    $c->get(SyslogHandler::class),
+                    $c->get(RemoteSyslogHandler::class),
+                    $c->get(AclHandler::class),
+                    $c->get(NotificationHandler::class)
+                );
+            }),
         ];
     }
 }

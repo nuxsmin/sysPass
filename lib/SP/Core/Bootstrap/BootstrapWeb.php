@@ -119,7 +119,7 @@ final class BootstrapWeb extends BootstrapBase
 
                 $this->initializeCommon();
 
-                $this->module->initialize($controllerName);
+                $this->module->initialize($controllerClass);
 
                 logger(
                     sprintf(

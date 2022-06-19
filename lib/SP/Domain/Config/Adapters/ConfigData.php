@@ -27,6 +27,7 @@ namespace SP\Domain\Config\Adapters;
 use JsonSerializable;
 use SP\Core\DataCollection;
 use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Util\VersionUtil;
 
 /**
  * Class configData
@@ -1136,7 +1137,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getAppVersion(): string
     {
-        return $this->get(ConfigDataInterface::APP_VERSION);
+        return $this->get(ConfigDataInterface::APP_VERSION, VersionUtil::getVersionStringNormalized());
     }
 
     public function setAppVersion(?string $appVersion): ConfigDataInterface

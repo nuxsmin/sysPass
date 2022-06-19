@@ -61,6 +61,24 @@ use SP\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
+use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
+use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
+use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
+use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Install\InstallController;
+use SP\Modules\Web\Controllers\Items\AccountUserController;
+use SP\Modules\Web\Controllers\Items\CategoriesController;
+use SP\Modules\Web\Controllers\Items\ClientsController;
+use SP\Modules\Web\Controllers\Items\NotificationsController;
+use SP\Modules\Web\Controllers\Items\TagsController;
+use SP\Modules\Web\Controllers\Login\LoginController;
+use SP\Modules\Web\Controllers\Resource\CssController;
+use SP\Modules\Web\Controllers\Resource\JsController;
+use SP\Modules\Web\Controllers\Status\CheckNotices;
+use SP\Modules\Web\Controllers\Status\StatusController;
+use SP\Modules\Web\Controllers\Task\TrackStatusController;
+use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
+use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
 use SP\Plugin\PluginManager;
 use SP\Util\HttpUtil;
 
@@ -74,23 +92,42 @@ final class Init extends HttpModuleBase
      * like: install/database checks, session/event handlers initialization
      */
     private const PARTIAL_INIT = [
-        'resource',
-        'install',
-        'bootstrap',
-        'status',
-        'upgrade',
-        'error',
-        'task',
+        CssController::class,
+        JsController::class,
+        InstallController::class,
+        GetEnvironmentController::class,
+        CheckNotices::class,
+        StatusController::class,
+        UpgradeIndexController::class,
+        UpgradeController::class,
+        DatabaseConnectionController::class,
+        DatabaseErrorController::class,
+        ErrorIndexController::class,
+        TrackStatusController::class,
     ];
     /**
      * List of controllers that don't need to update the user's session activity
      */
-    private const NO_SESSION_ACTIVITY             = ['items', 'login'];
+    private const NO_SESSION_ACTIVITY = [
+        AccountUserController::class,
+        CategoriesController::class,
+        ClientsController::class,
+        NotificationsController::class,
+        TagsController::class,
+        LoginController::class,
+    ];
+    /**
+     * List of controllers that needs to keep the session opened
+     */
+    private const NO_SESSION_CLOSE = [LoginController::class];
+    /**
+     * Routes
+     */
     public const  ROUTE_INSTALL                   = 'install';
     public const  ROUTE_ERROR_DATABASE_CONNECTION = 'error/databaseConnection';
     public const  ROUTE_ERROR_MAINTENANCE         = 'error/maintenanceError';
     public const  ROUTE_ERROR_DATABASE            = 'error/databaseError';
-    public const  ROUTE_UPGRADE                   = 'upgrade/index';
+    public const  ROUTE_UPGRADE                   = 'upgrade';
 
 
     private CSRF                 $csrf;
@@ -260,7 +297,9 @@ final class Init extends HttpModuleBase
         }
 
         // Do not keep the PHP's session opened
-        SessionContext::close();
+        if (!in_array($controller, self::NO_SESSION_CLOSE, true)) {
+            SessionContext::close();
+        }
     }
 
     /**

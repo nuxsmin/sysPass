@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -43,24 +43,14 @@ class SessionContext extends ContextBase
     private static bool $isLocked = false;
 
     /**
-     * @return bool
-     */
-    public static function isLocked(): bool
-    {
-        return self::$isLocked;
-    }
-
-    /**
      * Closes session
      */
     public static function close(): void
     {
         if (!self::$isLocked) {
-            logger('Session closed');
+            self::$isLocked = session_write_close();
 
-            session_write_close();
-
-            self::$isLocked = true;
+            logger(sprintf('Session close value=%s caller=%s', self::$isLocked, getLastCaller()));
         }
     }
 
