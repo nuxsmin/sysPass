@@ -46,7 +46,7 @@ final class InstallController extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerServiceInterface $installer,
+        InstallerServiceInterface $installer
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -47,7 +47,7 @@ final class CopyPassController extends AccountControllerBase
         Application $application,
         WebControllerHelper $webControllerHelper,
         AccountServiceInterface $accountService,
-        AccountPasswordHelper $accountPasswordHelper,
+        AccountPasswordHelper $accountPasswordHelper
     ) {
         parent::__construct(
             $application,

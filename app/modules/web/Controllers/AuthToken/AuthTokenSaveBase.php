@@ -49,8 +49,7 @@ abstract class AuthTokenSaveBase extends ControllerBase
         Application $application,
         WebControllerHelper $webControllerHelper,
         AuthTokenServiceInterface $authTokenService,
-        CustomFieldServiceInterface $customFieldService,
-
+        CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

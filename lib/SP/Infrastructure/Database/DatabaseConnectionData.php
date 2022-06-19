@@ -43,12 +43,12 @@ final class DatabaseConnectionData
     public static function getFromConfig(ConfigDataInterface $configData): DatabaseConnectionData
     {
         return (new self())
-            ->setDbHost($configData->getDbHost())
-            ->setDbName($configData->getDbName())
-            ->setDbUser($configData->getDbUser())
-            ->setDbPass($configData->getDbPass())
-            ->setDbPort($configData->getDbPort())
-            ->setDbSocket($configData->getDbSocket());
+            ->setDbHost($configData->getDbHost() ?? '')
+            ->setDbName($configData->getDbName() ?? '')
+            ->setDbUser($configData->getDbUser() ?? '')
+            ->setDbPass($configData->getDbPass() ?? '')
+            ->setDbPort($configData->getDbPort() ?? 0)
+            ->setDbSocket($configData->getDbSocket() ?? '');
     }
 
     public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData

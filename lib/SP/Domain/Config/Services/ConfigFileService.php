@@ -176,10 +176,8 @@ class ConfigFileService implements ConfigInterface
      * @return ConfigInterface
      * @throws \SP\Infrastructure\File\FileException
      */
-    public function saveConfig(
-        ConfigDataInterface $configData,
-        ?bool $backup = true
-    ): ConfigInterface {
+    public function saveConfig(ConfigDataInterface $configData, ?bool $backup = true): ConfigInterface
+    {
         if ($backup) {
             $this->configBackupService->backup($configData);
         }

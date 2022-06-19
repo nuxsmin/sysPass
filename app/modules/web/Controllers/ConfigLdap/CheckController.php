@@ -52,7 +52,7 @@ final class CheckController extends SimpleControllerBase
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         LdapCheckServiceInterface $ldapCheckService,
-        TemplateInterface $template,
+        TemplateInterface $template
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

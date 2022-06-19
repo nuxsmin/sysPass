@@ -33,17 +33,17 @@ use SP\Domain\Config\In\ConfigDataInterface;
  */
 final class ConfigData extends DataCollection implements JsonSerializable, ConfigDataInterface
 {
-    private const PUBLIC_LINK_MAX_VIEWS = 3;
-    private const PUBLIC_LINK_MAX_TIME  = 600;
-    private const ACCOUNT_COUNT         = 12;
-    private const DB_PORT               = 3306;
-    private const FILES_ALLOWED_SIZE    = 1024;
-    private const MAIL_PORT             = 587;
-    private const SESSION_TIMEOUT       = 300;
-    private const SITE_THEME            = 'material-blue';
-    private const SYSLOG_PORT           = 514;
-    private const ACCOUNT_EXPIRE_TIME   = 10368000;
-    private const PROXY_PORT            = 8080;
+    private const DEFAULT_PUBLIC_LINK_MAX_VIEWS = 3;
+    private const DEFAULT_PUBLIC_LINK_MAX_TIME  = 600;
+    private const DEFAULT_ACCOUNT_COUNT         = 12;
+    private const DEFAULT_DB_PORT               = 3306;
+    private const DEFAULT_FILES_ALLOWED_SIZE    = 1024;
+    private const DEFAULT_MAIL_PORT             = 587;
+    private const DEFAULT_SESSION_TIMEOUT       = 300;
+    private const DEFAULT_SITE_THEME            = 'material-blue';
+    private const DEFAULT_SYSLOG_PORT           = 514;
+    private const DEFAULT_ACCOUNT_EXPIRE_TIME   = 10368000;
+    private const DEFAULT_PROXY_PORT            = 8080;
 
     public function getAttributes(): array
     {
@@ -52,188 +52,188 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getLogEvents(): array
     {
-        return $this->get('logEvents', []);
+        return $this->get(ConfigDataInterface::LOG_EVENTS, []);
     }
 
     public function setLogEvents(?array $logEvents): ConfigDataInterface
     {
-        $this->set('logEvents', $logEvents);
+        $this->set(ConfigDataInterface::LOG_EVENTS, $logEvents);
 
         return $this;
     }
 
     public function isDokuwikiEnabled(): bool
     {
-        return $this->get('dokuwikiEnabled', false);
+        return $this->get(ConfigDataInterface::DOKUWIKI_ENABLED, false);
     }
 
     public function setDokuwikiEnabled(?bool $dokuwikiEnabled): ConfigDataInterface
     {
-        $this->set('dokuwikiEnabled', (bool)$dokuwikiEnabled);
+        $this->set(ConfigDataInterface::DOKUWIKI_ENABLED, (bool)$dokuwikiEnabled);
 
         return $this;
     }
 
     public function getDokuwikiUrl(): ?string
     {
-        return $this->get('dokuwikiUrl');
+        return $this->get(ConfigDataInterface::DOKUWIKI_URL);
     }
 
     public function setDokuwikiUrl(?string $dokuwikiUrl): ConfigDataInterface
     {
-        $this->set('dokuwikiUrl', $dokuwikiUrl);
+        $this->set(ConfigDataInterface::DOKUWIKI_URL, $dokuwikiUrl);
 
         return $this;
     }
 
     public function getDokuwikiUrlBase(): ?string
     {
-        return $this->get('dokuwikiUrlBase');
+        return $this->get(ConfigDataInterface::DOKUWIKI_URL_BASE);
     }
 
     public function setDokuwikiUrlBase(?string $dokuwikiUrlBase): ConfigDataInterface
     {
-        $this->set('dokuwikiUrlBase', $dokuwikiUrlBase);
+        $this->set(ConfigDataInterface::DOKUWIKI_URL_BASE, $dokuwikiUrlBase);
 
         return $this;
     }
 
     public function getDokuwikiUser(): ?string
     {
-        return $this->get('dokuwikiUser');
+        return $this->get(ConfigDataInterface::DOKUWIKI_USER);
     }
 
     public function setDokuwikiUser(?string $dokuwikiUser): ConfigDataInterface
     {
-        $this->set('dokuwikiUser', $dokuwikiUser);
+        $this->set(ConfigDataInterface::DOKUWIKI_USER, $dokuwikiUser);
 
         return $this;
     }
 
     public function getDokuwikiPass(): ?string
     {
-        return $this->get('dokuwikiPass');
+        return $this->get(ConfigDataInterface::DOKUWIKI_PASS);
     }
 
     public function setDokuwikiPass(?string $dokuwikiPass): ConfigDataInterface
     {
-        $this->set('dokuwikiPass', $dokuwikiPass);
+        $this->set(ConfigDataInterface::DOKUWIKI_PASS, $dokuwikiPass);
 
         return $this;
     }
 
     public function getDokuwikiNamespace(): ?string
     {
-        return $this->get('dokuwikiNamespace');
+        return $this->get(ConfigDataInterface::DOKUWIKI_NAMESPACE);
     }
 
     public function setDokuwikiNamespace(?string $dokuwikiNamespace): ConfigDataInterface
     {
-        $this->set('dokuwikiNamespace', $dokuwikiNamespace);
+        $this->set(ConfigDataInterface::DOKUWIKI_NAMESPACE, $dokuwikiNamespace);
 
         return $this;
     }
 
     public function getLdapDefaultGroup(): int
     {
-        return (int)$this->get('ldapDefaultGroup');
+        return (int)$this->get(ConfigDataInterface::LDAP_DEFAULT_GROUP);
     }
 
     public function setLdapDefaultGroup(?int $ldapDefaultGroup): ConfigDataInterface
     {
-        $this->set('ldapDefaultGroup', (int)$ldapDefaultGroup);
+        $this->set(ConfigDataInterface::LDAP_DEFAULT_GROUP, (int)$ldapDefaultGroup);
 
         return $this;
     }
 
     public function getLdapDefaultProfile(): int
     {
-        return (int)$this->get('ldapDefaultProfile');
+        return (int)$this->get(ConfigDataInterface::LDAP_DEFAULT_PROFILE);
     }
 
     public function setLdapDefaultProfile(?int $ldapDefaultProfile): ConfigDataInterface
     {
-        $this->set('ldapDefaultProfile', (int)$ldapDefaultProfile);
+        $this->set(ConfigDataInterface::LDAP_DEFAULT_PROFILE, (int)$ldapDefaultProfile);
 
         return $this;
     }
 
     public function isProxyEnabled(): bool
     {
-        return $this->get('proxyEnabled', false);
+        return $this->get(ConfigDataInterface::PROXY_ENABLED, false);
     }
 
     public function setProxyEnabled(?bool $proxyEnabled): ConfigDataInterface
     {
-        $this->set('proxyEnabled', (bool)$proxyEnabled);
+        $this->set(ConfigDataInterface::PROXY_ENABLED, (bool)$proxyEnabled);
 
         return $this;
     }
 
     public function getProxyServer(): ?string
     {
-        return $this->get('proxyServer');
+        return $this->get(ConfigDataInterface::PROXY_SERVER);
     }
 
     public function setProxyServer(?string $proxyServer): ConfigDataInterface
     {
-        $this->set('proxyServer', $proxyServer);
+        $this->set(ConfigDataInterface::PROXY_SERVER, $proxyServer);
 
         return $this;
     }
 
     public function getProxyPort(): int
     {
-        return $this->get('proxyPort', self::PROXY_PORT);
+        return $this->get(ConfigDataInterface::PROXY_PORT, self::DEFAULT_PROXY_PORT);
     }
 
     public function setProxyPort(?int $proxyPort): ConfigDataInterface
     {
-        $this->set('proxyPort', (int)$proxyPort);
+        $this->set(ConfigDataInterface::PROXY_PORT, (int)$proxyPort);
 
         return $this;
     }
 
     public function getProxyUser(): ?string
     {
-        return $this->get('proxyUser');
+        return $this->get(ConfigDataInterface::PROXY_USER);
     }
 
     public function setProxyUser(?string $proxyUser): ConfigDataInterface
     {
-        $this->set('proxyUser', $proxyUser);
+        $this->set(ConfigDataInterface::PROXY_USER, $proxyUser);
 
         return $this;
     }
 
     public function getProxyPass(): ?string
     {
-        return $this->get('proxyPass');
+        return $this->get(ConfigDataInterface::PROXY_PASS);
     }
 
     public function setProxyPass(?string $proxyPass): ConfigDataInterface
     {
-        $this->set('proxyPass', $proxyPass);
+        $this->set(ConfigDataInterface::PROXY_PASS, $proxyPass);
 
         return $this;
     }
 
     public function getPublinksMaxViews(): int
     {
-        return $this->get('publinksMaxViews', self::PUBLIC_LINK_MAX_VIEWS);
+        return $this->get(ConfigDataInterface::PUBLINKS_MAX_VIEWS, self::DEFAULT_PUBLIC_LINK_MAX_VIEWS);
     }
 
 
     public function setPublinksMaxViews(?int $publinksMaxViews): ConfigDataInterface
     {
-        $this->set('publinksMaxViews', (int)$publinksMaxViews);
+        $this->set(ConfigDataInterface::PUBLINKS_MAX_VIEWS, (int)$publinksMaxViews);
 
         return $this;
     }
 
     public function getPublinksMaxTime(): int
     {
-        return $this->get('publinksMaxTime', self::PUBLIC_LINK_MAX_TIME);
+        return $this->get('publinksMaxTime', self::DEFAULT_PUBLIC_LINK_MAX_TIME);
     }
 
     public function setPublinksMaxTime(?int $publinksMaxTime): ConfigDataInterface
@@ -281,7 +281,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getSyslogPort(): int
     {
-        return $this->get('syslogPort', self::SYSLOG_PORT);
+        return $this->get('syslogPort', self::DEFAULT_SYSLOG_PORT);
     }
 
     public function setSyslogPort(?int $syslogPort): ConfigDataInterface
@@ -329,7 +329,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getAccountCount(): int
     {
-        return $this->get('accountCount', self::ACCOUNT_COUNT);
+        return $this->get('accountCount', self::DEFAULT_ACCOUNT_COUNT);
     }
 
     public function setAccountCount(?int $accountCount): ConfigDataInterface
@@ -457,7 +457,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getFilesAllowedSize(): int
     {
-        return $this->get('filesAllowedSize', self::FILES_ALLOWED_SIZE);
+        return $this->get('filesAllowedSize', self::DEFAULT_FILES_ALLOWED_SIZE);
     }
 
     public function setFilesAllowedSize(?int $filesAllowedSize): ConfigDataInterface
@@ -613,7 +613,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getMailPort(): int
     {
-        return $this->get('mailPort', self::MAIL_PORT);
+        return $this->get('mailPort', self::DEFAULT_MAIL_PORT);
     }
 
     public function setMailPort(?int $mailPort): ConfigDataInterface
@@ -709,7 +709,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getSessionTimeout(): int
     {
-        return $this->get('sessionTimeout', self::SESSION_TIMEOUT);
+        return $this->get('sessionTimeout', self::DEFAULT_SESSION_TIMEOUT);
     }
 
     public function setSessionTimeout(?int $sessionTimeout): ConfigDataInterface
@@ -733,7 +733,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getSiteTheme(): string
     {
-        return $this->get('siteTheme', self::SITE_THEME);
+        return $this->get('siteTheme', self::DEFAULT_SITE_THEME);
     }
 
     public function setSiteTheme(?string $siteTheme): ConfigDataInterface
@@ -877,7 +877,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getDbPort(): int
     {
-        return $this->get('dbPort', self::DB_PORT);
+        return $this->get('dbPort', self::DEFAULT_DB_PORT);
     }
 
     public function setDbPort(?int $dbPort): ConfigDataInterface
@@ -1088,7 +1088,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getAccountExpireTime(): int
     {
-        return $this->get('accountExpireTime', self::ACCOUNT_EXPIRE_TIME);
+        return $this->get('accountExpireTime', self::DEFAULT_ACCOUNT_EXPIRE_TIME);
     }
 
     public function setAccountExpireTime(?int $accountExpireTime): ConfigDataInterface

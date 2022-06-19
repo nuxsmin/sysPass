@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -64,11 +64,11 @@ abstract class ModuleBase
      */
     protected function initEventHandlers(bool $partialInit = false): void
     {
-        if (DEBUG || $this->configData->isDebug()) {
+        if (DEBUG || $this->configData->isDebug() || !$this->configData->isInstalled()) {
             $this->eventDispatcher->attach($this->providersHelper->getFileLogHandler());
         }
 
-        if ($partialInit) {
+        if ($partialInit || !$this->configData->isInstalled()) {
             return;
         }
 

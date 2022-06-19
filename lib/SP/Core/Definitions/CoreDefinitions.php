@@ -38,6 +38,7 @@ use SP\Core\Language;
 use SP\Core\LanguageInterface;
 use SP\Core\MimeTypes;
 use SP\Core\MimeTypesInterface;
+use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Domain\Config\ConfigInterface;
@@ -72,6 +73,7 @@ use SP\Providers\Auth\Ldap\Ldap;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Log\FileLogHandler;
 use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\PhpMailerWrapper;
 use function DI\autowire;
@@ -163,6 +165,15 @@ final class CoreDefinitions
                 }
 
                 throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
+            },
+            ProvidersHelper::class        => static function (ContainerInterface $c) {
+                $configData = $c->get(ConfigDataInterface::class);
+
+                if (!$configData->isInstalled()) {
+                    return new ProvidersHelper($c->get(FileLogHandler::class));
+                }
+
+                return create(ProvidersHelper::class);
             },
         ];
     }

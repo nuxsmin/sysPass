@@ -32,39 +32,29 @@ use SP\Providers\Log\RemoteSyslogHandler;
 use SP\Providers\Log\SyslogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Providers\Notification\NotificationHandler;
+use SP\Providers\ProviderInterface;
 
 /**
  * The Provider helper class will have oll the providers availabe in the application
  */
 final class ProvidersHelper
 {
-    private FileLogHandler      $fileLogHandler;
-    private DatabaseLogHandler  $databaseLogHandler;
-    private MailHandler         $mailHandler;
-    private SyslogHandler       $syslogHandler;
-    private RemoteSyslogHandler $remoteSyslogHandler;
-    private AclHandler          $aclHandler;
-    private NotificationHandler $notificationHandler;
+    private FileLogHandler       $fileLogHandler;
+    private ?DatabaseLogHandler  $databaseLogHandler;
+    private ?MailHandler         $mailHandler;
+    private ?SyslogHandler       $syslogHandler;
+    private ?RemoteSyslogHandler $remoteSyslogHandler;
+    private ?AclHandler          $aclHandler;
+    private ?NotificationHandler $notificationHandler;
 
-    /**
-     * Module constructor.
-     *
-     * @param  \SP\Providers\Log\FileLogHandler  $fileLogHandler
-     * @param  \SP\Providers\Log\DatabaseLogHandler  $databaseLogHandler
-     * @param  \SP\Providers\Mail\MailHandler  $mailHandler
-     * @param  \SP\Providers\Log\SyslogHandler  $syslogHandler
-     * @param  \SP\Providers\Log\RemoteSyslogHandler  $remoteSyslogHandler
-     * @param  \SP\Providers\Acl\AclHandler  $aclHandler
-     * @param  \SP\Providers\Notification\NotificationHandler  $notificationHandler
-     */
     public function __construct(
         FileLogHandler $fileLogHandler,
-        DatabaseLogHandler $databaseLogHandler,
-        MailHandler $mailHandler,
-        SyslogHandler $syslogHandler,
-        RemoteSyslogHandler $remoteSyslogHandler,
-        AclHandler $aclHandler,
-        NotificationHandler $notificationHandler
+        ?DatabaseLogHandler $databaseLogHandler = null,
+        ?MailHandler $mailHandler = null,
+        ?SyslogHandler $syslogHandler = null,
+        ?RemoteSyslogHandler $remoteSyslogHandler = null,
+        ?AclHandler $aclHandler = null,
+        ?NotificationHandler $notificationHandler = null
     ) {
         $this->fileLogHandler = $fileLogHandler;
         $this->databaseLogHandler = $databaseLogHandler;
@@ -75,86 +65,58 @@ final class ProvidersHelper
         $this->notificationHandler = $notificationHandler;
     }
 
-    /**
-     * @return \SP\Providers\Log\FileLogHandler
-     */
+    private static function ensureIsInitialized(?ProviderInterface $provider = null): void
+    {
+        if ($provider !== null && !$provider->isInitialized()) {
+            $provider->initialize();
+        }
+    }
+
     public function getFileLogHandler(): FileLogHandler
     {
-        if (!$this->fileLogHandler->isInitialized()) {
-            $this->fileLogHandler->initialize();
-        }
+        self::ensureIsInitialized($this->fileLogHandler);
 
         return $this->fileLogHandler;
     }
 
-    /**
-     * @return \SP\Providers\Log\DatabaseLogHandler
-     */
     public function getDatabaseLogHandler(): DatabaseLogHandler
     {
-        if (!$this->databaseLogHandler->isInitialized()) {
-            $this->databaseLogHandler->initialize();
-        }
+        self::ensureIsInitialized($this->databaseLogHandler);
 
         return $this->databaseLogHandler;
     }
 
-    /**
-     * @return \SP\Providers\Mail\MailHandler
-     */
     public function getMailHandler(): MailHandler
     {
-        if (!$this->mailHandler->isInitialized()) {
-            $this->mailHandler->initialize();
-        }
+        self::ensureIsInitialized($this->mailHandler);
 
         return $this->mailHandler;
     }
 
-    /**
-     * @return \SP\Providers\Log\SyslogHandler
-     */
     public function getSyslogHandler(): SyslogHandler
     {
-        if (!$this->syslogHandler->isInitialized()) {
-            $this->syslogHandler->initialize();
-        }
+        self::ensureIsInitialized($this->syslogHandler);
 
         return $this->syslogHandler;
     }
 
-    /**
-     * @return \SP\Providers\Log\RemoteSyslogHandler
-     */
     public function getRemoteSyslogHandler(): RemoteSyslogHandler
     {
-        if (!$this->remoteSyslogHandler->isInitialized()) {
-            $this->remoteSyslogHandler->initialize();
-        }
+        self::ensureIsInitialized($this->remoteSyslogHandler);
 
         return $this->remoteSyslogHandler;
     }
 
-    /**
-     * @return \SP\Providers\Acl\AclHandler
-     */
     public function getAclHandler(): AclHandler
     {
-        if (!$this->aclHandler->isInitialized()) {
-            $this->aclHandler->initialize();
-        }
+        self::ensureIsInitialized($this->aclHandler);
 
         return $this->aclHandler;
     }
 
-    /**
-     * @return \SP\Providers\Notification\NotificationHandler
-     */
     public function getNotificationHandler(): NotificationHandler
     {
-        if (!$this->notificationHandler->isInitialized()) {
-            $this->notificationHandler->initialize();
-        }
+        self::ensureIsInitialized($this->notificationHandler);
 
         return $this->notificationHandler;
     }
