@@ -102,7 +102,7 @@ class ConfigFileService implements ConfigInterface
                         $configData = new ConfigData();
 
                         // Generate a random salt that is used to add more seed to some passwords
-                        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes(30));
+                        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes());
 
                         $this->saveConfig($configData, false);
 

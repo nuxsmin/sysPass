@@ -36,7 +36,6 @@ use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
-use SP\Domain\Config\Adapters\ConfigData as ConfigSettings;
 use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\ConfigServiceInterface;
 use SP\Domain\Config\In\ConfigDataInterface;
@@ -263,8 +262,8 @@ final class InstallerService implements InstallerServiceInterface
      */
     private function setupConfig(): ConfigDataInterface
     {
-        $configData = new ConfigSettings();
-        $configData->setConfigVersion(VersionUtil::getVersionStringNormalized())
+        $configData = $this->config->getConfigData()
+            ->setConfigVersion(VersionUtil::getVersionStringNormalized())
             ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
             ->setUpgradeKey(null)
             ->setDbHost($this->installData->getDbHost())
