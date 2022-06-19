@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Modules\Cli;
@@ -31,7 +31,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Core\Context\ContextInterface;
-use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\DbStorageInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use function SP\Tests\getDbHandler;
 use const SP\Tests\APP_DEFINITIONS_FILE;
@@ -97,6 +97,6 @@ abstract class CliTestCase extends TestCase
 
     protected function setupDatabase(): void
     {
-        self::$dic->set(DBStorageInterface::class, getDbHandler());
+        self::$dic->set(DbStorageInterface::class, getDbHandler());
     }
 }

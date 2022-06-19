@@ -22,21 +22,45 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Install;
+namespace SP\Infrastructure\Database;
 
-
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
-use SP\Domain\Install\In\InstallData;
+use PDO;
 
 /**
- * Installer class
+ * Interface DBStorageInterface
+ *
+ * @package SP\Storage
  */
-interface InstallerServiceInterface
+interface DbStorageInterface
 {
     /**
-     * @throws InvalidArgumentException
-     * @throws SPException
+     * Obtener una conexión PDO
+     *
+     * @return PDO
      */
-    public function run(InstallData $installData): InstallerServiceInterface;
+    public function getConnection(): PDO;
+
+    /**
+     * Obtener una conexión PDO sin seleccionar la BD
+     *
+     * @return PDO
+     */
+    public function getConnectionSimple(): PDO;
+
+    /**
+     * Devolcer el estado de la BD
+     *
+     * @return int
+     */
+    public function getDbStatus(): int;
+
+    /**
+     * @return string
+     */
+    public function getConnectionUri(): string;
+
+    /**
+     * @return string|null
+     */
+    public function getDatabaseName(): ?string;
 }

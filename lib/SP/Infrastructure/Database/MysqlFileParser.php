@@ -33,7 +33,7 @@ use SP\Infrastructure\File\FileHandlerInterface;
  *
  * @package SP\Storage
  */
-final class MySQLFileParser implements DatabaseFileInterface
+final class MysqlFileParser implements DatabaseFileInterface
 {
     private FileHandler $fileHandler;
 

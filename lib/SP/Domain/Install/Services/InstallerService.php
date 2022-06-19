@@ -48,10 +48,6 @@ use SP\Domain\User\UserProfileServiceInterface;
 use SP\Domain\User\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\MySQLFileParser;
-use SP\Infrastructure\Database\MySQLHandler;
-use SP\Infrastructure\File\FileHandler;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
@@ -74,8 +70,9 @@ final class InstallerService implements InstallerServiceInterface
     private UserGroupServiceInterface   $userGroupService;
     private UserProfileServiceInterface $userProfileService;
     private ConfigServiceInterface      $configService;
-    private ?DatabaseSetupInterface     $databaseSetup = null;
-    private ?InstallData                $installData   = null;
+    private DatabaseConnectionData      $databaseConnectionData;
+    private DatabaseSetupInterface      $databaseSetup;
+    private ?InstallData                $installData = null;
 
     public function __construct(
         RequestInterface $request,
@@ -83,7 +80,9 @@ final class InstallerService implements InstallerServiceInterface
         UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        ConfigServiceInterface $configService
+        ConfigServiceInterface $configService,
+        DatabaseConnectionData $databaseConnectionData,
+        DatabaseSetupInterface $databaseSetup
     ) {
         $this->request = $request;
         $this->config = $config;
@@ -91,42 +90,16 @@ final class InstallerService implements InstallerServiceInterface
         $this->userGroupService = $userGroupService;
         $this->userProfileService = $userProfileService;
         $this->configService = $configService;
-    }
-
-    /**
-     * @param  \SP\Domain\Install\In\InstallData  $installData
-     * @param $configData
-     *
-     * @return \SP\Domain\Install\DatabaseSetupInterface
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function getDatabaseSetup(InstallData $installData, $configData): DatabaseSetupInterface
-    {
-        $connectionData = (new DatabaseConnectionData())
-            ->setDbHost($installData->getDbHost())
-            ->setDbPort($installData->getDbPort())
-            ->setDbSocket($installData->getDbSocket())
-            ->setDbUser($installData->getDbAdminUser())
-            ->setDbPass($installData->getDbAdminPass());
-
-        if ($installData->getBackendType() === 'mysql') {
-            $parser = new MySQLFileParser(new FileHandler(SQL_PATH.DIRECTORY_SEPARATOR.'dbstructure.sql'));
-
-            $mySQLHandler = new MySQLHandler($connectionData);
-
-            return new MysqlService($mySQLHandler, $installData, $configData, $parser, new DatabaseUtil($mySQLHandler));
-        }
-
-        throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
+        $this->databaseConnectionData = $databaseConnectionData;
+        $this->databaseSetup = $databaseSetup;
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function run(DatabaseSetupInterface $databaseSetup, InstallData $installData): InstallerServiceInterface
+    public function run(InstallData $installData): InstallerServiceInterface
     {
-        $this->databaseSetup = $databaseSetup;
         $this->installData = $installData;
 
         $this->checkData();
@@ -310,6 +283,10 @@ final class InstallerService implements InstallerServiceInterface
      */
     private function setupDb(ConfigDataInterface $configData): void
     {
+        $user = null;
+
+        $this->databaseSetup->connectDatabase();
+
         if ($this->installData->isHostingMode()) {
             // Save DB connection user and pass
             $configData->setDbUser($this->installData->getDbAdminUser());
@@ -323,10 +300,11 @@ final class InstallerService implements InstallerServiceInterface
 
         $this->config->updateConfig($configData);
 
-        $this->databaseSetup->connectDatabase();
-        $this->databaseSetup->createDatabase();
+        $this->databaseSetup->createDatabase($user);
         $this->databaseSetup->createDBStructure();
         $this->databaseSetup->checkConnection();
+
+        $this->databaseConnectionData->refreshFromConfig($configData);
     }
 
     /**
@@ -346,15 +324,9 @@ final class InstallerService implements InstallerServiceInterface
         } catch (Exception $e) {
             processException($e);
 
-            $this->databaseSetup->rollback();
+            $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
-            throw new SPException(
-                $e->getMessage(),
-                SPException::CRITICAL,
-                __u('Warn to developer'),
-                $e->getCode(),
-                $e
-            );
+            throw new SPException($e->getMessage(), SPException::CRITICAL, __u('Warn to developer'), $e->getCode(), $e);
         }
     }
 
@@ -391,7 +363,7 @@ final class InstallerService implements InstallerServiceInterface
         } catch (Exception $e) {
             processException($e);
 
-            $this->databaseSetup->rollback();
+            $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
             throw new SPException(
                 $e->getMessage(),

@@ -26,12 +26,11 @@ namespace SP\Domain\Install\Services;
 
 use PDOException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\Install\DatabaseSetupInterface;
 use SP\Domain\Install\In\InstallData;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\PasswordUtil;
 
@@ -43,8 +42,7 @@ use SP\Util\PasswordUtil;
 final class MysqlService implements DatabaseSetupInterface
 {
     private InstallData           $installData;
-    private DBStorageInterface    $DBStorage;
-    private ConfigDataInterface   $configData;
+    private DbStorageInterface    $DBStorage;
     private DatabaseFileInterface $databaseFile;
     private DatabaseUtil          $databaseUtil;
 
@@ -53,14 +51,12 @@ final class MysqlService implements DatabaseSetupInterface
      *
      */
     public function __construct(
-        DBStorageInterface $DBStorage,
+        DbStorageInterface $DBStorage,
         InstallData $installData,
-        ConfigDataInterface $configData,
         DatabaseFileInterface $databaseFile,
         DatabaseUtil $databaseUtil
     ) {
         $this->installData = $installData;
-        $this->configData = $configData;
         $this->DBStorage = $DBStorage;
         $this->databaseFile = $databaseFile;
         $this->databaseUtil = $databaseUtil;
@@ -190,7 +186,7 @@ final class MysqlService implements DatabaseSetupInterface
      *
      * @throws SPException
      */
-    public function createDatabase(): void
+    public function createDatabase(?string $dbUser = null): void
     {
         if (!$this->installData->isHostingMode()) {
 
@@ -228,7 +224,7 @@ final class MysqlService implements DatabaseSetupInterface
                     sprintf(
                         $query,
                         $this->installData->getDbName(),
-                        $dbc->quote($this->configData->getDbUser()),
+                        $dbc->quote($dbUser),
                         $dbc->quote($this->installData->getDbAuthHost())
                     )
                 );
@@ -240,7 +236,7 @@ final class MysqlService implements DatabaseSetupInterface
                         sprintf(
                             $query,
                             $this->installData->getDbName(),
-                            $dbc->quote($this->configData->getDbUser()),
+                            $dbc->quote($dbUser),
                             $dbc->quote($this->installData->getDbAuthHostDns())
                         )
                     );
@@ -250,7 +246,7 @@ final class MysqlService implements DatabaseSetupInterface
             } catch (PDOException $e) {
                 processException($e);
 
-                $this->rollback();
+                $this->rollback($dbUser);
 
                 throw new SPException(
                     sprintf(__('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
@@ -274,7 +270,7 @@ final class MysqlService implements DatabaseSetupInterface
         return (int)$sth->fetchColumn() === 1;
     }
 
-    public function rollback(): void
+    public function rollback(?string $dbUser = null): void
     {
         $dbc = $this->DBStorage->getConnectionSimple();
 
@@ -295,22 +291,25 @@ final class MysqlService implements DatabaseSetupInterface
                     $this->installData->getDbName()
                 )
             );
-            $dbc->exec(
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $dbc->quote($this->configData->getDbUser()),
-                    $dbc->quote($this->installData->getDbAuthHost())
-                )
-            );
 
-            if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+            if ($dbUser) {
                 $dbc->exec(
                     sprintf(
                         'DROP USER IF EXISTS %s@%s',
-                        $dbc->quote($this->configData->getDbUser()),
-                        $dbc->quote($this->installData->getDbAuthHostDns())
+                        $dbc->quote($dbUser),
+                        $dbc->quote($this->installData->getDbAuthHost())
                     )
                 );
+
+                if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                    $dbc->exec(
+                        sprintf(
+                            'DROP USER IF EXISTS %s@%s',
+                            $dbc->quote($dbUser),
+                            $dbc->quote($this->installData->getDbAuthHostDns())
+                        )
+                    );
+                }
             }
         }
 

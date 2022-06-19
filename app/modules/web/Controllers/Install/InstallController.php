@@ -27,9 +27,8 @@ namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
 use SP\Core\Application;
-use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\In\InstallDataFactory;
 use SP\Domain\Install\InstallerServiceInterface;
-use SP\Domain\Install\Services\InstallerService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -47,7 +46,7 @@ final class InstallController extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerServiceInterface $installer
+        InstallerServiceInterface $installer,
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -56,14 +55,14 @@ final class InstallController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function installAction(): bool
     {
-        $installData = $this->getInstallDataFromRequest();
+        $installData = InstallDataFactory::buildFromRequest($this->request);
 
         try {
-            $this->installer->run(InstallerService::getDatabaseSetup($installData, $this->configData), $installData);
+            $this->installer->run($installData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
         } catch (Exception $e) {
@@ -71,24 +70,5 @@ final class InstallController extends ControllerBase
 
             return $this->returnJsonResponseException($e);
         }
-    }
-
-    /**
-     * @return \SP\Domain\Install\In\InstallData
-     */
-    private function getInstallDataFromRequest(): InstallData
-    {
-        $installData = new InstallData();
-        $installData->setSiteLang($this->request->analyzeString('sitelang', 'en_US'));
-        $installData->setAdminLogin($this->request->analyzeString('adminlogin', 'admin'));
-        $installData->setAdminPass($this->request->analyzeEncrypted('adminpass'));
-        $installData->setMasterPassword($this->request->analyzeEncrypted('masterpassword'));
-        $installData->setDbAdminUser($this->request->analyzeString('dbuser', 'root'));
-        $installData->setDbAdminPass($this->request->analyzeEncrypted('dbpass'));
-        $installData->setDbName($this->request->analyzeString('dbname', 'syspass'));
-        $installData->setDbHost($this->request->analyzeString('dbhost', 'localhost'));
-        $installData->setHostingMode($this->request->analyzeBool('hostingmode', false));
-
-        return $installData;
     }
 }

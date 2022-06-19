@@ -53,7 +53,7 @@ interface DatabaseInterface
      */
     public function getFullRowCount(QueryData $queryData): int;
 
-    public function getDbHandler(): DBStorageInterface;
+    public function getDbHandler(): DbStorageInterface;
 
     public function getNumRows(): int;
 

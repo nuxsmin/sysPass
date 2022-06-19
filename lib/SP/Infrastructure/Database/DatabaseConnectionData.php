@@ -51,6 +51,16 @@ final class DatabaseConnectionData
             ->setDbSocket($configData->getDbSocket());
     }
 
+    public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData
+    {
+        return $this->setDbHost($configData->getDbHost())
+            ->setDbName($configData->getDbName())
+            ->setDbUser($configData->getDbUser())
+            ->setDbPass($configData->getDbPass())
+            ->setDbPort($configData->getDbPort())
+            ->setDbSocket($configData->getDbSocket());
+    }
+
     public function getDbHost(): ?string
     {
         return $this->dbHost;

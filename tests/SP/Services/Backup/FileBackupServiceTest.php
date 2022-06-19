@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Backup;
@@ -29,7 +29,7 @@ use SP\Domain\Export\Services\BackupFiles;
 use SP\Domain\Export\Services\FileBackupService;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\MySQLHandler;
+use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Tests\UnitaryTestCase;
 
@@ -63,7 +63,7 @@ class FileBackupServiceTest extends UnitaryTestCase
 
         $database = $this->createStub(Database::class);
         $database->method('getDbHandler')->willReturn(
-            $this->createStub(MySQLHandler::class)
+            $this->createStub(MysqlHandler::class)
         );
 
         $archiveHandler = $this->createMock(ArchiveHandler::class);

@@ -29,7 +29,7 @@ use RuntimeException;
 use SP\DataModel\DataModelInterface;
 use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\DbStorageInterface;
 
 /**
  * Trait RepositoryItemTrait
@@ -79,7 +79,7 @@ trait RepositoryItemTrait
      */
     protected function makeItemHash(
         string $name,
-        DBStorageInterface $DBStorage
+        DbStorageInterface $DBStorage
     ): string {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 

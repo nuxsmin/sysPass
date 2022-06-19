@@ -28,7 +28,9 @@ use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Install\DatabaseSetupInterface;
 use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\InstallerServiceInterface;
 use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\User\Services\UserGroupService;
 use SP\Domain\User\Services\UserProfileService;
@@ -36,6 +38,7 @@ use SP\Domain\User\Services\UserService;
 use SP\Domain\User\UserProfileServiceInterface;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
+use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Tests\UnitaryTestCase;
 use SP\Util\VersionUtil;
 
@@ -93,7 +96,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
 
         $configData = $this->config->getConfigData();
 
@@ -131,7 +134,7 @@ class InstallerTest extends UnitaryTestCase
     /**
      * @return \SP\Domain\Install\InstallerServiceInterface
      */
-    private function getDefaultInstaller(): \SP\Domain\Install\InstallerServiceInterface
+    private function getDefaultInstaller(): InstallerServiceInterface
     {
         return new InstallerService(
             $this->request,
@@ -139,7 +142,9 @@ class InstallerTest extends UnitaryTestCase
             $this->userService,
             $this->userGroupService,
             $this->userProfileService,
-            $this->configService
+            $this->configService,
+            new DatabaseConnectionData(),
+            $this->databaseSetup
         );
     }
 
@@ -160,7 +165,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
 
         $configData = $this->config->getConfigData();
 
@@ -185,7 +190,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
 
         $this->assertEquals($params->getDbHost(), $params->getDbAuthHost());
     }
@@ -206,7 +211,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
 
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertEquals('host', $params->getDbHost());
@@ -227,7 +232,7 @@ class InstallerTest extends UnitaryTestCase
 
         $installer = $this->getDefaultInstaller();
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
 
         $configData = $this->config->getConfigData();
 
@@ -252,7 +257,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Error while creating \'admin\' user');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -273,7 +278,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Create exception');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -290,7 +295,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin username');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -307,7 +312,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin\'s password');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -324,7 +329,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the Master Password');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -341,7 +346,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Master password too short');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -358,7 +363,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database user');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -375,7 +380,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database password');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -392,7 +397,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database name');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -409,7 +414,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Database name cannot contain "."');
 
-        $installer->run($this->databaseSetup, $params);
+        $installer->run($params);
     }
 
     /**
@@ -426,31 +431,7 @@ class InstallerTest extends UnitaryTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the database server');
 
-        $installer->run($this->databaseSetup, $params);
-    }
-
-    /**
-     * @throws \SP\Core\Exceptions\SPException
-     *
-     * @doesNotPerformAssertions
-     */
-    public function testGetDatabaseSetupIsSuccessful()
-    {
-        InstallerService::getDatabaseSetup($this->getInstallData(), $this->config->getConfigData());
-    }
-
-    /**
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function testGetDatabaseSetupIsNotSuccessfulWithWrongBackend()
-    {
-        $installData = $this->getInstallData();
-        $installData->setBackendType('test');
-
-        $this->expectException(SPException::class);
-        $this->expectExceptionMessage('Unimplemented');
-
-        InstallerService::getDatabaseSetup($installData, $this->config->getConfigData());
+        $installer->run($params);
     }
 
     /**
@@ -459,7 +440,7 @@ class InstallerTest extends UnitaryTestCase
      */
     protected function setUp(): void
     {
-        $this->databaseSetup = $this->createMock(\SP\Domain\Install\DatabaseSetupInterface::class);
+        $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
         $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(Request::class);
         $this->configService = $this->createMock(ConfigService::class);

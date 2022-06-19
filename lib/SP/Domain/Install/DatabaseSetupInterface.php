@@ -53,7 +53,7 @@ interface DatabaseSetupInterface
     /**
      * Crear la base de datos
      */
-    public function createDatabase();
+    public function createDatabase(?string $dbUser = null);
 
     /**
      * @return mixed
@@ -64,7 +64,7 @@ interface DatabaseSetupInterface
      * Deshacer la instalación en caso de fallo.
      * Esta función elimina la base de datos y el usuario de sysPass
      */
-    public function rollback();
+    public function rollback(?string $dbUser = null);
 
     /**
      * Crear la estructura de la base de datos.

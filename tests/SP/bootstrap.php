@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,8 +34,8 @@ use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\ProfileData;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DBStorageInterface;
-use SP\Infrastructure\Database\MySQLHandler;
+use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\MysqlHandler;
 use SP\Util\FileUtil;
 
 define('DEBUG', true);
@@ -133,19 +133,19 @@ function setupContext(): Container
     $context->setUserProfile(new ProfileData());
 
     // Inicializar los datos de conexión a la BBDD
-    $dic->set(DBStorageInterface::class, getDbHandler());
+    $dic->set(DbStorageInterface::class, getDbHandler());
 
     return $dic;
 }
 
-function getDbHandler(?DatabaseConnectionData $connectionData = null): MySQLHandler
+function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHandler
 {
     if ($connectionData === null) {
         // Establecer configuración de conexión con la BBDD
         $connectionData = DatabaseConnectionData::getFromEnvironment();
     }
 
-    return new MySQLHandler($connectionData);
+    return new MysqlHandler($connectionData);
 }
 
 function getResource(string $dir, string $file): string

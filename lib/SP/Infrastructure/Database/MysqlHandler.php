@@ -35,7 +35,7 @@ defined('APP_ROOT') || die();
  *
  * Esta clase se encarga de crear las conexiones a la BD
  */
-final class MySQLHandler implements DBStorageInterface
+final class MysqlHandler implements DbStorageInterface
 {
     public const STATUS_OK = 0;
     public const STATUS_KO = 1;

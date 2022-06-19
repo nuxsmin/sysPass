@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Modules\Api;
@@ -40,8 +40,8 @@ use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DBStorageInterface;
-use SP\Infrastructure\Database\MySQLHandler;
+use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\MysqlHandler;
 use SP\Tests\DatabaseTrait;
 use stdClass;
 use function DI\create;
@@ -153,7 +153,7 @@ abstract class ApiTestCase extends TestCase
 
                         return new ApiRequest(json_encode($data, JSON_THROW_ON_ERROR));
                     },
-                    DBStorageInterface::class  => create(MySQLHandler::class)
+                    DbStorageInterface::class => create(MysqlHandler::class)
                         ->constructor($databaseConnectionData),
                     ConfigDataInterface::class => static function (ConfigInterface $config) use ($databaseConnectionData) {
                         $configData = $config->getConfigData()

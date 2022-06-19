@@ -53,7 +53,7 @@ class ConfigFileService implements ConfigInterface
 
     private static int                   $timeUpdated;
     private bool                         $configLoaded = false;
-    private ?ConfigDataInterface         $configData   = null;
+    private static ?ConfigDataInterface  $configData   = null;
     private ContextInterface             $context;
     private XmlFileStorageInterface      $fileStorage;
     private FileCacheInterface           $fileCache;
@@ -83,12 +83,10 @@ class ConfigFileService implements ConfigInterface
     {
         if (!$this->configLoaded) {
             try {
-                if ($this->fileCache->exists()
-                    && !$this->isCacheExpired()
-                ) {
-                    $this->configData = $this->fileCache->load();
+                if ($this->fileCache->exists() && !$this->isCacheExpired()) {
+                    self::$configData = $this->fileCache->load();
 
-                    if ($this->configData->count() === 0) {
+                    if (self::$configData->count() === 0) {
                         $this->fileCache->delete();
                         $this->initialize();
 
@@ -98,8 +96,8 @@ class ConfigFileService implements ConfigInterface
                     logger('Config cache loaded');
                 } else {
                     if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
-                        $this->configData = $this->loadConfigFromFile();
-                        $this->fileCache->save($this->configData);
+                        self::$configData = $this->loadConfigFromFile();
+                        $this->fileCache->save(self::$configData);
                     } else {
                         $configData = new ConfigData();
 
@@ -114,7 +112,7 @@ class ConfigFileService implements ConfigInterface
                     logger('Config loaded');
                 }
 
-                self::$timeUpdated = $this->configData->getConfigDate();
+                self::$timeUpdated = self::$configData->getConfigDate();
 
                 $this->configLoaded = true;
             } catch (Exception $e) {
@@ -186,8 +184,7 @@ class ConfigFileService implements ConfigInterface
             $this->configBackupService->backup($configData);
         }
 
-        $configSaver = $this->context->getUserData()->getLogin()
-            ?: AppInfoInterface::APP_NAME;
+        $configSaver = $this->context->getUserData()->getLogin() ?: AppInfoInterface::APP_NAME;
 
         $configData->setConfigDate(time());
         $configData->setConfigSaver($configSaver);
@@ -198,7 +195,7 @@ class ConfigFileService implements ConfigInterface
         // Save the class object (serialized)
         $this->fileCache->save($configData);
 
-        $this->configData = $configData;
+        self::$configData = $configData;
 
         return $this;
     }
@@ -217,7 +214,7 @@ class ConfigFileService implements ConfigInterface
         $configData->setConfigSaver($this->context->getUserData()->getLogin());
         $configData->setConfigHash();
 
-        $this->configData = $configData;
+        self::$configData = $configData;
 
         self::$timeUpdated = $configData->getConfigDate();
 
@@ -236,10 +233,10 @@ class ConfigFileService implements ConfigInterface
                 || $configData === null
                 || $this->isCacheExpired()
             ) {
-                $this->configData = $this->loadConfigFromFile();
-                $this->fileCache->save($this->configData);
+                self::$configData = $this->loadConfigFromFile();
+                $this->fileCache->save(self::$configData);
 
-                return $this->configData;
+                return self::$configData;
             }
 
             return $configData;
@@ -247,7 +244,7 @@ class ConfigFileService implements ConfigInterface
             processException($e);
         }
 
-        return $this->configData;
+        return self::$configData;
     }
 
     /**
@@ -257,7 +254,7 @@ class ConfigFileService implements ConfigInterface
      */
     public function getConfigData(): ConfigDataInterface
     {
-        return clone $this->configData;
+        return clone self::$configData;
     }
 
     /**
@@ -266,10 +263,10 @@ class ConfigFileService implements ConfigInterface
      */
     public function generateUpgradeKey(): ConfigInterface
     {
-        if (empty($this->configData->getUpgradeKey())) {
+        if (empty(self::$configData->getUpgradeKey())) {
             logger('Generating upgrade key');
 
-            return $this->saveConfig($this->configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
+            return $this->saveConfig(self::$configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
         }
 
         return $this;

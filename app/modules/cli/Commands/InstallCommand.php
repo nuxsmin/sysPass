@@ -148,10 +148,8 @@ final class InstallCommand extends CommandBase
             );
     }
 
-    protected function execute(
-        InputInterface $input,
-        OutputInterface $output
-    ): int {
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         $style = new SymfonyStyle($input, $output);
 
         try {
@@ -166,7 +164,7 @@ final class InstallCommand extends CommandBase
                 return self::FAILURE;
             }
 
-            $this->installer->run(InstallerService::getDatabaseSetup($installData, $this->configData), $installData);
+            $this->installer->run($installData);
 
             $this->logger->info(__('Installation finished'));
 

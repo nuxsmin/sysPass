@@ -31,7 +31,7 @@ use SP\Domain\Install\In\InstallData;
 use SP\Domain\Install\Services\MysqlService;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DBStorageInterface;
+use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Stubs\Pdo;
 use SP\Tests\UnitaryTestCase;
@@ -43,9 +43,9 @@ use SP\Tests\UnitaryTestCase;
  */
 class MySQLTest extends UnitaryTestCase
 {
-    private DBStorageInterface $DBStorage;
-    private MysqlService       $mysql;
-    private Pdo                $pdo;
+    private DbStorageInterface    $DBStorage;
+    private MysqlService          $mysql;
+    private Pdo                   $pdo;
     private InstallData           $installData;
     private ConfigDataInterface   $configData;
     private DatabaseFileInterface $databaseFile;
@@ -162,7 +162,7 @@ class MySQLTest extends UnitaryTestCase
             ->method('exec')
             ->withConsecutive(...$execArguments);
 
-        $this->mysql->createDatabase();
+        $this->mysql->createDatabase($this->configData->getDbUser());
     }
 
 
@@ -246,7 +246,7 @@ class MySQLTest extends UnitaryTestCase
             ->method('exec')
             ->withConsecutive(...$execArguments);
 
-        $this->mysql->createDatabase();
+        $this->mysql->createDatabase($this->configData->getDbUser());
     }
 
     /**
@@ -323,7 +323,7 @@ class MySQLTest extends UnitaryTestCase
             sprintf(__('Error while setting the database permissions (\'%s\')'), $pdoException->getMessage())
         );
 
-        $this->mysql->createDatabase();
+        $this->mysql->createDatabase($this->configData->getDbUser());
     }
 
     /**
@@ -387,7 +387,7 @@ class MySQLTest extends UnitaryTestCase
             ->method('exec')
             ->withConsecutive(...$execArguments);
 
-        $this->mysql->rollback();
+        $this->mysql->rollback($this->configData->getDbUser());
     }
 
     public function testRollbackIsSuccessfulWithSameDnsHost(): void
@@ -416,7 +416,7 @@ class MySQLTest extends UnitaryTestCase
             ->method('exec')
             ->withConsecutive(...$execArguments);
 
-        $this->mysql->rollback();
+        $this->mysql->rollback($this->configData->getDbUser());
     }
 
     public function testRollbackIsSuccessfulWithHostingMode(): void
@@ -498,23 +498,9 @@ class MySQLTest extends UnitaryTestCase
                     'DROP DATABASE IF EXISTS `%s`',
                     $this->installData->getDbName()
                 ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHost()
-                ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHostDns()
-                ),
-            ],
+            ]
         ];
-        $matcher = $this->exactly(5);
+        $matcher = $this->exactly(3);
 
         $this->pdo->expects($matcher)
             ->method('exec')
@@ -552,23 +538,9 @@ class MySQLTest extends UnitaryTestCase
                     'DROP DATABASE IF EXISTS `%s`',
                     $this->installData->getDbName()
                 ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHost()
-                ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHostDns()
-                ),
-            ],
+            ]
         ];
-        $matcher = $this->exactly(4);
+        $matcher = $this->exactly(2);
 
         $this->pdo->expects($matcher)
             ->method('exec')
@@ -615,26 +587,10 @@ class MySQLTest extends UnitaryTestCase
                     'DROP DATABASE IF EXISTS `%s`',
                     $this->installData->getDbName()
                 ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHost()
-                ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHostDns()
-                ),
-            ],
+            ]
         ];
 
-        $matcher = $this->exactly(3);
-
-        $this->pdo->expects($matcher)
+        $this->pdo->expects(self::once())
             ->method('exec')
             ->withConsecutive(...$execArguments);
 
@@ -754,7 +710,7 @@ class MySQLTest extends UnitaryTestCase
 
         $this->pdo = $this->getMockBuilder(Pdo::class)->enableProxyingToOriginalMethods()->getMock();
 
-        $this->DBStorage = $this->createMock(DBStorageInterface::class);
+        $this->DBStorage = $this->createMock(DbStorageInterface::class);
         $this->DBStorage->method('getConnectionSimple')->willReturn($this->pdo);
         $this->databaseFile = $this->createMock(DatabaseFileInterface::class);
 
@@ -762,7 +718,7 @@ class MySQLTest extends UnitaryTestCase
         $this->configData = $this->config->getConfigData();
         $this->databaseUtil = $this->createMock(DatabaseUtil::class);
         $this->mysql = new MysqlService(
-            $this->DBStorage, $this->installData, $this->configData, $this->databaseFile, $this->databaseUtil
+            $this->DBStorage, $this->installData, $this->databaseFile, $this->databaseUtil
         );
     }
 

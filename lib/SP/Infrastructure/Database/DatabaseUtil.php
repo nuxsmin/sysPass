@@ -65,12 +65,12 @@ final class DatabaseUtil
         'account_data_v',
         'account_search_v',
     ];
-    private DBStorageInterface $DBStorage;
+    private DbStorageInterface $DBStorage;
 
     /**
      * DatabaseUtil constructor.
      */
-    public function __construct(DBStorageInterface $DBStorage)
+    public function __construct(DbStorageInterface $DBStorage)
     {
         $this->DBStorage = $DBStorage;
     }

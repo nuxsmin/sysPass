@@ -33,7 +33,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\Persistence\UpgradeDatabaseServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
-use SP\Infrastructure\Database\MySQLFileParser;
+use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Providers\Log\FileLogHandler;
@@ -205,7 +205,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
                     '.sql';
 
         try {
-            return (new MySQLFileParser(new FileHandler($fileName)))->parse('$$');
+            return (new MysqlFileParser(new FileHandler($fileName)))->parse('$$');
         } catch (FileException $e) {
             processException($e);
 

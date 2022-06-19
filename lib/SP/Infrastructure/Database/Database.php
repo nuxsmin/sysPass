@@ -44,18 +44,18 @@ final class Database implements DatabaseInterface
     protected int                $numRows    = 0;
     protected int                $numFields  = 0;
     protected ?array             $lastResult = null;
-    protected DBStorageInterface $dbHandler;
+    protected DbStorageInterface $dbHandler;
     private ?int                 $lastId     = null;
     private EventDispatcher      $eventDispatcher;
 
     /**
      * DB constructor.
      *
-     * @param  DBStorageInterface  $dbHandler
+     * @param  DbStorageInterface  $dbHandler
      * @param  EventDispatcher  $eventDispatcher
      */
     public function __construct(
-        DBStorageInterface $dbHandler,
+        DbStorageInterface $dbHandler,
         EventDispatcher $eventDispatcher
     ) {
         $this->dbHandler = $dbHandler;
@@ -82,7 +82,7 @@ final class Database implements DatabaseInterface
         return $this->lastId;
     }
 
-    public function getDbHandler(): DBStorageInterface
+    public function getDbHandler(): DbStorageInterface
     {
         return $this->dbHandler;
     }
@@ -291,7 +291,7 @@ final class Database implements DatabaseInterface
         array $options = [],
         ?bool $buffered = null
     ): PDOStatement {
-        if ($buffered === false && $this->dbHandler instanceof MySQLHandler) {
+        if ($buffered === false && $this->dbHandler instanceof MysqlHandler) {
             $this->dbHandler
                 ->getConnection()
                 ->setAttribute(
