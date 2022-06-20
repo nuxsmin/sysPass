@@ -72,10 +72,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
 
         self::checkVersion($version);
 
-        self::checkXmlHash(
-            $this->xml,
-            $this->config->getConfigData()->getPasswordSalt()
-        );
+        self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
 
         return new VerifyResult(
             $version,

@@ -31,7 +31,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -40,7 +39,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 /**
  * Class DownloadBackupController
  */
-final class DownloadBackupController extends SimpleControllerBase
+final class DownloadBackupAppController extends SimpleControllerBase
 {
     use JsonTrait;
 
@@ -99,8 +98,8 @@ final class DownloadBackupController extends SimpleControllerBase
     /**
      * initialize
      *
-     * @throws SessionTimeout
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function initialize(): void
     {

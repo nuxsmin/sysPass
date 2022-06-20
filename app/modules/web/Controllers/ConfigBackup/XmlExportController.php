@@ -63,7 +63,7 @@ final class XmlExportController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function xmlExportAction(): bool
     {
@@ -132,8 +132,8 @@ final class XmlExportController extends SimpleControllerBase
     /**
      * initialize
      *
-     * @throws SessionTimeout
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function initialize(): void
     {

@@ -100,8 +100,8 @@ final class DownloadBackupDbController extends SimpleControllerBase
     /**
      * initialize
      *
-     * @throws SessionTimeout
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function initialize(): void
     {
