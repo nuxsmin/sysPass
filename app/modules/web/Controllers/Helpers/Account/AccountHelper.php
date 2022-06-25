@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -68,7 +68,6 @@ final class AccountHelper extends AccountHelperBase
 {
     use ItemTrait;
 
-    private Acl                            $acl;
     private AccountServiceInterface        $accountService;
     private AccountHistoryServiceInterface $accountHistoryService;
     private PublicLinkServiceInterface     $publicLinkService;

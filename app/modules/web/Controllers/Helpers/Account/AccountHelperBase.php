@@ -44,7 +44,7 @@ abstract class AccountHelperBase extends HelperBase
     protected ?int                     $actionId = null;
     protected AccountActionsHelper     $accountActionsHelper;
     protected bool                     $isView   = false;
-    private Acl                        $acl;
+    protected Acl                      $acl;
     private MasterPassServiceInterface $masterPassService;
 
     public function __construct(

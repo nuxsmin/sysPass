@@ -66,7 +66,7 @@ use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
 use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
 use SP\Modules\Web\Controllers\Install\InstallController;
-use SP\Modules\Web\Controllers\Items\AccountUserController;
+use SP\Modules\Web\Controllers\Items\AccountsUserController;
 use SP\Modules\Web\Controllers\Items\CategoriesController;
 use SP\Modules\Web\Controllers\Items\ClientsController;
 use SP\Modules\Web\Controllers\Items\NotificationsController;
@@ -109,7 +109,7 @@ final class Init extends HttpModuleBase
      * List of controllers that don't need to update the user's session activity
      */
     private const NO_SESSION_ACTIVITY = [
-        AccountUserController::class,
+        AccountsUserController::class,
         CategoriesController::class,
         ClientsController::class,
         NotificationsController::class,

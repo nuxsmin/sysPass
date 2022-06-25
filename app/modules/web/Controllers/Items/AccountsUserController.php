@@ -33,9 +33,9 @@ use SP\Mvc\Controller\SimpleControllerHelper;
 use stdClass;
 
 /**
- * Class AccountUserController
+ * Class AccountsUserController
  */
-final class AccountUserController extends SimpleControllerBase
+final class AccountsUserController extends SimpleControllerBase
 {
     private AccountServiceInterface $accountService;
 
