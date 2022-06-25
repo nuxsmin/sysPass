@@ -539,7 +539,7 @@ sysPass.Actions = function (log) {
             log.info("user:passreset");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "/?r=" + $obj.data("action-route");
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = $obj.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
