@@ -49,7 +49,7 @@ $preset = $_getvar('preset');
                                 <?php /** @var SelectItem $user */
                                 foreach ($_getvar('users') as $user): ?>
                                     <option
-                                            value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
+                                            value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -67,7 +67,7 @@ $preset = $_getvar('preset');
                                 <?php /** @var SelectItem $userGroup */
                                 foreach ($_getvar('userGroups') as $userGroup): ?>
                                     <option
-                                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
+                                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -85,7 +85,7 @@ $preset = $_getvar('preset');
                                 <?php /** @var SelectItem $userProfile */
                                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                                     <option
-                                            value="<?php echo $userProfile->getId(); ?>" <?php echo $userProfile->isSelected() ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
+                                            value="<?php echo $userProfile->getId(); ?>" <?php echo $userProfile->isSelected() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>

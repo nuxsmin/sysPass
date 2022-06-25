@@ -1,4 +1,27 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @var ThemeIcons $icons
  * @var ConfigData $configData
@@ -87,7 +110,7 @@ use SP\Mvc\View\Template;
                     <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getDokuwikiUrl(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiUrl(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_url"><?php echo __('API URL'); ?></label>
                 </div>
@@ -97,7 +120,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Base URL'); ?>
                 <div id="help-dokuwiki_urlbase"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-dokuwiki_urlbase">
                     <p>
@@ -118,7 +142,7 @@ use SP\Mvc\View\Template;
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getDokuwikiUrlBase(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiUrlBase(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_urlbase"><?php echo __('Base URL'); ?></label>
                 </div>
@@ -128,7 +152,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('User'); ?>
                 <div id="help-dokuwiki_user"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-dokuwiki_user">
                     <p>
@@ -141,7 +166,7 @@ use SP\Mvc\View\Template;
                     <input id="dokuwiki_user" name="dokuwiki_user" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getDokuwikiUser(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiUser(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_user"><?php echo __('User'); ?></label>
                 </div>
@@ -181,7 +206,7 @@ use SP\Mvc\View\Template;
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getDokuwikiNamespace(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getDokuwikiNamespace(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_namespace"><?php echo __('Namespace'); ?></label>
                 </div>

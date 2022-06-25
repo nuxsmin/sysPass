@@ -32,6 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
@@ -272,9 +273,10 @@ final class AccountManagerController extends ControllerBase
     /**
      * Initialize class
      *
+     * @throws AuthException
      * @throws DependencyException
      * @throws NotFoundException
-     * @throws AuthException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

@@ -135,9 +135,13 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
 
             try {
                 if ($this->version >= 210) {
-                    $xmlDecrypted = Crypt::decrypt($data, $node->getAttribute('key'), $this->importParams->getImportPwd());
+                    $xmlDecrypted = Crypt::decrypt($data,
+                        $node->getAttribute('key'),
+                        $this->importParams->getImportPwd());
                 } else {
-                    $xmlDecrypted = OldCrypt::getDecrypt($data, base64_decode($node->getAttribute('iv')), $this->importParams->getImportPwd());
+                    $xmlDecrypted = OldCrypt::getDecrypt($data,
+                        base64_decode($node->getAttribute('iv')),
+                        $this->importParams->getImportPwd());
                 }
             } catch (CryptoException $e) {
                 processException($e);

@@ -51,6 +51,7 @@ class SecureSessionServiceTest extends TestCase
         $service = $dic->get(SecureSessionService::class);
 
         $stub = $this->createMock(UUIDCookie::class);
+
         $stub->method('loadCookie')
             ->willReturn(uniqid('', true));
         $stub->method('createCookie')

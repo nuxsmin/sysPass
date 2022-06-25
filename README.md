@@ -6,7 +6,7 @@
 
 Join us in the Gitter chat room:  [![Join the chat at https://gitter.im/sysPass/Lobby](https://badges.gitter.im/sysPass/Lobby.svg)](https://gitter.im/sysPass/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 
-----------------
+---
 
 PHP web based Password Manager for business and personal use.
 
@@ -23,12 +23,12 @@ PHP web based Password Manager for business and personal use.
 
 Installation instructions and documentation at Doc https://doc.syspass.org
 
-----------------
+----
 
 This software is published under GNU GPLv3 license. For details about that, there is
 a copy on 'COPYING' file.
 
-----------------
+----
 
 https://syspass.org
 
@@ -66,4 +66,6 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/sysPass/sponsor/8/website" target="_blank"><img src="https://opencollective.com/sysPass/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/sysPass/sponsor/9/website" target="_blank"><img src="https://opencollective.com/sysPass/sponsor/9/avatar.svg"></a>
 
+---
 
+Though it would be preferable to ask or report issues through GitHub's website, you can reach me out by email (eg. CVEs, contribution, etc.): nuxsmin[a_t]syspass[d_o_t]org  

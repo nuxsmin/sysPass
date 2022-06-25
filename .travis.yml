@@ -1,12 +1,12 @@
+dist: xenial
+
 language: php
 
 sudo: false
 
 php:
-  - '7.0'
-  - '7.1'
-  - '7.2'
   - '7.3'
+  - '7.4'
 
 branches:
   only:
@@ -14,7 +14,7 @@ branches:
   - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
 
 addons:
-  mariadb: '10.1'
+  mariadb: '10.3'
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -22,7 +22,7 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite Core
+script: XDEBUG_MODE=coverage ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite Core
 
 after_script:
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then mv ./tests/_output/coverage-clover.xml clover.xml && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi

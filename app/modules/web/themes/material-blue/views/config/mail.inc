@@ -73,7 +73,7 @@ use SP\Mvc\View\Template;
                     <input id="mail_server" name="mail_server" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getMailServer(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getMailServer(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_server"><?php echo __('Server'); ?></label>
                 </div>
@@ -126,7 +126,7 @@ use SP\Mvc\View\Template;
                     <input id="mail_user" name="mail_user" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="50"
-                           value="<?php echo $configData->getMailUser(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getMailUser(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_user"><?php echo __('User'); ?></label>
                 </div>
@@ -173,7 +173,7 @@ use SP\Mvc\View\Template;
                     <input id="mail_from" name="mail_from" type="email"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
-                           value="<?php echo $configData->getMailFrom(); ?>"/>
+                           value="<?php echo htmlspecialchars($configData->getMailFrom(), ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_from"><?php echo __('Sender email address'); ?></label>
                 </div>

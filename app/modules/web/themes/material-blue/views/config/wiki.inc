@@ -1,4 +1,27 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @var ThemeIcons $icons
  * @var ConfigData $configData
@@ -61,7 +84,7 @@ use SP\Mvc\View\Template;
                     </p>
 
                     <p>
-                        <?php __('Example:'); ?>
+                        <?php echo __('Example:'); ?>
                     </p>
 
                     <p>
@@ -74,7 +97,7 @@ use SP\Mvc\View\Template;
                     <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getWikiSearchurl(); ?>">
+                           value="<?php echo htmlspecialchars($configData->getWikiSearchurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_searchurl"><?php echo __('Wiki search URL'); ?></label>
                 </div>
@@ -84,7 +107,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Wiki page URL'); ?>
                 <div id="help-wiki_pageurl"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wiki_pageurl">
                     <p>
@@ -109,7 +133,7 @@ use SP\Mvc\View\Template;
                     <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo $configData->getWikiPageurl(); ?>">
+                           value="<?php echo htmlspecialchars($configData->getWikiPageurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_pageurl"><?php echo __('Wiki page URL'); ?></label>
                 </div>
@@ -119,7 +143,8 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Account name prefix'); ?>
                 <div id="help-wikifilter"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
+                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wikifilter">
                     <p>

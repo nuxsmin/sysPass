@@ -19,7 +19,7 @@ if (!isset($data)) {
     $data = $_getvar('data');
 }
 
-$index = isset($index) ? $index : 0;
+$index = $index ?? 0;
 ?>
 
 <div class="tab-actions">

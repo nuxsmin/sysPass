@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Account;
@@ -202,7 +202,7 @@ final class AccountSearchItem
      */
     public function getShortUrl()
     {
-        return Html::truncate($this->accountSearchVData->getUrl(), $this->textMaxLength);
+        return Html::truncate($this->getSafeUrl(), $this->textMaxLength);
     }
 
     /**
@@ -210,7 +210,15 @@ final class AccountSearchItem
      */
     public function isUrlIslink()
     {
-        return preg_match('#^\w+://#i', $this->accountSearchVData->getUrl());
+        return preg_match('#^\w+://#', $this->accountSearchVData->getUrl());
+    }
+
+    /**
+     * @return string
+     */
+    public function getSafeUrl()
+    {
+        return Html::getSafeUrl($this->accountSearchVData->getUrl());
     }
 
     /**
@@ -379,7 +387,7 @@ final class AccountSearchItem
     public function getShortNotes()
     {
         if ($this->accountSearchVData->getNotes()) {
-            return nl2br(Html::truncate($this->accountSearchVData->getNotes(), 300));
+            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchVData->getNotes(), 300), ENT_QUOTES));
         }
 
         return '';

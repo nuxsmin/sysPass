@@ -74,7 +74,7 @@ use SP\Mvc\View\Template;
                 <input id="authbasic_domain" name="authbasic_domain" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo $configData->getAuthBasicDomain(); ?>">
+                       value="<?php echo htmlspecialchars($configData->getAuthBasicDomain(), ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php echo __('Domain name'); ?></label>
             </div>
@@ -101,7 +101,7 @@ use SP\Mvc\View\Template;
                 <?php /** @var SelectItem $userGroup */
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
-                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
+                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -127,7 +127,7 @@ use SP\Mvc\View\Template;
                 <?php /** @var SelectItem $userProfile */
                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                     <option
-                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
+                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>

@@ -948,10 +948,14 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 }));
 
-            if (fileType === 'application/pdf') {
+            if (fileType.toUpperCase() === 'PDF') {
+                log.info("Opening PDF file in new window/tab");
+
                 window.open(url, '_blank');
                 return;
             }
+
+            log.info("Downloading file");
 
             $.fileDownload(url,
                 {
@@ -1466,30 +1470,7 @@ sysPass.Actions = function (log) {
             log.info("plugin:nav");
 
             grid.nav($obj);
-        },
-        delete: function ($obj) {
-            log.info("plugin:delete");
-
-            grid.delete($obj, function (items) {
-                const opts = sysPassApp.requests.getRequestOpts();
-                opts.method = "get";
-                opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
-                    {
-                        r: [$obj.data("action-route"), (items.length === 0 ? $obj.data("item-id") : null)],
-                        sk: sysPassApp.sk.get(),
-                        isAjax: 1
-                    });
-                opts.data = {items: items};
-
-                sysPassApp.requests.getActionCall(opts, function (json) {
-                    sysPassApp.msg.out(json);
-
-                    if (json.status === 0) {
-                        getContent({r: $obj.data("action-next")});
-                    }
-                });
-            });
-        },
+        }
     };
 
     /**

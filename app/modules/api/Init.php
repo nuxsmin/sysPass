@@ -137,11 +137,9 @@ final class Init extends ModuleBase
     /**
      * Comprobar si es necesario actualizar componentes
      *
-     * @throws InitializationException
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws EnvironmentIsBrokenException
      * @throws FileException
+     * @throws InitializationException
      */
     private function checkUpgrade()
     {

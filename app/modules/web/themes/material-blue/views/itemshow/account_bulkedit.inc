@@ -51,7 +51,7 @@ use SP\Mvc\View\Template;
                                 <option value=""><?php echo __('Select Client'); ?></option>
                                 <?php foreach ($_getvar('clients') as $client): ?>
                                     <option
-                                            value="<?php echo $client->getId(); ?>"><?php echo $client->getName(); ?></option>
+                                            value="<?php echo $client->getId(); ?>"><?php echo htmlspecialchars($client->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -67,7 +67,7 @@ use SP\Mvc\View\Template;
                                 <option value=""><?php echo __('Select Category'); ?></option>
                                 <?php foreach ($_getvar('categories') as $category): ?>
                                     <option
-                                            value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
+                                            value="<?php echo $category->getId(); ?>"><?php echo htmlspecialchars($category->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -83,7 +83,7 @@ use SP\Mvc\View\Template;
                                 <option value=""><?php echo __('Select User'); ?></option>
                                 <?php foreach ($_getvar('users') as $user): ?>
                                     <option
-                                            value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
+                                            value="<?php echo $user->getId(); ?>"><?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -99,7 +99,7 @@ use SP\Mvc\View\Template;
                                 <option value=""><?php echo __('Select Group'); ?></option>
                                 <?php foreach ($_getvar('userGroups') as $group): ?>
                                     <option
-                                            value="<?php echo $group->getId(); ?>"><?php echo $group->getName(); ?></option>
+                                            value="<?php echo $group->getId(); ?>"><?php echo htmlspecialchars($group->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -112,7 +112,7 @@ use SP\Mvc\View\Template;
                                     class="select-box-tags">
                                 <option value=""><?php echo __('Select Tags'); ?></option>
                                 <?php foreach ($_getvar('tags') as $tag): ?>
-                                    <option value="<?php echo $tag->getId(); ?>"><?php echo $tag->getName(); ?></option>
+                                    <option value="<?php echo $tag->getId(); ?>"><?php echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -136,7 +136,7 @@ use SP\Mvc\View\Template;
                                         <option value=""><?php echo __('Select Users'); ?></option>
                                         <?php foreach ($_getvar('users') as $user): ?>
                                             <option
-                                                    value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
+                                                    value="<?php echo $user->getId(); ?>"><?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -161,7 +161,7 @@ use SP\Mvc\View\Template;
                                         <option value=""><?php echo __('Select Users'); ?></option>
                                         <?php foreach ($_getvar('users') as $user): ?>
                                             <option
-                                                    value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
+                                                    value="<?php echo $user->getId(); ?>"><?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -193,7 +193,7 @@ use SP\Mvc\View\Template;
                                         <option value=""><?php echo __('Select Groups'); ?></option>
                                         <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
-                                                    value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
+                                                    value="<?php echo $userGroup->getId(); ?>"><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                                         <?php endforeach; ?>
                                     </select>
 
@@ -218,7 +218,7 @@ use SP\Mvc\View\Template;
                                         <option value=""><?php echo __('Select Groups'); ?></option>
                                         <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
-                                                    value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
+                                                    value="<?php echo $userGroup->getId(); ?>"><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
                                         <?php endforeach; ?>
                                     </select>
 

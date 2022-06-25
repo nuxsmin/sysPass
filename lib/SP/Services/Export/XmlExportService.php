@@ -335,11 +335,11 @@ final class XmlExportService extends Service
                 // Crear el nodo hijo con los datos encriptados
                 $encryptedData = $this->xml->createElement('Data', base64_encode($encrypted));
 
-                $encryptedDataIV = $this->xml->createAttribute('key');
-                $encryptedDataIV->value = $securedKey;
+                $encryptedDataKey = $this->xml->createAttribute('key');
+                $encryptedDataKey->value = $securedKey;
 
                 // Añadir nodos de datos
-                $encryptedData->appendChild($encryptedDataIV);
+                $encryptedData->appendChild($encryptedDataKey);
                 $encryptedNode->appendChild($encryptedData);
 
                 // Añadir el nodo encriptado

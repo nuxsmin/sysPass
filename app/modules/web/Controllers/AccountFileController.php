@@ -28,13 +28,13 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Html\Html;
@@ -153,20 +153,22 @@ final class AccountFileController extends ControllerBase implements CrudControll
             );
 
             $response = $this->router->response();
-            $response->header('Cache-Control', 'max-age=60, must-revalidate');
-            $response->header('Content-length', $fileData->getSize());
-            $response->header('Content-type', $fileData->getType());
+            $response->header('Content-Length', $fileData->getSize());
+            $response->header('Content-Type', $fileData->getType());
             $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-transfer-encoding', 'binary');
+            $response->header('Content-Transfer-Encoding', 'binary');
+            $response->header('Accept-Ranges', 'bytes');
 
             $type = strtolower($fileData->getType());
 
             if ($type === 'application/pdf') {
-                $response->header('Content-Disposition', 'inline; filename="' . $fileData->getName() . '"');
+                $disposition = sprintf('inline; filename="%s"', $fileData->getName());
             } else {
+                $disposition = sprintf('attachment; filename="%s"', $fileData->getName());
                 $response->header('Set-Cookie', 'fileDownload=true; path=/');
-                $response->header('Content-Disposition', 'attachment; filename="' . $fileData->getName() . '"');
             }
+
+            $response->header('Content-Disposition', $disposition);
 
             $response->body($fileData->getContent());
             $response->send(true);
@@ -467,9 +469,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

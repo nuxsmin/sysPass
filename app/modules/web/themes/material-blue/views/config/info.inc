@@ -58,7 +58,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('PHP'); ?></div>
 
-            <?php printf('%s: %s', Html::strongText(__('Version')), phpversion()); ?>
+            <?php printf('%s: %s', Html::strongText(__('Version')), PHP_VERSION); ?>
             <br>
             <?php printf('%s: %s', Html::strongText(__('Extensions')), implode(', ', get_loaded_extensions())); ?>
             <br>
@@ -73,7 +73,7 @@
             <?php printf('%s: %s', Html::strongText(__('User')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
             <br>
             <?php printf('%s: %d MB/s', Html::strongText(__('Download rate')), $_getvar('downloadRate')); ?>
-            <?php if (function_exists('opcache_get_status') && version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
+            <?php if (function_exists('opcache_get_status') && PHP_VERSION_ID >= 50600): ?>
                 <br>
                 <?php echo Html::strongText(__('OP Cache')); ?>
                 <?php foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value): ?>

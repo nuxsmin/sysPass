@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html;
@@ -175,5 +175,28 @@ final class Html
 
         // Replace tags, then new lines, tabs and return chars, and then 2 or more spaces
         return trim(preg_replace(['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'], ' ', $text));
+    }
+
+    /**
+     * @param  string  $url
+     *
+     * @return string
+     */
+    public static function getSafeUrl(string $url): string
+    {
+        $match = preg_match('#^(([a-z]+)://[\w._-]+)(?:/(.*))?#i', $url, $urlParts);
+
+        if ($match !== 1) {
+            return htmlspecialchars($url, ENT_QUOTES);
+        }
+
+        switch (count($urlParts)) {
+            case 3:
+                return htmlspecialchars($urlParts[1], ENT_QUOTES).'/'.urlencode($urlParts[2]);
+            case 2:
+                return htmlspecialchars($urlParts[1], ENT_QUOTES);
+            default:
+                return htmlspecialchars($url, ENT_QUOTES);
+        }
     }
 }

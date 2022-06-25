@@ -163,14 +163,26 @@ final class MySQL implements DatabaseSetupInterface
         logger('Creating DB user');
 
         try {
-            $query = 'CREATE USER %s@`%s` IDENTIFIED BY %s';
+            $query = 'CREATE USER %s@%s IDENTIFIED BY %s';
 
             $dbc = $this->mysqlHandler->getConnectionSimple();
 
-            $dbc->exec(sprintf($query, $dbc->quote($user), $this->installData->getDbAuthHost(), $dbc->quote($pass)));
+            $dbc->exec(
+                sprintf($query,
+                    $dbc->quote($user),
+                    $dbc->quote($this->installData->getDbAuthHost()),
+                    $dbc->quote($pass))
+            );
 
-            if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                $dbc->exec(sprintf($query, $dbc->quote($user), $this->installData->getDbAuthHostDns(), $dbc->quote($pass)));
+            if (!empty($this->installData->getDbAuthHostDns())
+                && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
+            ) {
+                $dbc->exec(
+                    sprintf($query,
+                        $dbc->quote($user),
+                        $this->installData->getDbAuthHostDns(),
+                        $dbc->quote($pass))
+                );
             }
 
             $dbc->exec('FLUSH PRIVILEGES');
@@ -207,7 +219,10 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 $dbc = $this->mysqlHandler->getConnectionSimple();
 
-                $dbc->exec('CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
+                $dbc->exec(sprintf(
+                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                    $this->installData->getDbName()
+                ));
             } catch (PDOException $e) {
                 throw new SPException(
                     sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
@@ -219,12 +234,24 @@ final class MySQL implements DatabaseSetupInterface
             }
 
             try {
-                $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@`%s`';
+                $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@%s';
 
-                $dbc->exec(sprintf($query, $this->installData->getDbName(), $dbc->quote($this->configData->getDbUser()), $this->installData->getDbAuthHost()));
+                $dbc->exec(sprintf(
+                        $query,
+                        $this->installData->getDbName(),
+                        $dbc->quote($this->configData->getDbUser()),
+                        $dbc->quote($this->installData->getDbAuthHost()))
+                );
 
-                if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                    $dbc->exec(sprintf($query, $this->installData->getDbName(), $dbc->quote($this->configData->getDbUser()), $this->installData->getDbAuthHostDns()));
+                if (!empty($this->installData->getDbAuthHostDns())
+                    && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
+                ) {
+                    $dbc->exec(sprintf(
+                            $query,
+                            $this->installData->getDbName(),
+                            $dbc->quote($this->configData->getDbUser()),
+                            $dbc->quote($this->installData->getDbAuthHostDns()))
+                    );
                 }
 
                 $dbc->exec('FLUSH PRIVILEGES');
@@ -245,7 +272,7 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 // Commprobar si existe al seleccionarla
                 $this->mysqlHandler->getConnectionSimple()
-                    ->exec('USE `' . $this->installData->getDbName() . '`');
+                    ->exec(sprintf('USE `%s`', $this->installData->getDbName()));
             } catch (PDOException $e) {
                 throw new SPException(
                     __u('The database does not exist'),
@@ -283,11 +310,22 @@ final class MySQL implements DatabaseSetupInterface
                 $dbc->exec('DROP TABLE IF EXISTS `' . $this->installData->getDbName() . '`.`' . $table . '`');
             }
         } else {
-            $dbc->exec('DROP DATABASE IF EXISTS `' . $this->installData->getDbName() . '`');
-            $dbc->exec('DROP USER ' . $dbc->quote($this->configData->getDbUser()) . '@`' . $this->installData->getDbAuthHost() . '`');
+            $dbc->exec(sprintf(
+                'DROP DATABASE IF EXISTS `%s`',
+                $this->installData->getDbName()
+            ));
+            $dbc->exec(sprintf(
+                'DROP USER %s@%s',
+                $dbc->quote($this->configData->getDbUser()),
+                $dbc->quote($this->installData->getDbAuthHost())
+            ));
 
             if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                $dbc->exec('DROP USER ' . $dbc->quote($this->configData->getDbUser()) . '@`' . $this->installData->getDbAuthHostDns() . '`');
+                $dbc->exec(sprintf(
+                    'DROP USER %s@%s',
+                    $dbc->quote($this->configData->getDbUser()),
+                    $dbc->quote($this->installData->getDbAuthHostDns())
+                ));
             }
         }
 
@@ -303,7 +341,7 @@ final class MySQL implements DatabaseSetupInterface
             $dbc = $this->mysqlHandler->getConnectionSimple();
 
             // Usar la base de datos de sysPass
-            $dbc->exec('USE `' . $this->installData->getDbName() . '`');
+            $dbc->exec(sprintf('USE `%s`', $this->installData->getDbName()));
         } catch (PDOException $e) {
             throw new SPException(
                 sprintf(__('Error while selecting \'%s\' database (%s)'), $this->installData->getDbName(), $e->getMessage()),

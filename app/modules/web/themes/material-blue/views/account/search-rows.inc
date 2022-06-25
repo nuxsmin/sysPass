@@ -1,4 +1,27 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @var ThemeIcons         $icons
  * @var callable           $_getvar
@@ -44,17 +67,25 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                title="<?php echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
-                                          class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
+                                          class="mdl-chip__contact mdl-color-text--white">
+                                        <?php echo htmlspecialchars(mb_ucfirst($accountSearchData->getClientName()), ENT_QUOTES); ?>
+                                    </span>
                                     <span class="mdl-chip__text"
-                                          title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
+                                          title="<?php echo htmlspecialchars($accountSearchData->getClientName(), ENT_QUOTES); ?>">
+                                        <?php echo htmlspecialchars($accountSearchItem->getShortClientName(), ENT_QUOTES); ?>
+                                    </span>
                                 </span>
                             </a>
                         <?php else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
-                                      class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
+                                      class="mdl-chip__contact mdl-color-text--white">
+                                    <?php echo htmlspecialchars(mb_ucfirst($accountSearchData->getClientName()), ENT_QUOTES); ?>
+                                </span>
                                 <span class="mdl-chip__text"
-                                      title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
+                                      title="<?php echo htmlspecialchars($accountSearchData->getClientName(), ENT_QUOTES); ?>">
+                                    <?php echo htmlspecialchars($accountSearchItem->getShortClientName(), ENT_QUOTES); ?>
+                                </span>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -68,33 +99,45 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                class="btn-action"
                                data-action-route="<?php echo $_getvar('viewAccountRoute'); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
-                               data-onclick="account/view"><?php echo $accountSearchData->getName(); ?></a>
+                               data-onclick="account/view"><?php echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?></a>
                         <?php else: ?>
                             <div class="field-text">
-                                <?php echo $accountSearchData->getName(); ?>
+                                <?php echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>
                             </div>
                         <?php endif; ?>
                     </div>
 
                     <div class="field-category field-text label-field">
                         <div class="field-name"><?php echo __('Category'); ?></div>
-                        <div class="field-text"><?php echo $accountSearchData->getCategoryName(); ?></div>
+                        <div class="field-text">
+                            <?php echo htmlspecialchars($accountSearchData->getCategoryName(), ENT_QUOTES); ?>
+                        </div>
                     </div>
 
                     <?php if ($accountSearchItem->isShow()): ?>
                         <div class="field-user field-text label-field">
                             <div class="field-name"><?php echo __('User'); ?></div>
-                            <div class="field-text"><?php echo $accountSearchItem->getShortLogin(); ?></div>
+                            <div class="field-text">
+                                <?php echo htmlspecialchars($accountSearchItem->getShortLogin(), ENT_QUOTES); ?>
+                            </div>
                         </div>
 
                         <div class="field-url field-text label-field">
                             <div class="field-name"><?php echo __('URL / IP'); ?></div>
                             <?php if ($accountSearchItem->isUrlIslink()): ?>
-                                <a href="<?php echo $accountSearchData->getUrl(); ?>"
+                                <a href="<?php echo $accountSearchItem->getSafeUrl(); ?>"
                                    target="_blank"
-                                   title="<?php printf(__('Open link to: %s'), $accountSearchData->getUrl()); ?>"><?php echo $accountSearchItem->getShortUrl(); ?></a>
+                                   title="<?php printf(
+                                       __('Open link to: %s'),
+                                       htmlspecialchars($accountSearchData->getUrl(), ENT_QUOTES)
+                                   ); ?>">
+                                    <?php echo htmlspecialchars($accountSearchItem->getShortUrl(), ENT_QUOTES); ?>
+                                </a>
                             <?php else: ?>
-                                <div class="field-text"><?php echo $accountSearchItem->getShortUrl(); ?></div>
+                                <div class="field-text"><?php echo htmlspecialchars(
+                                        $accountSearchItem->getShortUrl(),
+                                        ENT_QUOTES
+                                    ); ?></div>
                             <?php endif; ?>
                         </div>
                     <?php else: ?>
@@ -106,7 +149,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <div class="tags-box">
                         <?php foreach ($accountSearchItem->getTags() as $tag): ?>
                             <span class="tag"
-                                  data-tag-id="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></span>
+                                  data-tag-id="<?php echo $tag->id; ?>">
+                                <?php echo htmlspecialchars($tag->name, ENT_QUOTES); ?>
+                            </span>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -120,7 +165,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <?php echo $icons->getIconWarning()->getIcon(); ?></i>
                             <span
                                     for="icon-expired-<?php echo $accountSearchData->getId(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Password Expired'); ?></span>
+                                    class="mdl-tooltip mdl-tooltip--top">
+                                <?php echo __('Password Expired'); ?>
+                            </span>
                         <?php endif; ?>
 
                         <?php if ($accountSearchData->getIsPrivate() === 1): ?>
@@ -128,13 +175,17 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                class="material-icons">lock</i>
                             <span
                                     for="icon-private-<?php echo $accountSearchData->getId(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Private Account'); ?></span>
+                                    class="mdl-tooltip mdl-tooltip--top">
+                                <?php echo __('Private Account'); ?>
+                            </span>
                         <?php elseif ($accountSearchData->getIsPrivateGroup() === 1): ?>
                             <i id="icon-private-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons">lock_open</i>
                             <span
                                     for="icon-private-<?php echo $accountSearchData->getId(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Private Account (Group)'); ?></span>
+                                    class="mdl-tooltip mdl-tooltip--top">
+                                <?php echo __('Private Account (Group)'); ?>
+                            </span>
                         <?php else: ?>
                             <i id="accesses-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons">face</i>
@@ -159,7 +210,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-status="<?php echo 'on'; ?>">star</i>
                             <span
                                     for="btn-favorite-<?php echo $accountSearchData->getId(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Delete Favorite'); ?></span>
+                                    class="mdl-tooltip mdl-tooltip--top">
+                                <?php echo __('Delete Favorite'); ?>
+                            </span>
                         <?php else: ?>
                             <i id="btn-favorite-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons icon-favorite"
@@ -169,7 +222,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-status="<?php echo 'off'; ?>">star_border</i>
                             <span
                                     for="btn-favorite-<?php echo $accountSearchData->getId(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Mark as Favorite'); ?></span>
+                                    class="mdl-tooltip mdl-tooltip--top">
+                                <?php echo __('Mark as Favorite'); ?>
+                            </span>
                         <?php endif; ?>
 
                         <?php if ($accountSearchData->getNotes() !== ''): ?>
@@ -180,7 +235,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <div class="tooltip-text">
                                     <p class="tooltip-header"><?php echo __('Notes'); ?></p>
                                     <p>
-                                        <?php echo htmlspecialchars($accountSearchItem->getShortNotes(), ENT_QUOTES); ?>
+                                        <?php echo $accountSearchItem->getShortNotes(); ?>
                                     </p>
                                 </div>
                             </div>
@@ -192,7 +247,11 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="attachments-<?php echo $accountSearchData->getId(); ?>">
                                 <div class="tooltip-text">
-                                    <?php printf('%s: %d', __('Attachments'), $accountSearchItem->getNumFiles()); ?>
+                                    <?php printf(
+                                            '%s: %d',
+                                        __('Attachments'),
+                                        $accountSearchItem->getNumFiles()
+                                    ); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -205,9 +264,17 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <div class="tooltip-text">
                                     <p class="tooltip-header"><?php echo __('Public Link'); ?></p>
                                     <p>
-                                        <?php printf('%s: %s', __('Expiry Date'), DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())); ?>
+                                        <?php printf(
+                                                '%s: %s',
+                                            __('Expiry Date'),
+                                            DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())
+                                        ); ?>
                                         <br>
-                                        <?php printf('%s: %s', __('Visits'), $accountSearchData->getPublicLinkTotalCountViews()); ?>
+                                        <?php printf(
+                                                '%s: %s',
+                                                __('Visits'),
+                                                $accountSearchData->getPublicLinkTotalCountViews()
+                                        ); ?>
                                     </p>
                                 </div>
                             </div>
@@ -216,7 +283,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <?php if ($wikiFilter
                             && $accountSearchItem->isWikiMatch($wikiFilter)): ?>
                             <?php if (AccountSearchItem::$dokuWikiEnabled): ?>
-                                <a href="<?php echo $_getvar('wikiPageUrl'), $accountSearchData->getName(); ?>"
+                                <a href="<?php echo $_getvar('wikiPageUrl'), urlencode(
+                                    $accountSearchData->getName()
+                                ); ?>"
                                    target="_blank">
                                     <i class="material-icons"
                                        title="<?php echo __('Link to Wiki'); ?>">library_books</i>
@@ -224,10 +293,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <i class="btn-action material-icons fg-green100"
                                    title="<?php echo __('View at Wiki'); ?>"
                                    data-action-route="<?php echo ActionsInterface::WIKI_VIEW; ?>"
-                                   data-pagename="<?php echo $accountSearchData->getName(); ?>"
+                                   data-pagename="<?php echo htmlspecialchars(
+                                       $accountSearchData->getName(),
+                                       ENT_QUOTES
+                                   ); ?>"
                                    data-onclick="wiki/show">library_books</i>
                             <?php else: ?>
-                                <a href="<?php echo $_getvar('wikiPageUrl'), $accountSearchData->getName(); ?>"
+                                <a href="<?php echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
                                    target="_blank">
                                     <i class="material-icons"
                                        title="<?php echo __('Link to Wiki'); ?>">library_books</i>
@@ -248,7 +320,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                class="btn-action material-icons <?php echo $action->getClassesAsString(), ' ', $action->getIcon()->getClass(); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-parent-id="<?php echo $accountSearchData->getParentId(); ?>"
-                                <?php foreach ($action->getData() as $dataName => $dataValue): printf('data-%s="%s"', $dataName, $dataValue); endforeach; ?>>
+                                <?php foreach ($action->getData() as $dataName => $dataValue):
+                                    printf('data-%s="%s"', $dataName, $dataValue);
+                                endforeach; ?>>
                                 <?php echo $action->getIcon()->getIcon(); ?></i>
                             <span
                                     for="<?php echo $actionUid; ?>"
@@ -271,9 +345,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                         <li class="btn-action mdl-menu__item <?php echo $actionMenu->getClassesAsString(); ?>"
                                             data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                             data-parent-id="<?php echo $accountSearchData->getParentId(); ?>"
-                                            <?php foreach ($actionMenu->getData() as $dataName => $dataValue): printf('data-%s="%s"', $dataName, $dataValue); endforeach; ?>>
+                                            <?php foreach ($actionMenu->getData() as $dataName => $dataValue):
+                                                printf('data-%s="%s"', $dataName, $dataValue);
+                                            endforeach; ?>>
                                             <i class="material-icons <?php echo $actionMenu->getIcon()->getClass(); ?>"
-                                               title="<?php echo $actionMenu->getTitle(); ?>"><?php echo $actionMenu->getIcon()->getIcon(); ?></i>
+                                               title="<?php echo $actionMenu->getTitle(); ?>">
+                                                <?php echo $actionMenu->getIcon()->getIcon(); ?>
+                                            </i>
                                             <?php echo $actionMenu->getName(); ?>
                                         </li>
                                     <?php endforeach; ?>

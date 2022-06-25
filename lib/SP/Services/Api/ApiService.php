@@ -33,6 +33,7 @@ use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\Service;
@@ -103,7 +104,19 @@ final class ApiService extends Service
             );
         }
 
-        $this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'));
+        try {
+            $this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'));
+        } catch (NoSuchItemException $e) {
+            logger($e->getMessage(), 'ERROR');
+
+            // For security reasons there won't be any hint about a not found token...
+            throw new ServiceException(
+                __u('Internal error'),
+                ServiceException::ERROR,
+                null,
+                JsonRpcResponse::INTERNAL_ERROR
+            );
+        }
 
         if ($this->authTokenData->getActionId() !== $actionId) {
             $this->accessDenied();

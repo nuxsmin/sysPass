@@ -79,7 +79,8 @@ final class Language
         'pt_BR' => 'Português',
         'it_IT' => 'Italiano',
         'da' => 'Dansk',
-        'fo' => 'Føroyskt mál'
+        'fo' => 'Føroyskt mál',
+        'ja_JP' => '日本語',
     ];
     /**
      * @var ConfigData
@@ -191,7 +192,7 @@ final class Language
         $locale = setlocale(LC_ALL, $lang);
 
         if ($locale === false) {
-            logger('Could not set locale', 'ERROR');
+            logger('Could not set locale to ' . $lang, 'ERROR');
             logger('Domain path: ' . LOCALES_PATH);
         } else {
             logger('Locale set to: ' . $locale);

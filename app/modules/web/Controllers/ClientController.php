@@ -28,13 +28,12 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
@@ -267,7 +266,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
             $itemData = $form->getItemData();
 
-            $this->clientService->create($itemData);
+            $id = $this->clientService->create($itemData);
 
             $this->eventDispatcher->notifyEvent('create.client',
                 new Event($this,
@@ -275,6 +274,8 @@ final class ClientController extends ControllerBase implements CrudControllerInt
                         ->addDescription(__u('Client added'))
                         ->addDetail(__u('Client'), $itemData->getName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::CLIENT, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client added'));
         } catch (ValidationException $e) {
@@ -315,6 +316,8 @@ final class ClientController extends ControllerBase implements CrudControllerInt
                         ->addDescription(__u('Client updated'))
                         ->addDetail(__u('Client'), $id))
             );
+
+            $this->updateCustomFieldsForItem(Acl::CLIENT, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client updated'));
         } catch (ValidationException $e) {
@@ -364,9 +367,10 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

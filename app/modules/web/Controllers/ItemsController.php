@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\DataModel\NotificationData;
@@ -166,6 +167,8 @@ final class ItemsController extends SimpleControllerBase
 
     /**
      * ItemsController constructor.
+     *
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

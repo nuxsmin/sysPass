@@ -29,12 +29,12 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
@@ -286,14 +286,14 @@ final class UserController extends ControllerBase implements CrudControllerInter
             if ($id === null) {
                 $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::USER, $id);
-
                 $this->eventDispatcher->notifyEvent(
                     'delete.user.selection',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Users deleted'))
                         ->setExtra('userId', $this->getItemsIdFromRequest($this->request)))
                 );
+
+                $this->deleteCustomFieldsForItem(Acl::USER, $id);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Users deleted'));
             } else {
@@ -338,13 +338,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             $id = $this->userService->create($itemData);
 
-            $this->addCustomFieldsForItem(Acl::USER, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('create.user',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('User added'))
                     ->addDetail(__u('User'), $itemData->getName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::USER, $id, $this->request);
 
             $this->checkChangeUserPass($id, $itemData);
 
@@ -405,14 +405,14 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             $this->userService->update($itemData);
 
-            $this->updateCustomFieldsForItem(Acl::USER, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('edit.user',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('User updated'))
                     ->addDetail(__u('User'), $itemData->getName())
                     ->addExtra('userId', $id))
             );
+
+            $this->updateCustomFieldsForItem(Acl::USER, $id, $this->request);
 
             $this->checkChangeUserPass($id, $itemData);
 
@@ -503,9 +503,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

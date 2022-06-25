@@ -26,12 +26,11 @@ namespace SP\Modules\Web\Controllers;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
@@ -205,9 +204,10 @@ final class AccessManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

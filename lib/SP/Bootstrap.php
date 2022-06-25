@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP;
@@ -92,10 +92,6 @@ final class Bootstrap
      */
     private $router;
     /**
-     * @var Language
-     */
-    private $language;
-    /**
      * @var Request
      */
     private $request;
@@ -127,7 +123,6 @@ final class Bootstrap
         $this->configData = $this->config->getConfigData();
         $this->router = $container->get(Klein::class);
         $this->request = $container->get(Request::class);
-        $this->language = $container->get(Language::class);
 
         $this->initRouter();
     }
@@ -161,22 +156,31 @@ final class Bootstrap
                     list($controller, $action) = explode('/', $apiRequest->getMethod());
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
-                    $method = $action . 'Action';
+                    $method = $action.'Action';
 
                     if (!method_exists($controllerClass, $method)) {
-                        logger($controllerClass . '::' . $method);
+                        logger($controllerClass.'::'.$method);
 
                         /** @var Response $response */
                         $response->headers()->set('Content-type', 'application/json; charset=utf-8');
-                        return $response->body(JsonRpcResponse::getResponseError($oops, JsonRpcResponse::METHOD_NOT_FOUND, $apiRequest->getId()));
+
+                        return $response->body(
+                            JsonRpcResponse::getResponseError(
+                                $oops,
+                                JsonRpcResponse::METHOD_NOT_FOUND,
+                                $apiRequest->getId()
+                            )
+                        );
                     }
+
+                    $this->setCors($response);
 
                     $this->initializeCommon();
 
                     self::$container->get(InitApi::class)
                         ->initialize($controller);
 
-                    logger('Routing call: ' . $controllerClass . '::' . $method);
+                    logger('Routing call: '.$controllerClass.'::'.$method);
 
                     return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
                 } catch (\Exception $e) {
@@ -216,13 +220,16 @@ final class Bootstrap
                     $this->initializePluginClasses();
 
                     if (!method_exists($controllerClass, $methodName)) {
-                        logger($controllerClass . '::' . $methodName);
+                        logger($controllerClass.'::'.$methodName);
 
                         /** @var Response $response */
                         $response->code(404);
 
                         throw new RuntimeException($oops);
                     }
+
+                    $this->setCors($response);
+                    $this->setXFrame($response);
 
                     $this->initializeCommon();
 
@@ -290,8 +297,8 @@ final class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__('Required PHP version >= %s <= %s'), '7.0', '7.3'),
-                InitializationException::ERROR,
+                sprintf(__('Required PHP version >= %s <= %s'), '7.3', '7.4'),
+                Core\Exceptions\SPException::ERROR,
                 __u('Please update the PHP version to run sysPass')
             );
         }
@@ -472,5 +479,24 @@ final class Bootstrap
             default;
                 throw new InitializationException('Unknown module');
         }
+    }
+
+    protected function setCors(Response $response): void
+    {
+        $response->header(
+            'Access-Control-Allow-Origin',
+            $this->configData->getApplicationUrl() ?? $this->request->getHttpHost()
+        );
+        $response->header(
+            'Access-Control-Allow-Headers',
+            'X-Requested-With, Content-Type, Accept, Origin, Authorization'
+        );
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    }
+
+    protected function setXFrame(Response $response): void
+    {
+        $response->header('X-FRAME-OPTIONS', 'DENY');
+        $response->header('Content-Security-Policy', 'frame-ancestors \'none\'');
     }
 }

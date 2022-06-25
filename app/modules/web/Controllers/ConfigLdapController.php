@@ -267,10 +267,7 @@ final class ConfigLdapController extends SimpleControllerBase
             $userLdapService = $this->dic->get(LdapImportService::class);
             $userLdapService->importUsers($ldapParams, $ldapImportParams);
 
-            $filter = $this->request->analyzeString('ldap_import_filter');
-
-            // Groups won't be imported if filter is set
-            if ($checkImportGroups === true && empty($filter)) {
+            if ($checkImportGroups === true) {
                 $userLdapService->importGroups($ldapParams, $ldapImportParams);
             }
 

@@ -229,7 +229,7 @@ final class AccountSearchService extends Service
         $queryCondition = new QueryCondition();
 
         $match = preg_match_all(
-            '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-z_]+):(?!\s]*)"?(?<filter_condition>[^":]+)"?/',
+            '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-zа-я_]+):(?!\s]*)"?(?<filter_condition>[^":]+)"?/u',
             $string,
             $filters
         );

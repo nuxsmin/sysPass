@@ -69,12 +69,6 @@ final class PluginGrid extends GridBase
         $grid->addDataAction($this->getDisableAction());
         $grid->addDataAction($this->getResetAction());
         $grid->addDataAction($this->getDeleteAction());
-        $grid->addDataAction(
-            $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

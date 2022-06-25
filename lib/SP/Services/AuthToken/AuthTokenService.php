@@ -307,15 +307,15 @@ final class AuthTokenService extends Service
      *
      * @return false|AuthTokenData
      * @throws ConstraintException
+     * @throws NoSuchItemException
      * @throws QueryException
-     * @throws ServiceException
      */
     public function getTokenByToken($actionId, $token)
     {
         $result = $this->authTokenRepository->getTokenByToken($actionId, $token);
 
         if ($result->getNumRows() === 0) {
-            throw new ServiceException(__u('Internal error'));
+            throw new NoSuchItemException(__u('Token not found'));
         }
 
         return $result->getData();
