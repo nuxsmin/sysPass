@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,29 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Adapters;
+namespace SP\Domain\Account\Out;
 
 
-use SP\Domain\CustomField\Services\CustomFieldItem;
+use League\Fractal\Resource\Collection;
+use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
 
 /**
- * Class CustomFieldAdapter
+ * Class AccountAdapter
  *
  * @package SP\Adapters
  */
-final class CustomFieldAdapter extends AdapterBase
+interface AccountAdapterInterface
 {
-    public function transform(CustomFieldItem $data): array
-    {
-        return [
-            'type' => $data->typeName,
-            'typeText' => $data->typeText,
-            'definitionId' => $data->definitionId,
-            'definitionName' => $data->definitionName,
-            'help' => $data->help,
-            'value' => $data->value,
-            'encrypted' => $data->isEncrypted,
-            'required' => $data->required
-        ];
-    }
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function includeCustomFields(
+        AccountDetailsResponse $data,
+        CustomFieldServiceInterface $customFieldService
+    ): Collection;
+
+    public function transform(AccountDetailsResponse $data): array;
 }

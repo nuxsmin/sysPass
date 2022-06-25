@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,13 +26,13 @@ namespace SP\Modules\Api\Controllers;
 
 use Exception;
 use League\Fractal\Resource\Item;
-use SP\Adapters\ClientAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Client\Out\ClientAdapter;
 use SP\Domain\Client\Services\ClientService;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
 use SP\Mvc\Controller\ItemTrait;

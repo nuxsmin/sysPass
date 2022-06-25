@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -96,12 +96,13 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param  RequestInterface  $request
+     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     protected function addCustomFieldsForItem(
         int $moduleId,
@@ -109,17 +110,7 @@ trait ItemTrait
         RequestInterface $request,
         CustomFieldServiceInterface $customFieldService
     ): void {
-        $customFields = $request->analyzeArray(
-            'customfield',
-            function ($values) {
-                return array_map(
-                    static function ($value) {
-                        return Filter::getString($value);
-                    },
-                    $values
-                );
-            }
-        );
+        $customFields = $this->getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
             try {
@@ -179,17 +170,7 @@ trait ItemTrait
         RequestInterface $request,
         CustomFieldServiceInterface $customFieldService
     ): void {
-        $customFields = $request->analyzeArray(
-            'customfield',
-            function ($values) {
-                return array_map(
-                    static function ($value) {
-                        return Filter::getString($value);
-                    },
-                    $values
-                );
-            }
-        );
+        $customFields = $this->getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
             try {
@@ -226,5 +207,18 @@ trait ItemTrait
     protected function getItemsIdFromRequest(RequestInterface $request): ?array
     {
         return $request->analyzeArray('items');
+    }
+
+    /**
+     * @param  \SP\Http\RequestInterface  $request
+     *
+     * @return array|null
+     */
+    private static function getCustomFieldsFromRequest(RequestInterface $request): ?array
+    {
+        return $request->analyzeArray(
+            'customfield',
+            fn($values) => array_map(static fn($value) => Filter::getString($value), $values)
+        );
     }
 }

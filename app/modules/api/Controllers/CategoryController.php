@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,13 +26,13 @@ namespace SP\Modules\Api\Controllers;
 
 use Exception;
 use League\Fractal\Resource\Item;
-use SP\Adapters\CategoryAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Category\Out\CategoryAdapter;
 use SP\Domain\Category\Services\CategoryService;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 use SP\Mvc\Controller\ItemTrait;

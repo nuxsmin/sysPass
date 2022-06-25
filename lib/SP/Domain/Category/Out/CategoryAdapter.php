@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,26 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Adapters;
+namespace SP\Domain\Category\Out;
 
 use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
-use SP\DataModel\ClientData;
+use SP\DataModel\CategoryData;
+use SP\Domain\Common\Out\AdapterBase;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Out\CustomFieldAdapter;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Util\Link;
 
 /**
- * Class ClientAdapter
+ * Class CategoryAdapter
  *
  * @package SP\Adapters
  */
-final class ClientAdapter extends AdapterBase
+final class CategoryAdapter extends AdapterBase implements CategoryAdapterInterface
 {
     use ItemTrait;
 
-    protected $availableIncludes = [
-        'customFields'
-    ];
+    protected $availableIncludes = ['customFields'];
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -49,29 +50,30 @@ final class ClientAdapter extends AdapterBase
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function includeCustomFields(ClientData $data): Collection
+    public function includeCustomFields(CategoryData $data, CustomFieldServiceInterface $customFieldService): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $data->id),
+            $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $data->id, $customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
 
-    public function transform(ClientData $data): array
+    public function transform(CategoryData $data): array
     {
         return [
             'id' => $data->getId(),
             'name' => $data->getName(),
             'description' => $data->getDescription(),
-            'isGlobal' => $data->isGlobal,
             'customFields' => null,
             'links' => [
                 [
                     'rel' => 'self',
-                    'uri' => Link::getDeepLink($data->getId(),
-                        ActionsInterface::CLIENT_VIEW,
+                    'uri' => Link::getDeepLink(
+                        $data->getId(),
+                        ActionsInterface::CATEGORY_VIEW,
                         $this->configData,
-                        true)
+                        true
+                    )
                 ]
             ],
         ];

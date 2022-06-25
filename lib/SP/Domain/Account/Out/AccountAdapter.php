@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,11 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Adapters;
+namespace SP\Domain\Account\Out;
 
 use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Domain\Common\Out\AdapterBase;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Out\CustomFieldAdapter;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Link;
@@ -36,13 +39,11 @@ use SP\Util\Link;
  *
  * @package SP\Adapters
  */
-final class AccountAdapter extends AdapterBase
+final class AccountAdapter extends AdapterBase implements AccountAdapterInterface
 {
     use ItemTrait;
 
-    protected $availableIncludes = [
-        'customFields'
-    ];
+    protected $availableIncludes = ['customFields'];
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -50,10 +51,12 @@ final class AccountAdapter extends AdapterBase
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function includeCustomFields(AccountDetailsResponse $data): Collection
-    {
+    public function includeCustomFields(
+        AccountDetailsResponse $data,
+        CustomFieldServiceInterface $customFieldService
+    ): Collection {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId()),
+            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId(), $customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }

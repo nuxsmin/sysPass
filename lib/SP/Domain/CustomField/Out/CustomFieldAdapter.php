@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,23 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Adapters;
+namespace SP\Domain\CustomField\Out;
 
 
-use League\Fractal\TransformerAbstract;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Common\Out\AdapterBase;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**
- * Class AdapterBase
+ * Class CustomFieldAdapter
  *
  * @package SP\Adapters
  */
-abstract class AdapterBase extends TransformerAbstract
+final class CustomFieldAdapter extends AdapterBase implements CustomFieldAdapterInterface
 {
-    protected ConfigDataInterface $configData;
-
-    public function __construct(ConfigDataInterface $configData)
+    public function transform(CustomFieldItem $data): array
     {
-        $this->configData = $configData;
+        return [
+            'type' => $data->typeName,
+            'typeText' => $data->typeText,
+            'definitionId' => $data->definitionId,
+            'definitionName' => $data->definitionName,
+            'help' => $data->help,
+            'value' => $data->value,
+            'encrypted' => $data->isEncrypted,
+            'required' => $data->required
+        ];
     }
 }

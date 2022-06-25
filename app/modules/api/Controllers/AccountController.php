@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,6 @@ namespace SP\Modules\Api\Controllers;
 use Exception;
 use Klein\Klein;
 use League\Fractal\Resource\Item;
-use SP\Adapters\AccountAdapter;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
@@ -37,10 +36,12 @@ use SP\Core\Events\EventMessage;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Domain\Account\AccountPresetServiceInterface;
 use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Out\AccountAdapter;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Account\Services\AccountSearchFilter;
 use SP\Domain\Api\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Model\QueryCondition;
@@ -57,19 +58,25 @@ final class AccountController extends ControllerBase
 
     private AccountPresetServiceInterface $accountPresetService;
     private AccountServiceInterface       $accountService;
+    private CustomFieldServiceInterface   $customFieldService;
 
+    /**
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
     public function __construct(
         Application $application,
         Klein $router,
         ApiServiceInterface $apiService,
         Acl $acl,
         AccountPresetServiceInterface $accountPresetService,
-        AccountServiceInterface $accountService
+        AccountServiceInterface $accountService,
+        CustomFieldServiceInterface $customFieldService
     ) {
+        parent::__construct($application, $router, $apiService, $acl);
+
         $this->accountPresetService = $accountPresetService;
         $this->accountService = $accountService;
-
-        parent::__construct($application, $router, $apiService, $acl);
+        $this->customFieldService = $customFieldService;
 
         $this->apiService->setHelpClass(AccountHelp::class);
     }
@@ -113,18 +120,15 @@ final class AccountController extends ControllerBase
                 )
             );
 
-            $adapter = new AccountAdapter($this->configData);
+            $adapter = new AccountAdapter($this->configData, $this->customFieldService);
 
-            $out = $this->fractal
-                ->createData(new Item($accountResponse, $adapter));
+            $out = $this->fractal->createData(new Item($accountResponse, $adapter));
 
             if ($customFields) {
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($out->toArray(), $id)
-            );
+            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
         } catch (Exception $e) {
             $this->returnResponseException($e);
 
