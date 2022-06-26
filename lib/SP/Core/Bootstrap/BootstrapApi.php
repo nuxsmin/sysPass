@@ -43,11 +43,6 @@ final class BootstrapApi extends BootstrapBase
 
     protected HttpModuleBase $module;
 
-    /**
-     * @param  \Psr\Container\ContainerInterface  $container
-     *
-     * @return \SP\Core\Bootstrap\BootstrapApi
-     */
     public static function run(ContainerInterface $container): BootstrapApi
     {
         logger('------------');
@@ -69,37 +64,31 @@ final class BootstrapApi extends BootstrapBase
 
     protected function configureRouter(): void
     {
-        // Manage requests for api module
-        $this->router->respond(
-            'POST',
-            '@/api\.php',
-            $this->manageApiRequest()
-        );
+        $this->router->respond('POST', '@/api\.php', $this->manageApiRequest());
     }
 
     private function manageApiRequest(): Closure
     {
         return function ($request, $response, $service) {
+            /** @var \Klein\Request $request */
+            /** @var \Klein\Response $response */
+
             try {
                 logger('API route');
 
                 $apiRequest = $this->createObjectFor(ApiRequest::class);
 
-                [$controllerName, $action] = explode('/', $apiRequest->getMethod());
+                [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
 
-                $controllerClass = self::getClassFor($controllerName, $action);
+                $controllerClass = self::getClassFor($controllerName, $actionName);
 
-                $method = $action.'Action';
+                $method = $actionName.'Action';
 
                 if (!method_exists($controllerClass, $method)) {
                     logger($controllerClass.'::'.$method);
 
                     /** @var Response $response */
-                    $response->headers()
-                        ->set(
-                            'Content-type',
-                            'application/json; charset=utf-8'
-                        );
+                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                     return $response->body(
                         JsonRpcResponse::getResponseError(
@@ -109,6 +98,8 @@ final class BootstrapApi extends BootstrapBase
                         )
                     );
                 }
+
+                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $actionName);
 
                 $this->initializeCommon();
 

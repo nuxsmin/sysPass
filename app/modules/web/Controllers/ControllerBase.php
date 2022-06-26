@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
@@ -72,6 +73,7 @@ abstract class ControllerBase
     protected bool                $isAjax;
     protected LayoutHelper        $layoutHelper;
     private BrowserAuthInterface  $browser;
+    protected string              $actionName;
 
     public function __construct(
         Application $application,
@@ -93,6 +95,7 @@ abstract class ControllerBase
 
         $this->view->setBase($this->getViewBaseName());
         $this->isAjax = $this->request->isAjax();
+        $this->actionName = $this->session->getTrasientKey(BootstrapBase::CONTEXT_ACTION_NAME);
 
         $loggedIn = $this->session->isLoggedIn();
 

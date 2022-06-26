@@ -32,6 +32,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -53,6 +54,8 @@ defined('APP_ROOT') || die();
  */
 abstract class BootstrapBase
 {
+    public const CONTEXT_ACTION_NAME = "_actionName";
+
     protected const OOPS_MESSAGE = "Oops, it looks like this content does not exist...";
     /**
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
@@ -71,6 +74,7 @@ abstract class BootstrapBase
     protected Klein               $router;
     protected RequestInterface    $request;
     protected ConfigDataInterface $configData;
+    protected ContextInterface    $context;
     private ContainerInterface    $container;
     private UpgradeConfigChecker  $upgradeConfigChecker;
     private PhpExtensionChecker   $phpExtensionChecker;
@@ -84,6 +88,7 @@ abstract class BootstrapBase
         RequestInterface $request,
         UpgradeConfigChecker $upgradeConfigChecker,
         PhpExtensionChecker $extensionChecker,
+        ContextInterface $context,
         ContainerInterface $container
     ) {
         // Set the default language
@@ -94,6 +99,7 @@ abstract class BootstrapBase
         $this->request = $request;
         $this->upgradeConfigChecker = $upgradeConfigChecker;
         $this->phpExtensionChecker = $extensionChecker;
+        $this->context = $context;
         $this->container = $container;
 
         $this->initRouter();
@@ -152,21 +158,13 @@ abstract class BootstrapBase
         return null;
     }
 
-    final protected static function getClassFor(string $controllerName, ?string $actionName): string
+    final protected static function getClassFor(string $controllerName, string $actionName): string
     {
-        if ($actionName !== null) {
-            return sprintf(
-                'SP\Modules\%s\Controllers\%s\%sController',
-                ucfirst(APP_MODULE),
-                ucfirst($controllerName),
-                ucfirst($actionName)
-            );
-        }
-
         return sprintf(
-            'SP\Modules\%s\Controllers\%sController',
+            'SP\Modules\%s\Controllers\%s\%sController',
             ucfirst(APP_MODULE),
-            ucfirst($controllerName)
+            ucfirst($controllerName),
+            ucfirst($actionName)
         );
     }
 

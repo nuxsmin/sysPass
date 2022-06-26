@@ -29,6 +29,7 @@ use Klein\Klein;
 use League\Fractal\Manager;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
@@ -73,7 +74,7 @@ abstract class ControllerBase
 
         $this->fractal = new Manager();
         $this->controllerName = $this->getControllerName();
-        $this->actionName = $this->context->getTrasientKey('_actionName');
+        $this->actionName = $this->context->getTrasientKey(BootstrapBase::CONTEXT_ACTION_NAME);
     }
 
     final protected function getControllerName(): string

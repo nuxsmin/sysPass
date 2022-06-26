@@ -41,15 +41,11 @@ use SP\Util\Filter;
  */
 final class BootstrapWeb extends BootstrapBase
 {
+    private const ROUTE_REGEX = /** @lang RegExp */
+        '#(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#';
+
     protected HttpModuleBase $module;
 
-    /**
-     * @param  \Psr\Container\ContainerInterface  $container
-     *
-     * @return \SP\Core\Bootstrap\BootstrapWeb
-     *
-     * TODO: Inject needed classes
-     */
     public static function run(ContainerInterface $container): BootstrapWeb
     {
         logger('------------');
@@ -72,7 +68,6 @@ final class BootstrapWeb extends BootstrapBase
 
     protected function configureRouter(): void
     {
-        // Manage requests for web module
         $this->router->respond(['GET', 'POST'], '@(?!/api\.php)', $this->manageWebRequest());
     }
 
@@ -88,11 +83,7 @@ final class BootstrapWeb extends BootstrapBase
                 /** @var \Klein\Request $request */
                 $route = Filter::getString($request->param('r', 'index/index'));
 
-                if (!preg_match_all(
-                    '#(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#',
-                    $route,
-                    $matches
-                )) {
+                if (!preg_match_all(self::ROUTE_REGEX, $route, $matches)) {
                     throw new RuntimeException(self::OOPS_MESSAGE);
                 }
 
@@ -114,6 +105,8 @@ final class BootstrapWeb extends BootstrapBase
 
                     throw new RuntimeException(self::OOPS_MESSAGE);
                 }
+
+                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $actionName);
 
                 $this->setCors($response);
 
