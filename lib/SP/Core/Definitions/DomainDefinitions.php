@@ -35,14 +35,17 @@ final class DomainDefinitions
     {
         return [
             'SP\Domain\Account\*ServiceInterface'            => autowire('SP\Domain\Account\Services\*Service'),
+            'SP\Domain\Account\Out\*AdapterInterface'        => autowire('SP\Domain\Account\Out\*Adapter'),
             'SP\Domain\Account\In\*RepositoryInterface'      => autowire(
                 'SP\Infrastructure\Account\Repositories\*Repository'
             ),
             'SP\Domain\Category\*ServiceInterface'           => autowire('SP\Domain\Category\Services\*Service'),
+            'SP\Domain\Category\Out\*AdapterInterface'       => autowire('SP\Domain\Category\Out\*Adapter'),
             'SP\Domain\Category\In\*RepositoryInterface'     => autowire(
                 'SP\Infrastructure\Category\Repositories\*Repository'
             ),
             'SP\Domain\Client\*ServiceInterface'             => autowire('SP\Domain\Client\Services\*Service'),
+            'SP\Domain\Client\Out\*AdapterInterface'         => autowire('SP\Domain\Client\Out\*Adapter'),
             'SP\Domain\Client\In\*RepositoryInterface'       => autowire(
                 'SP\Infrastructure\Client\Repositories\*Repository'
             ),
