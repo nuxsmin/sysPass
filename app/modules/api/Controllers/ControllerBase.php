@@ -27,7 +27,6 @@ namespace SP\Modules\Api\Controllers;
 use Exception;
 use Klein\Klein;
 use League\Fractal\Manager;
-use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
@@ -48,7 +47,6 @@ abstract class ControllerBase
 {
     protected const SEARCH_COUNT_ITEMS = 25;
 
-    protected ContainerInterface  $dic;
     protected string              $controllerName;
     protected ContextInterface    $context;
     protected EventDispatcher     $eventDispatcher;
@@ -57,6 +55,7 @@ abstract class ControllerBase
     protected ConfigDataInterface $configData;
     protected Manager             $fractal;
     protected Acl                 $acl;
+    protected string              $actionName;
     private bool                  $isAuthenticated = false;
 
     public function __construct(
@@ -71,26 +70,17 @@ abstract class ControllerBase
         $this->router = $router;
         $this->apiService = $apiService;
         $this->acl = $acl;
+
         $this->fractal = new Manager();
-
         $this->controllerName = $this->getControllerName();
-        // FIXME: provide action name
-//        $this->actionName = $actionName;
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
+        $this->actionName = $this->context->getTrasientKey('_actionName');
     }
 
     final protected function getControllerName(): string
     {
         $class = static::class;
 
-        return substr(
-            $class,
-            strrpos($class, '\\') + 1,
-            -strlen('Controller')
-        ) ?: '';
+        return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
     }
 
     /**
@@ -116,12 +106,7 @@ abstract class ControllerBase
                 throw new SPException(__u('Unauthorized access'));
             }
 
-            $this->sendJsonResponse(
-                JsonRpcResponse::getResponse(
-                    $apiResponse,
-                    $this->apiService->getRequestId()
-                )
-            );
+            $this->sendJsonResponse(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
         } catch (SPException $e) {
             processException($e);
 
@@ -139,8 +124,6 @@ abstract class ControllerBase
 
     final protected function returnResponseException(Exception $e): void
     {
-        $this->sendJsonResponse(
-            JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId())
-        );
+        $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
     }
 }
