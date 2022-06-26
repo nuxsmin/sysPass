@@ -30,6 +30,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Api\ApiServiceInterface;
 use SP\Domain\Client\ClientServiceInterface;
+use SP\Domain\Client\Out\ClientAdapterInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
 
@@ -39,18 +40,25 @@ use SP\Modules\Api\Controllers\Help\ClientHelp;
 abstract class ClientBase extends ControllerBase
 {
     protected ClientServiceInterface $clientService;
+    protected ClientAdapterInterface $clientAdapter;
 
+    /**
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
     public function __construct(
         Application $application,
         Klein $router,
         ApiServiceInterface $apiService,
         Acl $acl,
-        ClientServiceInterface $clientService
+        ClientServiceInterface $clientService,
+        ClientAdapterInterface $clientAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
         $this->clientService = $clientService;
+        $this->clientAdapter = $clientAdapter;
 
         $this->apiService->setHelpClass(ClientHelp::class);
+
     }
 }

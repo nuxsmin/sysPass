@@ -129,7 +129,7 @@ abstract class ControllerBase
             $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
         }
 
-        $this->view->assign('action', true);
+        $this->view->assign('action', $this->actionName);
     }
 
     /**

@@ -30,6 +30,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Api\ApiServiceInterface;
 use SP\Domain\Category\CategoryServiceInterface;
+use SP\Domain\Category\Out\CategoryAdapterInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 
@@ -39,6 +40,7 @@ use SP\Modules\Api\Controllers\Help\CategoryHelp;
 abstract class CategoryBase extends ControllerBase
 {
     protected CategoryServiceInterface $categoryService;
+    protected CategoryAdapterInterface $categoryAdapter;
 
     /**
      * @throws \SP\Core\Exceptions\InvalidClassException
@@ -48,11 +50,13 @@ abstract class CategoryBase extends ControllerBase
         Klein $router,
         ApiServiceInterface $apiService,
         Acl $acl,
-        CategoryServiceInterface $categoryService
+        CategoryServiceInterface $categoryService,
+        CategoryAdapterInterface $categoryAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
         $this->categoryService = $categoryService;
+        $this->categoryAdapter = $categoryAdapter;
 
         $this->apiService->setHelpClass(CategoryHelp::class);
     }

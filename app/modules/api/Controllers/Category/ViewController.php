@@ -30,7 +30,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
-use SP\Domain\Category\Out\CategoryAdapter;
 use SP\Util\Util;
 
 
@@ -65,8 +64,7 @@ final class ViewController extends CategoryBase
                 )
             );
 
-            $out = $this->fractal
-                ->createData(new Item($categoryData, new CategoryAdapter($this->configData)));
+            $out = $this->fractal->createData(new Item($categoryData, $this->categoryAdapter));
 
             if ($customFields) {
                 $this->apiService->requireMasterPass();

@@ -30,7 +30,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
-use SP\Domain\Client\Out\ClientAdapter;
 use SP\Util\Util;
 
 /**
@@ -52,10 +51,7 @@ final class ViewController extends ClientBase
 
             $clientData = $this->clientService->getById($id);
 
-            $this->eventDispatcher->notifyEvent(
-                'show.client',
-                new Event($this)
-            );
+            $this->eventDispatcher->notifyEvent('show.client', new Event($this));
 
             $this->eventDispatcher->notifyEvent(
                 'show.client',
@@ -72,12 +68,7 @@ final class ViewController extends ClientBase
                 $this->apiService->requireMasterPass();
             }
 
-            $out = $this->fractal
-                ->createData(
-                    new Item(
-                        $clientData,
-                        new ClientAdapter($this->configData)
-                    ));
+            $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
 
             if ($customFields) {
                 $this->apiService->requireMasterPass();
