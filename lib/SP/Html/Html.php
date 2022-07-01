@@ -184,19 +184,19 @@ final class Html
      */
     public static function getSafeUrl(string $url): string
     {
-        $match = preg_match('#^(([a-z]+)://[\w._-]+)(?:/(.*))?#i', $url, $urlParts);
+        $urlParts = parse_url($url);
 
-        if ($match !== 1) {
-            return htmlspecialchars($url, ENT_QUOTES);
+        if ($urlParts === false) {
+            return 'malformed_url';
         }
 
-        switch (count($urlParts)) {
-            case 3:
-                return htmlspecialchars($urlParts[1], ENT_QUOTES).'/'.urlencode($urlParts[2]);
-            case 2:
-                return htmlspecialchars($urlParts[1], ENT_QUOTES);
-            default:
-                return htmlspecialchars($url, ENT_QUOTES);
-        }
+        return preg_replace_callback(
+            '/[^:\/@?&=#%\w]+/u',
+            function ($matches)
+            {
+                return urlencode($matches[0]);
+            },
+            $url
+        );
     }
 }
