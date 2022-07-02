@@ -60,9 +60,9 @@ final class Installer extends Service
     /**
      * sysPass' version and build number
      */
-    const VERSION      = [3, 2, 10];
+    const VERSION      = [3, 2, 11];
     const VERSION_TEXT = '3.2';
-    const BUILD        = 22070101;
+    const BUILD        = 22070201;
 
     /**
      * @var DatabaseSetupInterface

@@ -191,12 +191,12 @@ final class Html
         }
 
         return preg_replace_callback(
-            '/[^:\/@?&=#%\w]+/u',
+            '/["<>\']+/u',
             function ($matches)
             {
                 return urlencode($matches[0]);
             },
-            $url
+            strip_tags($url)
         );
     }
 }
