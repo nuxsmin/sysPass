@@ -22,78 +22,56 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Account\Out;
 
 use SP\Domain\Common\Out\DataModelBase;
 use SP\Domain\Common\Out\DataModelInterface;
 
-defined('APP_ROOT') || die();
-
 /**
- * Class ProfileBaseData
- *
- * @package SP\DataModel
+ * Class AccountPassData
  */
-class UserProfileData extends DataModelBase implements DataModelInterface
+class AccountPassData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id = 0;
-    /**
-     * @var string
-     */
-    public $name = '';
-    /**
-     * @var ProfileData
-     */
-    public $profile;
+    private ?int    $id        = null;
+    private ?string $name      = null;
+    private ?string $login     = null;
+    private ?string $pass      = null;
+    private ?string $key       = null;
+    private ?int    $parentId  = null;
+    private ?string $mPassHash = null;
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function getLogin(): ?string
     {
-        $this->name = $name;
+        return $this->login;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getPass(): ?string
     {
-        return (int)$this->id;
+        return $this->pass;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
+    public function getKey(): ?string
     {
-        $this->id = (int)$id;
+        return $this->key;
     }
 
-    /**
-     * @return ProfileData
-     */
-    public function getProfile()
+    public function getParentId(): ?int
     {
-        return $this->profile;
+        return $this->parentId;
     }
 
-    /**
-     * @param ProfileData $profile
-     */
-    public function setProfile(ProfileData $profile)
+    public function getMPassHash(): ?string
     {
-        $this->profile = $profile;
+        return $this->mPassHash;
     }
 }

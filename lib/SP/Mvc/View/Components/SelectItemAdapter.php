@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Mvc\View\Components;
 
 use RuntimeException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\DataModelInterface;
+use SP\Domain\Common\Out\DataModelInterface;
 use SP\Http\Json;
 
 /**

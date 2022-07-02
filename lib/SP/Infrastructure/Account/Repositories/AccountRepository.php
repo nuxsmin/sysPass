@@ -28,17 +28,18 @@ use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\In\AccountRepositoryInterface;
+use SP\Domain\Account\Out\AccountData;
+use SP\Domain\Account\Out\AccountPassData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Common\Out\SimpleModel;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
@@ -46,7 +47,6 @@ use SP\Infrastructure\Database\QueryResult;
 use SP\Mvc\Model\QueryAssignment;
 use SP\Mvc\Model\QueryCondition;
 use SP\Mvc\Model\QueryJoin;
-use stdClass;
 
 /**
  * Class AccountRepository
@@ -59,18 +59,15 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
 
     /**
      * Devolver el número total de cuentas
-     *
-     * @return stdClass
-     * @throws QueryException
-     * @throws ConstraintException
      */
-    public function getTotalNumAccounts(): stdClass
+    public function getTotalNumAccounts(): SimpleModel
     {
         $query = /** @lang SQL */
             'SELECT SUM(n) AS num FROM 
             (SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory) a';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(SimpleModel::class);
         $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData)->getData();
@@ -81,8 +78,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  QueryCondition  $queryCondition
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getPasswordForId(int $id, QueryCondition $queryCondition): QueryResult
     {
@@ -103,8 +98,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  QueryCondition  $queryCondition
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getPasswordHistoryForId(QueryCondition $queryCondition): QueryResult
     {

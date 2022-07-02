@@ -91,16 +91,10 @@ final class Database implements DatabaseInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function doSelect(
-        QueryData $queryData,
-        bool $fullCount = false
-    ): QueryResult {
+    public function doSelect(QueryData $queryData, bool $fullCount = false): QueryResult
+    {
         if ($queryData->getQuery() === '') {
-            throw new QueryException(
-                $queryData->getOnErrorMessage(),
-                SPException::ERROR,
-                __u('Blank query')
-            );
+            throw new QueryException($queryData->getOnErrorMessage(), SPException::ERROR, __u('Blank query'));
         }
 
         try {
@@ -140,11 +134,7 @@ final class Database implements DatabaseInterface
 
         $this->eventDispatcher->notifyEvent(
             'database.query',
-            new Event(
-                $this,
-                EventMessage::factory()
-                    ->addDescription($queryData->getQuery())
-            )
+            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery()))
         );
 
         if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {

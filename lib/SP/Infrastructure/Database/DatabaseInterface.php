@@ -35,6 +35,8 @@ use SP\Core\Exceptions\QueryException;
  */
 interface DatabaseInterface
 {
+    public function doSelect(QueryData $queryData, bool $fullCount = false): QueryResult;
+
     /**
      * Performs a DB query
      *

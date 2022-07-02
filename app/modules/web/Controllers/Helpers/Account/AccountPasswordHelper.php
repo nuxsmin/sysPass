@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\DataModel\AccountPassData;
+use SP\Domain\Account\Out\AccountPassData;
 use SP\Domain\Crypt\MasterPassServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;

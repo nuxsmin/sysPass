@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Plugin\Repositories;
 
-use SP\DataModel\DataModelBase;
-use SP\DataModel\DataModelInterface;
+use SP\Domain\Common\Out\DataModelBase;
+use SP\Domain\Common\Out\DataModelInterface;
 
 /**
  * Class PluginData

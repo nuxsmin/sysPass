@@ -32,9 +32,9 @@ use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Account\Services\AccountSearchFilter;
 use SP\Domain\Common\In\RepositoryInterface;
+use SP\Domain\Common\Out\SimpleModel;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Mvc\Model\QueryCondition;
-use stdClass;
 
 /**
  * Class AccountRepository
@@ -46,11 +46,10 @@ interface AccountRepositoryInterface extends RepositoryInterface
     /**
      * Devolver el número total de cuentas
      *
-     * @return stdClass
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getTotalNumAccounts(): stdClass;
+    public function getTotalNumAccounts(): SimpleModel;
 
     /**
      * @param  int  $id

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,30 +22,16 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Common\Out;
 
 /**
- * Class DataModelBase
+ * Class SimpleModel
  *
- * @package SP\DataModel
+ * This model does not contain any properties, they will be set on $properties property.
+ *
+ * It's intended to be used when returned non-well defined objects from the repository.
  */
-abstract class DataModelBase
+final class SimpleModel extends DataModelBase
 {
-    /**
-     * is utilized for reading data from inaccessible members.
-     *
-     * @param $name string
-     *
-     * @return mixed
-     * @link https://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
-     */
-    public function __get($name)
-    {
-        if (property_exists($this, $name)) {
-            return $this->{$name};
-        }
-
-        return null;
-    }
 
 }

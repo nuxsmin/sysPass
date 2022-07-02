@@ -22,40 +22,50 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
-
-
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Util\Util;
+namespace SP\Domain\Common\Out;
 
 /**
- * Trait Datamodel
- *
- * @package SP\DataModel
+ * Class DataModelBase
  */
-trait SerializedModel
+abstract class DataModelBase
 {
+    private array $properties;
+
+    public function __construct(?array $properties = [])
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
+    }
+
     /**
-     * @param string|null $class
-     * @param string      $property
+     * @param  string  $name
      *
      * @return mixed|null
-     * @throws NoSuchPropertyException
      */
-    public function hydrate(?string $class = null, string $property = 'data')
+    public function __get(string $name)
     {
-        if (property_exists($this, $property)) {
-            if ($this->{$property} === null) {
-                return null;
-            }
-
-            if ($class !== null) {
-                return Util::unserialize($class, $this->{$property});
-            }
-
-            return unserialize($this->{$property});
+        if (property_exists($this, $name)) {
+            return $this->{$name};
         }
 
-        throw new NoSuchPropertyException($property);
+        if (array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
+
+        return null;
+    }
+
+    public function __set(string $name, ?string $value = null): void
+    {
+        if (is_numeric($value)) {
+            $value = (int)$value;
+        }
+
+        if (property_exists($this, $name)) {
+            $this->{$name} = $value;
+        } else {
+            $this->properties[$name] = $value;
+        }
     }
 }

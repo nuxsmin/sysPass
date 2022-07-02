@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -51,7 +51,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      *
      * @since 5.1.0
      */
-    public function attach(SplObserver $observer)
+    public function attach(SplObserver $observer): void
     {
         $observerClass = get_class($observer);
 
@@ -77,7 +77,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * @throws InvalidClassException
      * @since 5.1.0
      */
-    public function detach(SplObserver $observer)
+    public function detach(SplObserver $observer): void
     {
         $observerClass = get_class($observer);
 
@@ -95,7 +95,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * @return void
      * @since 5.1.0
      */
-    public function notify()
+    public function notify(): void
     {
         foreach ($this->observers as $observer) {
             $observer->update($this);

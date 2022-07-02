@@ -30,6 +30,7 @@ use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Services\ConfigBackupService;
@@ -46,6 +47,7 @@ abstract class UnitaryTestCase extends TestCase
     protected static Generator  $faker;
     protected ConfigFileService $config;
     protected Application       $application;
+    protected ContextInterface  $context;
 
     public static function setUpBeforeClass(): void
     {
@@ -78,17 +80,17 @@ abstract class UnitaryTestCase extends TestCase
         $userLogin = new UserLoginResponse();
         $userLogin->setLogin(self::$faker->userName);
 
-        $context = new StatelessContext();
-        $context->initialize();
-        $context->setUserData($userLogin);
+        $this->context = new StatelessContext();
+        $this->context->initialize();
+        $this->context->setUserData($userLogin);
 
         $config = new ConfigFileService(
             $this->createStub(XmlHandler::class),
             $this->createStub(FileCache::class),
-            $context,
+            $this->context,
             $this->createStub(ConfigBackupService::class)
         );
 
-        return new Application($config, $this->createStub(EventDispatcher::class), $context);
+        return new Application($config, $this->createStub(EventDispatcher::class), $this->context);
     }
 }

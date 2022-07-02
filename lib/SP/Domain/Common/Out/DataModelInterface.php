@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,21 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Common\Out;
+
 
 /**
- * Interface HydratableInterface
+ * Interface DataModelInterface
  *
  * @package SP\DataModel
  */
-interface HydratableInterface
+interface DataModelInterface
 {
-    /**
-     * @param string $class
-     *
-     * @param string $property
-     *
-     * @return mixed|null
-     */
-    public function hydrate(string $class = null, string $property = 'data');
+    public function getId(): ?int;
+
+    public function getName(): ?string;
 }
