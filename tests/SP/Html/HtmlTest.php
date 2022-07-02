@@ -56,7 +56,7 @@ class HtmlTest extends TestCase
      */
     public function testGetSafeUrlEncoded(string $url)
     {
-        $this->assertEquals(0, preg_match('/["<>]+/', Html::getSafeUrl($url)));
+        $this->assertEquals(0, preg_match('/["<>\']+/', Html::getSafeUrl($url)));
     }
 
     private function urlProvider(): array
@@ -67,6 +67,7 @@ class HtmlTest extends TestCase
             ['https://foo.com/"><script>alert("TEST");</script>'],
             ['https://foo.com/"%20onClick="alert(\'TEST\'")'],
             ['https://foo.com/" onClick="alert(\'TEST\')"'],
+            ['mongodb+srv://cluster.foo.mongodb.net/bar'],
         ];
     }
 }
