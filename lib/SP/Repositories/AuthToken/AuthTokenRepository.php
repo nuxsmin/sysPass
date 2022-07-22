@@ -191,6 +191,10 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData->setFrom('AuthToken 
             INNER JOIN User ON AuthToken.userid = User.id');
 
+        if($this->context->getUserProfile()->isMgmApiOnlyUser() && !$this->context->getUserData()->getIsAdminApp()) {
+            $queryData->setWhere('User.id = ' . $this->context->getUserData()->getId());
+        }
+
         if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('User.login LIKE ? OR User.name LIKE ?');
 

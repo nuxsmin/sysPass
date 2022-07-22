@@ -63,6 +63,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
     protected $authTokenService;
 
     /**
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
      * Search action
      *
      * @return bool
@@ -152,10 +157,16 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->view->addTemplate('auth_token', 'itemshow');
 
         $authToken = $authTokenId ? $this->authTokenService->getById($authTokenId) : new AuthTokenData();
-
         $this->view->assign('authToken', $authToken);
 
-        $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$authToken->getUserId()]));
+        if($this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) && !$this->session->getUserData()->getIsAdminApp()) {
+            $tokenUserId = $this->session->getUserData()->getId();
+            $selectItems = [$this->userService->getById($tokenUserId)];
+        } else {
+            $selectItems = UserService::getItemsBasic();
+        }
+
+        $this->view->assign('users', SelectItemAdapter::factory($selectItems)->getItemsFromModelSelected([$authToken->getUserId()]));
         $this->view->assign('actions', SelectItemAdapter::factory(AuthTokenService::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
 
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
@@ -182,8 +193,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -217,8 +229,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -264,14 +277,16 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->session->getUserData()->getId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE) || (!$this->session->getUserData()->getIsAdminApp() && $tokenUserId !== $this->request->analyzeInt('users'))) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
 
             $form = new AuthTokenForm($this->dic);
             $form->validate(Acl::AUTHTOKEN_CREATE);
+            $form->validate(Acl::AUTHTOKEN_ONLY_USER);
 
             $apiTokenData = $form->getItemData();
 
@@ -304,11 +319,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT) || !$this->authTokenOnlyUser($tokenUserId)) {
+             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
-
 
             $form = new AuthTokenForm($this->dic, $id);
             $form->validate(Acl::AUTHTOKEN_EDIT);
@@ -358,8 +373,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -398,5 +414,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->checkLoggedIn();
 
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
+        $this->userService = $this->dic->get(UserService::class);
+    }
+
+    protected function authTokenOnlyUser($tokenUserId) {
+        return $this->session->getUserData()->getIsAdminApp() || ($this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) && $tokenUserId == $this->session->getUserData()->getId());
     }
 }

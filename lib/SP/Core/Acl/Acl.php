@@ -267,6 +267,8 @@ final class Acl implements ActionsInterface
             case self::AUTHTOKEN_EDIT:
             case self::AUTHTOKEN_DELETE:
                 return $userProfile->isMgmApiTokens();
+            case self::AUTHTOKEN_ONLY_USER:
+                return $userProfile->isMgmApiOnlyUser();
             case self::ITEMPRESET:
             case self::ITEMPRESET_SEARCH:
             case self::ITEMPRESET_VIEW:
