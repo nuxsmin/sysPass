@@ -114,6 +114,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected, $this->accountRepository->getPasswordHistoryForId(new QueryCondition()));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testIncrementDecryptCounter(): void
     {
         $id = 1;
@@ -137,6 +141,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertTrue($this->accountRepository->incrementDecryptCounter($id));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testIncrementDecryptCounterNoRows(): void
     {
         $id = 1;
@@ -158,6 +166,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertFalse($this->accountRepository->incrementDecryptCounter($id));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
     public function testCreate(): void
     {
         $accountRequest = $this->buildAccountRequest();
@@ -219,6 +231,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         return $accountRequest;
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
     public function testEditPassword(): void
     {
         $accountRequest = $this->buildAccountRequest();
@@ -247,6 +263,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->editPassword($accountRequest));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testUpdatePassword(): void
     {
         $accountPasswordRequest = new AccountPasswordRequest();
@@ -276,6 +296,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertTrue($this->accountRepository->updatePassword($accountPasswordRequest));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testEditRestore(): void
     {
         $historyId = 1;
@@ -302,6 +326,10 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertTrue($this->accountRepository->editRestore($historyId, $userId));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testDelete(): void
     {
         $id = 1;
@@ -325,6 +353,9 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->delete($id));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testUpdate(): void
     {
         $accountRequest = $this->buildAccountRequest();
@@ -359,6 +390,9 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testUpdateWithChangeGroup(): void
     {
         $accountRequest = $this->buildAccountRequest();
@@ -395,6 +429,9 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testUpdateWithChangeOwner(): void
     {
         $accountRequest = $this->buildAccountRequest();
@@ -431,6 +468,9 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testUpdateBulk()
     {
         $accountRequest = $this->buildAccountRequest();
