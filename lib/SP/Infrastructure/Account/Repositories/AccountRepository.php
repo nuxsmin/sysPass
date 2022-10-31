@@ -434,8 +434,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getById(int $id): QueryResult
     {
@@ -452,8 +450,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Returns all the items
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -534,8 +530,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  ItemSearchData  $itemSearchData
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -593,8 +587,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getDataForLink(int $id): QueryResult
     {
@@ -629,9 +621,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  QueryCondition  $queryFilterUser
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getByFilter(
         AccountSearchFilter $accountSearchFilter,
@@ -739,8 +728,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  QueryCondition  $queryFilter
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getForUser(QueryCondition $queryFilter): QueryResult
     {
@@ -762,8 +749,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  QueryCondition  $queryFilter
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getLinked(QueryCondition $queryFilter): QueryResult
     {
@@ -784,8 +769,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return \SP\Infrastructure\Database\QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult
     {
