@@ -62,13 +62,9 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function getTotalNumAccounts(): SimpleModel
     {
-        $query = /** @lang SQL */
-            'SELECT SUM(n) AS num FROM 
-            (SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory) a';
-
         $queryData = new QueryData();
         $queryData->setMapClassName(SimpleModel::class);
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::TOTAL_NUM_ACCOUNTS);
 
         return $this->db->doSelect($queryData)->getData();
     }
@@ -132,11 +128,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function incrementDecryptCounter(int $id): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE Account SET countDecrypt = (countDecrypt + 1) WHERE id = ? LIMIT 1';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::INCREMENT_DECRYPT_COUNTER);
         $queryData->addParam($id);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
@@ -153,28 +146,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function create($itemData): int
     {
-        $query = /** @lang SQL */
-            'INSERT INTO Account SET 
-            clientId = ?,
-            categoryId = ?,
-            `name` = ?,
-            login = ?,
-            url = ?,
-            pass = ?,
-            `key` = ?,
-            notes = ?,
-            dateAdd = NOW(),
-            userId = ?,
-            userGroupId = ?,
-            userEditId = ?,
-            isPrivate = ?,
-            isPrivateGroup = ?,
-            passDate = UNIX_TIMESTAMP(),
-            passDateChange = ?,
-            parentId = ?';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::CREATE);
         $queryData->setParams([
             $itemData->clientId,
             $itemData->categoryId,
@@ -208,18 +181,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function editPassword(AccountRequest $accountRequest): int
     {
-        $query = /** @lang SQL */
-            'UPDATE Account SET 
-            pass = ?,
-            `key` = ?,
-            userEditId = ?,
-            dateEdit = NOW(),
-            passDate = UNIX_TIMESTAMP(),
-            passDateChange = ?
-            WHERE id = ?';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::EDIT_PASSWORD);
         $queryData->setParams([
             $accountRequest->pass,
             $accountRequest->key,
@@ -243,14 +206,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function updatePassword(AccountPasswordRequest $request): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE Account SET 
-            pass = ?,
-            `key` = ?
-            WHERE id = ?';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::UPDATE_PASSWORD);
         $queryData->setParams([$request->pass, $request->key, $request->id]);
         $queryData->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -269,29 +226,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function editRestore(int $historyId, int $userId): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE Account dst, 
-            (SELECT * FROM AccountHistory AH WHERE AH.id = ?) src SET 
-            dst.clientId = src.clientId,
-            dst.categoryId = src.categoryId,
-            dst.name = src.name,
-            dst.login = src.login,
-            dst.url = src.url,
-            dst.notes = src.notes,
-            dst.userGroupId = src.userGroupId,
-            dst.userEditId = ?,
-            dst.dateEdit = NOW(),
-            dst.pass = src.pass,
-            dst.key = src.key,
-            dst.passDate = src.passDate,
-            dst.passDateChange = src.passDateChange, 
-            dst.parentId = src.parentId, 
-            dst.isPrivate = src.isPrivate,
-            dst.isPrivateGroup = src.isPrivateGroup
-            WHERE dst.id = src.accountId';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::EDIT_RESTORE);
         $queryData->setParams([$historyId, $userId]);
         $queryData->setOnErrorMessage(__u('Error on restoring the account'));
 
@@ -310,8 +246,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     public function delete(int $id): int
     {
         $queryData = new QueryData();
-
-        $queryData->setQuery('DELETE FROM Account WHERE id = ? LIMIT 1');
+        $queryData->setQuery(AccountRepositorySql::DELETE);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while deleting the account'));
 
@@ -438,7 +373,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT * FROM account_data_v WHERE id = ? LIMIT 1');
+        $queryData->setQuery(AccountRepositorySql::EDIT_BY_ID);
         $queryData->setMapClassName(AccountVData::class);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving account\'s data'));
@@ -455,7 +390,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountData::class);
-        $queryData->setQuery('SELECT * FROM Account ORDER BY id');
+        $queryData->setQuery(AccountRepositorySql::GET_ALL);
 
         return $this->db->doSelect($queryData);
     }
@@ -575,7 +510,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     public function incrementViewCounter(int $id): bool
     {
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1');
+        $queryData->setQuery(AccountRepositorySql::INCREMENT_VIEW_COUNTER);
         $queryData->addParam($id);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
@@ -590,23 +525,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function getDataForLink(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT Account.id, 
-            Account.name,
-            Account.login,
-            Account.pass,
-            Account.key,
-            Account.url,
-            Account.notes,
-            Client.name AS clientName,
-            Category.name AS categoryName
-            FROM Account
-            INNER JOIN Client ON Account.clientId = Client.id
-            INNER JOIN Category ON Account.categoryId = Category.id 
-            WHERE Account.id = ? LIMIT 1';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery(AccountRepositorySql::GET_DATA_FOR_LINK);
         $queryData->setMapClassName(AccountExtData::class);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving account\'s data'));
@@ -756,7 +676,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             'SELECT Account.id, Account.name, Client.name AS clientName 
             FROM Account
             INNER JOIN Client ON Account.clientId = Client.id 
-            WHERE '.$queryFilter->getFilters().' ORDER  BY Account.name';
+            WHERE '.$queryFilter->getFilters().' ORDER BY Account.name';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -773,7 +693,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     public function getAccountsPassData(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `name`, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
+        $queryData->setQuery(AccountRepositorySql::GET_ACCOUNT_PASS_DATA);
 
         return $this->db->doSelect($queryData);
     }
