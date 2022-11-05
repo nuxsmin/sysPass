@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Account;
@@ -34,7 +34,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Account\AccountSearchServiceInterface;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Account\Services\AccountSearchService;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -154,7 +154,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setCategoryId($id);
 
         // Comprobar un Id de categoría
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
 
         if ($rows > 0) {
@@ -181,7 +181,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId(10);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
@@ -203,7 +203,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId($id);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertEquals($rows, $result->getNumRows());
 
@@ -240,7 +240,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setClientId($clientId);
         $searchFilter->setCategoryId($categoryId);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertEquals($rows, $result->getNumRows());
 
@@ -264,7 +264,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
@@ -286,7 +286,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setTxtSearch($string);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
 
         $this->assertEquals($rows, $result->getNumRows());
@@ -315,7 +315,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
         $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertEquals($rows, $result->getNumRows());
@@ -347,7 +347,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $searchFilter->setFilterOperator($operator);
         $searchFilter->setTagsId($tagsId);
 
-        $result = self::$service->processSearchResults($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
 
         /** @var AccountSearchItem[] $data */

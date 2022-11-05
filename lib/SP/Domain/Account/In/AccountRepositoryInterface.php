@@ -28,9 +28,10 @@ namespace SP\Domain\Account\In;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountHistoryData;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Account\Services\AccountSearchFilter;
 use SP\Domain\Common\In\RepositoryInterface;
 use SP\Domain\Common\Out\SimpleModel;
 use SP\Infrastructure\Database\QueryResult;
@@ -53,22 +54,21 @@ interface AccountRepositoryInterface extends RepositoryInterface
 
     /**
      * @param  int  $id
-     * @param  QueryCondition  $queryCondition
      *
      * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getPasswordForId(int $id, QueryCondition $queryCondition): QueryResult;
+    public function getPasswordForId(int $id): QueryResult;
 
     /**
-     * @param  QueryCondition  $queryCondition
+     * @param  int  $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getPasswordHistoryForId(QueryCondition $queryCondition): QueryResult;
+    public function getPasswordHistoryForId(int $id): QueryResult;
 
     /**
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
@@ -106,14 +106,14 @@ interface AccountRepositoryInterface extends RepositoryInterface
     /**
      * Restaurar una cuenta desde el histórico.
      *
-     * @param  int  $historyId  El Id del registro en el histórico
+     * @param  \SP\DataModel\AccountHistoryData  $accountHistoryData
      * @param  int  $userId  User's Id
      *
      * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function editRestore(int $historyId, int $userId): bool;
+    public function editRestore(AccountHistoryData $accountHistoryData, int $userId): bool;
 
     /**
      * Updates an item for bulk action
@@ -148,35 +148,22 @@ interface AccountRepositoryInterface extends RepositoryInterface
     public function getDataForLink(int $id): QueryResult;
 
     /**
-     * Obtener las cuentas de una búsqueda.
-     *
-     * @param  AccountSearchFilter  $accountSearchFilter
-     * @param  QueryCondition  $queryFilterUser
+     * @param  int|null  $accountId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter, QueryCondition $queryFilterUser): QueryResult;
+    public function getForUser(?int $accountId = null): QueryResult;
 
     /**
-     * @param  QueryCondition  $queryFilter
+     * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForUser(QueryCondition $queryFilter): QueryResult;
-
-    /**
-     * @param  QueryCondition  $queryFilter
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getLinked(QueryCondition $queryFilter): QueryResult;
+    public function getLinked(int $accountId): QueryResult;
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.

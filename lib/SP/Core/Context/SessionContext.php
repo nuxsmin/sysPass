@@ -27,7 +27,7 @@ namespace SP\Core\Context;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\User\Services\UserLoginResponse;
 
 /**
@@ -189,7 +189,7 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * @param AccountSearchFilter $searchFilters
+     * @param \SP\Domain\Account\Search\AccountSearchFilter $searchFilters
      */
     public function setSearchFilters(AccountSearchFilter $searchFilters): void
     {

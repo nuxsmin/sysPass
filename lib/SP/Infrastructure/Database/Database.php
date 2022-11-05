@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\Database;
 
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\QueryInterface;
 use Exception;
 use PDO;
 use PDOStatement;
@@ -41,12 +43,12 @@ use SP\Core\Exceptions\SPException;
  */
 final class Database implements DatabaseInterface
 {
+    protected DbStorageInterface $dbHandler;
     protected int                $numRows    = 0;
     protected int                $numFields  = 0;
     protected ?array             $lastResult = null;
-    protected DbStorageInterface $dbHandler;
-    private ?int                 $lastId     = null;
     private EventDispatcher      $eventDispatcher;
+    private ?int                 $lastId     = null;
 
     /**
      * DB constructor.
@@ -93,7 +95,7 @@ final class Database implements DatabaseInterface
      */
     public function doSelect(QueryData $queryData, bool $fullCount = false): QueryResult
     {
-        if ($queryData->getQuery() === '') {
+        if ($queryData->getQuery()->getStatement()) {
             throw new QueryException($queryData->getOnErrorMessage(), SPException::ERROR, __u('Blank query'));
         }
 
@@ -130,14 +132,14 @@ final class Database implements DatabaseInterface
      */
     public function doQuery(QueryData $queryData): QueryResult
     {
-        $stmt = $this->prepareQueryData($queryData);
+        $stmt = $this->prepareQueryData($queryData->getQuery());
 
         $this->eventDispatcher->notifyEvent(
             'database.query',
-            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery()))
+            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery()->getStatement()))
         );
 
-        if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {
+        if ($queryData->getQuery() instanceof SelectInterface) {
             $this->numFields = $stmt->columnCount();
 
             return new QueryResult($this->fetch($queryData, $stmt));
@@ -149,8 +151,7 @@ final class Database implements DatabaseInterface
     /**
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
-     * @param  QueryData  $queryData  Los datos de la consulta
-     * @param  bool  $isCount  Indica si es una consulta de contador de registros
+     * @param  QueryInterface  $query  Los datos de la consulta
      * @param  array  $options
      *
      * @return \PDOStatement
@@ -158,25 +159,16 @@ final class Database implements DatabaseInterface
      * @throws \SP\Core\Exceptions\QueryException
      */
     private function prepareQueryData(
-        QueryData $queryData,
-        bool $isCount = false,
+        QueryInterface $query,
         array $options = []
     ): PDOStatement {
-        $query = $queryData->getQuery();
-        $params = $queryData->getParams();
-
-        if ($isCount === true) {
-            $query = $queryData->getQueryCount();
-            $params = $this->getParamsForCount($queryData);
-        }
-
         try {
             $connection = $this->dbHandler->getConnection();
 
-            if (count($params) !== 0) {
-                $stmt = $connection->prepare($query, $options);
+            if (count($query->getBindValues()) !== 0) {
+                $stmt = $connection->prepare($query->getStatement(), $options);
 
-                foreach ($params as $param => $value) {
+                foreach ($query->getBindValues() as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
                     $param = is_int($param) ? $param + 1 : ':'.$param;
@@ -223,6 +215,8 @@ final class Database implements DatabaseInterface
 
     /**
      * Strips out the unused params from the query count
+     *
+     * TODO: remove??
      */
     private function getParamsForCount(QueryData $queryData): array
     {
@@ -254,11 +248,7 @@ final class Database implements DatabaseInterface
      */
     public function getFullRowCount(QueryData $queryData): int
     {
-        if ($queryData->getQueryCount() === '') {
-            return 0;
-        }
-
-        $queryRes = $this->prepareQueryData($queryData, true);
+        $queryRes = $this->prepareQueryData($queryData->getQueryCount());
         $num = (int)$queryRes->fetchColumn();
         $queryRes->closeCursor();
 
@@ -290,7 +280,7 @@ final class Database implements DatabaseInterface
                 );
         }
 
-        return $this->prepareQueryData($queryData, false, $options);
+        return $this->prepareQueryData($queryData->getQuery(), $options);
     }
 
     /**

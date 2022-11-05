@@ -28,9 +28,8 @@ namespace SP\Domain\Account;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Mvc\Model\QueryCondition;
 
 /**
  * Class AccountSearchService para la gestión de búsquedas de cuentas
@@ -45,13 +44,13 @@ interface AccountSearchServiceInterface
      * @throws QueryException
      * @throws SPException
      */
-    public function processSearchResults(AccountSearchFilter $accountSearchFilter): QueryResult;
+    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult;
 
     /**
      * Analizar la cadena de consulta por eqituetas especiales y devolver un objeto
      * QueryCondition con los filtros
      */
-    public function analyzeQueryFilters(string $string): QueryCondition;
+    public function analyzeQueryFilters(string $string): void;
 
     public function getCleanString(): ?string;
 }

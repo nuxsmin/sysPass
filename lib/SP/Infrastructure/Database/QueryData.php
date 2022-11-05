@@ -24,6 +24,11 @@
 
 namespace SP\Infrastructure\Database;
 
+use Aura\SqlQuery\Common\Select;
+use Aura\SqlQuery\QueryInterface;
+use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\Out\SimpleModel;
+
 /**
  * Class QueryData
  *
@@ -31,18 +36,27 @@ namespace SP\Infrastructure\Database;
  */
 final class QueryData
 {
-    protected array   $params         = [];
-    protected ?string $query          = null;
-    protected ?string $mapClassName   = null;
-    protected bool    $useKeyPair     = false;
-    protected ?string $select         = null;
-    protected ?string $from           = null;
-    protected ?string $where          = null;
-    protected ?string $groupBy        = null;
-    protected ?string $order          = null;
-    protected ?string $limit          = null;
-    protected ?string $queryCount     = null;
-    protected ?string $onErrorMessage = null;
+    protected array          $params         = [];
+    protected QueryInterface $query;
+    protected ?string        $mapClassName   = SimpleModel::class;
+    protected bool           $useKeyPair     = false;
+    protected ?string        $select         = null;
+    protected ?string        $from           = null;
+    protected ?string        $where          = null;
+    protected ?string        $groupBy        = null;
+    protected ?string        $order          = null;
+    protected ?string        $limit          = null;
+    protected ?string        $onErrorMessage = null;
+
+    public function __construct(QueryInterface $query)
+    {
+        $this->query = $query;
+    }
+
+    public static function build(QueryInterface $query): QueryData
+    {
+        return new self($query);
+    }
 
     /**
      * Añadir un parámetro a la consulta
@@ -69,28 +83,16 @@ final class QueryData
         $this->params = $data;
     }
 
-    public function getQuery(): string
+    public function getQuery(): QueryInterface
     {
-        if (empty($this->query)) {
-            return $this->select.
-                   ' '.
-                   $this->from.
-                   ' '.
-                   $this->where.
-                   ' '.
-                   $this->groupBy.
-                   ' '.
-                   $this->order.
-                   ' '.
-                   $this->limit;
-        }
-
         return $this->query;
     }
 
-    public function setQuery(string $query): void
+    public function setQuery(QueryInterface $query): QueryData
     {
         $this->query = $query;
+
+        return $this;
     }
 
     public function getMapClassName(): ?string
@@ -98,9 +100,11 @@ final class QueryData
         return $this->mapClassName;
     }
 
-    public function setMapClassName(string $mapClassName): void
+    public function setMapClassName(string $mapClassName): QueryData
     {
         $this->mapClassName = $mapClassName;
+
+        return $this;
     }
 
     public function isUseKeyPair(): bool
@@ -146,13 +150,26 @@ final class QueryData
         $this->params = array_merge($this->params, $params);
     }
 
-    public function getQueryCount(): string
+    /**
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function getQueryCount(): QueryInterface
     {
-        if (empty($this->queryCount)) {
-            return 'SELECT COUNT(*) '.$this->from.' '.$this->where;
+        if ($this->query instanceof Select) {
+            $countQuery = (clone $this->query)
+                ->resetFlags()
+                ->resetCols()
+                ->resetOrderBy()
+                ->resetGroupBy()
+                ->resetHaving()
+                ->page(0);
+
+            $countQuery->cols(['COUNT(*)']);
+
+            return $countQuery;
         }
 
-        return $this->queryCount;
+        throw new QueryException(__u('Invalid query type for count'));
     }
 
     public function getFrom(): ?string
@@ -191,9 +208,11 @@ final class QueryData
         return $this->onErrorMessage ?: __u('Error while querying');
     }
 
-    public function setOnErrorMessage(string $onErrorMessage): void
+    public function setOnErrorMessage(string $onErrorMessage): QueryData
     {
         $this->onErrorMessage = $onErrorMessage;
+
+        return $this;
     }
 
     public function setGroupBy(string $groupBy): void

@@ -34,6 +34,7 @@ use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -46,8 +47,7 @@ interface AccountHistoryServiceInterface
     /**
      * Returns the item for given id
      *
-     * @throws SPException
-     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): AccountHistoryData;
 

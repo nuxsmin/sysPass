@@ -24,6 +24,7 @@
 
 namespace SP\Core\Definitions;
 
+use Aura\SqlQuery\QueryFactory;
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
@@ -188,6 +189,8 @@ final class CoreDefinitions
                     $c->get(NotificationHandler::class)
                 );
             }),
+            QueryFactory::class           => create(QueryFactory::class)
+                ->constructor('mysql', QueryFactory::COMMON),
         ];
     }
 }

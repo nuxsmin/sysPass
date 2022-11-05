@@ -41,7 +41,8 @@
     "league/fractal": "^0.19.2",
     "symfony/console": "^v5.1.2",
     "symfony/lock": "^v5.0",
-    "ocramius/proxy-manager": "~2.0"
+    "ocramius/proxy-manager": "~2.0",
+    "aura/sqlquery": "~2.8"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

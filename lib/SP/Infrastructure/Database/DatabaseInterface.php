@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Database;
 
+use Aura\SqlQuery\QueryInterface;
 use PDOStatement;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;

@@ -24,7 +24,14 @@
 
 namespace SP\Infrastructure\Common\Repositories;
 
+use Aura\SqlQuery\QueryFactory;
+use Closure;
+use Exception;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcherInterface;
+use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
 
 /**
@@ -34,16 +41,59 @@ use SP\Infrastructure\Database\DatabaseInterface;
  */
 abstract class Repository
 {
-    protected ContextInterface  $context;
-    protected DatabaseInterface $db;
+    protected ContextInterface         $context;
+    protected DatabaseInterface        $db;
+    protected QueryFactory             $queryFactory;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    final public function __construct(DatabaseInterface $database, ContextInterface $session)
-    {
+    public function __construct(
+        DatabaseInterface $database,
+        ContextInterface $session,
+        EventDispatcherInterface $eventDispatcher,
+        QueryFactory $queryFactory
+    ) {
         $this->db = $database;
         $this->context = $session;
+        $this->queryFactory = $queryFactory;
+        $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
+        }
+    }
+
+    /**
+     * Bubbles a Closure in a database transaction
+     *
+     * @param  \Closure  $closure
+     *
+     * @return mixed
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \Exception
+     */
+    final public function transactionAware(Closure $closure)
+    {
+        if ($this->db->beginTransaction()) {
+            try {
+                $result = $closure->call($this);
+
+                $this->db->endTransaction();
+
+                return $result;
+            } catch (Exception $e) {
+                $this->db->rollbackTransaction();
+
+                logger('Transaction:Rollback');
+
+                $this->eventDispatcher->notifyEvent(
+                    'database.rollback',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Rollback')))
+                );
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('Unable to start a transaction'));
         }
     }
 }

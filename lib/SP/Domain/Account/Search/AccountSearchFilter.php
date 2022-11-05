@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
+namespace SP\Domain\Account\Search;
 
 use SP\Mvc\Model\QueryCondition;
 
@@ -30,21 +30,19 @@ use SP\Mvc\Model\QueryCondition;
 /**
  * Class AccountSearchFilter
  *
- * @package SP\Account
+ * @package SP\Domain\Account\Filters
  */
 final class AccountSearchFilter
 {
     /**
-     * Constantes de ordenación
+     * @param  string  $txtSearch
+     *
+     * @return \SP\Domain\Account\Search\AccountSearchFilter
      */
-    public const SORT_DIR_ASC  = 0;
-    public const SORT_DIR_DESC = 1;
-    public const SORT_LOGIN    = 3;
-    public const SORT_URL      = 4;
-    public const SORT_CATEGORY = 2;
-    public const SORT_CLIENT   = 5;
-    public const SORT_NAME     = 1;
-    public const SORT_DEFAULT  = 0;
+    public static function build(string $txtSearch): AccountSearchFilter
+    {
+        return (new self())->setTxtSearch($txtSearch);
+    }
 
     /**
      * @var int|null El número de registros de la última consulta
@@ -55,18 +53,17 @@ final class AccountSearchFilter
     /**
      * @var string|null Search string without special filters
      */
-    private ?string         $cleanTxtSearch  = null;
-    private ?int            $clientId        = null;
-    private ?int            $categoryId      = null;
-    private ?array          $tagsId          = null;
-    private int             $sortOrder       = self::SORT_DEFAULT;
-    private int             $sortKey         = self::SORT_DIR_ASC;
-    private int             $limitStart      = 0;
-    private ?int            $limitCount      = null;
-    private ?bool           $sortViews       = null;
-    private bool            $searchFavorites = false;
-    private ?QueryCondition $stringFilters   = null;
-    private ?string         $filterOperator  = null;
+    private ?string $cleanTxtSearch  = null;
+    private ?int    $clientId        = null;
+    private ?int    $categoryId      = null;
+    private ?array  $tagsId          = null;
+    private int     $sortOrder       = AccountSearchConstants::SORT_DEFAULT;
+    private int     $sortKey         = AccountSearchConstants::SORT_DIR_ASC;
+    private int     $limitStart      = 0;
+    private ?int    $limitCount      = null;
+    private ?bool   $sortViews       = null;
+    private bool    $searchFavorites = false;
+    private ?string $filterOperator  = null;
 
     public function isSearchFavorites(): bool
     {
@@ -181,57 +178,6 @@ final class AccountSearchFilter
         return null !== $this->tagsId && count($this->tagsId) !== 0;
     }
 
-    public function getStringFilters(): QueryCondition
-    {
-        return $this->stringFilters ?? new QueryCondition();
-    }
-
-    public function setStringFilters(?QueryCondition $stringFilters): void
-    {
-        $this->stringFilters = $stringFilters;
-    }
-
-    /**
-     * Devuelve la cadena de ordenación de la consulta
-     */
-    public function getOrderString(): string
-    {
-        switch ($this->sortKey) {
-            case self::SORT_NAME:
-                $orderKey[] = 'Account.name';
-                break;
-            case self::SORT_CATEGORY:
-                $orderKey[] = 'Account.categoryName';
-                break;
-            case self::SORT_LOGIN:
-                $orderKey[] = 'Account.login';
-                break;
-            case self::SORT_URL:
-                $orderKey[] = 'Account.url';
-                break;
-            case self::SORT_CLIENT:
-                $orderKey[] = 'Account.clientName';
-                break;
-            case self::SORT_DEFAULT:
-            default:
-                $orderKey[] = 'Account.clientName, Account.name';
-                break;
-        }
-
-        if ($this->isSortViews() && !$this->getSortKey()) {
-            array_unshift($orderKey, 'Account.countView DESC');
-            $this->setSortOrder(self::SORT_DIR_DESC);
-        }
-
-        $orderDir = $this->sortOrder === self::SORT_DIR_ASC ? 'ASC' : 'DESC';
-
-        return sprintf(
-            '%s %s',
-            implode(',', $orderKey),
-            $orderDir
-        );
-    }
-
     public function isSortViews(): bool
     {
         return $this->sortViews ?? false;
@@ -292,7 +238,7 @@ final class AccountSearchFilter
         $this->limitCount = null;
         $this->sortViews = null;
         $this->searchFavorites = false;
-        $this->sortOrder = self::SORT_DEFAULT;
-        $this->sortKey = self::SORT_DIR_ASC;
+        $this->sortOrder = AccountSearchConstants::SORT_DEFAULT;
+        $this->sortKey = AccountSearchConstants::SORT_DIR_ASC;
     }
 }

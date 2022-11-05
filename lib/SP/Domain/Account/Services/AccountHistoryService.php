@@ -68,8 +68,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     /**
      * Returns the item for given id
      *
-     * @throws SPException
-     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): AccountHistoryData
     {

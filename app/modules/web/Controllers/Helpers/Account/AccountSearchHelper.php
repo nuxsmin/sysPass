@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Account\AccountSearchServiceInterface;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchConstants;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Category\CategoryServiceInterface;
 use SP\Domain\Client\ClientServiceInterface;
@@ -178,7 +179,7 @@ final class AccountSearchHelper extends HelperBase
         }
 
         $dataGrid = $this->getGrid();
-        $dataGrid->getData()->setData($this->accountSearchService->processSearchResults($this->accountSearchFilter));
+        $dataGrid->getData()->setData($this->accountSearchService->getByFilter($this->accountSearchFilter));
         $dataGrid->updatePager();
         $dataGrid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -275,35 +276,35 @@ final class AccountSearchHelper extends HelperBase
         $gridSortCustomer = new DataGridSort();
         $gridSortCustomer->setName(__('Client'))
             ->setTitle(__('Sort by Client'))
-            ->setSortKey(AccountSearchFilter::SORT_CLIENT)
+            ->setSortKey(AccountSearchConstants::SORT_CLIENT)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortName = new DataGridSort();
         $gridSortName->setName(__('Name'))
             ->setTitle(__('Sort by Name'))
-            ->setSortKey(AccountSearchFilter::SORT_NAME)
+            ->setSortKey(AccountSearchConstants::SORT_NAME)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortCategory = new DataGridSort();
         $gridSortCategory->setName(__('Category'))
             ->setTitle(__('Sort by Category'))
-            ->setSortKey(AccountSearchFilter::SORT_CATEGORY)
+            ->setSortKey(AccountSearchConstants::SORT_CATEGORY)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortLogin = new DataGridSort();
         $gridSortLogin->setName(__('User'))
             ->setTitle(__('Sort by Username'))
-            ->setSortKey(AccountSearchFilter::SORT_LOGIN)
+            ->setSortKey(AccountSearchConstants::SORT_LOGIN)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortUrl = new DataGridSort();
         $gridSortUrl->setName(__('URL / IP'))
             ->setTitle(__('Sort by URL / IP'))
-            ->setSortKey(AccountSearchFilter::SORT_URL)
+            ->setSortKey(AccountSearchConstants::SORT_URL)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
@@ -350,7 +351,7 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Set search filters
      *
-     * @return AccountSearchFilter
+     * @return \SP\Domain\Account\Search\AccountSearchFilter
      */
     private function getFilters(): AccountSearchFilter
     {

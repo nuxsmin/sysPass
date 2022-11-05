@@ -36,19 +36,21 @@ use SP\DataModel\Dto\AccountCache;
 use SP\Domain\Account\AccountAclServiceInterface;
 use SP\Domain\Account\AccountSearchServiceInterface;
 use SP\Domain\Account\AccountToFavoriteServiceInterface;
-use SP\Domain\Account\In\AccountRepositoryInterface;
 use SP\Domain\Account\In\AccountToTagRepositoryInterface;
 use SP\Domain\Account\In\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\In\AccountToUserRepositoryInterface;
+use SP\Domain\Account\Search\AccountSearchConstants;
+use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchTokenizer;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\User\UserGroupServiceInterface;
 use SP\Domain\User\UserServiceInterface;
+use SP\Infrastructure\Account\Repositories\AccountSearchRepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Mvc\Model\QueryCondition;
 use SP\Util\Filter;
 
 defined('APP_ROOT') || die();
@@ -58,24 +60,6 @@ defined('APP_ROOT') || die();
  */
 final class AccountSearchService extends Service implements AccountSearchServiceInterface
 {
-    /**
-     * Regex filters for special searching
-     */
-    private const FILTERS = [
-        'condition' => [
-            'subject'   => ['is', 'not'],
-            'condition' => ['expired', 'private'],
-        ],
-        'items'     => [
-            'subject'   => ['id', 'user', 'group', 'file', 'owner', 'maingroup', 'client', 'category', 'name_regex'],
-            'condition' => null,
-        ],
-        'operator'  => [
-            'subject'   => ['op'],
-            'condition' => ['and', 'or'],
-        ],
-    ];
-
     private const COLORS_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'colors.cache';
 
     /**
@@ -100,7 +84,6 @@ final class AccountSearchService extends Service implements AccountSearchService
         '673AB7',
         '3F51B5',
     ];
-    private AccountFilterUser                     $accountFilterUser;
     private AccountAclServiceInterface            $accountAclService;
     private ConfigDataInterface                   $configData;
     private AccountToTagRepositoryInterface       $accountToTagRepository;
@@ -110,7 +93,7 @@ final class AccountSearchService extends Service implements AccountSearchService
     private UserServiceInterface                  $userService;
     private UserGroupServiceInterface             $userGroupService;
     private FileCacheInterface                    $colorCache;
-    private AccountRepositoryInterface            $accountRepository;
+    private AccountSearchRepositoryInterface      $accountSearchRepository;
     private ?array                                $accountColor   = null;
     private ?string                               $cleanString    = null;
     private ?string                               $filterOperator = null;
@@ -124,8 +107,7 @@ final class AccountSearchService extends Service implements AccountSearchService
         AccountToFavoriteServiceInterface $accountToFavoriteService,
         UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService,
-        AccountRepositoryInterface $accountRepository,
-        AccountFilterUser $accountFilterUser
+        AccountSearchRepositoryInterface $accountSearchRepository,
     ) {
         parent::__construct($application);
         $this->accountAclService = $accountAclService;
@@ -135,8 +117,7 @@ final class AccountSearchService extends Service implements AccountSearchService
         $this->accountToTagRepository = $accountToTagRepository;
         $this->accountToUserRepository = $accountToUserRepository;
         $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountRepository = $accountRepository;
-        $this->accountFilterUser = $accountFilterUser;
+        $this->accountSearchRepository = $accountSearchRepository;
 
         // TODO: use IoC
         $this->colorCache = new FileCache(self::COLORS_CACHE_FILE);
@@ -168,16 +149,13 @@ final class AccountSearchService extends Service implements AccountSearchService
      * @throws QueryException
      * @throws SPException
      */
-    public function processSearchResults(
-        AccountSearchFilter $accountSearchFilter
-    ): QueryResult {
+    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult
+    {
         if (!empty($accountSearchFilter->getTxtSearch())) {
-            $accountSearchFilter->setStringFilters($this->analyzeQueryFilters($accountSearchFilter->getTxtSearch()));
+            $this->analyzeQueryFilters($accountSearchFilter->getTxtSearch());
         }
 
-        if ($this->filterOperator !== null
-            || $accountSearchFilter->getFilterOperator() === null
-        ) {
+        if ($this->filterOperator !== null || $accountSearchFilter->getFilterOperator() === null) {
             $accountSearchFilter->setFilterOperator($this->filterOperator);
         }
 
@@ -185,224 +163,65 @@ final class AccountSearchService extends Service implements AccountSearchService
             $accountSearchFilter->setCleanTxtSearch($this->cleanString);
         }
 
-        $queryResult = $this->accountRepository->getByFilter(
-            $accountSearchFilter,
-            $this->accountFilterUser->getFilter($accountSearchFilter->getGlobalSearch())
-        );
+        $queryResult = $this->accountSearchRepository->getByFilter($accountSearchFilter);
 
-        // Variables de configuración
-        $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
-
-        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
-                              || $this->configData->isAccountLink();
-        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
-
-        $accountsData = [];
-
-        /** @var AccountSearchVData $accountSearchData */
-        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
-            $cache = $this->getCacheForAccount($accountSearchData);
-
-            // Obtener la ACL de la cuenta
-            $accountAcl = $this->accountAclService->getAcl(
-                ActionsInterface::ACCOUNT_SEARCH,
-                AccountAclDto::makeFromAccountSearch(
-                    $accountSearchData,
-                    $cache->getUsers(),
-                    $cache->getUserGroups()
-                )
-            );
-
-            // Propiedades de búsqueda de cada cuenta
-            $accountsSearchItem = new AccountSearchItem(
-                $accountSearchData,
-                $accountAcl,
-                $this->configData
-            );
-
-            if (!$accountSearchData->getIsPrivate()) {
-                $accountsSearchItem->setUsers($cache->getUsers());
-                $accountsSearchItem->setUserGroups($cache->getUserGroups());
-            }
-
-            $accountsSearchItem->setTags(
-                $this->accountToTagRepository
-                    ->getTagsByAccountId($accountSearchData->getId())
-                    ->getDataAsArray()
-            );
-            $accountsSearchItem->setTextMaxLength($maxTextLength);
-            $accountsSearchItem->setColor(
-                $this->pickAccountColor($accountSearchData->getClientId())
-            );
-            $accountsSearchItem->setLink($accountLinkEnabled);
-            $accountsSearchItem->setFavorite(
-                isset($favorites[$accountSearchData->getId()])
-            );
-
-            $accountsData[] = $accountsSearchItem;
-        }
-
-        return QueryResult::fromResults($accountsData, $queryResult->getTotalNumRows());
+        return QueryResult::fromResults($this->buildAccountsData($queryResult), $queryResult->getTotalNumRows());
     }
 
     /**
      * Analizar la cadena de consulta por eqituetas especiales y devolver un objeto
      * QueryCondition con los filtros
      */
-    public function analyzeQueryFilters(string $string): QueryCondition
+    public function analyzeQueryFilters(string $string): void
     {
-        $this->cleanString = null;
-        $this->filterOperator = null;
+        $tokenizer = new AccountSearchTokenizer();
+        $tokens = $tokenizer->tokenizeFrom($string);
 
-        $queryCondition = new QueryCondition();
+        $this->cleanString = $tokens->getSearch();
+        $this->filterOperator = $tokens->getOperator();
 
-        $match = preg_match_all(
-            '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-zа-я_]+):(?!\s]*)"?(?<filter_condition>[^":]+)"?/u',
-            $string,
-            $filters
-        );
-
-        if ($match !== false && $match > 0) {
-            if (!empty($filters['search'][0])) {
-                $this->cleanString = Filter::safeSearchString(trim($filters['search'][0]));
-            }
-
-            $filtersAndValues = array_filter(
-                array_combine(
-                    $filters['filter_subject'],
-                    $filters['filter_condition']
-                )
-            );
-
-            if (!empty($filtersAndValues)) {
-                $filtersItem = array_filter(
-                    $filtersAndValues,
-                    static function ($value, $key) {
-                        return in_array($key, self::FILTERS['items']['subject'], true)
-                               && $value !== '';
-                    },
-                    ARRAY_FILTER_USE_BOTH
-                );
-
-                if (!empty($filtersItem)) {
-                    $this->processFilterItems($filtersItem, $queryCondition);
-                }
-
-                $filtersOperator = array_filter(
-                    $filtersAndValues,
-                    static function ($value, $key) {
-                        return in_array($key, self::FILTERS['operator']['subject'], true)
-                               && in_array($value, self::FILTERS['operator']['condition'], true);
-                    },
-                    ARRAY_FILTER_USE_BOTH
-                );
-
-                if (!empty($filtersOperator)) {
-                    $this->processFilterOperator($filtersOperator);
-                }
-
-                $filtersCondition = array_filter(
-                    array_map(
-                        static function ($subject, $condition) {
-                            if (in_array($subject, self::FILTERS['condition']['subject'], true)
-                                && in_array($condition, self::FILTERS['condition']['condition'], true)
-                            ) {
-                                return $subject.':'.$condition;
-                            }
-
-                            return null;
-                        },
-                        $filters['filter_subject'],
-                        $filters['filter_condition']
-                    )
-                );
-
-                if (count($filtersCondition) !== 0) {
-                    $this->processFilterIs($filtersCondition, $queryCondition);
-                }
-            }
-        }
-
-        return $queryCondition;
+        $this->processFilterItems($tokens->getItems());
+        $this->processFilterConditions($tokens->getConditions());
     }
 
-    private function processFilterItems(
-        array $filters,
-        QueryCondition $queryCondition
-    ): void {
+    private function processFilterItems(array $filters): void
+    {
         foreach ($filters as $filter => $text) {
             try {
                 switch ($filter) {
-                    case 'user':
+                    case AccountSearchConstants::FILTER_USER_NAME:
                         $userData = $this->userService->getByLogin(Filter::safeSearchString($text));
 
-                        if (null !== $userData) {
-                            $queryCondition->addFilter(
-                                'Account.userId = ? OR Account.userGroupId = ? OR Account.id IN 
-                                        (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = ? 
-                                        UNION 
-                                        SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = ?)',
-                                [
-                                    $userData->getId(),
-                                    $userData->getUserGroupId(),
-                                    $userData->getId(),
-                                    $userData->getUserGroupId(),
-                                ]
-                            );
-                        }
-                        break;
-                    case 'owner':
-                        $text = '%'.Filter::safeSearchString($text).'%';
-                        $queryCondition->addFilter(
-                            'Account.userLogin LIKE ? OR Account.userName LIKE ?',
-                            [$text, $text]
+                        $this->accountSearchRepository->withFilterForUser(
+                            $userData->getId(),
+                            $userData->getUserGroupId()
                         );
                         break;
-                    case 'group':
+                    case AccountSearchConstants::FILTER_OWNER:
+                        $this->accountSearchRepository->withFilterForOwner($text);
+                        break;
+                    case AccountSearchConstants::FILTER_GROUP_NAME:
                         $userGroupData = $this->userGroupService->getByName(Filter::safeSearchString($text));
 
-                        if (is_object($userGroupData)) {
-                            $queryCondition->addFilter(
-                                'Account.userGroupId = ? OR Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = ?)',
-                                [$userGroupData->getId(), $userGroupData->getId()]
-                            );
-                        }
+                        $this->accountSearchRepository->withFilterForGroup($userGroupData->getId());
                         break;
-                    case 'maingroup':
-                        $queryCondition->addFilter(
-                            'Account.userGroupName LIKE ?',
-                            ['%'.Filter::safeSearchString($text).'%']
-                        );
+                    case AccountSearchConstants::FILTER_MAIN_GROUP:
+                        $this->accountSearchRepository->withFilterForMainGroup($text);
                         break;
-                    case 'file':
-                        $queryCondition->addFilter(
-                            'Account.id IN (SELECT AccountFile.accountId FROM AccountFile WHERE AccountFile.name LIKE ?)',
-                            ['%'.$text.'%']
-                        );
+                    case AccountSearchConstants::FILTER_FILE_NAME:
+                        $this->accountSearchRepository->withFilterForFile($text);
                         break;
-                    case 'id':
-                        $queryCondition->addFilter(
-                            'Account.id = ?',
-                            [(int)$text]
-                        );
+                    case AccountSearchConstants::FILTER_ACCOUNT_ID:
+                        $this->accountSearchRepository->withFilterForAccountId((int)$text);
                         break;
-                    case 'client':
-                        $queryCondition->addFilter(
-                            'Account.clientName LIKE ?',
-                            ['%'.Filter::safeSearchString($text).'%']
-                        );
+                    case AccountSearchConstants::FILTER_CLIENT_NAME:
+                        $this->accountSearchRepository->withFilterForClient($text);
                         break;
-                    case 'category':
-                        $queryCondition->addFilter(
-                            'Account.categoryName LIKE ?',
-                            ['%'.Filter::safeSearchString($text).'%']
-                        );
+                    case AccountSearchConstants::FILTER_CATEGORY_NAME:
+                        $this->accountSearchRepository->withFilterForCategory($text);
                         break;
-                    case 'name_regex':
-                        $queryCondition->addFilter(
-                            'Account.name REGEXP ?',
-                            [$text]
-                        );
+                    case AccountSearchConstants::FILTER_ACCOUNT_NAME_REGEX:
+                        $this->accountSearchRepository->withFilterForAccountNameRegex($text);
                         break;
                 }
             } catch (Exception $e) {
@@ -411,46 +230,24 @@ final class AccountSearchService extends Service implements AccountSearchService
         }
     }
 
-    private function processFilterOperator(array $filters): void
+    private function processFilterConditions(array $filters,): void
     {
-        switch ($filters['op']) {
-            case 'and':
-                $this->filterOperator = QueryCondition::CONDITION_AND;
-                break;
-            case 'or':
-                $this->filterOperator = QueryCondition::CONDITION_OR;
-                break;
-        }
-    }
-
-    private function processFilterIs(
-        array $filters,
-        QueryCondition $queryCondition
-    ): void {
         foreach ($filters as $filter) {
             switch ($filter) {
-                case 'is:expired':
-                    $queryCondition->addFilter(
-                        'Account.passDateChange > 0 AND UNIX_TIMESTAMP() > Account.passDateChange',
-                        []
+                case AccountSearchConstants::FILTER_IS_EXPIRED:
+                    $this->accountSearchRepository->withFilterForIsExpired();
+                    break;
+                case AccountSearchConstants::FILTER_NOT_EXPIRED:
+                    $this->accountSearchRepository->withFilterForIsNotExpired();
+                    break;
+                case AccountSearchConstants::FILTER_IS_PRIVATE:
+                    $this->accountSearchRepository->withFilterForIsPrivate(
+                        $this->context->getUserData()->getId(),
+                        $this->context->getUserData()->getUserGroupId()
                     );
                     break;
-                case 'not:expired':
-                    $queryCondition->addFilter(
-                        'Account.passDateChange = 0 OR Account.passDateChange IS NULL OR UNIX_TIMESTAMP() < Account.passDateChange',
-                        []
-                    );
-                    break;
-                case 'is:private':
-                    $queryCondition->addFilter(
-                        '(Account.isPrivate = 1 AND Account.userId = ?) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = ?)',
-                        [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
-                    );
-                    break;
-                case 'not:private':
-                    $queryCondition->addFilter(
-                        '(Account.isPrivate = 0 OR Account.isPrivate IS NULL) AND (Account.isPrivateGroup = 0 OR Account.isPrivateGroup IS NULL)'
-                    );
+                case AccountSearchConstants::FILTER_NOT_PRIVATE:
+                    $this->accountSearchRepository->withFilterForIsNotPrivate();
                     break;
             }
         }
@@ -462,9 +259,8 @@ final class AccountSearchService extends Service implements AccountSearchService
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getCacheForAccount(
-        AccountSearchVData $accountSearchData
-    ): AccountCache {
+    private function getCacheForAccount(AccountSearchVData $accountSearchData): AccountCache
+    {
         $accountId = $accountSearchData->getId();
 
         /** @var AccountCache[] $cache */
@@ -521,5 +317,66 @@ final class AccountSearchService extends Service implements AccountSearchService
     public function getCleanString(): ?string
     {
         return $this->cleanString;
+    }
+
+    /**
+     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
+     *
+     * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function buildAccountsData(QueryResult $queryResult): array
+    {
+        $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
+        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
+                              || $this->configData->isAccountLink();
+        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
+        $accountsData = [];
+
+        /** @var AccountSearchVData $accountSearchData */
+        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
+            $cache = $this->getCacheForAccount($accountSearchData);
+
+            // Obtener la ACL de la cuenta
+            $accountAcl = $this->accountAclService->getAcl(
+                ActionsInterface::ACCOUNT_SEARCH,
+                AccountAclDto::makeFromAccountSearch(
+                    $accountSearchData,
+                    $cache->getUsers(),
+                    $cache->getUserGroups()
+                )
+            );
+
+            // Propiedades de búsqueda de cada cuenta
+            $accountsSearchItem = new AccountSearchItem(
+                $accountSearchData,
+                $accountAcl,
+                $this->configData
+            );
+
+            if (!$accountSearchData->getIsPrivate()) {
+                $accountsSearchItem->setUsers($cache->getUsers());
+                $accountsSearchItem->setUserGroups($cache->getUserGroups());
+            }
+
+            $accountsSearchItem->setTags(
+                $this->accountToTagRepository
+                    ->getTagsByAccountId($accountSearchData->getId())
+                    ->getDataAsArray()
+            );
+            $accountsSearchItem->setTextMaxLength($maxTextLength);
+            $accountsSearchItem->setColor(
+                $this->pickAccountColor($accountSearchData->getClientId())
+            );
+            $accountsSearchItem->setLink($accountLinkEnabled);
+            $accountsSearchItem->setFavorite(
+                isset($favorites[$accountSearchData->getId()])
+            );
+
+            $accountsData[] = $accountsSearchItem;
+        }
+
+        return $accountsData;
     }
 }

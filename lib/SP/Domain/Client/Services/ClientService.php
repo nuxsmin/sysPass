@@ -185,6 +185,6 @@ final class ClientService extends Service implements ClientServiceInterface
      */
     public function getAllForUser(): array
     {
-        return $this->clientRepository->getAllForFilter($this->accountFilterUser->getFilter())->getDataAsArray();
+        return $this->clientRepository->getAllForFilter($this->accountFilterUser->buildFilter())->getDataAsArray();
     }
 }

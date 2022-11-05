@@ -164,9 +164,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function getPasswordForId(int $id): AccountPassData
     {
-        $queryFilter = $this->accountFilterUser->getFilter();
-
-        $result = $this->accountRepository->getPasswordForId($id, $queryFilter);
+        $result = $this->accountRepository->getPasswordForId($id);
 
         if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('Account not found'));
@@ -418,7 +416,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function update(AccountRequest $accountRequest): void
     {
-        $this->transactionAware(
+        $this->accountRepository->transactionAware(
             function () use ($accountRequest) {
                 $userData = $this->context->getUserData();
                 $userProfile = $this->context->getUserProfile() ?? new ProfileData();
@@ -535,7 +533,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function updateBulk(AccountBulkRequest $request): void
     {
-        $this->transactionAware(
+        $this->accountRepository->transactionAware(
             function () use ($request) {
                 foreach ($request->getItemsId() as $itemId) {
                     $accountRequest = $request->getAccountRequestForId($itemId);
@@ -557,16 +555,18 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function editPassword(AccountRequest $accountRequest): void
     {
-        $this->transactionAware(function () use ($accountRequest) {
-            $this->addHistory($accountRequest->id);
+        $this->accountRepository->transactionAware(
+            function () use ($accountRequest) {
+                $this->addHistory($accountRequest->id);
 
-            $pass = $this->getPasswordEncrypted($accountRequest->pass);
+                $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
-            $accountRequest->pass = $pass['pass'];
-            $accountRequest->key = $pass['key'];
+                $accountRequest->pass = $pass['pass'];
+                $accountRequest->key = $pass['key'];
 
-            $this->accountRepository->editPassword($accountRequest);
-        });
+                $this->accountRepository->editPassword($accountRequest);
+            }
+        );
     }
 
     /**
@@ -585,14 +585,17 @@ final class AccountService extends Service implements AccountServiceInterface
      * @param  int  $accountId
      *
      * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function editRestore(int $historyId, int $accountId): void
     {
-        $this->transactionAware(
+        $accountHistoryData = $this->accountHistoryService->getById($historyId);
+
+        $this->accountRepository->transactionAware(
             function () use ($historyId, $accountId) {
                 $this->addHistory($accountId);
 
-                if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
+                if (!$this->accountRepository->editRestore($accountHistoryData, $this->context->getUserData()->getId())) {
                     throw new ServiceException(__u('Error on restoring the account'));
                 }
             }
@@ -604,13 +607,15 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function delete(int $id): AccountService
     {
-        $this->transactionAware(function () use ($id) {
-            $this->addHistory($id, 1);
+        $this->accountRepository->transactionAware(
+            function () use ($id) {
+                $this->addHistory($id, 1);
 
-            if ($this->accountRepository->delete($id) === 0) {
-                throw new NoSuchItemException(__u('Account not found'));
+                if ($this->accountRepository->delete($id) === 0) {
+                    throw new NoSuchItemException(__u('Account not found'));
+                }
             }
-        });
+        );
 
         return $this;
     }
@@ -634,18 +639,9 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getForUser(int $accountId = null): array
+    public function getForUser(?int $accountId = null): array
     {
-        $queryFilter = $this->accountFilterUser->getFilter();
-
-        if (null !== $accountId) {
-            $queryFilter->addFilter(
-                'Account.id <> ? AND (Account.parentId = 0 OR Account.parentId IS NULL)',
-                [$accountId]
-            );
-        }
-
-        return $this->accountRepository->getForUser($queryFilter)->getDataAsArray();
+        return $this->accountRepository->getForUser($accountId)->getDataAsArray();
     }
 
     /**
@@ -654,11 +650,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function getLinked(int $accountId): array
     {
-        $queryFilter = $this->accountFilterUser->getFilter();
-
-        $queryFilter->addFilter('Account.parentId = ?', [$accountId]);
-
-        return $this->accountRepository->getLinked($queryFilter)->getDataAsArray();
+        return $this->accountRepository->getLinked($accountId)->getDataAsArray();
     }
 
     /**
@@ -668,10 +660,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function getPasswordHistoryForId(int $id): AccountPassData
     {
-        $queryFilter = $this->accountFilterUser->getFilterHistory();
-        $queryFilter->addFilter('AccountHistory.id = ?', [$id]);
-
-        $result = $this->accountRepository->getPasswordHistoryForId($queryFilter);
+        $result = $this->accountRepository->getPasswordHistoryForId($id);
 
         if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('The account doesn\'t exist'));
@@ -738,23 +727,5 @@ final class AccountService extends Service implements AccountServiceInterface
     public function getAccountsPassData(): array
     {
         return $this->accountRepository->getAccountsPassData()->getDataAsArray();
-    }
-
-    /**
-     * Obtener las cuentas de una búsqueda.
-     *
-     * @param  \SP\Domain\Account\Services\AccountSearchFilter  $accountSearchFilter
-     *
-     * @return \SP\Infrastructure\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult
-    {
-        return $this->accountRepository->getByFilter(
-            $accountSearchFilter,
-            $this->accountFilterUser->getFilter($accountSearchFilter->getGlobalSearch())
-        );
     }
 }

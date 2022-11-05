@@ -93,7 +93,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->with($callback, false)
             ->willReturn($expected);
 
-        $this->assertEquals($expected, $this->accountRepository->getPasswordForId(1, new QueryCondition()));
+        $this->assertEquals($expected, $this->accountRepository->getPasswordForId(1));
     }
 
     public function testGetPasswordHistoryForId(): void

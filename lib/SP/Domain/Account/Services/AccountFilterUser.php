@@ -24,128 +24,137 @@
 
 namespace SP\Domain\Account\Services;
 
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Mvc\Model\QueryCondition;
 
 defined('APP_ROOT') || die();
 
 /**
- * Class AccountUtil con utilidades para la gestión de cuentas
+ * Class AccountFilterUser
  */
 final class AccountFilterUser
 {
     private ConfigDataInterface $configData;
     private ContextInterface    $context;
-    private ?ProfileData        $userProfile = null;
-    private ?UserLoginResponse  $userData    = null;
+    private QueryFactory        $queryFactory;
 
     public function __construct(
         ContextInterface $context,
-        ConfigDataInterface $configData
+        ConfigDataInterface $configData,
+        QueryFactory $queryFactory
     ) {
         $this->context = $context;
         $this->configData = $configData;
+        $this->queryFactory = $queryFactory;
     }
 
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      */
-    public function getFilterHistory(bool $useGlobalSearch = false): QueryCondition
+    public function buildFilterHistory(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface
     {
-        $this->setUp();
+        $userData = $this->context->getUserData();
+        $userProfile = $this->context->getUserProfile();
 
-        $queryFilter = new QueryCondition();
+        if ($query === null) {
+            $query = $this->queryFactory->newSelect()->from('AccountHistory');
+        }
 
-        if (!$this->userData->getIsAdminApp()
-            && !$this->userData->getIsAdminAcc()
-            && !($this->configData->isGlobalSearch() && $useGlobalSearch && $this->userProfile->isAccGlobalSearch())
-        ) {
-            // Filtro usuario y grupo
-            $filter = '(AccountHistory.userId = ? 
-            OR AccountHistory.userGroupId = ? 
-            OR AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = ?)
-            OR AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = ?))';
-
-            $params = [
-                $this->userData->getId(),
-                $this->userData->getUserGroupId(),
-                $this->userData->getId(),
-                $this->userData->getUserGroupId(),
-                $this->userData->getId(),
+        if ($this->isFilterByAdminAndGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
+            $where = [
+                'AccountHistory.userId = :userId',
+                'AccountHistory.userGroupId = :userGroupId',
+                'AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = :userId UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = :userGroupId',
+                'AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = :userId)',
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= PHP_EOL
-                           .'OR AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = ? LIMIT 1)';
-                $params[] = $this->userData->getId();
+                $where[] =
+                    'AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = :userId LIMIT 1)';
             }
 
-            $queryFilter->addFilter($filter, $params);
+            $query->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)));
         }
 
-        $queryFilter->addFilter(
-            '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = ?)) AND (AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = ?))',
-            [$this->userData->getId(), $this->userData->getUserGroupId()]
+        $query->where(
+            '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = :userId))'
+        );
+        $query->where(
+            '(AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = :userGroupId))'
         );
 
-        return $queryFilter;
-    }
+        $query->bindValues([
+            'userId'      => $userData->getId(),
+            'userGroupId' => $userData->getUserGroupId(),
+        ]);
 
-    /**
-     * setUp
-     */
-    private function setUp(): void
-    {
-        $this->userData = $this->context->getUserData();
-        $this->userProfile = $this->context->getUserProfile();
+        return $query;
     }
 
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      */
-    public function getFilter(bool $useGlobalSearch = false): QueryCondition
+    public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface
     {
-        $this->setUp();
+        $userData = $this->context->getUserData();
+        $userProfile = $this->context->getUserProfile();
 
-        $queryFilter = new QueryCondition();
+        if ($query === null) {
+            $query = $this->queryFactory->newSelect()->from('Account');
+        }
 
-        if (!$this->userData->getIsAdminApp()
-            && !$this->userData->getIsAdminAcc()
-            && !($this->configData->isGlobalSearch() && $useGlobalSearch && $this->userProfile->isAccGlobalSearch())
-        ) {
-            // Filtro usuario y grupo
-            $filter = '(Account.userId = ? 
-            OR Account.userGroupId = ? 
-            OR Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = ?)
-            OR Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?))';
-
-            $params = [
-                $this->userData->getId(),
-                $this->userData->getUserGroupId(),
-                $this->userData->getId(),
-                $this->userData->getUserGroupId(),
-                $this->userData->getId(),
+        if ($this->isFilterByAdminAndGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
+            $where = [
+                'Account.userId = :userId',
+                'Account.userGroupId = :userGroupId',
+                'Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :userId UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :userGroupId)',
+                'Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = :userId)',
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= PHP_EOL
-                           .'OR Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = ? LIMIT 1)';
-                $params[] = $this->userData->getId();
+                $where[] =
+                    'Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = :userId LIMIT 1)';
             }
 
-            $queryFilter->addFilter($filter, $params);
+            $query->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)));
         }
 
-        $queryFilter->addFilter(
-            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = ?)) AND (Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = ?))',
-            [$this->userData->getId(), $this->userData->getUserGroupId()]
+        $query->where(
+            'Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userId)'
+        );
+        $query->where(
+            'Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId)'
         );
 
-        return $queryFilter;
+        $query->bindValues([
+            'userId'      => $userData->getId(),
+            'userGroupId' => $userData->getUserGroupId(),
+        ]);
+
+        return $query;
+    }
+
+    /**
+     * @param  \SP\Domain\User\Services\UserLoginResponse  $userData
+     * @param  bool  $useGlobalSearch
+     * @param  \SP\DataModel\ProfileData|null  $userProfile
+     *
+     * @return bool
+     */
+    private function isFilterByAdminAndGlobalSearch(
+        UserLoginResponse $userData,
+        bool $useGlobalSearch,
+        ?ProfileData $userProfile
+    ): bool {
+        return !$userData->getIsAdminApp()
+               && !$userData->getIsAdminAcc()
+               && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
     }
 }

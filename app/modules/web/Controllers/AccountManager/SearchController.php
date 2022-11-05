@@ -28,7 +28,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Domain\Account\AccountSearchServiceInterface;
 use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -51,6 +51,10 @@ final class SearchController extends ControllerBase
     private AccountSearchServiceInterface $accountSearchService;
     private AccountGrid                   $accountGrid;
 
+    /**
+     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws \SP\Domain\Auth\Services\AuthException
+     */
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
@@ -67,7 +71,6 @@ final class SearchController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -100,19 +103,12 @@ final class SearchController extends ControllerBase
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        $filter = new AccountSearchFilter();
-        $filter->setLimitCount($itemSearchData->getLimitCount());
-        $filter->setLimitStart($itemSearchData->getLimitStart());
-
-        if (!empty($itemSearchData->getSeachString())) {
-            $filter->setStringFilters(
-                $this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString())
-            );
-            $filter->setCleanTxtSearch($this->accountSearchService->getCleanString());
-        }
+        $filter = AccountSearchFilter::build($itemSearchData->getSeachString())
+            ->setLimitCount($itemSearchData->getLimitCount())
+            ->setLimitStart($itemSearchData->getLimitStart());
 
         return $this->accountGrid->updatePager(
-            $this->accountGrid->getGrid($this->accountService->getByFilter($filter)),
+            $this->accountGrid->getGrid($this->accountSearchService->getByFilter($filter)),
             $itemSearchData
         );
     }

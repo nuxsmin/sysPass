@@ -25,16 +25,36 @@
 namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
+use Klein\Klein;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Domain\Account\Services\AccountSearchFilter;
+use SP\Core\Application;
+use SP\Domain\Account\AccountSearchServiceInterface;
+use SP\Domain\Account\Search\AccountSearchConstants;
+use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Api\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
-use SP\Mvc\Model\QueryCondition;
+use SP\Modules\Api\Controllers\ControllerBase;
 
 /**
  * Class SearchController
  */
-final class SearchController extends AccountBase
+final class SearchController extends ControllerBase
 {
+    private AccountSearchServiceInterface $accountSearchService;
+
+    public function __construct(
+        Application $application,
+        Klein $router,
+        ApiServiceInterface $apiService,
+        Acl $acl,
+        AccountSearchServiceInterface $accountSearchService
+    ) {
+        parent::__construct($application, $router, $apiService, $acl);
+
+        $this->accountSearchService = $accountSearchService;
+    }
+
     /**
      * searchAction
      */
@@ -46,7 +66,9 @@ final class SearchController extends AccountBase
             $accountSearchFilter = $this->buildAccountSearchFilter();
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($this->accountService->getByFilter($accountSearchFilter)->getDataAsArray())
+                ApiResponse::makeSuccess(
+                    $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray()
+                )
             );
         } catch (Exception $e) {
             processException($e);
@@ -56,40 +78,33 @@ final class SearchController extends AccountBase
     }
 
     /**
-     * @return \SP\Domain\Account\Services\AccountSearchFilter
+     * @return \SP\Domain\Account\Search\AccountSearchFilter
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     private function buildAccountSearchFilter(): AccountSearchFilter
     {
-        $accountSearchFilter = new AccountSearchFilter();
-        $accountSearchFilter->setCleanTxtSearch($this->apiService->getParamString('text'));
-        $accountSearchFilter->setCategoryId($this->apiService->getParamInt('categoryId'));
-        $accountSearchFilter->setClientId($this->apiService->getParamInt('clientId'));
+        $filter = AccountSearchFilter::build($this->apiService->getParamString('text'))
+            ->setCategoryId($this->apiService->getParamInt('categoryId'))
+            ->setClientId($this->apiService->getParamInt('clientId'))
+            ->setTagsId(array_map('intval', $this->apiService->getParamArray('tagsId', false, [])))
+            ->setLimitCount($this->apiService->getParamInt('count', false, 50))
+            ->setSortOrder(
+                $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
+            );
 
-        $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
-
-        if (count($tagsId) !== 0) {
-            $accountSearchFilter->setTagsId($tagsId);
-        }
-
-        $op = $this->apiService->getParamString('op');
+        $op = $this->apiService->getParamString('op', false, AccountSearchConstants::FILTER_CHAIN_AND);
 
         if ($op !== null) {
             switch ($op) {
-                case 'and':
-                    $accountSearchFilter->setFilterOperator(QueryCondition::CONDITION_AND);
+                case AccountSearchConstants::FILTER_CHAIN_AND:
+                    $filter->setFilterOperator(AccountSearchConstants::FILTER_CHAIN_AND);
                     break;
-                case 'or':
-                    $accountSearchFilter->setFilterOperator(QueryCondition::CONDITION_OR);
+                case AccountSearchConstants::FILTER_CHAIN_OR:
+                    $filter->setFilterOperator(AccountSearchConstants::FILTER_CHAIN_OR);
                     break;
             }
         }
 
-        $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
-        $accountSearchFilter->setSortOrder(
-            $this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT)
-        );
-
-        return $accountSearchFilter;
+        return $filter;
     }
 }
