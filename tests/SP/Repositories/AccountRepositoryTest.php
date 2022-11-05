@@ -24,9 +24,11 @@
 
 namespace SP\Tests\Repositories;
 
+use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountVData;
-use SP\Domain\Account\Out\AccountPassData;
+use SP\Domain\Account\Services\AccountFilterUser;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Common\Out\SimpleModel;
@@ -34,7 +36,6 @@ use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Mvc\Model\QueryCondition;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -57,7 +58,26 @@ class AccountRepositoryTest extends UnitaryTestCase
         parent::setUp();
 
         $this->databaseInterface = $this->createMock(DatabaseInterface::class);
-        $this->accountRepository = new AccountRepository($this->databaseInterface, $this->context);
+        $this->queryFactory = $this->getMockBuilder(QueryFactory::class)
+            ->enableOriginalConstructor()
+            ->enableProxyingToOriginalMethods()
+            ->setConstructorArgs(['mysql'])
+            ->getMock();
+        $this->accountFilterUser =
+            $this->getMockBuilder(AccountFilterUser::class)
+                ->enableOriginalConstructor()
+                ->enableProxyingToOriginalMethods()
+                ->setConstructorArgs(
+                    [$this->application->getContext(), $this->config->getConfigData(), $this->queryFactory]
+                )
+                ->getMock();
+        $this->accountRepository = new AccountRepository(
+            $this->databaseInterface,
+            $this->context,
+            $this->queryFactory,
+            $this->application->getEventDispatcher(),
+            $this->accountFilterUser
+        );
     }
 
     public function testGetTotalNumAccounts(): void
@@ -84,7 +104,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === AccountPassData::class && !empty($arg->getQuery());
+                return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -102,7 +122,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === AccountPassData::class && !empty($arg->getQuery());
+                return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery());
             }
         );
 
@@ -111,7 +131,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->with($callback, false)
             ->willReturn($expected);
 
-        $this->assertEquals($expected, $this->accountRepository->getPasswordHistoryForId(new QueryCondition()));
+        $this->assertEquals($expected, $this->accountRepository->getPasswordHistoryForId(1));
     }
 
     /**
@@ -127,9 +147,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
-                $params = $arg->getParams();
-
-                return $params[0] === $id && !empty($arg->getQuery());
+                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -154,7 +172,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
-                return $arg->getParams()[0] === $id && !empty($arg->getQuery());
+                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery());
             }
         );
 
@@ -179,24 +197,23 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->clientId
-                       && $params[1] === $accountRequest->categoryId
-                       && $params[2] === $accountRequest->name
-                       && $params[3] === $accountRequest->login
-                       && $params[4] === $accountRequest->url
-                       && $params[5] === $accountRequest->pass
-                       && $params[6] === $accountRequest->key
-                       && $params[7] === $accountRequest->notes
-                       && $params[8] === $accountRequest->userId
-                       && $params[9] === $accountRequest->userGroupId
-                       && $params[10] === $accountRequest->userId
-                       && $params[11] === $accountRequest->isPrivate
-                       && $params[12] === $accountRequest->isPrivateGroup
-                       && $params[13] === $accountRequest->passDateChange
-                       && $params[14] === $accountRequest->parentId
-                       && !empty($arg->getQuery());
+                return $params['clientId'] === $accountRequest->clientId
+                       && $params['categoryId'] === $accountRequest->categoryId
+                       && $params['name'] === $accountRequest->name
+                       && $params['login'] === $accountRequest->login
+                       && $params['url'] === $accountRequest->url
+                       && $params['pass'] === $accountRequest->pass
+                       && $params['key'] === $accountRequest->key
+                       && $params['notes'] === $accountRequest->notes
+                       && $params['userId'] === $accountRequest->userId
+                       && $params['userGroupId'] === $accountRequest->userGroupId
+                       && $params['isPrivate'] === $accountRequest->isPrivate
+                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['parentId'] === $accountRequest->parentId
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -244,14 +261,14 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->pass
-                       && $params[1] === $accountRequest->key
-                       && $params[2] === $accountRequest->userEditId
-                       && $params[3] === $accountRequest->passDateChange
-                       && $params[4] === $accountRequest->id
-                       && !empty($arg->getQuery());
+                return $params['pass'] === $accountRequest->pass
+                       && $params['key'] === $accountRequest->key
+                       && $params['userEditId'] === $accountRequest->userEditId
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['id'] === $accountRequest->id
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -279,12 +296,12 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountPasswordRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountPasswordRequest->pass
-                       && $params[1] === $accountPasswordRequest->key
-                       && $params[2] === $accountPasswordRequest->id
-                       && !empty($arg->getQuery());
+                return $params['pass'] === $accountPasswordRequest->pass
+                       && $params['key'] === $accountPasswordRequest->key
+                       && $params['id'] === $accountPasswordRequest->id
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -302,19 +319,50 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testEditRestore(): void
     {
-        $historyId = 1;
+        $accountHistoryData = new AccountHistoryData();
+        $accountHistoryData->id = self::$faker->randomNumber();
+        $accountHistoryData->accountId = self::$faker->randomNumber();
+        $accountHistoryData->name = self::$faker->name;
+        $accountHistoryData->login = self::$faker->userName;
+        $accountHistoryData->url = self::$faker->url;
+        $accountHistoryData->notes = self::$faker->text;
+        $accountHistoryData->userEditId = self::$faker->randomNumber();
+        $accountHistoryData->passDateChange = self::$faker->unixTime;
+        $accountHistoryData->clientId = self::$faker->randomNumber();
+        $accountHistoryData->categoryId = self::$faker->randomNumber();
+        $accountHistoryData->isPrivate = self::$faker->numberBetween(0, 1);
+        $accountHistoryData->isPrivateGroup = self::$faker->numberBetween(0, 1);
+        $accountHistoryData->parentId = self::$faker->randomNumber();
+        $accountHistoryData->userId = self::$faker->randomNumber();
+        $accountHistoryData->userGroupId = self::$faker->randomNumber();
+        $accountHistoryData->key = self::$faker->text;
+        $accountHistoryData->pass = self::$faker->text;
+
         $userId = 1;
 
         $expected = new QueryResult();
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($historyId, $userId) {
-                $params = $arg->getParams();
+            function (QueryData $arg) use ($accountHistoryData, $userId) {
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $historyId
-                       && $params[1] === $userId
-                       && !empty($arg->getQuery());
+                return $params['id'] === $accountHistoryData->getAccountId()
+                       && $params['name'] === $accountHistoryData->getName()
+                       && $params['login'] === $accountHistoryData->getLogin()
+                       && $params['url'] === $accountHistoryData->getUrl()
+                       && $params['notes'] === $accountHistoryData->getNotes()
+                       && $params['userEditId'] === $userId
+                       && $params['passDateChange'] === $accountHistoryData->getPassDateChange()
+                       && $params['clientId'] === $accountHistoryData->getClientId()
+                       && $params['categoryId'] === $accountHistoryData->getCategoryId()
+                       && $params['isPrivate'] === $accountHistoryData->getIsPrivate()
+                       && $params['isPrivateGroup'] === $accountHistoryData->getIsPrivateGroup()
+                       && $params['parentId'] === $accountHistoryData->getParentId()
+                       && $params['userGroupId'] === $accountHistoryData->getUserGroupId()
+                       && $params['key'] === $accountHistoryData->getKey()
+                       && $params['pass'] === $accountHistoryData->getPass()
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -323,7 +371,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountRepository->editRestore($historyId, $userId));
+        $this->assertTrue($this->accountRepository->editRestore($accountHistoryData, $userId));
     }
 
     /**
@@ -338,10 +386,8 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
-                $params = $arg->getParams();
-
-                return $params[0] === $id
-                       && !empty($arg->getQuery());
+                return $arg->getQuery()->getBindValues()['id'] === $id
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -365,20 +411,20 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->clientId
-                       && $params[1] === $accountRequest->categoryId
-                       && $params[2] === $accountRequest->name
-                       && $params[3] === $accountRequest->login
-                       && $params[4] === $accountRequest->url
-                       && $params[5] === $accountRequest->notes
-                       && $params[6] === $accountRequest->userEditId
-                       && $params[7] === $accountRequest->passDateChange
-                       && $params[8] === $accountRequest->isPrivate
-                       && $params[9] === $accountRequest->isPrivateGroup
-                       && $params[10] === $accountRequest->parentId
-                       && !empty($arg->getQuery());
+                return $params['clientId'] === $accountRequest->clientId
+                       && $params['categoryId'] === $accountRequest->categoryId
+                       && $params['name'] === $accountRequest->name
+                       && $params['login'] === $accountRequest->login
+                       && $params['url'] === $accountRequest->url
+                       && $params['notes'] === $accountRequest->notes
+                       && $params['userEditId'] === $accountRequest->userEditId
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['isPrivate'] === $accountRequest->isPrivate
+                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
+                       && $params['parentId'] === $accountRequest->parentId
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -403,21 +449,21 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->clientId
-                       && $params[1] === $accountRequest->categoryId
-                       && $params[2] === $accountRequest->name
-                       && $params[3] === $accountRequest->login
-                       && $params[4] === $accountRequest->url
-                       && $params[5] === $accountRequest->notes
-                       && $params[6] === $accountRequest->userEditId
-                       && $params[7] === $accountRequest->passDateChange
-                       && $params[8] === $accountRequest->isPrivate
-                       && $params[9] === $accountRequest->isPrivateGroup
-                       && $params[10] === $accountRequest->parentId
-                       && $params[11] === $accountRequest->userGroupId
-                       && !empty($arg->getQuery());
+                return $params['clientId'] === $accountRequest->clientId
+                       && $params['categoryId'] === $accountRequest->categoryId
+                       && $params['name'] === $accountRequest->name
+                       && $params['login'] === $accountRequest->login
+                       && $params['url'] === $accountRequest->url
+                       && $params['notes'] === $accountRequest->notes
+                       && $params['userEditId'] === $accountRequest->userEditId
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['isPrivate'] === $accountRequest->isPrivate
+                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
+                       && $params['parentId'] === $accountRequest->parentId
+                       && $params['userGroupId'] === $accountRequest->userGroupId
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -442,21 +488,21 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->clientId
-                       && $params[1] === $accountRequest->categoryId
-                       && $params[2] === $accountRequest->name
-                       && $params[3] === $accountRequest->login
-                       && $params[4] === $accountRequest->url
-                       && $params[5] === $accountRequest->notes
-                       && $params[6] === $accountRequest->userEditId
-                       && $params[7] === $accountRequest->passDateChange
-                       && $params[8] === $accountRequest->isPrivate
-                       && $params[9] === $accountRequest->isPrivateGroup
-                       && $params[10] === $accountRequest->parentId
-                       && $params[11] === $accountRequest->userId
-                       && !empty($arg->getQuery());
+                return $params['clientId'] === $accountRequest->clientId
+                       && $params['categoryId'] === $accountRequest->categoryId
+                       && $params['name'] === $accountRequest->name
+                       && $params['login'] === $accountRequest->login
+                       && $params['url'] === $accountRequest->url
+                       && $params['notes'] === $accountRequest->notes
+                       && $params['userEditId'] === $accountRequest->userEditId
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['isPrivate'] === $accountRequest->isPrivate
+                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
+                       && $params['parentId'] === $accountRequest->parentId
+                       && $params['userId'] === $accountRequest->userId
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -480,16 +526,16 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($accountRequest) {
-                $params = $arg->getParams();
+                $params = $arg->getQuery()->getBindValues();
 
-                return $params[0] === $accountRequest->userEditId
-                       && $params[1] === $accountRequest->clientId
-                       && $params[2] === $accountRequest->categoryId
-                       && $params[3] === $accountRequest->userId
-                       && $params[4] === $accountRequest->userGroupId
-                       && $params[5] === $accountRequest->passDateChange
-                       && $params[6] === $accountRequest->id
-                       && !empty($arg->getQuery());
+                return $params['userEditId'] === $accountRequest->userEditId
+                       && $params['clientId'] === $accountRequest->clientId
+                       && $params['categoryId'] === $accountRequest->categoryId
+                       && $params['userId'] === $accountRequest->userId
+                       && $params['userGroupId'] === $accountRequest->userGroupId
+                       && $params['passDateChange'] === $accountRequest->passDateChange
+                       && $params['id'] === $accountRequest->id
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
@@ -509,11 +555,9 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
-                $params = $arg->getParams();
-
-                return $params[0] === $id
-                       && $arg->getMapClassName() === AccountVData::class
-                       && !empty($arg->getQuery());
+                return $arg->getQuery()->getBindValues()['id'] === $id
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 

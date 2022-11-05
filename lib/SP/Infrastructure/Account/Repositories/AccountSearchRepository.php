@@ -32,7 +32,7 @@ use SP\Core\Events\EventDispatcherInterface;
 use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
-use SP\Domain\Account\Services\AccountFilterUser;
+use SP\Domain\Account\Services\AccountFilterUserInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -44,15 +44,15 @@ use SP\Util\Filter;
  */
 final class AccountSearchRepository extends Repository implements AccountSearchRepositoryInterface
 {
-    protected SelectInterface $query;
-    private AccountFilterUser $accountFilterUser;
+    private SelectInterface            $query;
+    private AccountFilterUserInterface $accountFilterUser;
 
     public function __construct(
         DatabaseInterface $database,
         ContextInterface $session,
         EventDispatcherInterface $eventDispatcher,
         QueryFactory $queryFactory,
-        AccountFilterUser $accountFilterUser
+        AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
 

@@ -65,14 +65,14 @@ final class AccountService extends Service implements AccountServiceInterface
 {
     use ServiceItemTrait;
 
-    private AccountRepositoryInterface $accountRepository;
+    private AccountRepositoryInterface            $accountRepository;
     private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository;
-    private AccountToUserRepositoryInterface $accountToUserRepository;
-    private AccountToTagRepositoryInterface $accountToTagRepository;
-    private ItemPresetServiceInterface $itemPresetService;
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private ConfigServiceInterface $configService;
-    private AccountFilterUser $accountFilterUser;
+    private AccountToUserRepositoryInterface      $accountToUserRepository;
+    private AccountToTagRepositoryInterface       $accountToTagRepository;
+    private ItemPresetServiceInterface            $itemPresetService;
+    private AccountHistoryServiceInterface        $accountHistoryService;
+    private ConfigServiceInterface                $configService;
+    private AccountFilterUserInterface            $accountFilterUser;
 
     public function __construct(
         Application $application,
@@ -83,7 +83,7 @@ final class AccountService extends Service implements AccountServiceInterface
         ItemPresetServiceInterface $itemPresetService,
         AccountHistoryServiceInterface $accountHistoryService,
         ConfigServiceInterface $configService,
-        AccountFilterUser $accountFilterUser
+        AccountFilterUserInterface $accountFilterUser
     ) {
         $this->accountRepository = $accountRepository;
         $this->accountToUserGroupRepository = $accountToUserGroupRepository;

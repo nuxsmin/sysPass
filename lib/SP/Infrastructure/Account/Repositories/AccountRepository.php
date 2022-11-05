@@ -34,7 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\In\AccountRepositoryInterface;
-use SP\Domain\Account\Services\AccountFilterUser;
+use SP\Domain\Account\Services\AccountFilterUserInterface;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Common\Out\SimpleModel;
@@ -53,14 +53,14 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
 {
     use RepositoryItemTrait;
 
-    private AccountFilterUser $accountFilterUser;
+    private AccountFilterUserInterface $accountFilterUser;
 
     public function __construct(
         DatabaseInterface $database,
         ContextInterface $session,
         QueryFactory $queryFactory,
         EventDispatcherInterface $eventDispatcher,
-        AccountFilterUser $accountFilterUser
+        AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
 
@@ -141,7 +141,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->newUpdate()
             ->table('Account')
             ->set('countDecrypt', '(countDecrypt + 1)')
-            ->where('id = :id', ['id' => $id]);
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
         return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows() === 1;
     }
@@ -207,7 +208,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ])
             ->set('dateEdit', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()')
-            ->where('id = :id', ['id' => $accountRequest->id]);
+            ->where('id = :id')
+            ->bindValues(['id' => $accountRequest->id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -229,7 +231,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->newUpdate()
             ->table('Account')
             ->cols(['pass' => $request->pass, 'key' => $request->key])
-            ->where('id = :id', ['id' => $request->id]);
+            ->where('id = :id')
+            ->bindValues(['id' => $request->id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -269,7 +272,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'isPrivateGroup' => $accountHistoryData->getIsPrivateGroup(),
             ])
             ->set('dateEdit', 'NOW()')
-            ->where('id = :id', ['id' => $accountHistoryData->getAccountId()]);
+            ->where('id = :id')
+            ->bindValues(['id' => $accountHistoryData->getAccountId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error on restoring the account'));
 
@@ -290,7 +294,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newDelete()
             ->from('Account')
-            ->where('id = :id', ['id' => $id]);
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
@@ -352,11 +357,12 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->where('id = :id', ['id' => $itemData->id])
             ->cols([
                 'userEditId' => $itemData->userEditId,
             ])
-            ->set('dateEdit', 'NOW()');
+            ->set('dateEdit', 'NOW()')
+            ->where('id = :id')
+            ->bindValues(['id' => $itemData->id]);
 
         $optional = ['clientId', 'categoryId', 'userId', 'userGroupId', 'passDateChange'];
 
@@ -392,7 +398,39 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newSelect()
             ->from('account_data_v')
-            ->where('id = :id', ['id' => $id])
+            ->cols([
+                'id',
+                'name',
+                'categoryId',
+                'userId',
+                'clientId',
+                'userGroupId',
+                'userEditId',
+                'login',
+                'url',
+                'notes',
+                'countView',
+                'countDecrypt',
+                'dateAdd',
+                'dateEdit',
+                'otherUserEdit',
+                'otherUserGroupEdit',
+                'isPrivate',
+                'isPrivateGroup',
+                'passDate',
+                'passDateChange',
+                'parentId',
+                'categoryName',
+                'clientName',
+                'userGroupName',
+                'userName',
+                'userLogin',
+                'userEditName',
+                'userEditLogin',
+                'publicLinkHash',
+            ])
+            ->where('id = :id')
+            ->bindValues(['id' => $id])
             ->limit(1);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));

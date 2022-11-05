@@ -37,7 +37,7 @@ defined('APP_ROOT') || die();
 /**
  * Class AccountFilterUser
  */
-final class AccountFilterUser
+final class AccountFilterUser implements AccountFilterUserInterface
 {
     private ConfigDataInterface $configData;
     private ContextInterface    $context;

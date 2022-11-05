@@ -31,12 +31,12 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Services\AccountFilterUser;
+use SP\Domain\Account\Services\AccountFilterUserInterface;
 use SP\Domain\Client\ClientServiceInterface;
+use SP\Domain\Client\In\ClientRepositoryInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
-use SP\Infrastructure\Client\Repositories\ClientRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -50,13 +50,13 @@ final class ClientService extends Service implements ClientServiceInterface
 {
     use ServiceItemTrait;
 
-    private ClientRepository  $clientRepository;
-    private AccountFilterUser $accountFilterUser;
+    private ClientRepositoryInterface  $clientRepository;
+    private AccountFilterUserInterface $accountFilterUser;
 
     public function __construct(
         Application $application,
-        ClientRepository $clientRepository,
-        AccountFilterUser $accountFilterUser
+        ClientRepositoryInterface $clientRepository,
+        AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($application);
 
@@ -65,8 +65,9 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -108,8 +109,9 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @param  int  $id
+     *
+     * @return \SP\Domain\Client\ClientServiceInterface
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function delete(int $id): ClientServiceInterface
@@ -124,9 +126,8 @@ final class ClientService extends Service implements ClientServiceInterface
     /**
      * @param  int[]  $ids
      *
+     * @return int
      * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids): int
     {
@@ -143,8 +144,9 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @throws SPException
-     * @throws DuplicatedItemException
+     * @param $itemData
+     *
+     * @return int
      */
     public function create($itemData): int
     {
@@ -155,9 +157,6 @@ final class ClientService extends Service implements ClientServiceInterface
      * @param  ClientData  $itemData
      *
      * @return int
-     * @throws SPException
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function update(ClientData $itemData): int
     {
