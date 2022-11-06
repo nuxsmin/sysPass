@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Services\Backup;
+namespace SP\Tests\Domain\Export\Services;
 
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Export\Services\BackupFiles;
@@ -41,7 +41,6 @@ use SP\Tests\UnitaryTestCase;
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private FileBackupService $fileBackupService;
-    private BackupFiles       $backupFiles;
 
     /**
      * @throws \SP\Domain\Common\Services\ServiceException
@@ -77,18 +76,18 @@ class FileBackupServiceTest extends UnitaryTestCase
                 FileBackupService::BACKUP_INCLUDE_REGEX
             );
 
-        $this->backupFiles = $this->getMockBuilder(BackupFiles::class)
+        $backupFiles = $this->getMockBuilder(BackupFiles::class)
             ->onlyMethods(['getDbBackupArchiveHandler', 'getAppBackupArchiveHandler'])
             ->setConstructorArgs([new PhpExtensionChecker()])
             ->getMock();
-        $this->backupFiles->method('getDbBackupArchiveHandler')->willReturn($archiveHandler);
-        $this->backupFiles->method('getAppBackupArchiveHandler')->willReturn($archiveHandler);
+        $backupFiles->method('getDbBackupArchiveHandler')->willReturn($archiveHandler);
+        $backupFiles->method('getAppBackupArchiveHandler')->willReturn($archiveHandler);
 
         $this->fileBackupService = new FileBackupService(
             $this->application,
             $database,
             $this->createStub(DatabaseUtil::class),
-            $this->backupFiles
+            $backupFiles
         );
     }
 }

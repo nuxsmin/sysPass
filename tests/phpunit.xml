@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ sysPass
+  ~
+  ~ @author nuxsmin
+  ~ @link https://syspass.org
+  ~ @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+  ~
+  ~ This file is part of sysPass.
+  ~
+  ~ sysPass is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ sysPass is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          backupGlobals="false"
          backupStaticAttributes="false"
@@ -41,8 +64,8 @@
             <directory suffix=".php">./SP/Modules/Cli</directory>
         </testsuite>
         <testsuite name="unitary">
-            <directory suffix=".php">./SP/Services/Install</directory>
-            <directory suffix=".php">./SP/Services/Backup</directory>
+            <directory suffix=".php">./SP/Domain</directory>
+            <directory suffix=".php">./SP/Infrastructure</directory>
         </testsuite>
     </testsuites>
     <logging/>

@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Services\Install;
+namespace SP\Tests\Domain\Install\Services;
 
 use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;

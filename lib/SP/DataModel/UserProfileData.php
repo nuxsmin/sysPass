@@ -36,23 +36,14 @@ defined('APP_ROOT') || die();
  */
 class UserProfileData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id = 0;
-    /**
-     * @var string
-     */
-    public $name = '';
-    /**
-     * @var ProfileData
-     */
-    public $profile;
+    protected ?int         $id      = null;
+    protected ?string      $name    = null;
+    protected ?ProfileData $profile = null;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -66,9 +57,9 @@ class UserProfileData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return (int)$this->id;
     }
