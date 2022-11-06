@@ -50,7 +50,6 @@ class AccountRepositoryTest extends UnitaryTestCase
 {
     private DatabaseInterface $databaseInterface;
     private AccountRepository $accountRepository;
-    private QueryFactory      $queryFactory;
     private AccountFilterUser $accountFilterUser;
 
     protected function setUp(): void
@@ -58,23 +57,21 @@ class AccountRepositoryTest extends UnitaryTestCase
         parent::setUp();
 
         $this->databaseInterface = $this->createMock(DatabaseInterface::class);
-        $this->queryFactory = $this->getMockBuilder(QueryFactory::class)
-            ->enableOriginalConstructor()
-            ->enableProxyingToOriginalMethods()
-            ->setConstructorArgs(['mysql'])
-            ->getMock();
+        $queryFactory = new QueryFactory('mysql');
+
+        /** @noinspection PhpUnitInvalidMockingEntityInspection */
         $this->accountFilterUser =
             $this->getMockBuilder(AccountFilterUser::class)
                 ->enableOriginalConstructor()
                 ->enableProxyingToOriginalMethods()
                 ->setConstructorArgs(
-                    [$this->application->getContext(), $this->config->getConfigData(), $this->queryFactory]
+                    [$this->application->getContext(), $this->config->getConfigData(), $queryFactory]
                 )
                 ->getMock();
         $this->accountRepository = new AccountRepository(
             $this->databaseInterface,
             $this->context,
-            $this->queryFactory,
+            $queryFactory,
             $this->application->getEventDispatcher(),
             $this->accountFilterUser
         );
