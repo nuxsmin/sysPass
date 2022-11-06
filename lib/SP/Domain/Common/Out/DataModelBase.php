@@ -43,7 +43,7 @@ abstract class DataModelBase
      *
      * @return mixed|null
      */
-    public function __get(string $name)
+    public final function __get(string $name)
     {
         if (property_exists($this, $name)) {
             return $this->{$name};
@@ -56,7 +56,7 @@ abstract class DataModelBase
         return null;
     }
 
-    public function __set(string $name, ?string $value = null): void
+    public final function __set(string $name, ?string $value = null): void
     {
         if (is_numeric($value)) {
             $value = (int)$value;

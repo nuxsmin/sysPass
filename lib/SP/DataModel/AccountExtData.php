@@ -33,176 +33,50 @@ use SP\Domain\Account\Out\AccountData;
  */
 class AccountExtData extends AccountData
 {
-    /**
-     * @var array Los Ids de los usuarios secundarios de la cuenta.
-     */
-    public $usersId = [];
-    /**
-     * @var array Los Ids de los grupos secundarios de la cuenta.
-     */
-    public $userGroupsId = [];
-    /**
-     * @var array
-     */
-    public $tags = [];
-    /**
-     * @var string
-     */
-    public $categoryName = '';
-    /**
-     * @var string
-     */
-    public $clientName = '';
-    /**
-     * @var string
-     */
-    public $userGroupName = '';
-    /**
-     * @var string
-     */
-    public $userName = '';
-    /**
-     * @var string
-     */
-    public $userLogin = '';
-    /**
-     * @var string
-     */
-    public $userEditName = '';
-    /**
-     * @var string
-     */
-    public $userEditLogin = '';
-    /**
-     * @var string
-     */
-    public $publicLinkHash = '';
+    protected array   $usersId        = [];
+    protected array   $userGroupsId   = [];
+    protected array   $tags           = [];
+    protected ?string $categoryName   = null;
+    protected ?string $clientName     = null;
+    protected ?string $userGroupName  = null;
+    protected ?string $userName       = null;
+    protected ?string $userLogin      = null;
+    protected ?string $userEditName   = null;
+    protected ?string $userEditLogin  = null;
+    protected ?string $publicLinkHash = null;
 
-    /**
-     * @return string
-     */
-    public function getUserEditName()
+    public function getUserEditName(): ?string
     {
         return $this->userEditName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserEditLogin()
+    public function getUserEditLogin(): ?string
     {
         return $this->userEditLogin;
     }
 
-    /**
-     * @return string
-     */
-    public function getPublicLinkHash()
-    {
-        return $this->publicLinkHash;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountUsersId()
-    {
-        return $this->usersId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountUserGroupsId()
-    {
-        return $this->userGroupsId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
+    public function getCategoryName(): ?string
     {
         return $this->categoryName;
     }
 
-    /**
-     * @return string
-     */
-    public function getClientName()
+    public function getClientName(): ?string
     {
         return $this->clientName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserGroupName()
+    public function getUserGroupName(): ?string
     {
         return $this->userGroupName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserName()
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserLogin()
+    public function getUserLogin(): ?string
     {
         return $this->userLogin;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsersId()
-    {
-        return $this->usersId;
-    }
-
-    /**
-     * @param array $usersId
-     */
-    public function setUsersId(array $usersId)
-    {
-        $this->usersId = $usersId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUserGroupsId()
-    {
-        return $this->userGroupsId;
-    }
-
-    /**
-     * @param array $userGroupsId
-     */
-    public function setUserGroupsId(array $userGroupsId)
-    {
-        $this->userGroupsId = $userGroupsId;
     }
 }

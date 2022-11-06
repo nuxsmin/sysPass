@@ -36,27 +36,27 @@ use SP\Http\Json;
  */
 class AccountData extends DataModelBase implements JsonSerializable, DataModelInterface
 {
-    private int     $id;
-    private ?int    $userId         = null;
-    private ?int    $userGroupId    = null;
-    private ?int    $userEditId     = null;
-    private ?string $name           = null;
-    private ?int    $clientId       = null;
-    private ?int    $categoryId     = null;
-    private ?string $login          = null;
-    private ?string $url            = null;
-    private ?string $pass           = null;
-    private ?string $key            = null;
-    private ?string $notes          = null;
-    private ?int    $dateAdd        = 0;
-    private ?int    $dateEdit       = 0;
-    private ?int    $countView      = 0;
-    private ?int    $countDecrypt   = 0;
-    private ?int    $isPrivate      = 0;
-    private ?int    $isPrivateGroup = 0;
-    private ?int    $passDate       = 0;
-    private ?int    $passDateChange = 0;
-    private ?int    $parentId       = 0;
+    protected int     $id;
+    protected ?int    $userId         = null;
+    protected ?int    $userGroupId    = null;
+    protected ?int    $userEditId     = null;
+    protected ?string $name           = null;
+    protected ?int    $clientId       = null;
+    protected ?int    $categoryId     = null;
+    protected ?string $login          = null;
+    protected ?string $url            = null;
+    protected ?string $pass           = null;
+    protected ?string $key            = null;
+    protected ?string $notes          = null;
+    protected ?int    $dateAdd        = 0;
+    protected ?int    $dateEdit       = 0;
+    protected ?int    $countView      = 0;
+    protected ?int    $countDecrypt   = 0;
+    protected ?int    $isPrivate      = 0;
+    protected ?int    $isPrivateGroup = 0;
+    protected ?int    $passDate       = 0;
+    protected ?int    $passDateChange = 0;
+    protected ?int    $parentId       = 0;
 
     public function __construct(int $accountId = 0, ?array $properties = [])
     {
@@ -153,7 +153,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      *        which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $data = get_object_vars($this);
 

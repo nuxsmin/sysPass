@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,64 +31,12 @@ namespace SP\DataModel;
  */
 class AccountHistoryData extends AccountExtData
 {
-    /**
-     * @var bool
-     */
-    public $isModify = 0;
-    /**
-     * @var bool
-     */
-    public $isDeleted = 0;
-    /**
-     * @var int
-     */
-    public $accountId;
+    protected int  $isModify  = 0;
+    protected int  $isDeleted = 0;
+    protected ?int $accountId = null;
 
-    /**
-     * @return int
-     */
-    public function isIsModify()
-    {
-        return (int)$this->isModify;
-    }
-
-    /**
-     * @param boolean $isModify
-     */
-    public function setIsModify($isModify)
-    {
-        $this->isModify = (int)$isModify;
-    }
-
-    /**
-     * @return int
-     */
-    public function isIsDeleted()
-    {
-        return (int)$this->isDeleted;
-    }
-
-    /**
-     * @param boolean $isDeleted
-     */
-    public function setIsDeleted($isDeleted)
-    {
-        $this->isDeleted = (int)$isDeleted;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountId()
+    public function getAccountId(): ?int
     {
         return $this->accountId;
-    }
-
-    /**
-     * @param int $accountId
-     */
-    public function setAccountId($accountId)
-    {
-        $this->accountId = $accountId;
     }
 }
