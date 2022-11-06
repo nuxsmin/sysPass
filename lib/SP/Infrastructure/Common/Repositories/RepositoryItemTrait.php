@@ -100,7 +100,7 @@ trait RepositoryItemTrait
      *
      * @return string
      */
-    protected function getParamsFromArray(
+    protected function buildParamsFromArray(
         array $items,
         string $placeholder = '?'
     ): string {

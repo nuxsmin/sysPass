@@ -369,7 +369,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $optionalCount = 0;
 
         foreach ($optional as $field) {
-            if (isset($itemData->{$field}) && !empty($itemData->{$field})) {
+            if (!empty($itemData->{$field})) {
                 $query->col($field, $itemData->{$field});
                 $optionalCount++;
             } else {
@@ -445,7 +445,32 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      */
     public function getAll(): QueryResult
     {
-        $query = $this->queryFactory->newSelect()->from('Account');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('Account')
+            ->cols([
+                'id',
+                'name',
+                'categoryId',
+                'userId',
+                'clientId',
+                'userGroupId',
+                'userEditId',
+                'login',
+                'url',
+                'notes',
+                'countView',
+                'countDecrypt',
+                'dateAdd',
+                'dateEdit',
+                'otherUserEdit',
+                'otherUserGroupEdit',
+                'isPrivate',
+                'isPrivateGroup',
+                'passDate',
+                'passDateChange',
+                'parentId',
+            ]);
 
         return $this->db->doSelect(QueryData::build($query));
     }
@@ -478,7 +503,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newDelete()
             ->from('Account')
-            ->where('id IN (:id)', $ids);
+            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -575,7 +601,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->newUpdate()
             ->table('Account')
             ->set('countView', '(countView + 1)')
-            ->where('id = :id', ['id' => $id]);
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
         return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows() === 1;
     }
@@ -604,7 +631,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'Client.name AS clientName',
                 'Category.name AS categoryName',
             ])
-            ->where('Account.id = :id', ['id' => $id]);
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
@@ -631,8 +659,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->orderBy(['Account.name ASC']);
 
         if ($accountId) {
-            $query->where('Account.id <> :id', ['id' => $accountId]);
-            $query->where('Account.parentId = 0 OR Account.parentId IS NULL');
+            $query
+                ->where('Account.id <> :id')
+                ->where('Account.parentId = 0 OR Account.parentId IS NULL')
+                ->bindValues(['id' => $accountId]);
         }
 
         return $this->db->doSelect(QueryData::build($query));
@@ -655,7 +685,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 ]
             )
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->where('Account.parentId = :parentId', ['parentId' => $accountId])
+            ->where('Account.parentId = :parentId')
+            ->bindValues(['parentId' => $accountId])
             ->orderBy(['Account.name ASC']);
 
         return $this->db->doSelect(QueryData::build($query));

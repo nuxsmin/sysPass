@@ -132,7 +132,7 @@ final class UserToUserGroupRepository extends Repository implements UserToUserGr
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES '.$this->getParamsFromArray($users, '(?,?)');
+            'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES '.$this->buildParamsFromArray($users, '(?,?)');
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

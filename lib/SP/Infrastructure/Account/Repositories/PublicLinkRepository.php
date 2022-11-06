@@ -141,7 +141,7 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
               FROM PublicLink PL
               INNER JOIN User U ON PL.userId = U.id
               INNER JOIN Account A ON itemId = A.id
-              WHERE PL.id IN ('.$this->getParamsFromArray($ids).')
+              WHERE PL.id IN ('.$this->buildParamsFromArray($ids).')
               ORDER BY PL.id';
 
         $queryData = new QueryData();
@@ -168,7 +168,7 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PublicLink WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM PublicLink WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();

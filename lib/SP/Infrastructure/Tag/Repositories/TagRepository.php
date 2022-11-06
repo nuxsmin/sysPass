@@ -212,7 +212,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name` FROM Tag WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'SELECT id, `name` FROM Tag WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(TagData::class);
@@ -238,7 +238,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Tag WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM Tag WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while removing the tags'));
 

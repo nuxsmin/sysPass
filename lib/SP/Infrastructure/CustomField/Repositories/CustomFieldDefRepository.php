@@ -204,7 +204,7 @@ final class CustomFieldDefRepository extends Repository implements CustomFieldDe
         $query = /** @lang SQL */
             'SELECT id, `name`, moduleId, required, `help`, showInList, typeId, isEncrypted
               FROM CustomFieldDefinition
-              WHERE id IN ('.$this->getParamsFromArray($ids).') 
+              WHERE id IN ('.$this->buildParamsFromArray($ids).') 
               ORDER BY id';
 
         $queryData = new QueryData();
@@ -232,7 +232,7 @@ final class CustomFieldDefRepository extends Repository implements CustomFieldDe
         }
 
         $query = /** @lang SQL */
-            'DELETE FROM CustomFieldDefinition WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'DELETE FROM CustomFieldDefinition WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

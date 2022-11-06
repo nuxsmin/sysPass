@@ -78,7 +78,11 @@ abstract class UnitaryTestCase extends TestCase
     private function mockApplication(): Application
     {
         $userLogin = new UserLoginResponse();
-        $userLogin->setLogin(self::$faker->userName);
+        $userLogin
+            ->setLogin(self::$faker->userName)
+            ->setName(self::$faker->userName)
+            ->setId(self::$faker->randomNumber())
+            ->setUserGroupId(self::$faker->randomNumber());
 
         $this->context = new StatelessContext();
         $this->context->initialize();

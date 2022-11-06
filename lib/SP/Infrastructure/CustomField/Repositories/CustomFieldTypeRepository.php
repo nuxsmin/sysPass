@@ -176,7 +176,7 @@ final class CustomFieldTypeRepository extends Repository implements CustomFieldT
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM CustomFieldType WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM CustomFieldType WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the field type'));
 

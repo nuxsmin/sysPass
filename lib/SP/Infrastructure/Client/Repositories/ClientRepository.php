@@ -236,7 +236,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(ClientData::class);
@@ -262,7 +262,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Client WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM Client WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the clients'));
 

@@ -156,7 +156,7 @@ final class AccountToUserGroupRepository extends Repository implements AccountTo
     public function addByType(AccountRequest $accountRequest, bool $isEdit): int
     {
         $items = $isEdit ? $accountRequest->userGroupsEdit : $accountRequest->userGroupsView;
-        $values = $this->getParamsFromArray($items, '(?,?,?)');
+        $values = $this->buildParamsFromArray($items, '(?,?,?)');
 
         $query = /** @lang SQL */
             'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 

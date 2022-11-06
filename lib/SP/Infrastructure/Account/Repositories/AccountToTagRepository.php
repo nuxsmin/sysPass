@@ -112,7 +112,7 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
     public function add(AccountRequest $accountRequest): int
     {
         $query = /** @lang SQL */
-            'INSERT INTO AccountToTag (accountId, tagId) VALUES '.$this->getParamsFromArray(
+            'INSERT INTO AccountToTag (accountId, tagId) VALUES '.$this->buildParamsFromArray(
                 $accountRequest->tags,
                 '(?,?)'
             );

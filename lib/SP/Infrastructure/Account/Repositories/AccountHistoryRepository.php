@@ -288,7 +288,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
 
@@ -311,7 +311,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE accountId IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE accountId IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
 

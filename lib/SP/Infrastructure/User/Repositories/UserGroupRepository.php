@@ -225,7 +225,7 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
         }
 
         $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'SELECT id, name, description FROM UserGroup WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -251,7 +251,7 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM UserGroup WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM UserGroup WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();

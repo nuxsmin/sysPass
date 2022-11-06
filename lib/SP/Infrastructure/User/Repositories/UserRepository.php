@@ -325,7 +325,7 @@ final class UserRepository extends Repository implements UserRepositoryInterface
             U.isMigrate
             FROM User U
             INNER JOIN UserGroup UG ON U.userGroupId = UG.id
-            WHERE U.id IN ('.$this->getParamsFromArray($ids).')';
+            WHERE U.id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(UserData::class);
@@ -351,7 +351,7 @@ final class UserRepository extends Repository implements UserRepositoryInterface
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM User WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM User WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the users'));
 
@@ -782,7 +782,7 @@ final class UserRepository extends Repository implements UserRepositoryInterface
             FROM User
             WHERE email IS NOT NULL 
             AND isDisabled = 0
-            AND id IN ('.$this->getParamsFromArray($ids).')
+            AND id IN ('.$this->buildParamsFromArray($ids).')
             ORDER BY login';
 
         $queryData = new QueryData();

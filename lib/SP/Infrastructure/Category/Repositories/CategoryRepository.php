@@ -225,7 +225,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name`, description FROM Category WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'SELECT id, `name`, description FROM Category WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(CategoryData::class);
@@ -251,7 +251,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Category WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM Category WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the categories'));
 

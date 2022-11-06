@@ -26,8 +26,9 @@ namespace SP\Tests\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use RuntimeException;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\AccountVData;
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountFilterUser;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
@@ -49,10 +50,9 @@ class AccountRepositoryTest extends UnitaryTestCase
 {
     private DatabaseInterface $databaseInterface;
     private AccountRepository $accountRepository;
+    private QueryFactory      $queryFactory;
+    private AccountFilterUser $accountFilterUser;
 
-    /**
-     * @noinspection ClassMockingCorrectnessInspection
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -82,8 +82,6 @@ class AccountRepositoryTest extends UnitaryTestCase
 
     public function testGetTotalNumAccounts(): void
     {
-        $expected = new QueryResult([new SimpleModel(['num' => 1])]);
-
         $callback = new Callback(
             static function (QueryData $arg) {
                 return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery());
@@ -93,50 +91,54 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->databaseInterface->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
-            ->willReturn($expected);
+            ->willReturn(new QueryResult([new SimpleModel(['num' => 1])]));
 
-        $this->assertEquals($expected->getData(), $this->accountRepository->getTotalNumAccounts());
+        $this->accountRepository->getTotalNumAccounts();
     }
 
     public function testGetPasswordForId(): void
     {
-        $expected = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) {
                 return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery()->getStatement());
             }
         );
 
+        $this->accountFilterUser
+            ->expects(self::once())
+            ->method('buildFilter');
+
         $this->databaseInterface->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
-            ->willReturn($expected);
+            ->willReturn(new QueryResult());
 
-        $this->assertEquals($expected, $this->accountRepository->getPasswordForId(1));
+        $this->accountRepository->getPasswordForId(1);
     }
 
     public function testGetPasswordHistoryForId(): void
     {
-        $expected = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) {
                 return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery());
             }
         );
 
+        $this->accountFilterUser
+            ->expects(self::once())
+            ->method('buildFilterHistory');
+
         $this->databaseInterface->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
-            ->willReturn($expected);
+            ->willReturn(new QueryResult());
 
-        $this->assertEquals($expected, $this->accountRepository->getPasswordHistoryForId(1));
+        $this->accountRepository->getPasswordHistoryForId(1);
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function testIncrementDecryptCounter(): void
     {
@@ -146,7 +148,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -171,7 +173,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(0);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery());
             }
         );
@@ -196,7 +198,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setLastId(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['clientId'] === $accountRequest->clientId
@@ -249,8 +251,8 @@ class AccountRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testEditPassword(): void
     {
@@ -260,7 +262,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['pass'] === $accountRequest->pass
@@ -295,7 +297,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountPasswordRequest) {
+            static function (QueryData $arg) use ($accountPasswordRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['pass'] === $accountPasswordRequest->pass
@@ -314,8 +316,8 @@ class AccountRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function testEditRestore(): void
     {
@@ -344,7 +346,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountHistoryData, $userId) {
+            static function (QueryData $arg) use ($accountHistoryData, $userId) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['id'] === $accountHistoryData->getAccountId()
@@ -385,7 +387,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -410,7 +412,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['clientId'] === $accountRequest->clientId
@@ -448,7 +450,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['clientId'] === $accountRequest->clientId
@@ -487,7 +489,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['clientId'] === $accountRequest->clientId
@@ -525,7 +527,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($accountRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['userEditId'] === $accountRequest->userEditId
@@ -547,14 +549,23 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->updateBulk($accountRequest));
     }
 
-    public function testgetById()
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testUpdateBulkNoFieldsToUpdate()
+    {
+        $this->databaseInterface->expects(self::never())
+            ->method('doQuery');
+
+        $this->assertEquals(0, $this->accountRepository->updateBulk(new AccountRequest()));
+    }
+
+    public function testGetById()
     {
         $id = self::$faker->randomNumber();
 
-        $expected = new QueryResult();
-
         $callback = new Callback(
-            function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
                        && $arg->getMapClassName() === SimpleModel::class
                        && !empty($arg->getQuery()->getStatement());
@@ -564,8 +575,323 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->databaseInterface->expects(self::once())
             ->method('doSelect')
             ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getById($id);
+    }
+
+    public function testGetAll()
+    {
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                return $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getAll();
+    }
+
+    public function testGetByIdBatch()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not implemented');
+
+        $this->accountRepository->getByIdBatch([]);
+    }
+
+    public function testCheckInUse()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not implemented');
+
+        $this->accountRepository->checkInUse(0);
+    }
+
+    public function testCheckDuplicatedOnUpdate()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not implemented');
+
+        $this->accountRepository->checkDuplicatedOnUpdate(null);
+    }
+
+    public function testCheckDuplicatedOnAdd()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not implemented');
+
+        $this->accountRepository->checkDuplicatedOnAdd(null);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testDeleteByIdBatch()
+    {
+        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($ids) {
+                $values = $arg->getQuery()->getBindValues();
+
+                return array_shift($values) === array_shift($ids)
+                       && array_shift($values) === array_shift($ids)
+                       && array_shift($values) === array_shift($ids)
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface->expects(self::once())
+            ->method('doQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->deleteByIdBatch($ids);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testDeleteByIdBatchWithNoIds()
+    {
+        $this->databaseInterface->expects(self::never())
+            ->method('doQuery');
+
+        $this->assertEquals(0, $this->accountRepository->deleteByIdBatch([]));
+    }
+
+    public function testSearch()
+    {
+        $item = new ItemSearchData();
+        $item->seachString = self::$faker->name;
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($item) {
+                $params = $arg->getQuery()->getBindValues();
+                $searchStringLike = '%'.$item->seachString.'%';
+
+                return $params['name'] === $searchStringLike
+                       && $params['clientName'] === $searchStringLike
+                       && $params['categoryName'] === $searchStringLike
+                       && $params['userName'] === $searchStringLike
+                       && $params['userGroupName'] === $searchStringLike
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->search($item);
+    }
+
+    public function testSearchWithoutString()
+    {
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                return count($arg->getQuery()->getBindValues()) === 0
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->search(new ItemSearchData());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function testIncrementViewCounter(): void
+    {
+        $id = 1;
+
+        $expected = new QueryResult();
+        $expected->setAffectedNumRows(1);
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($id) {
+                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface->expects(self::once())
+            ->method('doQuery')
+            ->with($callback)
             ->willReturn($expected);
 
-        $this->assertEquals($expected, $this->accountRepository->getById($id));
+        $this->assertTrue($this->accountRepository->incrementViewCounter($id));
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testIncrementViewCounterNoRows(): void
+    {
+        $id = 1;
+
+        $expected = new QueryResult();
+        $expected->setAffectedNumRows(0);
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($id) {
+                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery());
+            }
+        );
+
+        $this->databaseInterface->expects(self::once())
+            ->method('doQuery')
+            ->with($callback)
+            ->willReturn($expected);
+
+        $this->assertFalse($this->accountRepository->incrementViewCounter($id));
+    }
+
+    public function testGetDataForLink()
+    {
+        $id = self::$faker->randomNumber();
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($id) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return $params['id'] === $id
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getDataForLink($id);
+    }
+
+    public function testGetForUser()
+    {
+        $id = self::$faker->randomNumber();
+
+        $callback = new Callback(
+            function (QueryData $arg) use ($id) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return $params['id'] === $id
+                       && $params['userId'] === $this->context->getUserData()->getId()
+                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->accountFilterUser
+            ->expects(self::once())
+            ->method('buildFilter');
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getForUser($id);
+    }
+
+    public function testGetForUserWithoutAccount()
+    {
+        $callback = new Callback(
+            function (QueryData $arg) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return $params['userId'] === $this->context->getUserData()->getId()
+                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
+                       && count($params) === 2
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->accountFilterUser
+            ->expects(self::once())
+            ->method('buildFilter');
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getForUser();
+    }
+
+    public function testGetLinked()
+    {
+        $id = self::$faker->randomNumber();
+
+        $callback = new Callback(
+            function (QueryData $arg) use ($id) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return $params['parentId'] === $id
+                       && $params['userId'] === $this->context->getUserData()->getId()
+                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
+                       && $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->accountFilterUser
+            ->expects(self::once())
+            ->method('buildFilter');
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getLinked($id);
+    }
+
+    public function testGetAccountsPassData()
+    {
+        $callback = new Callback(
+            function (QueryData $arg) {
+                return $arg->getMapClassName() === SimpleModel::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountRepository->getAccountsPassData();
+
     }
 }

@@ -176,7 +176,7 @@ final class NotificationRepository extends Repository implements NotificationRep
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Notification WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM Notification WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the notifications'));
 
@@ -272,7 +272,7 @@ final class NotificationRepository extends Repository implements NotificationRep
             sticky,
             onlyAdmin 
             FROM Notification 
-            WHERE id IN ('.$this->getParamsFromArray($ids).')
+            WHERE id IN ('.$this->buildParamsFromArray($ids).')
             ORDER BY id';
 
         $queryData = new QueryData();
@@ -300,7 +300,7 @@ final class NotificationRepository extends Repository implements NotificationRep
 
         $queryData = new QueryData();
         $queryData->setQuery(
-            'DELETE FROM Notification WHERE id IN ('.$this->getParamsFromArray($ids).') AND sticky = 0'
+            'DELETE FROM Notification WHERE id IN ('.$this->buildParamsFromArray($ids).') AND sticky = 0'
         );
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the notifications'));

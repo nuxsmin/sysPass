@@ -152,7 +152,7 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AuthToken WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM AuthToken WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Internal error'));
 

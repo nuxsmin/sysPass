@@ -245,7 +245,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
         $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
             'SELECT type, userId, userGroupId, userProfileId, `fixed`, priority, `data`
-            FROM ItemPreset WHERE id IN ('.$this->getParamsFromArray($ids).')'
+            FROM ItemPreset WHERE id IN ('.$this->buildParamsFromArray($ids).')'
         );
         $queryData->setParams($ids);
 
@@ -268,7 +268,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM ItemPreset WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM ItemPreset WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while removing the permissions'));
 

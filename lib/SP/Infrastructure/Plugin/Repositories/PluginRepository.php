@@ -200,7 +200,7 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
             available,
             versionLevel
             FROM Plugin 
-            WHERE id IN ('.$this->getParamsFromArray($ids).')
+            WHERE id IN ('.$this->buildParamsFromArray($ids).')
             ORDER BY id';
 
         $queryData = new QueryData();
@@ -228,7 +228,7 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Plugin WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM Plugin WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting the plugins'));
 

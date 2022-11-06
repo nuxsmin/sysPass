@@ -232,7 +232,7 @@ final class CustomFieldRepository extends Repository implements CustomFieldRepos
 
         $queryData = new QueryData();
         $queryData->setQuery(
-            'DELETE FROM CustomFieldData WHERE definitionId IN ('.$this->getParamsFromArray($definitionIds).')'
+            'DELETE FROM CustomFieldData WHERE definitionId IN ('.$this->buildParamsFromArray($definitionIds).')'
         );
         $queryData->setParams($definitionIds);
 
@@ -257,7 +257,7 @@ final class CustomFieldRepository extends Repository implements CustomFieldRepos
 
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldData
-            WHERE itemId IN ('.$this->getParamsFromArray($ids).')
+            WHERE itemId IN ('.$this->buildParamsFromArray($ids).')
             AND moduleId = ?';
 
         $queryData = new QueryData();

@@ -208,7 +208,7 @@ final class PluginDataRepository extends Repository implements PluginDataReposit
             `data`,
             `key`
             FROM PluginData 
-            WHERE `name` IN ('.$this->getParamsFromArray($ids).')
+            WHERE `name` IN ('.$this->buildParamsFromArray($ids).')
             ORDER BY `name`';
 
         $queryData = new QueryData();
@@ -235,7 +235,7 @@ final class PluginDataRepository extends Repository implements PluginDataReposit
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PluginData WHERE `name` IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM PluginData WHERE `name` IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 

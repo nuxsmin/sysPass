@@ -92,7 +92,7 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
     public function addByType(AccountRequest $accountRequest, bool $isEdit): int
     {
         $items = $isEdit ? $accountRequest->usersEdit : $accountRequest->usersView;
-        $values = $this->getParamsFromArray($items, '(?,?,?)');
+        $values = $this->buildParamsFromArray($items, '(?,?,?)');
 
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 

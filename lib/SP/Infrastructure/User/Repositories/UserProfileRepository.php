@@ -150,7 +150,7 @@ final class UserProfileRepository extends Repository implements UserProfileRepos
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name` FROM UserProfile WHERE id IN ('.$this->getParamsFromArray($ids).')';
+            'SELECT id, `name` FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(UserProfileData::class);
@@ -176,7 +176,7 @@ final class UserProfileRepository extends Repository implements UserProfileRepos
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN ('.$this->getParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while removing the profiles'));
 
