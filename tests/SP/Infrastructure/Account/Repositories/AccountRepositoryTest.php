@@ -26,7 +26,6 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
-use RuntimeException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountFilterUser;
@@ -395,7 +394,32 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->delete($id));
+        $this->assertTrue($this->accountRepository->delete($id));
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testDeleteWithouResults(): void
+    {
+        $id = 1;
+        $expected = new QueryResult();
+        $expected->setAffectedNumRows(0);
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($id) {
+                return $arg->getQuery()->getBindValues()['id'] === $id
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->databaseInterface->expects(self::once())
+            ->method('doQuery')
+            ->with($callback)
+            ->willReturn($expected);
+
+        $this->assertFalse($this->accountRepository->delete($id));
     }
 
     /**
@@ -593,38 +617,6 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountRepository->getAll();
-    }
-
-    public function testGetByIdBatch()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Not implemented');
-
-        $this->accountRepository->getByIdBatch([]);
-    }
-
-    public function testCheckInUse()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Not implemented');
-
-        $this->accountRepository->checkInUse(0);
-    }
-
-    public function testCheckDuplicatedOnUpdate()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Not implemented');
-
-        $this->accountRepository->checkDuplicatedOnUpdate(null);
-    }
-
-    public function testCheckDuplicatedOnAdd()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Not implemented');
-
-        $this->accountRepository->checkDuplicatedOnAdd(null);
     }
 
     /**

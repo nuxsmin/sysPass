@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
-use RuntimeException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\ConstraintException;
@@ -150,33 +149,33 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  AccountRequest  $itemData
+     * @param  AccountRequest  $accountRequest
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData): int
+    public function create(AccountRequest $accountRequest): int
     {
         $query = $this->queryFactory
             ->newInsert()
             ->into('Account')
             ->cols([
-                'clientId'       => $itemData->clientId,
-                'categoryId'     => $itemData->categoryId,
-                'name'           => $itemData->name,
-                'login'          => $itemData->login,
-                'url'            => $itemData->url,
-                'pass'           => $itemData->pass,
-                'key'            => $itemData->key,
-                'notes'          => $itemData->notes,
-                'userId'         => $itemData->userId,
-                'userGroupId'    => $itemData->userGroupId,
-                'userEditId'     => $itemData->userId,
-                'isPrivate'      => $itemData->isPrivate,
-                'isPrivateGroup' => $itemData->isPrivateGroup,
-                'passDateChange' => $itemData->passDateChange,
-                'parentId'       => $itemData->parentId,
+                'clientId'       => $accountRequest->clientId,
+                'categoryId'     => $accountRequest->categoryId,
+                'name'           => $accountRequest->name,
+                'login'          => $accountRequest->login,
+                'url'            => $accountRequest->url,
+                'pass'           => $accountRequest->pass,
+                'key'            => $accountRequest->key,
+                'notes'          => $accountRequest->notes,
+                'userId'         => $accountRequest->userId,
+                'userGroupId'    => $accountRequest->userGroupId,
+                'userEditId'     => $accountRequest->userId,
+                'isPrivate'      => $accountRequest->isPrivate,
+                'isPrivateGroup' => $accountRequest->isPrivateGroup,
+                'passDateChange' => $accountRequest->passDateChange,
+                'parentId'       => $accountRequest->parentId,
             ])
             ->set('dateAdd', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()');
@@ -285,11 +284,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      *
      * @param  int  $id
      *
-     * @return int EL número de cuentas eliminadas
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -299,44 +298,44 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
      * Updates an item
      *
-     * @param  AccountRequest  $itemData
+     * @param  AccountRequest  $accountRequest
      *
      * @return int
      * @throws SPException
      */
-    public function update($itemData): int
+    public function update(AccountRequest $accountRequest): int
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->where('id = :id', ['id' => $itemData->id])
+            ->where('id = :id', ['id' => $accountRequest->id])
             ->cols([
-                'clientId'       => $itemData->clientId,
-                'categoryId'     => $itemData->categoryId,
-                'name'           => $itemData->name,
-                'login'          => $itemData->login,
-                'url'            => $itemData->url,
-                'notes'          => $itemData->notes,
-                'userEditId'     => $itemData->userEditId,
-                'passDateChange' => $itemData->passDateChange,
-                'isPrivate'      => $itemData->isPrivate,
-                'isPrivateGroup' => $itemData->isPrivateGroup,
-                'parentId'       => $itemData->parentId,
+                'clientId'       => $accountRequest->clientId,
+                'categoryId'     => $accountRequest->categoryId,
+                'name'           => $accountRequest->name,
+                'login'          => $accountRequest->login,
+                'url'            => $accountRequest->url,
+                'notes'          => $accountRequest->notes,
+                'userEditId'     => $accountRequest->userEditId,
+                'passDateChange' => $accountRequest->passDateChange,
+                'isPrivate'      => $accountRequest->isPrivate,
+                'isPrivateGroup' => $accountRequest->isPrivateGroup,
+                'parentId'       => $accountRequest->parentId,
             ])
             ->set('dateEdit', 'NOW()');
 
-        if ($itemData->changeUserGroup) {
-            $query->col('userGroupId', $itemData->userGroupId);
+        if ($accountRequest->changeUserGroup) {
+            $query->col('userGroupId', $accountRequest->userGroupId);
         }
 
-        if ($itemData->changeOwner) {
-            $query->col('userId', $itemData->userId);
+        if ($accountRequest->changeOwner) {
+            $query->col('userId', $accountRequest->userId);
         }
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the account'));
@@ -476,16 +475,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     }
 
     /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
      * Deletes all the items for given ids
      *
      * @param  array  $ids
@@ -508,36 +497,6 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param  mixed  $itemData
-     */
-    public function checkDuplicatedOnUpdate($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @param  mixed  $itemData
-     */
-    public function checkDuplicatedOnAdd($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
     }
 
     /**

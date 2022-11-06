@@ -29,20 +29,18 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Common\In\RepositoryInterface;
 use SP\Domain\Common\Out\SimpleModel;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Mvc\Model\QueryCondition;
 
 /**
  * Class AccountRepository
  *
  * @package Services
  */
-interface AccountRepositoryInterface extends RepositoryInterface
+interface AccountRepositoryInterface
 {
     /**
      * Devolver el número total de cuentas
@@ -173,4 +171,73 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult;
+
+    /**
+     * Crea una nueva cuenta en la BBDD
+     *
+     * @param  AccountRequest  $accountRequest
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function create(AccountRequest $accountRequest): int;
+
+    /**
+     * Elimina los datos de una cuenta en la BBDD.
+     *
+     * @param  int  $id
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function delete(int $id): bool;
+
+    /**
+     * Updates an item
+     *
+     * @param  AccountRequest  $accountRequest
+     *
+     * @return int
+     * @throws SPException
+     */
+    public function update(AccountRequest $accountRequest): int;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param  int  $id
+     *
+     * @return QueryResult
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param  array  $ids
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $ids): int;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param  ItemSearchData  $itemSearchData
+     *
+     * @return QueryResult
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
 }
