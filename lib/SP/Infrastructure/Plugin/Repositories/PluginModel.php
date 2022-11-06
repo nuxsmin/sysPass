@@ -59,10 +59,7 @@ class PluginModel extends DataModelBase implements DataModelInterface
      */
     protected $versionLevel;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return (int)$this->id;
     }
@@ -75,10 +72,7 @@ class PluginModel extends DataModelBase implements DataModelInterface
         $this->id = (int)$id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
