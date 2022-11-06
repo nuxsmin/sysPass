@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,8 @@
 namespace SP\DataModel\Dto;
 
 
+use SP\Domain\Account\Out\AccountData;
+
 /**
  * Class AccountHistoryCreateDto
  *
@@ -32,45 +34,25 @@ namespace SP\DataModel\Dto;
  */
 class AccountHistoryCreateDto
 {
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var bool
-     */
-    private $isModify;
-    /**
-     * @var bool
-     */
-    private $isDelete;
-    /**
-     * @var string
-     */
-    private $masterPassHash;
+    private bool        $isModify;
+    private bool        $isDelete;
+    private string      $masterPassHash;
+    private AccountData $accountData;
 
     /**
      * AccountHistoryCreateDto constructor.
      *
-     * @param int    $accountId
-     * @param bool   $isModify
-     * @param bool   $isDelete
-     * @param string $masterPassHash
+     * @param  \SP\Domain\Account\Out\AccountData  $accountData
+     * @param  bool  $isModify
+     * @param  bool  $isDelete
+     * @param  string  $masterPassHash
      */
-    public function __construct(int $accountId, bool $isModify, bool $isDelete, string $masterPassHash)
+    public function __construct(AccountData $accountData, bool $isModify, bool $isDelete, string $masterPassHash)
     {
-        $this->accountId = $accountId;
+        $this->accountData = $accountData;
         $this->isModify = $isModify;
         $this->isDelete = $isDelete;
         $this->masterPassHash = $masterPassHash;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountId(): int
-    {
-        return $this->accountId;
     }
 
     /**
@@ -95,5 +77,10 @@ class AccountHistoryCreateDto
     public function getMasterPassHash(): string
     {
         return $this->masterPassHash;
+    }
+
+    public function getAccountData(): AccountData
+    {
+        return $this->accountData;
     }
 }

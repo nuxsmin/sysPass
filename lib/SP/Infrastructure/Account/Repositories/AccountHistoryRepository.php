@@ -24,11 +24,8 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\In\AccountHistoryRepositoryInterface;
@@ -53,95 +50,74 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      * @param $id
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getHistoryForAccount($id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AH.id,
-            AH.dateEdit,
-            AH.dateAdd ,
-            U1.login AS userAdd,
-            U2.login AS userEdit
-            FROM AccountHistory AH
-            INNER JOIN User U1 ON AH.userId = U1.id
-            LEFT JOIN User U2 ON AH.userEditId = U2.id
-            WHERE AH.accountId = ?
-            ORDER BY AH.id DESC';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('AccountHistory AS Account')
+            ->cols([
+                'Account.id',
+                'Account.dateEdit',
+                'Account.dateAdd',
+                'User.login AS userAdd',
+                'UserEdit.login AS userEdit',
+            ])
+            ->join('INNER', 'User as User', 'Account.userId = User.id')
+            ->join('LEFT', 'User as UserEdit', 'Account.userEditId = UserEdit.id')
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $id])
+            ->orderBy(['Account.id DESC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  AccountHistoryCreateDto  $dto
+     * @param  \SP\DataModel\Dto\AccountHistoryCreateDto  $dto
      *
      * @return int
-     * @throws QueryException
-     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($dto): int
+    public function create(AccountHistoryCreateDto $dto): int
     {
-        $queryData = new QueryData();
-        $query = /** @lang SQL */
-            'INSERT INTO AccountHistory
-            (accountId,
-            categoryId,
-            clientId,
-            `name`,
-            login,
-            url,
-            pass,
-            `key`,
-            notes,
-            countView,
-            countDecrypt,
-            dateAdd,
-            dateEdit,
-            userId,
-            userGroupId,
-            userEditId,
-            otherUserEdit,
-            otherUserGroupEdit,
-            isPrivate,
-            isPrivateGroup,
-            isModify,
-            isDeleted,
-            mPassHash)
-            SELECT id,
-            categoryId,
-            clientId,
-            `name`,
-            login,
-            url,
-            pass,
-            `key`,
-            notes,
-            countView,
-            countDecrypt,
-            dateAdd,
-            dateEdit,
-            userId,
-            userGroupId,
-            userEditId,
-            otherUserEdit,
-            otherUserGroupEdit,
-            isPrivate,
-            isPrivateGroup,
-            ?,?,? FROM Account WHERE id = ?';
+        $accountData = $dto->getAccountData();
 
-        $queryData->setQuery($query);
-        $queryData->addParam((int)$dto->isModify());
-        $queryData->addParam((int)$dto->isDelete());
-        $queryData->addParam($dto->getMasterPassHash());
-        $queryData->addParam($dto->getAccountId());
-        $queryData->setOnErrorMessage(__u('Error while updating history'));
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into('Account')
+            ->cols([
+                'accountId'          => $accountData->getId(),
+                'clientId'           => $accountData->getClientId(),
+                'categoryId'         => $accountData->getCategoryId(),
+                'name'               => $accountData->getName(),
+                'login'              => $accountData->getLogin(),
+                'url'                => $accountData->getUrl(),
+                'pass'               => $accountData->getPass(),
+                'key'                => $accountData->getKey(),
+                'notes'              => $accountData->getNotes(),
+                'userId'             => $accountData->getUserId(),
+                'userGroupId'        => $accountData->getUserGroupId(),
+                'userEditId'         => $accountData->getUserEditId(),
+                'isPrivate'          => $accountData->getIsPrivate(),
+                'isPrivateGroup'     => $accountData->getIsPrivateGroup(),
+                'passDate'           => $accountData->getPassDate(),
+                'passDateChange'     => $accountData->getPassDateChange(),
+                'parentId'           => $accountData->getParentId(),
+                'countView'          => $accountData->getCountView(),
+                'countDecrypt'       => $accountData->getCountDecrypt(),
+                'dateAdd'            => $accountData->getDateAdd(),
+                'dateEdit'           => $accountData->getDateEdit(),
+                'otherUserEdit'      => $accountData->getOtherUserEdit(),
+                'otherUserGroupEdit' => $accountData->getOtherUserGroupEdit(),
+                'isModify'           => $dto->isModify(),
+                'isDeleted'          => $dto->isDelete(),
+                'mPassHash'          => $dto->getMasterPassHash(),
+            ]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating history'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -151,30 +127,21 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      *
      * @param  int  $id
      *
-     * @return int Los ids de las cuentas eliminadas
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountHistory')
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
-    /**
-     * Updates an item
-     *
-     * @param  mixed  $itemData
-     *
-     * @return void
-     */
-    public function update($itemData): void
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -183,53 +150,57 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws SPException
      */
     public function getById(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AH.id,
-            AH.accountId,
-            AH.clientId,
-            AH.categoryId,
-            AH.name,
-            AH.login,
-            AH.url,
-            AH.pass,
-            AH.key,
-            AH.notes,
-            AH.countView,
-            AH.countDecrypt,
-            AH.dateAdd,
-            AH.dateEdit,
-            AH.userId,
-            AH.userGroupId,
-            AH.userEditId,
-            AH.isModify,
-            AH.isDeleted,
-            AH.otherUserEdit,
-            AH.otherUserGroupEdit,
-            AH.isPrivate,
-            AH.isPrivateGroup,
-            U1.name AS userName,
-            U1.login AS userLogin,
-            UG.name AS userGroupName,
-            U2.name AS userEditName,
-            U2.login AS userEditLogin,
-            C.name AS categoryName,
-            C2.name AS clientName
-            FROM AccountHistory AH
-            INNER JOIN Category C ON AH.categoryId = C.id
-            INNER JOIN Client C2 ON AH.clientId = C2.id
-            INNER JOIN UserGroup UG ON AH.userGroupId = UG.id
-            INNER JOIN User U1 ON AH.userId = U1.id
-            LEFT JOIN User U2 ON AH.userEditId = U2.id
-            WHERE AH.id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('AccountHistory AS Account')
+            ->cols([
+                'Account.id',
+                'Account.accountId',
+                'Account.name',
+                'Account.categoryId',
+                'Account.userId',
+                'Account.clientId',
+                'Account.userGroupId',
+                'Account.userEditId',
+                'Account.login',
+                'Account.url',
+                'Account.notes',
+                'Account.countView',
+                'Account.countDecrypt',
+                'Account.dateAdd',
+                'Account.dateEdit',
+                'Account.otherUserEdit',
+                'Account.otherUserGroupEdit',
+                'Account.isPrivate',
+                'Account.isPrivateGroup',
+                'Account.passDate',
+                'Account.passDateChange',
+                'Account.parentId',
+                'Account.userLogin',
+                'Account.publicLinkHash',
+                'Account.isModify',
+                'Account.isDeleted',
+                'Account.mPassHash',
+                'Category.name AS categoryName',
+                'User.name AS userName',
+                'Client.name AS clientName',
+                'UserGroup.name AS userGroupName',
+                'UserEdit.name AS userEditName',
+                'UserEdit.login AS userEditLogin',
+            ])
+            ->where('Account.id = :id')
+            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
+            ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->join('INNER', 'UserGroup', 'Account.userGroupId = UserGroup.id')
+            ->join('INNER', 'User', 'Account.userId = User.id')
+            ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
+            ->bindValues(['id' => $id])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setMapClassName(AccountHistoryData::class);
-        $queryData->addParam($id);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->doSelect($queryData);
     }
@@ -238,38 +209,57 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      * Returns all the items
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getAll(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AH.id,
-            AH.dateEdit,
-            AH.dateAdd, 
-            U1.login AS userAdd,
-            U2.login AS userEdit
-            FROM AccountHistory AH
-            INNER JOIN User U1 ON AH.userId = U1.id 
-            LEFT JOIN User U2 ON AH.userEditId = U2.id 
-            ORDER BY AH.id DESC';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('AccountHistory AS Account')
+            ->cols([
+                'Account.id',
+                'Account.accountId',
+                'Account.name',
+                'Account.categoryId',
+                'Account.userId',
+                'Account.clientId',
+                'Account.userGroupId',
+                'Account.userEditId',
+                'Account.login',
+                'Account.url',
+                'Account.notes',
+                'Account.countView',
+                'Account.countDecrypt',
+                'Account.dateAdd',
+                'Account.dateEdit',
+                'Account.otherUserEdit',
+                'Account.otherUserGroupEdit',
+                'Account.isPrivate',
+                'Account.isPrivateGroup',
+                'Account.passDate',
+                'Account.passDateChange',
+                'Account.parentId',
+                'Account.userLogin',
+                'Account.publicLinkHash',
+                'Account.isModify',
+                'Account.isDeleted',
+                'Account.mPassHash',
+                'Category.name AS categoryName',
+                'User.name AS userName',
+                'Client.name AS clientName',
+                'UserGroup.name AS userGroupName',
+                'UserEdit.name AS userEditName',
+                'UserEdit.login AS userEditLogin',
+            ])
+            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
+            ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->join('INNER', 'UserGroup', 'Account.userGroupId = UserGroup.id')
+            ->join('INNER', 'User', 'Account.userId = User.id')
+            ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
+            ->orderBy(['Account.id DESC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData = QueryData::build($query);
 
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -287,10 +277,12 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
             return 0;
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountHistory')
+            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -310,48 +302,14 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
             return 0;
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE accountId IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountHistory')
+            ->where(sprintf('accountId IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param  mixed  $itemData
-     *
-     * @return void
-     */
-    public function checkDuplicatedOnUpdate($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @param  mixed  $itemData
-     *
-     * @return void
-     */
-    public function checkDuplicatedOnAdd($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -360,56 +318,66 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      * @param  ItemSearchData  $itemSearchData
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setSelect(
-            'AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted'
-        );
-        $queryData->setFrom(
-            'AccountHistory AH 
-        INNER JOIN Client C ON AH.clientId = C.id
-        INNER JOIN Category C2 ON AH.categoryId = C2.id
-        '
-        );
-        $queryData->setOrder('date DESC, AH.name, C.name, AH.id DESC');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('AccountHistory AS Account')
+            ->cols([
+                'Account.id',
+                'Account.name',
+                'Client.name AS clientName',
+                'Category.name AS categoryName',
+                'Account.isModify',
+                'Account.isDeleted',
+                'IFNULL(Account.dateEdit,Account.dateAdd) as date',
+            ])
+            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
+            ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->orderBy(['Account.date DESC', 'clientName ASC', 'Account.id DESC'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('AH.name LIKE ? OR C.name LIKE ?');
+            $query
+                ->where('Account.name LIKE :name')
+                ->orWhere('Client.name LIKE :clientName');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+
+            $query->bindValues([
+                'name'       => $search,
+                'clientName' => $search,
+            ]);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
-
-        return $this->db->doSelect($queryData, true);
+        return $this->db->doSelect(QueryData::build($query), true);
     }
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT id, `name`, pass, `key`, mPassHash
-            FROM AccountHistory WHERE BIT_LENGTH(pass) > 0
-            ORDER BY id';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('AccountHistory')
+            ->cols(
+                [
+                    'id',
+                    'name',
+                    'pass',
+                    'key',
+                    'mPassHash',
+                ]
+            )
+            ->where('BIT_LENGTH(pass) > 0')
+            ->orderBy(['id ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -417,29 +385,25 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      *
      * @param  AccountPasswordRequest  $request
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updatePassword(AccountPasswordRequest $request): int
+    public function updatePassword(AccountPasswordRequest $request): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE AccountHistory SET 
-            pass = ?,
-            `key` = ?,
-            mPassHash = ?
-            WHERE id = ?';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table('AccountHistory')
+            ->cols([
+                'pass'      => $request->pass,
+                'key'       => $request->key,
+                'mPassHash' => $request->hash,
+            ])
+            ->where('id = :id')
+            ->bindValues(['id' => $request->id]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $request->pass,
-            $request->key,
-            $request->hash,
-            $request->id,
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the password'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

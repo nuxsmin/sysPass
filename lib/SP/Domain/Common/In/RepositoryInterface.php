@@ -37,11 +37,11 @@ interface RepositoryInterface
     /**
      * Creates an item
      *
-     * @param  mixed  $itemData
+     * @param  object  $itemData
      *
      * @return mixed
      */
-    public function create($itemData);
+    public function create(object $itemData);
 
     /**
      * Updates an item

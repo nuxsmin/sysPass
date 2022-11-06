@@ -37,26 +37,28 @@ use SP\Http\Json;
 class AccountData extends DataModelBase implements JsonSerializable, DataModelInterface
 {
     protected int     $id;
-    protected ?int    $userId         = null;
-    protected ?int    $userGroupId    = null;
-    protected ?int    $userEditId     = null;
-    protected ?string $name           = null;
-    protected ?int    $clientId       = null;
-    protected ?int    $categoryId     = null;
-    protected ?string $login          = null;
-    protected ?string $url            = null;
-    protected ?string $pass           = null;
-    protected ?string $key            = null;
-    protected ?string $notes          = null;
-    protected ?int    $dateAdd        = 0;
-    protected ?int    $dateEdit       = 0;
-    protected ?int    $countView      = 0;
-    protected ?int    $countDecrypt   = 0;
-    protected ?int    $isPrivate      = 0;
-    protected ?int    $isPrivateGroup = 0;
-    protected ?int    $passDate       = 0;
-    protected ?int    $passDateChange = 0;
-    protected ?int    $parentId       = 0;
+    protected ?int    $userId             = null;
+    protected ?int    $userGroupId        = null;
+    protected ?int    $userEditId         = null;
+    protected ?string $name               = null;
+    protected ?int    $clientId           = null;
+    protected ?int    $categoryId         = null;
+    protected ?string $login              = null;
+    protected ?string $url                = null;
+    protected ?string $pass               = null;
+    protected ?string $key                = null;
+    protected ?string $notes              = null;
+    protected ?int    $dateAdd            = 0;
+    protected ?int    $dateEdit           = 0;
+    protected ?int    $countView          = 0;
+    protected ?int    $countDecrypt       = 0;
+    protected ?int    $isPrivate          = 0;
+    protected ?int    $isPrivateGroup     = 0;
+    protected ?int    $passDate           = 0;
+    protected ?int    $passDateChange     = 0;
+    protected ?int    $parentId           = 0;
+    protected ?bool   $otherUserGroupEdit = false;
+    protected ?bool   $otherUserEdit      = false;
 
     public function __construct(int $accountId = 0, ?array $properties = [])
     {
@@ -195,5 +197,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function getIsPrivateGroup(): ?int
     {
         return $this->isPrivateGroup;
+    }
+
+    public function getOtherUserGroupEdit(): ?bool
+    {
+        return $this->otherUserGroupEdit;
+    }
+
+    public function getOtherUserEdit(): ?bool
+    {
+        return $this->otherUserEdit;
     }
 }

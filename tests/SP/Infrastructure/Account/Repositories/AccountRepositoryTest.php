@@ -889,6 +889,5 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountRepository->getAccountsPassData();
-
     }
 }

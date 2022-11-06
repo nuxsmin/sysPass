@@ -24,11 +24,9 @@
 
 namespace SP\Domain\Account\In;
 
-
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
+use SP\DataModel\Dto\AccountHistoryCreateDto;
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
-use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -36,18 +34,23 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package Services
  */
-interface AccountHistoryRepositoryInterface extends RepositoryInterface
+interface AccountHistoryRepositoryInterface
 {
+    /**
+     * Creates an item
+     *
+     * @param  \SP\DataModel\Dto\AccountHistoryCreateDto  $dto
+     */
+    public function create(AccountHistoryCreateDto $dto): int;
+
     /**
      * Obtiene el listado del histórico de una cuenta.
      *
-     * @param $id
+     * @param  int  $id
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
-    public function getHistoryForAccount($id): QueryResult;
+    public function getHistoryForAccount(int $id): QueryResult;
 
     /**
      * Deletes all the items for given accounts id
@@ -55,8 +58,6 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
      * @param  array  $ids
      *
      * @return int
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function deleteByAccountIdBatch(array $ids): int;
 
@@ -64,8 +65,6 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult;
 
@@ -74,9 +73,51 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
      *
      * @param  AccountPasswordRequest  $request
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
      */
-    public function updatePassword(AccountPasswordRequest $request): int;
+    public function updatePassword(AccountPasswordRequest $request): bool;
+
+    /**
+     * Elimina los datos de una cuenta en la BBDD.
+     *
+     * @param  int  $id
+     *
+     * @return bool
+     */
+    public function delete(int $id): bool;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param  int  $id
+     *
+     * @return QueryResult
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param  array  $ids
+     *
+     * @return int
+     */
+    public function deleteByIdBatch(array $ids): int;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param  ItemSearchData  $itemSearchData
+     *
+     * @return QueryResult
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
 }
