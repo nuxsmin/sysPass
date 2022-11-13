@@ -81,6 +81,7 @@ final class Language
         'da' => 'Dansk',
         'fo' => 'Føroyskt mál',
         'ja_JP' => '日本語',
+        'zh_CN' => '简体中文',
     ];
     /**
      * @var ConfigData
