@@ -75,7 +75,7 @@ jobs:
 #          mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
 
       - name: Unitary tests
-        uses: paambaati/codeclimate-action@v3
+        uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
