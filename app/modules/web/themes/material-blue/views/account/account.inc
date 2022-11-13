@@ -1,16 +1,40 @@
 <?php
-/**
- * @var callable                       $_getvar
- * @var ThemeIcons                     $icons
- * @var AccountExtData                 $accountData
- * @var AccountAcl                     $accountAcl
- * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @var callable       $_getvar
+ * @var ThemeIcons     $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
+ */
+
+use SP\Config\ConfigData;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
-use SP\Domain\Account\Services\AccountAcl;
 use SP\Mvc\View\Components\SelectItem;
+use SP\Services\Account\AccountAcl;
 
 $accountData = $_getvar('accountData');
 $accountAcl = $_getvar('accountAcl');
@@ -68,6 +92,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
               data-item-id="<?php echo $_getvar('accountId') ?: ''; ?>"
               data-hash="">
 
+            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
 
             <div class="mdl-tabs__panel is-active" id="account-panel">
@@ -97,8 +122,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
 
                             <select id="client_id" name="client_id"
                                     class="select-box"
-                                    required <?php echo $_getvar('disabled'); ?>
-                            >
+                                    required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Client'); ?></option>
                                 <?php /** @var SelectItem $client */
                                 foreach ($_getvar('clients') as $client): ?>
@@ -163,7 +187,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255"
                                        value="<?php echo $gotData
-                                           ? $accountData->getUrl()
+                                           ? htmlspecialchars($accountData->getUrl(), ENT_QUOTES)
                                            : ''; ?>"
                                     <?php echo $_getvar('readonly'); ?>
                                 >
@@ -252,11 +276,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 class="mdl-textfield__input mdl-color-text--indigo-400"
                                 rows="3" id="notes"
                                 name="notes"
-                                maxlength="5000" <?php echo $_getvar('readonly'); ?>>
-                            <?php echo $gotData
-                                ? htmlspecialchars($accountData->getNotes(), ENT_QUOTES)
-                                : ''; ?>
-                        </textarea>
+                                maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData
+                                ? htmlspecialchars($accountData->getNotes(), ENT_QUOTES) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
@@ -320,6 +341,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <select id="parent_account_id"
                                         name="parent_account_id"
                                         class="select-box select-box-deselect" <?php echo $_getvar('disabled'); ?>
+                                        data-sk="<?php echo $_getvar('sk'); ?>"
                                         data-action-route="items/accountsUser"
                                         data-item-id="<?php echo $gotData ? $_getvar('accountId') : ''; ?>"
                                         data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">

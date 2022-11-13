@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -183,6 +183,29 @@ final class Html
                 ['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'],
                 ' ',
                 $text)
+        );
+    }
+
+    /**
+     * @param  string  $url
+     *
+     * @return string
+     */
+    public static function getSafeUrl(string $url): string
+    {
+        $urlParts = parse_url($url);
+
+        if ($urlParts === false) {
+            return 'malformed_url';
+        }
+
+        return preg_replace_callback(
+            '/["<>\']+/u',
+            function ($matches)
+            {
+                return urlencode($matches[0]);
+            },
+            strip_tags($url)
         );
     }
 }

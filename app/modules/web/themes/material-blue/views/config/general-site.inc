@@ -1,4 +1,27 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @var ThemeIcons $icons
  * @var \SP\Domain\Config\In\ConfigDataInterface $configData
@@ -107,7 +130,9 @@ use SP\Mvc\View\Components\SelectItem;
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-app_url">
                 <p>
-                    <?php echo __('Sets the application URL when accessing through a reverse proxy or load balancer.'); ?>
+                    <?php echo __(
+                        'Sets the application URL when accessing through a reverse proxy or load balancer.'
+                    ); ?>
                 </p>
             </div>
         </td>
@@ -116,7 +141,7 @@ use SP\Mvc\View\Components\SelectItem;
                 <input id="app_url" name="app_url" type="url"
                        pattern="^https?://.*"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="<?php echo $configData->getApplicationUrl(); ?>"/>
+                       value="<?php echo htmlspecialchars($configData->getApplicationUrl(), ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="app_url"><?php echo __('Application URL'); ?></label>
             </div>

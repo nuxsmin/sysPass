@@ -169,7 +169,7 @@ final class Language implements LanguageInterface
         $locale = setlocale(LC_ALL, $lang);
 
         if ($locale === false) {
-            logger('Could not set locale', 'ERROR');
+            logger('Could not set locale to '.$lang, 'ERROR');
             logger('Domain path: '.LOCALES_PATH);
         } else {
             logger('Locale set to: '.$locale);
