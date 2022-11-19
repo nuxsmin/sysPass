@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Core\Exceptions\SPException;
@@ -45,9 +45,9 @@ const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}'.
  * @param  mixed  $data
  * @param  string  $type
  */
-function logger($data, string $type = 'DEBUG')
+function logger(mixed $data, string $type = 'DEBUG'): void
 {
-    if (!DEBUG && $type === 'DEBUG') {
+    if (defined('DEBUG') && !DEBUG && ($type === 'DEBUG')) {
         return;
     }
 
@@ -75,14 +75,6 @@ function logger($data, string $type = 'DEBUG')
 
         @error_log($line);
     }
-}
-
-/**
- * Print last callers from backtrace
- */
-function printLastCallers()
-{
-    logger(formatTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)));
 }
 
 /**
@@ -155,7 +147,7 @@ function formatStackTrace(Throwable $e): string
  *
  * @param  \Exception  $exception
  */
-function processException(Exception $exception)
+function processException(Exception $exception): void
 {
     logger(
         sprintf(
@@ -178,35 +170,13 @@ function processException(Exception $exception)
     }
 }
 
-function formatTrace(array $trace): string
-{
-    $btLine = [];
-    $i = 0;
-
-    foreach ($trace as $caller) {
-        $class = $caller['class'] ?? '';
-        $file = $caller['file'] ?? '';
-        $line = $caller['line'] ?? 0;
-
-        $btLine[] = sprintf(
-            'Caller %d: %s\%s (%s:%d)',
-            $i,
-            $class,
-            $caller['function'],
-            $file,
-            $line
-        );
-        $i++;
-    }
-
-    return implode(PHP_EOL, $btLine);
-}
-
 /**
  * Alias gettext function
  *
  * @param  string  $message
  * @param  bool  $translate  Si es necesario traducir
+ *
+ * @return string
  */
 function __(string $message, bool $translate = true): string
 {
@@ -268,6 +238,10 @@ function getElapsedTime(float $from): float
  */
 function initModule(string $module): array
 {
+    if (!defined('MODULES_PATH')) {
+        return [];
+    }
+
     logger(sprintf('Initializing module: %s', $module));
 
     $moduleFile = MODULES_PATH.DIRECTORY_SEPARATOR.$module.DIRECTORY_SEPARATOR.'module.php';
@@ -285,28 +259,4 @@ function initModule(string $module): array
     logger(sprintf('No definitions found for module: %s', $module));
 
     return [];
-}
-
-/**
- * @return bool|string
- */
-function nDirname($dir, $levels)
-{
-    if (version_compare(PHP_VERSION, '7.0') === -1) {
-        logger(realpath(dirname($dir).str_repeat('../', $levels)));
-
-        return realpath(dirname($dir).str_repeat('../', $levels));
-    }
-
-    return dirname($dir, $levels);
-}
-
-/**
- * Prints a fancy trace info using Xdebug extension
- */
-function printTraceInfo()
-{
-    if (DEBUG && extension_loaded('xdebug')) {
-        xdebug_print_function_stack();
-    }
 }

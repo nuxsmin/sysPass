@@ -24,7 +24,6 @@
 
 namespace SP\Core\Bootstrap;
 
-
 use Closure;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -71,6 +70,7 @@ final class BootstrapWeb extends BootstrapBase
         $this->router->respond(['GET', 'POST'], '@(?!/api\.php)', $this->manageWebRequest());
     }
 
+    /** @noinspection PhpInconsistentReturnPointsInspection */
     private function manageWebRequest(): Closure
     {
         return function ($request, $response, $service) {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -156,10 +156,10 @@ final class LogMessage extends MessageBase
         $formatter = new HtmlFormatter();
 
         $message = '<div class="log-message">';
-        $message .= '<h1>' . $this->action . '</h1>';
-        $message .= '<div class="log-description">' . $this->getDescription($formatter, true) . '</div>';
-        $message .= '<div class="log-details">' . $this->getDetails($formatter, true) . '</div>';
-        $message .= '<footer>' . $this->footer . '</footer>';
+        $message .= '<h1>'.$this->action.'</h1>';
+        $message .= '<div class="log-description">'.$this->getDescription($formatter, true).'</div>';
+        $message .= '<div class="log-details">'.$this->getDetails($formatter, true).'</div>';
+        $message .= '<footer>'.join('<br/>', $this->footer).'</footer>';
         $message .= '</div>';
 
         return $message;
