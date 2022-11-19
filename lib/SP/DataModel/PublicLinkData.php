@@ -109,10 +109,7 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
         $this->data = $data;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return (int)$this->id;
     }
@@ -309,10 +306,7 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
         return $this->totalCountViews++;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return '';
     }

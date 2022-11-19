@@ -154,18 +154,12 @@ class CustomFieldDefDataOld extends CustomFieldBaseData implements DataModelInte
         return $this->help;
     }
 
-    /**
-     * @param string $help
-     */
     public function setHelp($help)
     {
         $this->help = $help;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->customfielddef_id;
     }

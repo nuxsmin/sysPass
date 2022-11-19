@@ -48,10 +48,7 @@ class CustomFieldTypeData extends DataModelBase implements DataModelInterface
      */
     public $text;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return (int)$this->id;
     }
@@ -67,7 +64,7 @@ class CustomFieldTypeData extends DataModelBase implements DataModelInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }

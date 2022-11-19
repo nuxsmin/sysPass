@@ -592,7 +592,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $accountHistoryData = $this->accountHistoryService->getById($historyId);
 
         $this->accountRepository->transactionAware(
-            function () use ($historyId, $accountId) {
+            function () use ($historyId, $accountId, $accountHistoryData) {
                 $this->addHistory($accountId);
 
                 if (!$this->accountRepository->editRestore($accountHistoryData, $this->context->getUserData()->getId())) {

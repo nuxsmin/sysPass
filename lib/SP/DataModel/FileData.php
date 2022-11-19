@@ -69,10 +69,7 @@ class FileData extends DataModelBase implements DataModelInterface
      */
     public $size;
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return (int)$this->id;
     }
@@ -101,10 +98,7 @@ class FileData extends DataModelBase implements DataModelInterface
         $this->accountId = $accountId;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
