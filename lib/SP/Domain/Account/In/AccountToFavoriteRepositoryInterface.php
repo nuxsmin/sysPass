@@ -65,9 +65,9 @@ interface AccountToFavoriteRepositoryInterface
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $accountId, int $userId): int;
+    public function delete(int $accountId, int $userId): bool;
 }

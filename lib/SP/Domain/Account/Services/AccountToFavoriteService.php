@@ -79,7 +79,7 @@ final class AccountToFavoriteService extends Service implements AccountToFavorit
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $accountId, int $userId): int
+    public function delete(int $accountId, int $userId): bool
     {
         return $this->accountFavoriteRepository->delete($accountId, $userId);
     }

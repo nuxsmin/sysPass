@@ -57,5 +57,5 @@ interface AccountToFavoriteServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $accountId, int $userId): int;
+    public function delete(int $accountId, int $userId): bool;
 }

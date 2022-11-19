@@ -30,6 +30,7 @@ use SP\Domain\Account\In\AccountToFavoriteRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountFavoriteRepository
@@ -44,17 +45,20 @@ final class AccountToFavoriteRepository extends Repository implements AccountToF
      * @param $id int El Id de usuario
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getForUserId(int $id): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT accountId, userId FROM AccountToFavorite WHERE userId = ?');
-        $queryData->addParam($id);
-        $queryData->setUseKeyPair(true);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'accountId',
+                'userId',
+            ])
+            ->from('AccountToFavorite')
+            ->where('userId = :userId')
+            ->bindValues(['userId' => $id]);
 
-        return $this->db->doQuery($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -69,10 +73,15 @@ final class AccountToFavoriteRepository extends Repository implements AccountToF
      */
     public function add(int $accountId, int $userId): int
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO AccountToFavorite SET accountId = ?, userId = ?');
-        $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error while adding favorite'));
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into('AccountToFavorite')
+            ->cols([
+                'accountId' => $accountId,
+                'userId'    => $userId,
+            ]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding favorite'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -83,17 +92,24 @@ final class AccountToFavoriteRepository extends Repository implements AccountToF
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $accountId, int $userId): int
+    public function delete(int $accountId, int $userId): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?');
-        $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error while deleting favorite'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToFavorite')
+            ->where('accountId = :accountId')
+            ->where('userId = :userId')
+            ->bindValues([
+                'accountId' => $accountId,
+                'userId'    => $userId,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting favorite'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 }
