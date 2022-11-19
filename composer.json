@@ -18,7 +18,7 @@
     "docs": "https://doc.syspass.org"
   },
   "require": {
-    "php": "~7.4 || ~8.0",
+    "php": "~8.0 || ~8.1",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
@@ -52,7 +52,9 @@
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v4.1",
     "dg/bypass-finals": "^v1.3",
-    "jimbojsb/pseudo": "^0.5"
+    "jimbojsb/pseudo": "^0.5",
+    "squizlabs/php_codesniffer": "^3",
+    "phpstan/phpstan": "^1.9"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.2",
@@ -72,7 +74,14 @@
   "config": {
     "classmap-authoritative": false,
     "platform": {
-      "php": "7.4"
+      "php": "8.0"
+    },
+    "allow-plugins": {
+      "ocramius/package-versions": true
     }
+  },
+  "scripts": {
+    "phpcs": "phpcs --standard=PSR2 lib",
+    "phpstan": "vendor/bin/phpstan analyse lib tests --xdebug"
   }
 }
