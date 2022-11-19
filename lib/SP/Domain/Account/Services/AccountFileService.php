@@ -25,7 +25,6 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -40,6 +39,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\FileUtil;
 use SP\Util\ImageUtil;
+use function SP\__u;
 
 /**
  * Class AccountFileService
@@ -68,18 +68,14 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * @param  \SP\DataModel\FileData  $itemData
      *
      * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidImageException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create(FileData $itemData): int
     {
         if (FileUtil::isImage($itemData)) {
-            try {
-                $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
-            } catch (CheckException $e) {
-                processException($e);
-
-                $itemData->setThumb('no_thumb');
-            }
+            $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
         } else {
             $itemData->setThumb('no_thumb');
         }
@@ -99,11 +95,11 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Returns the item for given id
      *
-     * @return mixed|null
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @param  int  $id
+     *
+     * @return mixed
      */
-    public function getById(int $id)
+    public function getById(int $id): mixed
     {
         return $this->accountFileRepository->getById($id)->getData();
     }
@@ -112,8 +108,6 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * Returns all the items
      *
      * @return FileExtData[]
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAll(): array
     {
@@ -126,6 +120,8 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * @param  int[]  $ids
      *
      * @return FileExtData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids): array
     {
@@ -138,6 +134,8 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * @param  int[]  $ids
      *
      * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function deleteByIdBatch(array $ids): int
@@ -160,11 +158,13 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * @param  int  $id
      *
      * @return \SP\Domain\Account\AccountFileServiceInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function delete(int $id): AccountFileServiceInterface
     {
-        if ($this->accountFileRepository->delete($id) === 0) {
+        if (!$this->accountFileRepository->delete($id)) {
             throw new NoSuchItemException(__u('File not found'));
         }
 

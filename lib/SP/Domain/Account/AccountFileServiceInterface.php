@@ -62,7 +62,7 @@ interface AccountFileServiceInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getById(int $id);
+    public function getById(int $id): mixed;
 
     /**
      * Returns all the items
