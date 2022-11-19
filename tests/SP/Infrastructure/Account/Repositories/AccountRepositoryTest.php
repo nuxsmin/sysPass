@@ -96,7 +96,12 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery()->getStatement());
+                $query = $arg->getQuery();
+
+                return
+                    $query->getBindValues()['id'] === 1
+                    && $arg->getMapClassName() === SimpleModel::class
+                    && !empty($query->getStatement());
             }
         );
 
@@ -116,7 +121,12 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery());
+                $query = $arg->getQuery();
+
+                return
+                    $query->getBindValues()['id'] === 1
+                    && $arg->getMapClassName() === SimpleModel::class
+                    && !empty($query->getStatement());
             }
         );
 
@@ -447,6 +457,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        && $params['isPrivate'] === $accountRequest->isPrivate
                        && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
                        && $params['parentId'] === $accountRequest->parentId
+                       && $params['id'] === $accountRequest->id
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -486,6 +497,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
                        && $params['parentId'] === $accountRequest->parentId
                        && $params['userGroupId'] === $accountRequest->userGroupId
+                       && $params['id'] === $accountRequest->id
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -525,6 +537,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
                        && $params['parentId'] === $accountRequest->parentId
                        && $params['userId'] === $accountRequest->userId
+                       && $params['id'] === $accountRequest->id
                        && !empty($arg->getQuery()->getStatement());
             }
         );

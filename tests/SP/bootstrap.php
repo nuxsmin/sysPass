@@ -37,16 +37,18 @@ use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Util\FileUtil;
+use function SP\logger;
+use function SP\processException;
 
 define('DEBUG', true);
 define('IS_TESTING', true);
 define('APP_ROOT', dirname(__DIR__, 2));
 define('TEST_ROOT', dirname(__DIR__));
 
-const APP_DEFINITIONS_FILE = APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php';
+const APP_DEFINITIONS_FILE = APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Definitions.php';
 
-define('RESOURCE_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
+define('RESOURCE_PATH', TEST_ROOT.DIRECTORY_SEPARATOR.'res');
+define('CONFIG_PATH', RESOURCE_PATH.DIRECTORY_SEPARATOR.'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'locales');
@@ -73,8 +75,12 @@ logger('TEST_ROOT=' . TEST_ROOT);
 logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
 
 // Setup directories
-recreateDir(TMP_PATH);
-recreateDir(CACHE_PATH);
+try {
+    recreateDir(TMP_PATH);
+    recreateDir(CACHE_PATH);
+} catch (FileNotFoundException $e) {
+    processException($e);
+}
 
 if (is_dir(CONFIG_PATH)
     && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
@@ -153,23 +159,23 @@ function getResource(string $dir, string $file): string
     return file_get_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
 }
 
-function saveResource(string $dir, string $file, string $data): string
+function saveResource(string $dir, string $file, string $data): bool|int
 {
-    return file_put_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
+    return file_put_contents(RESOURCE_PATH.DIRECTORY_SEPARATOR.$dir.DIRECTORY_SEPARATOR.$file, $data);
 }
 
 /**
- * @throws FileNotFoundException
+ * @throws \SP\Core\Exceptions\FileNotFoundException
  */
-function recreateDir(string $dir)
+function recreateDir(string $dir): void
 {
     if (is_dir($dir)) {
-        logger('Deleting ' . $dir);
+        logger('Deleting '.$dir);
 
         FileUtil::rmdir_recursive($dir);
     }
 
-    logger('Creating ' . $dir . PHP_EOL);
+    logger('Creating '.$dir.PHP_EOL);
 
     if (!mkdir($dir) && !is_dir($dir)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));

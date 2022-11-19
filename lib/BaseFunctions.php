@@ -22,7 +22,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace SP;
+
+use Exception;
 use SP\Core\Exceptions\SPException;
+use Throwable;
 
 /**
  * [type] [caller] data
@@ -145,7 +149,7 @@ function formatStackTrace(Throwable $e): string
 /**
  * Process an exception and log into the error log
  *
- * @param  \Exception  $exception
+ * @param  Exception  $exception
  */
 function processException(Exception $exception): void
 {

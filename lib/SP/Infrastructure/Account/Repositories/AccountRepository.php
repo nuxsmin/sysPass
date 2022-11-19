@@ -42,6 +42,8 @@ use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class AccountRepository
@@ -96,7 +98,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'Account.key',
                 'Account.parentId',
             ])
-            ->where('Account.id = :id', ['id' => $id])
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $id])
             ->limit(1);
 
         return $this->db->doSelect(QueryData::build($query));
@@ -120,7 +123,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'AccountHistory.parentId',
                 'AccountHistory.mPassHash',
             ])
-            ->where('AccountHistory.id = :id', ['id' => $id]);
+            ->where('AccountHistory.id = :id')
+            ->bindValues(['id' => $id]);
 
         return $this->db->doSelect(QueryData::build($query));
     }
@@ -314,7 +318,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->where('id = :id', ['id' => $accountRequest->id])
+            ->where('id = :id')
             ->cols([
                 'clientId'       => $accountRequest->clientId,
                 'categoryId'     => $accountRequest->categoryId,
@@ -328,7 +332,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'isPrivateGroup' => $accountRequest->isPrivateGroup,
                 'parentId'       => $accountRequest->parentId,
             ])
-            ->set('dateEdit', 'NOW()');
+            ->set('dateEdit', 'NOW()')
+            ->bindValues(['id' => $accountRequest->id]);
 
         if ($accountRequest->changeUserGroup) {
             $query->col('userGroupId', $accountRequest->userGroupId);
