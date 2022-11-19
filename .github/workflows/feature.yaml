@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [ ubuntu-latest ]
-        php: [ '7.4', '8' ]
+        php: [ '8' ]
     name: Build & Test ${{ matrix.php }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
 #    env:
