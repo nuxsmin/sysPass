@@ -34,6 +34,7 @@ use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountHistoryRepository
@@ -256,8 +257,6 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
             ->join('INNER', 'User', 'Account.userId = User.id')
             ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
             ->orderBy(['Account.id DESC']);
-
-        $queryData = QueryData::build($query);
 
         return $this->db->doSelect(QueryData::build($query));
     }
