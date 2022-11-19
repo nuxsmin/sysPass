@@ -22,8 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Account\Repositories;
-
+namespace SP\Domain\Account\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
