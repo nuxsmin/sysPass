@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Account\In;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Common\In\RepositoryInterface;
+use SP\DataModel\FileData;
+use SP\DataModel\ItemSearchData;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -35,8 +35,19 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountFileRepositoryInterface extends RepositoryInterface
+interface AccountFileRepositoryInterface
 {
+    /**
+     * Creates an item
+     *
+     * @param  FileData  $fileData
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function create(FileData $fileData): int;
+
     /**
      * @param  int  $id
      *
@@ -56,4 +67,62 @@ interface AccountFileRepositoryInterface extends RepositoryInterface
      * @throws QueryException
      */
     public function getByAccountId(int $id): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param  int  $id
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function delete(int $id): bool;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param  int  $id
+     *
+     * @return QueryResult
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Returns all the items for given ids
+     *
+     * @param  array  $ids
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByIdBatch(array $ids): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param  array  $ids
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $ids): int;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param  ItemSearchData  $itemSearchData
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
 }

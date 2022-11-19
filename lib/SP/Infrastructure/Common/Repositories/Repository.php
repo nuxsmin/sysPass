@@ -33,6 +33,8 @@ use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class Repository
@@ -71,7 +73,7 @@ abstract class Repository
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \Exception
      */
-    final public function transactionAware(Closure $closure)
+    final public function transactionAware(Closure $closure): mixed
     {
         if ($this->db->beginTransaction()) {
             try {

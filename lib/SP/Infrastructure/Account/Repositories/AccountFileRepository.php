@@ -24,17 +24,16 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
-use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\In\AccountFileRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountFileRepository
@@ -48,80 +47,57 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
     /**
      * Creates an item
      *
-     * @param  FileData  $itemData
+     * @param  FileData  $fileData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create($itemData): int
+    public function create(FileData $fileData): int
     {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountFile
-            SET accountId = ?,
-            `name` = ?,
-            type = ?,
-            size = ?,
-            content = ?,
-            extension = ?,
-            thumb = ?';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getAccountId(),
-            $itemData->getName(),
-            $itemData->getType(),
-            $itemData->getSize(),
-            $itemData->getContent(),
-            $itemData->getExtension(),
-            $itemData->getThumb(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while saving file'));
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into('AccountFile')
+            ->cols([
+                'accountId' => $fileData->getAccountId(),
+                'name'      => $fileData->getName(),
+                'type'      => $fileData->getType(),
+                'size'      => $fileData->getSize(),
+                'content'   => $fileData->getContent(),
+                'extension' => $fileData->getExtension(),
+                'thumb'     => $fileData->getThumb(),
+            ]);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while saving file'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
-     * Updates an item
-     *
-     * @param  mixed  $itemData
-     *
-     * @return void
-     */
-    public function update($itemData): void
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getInfoById(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AF.name,
-            AF.size,
-            AF.type,
-            AF.accountId,
-            AF.extension,
-            A.name AS accountName,
-            C.name AS clientName
-            FROM AccountFile AF
-            INNER JOIN Account A ON A.id = AF.accountId
-            INNER JOIN Client C ON A.clientId = C.id
-            WHERE AF.id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'AccountFile.name',
+                'AccountFile.size',
+                'AccountFile.type',
+                'AccountFile.accountId',
+                'AccountFile.extension',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->from('AccountFile')
+            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->where('AccountFile.id = :id')
+            ->bindValues(['id' => $id])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileExtData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -130,33 +106,31 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AF.id, 
-            AF.name,
-            AF.size,
-            AF.type,
-            AF.accountId,
-            AF.content,
-            AF.thumb,
-            AF.extension,
-            A.name AS accountName,
-            C.name AS clientName
-            FROM AccountFile AF
-            INNER JOIN Account A ON A.id = AF.accountId
-            INNER JOIN Client C ON A.clientId = C.id
-            WHERE AF.id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'AccountFile.id',
+                'AccountFile.name',
+                'AccountFile.size',
+                'AccountFile.type',
+                'AccountFile.accountId',
+                'AccountFile.extension',
+                'AccountFile.content',
+                'AccountFile.thumb',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->from('AccountFile')
+            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->where('AccountFile.id = :id')
+            ->bindValues(['id' => $id])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileExtData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -165,62 +139,57 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getByAccountId(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT id,
-            `name`,
-            size,
-            type,
-            accountId,
-            content,
-            thumb,
-            extension
-            FROM AccountFile
-            WHERE accountId = ?
-            ORDER BY `name`';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'id',
+                'name',
+                'size',
+                'type',
+                'accountId',
+                'extension',
+                'content',
+                'thumb',
+            ])
+            ->from('AccountFile')
+            ->where('accountId = :accountId')
+            ->bindValues(['accountId' => $id])
+            ->orderBy(['name ASC'])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
      * Returns all the items
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT AF.id,
-            AF.name,
-            AF.size,
-            AF.type,
-            AF.accountId,
-            AF.content,
-            AF.thumb,
-            AF.extension,
-            A.name AS accountName,
-            C.name AS clientName
-            FROM AccountFile AF
-            INNER JOIN Account A ON A.id = AF.accountId
-            INNER JOIN Client C ON A.clientId = C.id
-            ORDER BY AF.name';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'AccountFile.id',
+                'AccountFile.name',
+                'AccountFile.size',
+                'AccountFile.type',
+                'AccountFile.accountId',
+                'AccountFile.extension',
+                'AccountFile.content',
+                'AccountFile.thumb',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->from('AccountFile')
+            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->orderBy(['AccountFile.name ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileExtData::class);
-        $queryData->setQuery($query);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -238,28 +207,26 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
             return new QueryResult();
         }
 
-        $query = /** @lang SQL */
-            'SELECT AF.id,
-            AF.name,
-            AF.size,
-            AF.type,
-            AF.accountId,
-            AF.content,
-            AF.thumb,
-            AF.extension,
-            A.name AS accountName,
-            C.name AS clientName
-            FROM AccountFile AF
-            INNER JOIN Account A ON A.id = AF.accountId
-            INNER JOIN Client C ON A.clientId = C.id
-            WHERE AF.id IN ('.$this->buildParamsFromArray($ids).')';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'AccountFile.id',
+                'AccountFile.name',
+                'AccountFile.size',
+                'AccountFile.type',
+                'AccountFile.accountId',
+                'AccountFile.extension',
+                'AccountFile.content',
+                'AccountFile.thumb',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->from('AccountFile')
+            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->where(sprintf('AccountFile.id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileExtData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($ids);
-
-        return $this->db->doQuery($queryData);
+        return $this->db->doQuery(QueryData::build($query));
     }
 
     /**
@@ -267,21 +234,21 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      *
      * @param  int  $id
      *
-     * @return int
+     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AccountFile WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountFile')
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the file'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the file'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -299,42 +266,14 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
             return 0;
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountFile WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting the files'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountFile')
+            ->where(sprintf('AccountFile.id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the files'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param  mixed  $itemData
-     */
-    public function checkDuplicatedOnUpdate($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @param  mixed  $itemData
-     */
-    public function checkDuplicatedOnAdd($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -343,51 +282,45 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      * @param  ItemSearchData  $itemSearchData
      *
      * @return \SP\Infrastructure\Database\QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(FileExtData::class);
-        $queryData->setSelect(
-            'AccountFile.id, 
-        AccountFile.accountId, 
-        AccountFile.name, 
-        AccountFile.size, 
-        AccountFile.thumb, 
-        AccountFile.type, 
-        AccountFile.extension, 
-        Account.name as accountName, 
-        Client.name as clientName'
-        );
-        $queryData->setFrom(
-            'AccountFile 
-        INNER JOIN Account ON Account.id = AccountFile.accountId 
-        INNER JOIN Client ON Account.clientId = Client.id'
-        );
-        $queryData->setOrder('Account.name');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'AccountFile.id',
+                'AccountFile.name',
+                'AccountFile.size',
+                'AccountFile.type',
+                'AccountFile.accountId',
+                'AccountFile.extension',
+                'AccountFile.thumb',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->from('AccountFile')
+            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->orderBy(['AccountFile.name ASC'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere(
-                'AccountFile.name LIKE ? 
-            OR AccountFile.type LIKE ? 
-            OR Account.name LIKE ? 
-            OR Client.name LIKE ?'
-            );
+            $query->where('AccountFile.name LIKE :name')
+                ->orWhere('AccountFile.type LIKE :type')
+                ->orWhere('Account.name LIKE :accountName')
+                ->orWhere('Client.name LIKE :clientName');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+
+            $query->bindValues([
+                'name'        => $search,
+                'type'        => $search,
+                'accountName' => $search,
+                'clientName'  => $search,
+            ]);
         }
 
-        $queryData->setLimit(
-            '?,?',
-            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
-        );
-
-        return $this->db->doSelect($queryData, true);
+        return $this->db->doSelect(QueryData::build($query), true);
     }
 }
