@@ -28,6 +28,7 @@ namespace SP\Domain\Account\In;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\Repositories\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -35,7 +36,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountToTagRepositoryInterface
+interface AccountToTagRepositoryInterface extends RepositoryInterface
 {
     /**
      * Devolver las etiquetas de una cuenta
@@ -49,32 +50,23 @@ interface AccountToTagRepositoryInterface
     public function getTagsByAccountId(int $id): QueryResult;
 
     /**
-     * @param  AccountRequest  $accountRequest
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function update(AccountRequest $accountRequest): void;
-
-    /**
      * Eliminar las etiquetas de una cuenta
      *
      * @param  int  $id
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): int;
+    public function deleteByAccountId(int $id): bool;
 
     /**
      * Actualizar las etiquetas de una cuenta
      *
      * @param  AccountRequest  $accountRequest
      *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(AccountRequest $accountRequest): int;
+    public function add(AccountRequest $accountRequest): void;
 }

@@ -24,7 +24,6 @@
 
 namespace SP\Tests;
 
-
 use DG\BypassFinals;
 use Faker\Factory;
 use Faker\Generator;
@@ -33,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -44,13 +44,15 @@ use SP\Infrastructure\File\XmlHandler;
  */
 abstract class UnitaryTestCase extends TestCase
 {
-    protected static Generator  $faker;
-    protected ConfigFileService $config;
-    protected Application       $application;
-    protected ContextInterface  $context;
+    protected static Generator $faker;
+    protected ConfigInterface  $config;
+    protected Application      $application;
+    protected ContextInterface $context;
 
     public static function setUpBeforeClass(): void
     {
+        defined('APP_ROOT') || die();
+
         BypassFinals::enable();
         BypassFinals::setWhitelist([APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'*']);
 
@@ -96,5 +98,10 @@ abstract class UnitaryTestCase extends TestCase
         );
 
         return new Application($config, $this->createStub(EventDispatcher::class), $this->context);
+    }
+
+    public static function getRandomNumbers(int $count): array
+    {
+        return array_map(static fn() => self::$faker->randomNumber(), range(0, $count - 1));
     }
 }

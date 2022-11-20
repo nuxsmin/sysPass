@@ -31,6 +31,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Repositories\RepositoryInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use function SP\__u;
@@ -41,7 +42,7 @@ use function SP\logger;
  *
  * @package SP\Infrastructure\Common\Repositories
  */
-abstract class Repository
+abstract class Repository implements RepositoryInterface
 {
     protected ContextInterface         $context;
     protected DatabaseInterface        $db;

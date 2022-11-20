@@ -478,6 +478,7 @@ final class AccountService extends Service implements AccountServiceInterface
      *
      * @throws QueryException
      * @throws ConstraintException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     private function updateItems(AccountRequest $accountRequest): void
     {
@@ -517,7 +518,12 @@ final class AccountService extends Service implements AccountServiceInterface
 
         if ($accountRequest->tags !== null) {
             if (count($accountRequest->tags) > 0) {
-                $this->accountToTagRepository->update($accountRequest);
+                $this->accountToTagRepository->transactionAware(
+                    function () use ($accountRequest) {
+                        $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+                        $this->accountToTagRepository->add($accountRequest);
+                    }
+                );
             } else {
                 $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
             }

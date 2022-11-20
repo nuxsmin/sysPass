@@ -24,15 +24,13 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemData;
 use SP\Domain\Account\In\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountToTagRepository
@@ -49,36 +47,22 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getTagsByAccountId(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT T.id, T.name
-                FROM AccountToTag AT
-                INNER JOIN Tag T ON AT.tagId = T.id
-                WHERE AT.accountId = ?
-                ORDER BY T.name';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'Tag.id',
+                'Tag.name',
+            ])
+            ->from('AccountToTag')
+            ->join('INNER', 'Tag', 'Tag.id == AccountToTag.tagId')
+            ->where('AccountToTag.accountId = :accountId')
+            ->bindValues(['accountId' => $id])
+            ->orderBy(['Tag.name ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setMapClassName(ItemData::class);
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * @param  AccountRequest  $accountRequest
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function update(AccountRequest $accountRequest): void
-    {
-        $this->deleteByAccountId($accountRequest->id);
-        $this->add($accountRequest);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -86,18 +70,23 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
      *
      * @param  int  $id
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteByAccountId(int $id): int
+    public function deleteByAccountId(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while removing the account\'s tags'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToTag')
+            ->where('accountId = :accountId')
+            ->bindValues([
+                'accountId' => $id,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the account\'s tags'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -105,28 +94,24 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
      *
      * @param  AccountRequest  $accountRequest
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add(AccountRequest $accountRequest): int
+    public function add(AccountRequest $accountRequest): void
     {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountToTag (accountId, tagId) VALUES '.$this->buildParamsFromArray(
-                $accountRequest->tags,
-                '(?,?)'
-            );
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error while adding the account\'s tags'));
-
         foreach ($accountRequest->tags as $tag) {
-            $queryData->addParam($accountRequest->id);
-            $queryData->addParam($tag);
+            $query = $this->queryFactory
+                ->newInsert()
+                ->into('AccountToTag')
+                ->cols([
+                    'accountId' => $accountRequest->id,
+                    'tagId'     => $tag,
+                ]);
+
+            $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the account\'s tags'));
+
+            $this->db->doQuery($queryData);
         }
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
-
 }
