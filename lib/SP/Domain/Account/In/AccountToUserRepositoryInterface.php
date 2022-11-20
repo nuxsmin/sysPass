@@ -26,7 +26,6 @@ namespace SP\Domain\Account\In;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -38,52 +37,40 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountToUserRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Actualizar la asociación de grupos con cuentas.
+     * Eliminar la asociación de grupos con cuentas.
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $id  con el Id de la cuenta
+     * @param  bool  $isEdit
      *
+     * @return void
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteTypeByAccountId(int $id, bool $isEdit): void;
+
+    /**
+     * Crear asociación de usuarios con cuentas.
+     *
+     * @param  int  $accountId
+     * @param  array  $items
      * @param  bool  $isEdit
      *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit): void;
-
-    /**
-     * Eliminar la asociación de grupos con cuentas.
-     *
-     * @param  int  $id  con el Id de la cuenta
-     * @param  bool  $isEdit
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteTypeByAccountId(int $id, bool $isEdit): int;
-
-    /**
-     * Crear asociación de usuarios con cuentas.
-     *
-     * @param  AccountRequest  $accountRequest
-     * @param  bool  $isEdit
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit): int;
+    public function addByType(int $accountId, array $items, bool $isEdit): void;
 
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
      * @param  int  $id  con el Id de la cuenta
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): int;
+    public function deleteByAccountId(int $id): bool;
 
     /**
      * Obtiene el listado de usuarios de una cuenta.

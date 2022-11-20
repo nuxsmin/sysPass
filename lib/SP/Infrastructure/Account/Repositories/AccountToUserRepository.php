@@ -28,11 +28,12 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\In\AccountToUserRepositoryInterface;
-use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\In\Query;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountToUserRepository
@@ -44,76 +45,61 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
     use RepositoryItemTrait;
 
     /**
-     * Actualizar la asociación de grupos con cuentas.
+     * Eliminar la asociación de grupos con cuentas.
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $id  con el Id de la cuenta
      * @param  bool  $isEdit
      *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit): void
+    public function deleteTypeByAccountId(int $id, bool $isEdit): void
     {
-        $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
-        $this->addByType($accountRequest, $isEdit);
-    }
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToUser')
+            ->where('accountId = :accountId')
+            ->where('isEdit = :isEdit')
+            ->bindValues([
+                'accountId' => $id,
+                'isEdit'    => (int)$isEdit,
+            ]);
 
-    /**
-     * Eliminar la asociación de grupos con cuentas.
-     *
-     * @param  int  $id  con el Id de la cuenta
-     * @param  bool  $isEdit
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteTypeByAccountId(int $id, bool $isEdit): int
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = ?');
-        $queryData->setParams([$id, (int)$isEdit]);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account users'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $this->db->doQuery($queryData);
     }
 
     /**
      * Crear asociación de usuarios con cuentas.
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  array  $items
      * @param  bool  $isEdit
      *
-     * @return int
+     * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit): int
+    public function addByType(int $accountId, array $items, bool $isEdit): void
     {
-        $items = $isEdit ? $accountRequest->usersEdit : $accountRequest->usersView;
-        $values = $this->buildParamsFromArray($items, '(?,?,?)');
+        $values = array_map(static function ($item) use ($accountId, $isEdit) {
+            return [$accountId, (int)$item, (int)$isEdit];
+        }, $items);
+
+        $parameters = $this->buildParamsFromArray($values, '(?,?,?)');
 
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 
-              VALUES '.$values.'
-              ON DUPLICATE KEY UPDATE isEdit = '.(int)$isEdit;
+              VALUES '.$parameters.'
+              ON DUPLICATE KEY UPDATE isEdit = ?';
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error while updating the account users'));
+        $queryData = QueryData::build(
+            Query::buildForMySQL($query, array_merge_recursive($values))
+        )->setOnErrorMessage(__u('Error while updating the account users'));
 
-        $params = [];
-
-        foreach ($items as $user) {
-            $params[] = $accountRequest->id;
-            $params[] = $user;
-            $params[] = (int)$isEdit;
-        }
-
-        $queryData->setParams($params);
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $this->db->doQuery($queryData);
     }
 
     /**
@@ -121,18 +107,23 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
      *
      * @param  int  $id  con el Id de la cuenta
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): int
+    public function deleteByAccountId(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account users'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToUser')
+            ->where('accountId = :accountId')
+            ->bindValues([
+                'accountId' => $id,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account users'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -141,23 +132,23 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
      * @param  int  $id  con el id de la cuenta
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getUsersByAccountId(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT `User`.id, `User`.name, `User`.login, AccountToUser.isEdit
-            FROM AccountToUser
-            INNER JOIN `User` ON AccountToUser.userId = `User`.id
-            WHERE AccountToUser.accountId = ?
-            ORDER BY `User`.name';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'User.id',
+                'User.name',
+                'User.login',
+                'AccountToUser.isEdit',
+            ])
+            ->from('AccountToUser')
+            ->join('INNER', 'User', 'User.id == AccountToUser.userId')
+            ->where('AccountToUser.accountId = :accountId')
+            ->bindValues(['accountId' => $id])
+            ->orderBy(['User.name ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setMapClassName(ItemData::class);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemData::class));
     }
 }

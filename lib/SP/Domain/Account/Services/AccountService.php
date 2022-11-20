@@ -485,15 +485,14 @@ final class AccountService extends Service implements AccountServiceInterface
         if ($accountRequest->changePermissions) {
             if ($accountRequest->userGroupsView !== null) {
                 if (count($accountRequest->userGroupsView) > 0) {
-                    $this->accountToUserGroupRepository
-                        ->transactionAware(
-                            function () use ($accountRequest) {
-                                $this->accountToUserGroupRepository
-                                    ->deleteTypeByAccountId($accountRequest->id, false);
-                                $this->accountToUserGroupRepository
-                                    ->addByType($accountRequest->id, $accountRequest->userGroupsView, false);
-                            }
-                        );
+                    $this->accountToUserGroupRepository->transactionAware(
+                        function () use ($accountRequest) {
+                            $this->accountToUserGroupRepository
+                                ->deleteTypeByAccountId($accountRequest->id, false);
+                            $this->accountToUserGroupRepository
+                                ->addByType($accountRequest->id, $accountRequest->userGroupsView, false);
+                        }
+                    );
                 } else {
                     $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, false);
                 }
@@ -501,15 +500,14 @@ final class AccountService extends Service implements AccountServiceInterface
 
             if ($accountRequest->userGroupsEdit !== null) {
                 if (count($accountRequest->userGroupsEdit) > 0) {
-                    $this->accountToUserGroupRepository
-                        ->transactionAware(
-                            function () use ($accountRequest) {
-                                $this->accountToUserGroupRepository
-                                    ->deleteTypeByAccountId($accountRequest->id, true);
-                                $this->accountToUserGroupRepository
-                                    ->addByType($accountRequest->id, $accountRequest->userGroupsEdit, true);
-                            }
-                        );
+                    $this->accountToUserGroupRepository->transactionAware(
+                        function () use ($accountRequest) {
+                            $this->accountToUserGroupRepository
+                                ->deleteTypeByAccountId($accountRequest->id, true);
+                            $this->accountToUserGroupRepository
+                                ->addByType($accountRequest->id, $accountRequest->userGroupsEdit, true);
+                        }
+                    );
                 } else {
                     $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, true);
                 }
@@ -517,7 +515,14 @@ final class AccountService extends Service implements AccountServiceInterface
 
             if ($accountRequest->usersView !== null) {
                 if (count($accountRequest->usersView) > 0) {
-                    $this->accountToUserRepository->updateByType($accountRequest, false);
+                    $this->accountToUserRepository->transactionAware(
+                        function () use ($accountRequest) {
+                            $this->accountToUserRepository
+                                ->deleteTypeByAccountId($accountRequest->id, false);
+                            $this->accountToUserRepository
+                                ->addByType($accountRequest->id, $accountRequest->usersView, false);
+                        }
+                    );
                 } else {
                     $this->accountToUserRepository->deleteTypeByAccountId($accountRequest->id, false);
                 }
@@ -525,7 +530,14 @@ final class AccountService extends Service implements AccountServiceInterface
 
             if ($accountRequest->usersEdit !== null) {
                 if (count($accountRequest->usersEdit) > 0) {
-                    $this->accountToUserRepository->updateByType($accountRequest, true);
+                    $this->accountToUserRepository->transactionAware(
+                        function () use ($accountRequest) {
+                            $this->accountToUserRepository
+                                ->deleteTypeByAccountId($accountRequest->id, true);
+                            $this->accountToUserRepository
+                                ->addByType($accountRequest->id, $accountRequest->usersEdit, true);
+                        }
+                    );
                 } else {
                     $this->accountToUserRepository->deleteTypeByAccountId($accountRequest->id, true);
                 }
