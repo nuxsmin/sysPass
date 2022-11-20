@@ -24,9 +24,9 @@
 
 namespace SP\Domain\Account\In;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -34,7 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountToFavoriteRepositoryInterface
+interface AccountToFavoriteRepositoryInterface extends RepositoryInterface
 {
     /**
      * Obtener un array con los Ids de cuentas favoritas

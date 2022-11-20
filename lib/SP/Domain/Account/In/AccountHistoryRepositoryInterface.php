@@ -27,6 +27,7 @@ namespace SP\Domain\Account\In;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -34,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package Services
  */
-interface AccountHistoryRepositoryInterface
+interface AccountHistoryRepositoryInterface extends RepositoryInterface
 {
     /**
      * Creates an item

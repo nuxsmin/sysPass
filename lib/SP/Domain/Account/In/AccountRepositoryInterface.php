@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account\In;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -32,6 +31,7 @@ use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Domain\Common\Out\SimpleModel;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -40,7 +40,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package Services
  */
-interface AccountRepositoryInterface
+interface AccountRepositoryInterface extends RepositoryInterface
 {
     /**
      * Devolver el número total de cuentas

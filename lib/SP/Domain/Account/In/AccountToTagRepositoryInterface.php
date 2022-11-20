@@ -24,11 +24,10 @@
 
 namespace SP\Domain\Account\In;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Common\Repositories\RepositoryInterface;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**

@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Account\In;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -35,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountToUserGroupRepositoryInterface
+interface AccountToUserGroupRepositoryInterface extends RepositoryInterface
 {
     /**
      * Obtiene el listado con el nombre de los grupos de una cuenta.

@@ -28,6 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -35,7 +36,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountFileRepositoryInterface
+interface AccountFileRepositoryInterface extends RepositoryInterface
 {
     /**
      * Creates an item

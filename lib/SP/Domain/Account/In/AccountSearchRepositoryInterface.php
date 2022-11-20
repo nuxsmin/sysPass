@@ -22,16 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Repositories;
+namespace SP\Domain\Account\In;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Common\In\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class AccountSearchRepository
  */
-interface AccountSearchRepositoryInterface
+interface AccountSearchRepositoryInterface extends RepositoryInterface
 {
     /**
      * Obtener las cuentas de una búsqueda.

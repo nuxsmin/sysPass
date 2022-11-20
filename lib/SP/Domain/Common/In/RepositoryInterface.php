@@ -24,8 +24,7 @@
 
 namespace SP\Domain\Common\In;
 
-use SP\DataModel\ItemSearchData;
-use SP\Infrastructure\Database\QueryResult;
+use Closure;
 
 /**
  * Interface RepositoryItemInterface
@@ -35,95 +34,13 @@ use SP\Infrastructure\Database\QueryResult;
 interface RepositoryInterface
 {
     /**
-     * Creates an item
+     * Bubbles a Closure in a database transaction
      *
-     * @param  object  $itemData
-     *
-     * @return mixed
-     */
-    public function create(object $itemData);
-
-    /**
-     * Updates an item
-     *
-     * @param  mixed  $itemData
+     * @param  \Closure  $closure
      *
      * @return mixed
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \Exception
      */
-    public function update($itemData);
-
-    /**
-     * Deletes an item
-     *
-     * @param  int  $id
-     */
-    public function delete(int $id);
-
-    /**
-     * Returns the item for given id
-     *
-     * @param  int  $id
-     *
-     * @return mixed
-     */
-    public function getById(int $id);
-
-    /**
-     * Returns all the items
-     */
-    public function getAll();
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     */
-    public function getByIdBatch(array $ids): QueryResult;
-
-    /**
-     * Deletes all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return int
-     */
-    public function deleteByIdBatch(array $ids): int;
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return bool
-     */
-    public function checkInUse(int $id): bool;
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param  mixed  $itemData
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate($itemData): bool;
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @param  mixed  $itemData
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd($itemData): bool;
-
-    /**
-     * Searches for items by a given filter
-     *
-     * @param  ItemSearchData  $itemSearchData
-     *
-     * @return mixed
-     */
-    public function search(ItemSearchData $itemSearchData);
+    public function transactionAware(Closure $closure): mixed;
 }
