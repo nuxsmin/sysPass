@@ -27,8 +27,6 @@ namespace SP\DataModel;
 use SP\Domain\Common\Out\DataModelBase;
 use SP\Domain\Common\Out\DataModelInterface;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class PublicLinkData
  *
@@ -36,75 +34,27 @@ defined('APP_ROOT') || die();
  */
 class PublicLinkData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id = 0;
-    /**
-     * @var int
-     */
-    public $itemId = 0;
-    /**
-     * @var string
-     */
-    public $hash = '';
-    /**
-     * @var int
-     */
-    public $userId = 0;
-    /**
-     * @var int
-     */
-    public $typeId = 0;
-    /**
-     * @var bool
-     */
-    public $notify = false;
-    /**
-     * @var int
-     */
-    public $dateAdd = 0;
-    /**
-     * @var int
-     */
-    public $dateUpdate = 0;
-    /**
-     * @var int
-     */
-    public $dateExpire = 0;
-    /**
-     * @var int
-     */
-    public $countViews = 0;
-    /**
-     * @var int
-     */
-    public $totalCountViews = 0;
-    /**
-     * @var int
-     */
-    public $maxCountViews = 0;
-    /**
-     * @var string
-     */
-    public $useInfo;
-    /**
-     * @var string
-     */
-    public $data;
+    protected ?int    $id;
+    protected ?int    $itemId;
+    protected ?string $hash;
+    protected ?int    $userId;
+    protected ?int    $typeId;
+    protected ?bool   $notify;
+    protected ?int    $dateAdd;
+    protected ?int    $dateUpdate;
+    protected ?int    $dateExpire;
+    protected ?int    $countViews;
+    protected ?int    $totalCountViews;
+    protected ?int    $maxCountViews;
+    protected ?string $useInfo;
+    protected ?string $data;
 
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): ?string
     {
         return $this->data;
     }
 
-    /**
-     * @param string $data
-     */
-    public function setData($data)
+    public function setData(?string $data): void
     {
         $this->data = $data;
     }
@@ -114,216 +64,123 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
         return (int)$this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = (int)$id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): ?string
     {
         return $this->hash;
     }
 
-    /**
-     * @param string $hash
-     */
-    public function setHash($hash)
+    public function setHash(?string $hash): void
     {
         $this->hash = $hash;
     }
 
-    /**
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return (int)$this->itemId;
     }
 
-    /**
-     * @param int $itemId
-     */
-    public function setItemId($itemId)
+    public function setItemId(int $itemId): void
     {
-        $this->itemId = (int)$itemId;
+        $this->itemId = $itemId;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): int
     {
         return (int)$this->userId;
     }
 
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
+    public function setUserId(int $userId): void
     {
-        $this->userId = (int)$userId;
+        $this->userId = $userId;
     }
 
-    /**
-     * @return int
-     */
-    public function getTypeId()
+    public function getTypeId(): ?int
     {
-        return (int)$this->typeId;
+        return $this->typeId;
     }
 
-    /**
-     * @param int $typeId
-     */
-    public function setTypeId($typeId)
+    public function setTypeId(int $typeId): void
     {
-        $this->typeId = (int)$typeId;
+        $this->typeId = $typeId;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isNotify()
+    public function isNotify(): bool
     {
-        return (bool)$this->notify;
+        return $this->notify;
     }
 
-    /**
-     * @param boolean $notify
-     */
-    public function setNotify($notify)
+    public function setNotify(bool $notify): void
     {
-        $this->notify = (bool)$notify;
+        $this->notify = $notify;
     }
 
-    /**
-     * @return int
-     */
-    public function getDateAdd()
+    public function getDateAdd(): ?int
     {
-        return (int)$this->dateAdd;
+        return $this->dateAdd;
     }
 
-    /**
-     * @param int $dateAdd
-     */
-    public function setDateAdd($dateAdd)
+    public function setDateAdd(int $dateAdd): void
     {
-        $this->dateAdd = (int)$dateAdd;
+        $this->dateAdd = $dateAdd;
     }
 
-    /**
-     * @return int
-     */
-    public function getDateExpire()
+    public function getDateExpire(): ?int
     {
-        return (int)$this->dateExpire;
+        return $this->dateExpire;
     }
 
-    /**
-     * @param int $dateExpire
-     */
-    public function setDateExpire($dateExpire)
+    public function setDateExpire(int $dateExpire): void
     {
-        $this->dateExpire = (int)$dateExpire;
+        $this->dateExpire = $dateExpire;
     }
 
-    /**
-     * @return int
-     */
-    public function getCountViews()
+    public function getCountViews(): ?int
     {
-        return (int)$this->countViews;
+        return $this->countViews;
     }
 
-    /**
-     * @param int $countViews
-     */
-    public function setCountViews($countViews)
+    public function setCountViews(int $countViews): void
     {
-        $this->countViews = (int)$countViews;
+        $this->countViews = $countViews;
     }
 
-    /**
-     * @return int
-     */
-    public function addCountViews()
+    public function addCountViews(): ?int
     {
         return $this->countViews++;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxCountViews()
+    public function getMaxCountViews(): ?int
     {
-        return (int)$this->maxCountViews;
+        return $this->maxCountViews;
     }
 
-    /**
-     * @param int $maxCountViews
-     */
-    public function setMaxCountViews($maxCountViews)
+    public function setMaxCountViews(int $maxCountViews): void
     {
-        $this->maxCountViews = (int)$maxCountViews;
+        $this->maxCountViews = $maxCountViews;
     }
 
-    /**
-     * @return string
-     */
-    public function getUseInfo()
+    public function getUseInfo(): ?string
     {
         return $this->useInfo;
     }
 
-    /**
-     * @param array $useInfo
-     */
-    public function setUseInfo(array $useInfo)
+    public function setUseInfo(array $useInfo): void
     {
         $this->useInfo = serialize($useInfo);
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalCountViews()
+    public function getTotalCountViews(): ?int
     {
-        return (int)$this->totalCountViews;
+        return $this->totalCountViews;
     }
 
-    /**
-     * @return int
-     */
-    public function addTotalCountViews()
+    public function getDateUpdate(): ?int
     {
-        return $this->totalCountViews++;
+        return $this->dateUpdate;
     }
 
     public function getName(): ?string
     {
-        return '';
-    }
-
-    /**
-     * @return int
-     */
-    public function getDateUpdate(): int
-    {
-        return (int)$this->dateUpdate;
-    }
-
-    /**
-     * @param int $dateUpdate
-     */
-    public function setDateUpdate(int $dateUpdate)
-    {
-        $this->dateUpdate = $dateUpdate;
+        return null;
     }
 }

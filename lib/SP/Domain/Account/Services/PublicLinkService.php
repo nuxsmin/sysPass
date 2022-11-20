@@ -37,15 +37,16 @@ use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Repositories\PublicLinkRepositoryInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Config\ConfigInterface;
 use SP\Http\RequestInterface;
 use SP\Http\Uri;
-use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class PublicLinkService
@@ -61,13 +62,13 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      */
     public const TYPE_ACCOUNT = 1;
 
-    private PublicLinkRepository    $publicLinkRepository;
-    private RequestInterface        $request;
-    private AccountServiceInterface $accountService;
+    private PublicLinkRepositoryInterface $publicLinkRepository;
+    private RequestInterface              $request;
+    private AccountServiceInterface       $accountService;
 
     public function __construct(
         Application $application,
-        PublicLinkRepository $publicLinkRepository,
+        PublicLinkRepositoryInterface $publicLinkRepository,
         RequestInterface $request,
         AccountServiceInterface $accountService
     ) {
@@ -100,8 +101,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -138,8 +140,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @param  int  $id
+     *
+     * @return \SP\DataModel\PublicLinkListData
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getById(int $id): PublicLinkListData
@@ -180,7 +183,11 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
 
         // Desencriptar la clave de la cuenta
         $accountData->setPass(
-            Crypt::decrypt($accountData->getPass(), $accountData->getKey(), $this->getMasterKeyFromContext())
+            Crypt::decrypt(
+                $accountData->getPass(),
+                $accountData->getKey(),
+                $this->getMasterKeyFromContext()
+            )
         );
         $accountData->setKey(null);
 
@@ -196,15 +203,15 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
+     * @param  int  $id
+     *
+     * @return \SP\Domain\Account\PublicLinkServiceInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function delete(int $id): PublicLinkServiceInterface
     {
-        if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Link not found'), SPException::INFO);
-        }
+        $this->publicLinkRepository->delete($id);
 
         return $this;
     }
@@ -252,8 +259,6 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      * Get all items from the service's repository
      *
      * @return PublicLinkListData[]
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAllBasic(): array
     {
@@ -263,20 +268,19 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * Incrementar el contador de visitas de un enlace
      *
-     * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function addLinkView(PublicLinkData $publicLinkData): void
     {
         /** @var array $useInfo */
-        $useInfo = unserialize($publicLinkData->getUseInfo());
+        $useInfo = unserialize($publicLinkData->getUseInfo(), false);
         $useInfo[] = self::getUseInfo($publicLinkData->getHash(), $this->request);
         $publicLinkData->setUseInfo($useInfo);
 
-        if ($this->publicLinkRepository->addLinkView($publicLinkData) === 0) {
-            throw new NoSuchItemException(__u('Link not found'));
-        }
+        $this->publicLinkRepository->addLinkView($publicLinkData);
     }
 
     /**
@@ -310,9 +314,10 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * Devolver el hash asociado a un elemento
      *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
+     * @param  int  $itemId
+     *
+     * @return \SP\DataModel\PublicLinkData
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getHashForItem(int $itemId): PublicLinkData
     {
@@ -332,8 +337,8 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkData $itemData): int
+    public function update(PublicLinkData $itemData): void
     {
-        return $this->publicLinkRepository->update($itemData);
+        $this->publicLinkRepository->update($itemData);
     }
 }

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -34,6 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
+use SP\Domain\Account\Repositories\PublicLinkRepositoryInterface;
 use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
@@ -48,7 +49,7 @@ use function SP\Tests\setupContext;
 class PublicLinkRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Infrastructure\Account\Repositories\PublicLinkRepository
+     * @var PublicLinkRepositoryInterface
      */
     private static $repository;
 

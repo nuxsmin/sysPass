@@ -67,10 +67,9 @@ final class QueryResult
     /**
      * @return mixed|null
      */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->numRows === 1 ? $this->data[0] : null;
-
     }
 
     public function getDataAsArray(): array

@@ -137,5 +137,5 @@ interface PublicLinkServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkData $itemData): int;
+    public function update(PublicLinkData $itemData): void;
 }

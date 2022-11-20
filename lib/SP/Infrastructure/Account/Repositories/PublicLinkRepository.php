@@ -24,26 +24,25 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
-use SP\DataModel\PublicLinkListData;
-use SP\Domain\Common\In\RepositoryInterface;
+use SP\Domain\Account\Repositories\PublicLinkRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class PublicLinkRepository
  *
  * @package SP\Infrastructure\Common\Repositories\PublicLink
  */
-final class PublicLinkRepository extends Repository implements RepositoryInterface
+final class PublicLinkRepository extends Repository implements PublicLinkRepositoryInterface
 {
     use RepositoryItemTrait;
 
@@ -52,104 +51,55 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      *
      * @param  int  $id
      *
-     * @return int
+     * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): void
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PublicLink WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while removing the link'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('PublicLink')
+            ->where('id = :id')
+            ->bindValue('id', $id);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $this->db->doQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
     }
 
     /**
      * Returns all the items
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getAll(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT PL.id, 
-              PL.itemId,
-              PL.hash,
-              PL.data,
-              PL.userId,
-              PL.typeId,
-              PL.notify,
-              PL.dateAdd,
-              PL.dateExpire,
-              PL.dateUpdate,
-              PL.countViews,
-              PL.maxCountViews,
-              PL.totalCountViews,
-              PL.useInfo,
-              U.name AS userName,
-              U.login AS userLogin,
-              A.name AS accountName        
-              FROM PublicLink PL
-              INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON itemId = A.id
-              ORDER BY PL.id';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'PublicLink.id',
+                'PublicLink.itemId',
+                'PublicLink.hash',
+                'PublicLink.data',
+                'PublicLink.userId',
+                'PublicLink.typeId',
+                'PublicLink.notify',
+                'PublicLink.dateAdd',
+                'PublicLink.dateExpire',
+                'PublicLink.dateUpdate',
+                'PublicLink.countViews',
+                'PublicLink.maxCountViews',
+                'PublicLink.totalCountViews',
+                'PublicLink.useInfo',
+                'User.name AS userName',
+                'User.login AS userLogin',
+                'Account.name AS accountName',
+            ])
+            ->from('PublicLink')
+            ->join('INNER', 'User', 'User.id = PublicLink.userId')
+            ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
+            ->orderBy(['PublicLink.id']);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkListData::class);
-        $queryData->setQuery($query);
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        if (count($ids) === 0) {
-            return new QueryResult();
-        }
-
-        $query = /** @lang SQL */
-            'SELECT PL.id, 
-              PL.itemId,
-              PL.hash,
-              PL.data,
-              PL.userId,
-              PL.typeId,
-              PL.notify,
-              PL.dateAdd,
-              PL.dateExpire,
-              PL.dateUpdate,
-              PL.countViews,
-              PL.maxCountViews,
-              PL.totalCountViews,
-              PL.useInfo,
-              U.name AS userName,
-              U.login AS userLogin,
-              A.name AS accountName        
-              FROM PublicLink PL
-              INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON itemId = A.id
-              WHERE PL.id IN ('.$this->buildParamsFromArray($ids).')
-              ORDER BY PL.id';
-
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkListData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($ids);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
@@ -167,23 +117,12 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
             return 0;
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PublicLink WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('PublicLink')
+            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -192,99 +131,88 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      * @param  ItemSearchData  $itemSearchData
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkListData::class);
-        $queryData->setSelect(
-            'PublicLink.id, 
-              PublicLink.itemId,
-              PublicLink.hash,
-              PublicLink.data,
-              PublicLink.userId,
-              PublicLink.typeId,
-              PublicLink.notify,
-              PublicLink.dateAdd,
-              PublicLink.dateExpire,
-              PublicLink.dateUpdate,
-              PublicLink.countViews,
-              PublicLink.maxCountViews,
-              PublicLink.totalCountViews,
-              PublicLink.useInfo,
-              User.name AS userName,
-              User.login AS userLogin,
-              Account.name AS accountName,
-              Client.name AS clientName'
-        );
-        $queryData->setFrom(
-            'PublicLink
-              INNER JOIN User ON PublicLink.userId = User.id
-              INNER JOIN Account ON PublicLink.itemId = Account.id
-              INNER JOIN Client ON Account.clientId = Client.id'
-        );
-        $queryData->setOrder('PublicLink.dateExpire DESC');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('PublicLink')
+            ->cols([
+                'PublicLink.id',
+                'PublicLink.itemId',
+                'PublicLink.hash',
+                'PublicLink.data',
+                'PublicLink.userId',
+                'PublicLink.typeId',
+                'PublicLink.notify',
+                'PublicLink.dateAdd',
+                'PublicLink.dateExpire',
+                'PublicLink.dateUpdate',
+                'PublicLink.countViews',
+                'PublicLink.maxCountViews',
+                'PublicLink.totalCountViews',
+                'PublicLink.useInfo',
+                'User.name AS userName',
+                'User.login AS userLogin',
+                'Account.name AS accountName',
+                'Client.name AS clientName',
+            ])
+            ->join('INNER', 'User', 'User.id = PublicLink.userId')
+            ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
+            ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->orderBy(['PublicLink.dateExpire DESC'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('User.login LIKE ? OR Account.name LIKE ? OR Client.name LIKE ?');
+            $query->where('User.login LIKE :login')
+                ->orWhere('Account.name LIKE :accountName')
+                ->orWhere('Client.name LIKE :clientName');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+
+            $query->bindValues([
+                'login'       => $search,
+                'accountName' => $search,
+                'clientName'  => $search,
+            ]);
         }
 
-        $queryData->setLimit(
-            '?,?',
-            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
-        );
-
-        return $this->db->doSelect($queryData, true);
+        return $this->db->doSelect(QueryData::build($query), true);
     }
 
     /**
      * Creates an item
      *
-     * @param  PublicLinkData  $itemData
+     * @param  PublicLinkData  $publicLinkData
      *
      * @return QueryResult
      * @throws DuplicatedItemException
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create($itemData): QueryResult
+    public function create(PublicLinkData $publicLinkData): QueryResult
     {
-        if ($this->checkDuplicatedOnAdd($itemData)) {
+        if ($this->checkDuplicatedOnAdd($publicLinkData->getItemId())) {
             throw new DuplicatedItemException(__u('Link already created'));
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO PublicLink
-            SET itemId = ?,
-            `hash` = ?,
-            `data` = ?,
-            userId = ?,
-            typeId = ?,
-            notify = ?,
-            dateAdd = UNIX_TIMESTAMP(),
-            dateExpire = ?,
-            maxCountViews = ?';
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into('PublicLink')
+            ->cols([
+                'itemId'        => $publicLinkData->getItemId(),
+                'hash'          => $publicLinkData->getHash(),
+                'data'          => $publicLinkData->getData(),
+                'userId'        => $publicLinkData->getUserId(),
+                'typeId'        => $publicLinkData->getTypeId(),
+                'notify'        => (int)$publicLinkData->isNotify(),
+                'dateExpire'    => $publicLinkData->getDateExpire(),
+                'maxCountViews' => $publicLinkData->getMaxCountViews(),
+            ])
+            ->col('dateAdd = UNIX_TIMESTAMP()');
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getItemId(),
-            $itemData->getHash(),
-            $itemData->getData(),
-            $itemData->getUserId(),
-            $itemData->getTypeId(),
-            (int)$itemData->isNotify(),
-            $itemData->getDateExpire(),
-            $itemData->getMaxCountViews(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while creating the link'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the link'));
 
         return $this->db->doQuery($queryData);
     }
@@ -292,31 +220,22 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  PublicLinkData  $itemData
+     * @param  int  $id
      *
      * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function checkDuplicatedOnAdd($itemData): bool
+    private function checkDuplicatedOnAdd(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM PublicLink WHERE itemId = ? LIMIT 1');
-        $queryData->addParam($itemData->getItemId());
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from('PublicLink')
+            ->where('itemId = :itemId')
+            ->bindValue('itemId', $id);
 
-        return $this->db->doQuery($queryData)->getNumRows() === 1;
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param  mixed  $itemData
-     *
-     * @return void
-     */
-    public function checkDuplicatedOnUpdate($itemData): bool
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
     }
 
     /**
@@ -324,76 +243,57 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      *
      * @param  PublicLinkData  $publicLinkData
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addLinkView(PublicLinkData $publicLinkData): int
+    public function addLinkView(PublicLinkData $publicLinkData): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE PublicLink
-            SET countViews = countViews + 1,
-            totalCountViews = totalCountViews + 1,
-            useInfo = ?
-            WHERE `hash` = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table('PublicLink')
+            ->set('countViews', '(countViews + 1)')
+            ->set('totalCountViews', '(totalCountViews + 1)')
+            ->col('useInfo', $publicLinkData->getUseInfo())
+            ->where('hash = :hash')
+            ->bindValues(['hash' => $publicLinkData->getHash()]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $publicLinkData->getUseInfo(),
-            $publicLinkData->getHash(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the link'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
      * Updates an item
      *
-     * @param  PublicLinkData  $itemData
+     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
      *
-     * @return int
-     * @throws SPException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update($itemData): int
+    public function update(PublicLinkData $publicLinkData): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE PublicLink
-            SET itemId = ?,
-            `hash` = ?,
-            `data` = ?,
-            userId = ?,
-            notify = ?,
-            dateAdd = ?,
-            dateExpire = ?,
-            countViews = ?,
-            maxCountViews = ?,
-            useInfo = ?,
-            typeId = ?
-            WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table('PublicLink')
+            ->cols([
+                'itemId'        => $publicLinkData->getItemId(),
+                'hash'          => $publicLinkData->getHash(),
+                'data'          => $publicLinkData->getData(),
+                'userId'        => $publicLinkData->getUserId(),
+                'typeId'        => $publicLinkData->getTypeId(),
+                'notify'        => (int)$publicLinkData->isNotify(),
+                'dateExpire'    => $publicLinkData->getDateExpire(),
+                'maxCountViews' => $publicLinkData->getMaxCountViews(),
+                'useInfo'       => $publicLinkData->getUseInfo(),
+            ])
+            ->where('id = :id')
+            ->bindValues(['id' => $publicLinkData->getId()]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getItemId(),
-            $itemData->getHash(),
-            $itemData->getData(),
-            $itemData->getUserId(),
-            (int)$itemData->isNotify(),
-            $itemData->getDateAdd(),
-            $itemData->getDateExpire(),
-            $itemData->getCountViews(),
-            $itemData->getMaxCountViews(),
-            $itemData->getUseInfo(),
-            $itemData->getTypeId(),
-            $itemData->getId(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the link'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -401,34 +301,29 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      *
      * @param  PublicLinkData  $publicLinkData
      *
-     * @return int
+     * @return bool
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function refresh(PublicLinkData $publicLinkData): int
+    public function refresh(PublicLinkData $publicLinkData): bool
     {
-        $query = /** @lang SQL */
-            'UPDATE PublicLink
-            SET `hash` = ?,
-            `data` = ?,
-            dateExpire = ?,
-            countViews = 0,
-            maxCountViews = ?
-            WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table('PublicLink')
+            ->cols([
+                'hash'          => $publicLinkData->getHash(),
+                'data'          => $publicLinkData->getData(),
+                'dateExpire'    => $publicLinkData->getDateExpire(),
+                'countViews'    => 0,
+                'maxCountViews' => $publicLinkData->getMaxCountViews(),
+            ])
+            ->where('id = :id')
+            ->bindValues(['id' => $publicLinkData->getId()]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $publicLinkData->getHash(),
-            $publicLinkData->getData(),
-            $publicLinkData->getDateExpire(),
-            $publicLinkData->getMaxCountViews(),
-            $publicLinkData->getId(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while renewing link'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while renewing the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -437,81 +332,74 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getById(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT PL.id, 
-              PL.itemId,
-              PL.hash,
-              PL.data,
-              PL.userId,
-              PL.typeId,
-              PL.notify,
-              PL.dateAdd,
-              PL.dateExpire,
-              PL.countViews,
-              PL.maxCountViews,
-              PL.totalCountViews,
-              PL.useInfo,
-              U.name AS userName,
-              U.login AS userLogin,
-              A.name AS accountName        
-              FROM PublicLink PL
-              INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON PL.itemId = A.id
-              WHERE PL.id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'PublicLink.id',
+                'PublicLink.itemId',
+                'PublicLink.hash',
+                'PublicLink.data',
+                'PublicLink.userId',
+                'PublicLink.typeId',
+                'PublicLink.notify',
+                'PublicLink.dateAdd',
+                'PublicLink.dateExpire',
+                'PublicLink.dateUpdate',
+                'PublicLink.countViews',
+                'PublicLink.maxCountViews',
+                'PublicLink.totalCountViews',
+                'PublicLink.useInfo',
+                'User.name AS userName',
+                'User.login AS userLogin',
+                'Account.name AS accountName',
+            ])
+            ->from('PublicLink')
+            ->join('INNER', 'User', 'User.id = PublicLink.userId')
+            ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
+            ->where('PublicLink.id = :id')
+            ->bindValue('id', $id);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkListData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 
     /**
      * @param $hash string
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getByHash(string $hash): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT PL.id, 
-              PL.itemId,
-              PL.hash,
-              PL.data,
-              PL.userId,
-              PL.typeId,
-              PL.notify,
-              PL.dateAdd,
-              PL.dateExpire,
-              PL.dateUpdate,
-              PL.countViews,
-              PL.maxCountViews,
-              PL.totalCountViews,
-              PL.useInfo,
-              U.name AS userName,
-              U.login AS userLogin,
-              A.name AS accountName        
-              FROM PublicLink PL
-              INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON itemId = A.id
-              WHERE PL.hash = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'PublicLink.id',
+                'PublicLink.itemId',
+                'PublicLink.hash',
+                'PublicLink.data',
+                'PublicLink.userId',
+                'PublicLink.typeId',
+                'PublicLink.notify',
+                'PublicLink.dateAdd',
+                'PublicLink.dateExpire',
+                'PublicLink.dateUpdate',
+                'PublicLink.countViews',
+                'PublicLink.maxCountViews',
+                'PublicLink.totalCountViews',
+                'PublicLink.useInfo',
+                'User.name AS userName',
+                'User.login AS userLogin',
+                'Account.name AS accountName',
+            ])
+            ->from('PublicLink')
+            ->join('INNER', 'User', 'User.id = PublicLink.userId')
+            ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
+            ->where('PublicLink.hash = :hash')
+            ->bindValue('hash', $hash);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($hash);
-        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 
     /**
@@ -520,17 +408,20 @@ final class PublicLinkRepository extends Repository implements RepositoryInterfa
      * @param  int  $itemId
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getHashForItem(int $itemId): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PublicLinkData::class);
-        $queryData->setQuery('SELECT id, `hash`, userId FROM PublicLink WHERE itemId = ? LIMIT 1');
-        $queryData->addParam($itemId);
-        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'id',
+                'hash',
+                'userId',
+            ])
+            ->from('PublicLink')
+            ->where('itemId = :itemId')
+            ->bindValue('itemId', $itemId);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 }
