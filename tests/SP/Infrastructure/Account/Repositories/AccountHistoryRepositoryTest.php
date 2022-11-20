@@ -26,6 +26,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Out\AccountData;
@@ -42,8 +43,8 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountHistoryRepositoryTest extends UnitaryTestCase
 {
-    private DatabaseInterface        $databaseInterface;
-    private AccountHistoryRepository $accountHistoryRepository;
+    private DatabaseInterface|MockObject $database;
+    private AccountHistoryRepository     $accountHistoryRepository;
 
     public function testGetById()
     {
@@ -57,7 +58,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -77,7 +78,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -105,7 +106,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -120,7 +121,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithoutIds()
     {
-        $this->databaseInterface->expects(self::never())
+        $this->database->expects(self::never())
             ->method('doQuery');
 
         $this->accountHistoryRepository->deleteByIdBatch([]);
@@ -153,7 +154,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -179,7 +180,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -198,7 +199,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -217,7 +218,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -272,7 +273,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -334,7 +335,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -360,7 +361,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -378,7 +379,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -408,7 +409,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -422,7 +423,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByAccountIdBatchWithoutIds()
     {
-        $this->databaseInterface->expects(self::never())
+        $this->database->expects(self::never())
             ->method('doQuery');
 
         $this->accountHistoryRepository->deleteByAccountIdBatch([]);
@@ -433,10 +434,10 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->databaseInterface = $this->createMock(DatabaseInterface::class);
+        $this->database = $this->createMock(DatabaseInterface::class);
 
         $this->accountHistoryRepository = new AccountHistoryRepository(
-            $this->databaseInterface,
+            $this->database,
             $this->context,
             $this->application->getEventDispatcher(),
             new QueryFactory('mysql')

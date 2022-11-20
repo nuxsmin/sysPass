@@ -41,7 +41,7 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountFileRepositoryTest extends UnitaryTestCase
 {
-    private DatabaseInterface|MockObject $databaseInterface;
+    private DatabaseInterface|MockObject $database;
     private AccountFileRepository        $accountFileRepository;
 
     /**
@@ -64,7 +64,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -78,7 +78,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithNoIds()
     {
-        $this->databaseInterface->expects(self::never())
+        $this->database->expects(self::never())
             ->method('doQuery');
 
         $this->assertEquals(0, $this->accountFileRepository->deleteByIdBatch([]));
@@ -93,7 +93,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -116,7 +116,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -151,7 +151,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -188,7 +188,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -217,7 +217,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -244,7 +244,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
@@ -267,7 +267,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -294,7 +294,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -307,11 +307,11 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->databaseInterface = $this->createMock(DatabaseInterface::class);
+        $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
         $this->accountFileRepository = new AccountFileRepository(
-            $this->databaseInterface,
+            $this->database,
             $this->context,
             $this->application->getEventDispatcher(),
             $queryFactory,

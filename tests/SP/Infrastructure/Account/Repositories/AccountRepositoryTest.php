@@ -26,6 +26,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountFilterUser;
@@ -47,15 +48,15 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountRepositoryTest extends UnitaryTestCase
 {
-    private DatabaseInterface $databaseInterface;
-    private AccountRepository $accountRepository;
-    private AccountFilterUser $accountFilterUser;
+    private DatabaseInterface|MockObject $database;
+    private AccountRepository            $accountRepository;
+    private AccountFilterUser            $accountFilterUser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->databaseInterface = $this->createMock(DatabaseInterface::class);
+        $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
         /** @noinspection PhpUnitInvalidMockingEntityInspection */
@@ -68,7 +69,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                 )
                 ->getMock();
         $this->accountRepository = new AccountRepository(
-            $this->databaseInterface,
+            $this->database,
             $this->context,
             $queryFactory,
             $this->application->getEventDispatcher(),
@@ -84,7 +85,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
             ->willReturn(new QueryResult([new SimpleModel(['num' => 1])]));
@@ -109,7 +110,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
             ->willReturn(new QueryResult());
@@ -134,7 +135,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilterHistory');
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback, false)
             ->willReturn(new QueryResult());
@@ -159,7 +160,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -184,7 +185,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -225,7 +226,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -280,7 +281,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -313,7 +314,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -374,7 +375,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -399,7 +400,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -424,7 +425,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -462,7 +463,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -502,7 +503,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -542,7 +543,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -575,7 +576,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -588,7 +589,7 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdateBulkNoFieldsToUpdate()
     {
-        $this->databaseInterface->expects(self::never())
+        $this->database->expects(self::never())
             ->method('doQuery');
 
         $this->assertEquals(0, $this->accountRepository->updateBulk(new AccountRequest()));
@@ -606,7 +607,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -623,7 +624,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -652,7 +653,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -666,7 +667,7 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithNoIds()
     {
-        $this->databaseInterface->expects(self::never())
+        $this->database->expects(self::never())
             ->method('doQuery');
 
         $this->assertEquals(0, $this->accountRepository->deleteByIdBatch([]));
@@ -692,7 +693,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -711,7 +712,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -737,7 +738,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -762,7 +763,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -784,7 +785,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -813,7 +814,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -840,7 +841,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -869,7 +870,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
@@ -887,7 +888,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doSelect')
             ->with($callback)

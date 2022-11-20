@@ -39,7 +39,7 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountToFavoriteRepositoryTest extends UnitaryTestCase
 {
-    private MockObject|DatabaseInterface $databaseInterface;
+    private MockObject|DatabaseInterface $database;
     private AccountToFavoriteRepository  $accountToFavoriteRepository;
 
     public function testGetForUserId()
@@ -56,7 +56,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
@@ -83,7 +83,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface
+        $this->database
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
@@ -115,7 +115,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->databaseInterface->expects(self::once())
+        $this->database->expects(self::once())
             ->method('doQuery')
             ->with($callback)
             ->willReturn($expected);
@@ -127,11 +127,11 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->databaseInterface = $this->createMock(DatabaseInterface::class);
+        $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
         $this->accountToFavoriteRepository = new AccountToFavoriteRepository(
-            $this->databaseInterface,
+            $this->database,
             $this->context,
             $this->application->getEventDispatcher(),
             $queryFactory,
