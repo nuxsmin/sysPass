@@ -39,39 +39,6 @@ use SP\Infrastructure\Database\DbStorageInterface;
 trait RepositoryItemTrait
 {
     /**
-     * Eliminar elementos en lotes
-     *
-     * @param  int[]  $ids
-     *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function deleteBatch(array $ids): array
-    {
-        if (!class_implements($this, RepositoryInterface::class)) {
-            throw new RuntimeException(
-                sprintf(
-                    'This class must implement %s',
-                    RepositoryInterface::class
-                )
-            );
-        }
-
-        $items = $this->getByIdBatch($ids)->getDataAsArray();
-
-        /** @var DataModelInterface[] $items */
-        foreach ($items as $key => $item) {
-            try {
-                $this->delete($item->getId());
-            } catch (Exception $e) {
-                unset($items[$key]);
-            }
-        }
-
-        return $items;
-    }
-
-    /**
      * Crear un hash con el nombre del elemento.
      *
      * Esta función crear un hash para detectar nombres de elementos duplicados mediante

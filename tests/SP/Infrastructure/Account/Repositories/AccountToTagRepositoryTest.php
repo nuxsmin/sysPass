@@ -43,7 +43,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
     private MockObject|DatabaseInterface $database;
     private AccountToTagRepository       $accountToTagRepository;
 
-    public function testGetTagsByAccountId()
+    public function testGetTagsByAccountId(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -70,7 +70,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function testDeleteByAccountId()
+    public function testDeleteByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
 
@@ -100,14 +100,14 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $accountRequest = new AccountRequest();
         $accountRequest->id = self::$faker->randomNumber();
         $accountRequest->tags = self::getRandomNumbers(10);
 
         $callbacks = array_map(
-            function ($tag) use ($accountRequest) {
+            static function ($tag) use ($accountRequest) {
                 return [
                     new Callback(
                         static function (QueryData $arg) use ($accountRequest, $tag) {

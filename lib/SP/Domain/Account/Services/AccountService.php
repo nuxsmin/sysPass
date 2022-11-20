@@ -485,7 +485,15 @@ final class AccountService extends Service implements AccountServiceInterface
         if ($accountRequest->changePermissions) {
             if ($accountRequest->userGroupsView !== null) {
                 if (count($accountRequest->userGroupsView) > 0) {
-                    $this->accountToUserGroupRepository->updateByType($accountRequest, false);
+                    $this->accountToUserGroupRepository
+                        ->transactionAware(
+                            function () use ($accountRequest) {
+                                $this->accountToUserGroupRepository
+                                    ->deleteTypeByAccountId($accountRequest->id, false);
+                                $this->accountToUserGroupRepository
+                                    ->addByType($accountRequest->id, $accountRequest->userGroupsView, false);
+                            }
+                        );
                 } else {
                     $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, false);
                 }
@@ -493,7 +501,15 @@ final class AccountService extends Service implements AccountServiceInterface
 
             if ($accountRequest->userGroupsEdit !== null) {
                 if (count($accountRequest->userGroupsEdit) > 0) {
-                    $this->accountToUserGroupRepository->updateByType($accountRequest, true);
+                    $this->accountToUserGroupRepository
+                        ->transactionAware(
+                            function () use ($accountRequest) {
+                                $this->accountToUserGroupRepository
+                                    ->deleteTypeByAccountId($accountRequest->id, true);
+                                $this->accountToUserGroupRepository
+                                    ->addByType($accountRequest->id, $accountRequest->userGroupsEdit, true);
+                            }
+                        );
                 } else {
                     $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, true);
                 }

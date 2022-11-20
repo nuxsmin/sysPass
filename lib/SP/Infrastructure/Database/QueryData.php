@@ -28,6 +28,7 @@ use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryInterface;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Out\SimpleModel;
+use function SP\__u;
 
 /**
  * Class QueryData
@@ -58,41 +59,9 @@ final class QueryData
         return new self($query);
     }
 
-    /**
-     * Añadir un parámetro a la consulta
-     *
-     * @param $value
-     * @param $name
-     */
-    public function addParam($value, $name = null): void
-    {
-        if (null !== $name) {
-            $this->params[$name] = $value;
-        } else {
-            $this->params[] = $value;
-        }
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $data): void
-    {
-        $this->params = $data;
-    }
-
     public function getQuery(): QueryInterface
     {
         return $this->query;
-    }
-
-    public function setQuery(QueryInterface $query): QueryData
-    {
-        $this->query = $query;
-
-        return $this;
     }
 
     public function getMapClassName(): ?string
@@ -110,39 +79,6 @@ final class QueryData
     public function isUseKeyPair(): bool
     {
         return $this->useKeyPair;
-    }
-
-    public function setUseKeyPair(bool $useKeyPair): void
-    {
-        $this->useKeyPair = $useKeyPair;
-    }
-
-    public function getSelect(): ?string
-    {
-        return $this->select;
-    }
-
-    public function setSelect(string $select): void
-    {
-        $this->select = 'SELECT '.$select;
-    }
-
-    public function setOrder(string $order): void
-    {
-        if (!empty($order)) {
-            $this->order = 'ORDER BY '.$order;
-        }
-    }
-
-    public function setLimit(string $limit, ?array $params = null): void
-    {
-        if (!empty($limit)) {
-            $this->limit = 'LIMIT '.$limit;
-
-            if ($params !== null) {
-                $this->addParams($params);
-            }
-        }
     }
 
     public function addParams(array $params): void
@@ -172,37 +108,6 @@ final class QueryData
         throw new QueryException(__u('Invalid query type for count'));
     }
 
-    public function getFrom(): ?string
-    {
-        return $this->from;
-    }
-
-    public function setFrom(string $from): void
-    {
-        if (!empty($from)) {
-            $this->from = 'FROM '.$from;
-        }
-    }
-
-    public function getWhere(): ?string
-    {
-        return $this->where;
-    }
-
-    /**
-     * @param  string[]|string  $where
-     */
-    public function setWhere($where): void
-    {
-        if (!empty($where)) {
-            if (is_array($where)) {
-                $this->where = 'WHERE '.implode(' AND ', $where);
-            } else {
-                $this->where = 'WHERE '.$where;
-            }
-        }
-    }
-
     public function getOnErrorMessage(): string
     {
         return $this->onErrorMessage ?: __u('Error while querying');
@@ -213,12 +118,5 @@ final class QueryData
         $this->onErrorMessage = $onErrorMessage;
 
         return $this;
-    }
-
-    public function setGroupBy(string $groupBy): void
-    {
-        if (!empty($groupBy)) {
-            $this->groupBy = 'GROUP BY '.$groupBy;
-        }
     }
 }

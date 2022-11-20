@@ -62,48 +62,39 @@ interface AccountToUserGroupRepositoryInterface extends RepositoryInterface
     /**
      * @param $id int
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteByUserGroupId(int $id): int;
-
-    /**
-     * @param  AccountRequest  $accountRequest
-     * @param  bool  $isEdit
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit): int;
+    public function deleteByUserGroupId(int $id): bool;
 
     /**
      * @param  int  $id
      * @param  bool  $isEdit
      *
-     * @return int
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteTypeByAccountId(int $id, bool $isEdit): int;
+    public function deleteTypeByAccountId(int $id, bool $isEdit): void;
 
     /**
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  array  $items
      * @param  bool  $isEdit
      *
-     * @return int Last ID inserted
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit): int;
+    public function addByType(int $accountId, array $items, bool $isEdit): void;
 
     /**
      * @param $id int
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): int;
+    public function deleteByAccountId(int $id): bool;
 }

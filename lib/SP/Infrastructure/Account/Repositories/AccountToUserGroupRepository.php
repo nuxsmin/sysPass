@@ -28,11 +28,12 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\In\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\In\Query;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountToUserGroupRepository
@@ -49,24 +50,23 @@ final class AccountToUserGroupRepository extends Repository implements AccountTo
      * @param  int  $id  con el Id de la cuenta
      *
      * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getUserGroupsByAccountId(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
-            FROM AccountToUserGroup
-            INNER JOIN UserGroup ON AccountToUserGroup.userGroupId = UserGroup.id
-            WHERE AccountToUserGroup.accountId = ?
-            ORDER BY UserGroup.name';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'UserGroup.id',
+                'UserGroup.name',
+                'AccountToUserGroup.isEdit',
+            ])
+            ->from('AccountToUserGroup')
+            ->join('INNER', 'UserGroup', 'UserGroup.id == AccountToUserGroup.userGroupId')
+            ->where('AccountToUserGroup.accountId = :accountId')
+            ->bindValues(['accountId' => $id])
+            ->orderBy(['UserGroup.name ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setMapClassName(ItemData::class);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemData::class));
     }
 
     /**
@@ -75,125 +75,120 @@ final class AccountToUserGroupRepository extends Repository implements AccountTo
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserGroupsByUserGroupId(int $id): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
-            FROM AccountToUserGroup
-            INNER JOIN UserGroup ON AccountToUserGroup.userGroupId = UserGroup.id
-            WHERE AccountToUserGroup.userGroupId = ?
-            ORDER BY UserGroup.name';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                'UserGroup.id',
+                'UserGroup.name',
+                'AccountToUserGroup.isEdit',
+            ])
+            ->from('AccountToUserGroup')
+            ->join('INNER', 'UserGroup', 'UserGroup.id == AccountToUserGroup.userGroupId')
+            ->where('AccountToUserGroup.userGroupId = :userGroupId')
+            ->bindValues(['userGroupId' => $id])
+            ->orderBy(['UserGroup.name ASC']);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setMapClassName(ItemData::class);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemData::class));
     }
 
     /**
      * @param $id int
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function deleteByUserGroupId(int $id): int
+    public function deleteByUserGroupId(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE userGroupId = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToUserGroup')
+            ->where('userGroupId = :userGroupId')
+            ->bindValues([
+                'userGroupId' => $id,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-    /**
-     * @param  AccountRequest  $accountRequest
-     * @param  bool  $isEdit
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function updateByType(AccountRequest $accountRequest, bool $isEdit): int
-    {
-        $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
-
-        return $this->addByType($accountRequest, $isEdit);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
      * @param  int  $id
      * @param  bool  $isEdit
      *
-     * @return int
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteTypeByAccountId(int $id, bool $isEdit): int
+    public function deleteTypeByAccountId(int $id, bool $isEdit): void
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = ?');
-        $queryData->setParams([$id, (int)$isEdit]);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToUserGroup')
+            ->where('accountId = :accountId')
+            ->where('isEdit = :isEdit')
+            ->bindValues([
+                'accountId' => $id,
+                'isEdit'    => (int)$isEdit,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
+
+        $this->db->doQuery($queryData);
     }
 
     /**
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  array  $items
      * @param  bool  $isEdit
      *
-     * @return int Last ID inserted
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(AccountRequest $accountRequest, bool $isEdit): int
+    public function addByType(int $accountId, array $items, bool $isEdit): void
     {
-        $items = $isEdit ? $accountRequest->userGroupsEdit : $accountRequest->userGroupsView;
-        $values = $this->buildParamsFromArray($items, '(?,?,?)');
+        $values = array_map(static function ($item) use ($accountId, $isEdit) {
+            return [$accountId, (int)$item, (int)$isEdit];
+        }, $items);
+
+        $parameters = $this->buildParamsFromArray($values, '(?,?,?)');
 
         $query = /** @lang SQL */
             'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
-              VALUES '.$values.'
-              ON DUPLICATE KEY UPDATE isEdit = '.(int)$isEdit;
+              VALUES '.$parameters.'
+              ON DUPLICATE KEY UPDATE isEdit = ?';
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error while updating the secondary groups'));
+        $queryData = QueryData::build(
+            Query::buildForMySQL($query, array_merge_recursive($values))
+        )->setOnErrorMessage(__u('Error while updating the secondary groups'));
 
-        $params = [];
-
-        foreach ($items as $userGroup) {
-            $params[] = $accountRequest->id;
-            $params[] = $userGroup;
-            $params[] = (int)$isEdit;
-        }
-
-        $queryData->setParams($params);
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $this->db->doQuery($queryData);
     }
 
     /**
      * @param $id int
      *
-     * @return int
+     * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): int
+    public function deleteByAccountId(int $id): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('AccountToUserGroup')
+            ->where('accountId = :accountId')
+            ->bindValues([
+                'accountId' => $id,
+            ]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

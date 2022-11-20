@@ -24,6 +24,7 @@
 
 namespace SP\DataModel;
 
+use SP\Domain\Common\Out\DataModelBase;
 use SP\Domain\Common\Out\DataModelInterface;
 
 /**
@@ -31,20 +32,14 @@ use SP\Domain\Common\Out\DataModelInterface;
  *
  * @package SP\DataModel
  */
-class ItemData implements DataModelInterface
+class ItemData extends DataModelBase implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $name;
+    private ?int    $id   = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
     public function getName(): ?string
