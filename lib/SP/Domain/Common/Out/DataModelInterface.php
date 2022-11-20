@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Common\Out;
 
-
 /**
  * Interface DataModelInterface
  *

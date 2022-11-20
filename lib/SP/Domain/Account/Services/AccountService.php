@@ -601,7 +601,10 @@ final class AccountService extends Service implements AccountServiceInterface
             function () use ($historyId, $accountId, $accountHistoryData) {
                 $this->addHistory($accountId);
 
-                if (!$this->accountRepository->editRestore($accountHistoryData, $this->context->getUserData()->getId())) {
+                if (!$this->accountRepository->editRestore(
+                    $accountHistoryData,
+                    $this->context->getUserData()->getId()
+                )) {
                     throw new ServiceException(__u('Error on restoring the account'));
                 }
             }

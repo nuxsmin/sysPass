@@ -78,7 +78,6 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
         $this->accountService = $accountService;
     }
 
-
     /**
      * Returns an HTTP URL for given hash
      */

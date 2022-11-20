@@ -98,6 +98,23 @@ final class AccountFilterUser implements AccountFilterUserInterface
     }
 
     /**
+     * @param  \SP\Domain\User\Services\UserLoginResponse  $userData
+     * @param  bool  $useGlobalSearch
+     * @param  \SP\DataModel\ProfileData|null  $userProfile
+     *
+     * @return bool
+     */
+    private function isFilterByAdminAndGlobalSearch(
+        UserLoginResponse $userData,
+        bool $useGlobalSearch,
+        ?ProfileData $userProfile
+    ): bool {
+        return !$userData->getIsAdminApp()
+               && !$userData->getIsAdminAcc()
+               && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
+    }
+
+    /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      */
     public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface
@@ -139,22 +156,5 @@ final class AccountFilterUser implements AccountFilterUserInterface
         ]);
 
         return $query;
-    }
-
-    /**
-     * @param  \SP\Domain\User\Services\UserLoginResponse  $userData
-     * @param  bool  $useGlobalSearch
-     * @param  \SP\DataModel\ProfileData|null  $userProfile
-     *
-     * @return bool
-     */
-    private function isFilterByAdminAndGlobalSearch(
-        UserLoginResponse $userData,
-        bool $useGlobalSearch,
-        ?ProfileData $userProfile
-    ): bool {
-        return !$userData->getIsAdminApp()
-               && !$userData->getIsAdminAcc()
-               && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
     }
 }

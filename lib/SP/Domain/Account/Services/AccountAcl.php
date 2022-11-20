@@ -33,6 +33,20 @@ use SP\Core\Acl\ActionsInterface;
  */
 final class AccountAcl
 {
+    private const ACTIONS_VIEW = [
+        ActionsInterface::ACCOUNT_VIEW,
+        ActionsInterface::ACCOUNT_SEARCH,
+        ActionsInterface::ACCOUNT_VIEW_PASS,
+        ActionsInterface::ACCOUNT_HISTORY_VIEW,
+        ActionsInterface::ACCOUNT_COPY,
+    ];
+
+    private const ACTIONS_EDIT = [
+        ActionsInterface::ACCOUNT_EDIT,
+        ActionsInterface::ACCOUNT_DELETE,
+        ActionsInterface::ACCOUNT_EDIT_PASS,
+        ActionsInterface::ACCOUNT_EDIT_RESTORE,
+    ];
     private bool $userInGroups          = false;
     private bool $userInUsers           = false;
     private bool $resultView            = false;
@@ -306,21 +320,15 @@ final class AccountAcl
             return false;
         }
 
-        switch ($actionId) {
-            case ActionsInterface::ACCOUNT_VIEW
-                 || ActionsInterface::ACCOUNT_SEARCH
-                 || ActionsInterface::ACCOUNT_VIEW_PASS
-                 || ActionsInterface::ACCOUNT_HISTORY_VIEW
-                 || ActionsInterface::ACCOUNT_COPY:
-                return $this->resultView;
-            case ActionsInterface::ACCOUNT_EDIT
-                 || ActionsInterface::ACCOUNT_DELETE
-                 || ActionsInterface::ACCOUNT_EDIT_PASS
-                 || ActionsInterface::ACCOUNT_EDIT_RESTORE:
-                return $this->resultEdit;
-            default:
-                return false;
+        if (in_array($actionId, self::ACTIONS_VIEW, true)) {
+            return $this->resultView;
         }
+
+        if (in_array($actionId, self::ACTIONS_EDIT, true)) {
+            return $this->resultEdit;
+        }
+
+        return false;
     }
 
     public function isModified(): bool
@@ -425,7 +433,7 @@ final class AccountAcl
     public function reset(): void
     {
         foreach ($this as $property => $value) {
-            if (strpos($property, 'show') === 0) {
+            if (str_starts_with($property, 'show')) {
                 $this->{$property} = false;
             }
         }

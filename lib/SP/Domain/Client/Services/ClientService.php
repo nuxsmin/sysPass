@@ -37,7 +37,6 @@ use SP\Domain\Client\In\ClientRepositoryInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 

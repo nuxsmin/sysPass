@@ -26,7 +26,6 @@ namespace SP\Domain\Account\Search;
 
 use SP\Mvc\Model\QueryCondition;
 
-
 /**
  * Class AccountSearchFilter
  *
@@ -34,16 +33,6 @@ use SP\Mvc\Model\QueryCondition;
  */
 final class AccountSearchFilter
 {
-    /**
-     * @param  string  $txtSearch
-     *
-     * @return \SP\Domain\Account\Search\AccountSearchFilter
-     */
-    public static function build(string $txtSearch): AccountSearchFilter
-    {
-        return (new self())->setTxtSearch($txtSearch);
-    }
-
     /**
      * @var int|null El número de registros de la última consulta
      */
@@ -64,6 +53,16 @@ final class AccountSearchFilter
     private ?bool   $sortViews       = null;
     private bool    $searchFavorites = false;
     private ?string $filterOperator  = null;
+
+    /**
+     * @param  string  $txtSearch
+     *
+     * @return \SP\Domain\Account\Search\AccountSearchFilter
+     */
+    public static function build(string $txtSearch): AccountSearchFilter
+    {
+        return (new self())->setTxtSearch($txtSearch);
+    }
 
     public function isSearchFavorites(): bool
     {

@@ -53,8 +53,8 @@ class ConfigFileService implements ConfigInterface
     public const CONFIG_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'config.cache';
 
     private static int                   $timeUpdated;
-    private bool                         $configLoaded = false;
     private static ?ConfigDataInterface  $configData   = null;
+    private bool                         $configLoaded = false;
     private ContextInterface             $context;
     private XmlFileStorageInterface      $fileStorage;
     private FileCacheInterface           $fileCache;

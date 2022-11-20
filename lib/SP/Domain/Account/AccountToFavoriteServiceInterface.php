@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 

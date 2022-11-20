@@ -68,7 +68,6 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
         $this->userData = $this->context->getUserData();
     }
 
-
     /**
      * @param $userId
      *

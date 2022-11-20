@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account\Services;
 
-
 use Aura\SqlQuery\Common\SelectInterface;
 
 /**

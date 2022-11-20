@@ -35,7 +35,6 @@ use SP\Domain\ItemPreset\ItemPresetInterface;
 use SP\Domain\ItemPreset\ItemPresetServiceInterface;
 use SP\Mvc\Controller\Validators\PasswordValidator;
 
-
 /**
  * Class AccountPreset
  *

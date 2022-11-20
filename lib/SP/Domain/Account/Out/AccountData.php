@@ -24,8 +24,6 @@
 
 namespace SP\Domain\Account\Out;
 
-defined('APP_ROOT') || die();
-
 use JsonSerializable;
 use SP\Domain\Common\Out\DataModelBase;
 use SP\Domain\Common\Out\DataModelInterface;

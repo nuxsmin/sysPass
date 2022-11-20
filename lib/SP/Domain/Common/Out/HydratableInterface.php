@@ -37,5 +37,5 @@ interface HydratableInterface
      *
      * @return mixed|null
      */
-    public function hydrate(string $class = null, string $property = 'data');
+    public function hydrate(string $class = null, string $property = 'data'): mixed;
 }

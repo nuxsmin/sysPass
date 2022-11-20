@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account;
 
-
 use SP\DataModel\ItemData;
 
 /**

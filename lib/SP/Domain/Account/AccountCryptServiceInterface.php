@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account;
 
-
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 

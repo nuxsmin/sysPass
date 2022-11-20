@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account;
 
-
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
@@ -69,7 +68,7 @@ interface AccountAclServiceInterface
      * @param  int  $accountId
      * @param  int  $actionId
      *
-     * @return AccountAcl
+     * @return \SP\Domain\Account\Services\AccountAcl|null
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl;
 

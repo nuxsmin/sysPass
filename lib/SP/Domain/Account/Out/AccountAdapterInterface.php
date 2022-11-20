@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account\Out;
 
-
 use League\Fractal\Resource\Collection;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Domain\CustomField\CustomFieldServiceInterface;

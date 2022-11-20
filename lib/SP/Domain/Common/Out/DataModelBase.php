@@ -43,20 +43,16 @@ abstract class DataModelBase
      *
      * @return mixed|null
      */
-    public final function __get(string $name)
+    final public function __get(string $name)
     {
         if (property_exists($this, $name)) {
             return $this->{$name};
         }
 
-        if (array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
-
-        return null;
+        return $this->properties[$name] ?? null;
     }
 
-    public final function __set(string $name, ?string $value = null): void
+    final public function __set(string $name, mixed $value = null): void
     {
         if (is_numeric($value)) {
             $value = (int)$value;
@@ -68,4 +64,10 @@ abstract class DataModelBase
             $this->properties[$name] = $value;
         }
     }
+
+    final public function __isset(string $name): bool
+    {
+        return property_exists($this, $name) || isset($this->properties[$name]);
+    }
+
 }

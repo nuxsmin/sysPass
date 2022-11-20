@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Common\Out;
 
-
 use League\Fractal\TransformerAbstract;
 use SP\Domain\Config\In\ConfigDataInterface;
 

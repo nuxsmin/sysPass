@@ -37,7 +37,7 @@ use SP\Util\Link;
 /**
  * Class AccountAdapter
  *
- * @package SP\Adapters
+ * @package SP\Domain\Account\Out
  */
 final class AccountAdapter extends AdapterBase implements AccountAdapterInterface
 {
@@ -66,40 +66,40 @@ final class AccountAdapter extends AdapterBase implements AccountAdapterInterfac
         $account = $data->getAccountVData();
 
         return [
-            'id' => (int)$account->getId(),
-            'name' => $account->getName(),
-            'clientId' => $account->getClientId(),
-            'clientName' => $account->getClientName(),
-            'categoryId' => $account->getCategoryId(),
-            'categoryName' => $account->getCategoryName(),
-            'userId' => $account->getUserId(),
-            'userName' => $account->getUserName(),
-            'userLogin' => $account->getUserLogin(),
-            'userGroupId' => $account->getUserGroupId(),
-            'userGroupName' => $account->getUserGroupName(),
-            'userEditId' => $account->getUserEditId(),
-            'userEditName' => $account->getUserEditName(),
-            'userEditLogin' => $account->getUserEditLogin(),
-            'login' => $account->getLogin(),
-            'url' => $account->getUrl(),
-            'notes' => $account->getNotes(),
-            'otherUserEdit' => $account->getOtherUserEdit(),
+            'id'                 => (int)$account->getId(),
+            'name'               => $account->getName(),
+            'clientId'           => $account->getClientId(),
+            'clientName'         => $account->getClientName(),
+            'categoryId'         => $account->getCategoryId(),
+            'categoryName'       => $account->getCategoryName(),
+            'userId'             => $account->getUserId(),
+            'userName'           => $account->getUserName(),
+            'userLogin'          => $account->getUserLogin(),
+            'userGroupId'        => $account->getUserGroupId(),
+            'userGroupName'      => $account->getUserGroupName(),
+            'userEditId'         => $account->getUserEditId(),
+            'userEditName'       => $account->getUserEditName(),
+            'userEditLogin'      => $account->getUserEditLogin(),
+            'login'              => $account->getLogin(),
+            'url'                => $account->getUrl(),
+            'notes'              => $account->getNotes(),
+            'otherUserEdit'      => $account->getOtherUserEdit(),
             'otherUserGroupEdit' => $account->getOtherUserGroupEdit(),
-            'dateAdd' => $account->getDateAdd(),
-            'dateEdit' => $account->getDateEdit(),
-            'countView' => $account->getCountView(),
-            'countDecrypt' => $account->getCountDecrypt(),
-            'isPrivate' => $account->getIsPrivate(),
-            'isPrivateGroup' => $account->getIsPrivateGroup(),
-            'passDate' => $account->getPassDate(),
-            'passDateChange' => $account->getPassDateChange(),
-            'parentId' => $account->getParentId(),
-            'publicLinkHash' => $account->getPublicLinkHash(),
-            'tags' => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
-            'users' => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
-            'userGroups' => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
-            'customFields' => null,
-            'links' => [
+            'dateAdd'            => $account->getDateAdd(),
+            'dateEdit'           => $account->getDateEdit(),
+            'countView'          => $account->getCountView(),
+            'countDecrypt'       => $account->getCountDecrypt(),
+            'isPrivate'          => $account->getIsPrivate(),
+            'isPrivateGroup'     => $account->getIsPrivateGroup(),
+            'passDate'           => $account->getPassDate(),
+            'passDateChange'     => $account->getPassDateChange(),
+            'parentId'           => $account->getParentId(),
+            'publicLinkHash'     => $account->getPublicLinkHash(),
+            'tags'               => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
+            'users'              => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
+            'userGroups'         => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
+            'customFields'       => null,
+            'links'              => [
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
@@ -107,11 +107,10 @@ final class AccountAdapter extends AdapterBase implements AccountAdapterInterfac
                         ActionsInterface::ACCOUNT_VIEW,
                         $this->configData,
                         true
-                    )
-                ]
+                    ),
+                ],
             ],
         ];
     }
-
 
 }

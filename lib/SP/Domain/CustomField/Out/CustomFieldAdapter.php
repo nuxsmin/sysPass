@@ -38,14 +38,14 @@ final class CustomFieldAdapter extends AdapterBase implements CustomFieldAdapter
     public function transform(CustomFieldItem $data): array
     {
         return [
-            'type' => $data->typeName,
-            'typeText' => $data->typeText,
-            'definitionId' => $data->definitionId,
+            'type'           => $data->typeName,
+            'typeText'       => $data->typeText,
+            'definitionId'   => $data->definitionId,
             'definitionName' => $data->definitionName,
-            'help' => $data->help,
-            'value' => $data->value,
-            'encrypted' => $data->isEncrypted,
-            'required' => $data->required
+            'help'           => $data->help,
+            'value'          => $data->value,
+            'encrypted'      => $data->isEncrypted,
+            'required'       => $data->required,
         ];
     }
 }

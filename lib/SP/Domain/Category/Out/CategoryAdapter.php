@@ -61,11 +61,11 @@ final class CategoryAdapter extends AdapterBase implements CategoryAdapterInterf
     public function transform(CategoryData $data): array
     {
         return [
-            'id' => $data->getId(),
-            'name' => $data->getName(),
-            'description' => $data->getDescription(),
+            'id'           => $data->getId(),
+            'name'         => $data->getName(),
+            'description'  => $data->getDescription(),
             'customFields' => null,
-            'links' => [
+            'links'        => [
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
@@ -73,8 +73,8 @@ final class CategoryAdapter extends AdapterBase implements CategoryAdapterInterf
                         ActionsInterface::CATEGORY_VIEW,
                         $this->configData,
                         true
-                    )
-                ]
+                    ),
+                ],
             ],
         ];
     }

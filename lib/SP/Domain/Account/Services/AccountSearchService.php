@@ -254,6 +254,67 @@ final class AccountSearchService extends Service implements AccountSearchService
     }
 
     /**
+     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
+     *
+     * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function buildAccountsData(QueryResult $queryResult): array
+    {
+        $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
+        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
+                              || $this->configData->isAccountLink();
+        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
+        $accountsData = [];
+
+        /** @var AccountSearchVData $accountSearchData */
+        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
+            $cache = $this->getCacheForAccount($accountSearchData);
+
+            // Obtener la ACL de la cuenta
+            $accountAcl = $this->accountAclService->getAcl(
+                ActionsInterface::ACCOUNT_SEARCH,
+                AccountAclDto::makeFromAccountSearch(
+                    $accountSearchData,
+                    $cache->getUsers(),
+                    $cache->getUserGroups()
+                )
+            );
+
+            // Propiedades de búsqueda de cada cuenta
+            $accountsSearchItem = new AccountSearchItem(
+                $accountSearchData,
+                $accountAcl,
+                $this->configData
+            );
+
+            if (!$accountSearchData->getIsPrivate()) {
+                $accountsSearchItem->setUsers($cache->getUsers());
+                $accountsSearchItem->setUserGroups($cache->getUserGroups());
+            }
+
+            $accountsSearchItem->setTags(
+                $this->accountToTagRepository
+                    ->getTagsByAccountId($accountSearchData->getId())
+                    ->getDataAsArray()
+            );
+            $accountsSearchItem->setTextMaxLength($maxTextLength);
+            $accountsSearchItem->setColor(
+                $this->pickAccountColor($accountSearchData->getClientId())
+            );
+            $accountsSearchItem->setLink($accountLinkEnabled);
+            $accountsSearchItem->setFavorite(
+                isset($favorites[$accountSearchData->getId()])
+            );
+
+            $accountsData[] = $accountsSearchItem;
+        }
+
+        return $accountsData;
+    }
+
+    /**
      * Devolver los accesos desde la caché
      *
      * @throws ConstraintException
@@ -317,66 +378,5 @@ final class AccountSearchService extends Service implements AccountSearchService
     public function getCleanString(): ?string
     {
         return $this->cleanString;
-    }
-
-    /**
-     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
-     *
-     * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    private function buildAccountsData(QueryResult $queryResult): array
-    {
-        $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
-        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
-                              || $this->configData->isAccountLink();
-        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
-        $accountsData = [];
-
-        /** @var AccountSearchVData $accountSearchData */
-        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
-            $cache = $this->getCacheForAccount($accountSearchData);
-
-            // Obtener la ACL de la cuenta
-            $accountAcl = $this->accountAclService->getAcl(
-                ActionsInterface::ACCOUNT_SEARCH,
-                AccountAclDto::makeFromAccountSearch(
-                    $accountSearchData,
-                    $cache->getUsers(),
-                    $cache->getUserGroups()
-                )
-            );
-
-            // Propiedades de búsqueda de cada cuenta
-            $accountsSearchItem = new AccountSearchItem(
-                $accountSearchData,
-                $accountAcl,
-                $this->configData
-            );
-
-            if (!$accountSearchData->getIsPrivate()) {
-                $accountsSearchItem->setUsers($cache->getUsers());
-                $accountsSearchItem->setUserGroups($cache->getUserGroups());
-            }
-
-            $accountsSearchItem->setTags(
-                $this->accountToTagRepository
-                    ->getTagsByAccountId($accountSearchData->getId())
-                    ->getDataAsArray()
-            );
-            $accountsSearchItem->setTextMaxLength($maxTextLength);
-            $accountsSearchItem->setColor(
-                $this->pickAccountColor($accountSearchData->getClientId())
-            );
-            $accountsSearchItem->setLink($accountLinkEnabled);
-            $accountsSearchItem->setFavorite(
-                isset($favorites[$accountSearchData->getId()])
-            );
-
-            $accountsData[] = $accountsSearchItem;
-        }
-
-        return $accountsData;
     }
 }
