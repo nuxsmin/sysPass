@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\File;
 
+use function SP\__;
 
 /**
  * Class FileCacheBase
@@ -32,11 +33,13 @@ namespace SP\Infrastructure\File;
  */
 abstract class FileCacheBase implements FileCacheInterface
 {
-    protected FileHandler $path;
+    protected ?FileHandler $path = null;
 
-    public function __construct(string $path)
+    public function __construct(?string $path = null)
     {
-        $this->path = new FileHandler($path);
+        if (null !== $path) {
+            $this->path = new FileHandler($path);
+        }
     }
 
     public static function factory(string $path): FileCacheBase
@@ -95,5 +98,19 @@ abstract class FileCacheBase implements FileCacheInterface
     public function exists(): bool
     {
         return file_exists($this->path->getFile());
+    }
+
+    /**
+     * @throws \SP\Infrastructure\File\FileException
+     */
+    protected function checkOrInitializePath(?string $path = null): void
+    {
+        if (null === $path && null === $this->path) {
+            throw new FileException(__('Path is needed'));
+        }
+
+        if (null === $this->path || $this->path->getFile() !== $path) {
+            $this->path = new FileHandler($path);
+        }
     }
 }

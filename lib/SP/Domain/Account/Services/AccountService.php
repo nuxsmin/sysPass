@@ -55,6 +55,8 @@ use SP\Domain\ItemPreset\ItemPresetInterface;
 use SP\Domain\ItemPreset\ItemPresetServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class AccountService
@@ -72,7 +74,6 @@ final class AccountService extends Service implements AccountServiceInterface
     private ItemPresetServiceInterface            $itemPresetService;
     private AccountHistoryServiceInterface        $accountHistoryService;
     private ConfigServiceInterface                $configService;
-    private AccountFilterUserInterface            $accountFilterUser;
 
     public function __construct(
         Application $application,
@@ -83,7 +84,6 @@ final class AccountService extends Service implements AccountServiceInterface
         ItemPresetServiceInterface $itemPresetService,
         AccountHistoryServiceInterface $accountHistoryService,
         ConfigServiceInterface $configService,
-        AccountFilterUserInterface $accountFilterUser
     ) {
         $this->accountRepository = $accountRepository;
         $this->accountToUserGroupRepository = $accountToUserGroupRepository;
@@ -92,7 +92,6 @@ final class AccountService extends Service implements AccountServiceInterface
         $this->itemPresetService = $itemPresetService;
         $this->accountHistoryService = $accountHistoryService;
         $this->configService = $configService;
-        $this->accountFilterUser = $accountFilterUser;
 
         parent::__construct($application);
     }
@@ -101,7 +100,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountService
+    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setUsers(
             $this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId())
@@ -115,7 +114,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountService
+    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setUserGroups(
             $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId())
@@ -129,7 +128,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountService
+    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setTags(
             $this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId())
@@ -177,6 +176,8 @@ final class AccountService extends Service implements AccountServiceInterface
      * @param  \SP\DataModel\AccountHistoryData  $data
      *
      * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function createFromHistory(AccountHistoryData $data): int
     {
@@ -327,7 +328,6 @@ final class AccountService extends Service implements AccountServiceInterface
     private function addItems(AccountRequest $accountRequest): void
     {
         try {
-
             if ($accountRequest->changePermissions) {
                 if (is_array($accountRequest->userGroupsView)
                     && count($accountRequest->userGroupsView) !== 0
@@ -380,29 +380,25 @@ final class AccountService extends Service implements AccountServiceInterface
             $userData = $this->context->getUserData();
             $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
 
-            $accountRequest = new AccountRequest();
-            $accountRequest->id = $accountId;
-            $accountRequest->usersView = array_diff($accountPermission->getUsersView(), [$userData->getId()]);
-            $accountRequest->usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->getId()]);
-            $accountRequest->userGroupsView =
-                array_diff($accountPermission->getUserGroupsView(), [$userData->getUserGroupId()]);
-            $accountRequest->userGroupsEdit =
-                array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
+            $usersView = array_diff($accountPermission->getUsersView(), [$userData->getId()]);
+            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->getId()]);
+            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->getUserGroupId()]);
+            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
 
-            if (!empty($accountRequest->usersView)) {
-                $this->accountToUserRepository->addByType($accountRequest, false);
+            if (count($usersView) !== 0) {
+                $this->accountToUserRepository->addByType($accountId, $usersView, false);
             }
 
-            if (!empty($accountRequest->usersEdit)) {
-                $this->accountToUserRepository->addByType($accountRequest, true);
+            if (count($usersEdit) !== 0) {
+                $this->accountToUserRepository->addByType($accountId, $usersEdit, true);
             }
 
-            if (!empty($accountRequest->userGroupsView)) {
-                $this->accountToUserGroupRepository->addByType($accountRequest, false);
+            if (count($userGroupsView) !== 0) {
+                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsView, false);
             }
 
-            if (!empty($accountRequest->userGroupsEdit)) {
-                $this->accountToUserGroupRepository->addByType($accountRequest, true);
+            if (count($userGroupsEdit) !== 0) {
+                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsEdit, true);
             }
         }
     }
@@ -642,13 +638,13 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function delete(int $id): AccountService
+    public function delete(int $id): AccountServiceInterface
     {
         $this->accountRepository->transactionAware(
             function () use ($id) {
                 $this->addHistory($id, 1);
 
-                if ($this->accountRepository->delete($id) === 0) {
+                if ($this->accountRepository->delete($id)) {
                     throw new NoSuchItemException(__u('Account not found'));
                 }
             }
@@ -663,7 +659,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids): AccountService
+    public function deleteByIdBatch(array $ids): AccountServiceInterface
     {
         if ($this->accountRepository->deleteByIdBatch($ids) === 0) {
             throw new ServiceException(__u('Error while deleting the accounts'));
@@ -708,8 +704,6 @@ final class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @return AccountData[]
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function getAllBasic(): array
     {

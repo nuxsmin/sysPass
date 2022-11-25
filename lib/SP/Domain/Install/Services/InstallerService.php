@@ -48,6 +48,8 @@ use SP\Domain\User\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Util\VersionUtil;
+use function SP\__u;
+use function SP\processException;
 
 defined('APP_ROOT') || die();
 
@@ -340,9 +342,7 @@ final class InstallerService implements InstallerServiceInterface
             $userGroupData->setName('Admins');
             $userGroupData->setDescription('sysPass Admins');
 
-            $userProfileData = new UserProfileData();
-            $userProfileData->setName('Admin');
-            $userProfileData->setProfile(new ProfileData());
+            $userProfileData = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
 
             $userData = new UserData();
             $userData->setUserGroupId($this->userGroupService->create($userGroupData));

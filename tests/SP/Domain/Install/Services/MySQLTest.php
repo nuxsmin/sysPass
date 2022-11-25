@@ -35,6 +35,8 @@ use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Stubs\Pdo;
 use SP\Tests\UnitaryTestCase;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class MySQLTest

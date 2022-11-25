@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use SP\Util\Util;
+use function SP\logger;
 
 /**
  * Class FileHandler

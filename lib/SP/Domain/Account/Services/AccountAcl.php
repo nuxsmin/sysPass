@@ -135,6 +135,11 @@ final class AccountAcl
                    || $this->actionId === ActionsInterface::ACCOUNT_DELETE);
     }
 
+    /**
+     * @param  bool  $showDetails
+     *
+     * @return AccountAcl
+     */
     public function setShowDetails(bool $showDetails): AccountAcl
     {
         $this->showDetails = $showDetails;
@@ -148,6 +153,11 @@ final class AccountAcl
                 || $this->actionId === ActionsInterface::ACCOUNT_COPY);
     }
 
+    /**
+     * @param  bool  $showPass
+     *
+     * @return AccountAcl
+     */
     public function setShowPass(bool $showPass): AccountAcl
     {
         $this->showPass = $showPass;
@@ -194,6 +204,11 @@ final class AccountAcl
                || $this->actionId === ActionsInterface::ACCOUNT_COPY;
     }
 
+    /**
+     * @param  bool  $showSave
+     *
+     * @return AccountAcl
+     */
     public function setShowSave(bool $showSave): AccountAcl
     {
         $this->showSave = $showSave;
@@ -394,18 +409,6 @@ final class AccountAcl
         return $this;
     }
 
-    public function isHistory(): bool
-    {
-        return $this->isHistory;
-    }
-
-    public function setIsHistory(bool $isHistory): AccountAcl
-    {
-        $this->isHistory = $isHistory;
-
-        return $this;
-    }
-
     public function isCompiledShowAccess(): bool
     {
         return $this->compiledShowAccess;
@@ -432,7 +435,7 @@ final class AccountAcl
 
     public function reset(): void
     {
-        foreach ($this as $property => $value) {
+        foreach (get_class_vars(__CLASS__) as $property => $value) {
             if (str_starts_with($property, 'show')) {
                 $this->{$property} = false;
             }

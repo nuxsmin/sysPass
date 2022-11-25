@@ -29,21 +29,25 @@ namespace SP\Infrastructure\File;
  *
  * @package SP\Infrastructure\File;
  */
-final class FileCache extends FileCacheBase
+class FileCache extends FileCacheBase
 {
     /**
      * @throws FileException
      */
-    public function load()
+    public function load(?string $path = null): mixed
     {
+        $this->checkOrInitializePath($path);
+
+        /** @noinspection UnserializeExploitsInspection */
         return unserialize($this->path->checkIsReadable()->readToString());
     }
 
     /**
      * @throws FileException
      */
-    public function save($data): FileCacheInterface
+    public function save(mixed $data, ?string $path = null): FileCacheInterface
     {
+        $this->checkOrInitializePath($path);
         $this->createPath();
 
         $this->path->checkIsWritable();

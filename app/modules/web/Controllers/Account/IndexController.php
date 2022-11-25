@@ -27,9 +27,11 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Application;
+use SP\Core\Context\ContextBase;
 use SP\Core\Events\Event;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
 use SP\Mvc\Controller\WebControllerHelper;
+use SP\Providers\Acl\AclHandler;
 use SP\Util\ErrorUtil;
 
 /**

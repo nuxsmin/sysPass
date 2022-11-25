@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Core\Context;
 
+use function SP\__u;
+
 /**
  * Class ContextBase
  *
@@ -31,13 +33,11 @@ namespace SP\Core\Context;
  */
 abstract class ContextBase implements ContextInterface
 {
-    public const APP_STATUS_UPDATED = 'updated';
-    public const APP_STATUS_RELOADED = 'reloaded';
-    public const APP_STATUS_INSTALLED = 'installed';
+    public const APP_STATUS_RELOADED  = 'reloaded';
     public const APP_STATUS_LOGGEDOUT = 'loggedout';
 
     private ?ContextCollection $context = null;
-    private ContextCollection $trasient;
+    private ContextCollection  $trasient;
 
     /**
      * ContextBase constructor.
@@ -56,7 +56,7 @@ abstract class ContextBase implements ContextInterface
     public function setTrasientKey(string $key, $value)
     {
         // If the key starts with "_" it's a protected key, thus cannot be overwritten
-        if (strpos($key, '_') === 0
+        if (str_starts_with($key, '_')
             && $this->trasient->exists($key)
             && $this->trasient->get($key) !== $value
         ) {
@@ -101,6 +101,7 @@ abstract class ContextBase implements ContextInterface
 
         if (!isset($context['context'])) {
             $context['context'] = $this->context = new ContextCollection();
+
             return;
         }
 
@@ -128,6 +129,7 @@ abstract class ContextBase implements ContextInterface
     {
         $this->checkContext();
 
+
         return is_numeric($default)
             ? (int)$this->context->get($key, $default)
             : $this->context->get($key, $default);
@@ -146,12 +148,12 @@ abstract class ContextBase implements ContextInterface
     /**
      * Establecer una variable de contexto
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param  string  $key  El nombre de la variable
+     * @param  mixed  $value  El valor de la variable
      *
      * @throws ContextException
      */
-    protected function setContextKey(string $key, $value)
+    protected function setContextKey(string $key, mixed $value): mixed
     {
         $this->checkContext();
 

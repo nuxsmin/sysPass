@@ -32,15 +32,17 @@ namespace SP\Infrastructure\File;
 interface FileCacheInterface
 {
     /**
+     * @param  string|null  $path
+     *
      * @return mixed
-     * @throws FileException
+     * @throws \SP\Infrastructure\File\FileException
      */
-    public function load();
+    public function load(?string $path = null): mixed;
 
     /**
      * @throws FileException
      */
-    public function save($data): FileCacheInterface;
+    public function save(mixed $data, ?string $path = null): FileCacheInterface;
 
     public function delete(): FileCacheInterface;
 

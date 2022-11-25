@@ -32,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
+use SP\DataModel\ProfileData;
 use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Domain\Config\Services\ConfigFileService;
@@ -59,6 +60,11 @@ abstract class UnitaryTestCase extends TestCase
         self::$faker = Factory::create();
 
         parent::setUpBeforeClass();
+    }
+
+    public static function getRandomNumbers(int $count): array
+    {
+        return array_map(static fn() => self::$faker->randomNumber(), range(0, $count - 1));
     }
 
     /**
@@ -89,6 +95,7 @@ abstract class UnitaryTestCase extends TestCase
         $this->context = new StatelessContext();
         $this->context->initialize();
         $this->context->setUserData($userLogin);
+        $this->context->setUserProfile(new ProfileData());
 
         $config = new ConfigFileService(
             $this->createStub(XmlHandler::class),
@@ -98,10 +105,5 @@ abstract class UnitaryTestCase extends TestCase
         );
 
         return new Application($config, $this->createStub(EventDispatcher::class), $this->context);
-    }
-
-    public static function getRandomNumbers(int $count): array
-    {
-        return array_map(static fn() => self::$faker->randomNumber(), range(0, $count - 1));
     }
 }

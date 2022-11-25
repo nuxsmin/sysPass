@@ -27,8 +27,9 @@ namespace SP\Domain\Account\Services;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ProfileData;
@@ -36,10 +37,9 @@ use SP\Domain\Account\AccountAclServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\UserToUserGroupServiceInterface;
-use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileUtil;
+use function SP\processException;
 
 /**
  * Class AccountAclService
@@ -52,92 +52,76 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      * ACL's file base path
      */
     public const ACL_PATH = CACHE_PATH.DIRECTORY_SEPARATOR.'accountAcl'.DIRECTORY_SEPARATOR;
-    public static bool                      $useCache      = true;
+
     private ?AccountAclDto                  $accountAclDto = null;
     private ?AccountAcl                     $accountAcl    = null;
     private Acl                             $acl;
+    private ?FileCacheInterface             $fileCache;
     private UserToUserGroupServiceInterface $userToUserGroupService;
     private UserLoginResponse               $userData;
 
-    public function __construct(Application $application, Acl $acl, UserToUserGroupServiceInterface $userGroupService)
-    {
+    public function __construct(
+        Application $application,
+        Acl $acl,
+        UserToUserGroupServiceInterface $userGroupService,
+        ?FileCacheInterface $fileCache = null
+    ) {
         parent::__construct($application);
 
         $this->acl = $acl;
         $this->userToUserGroupService = $userGroupService;
         $this->userData = $this->context->getUserData();
-    }
-
-    /**
-     * @param $userId
-     *
-     * @return bool
-     */
-    public static function clearAcl($userId): bool
-    {
-        logger(sprintf('Clearing ACL for user ID: %d', $userId));
-
-        try {
-            if (FileUtil::rmdir_recursive(self::ACL_PATH.$userId) === false) {
-                logger(sprintf('Unable to delete %s directory', self::ACL_PATH.$userId));
-
-                return false;
-            }
-
-            return true;
-        } catch (FileNotFoundException $e) {
-            processException($e);
-        }
-
-        return false;
+        $this->fileCache = $fileCache;
     }
 
     /**
      * Obtener la ACL de una cuenta
      *
      * @param  int  $actionId
-     * @param  AccountAclDto|null  $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      * @param  bool  $isHistory
      *
      * @return AccountAcl
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAcl(int $actionId, ?AccountAclDto $accountAclDto = null, bool $isHistory = false): AccountAcl
+    public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountAcl
     {
         $this->accountAcl = new AccountAcl($actionId, $isHistory);
         $this->accountAcl->setShowPermission(
             self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
         );
 
-        if ($accountAclDto !== null) {
-            $this->accountAclDto = $accountAclDto;
+        $this->accountAclDto = $accountAclDto;
 
+        if (null !== $this->fileCache) {
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
-            if (self::$useCache && null !== $accountAcl) {
-                $this->accountAcl->setModified(
-                    (
-                        $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                        || $this->userData->getLastUpdate() > $accountAcl->getTime()
-                    )
-                );
+            if (null !== $accountAcl) {
+                $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
+                              || $this->userData->getLastUpdate() > $accountAcl->getTime();
 
-                if (!$this->accountAcl->isModified()) {
-                    logger('Account ACL HIT');
+                if (!$isModified) {
+                    $this->eventDispatcher->notifyEvent(
+                        'get.acl',
+                        new Event($this, EventMessage::factory()->addDescription('Account ACL HIT'))
+                    );
 
                     return $accountAcl;
                 }
+
+                $this->accountAcl->setModified(true);
             }
-
-            logger('Account ACL MISS');
-
-            $this->accountAcl->setAccountId($accountAclDto->getAccountId());
-
-            return $this->updateAcl();
         }
 
-        return $this->accountAcl;
+        $this->eventDispatcher->notifyEvent(
+            'get.acl',
+            new Event($this, EventMessage::factory()->addDescription('Account ACL MISS'))
+        );
+
+        $this->accountAcl->setAccountId($accountAclDto->getAccountId());
+
+        return $this->buildAcl();
     }
 
     /**
@@ -161,18 +145,18 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      * @param  int  $accountId
      * @param  int  $actionId
      *
-     * @return AccountAcl
+     * @return \SP\Domain\Account\Services\AccountAcl|null
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl
     {
         try {
-            $acl = FileCache::factory($this->getCacheFileForAcl($accountId, $actionId))->load();
+            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
 
             if ($acl instanceof AccountAcl) {
                 return $acl;
             }
         } catch (FileException $e) {
-            logger($e->getMessage());
+            processException($e);
         }
 
         return null;
@@ -184,7 +168,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      *
      * @return string
      */
-    public function getCacheFileForAcl(int $accountId, int $actionId): string
+    private function getCacheFileForAcl(int $accountId, int $actionId): string
     {
         $userId = $this->context->getUserData()->getId();
 
@@ -198,40 +182,12 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
     }
 
     /**
-     * Actualizar la ACL
-     *
-     * @return AccountAcl
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    private function updateAcl(): AccountAcl
-    {
-        if ($this->checkComponents()) {
-            $this->makeAcl();
-        }
-
-        if (self::$useCache) {
-            $this->saveAclInCache($this->accountAcl);
-        }
-
-        return $this->accountAcl;
-    }
-
-    /**
-     * @return bool
-     */
-    private function checkComponents(): bool
-    {
-        return null !== $this->accountAclDto;
-    }
-
-    /**
      * Crear la ACL de una cuenta
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function makeAcl(): void
+    private function buildAcl(): AccountAcl
     {
         $this->compileAccountAccess();
         $this->accountAcl->setCompiledAccountAccess(true);
@@ -240,6 +196,10 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
         $this->accountAcl->setCompiledShowAccess(true);
 
         $this->accountAcl->setTime(time());
+
+        $this->saveAclInCache($this->accountAcl);
+
+        return $this->accountAcl;
     }
 
     /**
@@ -318,7 +278,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
             array_filter(
                 $this->accountAclDto->getUsersId(),
                 static function ($value) use ($userId) {
-                    return (int)$value->id === $userId;
+                    return (int)$value->getId() === $userId;
                 }
             )
         );
@@ -355,11 +315,11 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
             array_filter(
                 $this->accountAclDto->getUserGroupsId(),
                 static function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
-                    return (int)$value->id === $userGroupId
+                    return (int)$value->getId() === $userGroupId
                            // o... permitir los grupos que no sean el principal del usuario?
                            || ($isAccountFullGroupAccess
                                // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
-                               && in_array((int)$value->id, $userGroups, true));
+                               && in_array((int)$value->getId(), $userGroups, true));
                 }
             )
         );
@@ -406,16 +366,21 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      *
      * @param  AccountAcl  $accountAcl
      *
-     * @return null|FileCacheInterface
+     * @return void
      */
-    public function saveAclInCache(AccountAcl $accountAcl): ?FileCacheInterface
+    private function saveAclInCache(AccountAcl $accountAcl): void
     {
+        if (null === $this->fileCache) {
+            return;
+        }
+
         try {
-            return FileCache::factory(
+            $this->fileCache->save(
+                $accountAcl,
                 $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
-            )->save($accountAcl);
+            );
         } catch (FileException $e) {
-            return null;
+            processException($e);
         }
     }
 }

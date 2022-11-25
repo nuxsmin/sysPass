@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Account;
@@ -32,6 +32,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\AccountCryptServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountCryptService;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Common\Services\ServiceException;
@@ -51,7 +52,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
     const NEW_MASTERPASS = '00123456789';
     const CURRENT_HASH = '$2y$10$xtsuN2PUvgSH/0mrfBlsbOActVgCjYcqDqC6L3T9QraNxZC4RXGYa';
     /**
-     * @var AccountService
+     * @var \SP\Domain\Account\AccountServiceInterface
      */
     private static $accountService;
     /**

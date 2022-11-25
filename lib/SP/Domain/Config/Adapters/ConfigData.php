@@ -48,7 +48,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
 
     public function getAttributes(): array
     {
-        return $this->attributes;
+        return $this->getArrayCopy();
     }
 
     public function getLogEvents(): array
@@ -374,7 +374,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
      */
     public function setConfigHash(): ConfigDataInterface
     {
-        $this->set(ConfigDataInterface::CONFIG_HASH, sha1(serialize($this->attributes)));
+        $this->set(ConfigDataInterface::CONFIG_HASH, sha1(serialize($this->getArrayCopy())));
 
         return $this;
     }
@@ -910,7 +910,7 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
      */
     public function jsonSerialize(): array
     {
-        return $this->attributes;
+        return $this->getArrayCopy();
     }
 
     public function getConfigSaver(): ?string

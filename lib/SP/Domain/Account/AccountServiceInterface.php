@@ -24,21 +24,206 @@
 
 namespace SP\Domain\Account;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Out\AccountData;
+use SP\Domain\Account\Out\AccountPassData;
+use SP\Domain\Account\Services\AccountBulkRequest;
+use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Interface AccountServiceInterface
+ * Class AccountService
  *
  * @package SP\Domain\Account\Services
  */
 interface AccountServiceInterface
 {
     /**
-     * @param  int  $id
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function incrementViewCounter(int $id): bool;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function incrementDecryptCounter(int $id): bool;
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     */
+    public function getPasswordForId(int $id): AccountPassData;
+
+    /**
+     * @param  \SP\DataModel\AccountHistoryData  $data
      *
-     * @return AccountDetailsResponse
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function createFromHistory(AccountHistoryData $data): int;
+
+    /**
+     * @throws QueryException
      * @throws SPException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     */
+    public function create(AccountRequest $accountRequest): int;
+
+    /**
+     * Devolver los datos de la clave encriptados
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): array;
+
+    /**
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
      */
     public function getById(int $id): AccountDetailsResponse;
+
+    /**
+     * Updates external items for the account
+     *
+     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function update(AccountRequest $accountRequest): void;
+
+    /**
+     * Update accounts in bulk mode
+     *
+     * @param  \SP\Domain\Account\Services\AccountBulkRequest  $request
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function updateBulk(AccountBulkRequest $request): void;
+
+    /**
+     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function editPassword(AccountRequest $accountRequest): void;
+
+    /**
+     * Updates an already encrypted password data from a master password changing action
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): bool;
+
+    /**
+     * @param  int  $historyId
+     * @param  int  $accountId
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     */
+    public function editRestore(int $historyId, int $accountId): void;
+
+    /**
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function delete(int $id): AccountServiceInterface;
+
+    /**
+     * @param  int[]  $ids
+     *
+     * @throws SPException
+     * @throws ServiceException
+     */
+    public function deleteByIdBatch(array $ids): AccountServiceInterface;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function getForUser(?int $accountId = null): array;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function getLinked(int $accountId): array;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     */
+    public function getPasswordHistoryForId(int $id): AccountPassData;
+
+    /**
+     * @return AccountData[]
+     */
+    public function getAllBasic(): array;
+
+    /**
+     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Devolver el número total de cuentas
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function getTotalNumAccounts(): int;
+
+    /**
+     * Obtener los datos de una cuenta.
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     */
+    public function getDataForLink(int $id): AccountExtData;
+
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function getAccountsPassData(): array;
 }

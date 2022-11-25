@@ -50,7 +50,7 @@ final class CustomFieldItem implements JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'required'         => $this->required,

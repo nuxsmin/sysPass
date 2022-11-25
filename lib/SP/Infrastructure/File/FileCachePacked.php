@@ -37,8 +37,10 @@ final class FileCachePacked extends FileCacheBase
      * @throws RuntimeException
      * @throws FileException
      */
-    public function load()
+    public function load(?string $path = null): mixed
     {
+        $this->checkOrInitializePath($path);
+
         $this->path->checkIsReadable();
         $dataUnpacked = gzuncompress($this->path->readToString());
 
@@ -63,8 +65,9 @@ final class FileCachePacked extends FileCacheBase
     /**
      * @throws FileException
      */
-    public function save($data): FileCacheInterface
+    public function save(mixed $data, ?string $path = null): FileCacheInterface
     {
+        $this->checkOrInitializePath($path);
         $this->createPath();
 
         $data = gzcompress(serialize($data));

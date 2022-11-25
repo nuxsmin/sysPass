@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,7 @@ namespace SP\Modules\Cli\Commands\Crypt;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Config\ConfigInterface;
 use SP\Domain\Config\ConfigServiceInterface;
@@ -71,7 +72,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
 
     public function __construct(
         MasterPassServiceInterface $masterPassService,
-        AccountService $accountService,
+        AccountServiceInterface $accountService,
         ConfigServiceInterface $configService,
         LoggerInterface $logger,
         ConfigInterface $config

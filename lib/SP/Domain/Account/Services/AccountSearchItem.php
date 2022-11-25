@@ -294,9 +294,6 @@ final class AccountSearchItem
 
     public function isWikiMatch(string $wikiFilter): bool
     {
-        return preg_match(
-                   '/^'.$wikiFilter.'/i',
-                   $this->accountSearchVData->getName()
-               ) === 1;
+        return preg_match('/^'.$wikiFilter.'/i', $this->accountSearchVData->getName()) === 1;
     }
 }

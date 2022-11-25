@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use SP\Core\Application;
 use SP\Core\Context\ContextBase;
-use SP\Domain\Account\Services\AccountAclService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -65,9 +64,6 @@ abstract class AccountControllerBase extends ControllerBase
 
         if (DEBUG === true && $this->session->getAppStatus() === ContextBase::APP_STATUS_RELOADED) {
             $this->session->resetAppStatus();
-
-            // Reset de los datos de ACL de cuentas
-            AccountAclService::clearAcl($this->session->getUserData()->getId());
         }
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\DataModel\Dto;
 
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
 
@@ -35,140 +34,127 @@ use SP\DataModel\ItemData;
  */
 final class AccountAclDto
 {
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var int
-     */
-    private $userId;
+    private int $accountId;
+    private int $userId;
+    private int $userGroupId;
+    private int $dateEdit;
     /**
      * @var ItemData[]
      */
-    private $usersId;
-    /**
-     * @var int
-     */
-    private $userGroupId;
+    private array $usersId;
     /**
      * @var ItemData[]
      */
-    private $userGroupsId;
-    /**
-     * @var int
-     */
-    private $dateEdit;
+    private array $userGroupsId;
 
-    private function __construct()
-    {
+    /**
+     * @param  int  $accountId
+     * @param  int  $userId
+     * @param  array  $usersId
+     * @param  int  $userGroupId
+     * @param  array  $userGroupsId
+     * @param  int  $dateEdit
+     */
+    public function __construct(
+        int $accountId,
+        int $userId,
+        array $usersId,
+        int $userGroupId,
+        array $userGroupsId,
+        int $dateEdit
+    ) {
+        $this->accountId = $accountId;
+        $this->userId = $userId;
+        $this->usersId = self::buildFromItemData($usersId);
+        $this->userGroupId = $userGroupId;
+        $this->userGroupsId = self::buildFromItemData($userGroupsId);
+        $this->dateEdit = $dateEdit;
     }
 
     /**
-     * @param AccountDetailsResponse $accountDetailsResponse
+     * @param  ItemData[]  $items
+     *
+     * @return array
+     */
+    private static function buildFromItemData(array $items): array
+    {
+        return array_filter($items, static fn($value) => $value instanceof ItemData);
+    }
+
+    /**
+     * @param  AccountDetailsResponse  $accountDetailsResponse
      *
      * @return AccountAclDto
      */
-    public static function makeFromAccount(AccountDetailsResponse $accountDetailsResponse)
+    public static function makeFromAccount(AccountDetailsResponse $accountDetailsResponse): AccountAclDto
     {
-        $dto = new self();
-        $dto->accountId = $accountDetailsResponse->getId();
-        $dto->userId = $accountDetailsResponse->getAccountVData()->getUserId();
-        $dto->usersId = $accountDetailsResponse->getUsers();
-        $dto->userGroupId = $accountDetailsResponse->getAccountVData()->getUserGroupId();
-        $dto->userGroupsId = $accountDetailsResponse->getUserGroups();
-        $dto->dateEdit = strtotime($accountDetailsResponse->getAccountVData()->getDateEdit());
-
-        return $dto;
+        return new self(
+            $accountDetailsResponse->getId(),
+            $accountDetailsResponse->getAccountVData()->getUserId(),
+            $accountDetailsResponse->getUsers(),
+            $accountDetailsResponse->getAccountVData()->getUserGroupId(),
+            $accountDetailsResponse->getUserGroups(),
+            strtotime($accountDetailsResponse->getAccountVData()->getDateEdit())
+        );
     }
 
-    /**
-     * @param AccountHistoryData $accountHistoryData
-     *
-     * @param array              $users
-     * @param array              $userGroups
-     *
-     * @return AccountAclDto
-     */
-    public static function makeFromAccountHistory(AccountHistoryData $accountHistoryData, array $users, array $userGroups)
-    {
-        $dto = new self();
-        $dto->accountId = $accountHistoryData->getId();
-        $dto->userId = $accountHistoryData->getUserId();
-        $dto->usersId = $users;
-        $dto->userGroupId = $accountHistoryData->getUserGroupId();
-        $dto->userGroupsId = $userGroups;
-        $dto->dateEdit = strtotime($accountHistoryData->getDateEdit());
-
-        return $dto;
-    }
-
-    /**
-     * @param AccountSearchVData $accountSearchVData
-     *
-     * @param array              $users
-     * @param array              $userGroups
-     *
-     * @return AccountAclDto
-     */
-    public static function makeFromAccountSearch(AccountSearchVData $accountSearchVData, array $users, array $userGroups)
-    {
-        $dto = new self();
-        $dto->accountId = $accountSearchVData->getId();
-        $dto->userId = $accountSearchVData->getUserId();
-        $dto->usersId = $users;
-        $dto->userGroupId = $accountSearchVData->getUserGroupId();
-        $dto->userGroupsId = $userGroups;
-        $dto->dateEdit = strtotime($accountSearchVData->getDateEdit());
-
-        return $dto;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): int
     {
         return $this->userId;
     }
 
-    /**
-     * @return ItemData[]
-     */
-    public function getUsersId()
-    {
-        return $this->usersId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
+    public function getUserGroupId(): int
     {
         return $this->userGroupId;
     }
 
-    /**
-     * @return ItemData[]
-     */
-    public function getUserGroupsId()
-    {
-        return $this->userGroupsId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDateEdit()
+    public function getDateEdit(): int
     {
         return $this->dateEdit;
     }
 
     /**
-     * @return int
+     * @param  AccountSearchVData  $accountSearchVData
+     *
+     * @param  array  $users
+     * @param  array  $userGroups
+     *
+     * @return AccountAclDto
      */
-    public function getAccountId()
+    public static function makeFromAccountSearch(
+        AccountSearchVData $accountSearchVData,
+        array $users,
+        array $userGroups
+    ): AccountAclDto {
+        return new self(
+            $accountSearchVData->getId(),
+            $accountSearchVData->getUserId(),
+            $users,
+            $accountSearchVData->getUserGroupId(),
+            $userGroups,
+            strtotime($accountSearchVData->getDateEdit())
+        );
+    }
+
+    public function getAccountId(): int
     {
         return $this->accountId;
     }
+
+    /**
+     * @return ItemData[]
+     */
+    public function getUsersId(): array
+    {
+        return $this->usersId;
+    }
+
+    /**
+     * @return ItemData[]
+     */
+    public function getUserGroupsId(): array
+    {
+        return $this->userGroupsId;
+    }
+
 }

@@ -49,30 +49,30 @@ const APP_DEFINITIONS_FILE = APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARA
 
 define('RESOURCE_PATH', TEST_ROOT.DIRECTORY_SEPARATOR.'res');
 define('CONFIG_PATH', RESOURCE_PATH.DIRECTORY_SEPARATOR.'config');
-define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
-define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'locales');
-define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'modules');
-define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
-define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
-define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
+define('CONFIG_FILE', CONFIG_PATH.DIRECTORY_SEPARATOR.'config.xml');
+define('ACTIONS_FILE', CONFIG_PATH.DIRECTORY_SEPARATOR.'actions.xml');
+define('LOCALES_PATH', APP_ROOT.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'locales');
+define('MODULES_PATH', APP_ROOT.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'modules');
+define('SQL_PATH', APP_ROOT.DIRECTORY_SEPARATOR.'schemas');
+define('CACHE_PATH', RESOURCE_PATH.DIRECTORY_SEPARATOR.'cache');
+define('TMP_PATH', TEST_ROOT.DIRECTORY_SEPARATOR.'tmp');
 define('BACKUP_PATH', TMP_PATH);
 define('PLUGINS_PATH', TMP_PATH);
-define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
-define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
+define('XML_SCHEMA', APP_ROOT.DIRECTORY_SEPARATOR.'schemas'.DIRECTORY_SEPARATOR.'syspass.xsd');
+define('LOG_FILE', TMP_PATH.DIRECTORY_SEPARATOR.'test.log');
 define('FIXTURE_FILES', [
-    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
-    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql'
+    RESOURCE_PATH.DIRECTORY_SEPARATOR.'datasets'.DIRECTORY_SEPARATOR.'truncate.sql',
+    RESOURCE_PATH.DIRECTORY_SEPARATOR.'datasets'.DIRECTORY_SEPARATOR.'syspass.sql',
 ]);
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'BaseFunctions.php';
 
-logger('APP_ROOT=' . APP_ROOT);
-logger('TEST_ROOT=' . TEST_ROOT);
-logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
+logger('APP_ROOT='.APP_ROOT);
+logger('TEST_ROOT='.TEST_ROOT);
+logger('SELF_IP_ADDRESS='.SELF_IP_ADDRESS);
 
 // Setup directories
 try {
@@ -85,7 +85,7 @@ try {
 if (is_dir(CONFIG_PATH)
     && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
 ) {
-    print 'Setting permissions for ' . CONFIG_PATH . PHP_EOL;
+    print 'Setting permissions for '.CONFIG_PATH.PHP_EOL;
 
     chmod(CONFIG_PATH, 0750);
 }
@@ -156,7 +156,7 @@ function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHand
 
 function getResource(string $dir, string $file): string
 {
-    return file_get_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
+    return file_get_contents(RESOURCE_PATH.DIRECTORY_SEPARATOR.$dir.DIRECTORY_SEPARATOR.$file) ?: '';
 }
 
 function saveResource(string $dir, string $file, string $data): bool|int
@@ -172,10 +172,10 @@ function recreateDir(string $dir): void
     if (is_dir($dir)) {
         logger('Deleting '.$dir);
 
-        FileUtil::rmdir_recursive($dir);
+        FileUtil::rmdirRecursive($dir);
     }
 
-    logger('Creating '.$dir.PHP_EOL);
+    logger('Creating '.$dir);
 
     if (!mkdir($dir) && !is_dir($dir)) {
         throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));

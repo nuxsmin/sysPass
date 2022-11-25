@@ -30,7 +30,6 @@ use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Infrastructure\File\FileCacheInterface;
 
 /**
  * Class AccountAclService
@@ -53,14 +52,14 @@ interface AccountAclServiceInterface
      * Obtener la ACL de una cuenta
      *
      * @param  int  $actionId
-     * @param  AccountAclDto|null  $accountAclDto
+     * @param  AccountAclDto  $accountAclDto
      * @param  bool  $isHistory
      *
      * @return AccountAcl
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getAcl(int $actionId, ?AccountAclDto $accountAclDto = null, bool $isHistory = false): AccountAcl;
+    public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountAcl;
 
     /**
      * Resturns an stored ACL
@@ -71,21 +70,4 @@ interface AccountAclServiceInterface
      * @return \SP\Domain\Account\Services\AccountAcl|null
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl;
-
-    /**
-     * @param  int  $accountId
-     * @param  int  $actionId
-     *
-     * @return string
-     */
-    public function getCacheFileForAcl(int $accountId, int $actionId): string;
-
-    /**
-     * Saves the ACL
-     *
-     * @param  AccountAcl  $accountAcl
-     *
-     * @return null|FileCacheInterface
-     */
-    public function saveAclInCache(AccountAcl $accountAcl): ?FileCacheInterface;
 }

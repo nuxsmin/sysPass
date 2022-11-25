@@ -40,8 +40,9 @@ use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\AccountHistoryServiceInterface;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Account\Out\AccountData;
+use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountBulkRequest;
 use SP\Domain\Account\Services\AccountHistoryService;
 use SP\Domain\Account\Services\AccountPasswordRequest;
@@ -72,7 +73,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     private static $context;
     /**
-     * @var AccountService
+     * @var \SP\Domain\Account\AccountServiceInterface
      */
     private static $service;
 

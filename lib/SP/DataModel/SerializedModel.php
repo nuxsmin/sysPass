@@ -42,7 +42,7 @@ trait SerializedModel
      * @return mixed|null
      * @throws NoSuchPropertyException
      */
-    public function hydrate(?string $class = null, string $property = 'data')
+    public function hydrate(?string $class = null, string $property = 'data'): mixed
     {
         if (property_exists($this, $property)) {
             if ($this->{$property} === null) {

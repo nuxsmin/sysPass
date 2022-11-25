@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,6 +29,8 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use function SP\__u;
+use function SP\processException;
 
 defined('APP_ROOT') || die();
 
@@ -50,10 +52,9 @@ class Acl implements ActionsInterface
      */
     public function __construct(
         ContextInterface $context,
-        EventDispatcher  $eventDispatcher,
+        EventDispatcher $eventDispatcher,
         Actions $actions = null
-    )
-    {
+    ) {
         $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
 
@@ -77,8 +78,8 @@ class Acl implements ActionsInterface
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param int  $actionId El id de la acción
-     * @param bool $translate
+     * @param  int  $actionId  El id de la acción
+     * @param  bool  $translate
      *
      * @return string
      * @internal param bool $shortName Si se devuelve el nombre corto de la acción
@@ -132,18 +133,18 @@ class Acl implements ActionsInterface
                 return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
             case self::ITEMS_MANAGE:
                 return ($userData->getIsAdminAcc()
-                    || $userProfile->isMgmCategories()
-                    || $userProfile->isMgmCustomers()
-                    || $userProfile->isMgmAccounts()
-                    || $userProfile->isMgmFiles()
-                    || $userProfile->isMgmTags()
-                    || $userProfile->isMgmCustomFields()
-                    || $userProfile->isMgmPublicLinks());
+                        || $userProfile->isMgmCategories()
+                        || $userProfile->isMgmCustomers()
+                        || $userProfile->isMgmAccounts()
+                        || $userProfile->isMgmFiles()
+                        || $userProfile->isMgmTags()
+                        || $userProfile->isMgmCustomFields()
+                        || $userProfile->isMgmPublicLinks());
             case self::CONFIG:
                 return ($userProfile->isConfigGeneral()
-                    || $userProfile->isConfigEncryption()
-                    || $userProfile->isConfigBackup()
-                    || $userProfile->isConfigImport());
+                        || $userProfile->isConfigEncryption()
+                        || $userProfile->isConfigBackup()
+                        || $userProfile->isConfigImport());
             case self::CONFIG_GENERAL:
             case self::CONFIG_ACCOUNT:
             case self::CONFIG_WIKI:
@@ -212,12 +213,12 @@ class Acl implements ActionsInterface
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
                 return ($userProfile->isMgmUsers()
-                    || $userProfile->isMgmGroups()
-                    || $userProfile->isMgmProfiles()
-                    || $userProfile->isMgmApiTokens());
+                        || $userProfile->isMgmGroups()
+                        || $userProfile->isMgmProfiles()
+                        || $userProfile->isMgmApiTokens());
             case self::SECURITY_MANAGE:
                 return $userProfile->isEvl()
-                    || $userProfile->isMgmUsers();
+                       || $userProfile->isMgmUsers();
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_VIEW:
@@ -280,11 +281,15 @@ class Acl implements ActionsInterface
             $actionName = __u('N/A');
         }
 
-        $this->eventDispatcher->notifyEvent('acl.deny',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Access denied'))
-                ->addDetail(__u('Action'), $actionName)
-                ->addDetail(__u('User'), $userData->getLogin()))
+        $this->eventDispatcher->notifyEvent(
+            'acl.deny',
+            new Event(
+                $this,
+                EventMessage::factory()
+                    ->addDescription(__u('Access denied'))
+                    ->addDetail(__u('Action'), $actionName)
+                    ->addDetail(__u('User'), $userData->getLogin())
+            )
         );
 
         return false;

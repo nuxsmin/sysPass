@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\User\Services\UserGroupService;
@@ -36,7 +37,11 @@ use SP\Domain\User\UserGroupServiceInterface;
 use SP\Domain\User\UserProfileServiceInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
+use SP\Util\FileUtil;
 use SplSubject;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class AclHandler
@@ -69,7 +74,6 @@ final class AclHandler extends Provider implements EventReceiver
 
         parent::__construct($application);
     }
-
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -147,12 +151,36 @@ final class AclHandler extends Provider implements EventReceiver
 
             if (isset($extra['userProfileId'])) {
                 foreach ($this->userProfileService->getUsersForProfile($extra['userProfileId'][0]) as $user) {
-                    AccountAclService::clearAcl($user->id);
+                    $this->clearAcl($user->id);
                 }
             }
         } catch (Exception $e) {
             processException($e);
         }
+    }
+
+    /**
+     * @param $userId
+     *
+     * @return bool
+     */
+    private function clearAcl($userId): bool
+    {
+        logger(sprintf('Clearing ACL for user ID: %d', $userId));
+
+        try {
+            if (FileUtil::rmdirRecursive(AccountAclService::ACL_PATH.$userId) === false) {
+                logger(sprintf('Unable to delete %s directory', AccountAclService::ACL_PATH.$userId));
+
+                return false;
+            }
+
+            return true;
+        } catch (FileNotFoundException $e) {
+            processException($e);
+        }
+
+        return false;
     }
 
     /**
@@ -170,7 +198,7 @@ final class AclHandler extends Provider implements EventReceiver
 
         if (isset($extra['userId'])) {
             foreach ($extra['userId'] as $id) {
-                AccountAclService::clearAcl($id);
+                $this->clearAcl($id);
             }
         }
     }
@@ -188,7 +216,7 @@ final class AclHandler extends Provider implements EventReceiver
 
             if (isset($extra['userGroupId'])) {
                 foreach ($this->userGroupService->getUsageByUsers($extra['userGroupId'][0]) as $user) {
-                    AccountAclService::clearAcl($user->id);
+                    $this->clearAcl($user->id);
                 }
             }
         } catch (Exception $e) {

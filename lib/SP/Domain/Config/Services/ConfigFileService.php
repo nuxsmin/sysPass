@@ -39,6 +39,7 @@ use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;
 use SP\Util\PasswordUtil;
 use function SP\logger;
+use function SP\processException;
 
 defined('APP_ROOT') || die();
 

@@ -49,14 +49,6 @@ class UserProfileData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -65,26 +57,10 @@ class UserProfileData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @param int $id
+     * @return \SP\DataModel\ProfileData|null
      */
-    public function setId($id)
-    {
-        $this->id = (int)$id;
-    }
-
-    /**
-     * @return ProfileData
-     */
-    public function getProfile()
+    public function getProfile(): ?ProfileData
     {
         return $this->profile;
-    }
-
-    /**
-     * @param ProfileData $profile
-     */
-    public function setProfile(ProfileData $profile)
-    {
-        $this->profile = $profile;
     }
 }

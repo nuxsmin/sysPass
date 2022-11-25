@@ -29,6 +29,8 @@ use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\User\Services\UserLoginResponse;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Session
@@ -39,7 +41,7 @@ class SessionContext extends ContextBase
 {
     public const MAX_SID_TIME = 120;
 
-    private static bool $isReset = false;
+    private static bool $isReset  = false;
     private static bool $isLocked = false;
 
     /**
@@ -79,8 +81,8 @@ class SessionContext extends ContextBase
     /**
      * Devolver una variable de sesión
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
+     * @param  mixed  $default
      *
      * @return mixed
      */
@@ -108,16 +110,16 @@ class SessionContext extends ContextBase
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param  string  $key  El nombre de la variable
+     * @param  mixed  $value  El valor de la variable
      *
      * @return mixed
      */
-    protected function setContextKey(string $key, $value)
+    protected function setContextKey(string $key, mixed $value): mixed
     {
         try {
             if (self::$isLocked) {
-                logger('Session locked; key=' . $key);
+                logger('Session locked; key='.$key);
             } else {
                 parent::setContextKey($key, $value);
             }
@@ -133,7 +135,7 @@ class SessionContext extends ContextBase
     /**
      * Establecer la hora de carga de la configuración
      *
-     * @param int $time
+     * @param  int  $time
      */
     public function setConfigTime(int $time): void
     {
@@ -153,7 +155,7 @@ class SessionContext extends ContextBase
     /**
      * Establece los datos del usuario en la sesión.
      *
-     * @param UserLoginResponse|null $userLoginResponse
+     * @param  UserLoginResponse|null  $userLoginResponse
      */
     public function setUserData(UserLoginResponse $userLoginResponse = null): void
     {
@@ -173,7 +175,7 @@ class SessionContext extends ContextBase
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param ProfileData $ProfileData
+     * @param  ProfileData  $ProfileData
      */
     public function setUserProfile(ProfileData $ProfileData): void
     {
@@ -189,7 +191,7 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * @param \SP\Domain\Account\Search\AccountSearchFilter $searchFilters
+     * @param  \SP\Domain\Account\Search\AccountSearchFilter  $searchFilters
      */
     public function setSearchFilters(AccountSearchFilter $searchFilters): void
     {
@@ -209,7 +211,7 @@ class SessionContext extends ContextBase
     public function isLoggedIn(): bool
     {
         return self::$isReset === false && $this->getUserData()->getLogin()
-            && is_object($this->getUserData()->getPreferences());
+               && is_object($this->getUserData()->getPreferences());
     }
 
     /**
@@ -253,7 +255,7 @@ class SessionContext extends ContextBase
     /**
      * Sets a temporary master password
      *
-     * @param string $password
+     * @param  string  $password
      */
     public function setTemporaryMasterPass(string $password): void
     {
@@ -293,7 +295,7 @@ class SessionContext extends ContextBase
     /**
      * Establecer el timeout de la sesión
      *
-     * @param int $timeout El valor en segundos
+     * @param  int  $timeout  El valor en segundos
      *
      * @return int
      */
@@ -365,7 +367,7 @@ class SessionContext extends ContextBase
     /**
      * Establece el color asociado a una cuenta
      *
-     * @param array $color
+     * @param  array  $color
      */
     public function setAccountColor(array $color): void
     {
@@ -385,7 +387,7 @@ class SessionContext extends ContextBase
     /**
      * Establecer el estado de la aplicación
      *
-     * @param string $status
+     * @param  string  $status
      */
     public function setAppStatus(string $status): void
     {
@@ -405,7 +407,7 @@ class SessionContext extends ContextBase
     /**
      * Set the CSRF key
      *
-     * @param string $csrf
+     * @param  string  $csrf
      */
     public function setCSRF(string $csrf): void
     {
@@ -435,7 +437,7 @@ class SessionContext extends ContextBase
     /**
      * Establecer la clave maestra encriptada
      *
-     * @param Vault $vault
+     * @param  Vault  $vault
      */
     public function setVault(Vault $vault): void
     {
@@ -445,7 +447,7 @@ class SessionContext extends ContextBase
     /**
      * Establece la cache de cuentas
      *
-     * @param array $accountsCache
+     * @param  array  $accountsCache
      */
     public function setAccountsCache(array $accountsCache): void
     {
@@ -523,9 +525,9 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * @param string $pluginName
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $pluginName
+     * @param  string  $key
+     * @param  mixed  $value
      *
      * @return mixed
      */
@@ -540,8 +542,8 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * @param string $pluginName
-     * @param string $key
+     * @param  string  $pluginName
+     * @param  string  $key
      *
      * @return mixed
      */

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
 use SP\Domain\User\Services\UserLoginResponse;
+use function SP\processException;
 
 /**
  * Class ApiContext
@@ -37,7 +38,7 @@ class StatelessContext extends ContextBase
     /**
      * Establece los datos del usuario en la sesión.
      *
-     * @param UserLoginResponse|null $userLoginResponse
+     * @param  UserLoginResponse|null  $userLoginResponse
      */
     public function setUserData(UserLoginResponse $userLoginResponse = null): void
     {
@@ -47,17 +48,15 @@ class StatelessContext extends ContextBase
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param  string  $key  El nombre de la variable
+     * @param  mixed  $value  El valor de la variable
      *
      * @return mixed
      */
-    protected function setContextKey(string $key, $value)
+    protected function setContextKey(string $key, mixed $value): mixed
     {
         try {
-            parent::setContextKey($key, $value);
-
-            return $value;
+            return parent::setContextKey($key, $value);
         } catch (ContextException $e) {
             processException($e);
         }
@@ -68,7 +67,7 @@ class StatelessContext extends ContextBase
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
-     * @return ProfileData
+     * @return \SP\DataModel\ProfileData|null
      */
     public function getUserProfile(): ?ProfileData
     {
@@ -78,12 +77,12 @@ class StatelessContext extends ContextBase
     /**
      * Devolver una variable de sesión
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
+     * @param  mixed  $default
      *
      * @return mixed
      */
-    protected function getContextKey(string $key, $default = null)
+    protected function getContextKey(string $key, $default = null): mixed
     {
         try {
             return parent::getContextKey($key, $default);
@@ -97,7 +96,7 @@ class StatelessContext extends ContextBase
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param ProfileData $profileData
+     * @param  ProfileData  $profileData
      */
     public function setUserProfile(ProfileData $profileData): void
     {
@@ -155,7 +154,7 @@ class StatelessContext extends ContextBase
     /**
      * Establecer el estado de la aplicación
      *
-     * @param string $status
+     * @param  string  $status
      */
     public function setAppStatus(string $status): void
     {
@@ -184,7 +183,7 @@ class StatelessContext extends ContextBase
     /**
      * Establecer la hora de carga de la configuración
      *
-     * @param int $time
+     * @param  int  $time
      */
     public function setConfigTime(int $time): void
     {
@@ -212,7 +211,7 @@ class StatelessContext extends ContextBase
     /**
      * Sets a temporary master password
      *
-     * @param string $password
+     * @param  string  $password
      *
      * @throws ContextException
      */
@@ -222,9 +221,9 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @param string $pluginName
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $pluginName
+     * @param  string  $key
+     * @param  mixed  $value
      *
      * @return mixed
      */
@@ -238,8 +237,8 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @param string $pluginName
-     * @param string $key
+     * @param  string  $pluginName
+     * @param  string  $key
      *
      * @return mixed
      */

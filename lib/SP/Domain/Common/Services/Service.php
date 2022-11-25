@@ -24,19 +24,16 @@
 
 namespace SP\Domain\Common\Services;
 
-use Closure;
 use Defuse\Crypto\Exception\CryptoException;
-use Exception;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
-use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventMessage;
 use SP\Domain\Config\ConfigInterface;
-use SP\Infrastructure\Database\DatabaseInterface;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class Service
@@ -56,42 +53,6 @@ abstract class Service
         $this->config = $application->getConfig();
         $this->context = $application->getContext();
         $this->eventDispatcher = $application->getEventDispatcher();
-    }
-
-    /**
-     * Bubbles a Closure in a database transaction
-     *
-     * @param  \Closure  $closure
-     * @param  \SP\Infrastructure\Database\DatabaseInterface  $database
-     *
-     * @return mixed
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \Exception
-     */
-    protected function transactionAware(Closure $closure, DatabaseInterface $database)
-    {
-        if ($database->beginTransaction()) {
-            try {
-                $result = $closure->call($this);
-
-                $database->endTransaction();
-
-                return $result;
-            } catch (Exception $e) {
-                $database->rollbackTransaction();
-
-                logger('Transaction:Rollback');
-
-                $this->eventDispatcher->notifyEvent(
-                    'database.rollback',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Rollback')))
-                );
-
-                throw $e;
-            }
-        } else {
-            throw new ServiceException(__u('Unable to start a transaction'));
-        }
     }
 
     /**

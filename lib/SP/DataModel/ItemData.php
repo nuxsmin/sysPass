@@ -34,8 +34,8 @@ use SP\Domain\Common\Out\DataModelInterface;
  */
 class ItemData extends DataModelBase implements DataModelInterface
 {
-    private ?int    $id   = null;
-    private ?string $name = null;
+    protected ?int    $id   = null;
+    protected ?string $name = null;
 
     public function getId(): ?int
     {

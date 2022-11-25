@@ -1,9 +1,4 @@
 {
-  "name": "syspass/syspass",
-  "description": "PHP web based Password Manager for business and personal use.",
-  "homepage": "https://syspass.org",
-  "minimum-stability": "stable",
-  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Rubén Domínguez",
@@ -12,11 +7,29 @@
       "homepage": "https://syspass.org/"
     }
   ],
-  "support": {
-    "issues": "https://github.com/nuxsmin/sysPass/issues",
-    "source": "https://github.com/nuxsmin/sysPass",
-    "docs": "https://doc.syspass.org"
+  "autoload": {
+    "psr-4": {
+      "SP\\": "lib/SP/",
+      "SP\\Modules\\Web\\": "app/modules/web/",
+      "SP\\Modules\\Api\\": "app/modules/api/",
+      "SP\\Modules\\Cli\\": "app/modules/cli/",
+      "SP\\Tests\\": "tests/SP/"
+    }
   },
+  "config": {
+    "classmap-authoritative": false,
+    "platform": {
+      "php": "8.0"
+    },
+    "allow-plugins": {
+      "ocramius/package-versions": true
+    }
+  },
+  "description": "PHP web based Password Manager for business and personal use.",
+  "homepage": "https://syspass.org",
+  "license": "GPL-3.0",
+  "minimum-stability": "stable",
+  "name": "syspass/syspass",
   "require": {
     "php": "~8.0 || ~8.1",
     "defuse/php-encryption": "^2.1",
@@ -56,32 +69,19 @@
     "squizlabs/php_codesniffer": "^3",
     "phpstan/phpstan": "^1.9"
   },
+  "scripts": {
+    "phpcs": "phpcs --standard=PSR2 lib",
+    "phpstan": "vendor/bin/phpstan analyse lib tests --xdebug"
+  },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.2",
     "ext-ldap": "*",
     "ext-curl": "*",
     "ext-xdebug": "*"
   },
-  "autoload": {
-    "psr-4": {
-      "SP\\": "lib/SP/",
-      "SP\\Modules\\Web\\": "app/modules/web/",
-      "SP\\Modules\\Api\\": "app/modules/api/",
-      "SP\\Modules\\Cli\\": "app/modules/cli/",
-      "SP\\Tests\\": "tests/SP/"
-    }
-  },
-  "config": {
-    "classmap-authoritative": false,
-    "platform": {
-      "php": "8.0"
-    },
-    "allow-plugins": {
-      "ocramius/package-versions": true
-    }
-  },
-  "scripts": {
-    "phpcs": "phpcs --standard=PSR2 lib",
-    "phpstan": "vendor/bin/phpstan analyse lib tests --xdebug"
+  "support": {
+    "issues": "https://github.com/nuxsmin/sysPass/issues",
+    "source": "https://github.com/nuxsmin/sysPass",
+    "docs": "https://doc.syspass.org"
   }
 }

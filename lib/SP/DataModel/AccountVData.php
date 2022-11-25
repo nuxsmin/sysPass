@@ -24,7 +24,6 @@
 
 namespace SP\DataModel;
 
-
 use SP\Domain\Common\Out\DataModelBase;
 
 /**
@@ -34,570 +33,190 @@ use SP\Domain\Common\Out\DataModelBase;
  */
 class AccountVData extends DataModelBase
 {
-    /**
-     * @var int Id de la cuenta.
-     */
-    public $id = 0;
-    /**
-     * @var int Id del usuario principal de la cuenta.
-     */
-    public $userId = 0;
-    /**
-     * @var int Id del grupo principal de la cuenta.
-     */
-    public $userGroupId = 0;
-    /**
-     * @var int Id del usuario que editó la cuenta.
-     */
-    public $userEditId = 0;
-    /**
-     * @var string El nombre de la cuenta.
-     */
-    public $name = '';
-    /**
-     * @var int Id del cliente de la cuenta.
-     */
-    public $clientId = 0;
-    /**
-     * @var int Id de la categoría de la cuenta.
-     */
-    public $categoryId = 0;
-    /**
-     * @var string El nombre de usuario de la cuenta.
-     */
-    public $login = '';
-    /**
-     * @var string La URL de la cuenta.
-     */
-    public $url = '';
-    /**
-     * @var string La clave de la cuenta.
-     */
-    public $pass = '';
-    /**
-     * @var string La clave de encriptación de la cuenta
-     */
-    public $key = '';
-    /**
-     * @var string Las nosta de la cuenta.
-     */
-    public $notes = '';
-    /**
-     * @var int
-     */
-    public $otherUserEdit = 0;
-    /**
-     * @var int
-     */
-    public $otherUserGroupEdit = 0;
-    /**
-     * @var int
-     */
-    public $dateAdd = 0;
-    /**
-     * @var int
-     */
-    public $dateEdit = 0;
-    /**
-     * @var int
-     */
-    public $countView = 0;
-    /**
-     * @var int
-     */
-    public $countDecrypt = 0;
-    /**
-     * @var int
-     */
-    public $isPrivate = 0;
-    /**
-     * @var int
-     */
-    public $isPrivateGroup = 0;
-    /**
-     * @var int
-     */
-    public $passDate = 0;
-    /**
-     * @var int
-     */
-    public $passDateChange = 0;
-    /**
-     * @var int
-     */
-    public $parentId = 0;
-    /**
-     * @var string
-     */
-    public $categoryName = '';
-    /**
-     * @var string
-     */
-    public $clientName = '';
-    /**
-     * @var string
-     */
-    public $userGroupName = '';
-    /**
-     * @var string
-     */
-    public $userName = '';
-    /**
-     * @var string
-     */
-    public $userLogin = '';
-    /**
-     * @var string
-     */
-    public $userEditName = '';
-    /**
-     * @var string
-     */
-    public $userEditLogin = '';
-    /**
-     * @var string
-     */
-    public $publicLinkHash = '';
+    protected ?int    $id                 = null;
+    protected ?int    $userId             = null;
+    protected ?int    $userGroupId        = null;
+    protected ?int    $userEditId         = null;
+    protected ?string $name               = null;
+    protected ?int    $clientId           = null;
+    protected ?int    $categoryId         = null;
+    protected ?string $login              = null;
+    protected ?string $url                = null;
+    protected ?string $pass               = null;
+    protected ?string $key                = null;
+    protected ?string $notes              = null;
+    protected ?int    $otherUserEdit      = null;
+    protected ?int    $otherUserGroupEdit = null;
+    protected ?int    $dateAdd            = null;
+    protected ?int    $dateEdit           = null;
+    protected ?int    $countView          = null;
+    protected ?int    $countDecrypt       = null;
+    protected ?int    $isPrivate          = null;
+    protected ?int    $isPrivateGroup     = null;
+    protected ?int    $passDate           = null;
+    protected ?int    $passDateChange     = null;
+    protected ?int    $parentId           = null;
+    protected ?string $categoryName       = null;
+    protected ?string $clientName         = null;
+    protected ?string $userGroupName      = null;
+    protected ?string $userName           = null;
+    protected ?string $userLogin          = null;
+    protected ?string $userEditName       = null;
+    protected ?string $userEditLogin      = null;
+    protected ?string $publicLinkHash     = null;
 
-    /**
-     * AccountData constructor.
-     *
-     * @param int $accountId
-     */
-    public function __construct($accountId = 0)
+    public function getId(): ?int
     {
-        $this->id = (int)$accountId;
+        return $this->id;
     }
 
-    /**
-     * @return int
-     */
-    public function getDateAdd()
+    public function getUserId(): ?int
     {
-        return (int)$this->dateAdd;
+        return $this->userId;
     }
 
-    /**
-     * @param int $dateAdd
-     */
-    public function setDateAdd($dateAdd)
+    public function getUserGroupId(): ?int
     {
-        $this->dateAdd = $dateAdd;
+        return $this->userGroupId;
     }
 
-    /**
-     * @return int
-     */
-    public function getDateEdit()
+    public function getUserEditId(): ?int
     {
-        return (int)$this->dateEdit;
+        return $this->userEditId;
     }
 
-    /**
-     * @param int $dateEdit
-     */
-    public function setDateEdit($dateEdit)
-    {
-        $this->dateEdit = $dateEdit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserEditId()
-    {
-        return (int)$this->userEditId;
-    }
-
-    /**
-     * @param int $userEditId
-     */
-    public function setUserEditId($userEditId)
-    {
-        $this->userEditId = (int)$userEditId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPass()
-    {
-        return $this->pass;
-    }
-
-    /**
-     * @param string $pass
-     */
-    public function setPass($pass)
-    {
-        $this->pass = $pass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId()
-    {
-        return (int)$this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = (int)$id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return (int)$this->userId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = (int)$userId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
-    {
-        return (int)$this->userGroupId;
-    }
-
-    /**
-     * @param int $userGroupId
-     */
-    public function setUserGroupId($userGroupId)
-    {
-        $this->userGroupId = (int)$userGroupId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOtherUserEdit()
-    {
-        return (int)$this->otherUserEdit;
-    }
-
-    /**
-     * @param bool $otherUserEdit
-     */
-    public function setOtherUserEdit($otherUserEdit)
-    {
-        $this->otherUserEdit = (int)$otherUserEdit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOtherUserGroupEdit()
-    {
-        return (int)$this->otherUserGroupEdit;
-    }
-
-    /**
-     * @param bool $otherUserGroupEdit
-     */
-    public function setOtherUserGroupEdit($otherUserGroupEdit)
-    {
-        $this->otherUserGroupEdit = (int)$otherUserGroupEdit;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function getClientId(): ?int
     {
-        $this->name = $name;
+        return $this->clientId;
     }
 
-    /**
-     * @return int
-     */
-    public function getCategoryId()
+    public function getCategoryId(): ?int
     {
-        return (int)$this->categoryId;
+        return $this->categoryId;
     }
 
-    /**
-     * @param int $categoryId
-     */
-    public function setCategoryId($categoryId)
-    {
-        $this->categoryId = (int)$categoryId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getClientId()
-    {
-        return (int)$this->clientId;
-    }
-
-    /**
-     * @param int $clientId
-     */
-    public function setClientId($clientId)
-    {
-        $this->clientId = (int)$clientId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLogin()
+    public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    /**
-     * @param string $login
-     */
-    public function setLogin($login)
-    {
-        $this->login = $login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string $url
-     */
-    public function setUrl($url)
+    public function getPass(): ?string
     {
-        $this->url = $url;
+        return $this->pass;
     }
 
-    /**
-     * @return string
-     */
-    public function getNotes()
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    /**
-     * @param string $notes
-     */
-    public function setNotes($notes)
+    public function getOtherUserEdit(): ?int
     {
-        $this->notes = $notes;
+        return $this->otherUserEdit;
     }
 
-    /**
-     * @return int
-     */
-    public function getCountView()
+    public function getOtherUserGroupEdit(): ?int
     {
-        return (int)$this->countView;
+        return $this->otherUserGroupEdit;
     }
 
-    /**
-     * @param int $countView
-     */
-    public function setCountView($countView)
+    public function getDateAdd(): ?int
     {
-        $this->countView = (int)$countView;
+        return $this->dateAdd;
     }
 
-    /**
-     * @return int
-     */
-    public function getCountDecrypt()
+    public function getDateEdit(): ?int
     {
-        return (int)$this->countDecrypt;
+        return $this->dateEdit;
     }
 
-    /**
-     * @param int $countDecrypt
-     */
-    public function setCountDecrypt($countDecrypt)
+    public function getCountView(): ?int
     {
-        $this->countDecrypt = (int)$countDecrypt;
+        return $this->countView;
     }
 
-    /**
-     * @return int
-     */
-    public function getIsPrivate()
+    public function getCountDecrypt(): ?int
     {
-        return (int)$this->isPrivate;
+        return $this->countDecrypt;
     }
 
-    /**
-     * @param int $isPrivate
-     */
-    public function setIsPrivate($isPrivate)
+    public function getIsPrivate(): ?int
     {
-        $this->isPrivate = (int)$isPrivate;
+        return $this->isPrivate;
     }
 
-    /**
-     * @return int
-     */
-    public function getPassDate()
+    public function getIsPrivateGroup(): ?int
     {
-        return (int)$this->passDate;
+        return $this->isPrivateGroup;
     }
 
-    /**
-     * @param int $passDate
-     */
-    public function setPassDate($passDate)
+    public function getPassDate(): ?int
     {
-        $this->passDate = (int)$passDate;
+        return $this->passDate;
     }
 
-    /**
-     * @return int
-     */
-    public function getPassDateChange()
+    public function getPassDateChange(): ?int
     {
-        return (int)$this->passDateChange;
+        return $this->passDateChange;
     }
 
-    /**
-     * @param int $passDateChange
-     */
-    public function setPassDateChange($passDateChange)
+    public function getParentId(): ?int
     {
-        $this->passDateChange = (int)$passDateChange;
+        return $this->parentId;
     }
 
-    /**
-     * @return int
-     */
-    public function getParentId()
-    {
-        return (int)$this->parentId;
-    }
-
-    /**
-     * @param int $parentId
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = (int)$parentId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIsPrivateGroup()
-    {
-        return (int)$this->isPrivateGroup;
-    }
-
-    /**
-     * @param int $isPrivateGroup
-     */
-    public function setIsPrivateGroup($isPrivateGroup)
-    {
-        $this->isPrivateGroup = (int)$isPrivateGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserEditName()
-    {
-        return $this->userEditName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserEditLogin()
-    {
-        return $this->userEditLogin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPublicLinkHash()
-    {
-        return $this->publicLinkHash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
+    public function getCategoryName(): ?string
     {
         return $this->categoryName;
     }
 
-    /**
-     * @return string
-     */
-    public function getClientName()
+    public function getClientName(): ?string
     {
         return $this->clientName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserGroupName()
+    public function getUserGroupName(): ?string
     {
         return $this->userGroupName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserName()
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserLogin()
+    public function getUserLogin(): ?string
     {
         return $this->userLogin;
+    }
+
+    public function getUserEditName(): ?string
+    {
+        return $this->userEditName;
+    }
+
+    public function getUserEditLogin(): ?string
+    {
+        return $this->userEditLogin;
+    }
+
+    public function getPublicLinkHash(): ?string
+    {
+        return $this->publicLinkHash;
     }
 }

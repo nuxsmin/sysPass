@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\DataModel\FileData;
  *
  * @package SP\Util
  */
-final class FileUtil
+class FileUtil
 {
     private const IMAGE_MIME = [
         'image/jpeg',
@@ -50,7 +50,7 @@ final class FileUtil
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @see https://stackoverflow.com/a/7288067
      */
-    public static function rmdir_recursive(string $dir): bool
+    public static function rmdirRecursive(string $dir): bool
     {
         if (!is_dir($dir)) {
             throw new FileNotFoundException('Directory does not exist');

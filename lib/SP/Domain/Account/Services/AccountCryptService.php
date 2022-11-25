@@ -33,6 +33,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\AccountCryptServiceInterface;
 use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
@@ -52,7 +53,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
 
     public function __construct(
         Application $application,
-        AccountService $accountService,
+        AccountServiceInterface $accountService,
         AccountHistoryServiceInterface $accountHistoryService
     ) {
         parent::__construct($application);

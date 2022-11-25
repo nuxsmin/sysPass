@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,561 +33,541 @@ defined('APP_ROOT') || die();
  */
 class ProfileData
 {
-    /**
-     * @var bool
-     */
-    protected $accView = false;
-    /**
-     * @var bool
-     */
-    protected $accViewPass = false;
-    /**
-     * @var bool
-     */
-    protected $accViewHistory = false;
-    /**
-     * @var bool
-     */
-    protected $accEdit = false;
-    /**
-     * @var bool
-     */
-    protected $accEditPass = false;
-    /**
-     * @var bool
-     */
-    protected $accAdd = false;
-    /**
-     * @var bool
-     */
-    protected $accDelete = false;
-    /**
-     * @var bool
-     */
-    protected $accFiles = false;
-    /**
-     * @var bool
-     */
-    protected $accPrivate = false;
-    /**
-     * @var bool
-     */
-    protected $accPrivateGroup = false;
-    /**
-     * @var bool
-     */
-    protected $accPermission = false;
-    /**
-     * @var bool
-     */
-    protected $accPublicLinks = false;
-    /**
-     * @var bool
-     */
-    protected $accGlobalSearch = false;
-    /**
-     * @var bool
-     */
-    protected $configGeneral = false;
-    /**
-     * @var bool
-     */
-    protected $configEncryption = false;
-    /**
-     * @var bool
-     */
-    protected $configBackup = false;
-    /**
-     * @var bool
-     */
-    protected $configImport = false;
-    /**
-     * @var bool
-     */
-    protected $mgmUsers = false;
-    /**
-     * @var bool
-     */
-    protected $mgmGroups = false;
-    /**
-     * @var bool
-     */
-    protected $mgmProfiles = false;
-    /**
-     * @var bool
-     */
-    protected $mgmCategories = false;
-    /**
-     * @var bool
-     */
-    protected $mgmCustomers = false;
-    /**
-     * @var bool
-     */
-    protected $mgmApiTokens = false;
-    /**
-     * @var bool
-     */
-    protected $mgmPublicLinks = false;
-    /**
-     * @var bool
-     */
-    protected $mgmAccounts = false;
-    /**
-     * @var bool
-     */
-    protected $mgmTags = false;
-    /**
-     * @var bool
-     */
-    protected $mgmFiles = false;
-    /**
-     * @var bool
-     */
-    protected $mgmItemsPreset = false;
-    /**
-     * @var bool
-     */
-    protected $evl = false;
-    /**
-     * @var bool
-     */
-    protected $mgmCustomFields = false;
+    protected bool $accView          = false;
+    protected bool $accViewPass      = false;
+    protected bool $accViewHistory   = false;
+    protected bool $accEdit          = false;
+    protected bool $accEditPass      = false;
+    protected bool $accAdd           = false;
+    protected bool $accDelete        = false;
+    protected bool $accFiles         = false;
+    protected bool $accPrivate       = false;
+    protected bool $accPrivateGroup  = false;
+    protected bool $accPermission    = false;
+    protected bool $accPublicLinks   = false;
+    protected bool $accGlobalSearch  = false;
+    protected bool $configGeneral    = false;
+    protected bool $configEncryption = false;
+    protected bool $configBackup     = false;
+    protected bool $configImport     = false;
+    protected bool $mgmUsers         = false;
+    protected bool $mgmGroups        = false;
+    protected bool $mgmProfiles      = false;
+    protected bool $mgmCategories    = false;
+    protected bool $mgmCustomers     = false;
+    protected bool $mgmApiTokens     = false;
+    protected bool $mgmPublicLinks   = false;
+    protected bool $mgmAccounts      = false;
+    protected bool $mgmTags          = false;
+    protected bool $mgmFiles         = false;
+    protected bool $mgmItemsPreset   = false;
+    protected bool $evl              = false;
+    protected bool $mgmCustomFields  = false;
 
-    /**
-     * @return boolean
-     */
-    public function isAccView()
+    public function isAccView(): bool
     {
         return $this->accView;
     }
 
     /**
-     * @param boolean $accView
+     * @param  bool  $accView
      *
      * @return ProfileData
      */
-    public function setAccView($accView)
+    public function setAccView(bool $accView): ProfileData
     {
         $this->accView = $accView;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccViewPass()
+    public function isAccViewPass(): bool
     {
         return $this->accViewPass;
     }
 
     /**
-     * @param boolean $accViewPass
+     * @param  bool  $accViewPass
      *
      * @return ProfileData
      */
-    public function setAccViewPass($accViewPass)
+    public function setAccViewPass(bool $accViewPass): ProfileData
     {
         $this->accViewPass = $accViewPass;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccViewHistory()
+    public function isAccViewHistory(): bool
     {
         return $this->accViewHistory;
     }
 
     /**
-     * @param boolean $accViewHistory
+     * @param  bool  $accViewHistory
      *
      * @return ProfileData
      */
-    public function setAccViewHistory($accViewHistory)
+    public function setAccViewHistory(bool $accViewHistory): ProfileData
     {
         $this->accViewHistory = $accViewHistory;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccEdit()
+    public function isAccEdit(): bool
     {
         return $this->accEdit;
     }
 
     /**
-     * @param boolean $accEdit
+     * @param  bool  $accEdit
      *
      * @return ProfileData
      */
-    public function setAccEdit($accEdit)
+    public function setAccEdit(bool $accEdit): ProfileData
     {
         $this->accEdit = $accEdit;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccEditPass()
+    public function isAccEditPass(): bool
     {
         return $this->accEditPass;
     }
 
     /**
-     * @param boolean $accEditPass
+     * @param  bool  $accEditPass
      *
      * @return ProfileData
      */
-    public function setAccEditPass($accEditPass)
+    public function setAccEditPass(bool $accEditPass): ProfileData
     {
         $this->accEditPass = $accEditPass;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccAdd()
+    public function isAccAdd(): bool
     {
         return $this->accAdd;
     }
 
     /**
-     * @param boolean $accAdd
+     * @param  bool  $accAdd
      *
      * @return ProfileData
      */
-    public function setAccAdd($accAdd)
+    public function setAccAdd(bool $accAdd): ProfileData
     {
         $this->accAdd = $accAdd;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccDelete()
+    public function isAccDelete(): bool
     {
         return $this->accDelete;
     }
 
     /**
-     * @param boolean $accDelete
+     * @param  bool  $accDelete
      *
      * @return ProfileData
      */
-    public function setAccDelete($accDelete)
+    public function setAccDelete(bool $accDelete): ProfileData
     {
         $this->accDelete = $accDelete;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAccFiles()
+    public function isAccFiles(): bool
     {
         return $this->accFiles;
     }
 
     /**
-     * @param boolean $accFiles
+     * @param  bool  $accFiles
      *
      * @return ProfileData
      */
-    public function setAccFiles($accFiles)
+    public function setAccFiles(bool $accFiles): ProfileData
     {
         $this->accFiles = $accFiles;
 
         return $this;
     }
 
+    public function isAccPrivate(): bool
+    {
+        return $this->accPrivate;
+    }
+
     /**
-     * @return boolean
+     * @param  bool  $accPrivate
+     *
+     * @return ProfileData
      */
-    public function isAccPublicLinks()
+    public function setAccPrivate(bool $accPrivate): ProfileData
+    {
+        $this->accPrivate = $accPrivate;
+
+        return $this;
+    }
+
+    public function isAccPrivateGroup(): bool
+    {
+        return $this->accPrivateGroup;
+    }
+
+    /**
+     * @param  bool  $accPrivateGroup
+     *
+     * @return ProfileData
+     */
+    public function setAccPrivateGroup(bool $accPrivateGroup): ProfileData
+    {
+        $this->accPrivateGroup = $accPrivateGroup;
+
+        return $this;
+    }
+
+    public function isAccPermission(): bool
+    {
+        return $this->accPermission;
+    }
+
+    /**
+     * @param  bool  $accPermission
+     *
+     * @return ProfileData
+     */
+    public function setAccPermission(bool $accPermission): ProfileData
+    {
+        $this->accPermission = $accPermission;
+
+        return $this;
+    }
+
+    public function isAccPublicLinks(): bool
     {
         return $this->accPublicLinks;
     }
 
     /**
-     * @param boolean $accPublicLinks
+     * @param  bool  $accPublicLinks
      *
      * @return ProfileData
      */
-    public function setAccPublicLinks($accPublicLinks)
+    public function setAccPublicLinks(bool $accPublicLinks): ProfileData
     {
         $this->accPublicLinks = $accPublicLinks;
 
         return $this;
     }
 
+    public function isAccGlobalSearch(): bool
+    {
+        return $this->accGlobalSearch;
+    }
+
     /**
-     * @return boolean
+     * @param  bool  $accGlobalSearch
+     *
+     * @return ProfileData
      */
-    public function isConfigGeneral()
+    public function setAccGlobalSearch(bool $accGlobalSearch): ProfileData
+    {
+        $this->accGlobalSearch = $accGlobalSearch;
+
+        return $this;
+    }
+
+    public function isConfigGeneral(): bool
     {
         return $this->configGeneral;
     }
 
     /**
-     * @param boolean $configGeneral
+     * @param  bool  $configGeneral
      *
      * @return ProfileData
      */
-    public function setConfigGeneral($configGeneral)
+    public function setConfigGeneral(bool $configGeneral): ProfileData
     {
         $this->configGeneral = $configGeneral;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isConfigEncryption()
+    public function isConfigEncryption(): bool
     {
         return $this->configEncryption;
     }
 
     /**
-     * @param boolean $configEncryption
+     * @param  bool  $configEncryption
      *
      * @return ProfileData
      */
-    public function setConfigEncryption($configEncryption)
+    public function setConfigEncryption(bool $configEncryption): ProfileData
     {
         $this->configEncryption = $configEncryption;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isConfigBackup()
+    public function isConfigBackup(): bool
     {
         return $this->configBackup;
     }
 
     /**
-     * @param boolean $configBackup
+     * @param  bool  $configBackup
      *
      * @return ProfileData
      */
-    public function setConfigBackup($configBackup)
+    public function setConfigBackup(bool $configBackup): ProfileData
     {
         $this->configBackup = $configBackup;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isConfigImport()
+    public function isConfigImport(): bool
     {
         return $this->configImport;
     }
 
     /**
-     * @param boolean $configImport
+     * @param  bool  $configImport
      *
      * @return ProfileData
      */
-    public function setConfigImport($configImport)
+    public function setConfigImport(bool $configImport): ProfileData
     {
         $this->configImport = $configImport;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmUsers()
+    public function isMgmUsers(): bool
     {
         return $this->mgmUsers;
     }
 
     /**
-     * @param boolean $mgmUsers
+     * @param  bool  $mgmUsers
      *
      * @return ProfileData
      */
-    public function setMgmUsers($mgmUsers)
+    public function setMgmUsers(bool $mgmUsers): ProfileData
     {
         $this->mgmUsers = $mgmUsers;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmGroups()
+    public function isMgmGroups(): bool
     {
         return $this->mgmGroups;
     }
 
     /**
-     * @param boolean $mgmGroups
+     * @param  bool  $mgmGroups
      *
      * @return ProfileData
      */
-    public function setMgmGroups($mgmGroups)
+    public function setMgmGroups(bool $mgmGroups): ProfileData
     {
         $this->mgmGroups = $mgmGroups;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmProfiles()
+    public function isMgmProfiles(): bool
     {
         return $this->mgmProfiles;
     }
 
     /**
-     * @param boolean $mgmProfiles
+     * @param  bool  $mgmProfiles
      *
      * @return ProfileData
      */
-    public function setMgmProfiles($mgmProfiles)
+    public function setMgmProfiles(bool $mgmProfiles): ProfileData
     {
         $this->mgmProfiles = $mgmProfiles;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmCategories()
+    public function isMgmCategories(): bool
     {
         return $this->mgmCategories;
     }
 
     /**
-     * @param boolean $mgmCategories
+     * @param  bool  $mgmCategories
      *
      * @return ProfileData
      */
-    public function setMgmCategories($mgmCategories)
+    public function setMgmCategories(bool $mgmCategories): ProfileData
     {
         $this->mgmCategories = $mgmCategories;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmCustomers()
+    public function isMgmCustomers(): bool
     {
         return $this->mgmCustomers;
     }
 
     /**
-     * @param boolean $mgmCustomers
+     * @param  bool  $mgmCustomers
      *
      * @return ProfileData
      */
-    public function setMgmCustomers($mgmCustomers)
+    public function setMgmCustomers(bool $mgmCustomers): ProfileData
     {
         $this->mgmCustomers = $mgmCustomers;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmApiTokens()
+    public function isMgmApiTokens(): bool
     {
         return $this->mgmApiTokens;
     }
 
     /**
-     * @param boolean $mgmApiTokens
+     * @param  bool  $mgmApiTokens
      *
      * @return ProfileData
      */
-    public function setMgmApiTokens($mgmApiTokens)
+    public function setMgmApiTokens(bool $mgmApiTokens): ProfileData
     {
         $this->mgmApiTokens = $mgmApiTokens;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmPublicLinks()
+    public function isMgmPublicLinks(): bool
     {
         return $this->mgmPublicLinks;
     }
 
     /**
-     * @param boolean $mgmPublicLinks
+     * @param  bool  $mgmPublicLinks
      *
      * @return ProfileData
      */
-    public function setMgmPublicLinks($mgmPublicLinks)
+    public function setMgmPublicLinks(bool $mgmPublicLinks): ProfileData
     {
         $this->mgmPublicLinks = $mgmPublicLinks;
 
         return $this;
     }
 
+    public function isMgmAccounts(): bool
+    {
+        return $this->mgmAccounts;
+    }
+
     /**
-     * @return boolean
+     * @param  bool  $mgmAccounts
+     *
+     * @return ProfileData
      */
-    public function isEvl()
+    public function setMgmAccounts(bool $mgmAccounts): ProfileData
+    {
+        $this->mgmAccounts = $mgmAccounts;
+
+        return $this;
+    }
+
+    public function isMgmTags(): bool
+    {
+        return $this->mgmTags;
+    }
+
+    /**
+     * @param  bool  $mgmTags
+     *
+     * @return ProfileData
+     */
+    public function setMgmTags(bool $mgmTags): ProfileData
+    {
+        $this->mgmTags = $mgmTags;
+
+        return $this;
+    }
+
+    public function isMgmFiles(): bool
+    {
+        return $this->mgmFiles;
+    }
+
+    /**
+     * @param  bool  $mgmFiles
+     *
+     * @return ProfileData
+     */
+    public function setMgmFiles(bool $mgmFiles): ProfileData
+    {
+        $this->mgmFiles = $mgmFiles;
+
+        return $this;
+    }
+
+    public function isMgmItemsPreset(): bool
+    {
+        return $this->mgmItemsPreset;
+    }
+
+    /**
+     * @param  bool  $mgmItemsPreset
+     *
+     * @return ProfileData
+     */
+    public function setMgmItemsPreset(bool $mgmItemsPreset): ProfileData
+    {
+        $this->mgmItemsPreset = $mgmItemsPreset;
+
+        return $this;
+    }
+
+    public function isEvl(): bool
     {
         return $this->evl;
     }
 
     /**
-     * @param boolean $evl
+     * @param  bool  $evl
      *
      * @return ProfileData
      */
-    public function setEvl($evl)
+    public function setEvl(bool $evl): ProfileData
     {
         $this->evl = $evl;
 
         return $this;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMgmCustomFields()
+    public function isMgmCustomFields(): bool
     {
         return $this->mgmCustomFields;
     }
 
     /**
-     * @param boolean $mgmCustomFields
+     * @param  bool  $mgmCustomFields
      *
      * @return ProfileData
      */
-    public function setMgmCustomFields($mgmCustomFields)
+    public function setMgmCustomFields(bool $mgmCustomFields): ProfileData
     {
         $this->mgmCustomFields = $mgmCustomFields;
 
@@ -608,181 +588,8 @@ class ProfileData
         // Para realizar la conversión de nombre de propiedades que empiezan por _
         foreach (get_object_vars($this) as $name => $value) {
             if ($name[0] === '_') {
-                $newName = substr($name, 1);
-                $this->$newName = $value;
+                $this->{substr($name, 1)} = $value;
             }
         }
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAccPrivate()
-    {
-        return $this->accPrivate;
-    }
-
-    /**
-     * @param boolean $accPrivate
-     *
-     * @return ProfileData
-     */
-    public function setAccPrivate($accPrivate)
-    {
-        $this->accPrivate = $accPrivate;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAccPermission()
-    {
-        return $this->accPermission;
-    }
-
-    /**
-     * @param boolean $accPermission
-     *
-     * @return ProfileData
-     */
-    public function setAccPermission($accPermission)
-    {
-        $this->accPermission = $accPermission;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isMgmAccounts()
-    {
-        return $this->mgmAccounts;
-    }
-
-    /**
-     * @param boolean $mgmAccounts
-     *
-     * @return ProfileData
-     */
-    public function setMgmAccounts($mgmAccounts)
-    {
-        $this->mgmAccounts = $mgmAccounts;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isMgmTags()
-    {
-        return $this->mgmTags;
-    }
-
-    /**
-     * @param boolean $mgmTags
-     *
-     * @return ProfileData
-     */
-    public function setMgmTags($mgmTags)
-    {
-        $this->mgmTags = $mgmTags;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isMgmFiles()
-    {
-        return $this->mgmFiles;
-    }
-
-    /**
-     * @param boolean $mgmFiles
-     *
-     * @return ProfileData
-     */
-    public function setMgmFiles($mgmFiles)
-    {
-        $this->mgmFiles = $mgmFiles;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAccGlobalSearch()
-    {
-        return $this->accGlobalSearch;
-    }
-
-    /**
-     * @param boolean $accGlobalSearch
-     *
-     * @return ProfileData
-     */
-    public function setAccGlobalSearch($accGlobalSearch)
-    {
-        $this->accGlobalSearch = $accGlobalSearch;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAccPrivateGroup()
-    {
-        return $this->accPrivateGroup;
-    }
-
-    /**
-     * @param bool $accPrivateGroup
-     *
-     * @return ProfileData
-     */
-    public function setAccPrivateGroup($accPrivateGroup)
-    {
-        $this->accPrivateGroup = $accPrivateGroup;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function reset()
-    {
-        foreach ($this as $property => $value) {
-            $this->{$property} = false;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMgmItemsPreset(): bool
-    {
-        return $this->mgmItemsPreset;
-    }
-
-    /**
-     * @param bool $mgmItemsPreset
-     *
-     * @return ProfileData
-     */
-    public function setMgmItemsPreset(bool $mgmItemsPreset)
-    {
-        $this->mgmItemsPreset = $mgmItemsPreset;
-
-        return $this;
     }
 }

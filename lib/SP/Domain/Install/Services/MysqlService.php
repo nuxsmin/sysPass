@@ -33,6 +33,10 @@ use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\PasswordUtil;
+use function SP\__;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class MySQL
@@ -189,7 +193,6 @@ final class MysqlService implements DatabaseSetupInterface
     public function createDatabase(?string $dbUser = null): void
     {
         if (!$this->installData->isHostingMode()) {
-
             if ($this->checkDatabaseExists()) {
                 throw new SPException(
                     __u('The database already exists'),
