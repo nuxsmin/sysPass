@@ -42,7 +42,7 @@ final class CategoryAdapter extends AdapterBase implements CategoryAdapterInterf
 {
     use ItemTrait;
 
-    protected $availableIncludes = ['customFields'];
+    protected array $availableIncludes = ['customFields'];
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException

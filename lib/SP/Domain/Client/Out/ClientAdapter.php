@@ -42,7 +42,7 @@ final class ClientAdapter extends AdapterBase implements ClientAdapterInterface
 {
     use ItemTrait;
 
-    protected $availableIncludes = ['customFields'];
+    protected array $availableIncludes = ['customFields'];
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
