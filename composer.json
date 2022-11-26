@@ -51,8 +51,8 @@
     "ext-zlib": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
-    "league/fractal": "^0.19.2",
-    "symfony/console": "^v5.1.2",
+    "league/fractal": "^0.20",
+    "symfony/console": "^v5.1",
     "symfony/lock": "^v5.0",
     "ocramius/proxy-manager": "~2.0",
     "aura/sqlquery": "~2.8"

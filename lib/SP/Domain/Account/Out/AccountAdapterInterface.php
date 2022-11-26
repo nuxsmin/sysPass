@@ -25,13 +25,10 @@
 namespace SP\Domain\Account\Out;
 
 use League\Fractal\Resource\Collection;
-use SP\DataModel\Dto\AccountDetailsResponse;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\DataModel\Dto\AccountEnrichedDto;
 
 /**
  * Class AccountAdapter
- *
- * @package SP\Adapters
  */
 interface AccountAdapterInterface
 {
@@ -41,10 +38,7 @@ interface AccountAdapterInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function includeCustomFields(
-        AccountDetailsResponse $data,
-        CustomFieldServiceInterface $customFieldService
-    ): Collection;
+    public function includeCustomFields(AccountEnrichedDto $data,): Collection;
 
-    public function transform(AccountDetailsResponse $data): array;
+    public function transform(AccountEnrichedDto $data): array;
 }

@@ -28,6 +28,7 @@ use RuntimeException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Out\DataModelInterface;
 use SP\Http\Json;
+use function SP\__u;
 
 /**
  * Class SelectItemAdapter
@@ -103,27 +104,25 @@ final class SelectItemAdapter implements ItemAdapterInterface
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
-     * @param array           $selected
-     * @param string|int|null $skip
+     * @param  array  $selected
+     * @param  string|int|null  $skip
      *
      * @return SelectItem[]
      */
     public function getItemsFromModelSelected(
         array $selected,
-              $skip = null
-    ): array
-    {
+        mixed $skip = null
+    ): array {
         $items = $this->getItemsFromModel();
 
-        foreach ($items as $item) {
-            if ($skip !== null && $item->getId() === $skip) {
-                $item->setSkip(true);
+        array_walk(
+            $items,
+            static function (SelectItem $item) use ($selected, $skip) {
+                $item->setSkip($item->getId() === $skip);
+                /** @noinspection TypeUnsafeArraySearchInspection */
+                $item->setSelected(in_array($item->getId(), $selected));
             }
-
-            if (in_array($item->getId(), $selected, false)) {
-                $item->setSelected(true);
-            }
-        }
+        );
 
         return $items;
     }
@@ -135,21 +134,16 @@ final class SelectItemAdapter implements ItemAdapterInterface
      */
     public function getItemsFromModel(): array
     {
-        $out = [];
+        return array_map(
+            static function ($item) {
+                if (!$item instanceof DataModelInterface) {
+                    throw new RuntimeException(__u('Wrong object type'));
+                }
 
-        foreach ($this->items as $item) {
-            if (!$item instanceof DataModelInterface) {
-                throw new RuntimeException(__u('Wrong object type'));
-            }
-
-            $out[] = new SelectItem(
-                $item->getId(),
-                $item->getName(),
-                $item
-            );
-        }
-
-        return $out;
+                return new SelectItem($item->getId(), $item->getName(), $item);
+            },
+            $this->items
+        );
     }
 
     /**
@@ -157,20 +151,19 @@ final class SelectItemAdapter implements ItemAdapterInterface
      *
      * @return SelectItem[]
      */
-    public function getItemsFromArraySelected(
-        array $selected,
-        bool  $useValueAsKey = false
-    ): array
+    public function getItemsFromArraySelected(array $selected, bool $useValueAsKey = false): array
     {
         $items = $this->getItemsFromArray();
 
-        foreach ($items as $item) {
-            $value = $useValueAsKey ? $item->getName() : $item->getId();
+        array_walk(
+            $items,
+            static function (SelectItem $item) use ($selected, $useValueAsKey) {
+                $value = $useValueAsKey ? $item->getName() : $item->getId();
 
-            if (in_array($value, $selected, false)) {
-                $item->setSelected(true);
+                /** @noinspection TypeUnsafeArraySearchInspection */
+                $item->setSelected(in_array($value, $selected));
             }
-        }
+        );
 
         return $items;
     }
@@ -182,12 +175,10 @@ final class SelectItemAdapter implements ItemAdapterInterface
      */
     public function getItemsFromArray(): array
     {
-        $out = [];
-
-        foreach ($this->items as $key => $value) {
-            $out[] = new SelectItem($key, $value);
-        }
-
-        return $out;
+        return array_map(
+            static fn($key, $value) => new SelectItem($key, $value),
+            array_keys($this->items),
+            array_values($this->items)
+        );
     }
 }

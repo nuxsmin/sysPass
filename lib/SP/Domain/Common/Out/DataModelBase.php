@@ -70,4 +70,12 @@ abstract class DataModelBase
         return property_exists($this, $name) || isset($this->properties[$name]);
     }
 
+    final public function toArray(): array
+    {
+        if (count($this->properties) !== 0) {
+            return $this->properties;
+        }
+
+        return get_object_vars($this);
+    }
 }

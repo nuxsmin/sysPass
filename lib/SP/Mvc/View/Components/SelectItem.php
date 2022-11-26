@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,20 +33,20 @@ use JsonSerializable;
  */
 final class SelectItem implements JsonSerializable
 {
-    protected $id;
-    protected string $name;
-    protected $item;
-    protected bool $selected = false;
-    protected bool $skip = false;
+    protected int|string $id;
+    protected string     $name;
+    protected mixed      $item;
+    protected bool       $selected = false;
+    protected bool       $skip     = false;
 
     /**
      * SelectItem constructor.
      *
-     * @param int|string $id
-     * @param string     $name
-     * @param mixed      $item
+     * @param  int|string  $id
+     * @param  string  $name
+     * @param  mixed  $item
      */
-    public function __construct($id, string $name, $item = null)
+    public function __construct(int|string $id, string $name, mixed $item = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -56,7 +56,7 @@ final class SelectItem implements JsonSerializable
     /**
      * @return int|string
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
@@ -77,13 +77,17 @@ final class SelectItem implements JsonSerializable
     }
 
     /**
+     * @param  string  $property
+     *
      * @return mixed
      */
-    public function getItemProperty(string $property)
+    public function getItemProperty(string $property): mixed
     {
-        return null !== $this->item && isset($this->item->{$property})
-            ? $this->item->{$property}
-            : null;
+        if (null !== $this->item) {
+            return $this->item->{$property} ?? null;
+        }
+
+        return null;
     }
 
     public function isSkip(): bool
@@ -99,7 +103,7 @@ final class SelectItem implements JsonSerializable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return ['id' => $this->id, 'name' => $this->name];
     }

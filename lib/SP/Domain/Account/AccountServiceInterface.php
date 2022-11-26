@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Out\AccountData;
 use SP\Domain\Account\Out\AccountPassData;
@@ -52,19 +52,19 @@ interface AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+    public function withUsersById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
 
     /**
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+    public function withUserGroupsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
 
     /**
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface;
+    public function withTagsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -114,7 +114,7 @@ interface AccountServiceInterface
      * @throws NoSuchItemException
      * @throws ConstraintException
      */
-    public function getById(int $id): AccountDetailsResponse;
+    public function getById(int $id): AccountEnrichedDto;
 
     /**
      * Updates external items for the account

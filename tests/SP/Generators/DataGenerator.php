@@ -22,27 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Out;
+namespace SP\Tests\Generators;
 
-use League\Fractal\TransformerAbstract;
-use RuntimeException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use Faker\Factory;
+use Faker\Generator;
 
 /**
- * Class AdapterBase
- *
- * @package SP\Adapters
+ * Class DataGenerator
  */
-abstract class AdapterBase extends TransformerAbstract
+abstract class DataGenerator
 {
-    protected ConfigDataInterface $configData;
+    protected Generator $faker;
 
-    public function __construct(ConfigDataInterface $configData)
+    private function __construct()
     {
-        $this->configData = $configData;
+        $this->faker = Factory::create();
+    }
 
-        if (!method_exists(static::class, 'transform')) {
-            throw new RuntimeException('\'transform\' method must be implemented');
-        }
+    public static function factory(): static
+    {
+        return new static();
     }
 }

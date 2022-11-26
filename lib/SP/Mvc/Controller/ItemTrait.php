@@ -33,11 +33,10 @@ use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Http\RequestInterface;
 use SP\Util\Filter;
+use function SP\__u;
 
 /**
  * Trait ItemTrait
- *
- * @package SP\Modules\Web\Controllers\Traits
  */
 trait ItemTrait
 {
@@ -83,7 +82,7 @@ trait ItemTrait
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR);
+                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
             }
         }
 
@@ -106,11 +105,11 @@ trait ItemTrait
      */
     protected function addCustomFieldsForItem(
         int $moduleId,
-        $itemId,
+        int|array $itemId,
         RequestInterface $request,
         CustomFieldServiceInterface $customFieldService
     ): void {
-        $customFields = $this->getCustomFieldsFromRequest($request);
+        $customFields = self::getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
             try {
@@ -124,9 +123,22 @@ trait ItemTrait
                     $customFieldService->create($customFieldData);
                 }
             } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR);
+                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
             }
         }
+    }
+
+    /**
+     * @param  \SP\Http\RequestInterface  $request
+     *
+     * @return array|null
+     */
+    private static function getCustomFieldsFromRequest(RequestInterface $request): ?array
+    {
+        return $request->analyzeArray(
+            'customfield',
+            fn($values) => array_map(static fn($value) => Filter::getString($value), $values)
+        );
     }
 
     /**
@@ -142,7 +154,7 @@ trait ItemTrait
      */
     protected function deleteCustomFieldsForItem(
         int $moduleId,
-        $itemId,
+        array|int $itemId,
         CustomFieldServiceInterface $customFieldService
     ): void {
         if (is_array($itemId)) {
@@ -166,11 +178,11 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem(
         int $moduleId,
-        $itemId,
+        int|array $itemId,
         RequestInterface $request,
         CustomFieldServiceInterface $customFieldService
     ): void {
-        $customFields = $this->getCustomFieldsFromRequest($request);
+        $customFields = self::getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
             try {
@@ -186,7 +198,7 @@ trait ItemTrait
                     }
                 }
             } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR);
+                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
             }
         }
     }
@@ -207,18 +219,5 @@ trait ItemTrait
     protected function getItemsIdFromRequest(RequestInterface $request): ?array
     {
         return $request->analyzeArray('items');
-    }
-
-    /**
-     * @param  \SP\Http\RequestInterface  $request
-     *
-     * @return array|null
-     */
-    private static function getCustomFieldsFromRequest(RequestInterface $request): ?array
-    {
-        return $request->analyzeArray(
-            'customfield',
-            fn($values) => array_map(static fn($value) => Filter::getString($value), $values)
-        );
     }
 }

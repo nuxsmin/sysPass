@@ -82,11 +82,11 @@ final class AccountAclDto
     }
 
     /**
-     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  AccountEnrichedDto  $accountDetailsResponse
      *
      * @return AccountAclDto
      */
-    public static function makeFromAccount(AccountDetailsResponse $accountDetailsResponse): AccountAclDto
+    public static function makeFromAccount(AccountEnrichedDto $accountDetailsResponse): AccountAclDto
     {
         return new self(
             $accountDetailsResponse->getId(),

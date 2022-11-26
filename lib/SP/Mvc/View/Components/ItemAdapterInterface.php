@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,26 +36,26 @@ interface ItemAdapterInterface
      *
      * @return array
      */
-    public function getItemsFromModel();
+    public function getItemsFromModel(): array;
 
     /**
      * Returns a JSON like collection of items for a select component
      *
      * @return string
      */
-    public function getJsonItemsFromModel();
+    public function getJsonItemsFromModel(): string;
 
     /**
      * Returns a collection of items for a select component
      *
      * @return array
      */
-    public function getItemsFromArray();
+    public function getItemsFromArray(): array;
 
     /**
      * Returns a collection of items for a select component
      *
      * @return string
      */
-    public function getJsonItemsFromArray();
+    public function getJsonItemsFromArray(): string;
 }

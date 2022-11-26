@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,11 +28,11 @@ use SP\DataModel\AccountVData;
 use SP\DataModel\ItemData;
 
 /**
- * Class AccountDetailsResponse
+ * Class AccountEnrichedDto
  */
-class AccountDetailsResponse
+class AccountEnrichedDto
 {
-    private int $id;
+    private int          $id;
     private AccountVData $accountVData;
     /**
      * @var ItemData[] Los usuarios secundarios de la cuenta.
@@ -50,13 +50,20 @@ class AccountDetailsResponse
     /**
      * AccountDetailsResponse constructor.
      *
-     * @param int          $id
-     * @param AccountVData $accountVData
+     * @param  AccountVData  $accountVData
      */
-    public function __construct(int $id, AccountVData $accountVData)
+    public function __construct(AccountVData $accountVData)
     {
-        $this->id = $id;
+        $this->id = $accountVData->getId();
         $this->accountVData = $accountVData;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -68,7 +75,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param ItemData[] $users
+     * @param  ItemData[]  $users
      */
     public function setUsers(array $users): void
     {
@@ -84,7 +91,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param ItemData[] $userGroups
+     * @param  ItemData[]  $userGroups
      */
     public function setUserGroups(array $userGroups): void
     {
@@ -100,7 +107,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param ItemData[] $tags
+     * @param  ItemData[]  $tags
      */
     public function setTags(array $tags): void
     {
@@ -113,13 +120,5 @@ class AccountDetailsResponse
     public function getAccountVData(): AccountVData
     {
         return $this->accountVData;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
     }
 }

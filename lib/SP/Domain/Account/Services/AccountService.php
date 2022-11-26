@@ -33,7 +33,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
@@ -100,7 +100,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUsersById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
+    public function withUsersById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setUsers(
             $this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId())
@@ -114,7 +114,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
+    public function withUserGroupsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setUserGroups(
             $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId())
@@ -128,7 +128,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function withTagsById(AccountDetailsResponse $accountDetailsResponse): AccountServiceInterface
+    public function withTagsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface
     {
         $accountDetailsResponse->setTags(
             $this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId())
@@ -311,7 +311,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws NoSuchItemException
      * @throws ConstraintException
      */
-    public function getById(int $id): AccountDetailsResponse
+    public function getById(int $id): AccountEnrichedDto
     {
         $result = $this->accountRepository->getById($id);
 
@@ -319,7 +319,7 @@ final class AccountService extends Service implements AccountServiceInterface
             throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
-        return new AccountDetailsResponse($id, $result->getData());
+        return new AccountEnrichedDto($result->getData());
     }
 
     /**

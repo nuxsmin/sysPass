@@ -33,7 +33,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountAclDto;
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ProfileData;
@@ -125,7 +125,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  AccountEnrichedDto  $accountDetailsResponse
      * @param  int  $actionId
      *
      * @throws \SP\Core\Acl\AccountPermissionException
@@ -138,7 +138,7 @@ final class AccountHelper extends AccountHelperBase
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function setViewForAccount(
-        AccountDetailsResponse $accountDetailsResponse,
+        AccountEnrichedDto $accountDetailsResponse,
         int $actionId
     ): void {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
@@ -288,14 +288,14 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  AccountEnrichedDto  $accountDetailsResponse
      *
      * @return AccountAcl
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function checkAccess(AccountDetailsResponse $accountDetailsResponse): AccountAcl
+    protected function checkAccess(AccountEnrichedDto $accountDetailsResponse): AccountAcl
     {
         $accountAcl = $this->accountAclService->getAcl(
             $this->actionId,

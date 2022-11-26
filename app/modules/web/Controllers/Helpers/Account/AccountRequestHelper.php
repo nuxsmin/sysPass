@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\Domain\Account\Services\AccountAcl;
 
 /**
@@ -36,7 +36,7 @@ final class AccountRequestHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  AccountDetailsResponse  $accountDetailsResponse
+     * @param  AccountEnrichedDto  $accountDetailsResponse
      * @param  int  $actionId
      *
      * @return bool
@@ -46,7 +46,7 @@ final class AccountRequestHelper extends AccountHelperBase
      * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      */
     public function setViewForRequest(
-        AccountDetailsResponse $accountDetailsResponse,
+        AccountEnrichedDto $accountDetailsResponse,
         int $actionId
     ): bool {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();

@@ -26,8 +26,9 @@ namespace SP\Domain\Account\Out;
 
 use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\Domain\Common\Out\AdapterBase;
+use SP\Domain\Config\In\ConfigDataInterface;
 use SP\Domain\CustomField\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Out\CustomFieldAdapter;
 use SP\Mvc\Controller\ItemTrait;
@@ -37,13 +38,23 @@ use SP\Util\Link;
 /**
  * Class AccountAdapter
  *
- * @package SP\Domain\Account\Out
+ * @template T of AccountEnrichedDto
+ * @template-implements AccountAdapterInterface<T>
  */
 final class AccountAdapter extends AdapterBase implements AccountAdapterInterface
 {
     use ItemTrait;
 
-    protected $availableIncludes = ['customFields'];
+    protected array $availableIncludes = ['customFields'];
+
+    private CustomFieldServiceInterface $customFieldService;
+
+    public function __construct(ConfigDataInterface $configData, CustomFieldServiceInterface $customFieldService)
+    {
+        parent::__construct($configData);
+
+        $this->customFieldService = $customFieldService;
+    }
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -51,17 +62,15 @@ final class AccountAdapter extends AdapterBase implements AccountAdapterInterfac
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function includeCustomFields(
-        AccountDetailsResponse $data,
-        CustomFieldServiceInterface $customFieldService
-    ): Collection {
+    public function includeCustomFields(AccountEnrichedDto $data,): Collection
+    {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId(), $customFieldService),
+            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId(), $this->customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
 
-    public function transform(AccountDetailsResponse $data): array
+    public function transform(AccountEnrichedDto $data): array
     {
         $account = $data->getAccountVData();
 

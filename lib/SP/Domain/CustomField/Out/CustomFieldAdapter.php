@@ -24,7 +24,6 @@
 
 namespace SP\Domain\CustomField\Out;
 
-
 use SP\Domain\Common\Out\AdapterBase;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 

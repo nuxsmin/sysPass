@@ -30,7 +30,7 @@ use League\Fractal\Resource\Item;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Util\Util;
 
@@ -59,7 +59,7 @@ final class ViewController extends AccountBase
 
             $this->accountService->incrementViewCounter($id);
 
-            $accountResponse = new AccountDetailsResponse($id, $accountDetails);
+            $accountResponse = new AccountEnrichedDto($accountDetails);
 
             $this->accountService
                 ->withUsersById($accountResponse)

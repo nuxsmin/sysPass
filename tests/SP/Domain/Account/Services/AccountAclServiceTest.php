@@ -29,7 +29,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
-use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountAclService;
@@ -59,9 +58,8 @@ class AccountAclServiceTest extends UnitaryTestCase
         ActionsInterface::ACCOUNT_COPY_PASS,
         ActionsInterface::ACCOUNT_DELETE,
     ];
-    private static array             $accounts;
-    protected AccountDetailsResponse $account;
-    private AccountAclService        $accountAclService;
+    private static array      $accounts;
+    private AccountAclService $accountAclService;
 
     public static function setUpBeforeClass(): void
     {
