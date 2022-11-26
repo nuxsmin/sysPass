@@ -25,9 +25,7 @@
 namespace SP\Domain\Install\Services;
 
 
-use SP\Domain\Install\DatabaseSetupInterface;
-use SP\Domain\Install\In\InstallData;
-use SP\Domain\Install\MysqlSetupBuilderInterface;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\MysqlFileParser;

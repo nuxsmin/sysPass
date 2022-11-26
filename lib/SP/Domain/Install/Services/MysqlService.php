@@ -26,8 +26,7 @@ namespace SP\Domain\Install\Services;
 
 use PDOException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Install\DatabaseSetupInterface;
-use SP\Domain\Install\In\InstallData;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;

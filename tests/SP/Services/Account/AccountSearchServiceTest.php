@@ -33,7 +33,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\Account\AccountSearchServiceInterface;
+use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Account\Services\AccountSearchService;
@@ -51,7 +51,7 @@ use function SP\Tests\setupContext;
 class AccountSearchServiceTest extends DatabaseTestCase
 {
     /**
-     * @var AccountSearchServiceInterface
+     * @var \SP\Domain\Account\Ports\AccountSearchServiceInterface
      */
     private static $service;
     /**

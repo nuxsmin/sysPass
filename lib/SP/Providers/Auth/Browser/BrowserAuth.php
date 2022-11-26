@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Providers\Auth\Browser;
 
 use SP\DataModel\UserLoginData;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\RequestInterface;
 
 /**

@@ -29,9 +29,8 @@ use DOMElement;
 use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
-use SP\Domain\Import\XmlFileImportInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 
 /**
  * Class XmlImportBase

@@ -32,8 +32,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -46,8 +46,8 @@ abstract class ClientViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private ClientServiceInterface      $clientService;
-    private CustomFieldServiceInterface $customFieldService;
+    private \SP\Domain\Client\Ports\ClientServiceInterface $clientService;
+    private CustomFieldServiceInterface                    $customFieldService;
 
     public function __construct(
         Application $application,

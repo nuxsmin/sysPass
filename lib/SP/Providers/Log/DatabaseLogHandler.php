@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\LanguageInterface;
 use SP\DataModel\EventlogData;
-use SP\Domain\Security\EventlogServiceInterface;
+use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Domain\Security\Services\EventlogService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;

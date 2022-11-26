@@ -35,13 +35,13 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\Account\In\PublicLinkRepositoryInterface;
-use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
+use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
-use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -205,7 +205,7 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * @param  int  $id
      *
-     * @return \SP\Domain\Account\PublicLinkServiceInterface
+     * @return \SP\Domain\Account\Ports\PublicLinkServiceInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

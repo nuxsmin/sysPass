@@ -36,10 +36,10 @@ use SP\Core\Messages\MailMessage;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Crypt\TemporaryMasterPassServiceInterface;
-use SP\Domain\Notification\MailServiceInterface;
-use SP\Domain\User\UserServiceInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
+use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\PasswordUtil;
 

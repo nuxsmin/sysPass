@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Generators;
 
-use SP\Domain\Common\Out\SimpleModel;
+use SP\Domain\Common\Adapters\SimpleModel;
 
 /**
  * Class CustomFieldGenerator

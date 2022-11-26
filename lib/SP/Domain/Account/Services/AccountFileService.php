@@ -31,8 +31,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\AccountFileServiceInterface;
-use SP\Domain\Account\In\AccountFileRepositoryInterface;
+use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
+use SP\Domain\Account\Ports\AccountFileServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -157,7 +157,7 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      *
      * @param  int  $id
      *
-     * @return \SP\Domain\Account\AccountFileServiceInterface
+     * @return \SP\Domain\Account\Ports\AccountFileServiceInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException

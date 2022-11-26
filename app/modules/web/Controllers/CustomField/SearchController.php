@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\CustomField\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -51,7 +51,7 @@ final class SearchController extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        CustomFieldDefServiceInterface $customFieldDefService,
+        \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService,
         CustomFieldGrid $customFieldGrid
     ) {
         parent::__construct($application, $webControllerHelper);

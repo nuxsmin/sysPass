@@ -38,7 +38,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
-use SP\Domain\Import\LdapImportServiceInterface;
+use SP\Domain\Import\Ports\LdapImportServiceInterface;
 use SP\Domain\Import\Services\LdapImportParams;
 use SP\Http\JsonResponse;
 use SP\Http\RequestInterface;

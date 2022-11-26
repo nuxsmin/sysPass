@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\CustomField\In\CustomFieldDefRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

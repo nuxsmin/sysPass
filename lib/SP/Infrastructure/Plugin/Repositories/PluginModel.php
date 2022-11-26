@@ -24,15 +24,15 @@
 
 namespace SP\Infrastructure\Plugin\Repositories;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 /**
  * Class PluginData
  *
  * @package SP\DataModel
  */
-class PluginModel extends DataModelBase implements DataModelInterface
+class PluginModel extends DataModel implements DataModelInterface
 {
     /**
      * @var int

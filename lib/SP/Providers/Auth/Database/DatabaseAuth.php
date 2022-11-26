@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,11 +27,11 @@ namespace SP\Providers\Auth\Database;
 use Exception;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\UserLoginData;
+use SP\Domain\User\Ports\UserPassServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserPassService;
 use SP\Domain\User\Services\UserService;
-use SP\Domain\User\UserPassServiceInterface;
-use SP\Domain\User\UserServiceInterface;
 
 /**
  * Class Database
@@ -49,8 +49,8 @@ final class DatabaseAuth implements DatabaseAuthInterface
     /**
      * Database constructor.
      *
-     * @param  \SP\Domain\User\UserServiceInterface  $userService
-     * @param  \SP\Domain\User\UserPassServiceInterface  $userPassService
+     * @param  \SP\Domain\User\Ports\UserServiceInterface  $userService
+     * @param  \SP\Domain\User\Ports\UserPassServiceInterface  $userPassService
      */
     public function __construct(UserServiceInterface $userService, UserPassServiceInterface $userPassService)
     {

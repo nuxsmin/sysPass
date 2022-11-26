@@ -28,11 +28,11 @@ namespace SP\Modules\Api\Controllers\Account;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Account\AccountPresetServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\Account\Out\AccountAdapterInterface;
-use SP\Domain\Api\ApiServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Account\Adapters\AccountAdapterInterface;
+use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 

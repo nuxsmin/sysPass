@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Plugin\UpgradePluginServiceInterface;
+use SP\Domain\Plugin\Ports\UpgradePluginServiceInterface;
 use SP\Plugin\PluginManager;
 
 /**

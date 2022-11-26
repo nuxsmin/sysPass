@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
-use SP\Domain\Notification\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\Notification\Services\MailService;
 use SP\Http\Request;
 use SP\Http\RequestInterface;

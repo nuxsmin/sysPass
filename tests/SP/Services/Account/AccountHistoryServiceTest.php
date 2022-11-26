@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Account;
@@ -34,7 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Services\AccountHistoryService;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Common\Services\ServiceException;

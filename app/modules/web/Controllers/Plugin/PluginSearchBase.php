@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use SP\Core\Application;
-use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;

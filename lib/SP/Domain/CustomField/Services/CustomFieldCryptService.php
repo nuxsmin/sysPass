@@ -38,8 +38,8 @@ use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Domain\CustomField\CustomFieldCryptServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Task\Services\TaskFactory;
 
 /**

@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
-use SP\Domain\Tag\In\TagRepositoryInterface;
+use SP\Domain\Tag\Ports\TagRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

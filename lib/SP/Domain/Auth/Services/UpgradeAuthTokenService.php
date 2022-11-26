@@ -29,8 +29,8 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\AuthTokenServiceInterface;
-use SP\Domain\Auth\UpgradeAuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Infrastructure\Database\DatabaseInterface;
 

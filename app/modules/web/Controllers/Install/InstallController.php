@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
 use SP\Core\Application;
-use SP\Domain\Install\In\InstallDataFactory;
-use SP\Domain\Install\InstallerServiceInterface;
+use SP\Domain\Install\Adapters\InstallDataFactory;
+use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -41,7 +41,7 @@ final class InstallController extends ControllerBase
 {
     use JsonTrait;
 
-    private InstallerServiceInterface $installer;
+    private \SP\Domain\Install\Ports\InstallerServiceInterface $installer;
 
     public function __construct(
         Application $application,

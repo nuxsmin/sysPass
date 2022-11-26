@@ -31,7 +31,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Common\In\RepositoryInterface;
+use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use function SP\__u;

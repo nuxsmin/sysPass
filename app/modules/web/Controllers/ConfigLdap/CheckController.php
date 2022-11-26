@@ -31,7 +31,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
-use SP\Domain\Auth\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

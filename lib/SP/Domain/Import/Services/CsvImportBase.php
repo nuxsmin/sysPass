@@ -33,7 +33,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Import\FileImportInterface;
 use SP\Infrastructure\File\FileException;
 
 defined('APP_ROOT') || die();

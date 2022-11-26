@@ -34,13 +34,12 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\Account\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
-use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGrid;
@@ -68,9 +67,9 @@ final class AccountSearchHelper extends HelperBase
     private int                           $queryTimeStart;
     private bool                          $isIndex;
     private ?AccountSearchFilter          $accountSearchFilter = null;
-    private ClientServiceInterface        $clientService;
-    private AccountSearchServiceInterface $accountSearchService;
-    private AccountActionsHelper          $accountActionsHelper;
+    private ClientServiceInterface                                 $clientService;
+    private \SP\Domain\Account\Ports\AccountSearchServiceInterface $accountSearchService;
+    private AccountActionsHelper                                   $accountActionsHelper;
     private CategoryServiceInterface      $categoryService;
     private TagServiceInterface           $tagService;
 
@@ -81,7 +80,7 @@ final class AccountSearchHelper extends HelperBase
         ClientServiceInterface $clientService,
         CategoryServiceInterface $categoryService,
         TagServiceInterface $tagService,
-        AccountSearchServiceInterface $accountSearchService,
+        \SP\Domain\Account\Ports\AccountSearchServiceInterface $accountSearchService,
         AccountActionsHelper $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);

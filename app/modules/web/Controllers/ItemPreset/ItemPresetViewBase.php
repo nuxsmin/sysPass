@@ -33,8 +33,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
-use SP\Domain\ItemPreset\ItemPresetInterface;
-use SP\Domain\ItemPreset\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
@@ -45,13 +44,13 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ItemPresetViewBase extends ControllerBase
 {
-    private ItemPresetServiceInterface $itemPresetService;
-    private ItemPresetHelper           $itemPresetHelper;
+    private \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService;
+    private ItemPresetHelper                                       $itemPresetHelper;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        ItemPresetServiceInterface $itemPresetService,
+        \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService,
         ItemPresetHelper $itemPresetHelper
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -95,7 +94,7 @@ abstract class ItemPresetViewBase extends ControllerBase
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
                 $this->itemPresetHelper->makeAccountPrivateView($itemPresetData);
                 break;
-            case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
+            case \SP\Domain\ItemPreset\Ports\ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
                 $this->itemPresetHelper->makeSessionTimeoutView($itemPresetData);
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:

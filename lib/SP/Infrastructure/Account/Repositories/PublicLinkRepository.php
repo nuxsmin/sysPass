@@ -41,7 +41,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\Common\Repositories\PublicLink
  */
-final class PublicLinkRepository extends Repository implements \SP\Domain\Account\In\PublicLinkRepositoryInterface
+final class PublicLinkRepository extends Repository implements \SP\Domain\Account\Ports\PublicLinkRepositoryInterface
 {
     use RepositoryItemTrait;
 

@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Track;
 
 
 use SP\Core\Application;
-use SP\Domain\Security\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 

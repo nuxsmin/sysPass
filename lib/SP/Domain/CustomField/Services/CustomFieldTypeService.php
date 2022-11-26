@@ -30,8 +30,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceItemTrait;
-use SP\Domain\CustomField\CustomFieldTypeServiceInterface;
-use SP\Domain\CustomField\In\CustomFieldTypeRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldTypeRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldTypeRepository;
 

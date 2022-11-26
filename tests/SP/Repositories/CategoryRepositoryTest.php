@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Category\In\CategoryRepositoryInterface;
+use SP\Domain\Category\Ports\CategoryRepositoryInterface;
 use SP\Infrastructure\Category\Repositories\CategoryRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
@@ -49,7 +49,7 @@ use function SP\Tests\setupContext;
 class CategoryRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var CategoryRepositoryInterface
+     * @var \SP\Domain\Category\Ports\CategoryRepositoryInterface
      */
     private static $repository;
 

@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserProfileData;
-use SP\Domain\User\In\UserProfileRepositoryInterface;
+use SP\Domain\User\Ports\UserProfileRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

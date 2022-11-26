@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Security\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;

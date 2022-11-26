@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Http\Json;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;

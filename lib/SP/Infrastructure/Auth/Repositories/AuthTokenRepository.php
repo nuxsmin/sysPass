@@ -29,7 +29,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Common\In\RepositoryInterface;
+use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

@@ -30,8 +30,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\User\In\UserToUserGroupRepositoryInterface;
-use SP\Domain\User\UserToUserGroupServiceInterface;
+use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
+use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\User\Repositories\UserToUserGroupRepository;
 

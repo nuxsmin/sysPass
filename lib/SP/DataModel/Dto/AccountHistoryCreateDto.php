@@ -25,7 +25,7 @@
 namespace SP\DataModel\Dto;
 
 
-use SP\Domain\Account\Out\AccountData;
+use SP\Domain\Account\Adapters\AccountData;
 
 /**
  * Class AccountHistoryCreateDto
@@ -42,7 +42,7 @@ class AccountHistoryCreateDto
     /**
      * AccountHistoryCreateDto constructor.
      *
-     * @param  \SP\Domain\Account\Out\AccountData  $accountData
+     * @param  \SP\Domain\Account\Adapters\AccountData  $accountData
      * @param  bool  $isModify
      * @param  bool  $isDelete
      * @param  string  $masterPassHash

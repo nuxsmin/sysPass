@@ -29,10 +29,10 @@ use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Account\AccountSearchServiceInterface;
+use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
-use SP\Domain\Api\ApiServiceInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Modules\Api\Controllers\ControllerBase;
 

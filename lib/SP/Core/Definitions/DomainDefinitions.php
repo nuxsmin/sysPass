@@ -83,7 +83,7 @@ final class DomainDefinitions
                 'SP\Infrastructure\Security\Repositories\*Repository'
             ),
             'SP\Domain\Config\*ServiceInterface'             => autowire('SP\Domain\Config\Services\*Service'),
-            'SP\Domain\Config\In\*RepositoryInterface'       => autowire(
+            'SP\Domain\Config\Ports\*RepositoryInterface'       => autowire(
                 'SP\Infrastructure\Config\Repositories\*Repository'
             ),
             'SP\Domain\Plugin\In\*RepositoryInterface'       => autowire(

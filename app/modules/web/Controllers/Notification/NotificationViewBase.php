@@ -31,8 +31,8 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\NotificationData;
-use SP\Domain\Notification\NotificationServiceInterface;
-use SP\Domain\User\UserServiceInterface;
+use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -49,7 +49,7 @@ abstract class NotificationViewBase extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        NotificationServiceInterface $notificationService,
+        \SP\Domain\Notification\Ports\NotificationServiceInterface $notificationService,
         UserServiceInterface $userService
     ) {
         parent::__construct($application, $webControllerHelper);

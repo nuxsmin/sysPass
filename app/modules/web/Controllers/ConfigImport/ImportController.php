@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Import\ImportServiceInterface;
+use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportParams;
 use SP\Http\JsonResponse;

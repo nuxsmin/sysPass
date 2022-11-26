@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
-use SP\Domain\Notification\In\NotificationRepositoryInterface;
+use SP\Domain\Notification\Ports\NotificationRepositoryInterface;
 use SP\Infrastructure\Notification\Repositories\NotificationRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Notification\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;

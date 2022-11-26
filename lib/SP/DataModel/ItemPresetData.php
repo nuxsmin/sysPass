@@ -24,15 +24,15 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\HydratableInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\HydratableInterface;
 
 /**
  * Class ItemPresetData
  *
  * @package SP\DataModel
  */
-class ItemPresetData extends DataModelBase implements HydratableInterface
+class ItemPresetData extends DataModel implements HydratableInterface
 {
     use SerializedModel;
 

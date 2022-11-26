@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Category\In\CategoryRepositoryInterface;
+use SP\Domain\Category\Ports\CategoryRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

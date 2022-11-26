@@ -35,7 +35,7 @@ use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
-use SP\Domain\Auth\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;

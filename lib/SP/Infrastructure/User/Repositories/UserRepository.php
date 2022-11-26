@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\User\In\UserRepositoryInterface;
+use SP\Domain\User\Ports\UserRepositoryInterface;
 use SP\Domain\User\Services\UpdatePassRequest;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;

@@ -27,7 +27,7 @@
  * @var ThemeIcons                     $icons
  * @var AccountExtData                 $accountData
  * @var AccountAcl                     $accountAcl
- * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
  */
 
 use SP\Core\UI\ThemeIcons;

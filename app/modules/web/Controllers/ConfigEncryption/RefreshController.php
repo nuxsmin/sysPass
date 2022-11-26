@@ -33,7 +33,7 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

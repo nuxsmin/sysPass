@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Domain\Account\In\AccountToTagRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

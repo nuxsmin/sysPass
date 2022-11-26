@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\In\AccountFileRepositoryInterface;
+use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;

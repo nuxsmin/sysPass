@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\ItemPreset\ItemPresetServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -43,13 +42,13 @@ final class SearchController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private ItemPresetServiceInterface $itemPresetService;
-    private ItemPresetGrid             $itemPresetGrid;
+    private \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService;
+    private ItemPresetGrid                                         $itemPresetGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        ItemPresetServiceInterface $itemPresetService,
+        \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService,
         ItemPresetGrid $itemPresetGrid
     ) {
         parent::__construct($application, $webControllerHelper);

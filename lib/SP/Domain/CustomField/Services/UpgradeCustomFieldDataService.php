@@ -31,8 +31,8 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\CustomField\UpgradeCustomFieldDataServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\UpgradeCustomFieldDataServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 

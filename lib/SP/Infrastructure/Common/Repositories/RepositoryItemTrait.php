@@ -24,10 +24,6 @@
 
 namespace SP\Infrastructure\Common\Repositories;
 
-use Exception;
-use RuntimeException;
-use SP\Domain\Common\In\RepositoryInterface;
-use SP\Domain\Common\Out\DataModelInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;
 

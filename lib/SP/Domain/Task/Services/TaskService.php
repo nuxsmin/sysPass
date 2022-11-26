@@ -27,7 +27,7 @@ namespace SP\Domain\Task\Services;
 use Closure;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Task\TaskServiceInterface;
+use SP\Domain\Task\Ports\TaskServiceInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Util\Util;

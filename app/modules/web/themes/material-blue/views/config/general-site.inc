@@ -24,7 +24,7 @@
 
 /**
  * @var ThemeIcons $icons
- * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
  * @var callable $_getvar
  * @var \SP\Mvc\View\TemplateInterface $this
  */

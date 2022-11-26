@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
-use SP\Domain\Notification\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Domain\Notification\Services\NotificationService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;

@@ -27,7 +27,7 @@ namespace SP\Core;
 
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
-use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 
 /**
  * The Application helper class. It holds all the needed dependencies for the application

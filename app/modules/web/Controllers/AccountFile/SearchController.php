@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Account\AccountFileServiceInterface;
+use SP\Domain\Account\Ports\AccountFileServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;

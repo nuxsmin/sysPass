@@ -29,10 +29,10 @@ use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\AccountPresetServiceInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
-use SP\Domain\ItemPreset\ItemPresetInterface;
-use SP\Domain\ItemPreset\ItemPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**

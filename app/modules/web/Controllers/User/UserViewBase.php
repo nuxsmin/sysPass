@@ -29,10 +29,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\DataModel\UserData;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\User\UserGroupServiceInterface;
-use SP\Domain\User\UserProfileServiceInterface;
-use SP\Domain\User\UserServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -45,16 +44,16 @@ abstract class UserViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    protected UserServiceInterface      $userService;
-    private UserGroupServiceInterface   $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
+    protected UserServiceInterface                          $userService;
+    private \SP\Domain\User\Ports\UserGroupServiceInterface $userGroupService;
+    private UserProfileServiceInterface                     $userProfileService;
     private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
+        \SP\Domain\User\Ports\UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
         CustomFieldServiceInterface $customFieldService
     ) {

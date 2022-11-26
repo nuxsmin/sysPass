@@ -27,7 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Common\Out\SimpleModel;
+use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountToFavoriteRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;

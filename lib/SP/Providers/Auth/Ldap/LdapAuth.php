@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\EventDispatcher;
 use SP\DataModel\UserLoginData;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
  * Class LdapBase
@@ -47,7 +47,7 @@ final class LdapAuth implements LdapAuthInterface
      *
      * @param  LdapInterface  $ldap
      * @param  EventDispatcher  $eventDispatcher
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      */
     public function __construct(
         LdapInterface $ldap,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Core\Crypt;
 
 
 use SP\Core\Context\ContextInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
 
@@ -46,7 +46,7 @@ class CSRF
      *
      * @param  ContextInterface  $context
      * @param  RequestInterface  $request
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      */
     public function __construct(
         ContextInterface    $context,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SP\Modules\Cli\Commands;
 
 use Psr\Log\LoggerInterface;
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

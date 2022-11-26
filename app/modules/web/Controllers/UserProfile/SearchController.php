@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;

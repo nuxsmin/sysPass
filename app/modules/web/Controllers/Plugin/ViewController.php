@@ -30,7 +30,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Modules\Web\Controllers\ControllerBase;

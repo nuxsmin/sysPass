@@ -32,8 +32,6 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Account\AccountPresetServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
@@ -46,14 +44,14 @@ final class SaveEditPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface $accountService;
-    private AccountForm             $accountForm;
+    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountForm                                      $accountForm;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
-        AccountPresetServiceInterface $accountPresetService
+        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
+        \SP\Domain\Account\Ports\AccountPresetServiceInterface $accountPresetService
     ) {
         parent::__construct(
             $application,

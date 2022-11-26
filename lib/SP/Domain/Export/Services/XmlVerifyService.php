@@ -33,7 +33,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\XmlVerifyServiceInterface;
+use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFileImport;

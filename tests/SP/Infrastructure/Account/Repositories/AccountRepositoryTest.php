@@ -32,7 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountFilterUser;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Common\Out\SimpleModel;
+use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;

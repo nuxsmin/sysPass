@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -43,8 +43,8 @@ final class SearchController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private TagServiceInterface $tagService;
-    private TagGrid             $tagGrid;
+    private \SP\Domain\Tag\Ports\TagServiceInterface $tagService;
+    private TagGrid                                  $tagGrid;
 
     public function __construct(
         Application $application,

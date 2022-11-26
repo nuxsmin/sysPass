@@ -33,7 +33,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\DataModel\ProfileData;
-use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\User\Services\UserLoginResponse;

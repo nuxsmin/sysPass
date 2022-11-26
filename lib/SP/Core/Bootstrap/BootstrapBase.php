@@ -37,7 +37,7 @@ use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Http\RequestInterface;
 use SP\Plugin\PluginManager;

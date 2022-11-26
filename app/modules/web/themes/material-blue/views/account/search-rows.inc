@@ -25,7 +25,7 @@
 /**
  * @var ThemeIcons                     $icons
  * @var callable                       $_getvar
- * @var \SP\Domain\Config\In\ConfigDataInterface $configData
+ * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
  * @var AccountSearchItem              $account
  * @var DataGridTab                    $data
  * @var DataGridActionBase             $actionMenu

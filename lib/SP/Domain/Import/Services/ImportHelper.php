@@ -25,10 +25,10 @@
 namespace SP\Domain\Import\Services;
 
 
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 
 /**
  * A helper class to provide the needed services.

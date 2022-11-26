@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\RequestInterface;
 use SP\Mvc\Controller\ControllerTrait;
 

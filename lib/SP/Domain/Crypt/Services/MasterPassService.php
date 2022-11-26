@@ -29,13 +29,13 @@ use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\AccountCryptServiceInterface;
+use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Config\Services\ConfigService;
-use SP\Domain\Crypt\MasterPassServiceInterface;
-use SP\Domain\CustomField\CustomFieldCryptServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldCryptService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 

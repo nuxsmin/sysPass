@@ -28,9 +28,9 @@ namespace SP\Modules\Api\Controllers\Client;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Api\ApiServiceInterface;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Client\Out\ClientAdapterInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Client\Ports\ClientAdapterInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
 
@@ -50,7 +50,7 @@ abstract class ClientBase extends ControllerBase
         Klein $router,
         ApiServiceInterface $apiService,
         Acl $acl,
-        ClientServiceInterface $clientService,
+        \SP\Domain\Client\Ports\ClientServiceInterface $clientService,
         ClientAdapterInterface $clientAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);

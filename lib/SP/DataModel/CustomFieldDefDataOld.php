@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 /**
  * Class CustomFieldDefDataOld

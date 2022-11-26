@@ -33,11 +33,11 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Config\Services\ConfigFileService;
-use SP\Domain\User\In\UserRepositoryInterface;
-use SP\Domain\User\UserPassServiceInterface;
+use SP\Domain\User\Ports\UserPassServiceInterface;
+use SP\Domain\User\Ports\UserRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\User\Repositories\UserRepository;
 

@@ -30,9 +30,9 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\ItemPreset\ItemPresetInterface;
-use SP\Domain\ItemPreset\ItemPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -44,9 +44,9 @@ final class ViewPassHistoryController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface    $accountService;
-    private AccountPasswordHelper      $accountPasswordHelper;
-    private ItemPresetServiceInterface $itemPresetService;
+    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountPasswordHelper                            $accountPasswordHelper;
+    private ItemPresetServiceInterface                       $itemPresetService;
 
     public function __construct(
         Application $application,

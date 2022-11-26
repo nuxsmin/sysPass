@@ -32,7 +32,6 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
@@ -50,15 +49,15 @@ use function SP\Tests\setupContext;
 class MasterPassServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\CustomField\CustomFieldServiceInterface
+     * @var \SP\Domain\CustomField\Ports\CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
-     * @var \SP\Domain\Account\AccountServiceInterface
+     * @var \SP\Domain\Account\Ports\AccountServiceInterface
      */
     private static $accountService;
     /**
-     * @var \SP\Domain\Crypt\MasterPassServiceInterface
+     * @var \SP\Domain\Crypt\Ports\MasterPassServiceInterface
      */
     private static $service;
 

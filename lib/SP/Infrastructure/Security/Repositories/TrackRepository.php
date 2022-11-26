@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
-use SP\Domain\Security\In\TrackRepositoryInterface;
+use SP\Domain\Security\Ports\TrackRepositoryInterface;
 use SP\Domain\Security\Services\TrackService;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;

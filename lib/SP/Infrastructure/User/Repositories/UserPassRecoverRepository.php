@@ -27,7 +27,7 @@ namespace SP\Infrastructure\User\Repositories;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\User\In\UserPassRecoverRepositoryInterface;
+use SP\Domain\User\Ports\UserPassRecoverRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

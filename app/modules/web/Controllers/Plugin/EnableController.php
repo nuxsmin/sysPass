@@ -29,7 +29,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -42,7 +42,7 @@ final class EnableController extends ControllerBase
 {
     use JsonTrait;
 
-    private PluginServiceInterface $pluginService;
+    private \SP\Domain\Plugin\Ports\PluginServiceInterface $pluginService;
 
     public function __construct(
         Application $application,

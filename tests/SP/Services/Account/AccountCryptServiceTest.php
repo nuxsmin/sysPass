@@ -31,8 +31,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\AccountCryptServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Services\AccountCryptService;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Common\Services\ServiceException;
@@ -52,7 +51,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
     const NEW_MASTERPASS = '00123456789';
     const CURRENT_HASH = '$2y$10$xtsuN2PUvgSH/0mrfBlsbOActVgCjYcqDqC6L3T9QraNxZC4RXGYa';
     /**
-     * @var \SP\Domain\Account\AccountServiceInterface
+     * @var \SP\Domain\Account\Ports\AccountServiceInterface
      */
     private static $accountService;
     /**

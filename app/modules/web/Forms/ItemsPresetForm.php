@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
-use SP\Domain\ItemPreset\ItemPresetInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
 

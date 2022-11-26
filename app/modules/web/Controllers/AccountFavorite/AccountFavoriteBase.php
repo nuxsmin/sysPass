@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFavorite;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\AccountToFavoriteServiceInterface;
+use SP\Domain\Account\Ports\AccountToFavoriteServiceInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 

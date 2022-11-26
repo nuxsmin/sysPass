@@ -26,7 +26,6 @@ namespace SP\Domain\Import\Services;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Import\ImportInterface;
 use SP\Infrastructure\File\FileException;
 
 defined('APP_ROOT') || die();

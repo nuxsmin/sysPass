@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Security\In\EventlogRepositoryInterface;
+use SP\Domain\Security\Ports\EventlogRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

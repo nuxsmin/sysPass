@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TagData;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -41,7 +41,7 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class TagViewBase extends ControllerBase
 {
-    private TagServiceInterface $tagService;
+    private \SP\Domain\Tag\Ports\TagServiceInterface $tagService;
 
     public function __construct(
         Application $application,

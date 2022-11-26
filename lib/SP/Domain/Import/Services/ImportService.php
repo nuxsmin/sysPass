@@ -29,10 +29,8 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Import\FileImportInterface;
-use SP\Domain\Import\ImportInterface;
-use SP\Domain\Import\ImportServiceInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\File\FileException;
 

@@ -25,7 +25,6 @@
 namespace SP\Domain\Import\Services;
 
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Import\FileImportInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;

@@ -29,7 +29,7 @@ use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Search\AccountSearchConstants;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 
 defined('APP_ROOT') || die();

@@ -31,9 +31,9 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\ConfigBackupServiceInterface;
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;
@@ -172,7 +172,7 @@ class ConfigFileService implements ConfigInterface
     /**
      * Guardar la configuración
      *
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      * @param  bool|null  $backup
      *
      * @return ConfigInterface
@@ -250,7 +250,7 @@ class ConfigFileService implements ConfigInterface
     /**
      * Returns a clone of the configuration data
      *
-     * @return \SP\Domain\Config\In\ConfigDataInterface
+     * @return \SP\Domain\Config\Ports\ConfigDataInterface
      */
     public function getConfigData(): ConfigDataInterface
     {

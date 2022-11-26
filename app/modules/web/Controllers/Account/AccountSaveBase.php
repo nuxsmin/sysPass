@@ -26,9 +26,9 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\AccountPresetServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;

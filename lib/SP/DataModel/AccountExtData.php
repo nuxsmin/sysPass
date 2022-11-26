@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Account\Out\AccountData;
+use SP\Domain\Account\Adapters\AccountData;
 
 /**
  * Class AccountExtData

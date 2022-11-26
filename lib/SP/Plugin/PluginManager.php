@@ -34,8 +34,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Install\Services\InstallerService;
-use SP\Domain\Plugin\PluginDataServiceInterface;
-use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Domain\Plugin\Services\PluginDataService;
 use SP\Domain\Plugin\Services\PluginService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -63,7 +63,7 @@ class PluginManager
     /**
      * PluginManager constructor.
      *
-     * @param  \SP\Domain\Plugin\PluginServiceInterface  $pluginService
+     * @param  \SP\Domain\Plugin\Ports\PluginServiceInterface  $pluginService
      * @param  PluginDataServiceInterface  $pluginDataService
      * @param  EventDispatcher  $eventDispatcher
      */

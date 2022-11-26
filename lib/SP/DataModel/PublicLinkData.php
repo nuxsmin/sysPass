@@ -24,15 +24,15 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 /**
  * Class PublicLinkData
  *
  * @package SP\DataModel
  */
-class PublicLinkData extends DataModelBase implements DataModelInterface
+class PublicLinkData extends DataModel implements DataModelInterface
 {
     protected ?int    $id;
     protected ?int    $itemId;

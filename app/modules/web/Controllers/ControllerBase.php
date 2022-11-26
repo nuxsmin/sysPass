@@ -40,7 +40,7 @@ use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Http\RequestInterface;

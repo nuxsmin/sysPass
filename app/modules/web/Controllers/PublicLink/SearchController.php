@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;

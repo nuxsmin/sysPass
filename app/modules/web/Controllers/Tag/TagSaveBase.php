@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\TagForm;
 use SP\Mvc\Controller\WebControllerHelper;

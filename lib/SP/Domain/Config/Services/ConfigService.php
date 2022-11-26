@@ -33,8 +33,8 @@ use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Config\In\ConfigRepositoryInterface;
+use SP\Domain\Config\Ports\ConfigRepositoryInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Config\Repositories\ConfigRepository;
 

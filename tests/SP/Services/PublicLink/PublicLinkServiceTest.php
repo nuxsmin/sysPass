@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\PublicLink;
@@ -37,10 +37,10 @@ use SP\DataModel\AccountExtData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;

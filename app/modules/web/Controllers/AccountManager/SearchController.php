@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\AccountManager;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\Account\AccountSearchServiceInterface;
-use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountSearchServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;

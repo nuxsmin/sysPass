@@ -26,8 +26,8 @@ namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\AccountToTagServiceInterface;
-use SP\Domain\Account\In\AccountToTagRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToTagServiceInterface;
 use SP\Domain\Common\Services\Service;
 
 /**

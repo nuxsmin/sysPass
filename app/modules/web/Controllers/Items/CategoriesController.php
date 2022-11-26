@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Category\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Http\Json;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;

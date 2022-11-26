@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\PublicLinkForm;
 use SP\Mvc\Controller\WebControllerHelper;

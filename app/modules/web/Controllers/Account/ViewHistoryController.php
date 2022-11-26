@@ -28,7 +28,6 @@ use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\AccountHistoryServiceInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
@@ -38,13 +37,13 @@ use SP\Util\ErrorUtil;
  */
 final class ViewHistoryController extends AccountControllerBase
 {
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountHistoryHelper           $accountHistoryHelper;
+    private \SP\Domain\Account\Ports\AccountHistoryServiceInterface $accountHistoryService;
+    private AccountHistoryHelper                                    $accountHistoryHelper;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountHistoryServiceInterface $accountHistoryService,
+        \SP\Domain\Account\Ports\AccountHistoryServiceInterface $accountHistoryService,
         AccountHistoryHelper $accountHistoryHelper
     ) {
         parent::__construct(

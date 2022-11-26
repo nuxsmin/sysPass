@@ -30,7 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Plugin\In\PluginRepositoryInterface;
+use SP\Domain\Plugin\Ports\PluginRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;

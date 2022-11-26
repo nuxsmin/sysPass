@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class FileData extends DataModelBase implements DataModelInterface
+class FileData extends DataModel implements DataModelInterface
 {
     /**
      * @var int

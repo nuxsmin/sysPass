@@ -26,7 +26,7 @@ namespace SP\Core;
 
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 
 /**

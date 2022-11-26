@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,9 +32,9 @@ use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
-use SP\Domain\User\UserGroupServiceInterface;
-use SP\Domain\User\UserProfileServiceInterface;
-use SP\Domain\User\UserServiceInterface;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;

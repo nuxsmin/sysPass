@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class CategoryData extends DataModelBase implements DataModelInterface
+class CategoryData extends DataModel implements DataModelInterface
 {
     public ?int $id = null;
     public ?string $name = null;

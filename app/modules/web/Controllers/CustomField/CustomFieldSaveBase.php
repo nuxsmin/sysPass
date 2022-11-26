@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\CustomField;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\CustomFieldDefForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -42,7 +42,7 @@ abstract class CustomFieldSaveBase extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        CustomFieldDefServiceInterface $customFieldDefService
+        \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService
     ) {
         parent::__construct($application, $webControllerHelper);
 

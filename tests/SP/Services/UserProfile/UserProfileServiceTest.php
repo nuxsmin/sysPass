@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\UserProfile;
@@ -34,7 +34,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
@@ -49,7 +49,7 @@ use function SP\Tests\setupContext;
 class UserProfileServiceTest extends DatabaseTestCase
 {
     /**
-     * @var UserProfileServiceInterface
+     * @var \SP\Domain\User\Ports\UserProfileServiceInterface
      */
     private static $service;
 

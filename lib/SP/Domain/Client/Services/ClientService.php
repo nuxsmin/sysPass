@@ -32,8 +32,8 @@ use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Services\AccountFilterUserInterface;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Client\In\ClientRepositoryInterface;
+use SP\Domain\Client\Ports\ClientRepositoryInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
@@ -110,7 +110,7 @@ final class ClientService extends Service implements ClientServiceInterface
     /**
      * @param  int  $id
      *
-     * @return \SP\Domain\Client\ClientServiceInterface
+     * @return \SP\Domain\Client\Ports\ClientServiceInterface
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function delete(int $id): ClientServiceInterface

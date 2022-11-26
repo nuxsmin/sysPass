@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -76,7 +76,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      *
      * @return void
      */
@@ -106,7 +106,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      * @param  \SP\Core\Events\EventMessage  $eventMessage
      *
      * @return void
@@ -151,7 +151,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      * @param  \SP\Core\Events\EventMessage  $eventMessage
      *
      * @return void
@@ -190,7 +190,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      * @param  \SP\Core\Events\EventMessage  $eventMessage
      *
      * @return void

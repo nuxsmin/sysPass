@@ -28,7 +28,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Common\Out\SimpleModel;
+use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountToTagRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;

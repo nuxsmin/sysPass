@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Http\RequestInterface;
@@ -95,7 +95,7 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param  RequestInterface  $request
-     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
+     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -146,7 +146,7 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
+     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -170,7 +170,7 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param  RequestInterface  $request
-     * @param  \SP\Domain\CustomField\CustomFieldServiceInterface  $customFieldService
+     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

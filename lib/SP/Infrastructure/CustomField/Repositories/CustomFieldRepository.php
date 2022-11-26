@@ -29,7 +29,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\CustomField\In\CustomFieldRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;

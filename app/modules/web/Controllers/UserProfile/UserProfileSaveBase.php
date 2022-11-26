@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\User\UserProfileServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserProfileForm;
 use SP\Mvc\Controller\WebControllerHelper;

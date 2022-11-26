@@ -27,12 +27,11 @@ namespace SP\Modules\Cli\Commands\Crypt;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountService;
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Config\Services\ConfigService;
-use SP\Domain\Crypt\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Modules\Cli\Commands\CommandBase;
@@ -65,13 +64,13 @@ final class UpdateMasterPasswordCommand extends CommandBase
     /**
      * @var string
      */
-    protected static                                    $defaultName = 'sp:crypt:update-master-password';
-    private \SP\Domain\Crypt\MasterPassServiceInterface $masterPassService;
-    private ConfigService                               $configService;
+    protected static                                          $defaultName = 'sp:crypt:update-master-password';
+    private \SP\Domain\Crypt\Ports\MasterPassServiceInterface $masterPassService;
+    private ConfigService                                     $configService;
     private AccountService $accountService;
 
     public function __construct(
-        MasterPassServiceInterface $masterPassService,
+        \SP\Domain\Crypt\Ports\MasterPassServiceInterface $masterPassService,
         AccountServiceInterface $accountService,
         ConfigServiceInterface $configService,
         LoggerInterface $logger,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Http\JsonResponse;
 use SP\Util\Util;
 

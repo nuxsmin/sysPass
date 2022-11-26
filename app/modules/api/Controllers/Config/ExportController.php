@@ -32,9 +32,9 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Api\ApiServiceInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
-use SP\Domain\Export\XmlExportServiceInterface;
+use SP\Domain\Export\Ports\XmlExportServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 

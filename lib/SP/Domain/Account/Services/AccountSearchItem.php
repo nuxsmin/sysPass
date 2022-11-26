@@ -29,7 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\Html;
 
 /**

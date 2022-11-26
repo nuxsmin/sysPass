@@ -28,7 +28,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Persistence\UpgradeDatabaseServiceInterface;
+use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Http\JsonResponse;

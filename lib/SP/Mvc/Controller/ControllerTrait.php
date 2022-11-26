@@ -28,7 +28,7 @@ use Closure;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Http\RequestInterface;
@@ -64,7 +64,7 @@ trait ControllerTrait
      * Logout from current session
      *
      * @param  \SP\Http\RequestInterface  $request
-     * @param  \SP\Domain\Config\In\ConfigDataInterface  $configData
+     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
      * @param  \Closure  $onRedirect
      *
      * @throws \SP\Core\Exceptions\SPException

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Auth\Services;
 
-use SP\Domain\Auth\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Providers\Auth\Ldap\Ldap;
 use SP\Providers\Auth\Ldap\LdapException;

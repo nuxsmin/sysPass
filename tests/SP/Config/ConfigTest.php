@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Config;
@@ -31,7 +31,7 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Infrastructure\File\FileException;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
@@ -83,7 +83,7 @@ class ConfigTest extends TestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function testLoadClass(): ConfigInterface
+    public function testLoadClass(): \SP\Domain\Config\Ports\ConfigInterface
     {
         $config = self::$dic->get(\SP\Domain\Config\Services\ConfigFileService::class);
 
@@ -102,7 +102,7 @@ class ConfigTest extends TestCase
      *
      * @throws FileException
      */
-    public function testSaveConfig(ConfigInterface $config)
+    public function testSaveConfig(\SP\Domain\Config\Ports\ConfigInterface $config)
     {
         $config->saveConfig($config->getConfigData(), false);
 
@@ -117,7 +117,7 @@ class ConfigTest extends TestCase
      *
      * @param  ConfigInterface  $config
      */
-    public function testLoadConfig(ConfigInterface $config)
+    public function testLoadConfig(\SP\Domain\Config\Ports\ConfigInterface $config)
     {
         $this->assertInstanceOf(ConfigData::class, $config->loadConfig());
     }
@@ -129,7 +129,7 @@ class ConfigTest extends TestCase
      *
      * @param  ConfigInterface  $config
      */
-    public function testUpdateConfig(ConfigInterface $config)
+    public function testUpdateConfig(\SP\Domain\Config\Ports\ConfigInterface $config)
     {
         $config->updateConfig($config->getConfigData());
 
@@ -146,7 +146,7 @@ class ConfigTest extends TestCase
      * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public function testGenerateUpgradeKey(ConfigInterface $config)
+    public function testGenerateUpgradeKey(\SP\Domain\Config\Ports\ConfigInterface $config)
     {
         $config->generateUpgradeKey();
 

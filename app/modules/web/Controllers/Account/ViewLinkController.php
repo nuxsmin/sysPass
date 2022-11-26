@@ -35,8 +35,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\Account\PublicLinkServiceInterface;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Http\Uri;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -49,16 +47,16 @@ use SP\Util\Util;
  */
 final class ViewLinkController extends AccountControllerBase
 {
-    private AccountServiceInterface $accountService;
-    private ThemeIcons              $icons;
-    private PublicLinkService       $publicLinkService;
-    private ImageUtil               $imageUtil;
+    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private ThemeIcons                                       $icons;
+    private PublicLinkService                                $publicLinkService;
+    private ImageUtil                                        $imageUtil;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
-        PublicLinkServiceInterface $publicLinkService,
+        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
+        \SP\Domain\Account\Ports\PublicLinkServiceInterface $publicLinkService,
         ImageUtil $imageUtil
     ) {
         parent::__construct(

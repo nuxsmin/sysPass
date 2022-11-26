@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Application;
-use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CategoryForm;

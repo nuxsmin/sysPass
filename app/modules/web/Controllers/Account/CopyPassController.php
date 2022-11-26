@@ -28,7 +28,6 @@ namespace SP\Modules\Web\Controllers\Account;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\AccountServiceInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -40,13 +39,13 @@ final class CopyPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface $accountService;
-    private AccountPasswordHelper   $accountPasswordHelper;
+    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountPasswordHelper                            $accountPasswordHelper;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
+        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
         AccountPasswordHelper $accountPasswordHelper
     ) {
         parent::__construct(

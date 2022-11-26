@@ -25,9 +25,9 @@
 namespace SP\Core\Bootstrap;
 
 
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\UpgradeConfigServiceInterface;
 use SP\Domain\Config\Services\UpgradeConfigService;
-use SP\Domain\Config\UpgradeConfigServiceInterface;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Util\VersionUtil;
 

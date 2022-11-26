@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\AccountFileServiceInterface;
+use SP\Domain\Account\Ports\AccountFileServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 

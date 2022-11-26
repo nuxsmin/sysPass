@@ -29,7 +29,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;

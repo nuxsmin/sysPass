@@ -34,7 +34,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Config\Services\ConfigUtil;
-use SP\Domain\Notification\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;

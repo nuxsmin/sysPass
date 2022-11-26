@@ -25,7 +25,7 @@
 namespace SP\DataModel;
 
 use SP\Core\Messages\MessageInterface;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 /**
  * Class NoticeData

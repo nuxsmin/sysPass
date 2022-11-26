@@ -40,7 +40,6 @@ use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Export\Services\XmlVerifyService;
-use SP\Domain\Import\ImportInterface;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();

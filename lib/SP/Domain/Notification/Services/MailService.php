@@ -34,7 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Notification\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
 use SP\Html\Html;

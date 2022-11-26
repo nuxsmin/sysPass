@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\Domain\Client\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Http\Json;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;

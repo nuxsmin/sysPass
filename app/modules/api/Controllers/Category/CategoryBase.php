@@ -28,9 +28,9 @@ namespace SP\Modules\Api\Controllers\Category;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Api\ApiServiceInterface;
-use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\Category\Out\CategoryAdapterInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Category\Ports\CategoryAdapterInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 

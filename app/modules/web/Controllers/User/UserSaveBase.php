@@ -27,11 +27,11 @@ namespace SP\Modules\Web\Controllers\User;
 
 use SP\Core\Application;
 use SP\DataModel\UserData;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\Notification\MailServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserPassRecoverService;
-use SP\Domain\User\UserPassRecoverServiceInterface;
-use SP\Domain\User\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\WebControllerHelper;

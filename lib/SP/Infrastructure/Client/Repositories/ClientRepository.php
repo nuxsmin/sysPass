@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Client\In\ClientRepositoryInterface;
+use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

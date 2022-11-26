@@ -27,8 +27,8 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Api\ApiServiceInterface;
-use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
 

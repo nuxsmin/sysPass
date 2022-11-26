@@ -27,7 +27,7 @@ namespace SP\Infrastructure\User\Repositories;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
-use SP\Domain\User\In\UserToUserGroupRepositoryInterface;
+use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;

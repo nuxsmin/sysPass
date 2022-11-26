@@ -30,7 +30,6 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Client\ClientServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -46,13 +45,13 @@ final class SearchController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private ClientServiceInterface $clientService;
-    private ClientGrid             $clientGrid;
+    private \SP\Domain\Client\Ports\ClientServiceInterface $clientService;
+    private ClientGrid                                     $clientGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        ClientServiceInterface $clientService,
+        \SP\Domain\Client\Ports\ClientServiceInterface $clientService,
         ClientGrid $clientGrid
     ) {
         parent::__construct($application, $webControllerHelper);

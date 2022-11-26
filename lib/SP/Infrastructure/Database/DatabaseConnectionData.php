@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Database;
 
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
  * Class DatabaseConnectionData

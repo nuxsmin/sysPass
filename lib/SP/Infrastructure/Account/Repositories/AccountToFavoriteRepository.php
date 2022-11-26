@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\In\AccountToFavoriteRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

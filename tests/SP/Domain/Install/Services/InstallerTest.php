@@ -28,14 +28,14 @@ use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Services\ConfigService;
-use SP\Domain\Install\DatabaseSetupInterface;
-use SP\Domain\Install\In\InstallData;
-use SP\Domain\Install\InstallerServiceInterface;
+use SP\Domain\Install\Adapters\InstallData;
+use SP\Domain\Install\Ports\InstallerServiceInterface;
+use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Services\UserGroupService;
 use SP\Domain\User\Services\UserProfileService;
 use SP\Domain\User\Services\UserService;
-use SP\Domain\User\UserProfileServiceInterface;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -50,7 +50,7 @@ use SP\Util\VersionUtil;
 class InstallerTest extends UnitaryTestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Install\DatabaseSetupInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Install\Services\DatabaseSetupInterface
      */
     private $databaseSetup;
     /**
@@ -62,15 +62,15 @@ class InstallerTest extends UnitaryTestCase
      */
     private $request;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Config\ConfigServiceInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Config\Ports\ConfigServiceInterface
      */
     private $configService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\UserGroupServiceInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Ports\UserGroupServiceInterface
      */
     private $userGroupService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|UserProfileServiceInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Ports\UserProfileServiceInterface
      */
     private $userProfileService;
 
@@ -114,7 +114,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\In\InstallData
+     * @return \SP\Domain\Install\Adapters\InstallData
      */
     private function getInstallData(): InstallData
     {
@@ -132,7 +132,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\InstallerServiceInterface
+     * @return \SP\Domain\Install\Ports\InstallerServiceInterface
      */
     private function getDefaultInstaller(): InstallerServiceInterface
     {

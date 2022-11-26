@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Config\Repositories;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
-use SP\Domain\Config\In\ConfigRepositoryInterface;
+use SP\Domain\Config\Ports\ConfigRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

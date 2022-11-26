@@ -31,7 +31,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
 use SP\Core\Events\EventDispatcher;
-use SP\Domain\Config\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use function SP\__u;
 use function SP\logger;
 

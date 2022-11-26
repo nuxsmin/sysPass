@@ -31,7 +31,7 @@ use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Crypt\SecureSessionServiceInterface;
+use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileException;

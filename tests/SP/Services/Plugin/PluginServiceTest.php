@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Plugin;
@@ -33,7 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Plugin\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Domain\Plugin\Services\PluginService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
@@ -48,7 +48,7 @@ use function SP\Tests\setupContext;
 class PluginServiceTest extends DatabaseTestCase
 {
     /**
-     * @var PluginServiceInterface
+     * @var \SP\Domain\Plugin\Ports\PluginServiceInterface
      */
     private static $service;
 

@@ -31,7 +31,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Config\ConfigBackupServiceInterface;
+use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

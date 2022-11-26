@@ -26,8 +26,8 @@ namespace SP\Tests\Domain\Install\Services;
 
 use PDOException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\In\ConfigDataInterface;
-use SP\Domain\Install\In\InstallData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlService;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -725,7 +725,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\In\InstallData
+     * @return \SP\Domain\Install\Adapters\InstallData
      */
     private function getInstallData(): InstallData
     {

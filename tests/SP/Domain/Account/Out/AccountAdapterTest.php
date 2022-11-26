@@ -26,8 +26,8 @@ namespace SP\Tests\Domain\Account\Out;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use SP\Domain\Account\Out\AccountAdapter;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Account\Adapters\AccountAdapter;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CustomFieldGenerator;
@@ -117,7 +117,7 @@ class AccountAdapterTest extends UnitaryTestCase
         )->toArray();
 
         $this->assertArrayHasKey('customFields', $out['data']);
-        $this->assertEquals($customFieldData->type, $out['data']['customFields']['data'][0]['typeName']);
+        $this->assertEquals($customFieldData->typeName, $out['data']['customFields']['data'][0]['type']);
         $this->assertEquals($customFieldData->typeText, $out['data']['customFields']['data'][0]['typeText']);
         $this->assertEquals($customFieldData->definitionId, $out['data']['customFields']['data'][0]['definitionId']);
         $this->assertEquals(

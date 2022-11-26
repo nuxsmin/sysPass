@@ -33,7 +33,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Domain\Account\Services\AccountRequest;
-use SP\Domain\Import\ImportInterface;
 use SP\Util\Filter;
 
 defined('APP_ROOT') || die();

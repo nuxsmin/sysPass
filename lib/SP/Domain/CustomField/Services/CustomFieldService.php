@@ -33,9 +33,9 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\CustomField\In\CustomFieldDefRepositoryInterface;
-use SP\Domain\CustomField\In\CustomFieldRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**

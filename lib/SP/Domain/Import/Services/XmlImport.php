@@ -26,10 +26,7 @@ namespace SP\Domain\Import\Services;
 
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\ConfigServiceInterface;
-use SP\Domain\Import\ImportInterface;
-use SP\Domain\Import\XmlFileImportInterface;
-use SP\Domain\Import\XmlImportInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 
 defined('APP_ROOT') || die();
 

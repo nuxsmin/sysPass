@@ -37,7 +37,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;

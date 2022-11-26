@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
-use SP\Domain\Common\Out\DataModelInterface;
+use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Adapters\DataModelInterface;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class UserProfileData extends DataModelBase implements DataModelInterface
+class UserProfileData extends DataModel implements DataModelInterface
 {
     protected ?int         $id      = null;
     protected ?string      $name    = null;

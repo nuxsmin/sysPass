@@ -28,7 +28,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;

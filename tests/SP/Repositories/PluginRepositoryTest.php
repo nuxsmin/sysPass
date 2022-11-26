@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Plugin\In\PluginRepositoryInterface;
+use SP\Domain\Plugin\Ports\PluginRepositoryInterface;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Infrastructure\Plugin\Repositories\PluginRepository;
 use SP\Tests\DatabaseTestCase;
@@ -46,7 +46,7 @@ use function SP\Tests\setupContext;
 class PluginRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var PluginRepositoryInterface
+     * @var \SP\Domain\Plugin\Ports\PluginRepositoryInterface
      */
     private static $repository;
 

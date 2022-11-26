@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Crypt\TemporaryMasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

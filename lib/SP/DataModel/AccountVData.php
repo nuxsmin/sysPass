@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Out\DataModelBase;
+use SP\Domain\Common\Adapters\DataModel;
 
 /**
  * Class AccountVData
  *
  * @package SP\DataModel
  */
-class AccountVData extends DataModelBase
+class AccountVData extends DataModel
 {
     protected ?int    $id                 = null;
     protected ?int    $userId             = null;

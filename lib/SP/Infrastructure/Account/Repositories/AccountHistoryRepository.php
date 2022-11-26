@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\In\AccountHistoryRepositoryInterface;
+use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;

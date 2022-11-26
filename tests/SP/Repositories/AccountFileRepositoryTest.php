@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\In\AccountFileRepositoryInterface;
+use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
 use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -45,7 +45,7 @@ use function SP\Tests\setupContext;
 class AccountFileRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Account\In\AccountFileRepositoryInterface
+     * @var \SP\Domain\Account\Ports\AccountFileRepositoryInterface
      */
     private static $repository;
 

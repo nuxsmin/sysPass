@@ -25,7 +25,7 @@
 namespace SP\DataModel;
 
 use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Common\Out\DataModelBase;
+use SP\Domain\Common\Adapters\DataModel;
 use SP\Http\Address;
 
 /**
@@ -33,7 +33,7 @@ use SP\Http\Address;
  *
  * @package SP\DataModel
  */
-class TrackData extends DataModelBase
+class TrackData extends DataModel
 {
     /**
      * @var int

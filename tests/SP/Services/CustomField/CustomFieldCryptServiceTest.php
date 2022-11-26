@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\CustomField;
@@ -31,9 +31,8 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Domain\CustomField\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldCryptService;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Tests\DatabaseTestCase;
@@ -48,11 +47,11 @@ use function SP\Tests\setupContext;
 class CustomFieldCryptServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\CustomField\CustomFieldServiceInterface
+     * @var \SP\Domain\CustomField\Ports\CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
-     * @var CustomFieldCryptServiceInterface
+     * @var \SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface
      */
     private static $service;
 

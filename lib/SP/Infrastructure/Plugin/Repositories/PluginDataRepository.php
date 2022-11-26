@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Plugin\Repositories;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\In\PluginDataRepositoryInterface;
+use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;

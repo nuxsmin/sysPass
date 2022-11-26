@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Export;
@@ -29,10 +29,10 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
 use SP\Domain\Export\Services\VerifyResult;
 use SP\Domain\Export\Services\XmlExportService;
 use SP\Domain\Export\Services\XmlVerifyService;
-use SP\Domain\Export\XmlVerifyServiceInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
@@ -46,7 +46,7 @@ use function SP\Tests\setupContext;
 class XmlExportServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Export\XmlExportServiceInterface
+     * @var \SP\Domain\Export\Ports\XmlExportServiceInterface
      */
     private static $xmlExportService;
     /**

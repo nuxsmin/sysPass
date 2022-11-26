@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,12 +32,12 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
-use SP\Domain\Account\AccountAclServiceInterface;
-use SP\Domain\Account\AccountHistoryServiceInterface;
+use SP\Domain\Account\Ports\AccountAclServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;
-use SP\Domain\Category\CategoryServiceInterface;
-use SP\Domain\Client\ClientServiceInterface;
-use SP\Domain\Crypt\MasterPassServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
@@ -61,7 +61,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         TemplateInterface $template,
         RequestInterface $request,
         Acl $acl,
-        AccountHistoryServiceInterface $accountHistoryService,
+        \SP\Domain\Account\Ports\AccountHistoryServiceInterface $accountHistoryService,
         AccountActionsHelper $accountActionsHelper,
         MasterPassServiceInterface $masterPassService,
         AccountAclServiceInterface $accountAclService,

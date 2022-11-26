@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Eventlog;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Security\EventlogServiceInterface;
+use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Domain\Security\Services\EventlogService;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
@@ -46,7 +46,7 @@ use function SP\Tests\setupContext;
 class EventlogServiceTest extends DatabaseTestCase
 {
     /**
-     * @var EventlogServiceInterface
+     * @var \SP\Domain\Security\Ports\EventlogServiceInterface
      */
     private static $service;
 

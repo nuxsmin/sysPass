@@ -28,8 +28,8 @@ namespace SP\Modules\Api\Controllers\Tag;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Api\ApiServiceInterface;
-use SP\Domain\Tag\TagServiceInterface;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
 

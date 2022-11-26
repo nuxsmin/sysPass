@@ -33,7 +33,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\ThemeInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;

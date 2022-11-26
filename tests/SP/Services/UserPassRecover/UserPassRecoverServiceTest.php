@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\UserPassRecover;
@@ -33,7 +33,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\User\Services\UserPassRecoverService;
-use SP\Domain\User\UserPassRecoverServiceInterface;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -46,7 +45,7 @@ use function SP\Tests\setupContext;
 class UserPassRecoverServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\User\UserPassRecoverServiceInterface
+     * @var \SP\Domain\User\Ports\UserPassRecoverServiceInterface
      */
     private static $service;
 

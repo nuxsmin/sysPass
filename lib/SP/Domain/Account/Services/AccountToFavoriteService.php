@@ -27,8 +27,8 @@ namespace SP\Domain\Account\Services;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\AccountToFavoriteServiceInterface;
-use SP\Domain\Account\In\AccountToFavoriteRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToFavoriteServiceInterface;
 use SP\Domain\Common\Services\Service;
 
 /**

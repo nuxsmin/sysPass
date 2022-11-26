@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Upgrade\Services;
 
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
 

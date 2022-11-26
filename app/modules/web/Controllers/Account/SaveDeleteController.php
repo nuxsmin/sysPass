@@ -30,8 +30,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\AccountServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -44,13 +43,13 @@ final class SaveDeleteController extends AccountControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private AccountServiceInterface     $accountService;
-    private CustomFieldServiceInterface $customFieldService;
+    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private CustomFieldServiceInterface                      $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
+        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct(

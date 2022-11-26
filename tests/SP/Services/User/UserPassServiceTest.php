@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\User;
@@ -37,7 +37,6 @@ use SP\DataModel\UserLoginData;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserPassService;
 use SP\Domain\User\Services\UserService;
-use SP\Domain\User\UserPassServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;

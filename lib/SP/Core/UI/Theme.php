@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,8 @@ use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Domain\Config\ConfigInterface;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 
@@ -62,7 +62,7 @@ final class Theme implements ThemeInterface
      * Theme constructor.
      *
      * @param  string  $module
-     * @param  ConfigInterface  $config
+     * @param  \SP\Domain\Config\Ports\ConfigInterface  $config
      * @param  ContextInterface  $context
      * @param  FileCacheInterface  $fileCache
      */

@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\User;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
-use SP\Domain\User\UserServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -43,13 +42,13 @@ final class SearchController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
-    private UserServiceInterface $userService;
-    private UserGrid             $userGrid;
+    private \SP\Domain\User\Ports\UserServiceInterface $userService;
+    private UserGrid                                   $userGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        UserServiceInterface $userService,
+        \SP\Domain\User\Ports\UserServiceInterface $userService,
         UserGrid $userGrid
     ) {
         parent::__construct($application, $webControllerHelper);

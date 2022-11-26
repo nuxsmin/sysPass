@@ -31,9 +31,9 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
-use SP\Domain\Category\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -52,7 +52,7 @@ abstract class CategoryViewBase extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        CategoryServiceInterface $categoryService,
+        \SP\Domain\Category\Ports\CategoryServiceInterface $categoryService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

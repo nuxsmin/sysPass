@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
-use SP\Domain\User\UserGroupServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserGroupForm;
 use SP\Mvc\Controller\WebControllerHelper;

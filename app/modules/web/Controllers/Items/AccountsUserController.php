@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\Domain\Account\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;

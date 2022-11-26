@@ -29,7 +29,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
-use SP\Domain\Common\Out\SimpleModel;
+use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;

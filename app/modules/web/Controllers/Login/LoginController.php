@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\LoginServiceInterface;
+use SP\Domain\Auth\Ports\LoginServiceInterface;
 use SP\Domain\Auth\Services\LoginService;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;

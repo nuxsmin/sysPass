@@ -26,7 +26,7 @@ namespace SP\Domain\Config\Adapters;
 
 use JsonSerializable;
 use SP\Core\DataCollection;
-use SP\Domain\Config\In\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Util\VersionUtil;
 
 /**

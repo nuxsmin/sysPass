@@ -30,7 +30,7 @@ use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\DataModel\AccountSearchVData;
-use SP\Domain\Account\In\AccountSearchRepositoryInterface;
+use SP\Domain\Account\Ports\AccountSearchRepositoryInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountFilterUserInterface;

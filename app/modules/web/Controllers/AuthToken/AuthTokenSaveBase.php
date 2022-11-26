@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 
 use SP\Core\Application;
-use SP\Domain\Auth\AuthTokenServiceInterface;
-use SP\Domain\CustomField\CustomFieldServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;

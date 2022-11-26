@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Config;
@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Config\Services\ConfigService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;

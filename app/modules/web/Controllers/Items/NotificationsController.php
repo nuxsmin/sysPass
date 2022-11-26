@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\DataModel\NotificationData;
-use SP\Domain\Notification\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Html\Html;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
