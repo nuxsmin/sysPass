@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,8 +23,6 @@
  */
 
 namespace SP\Util;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class Filter para el filtrado de datos
@@ -65,9 +63,11 @@ final class Filter
     }
 
     /**
-     * @param  string|int  $value
+     * @param  int|string  $value
+     *
+     * @return int|null
      */
-    public static function getInt($value): ?int
+    public static function getInt(int|string $value): ?int
     {
         $filterVar = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
 

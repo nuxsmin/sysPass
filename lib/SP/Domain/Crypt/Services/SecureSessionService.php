@@ -35,6 +35,8 @@ use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileException;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class SecureSessionService
@@ -67,7 +69,7 @@ final class SecureSessionService extends Service implements SecureSessionService
      *
      * @return Key|false
      */
-    public function getKey(UUIDCookie $cookie)
+    public function getKey(UUIDCookie $cookie): Key|bool
     {
         $this->cookie = $cookie;
 
@@ -117,7 +119,7 @@ final class SecureSessionService extends Service implements SecureSessionService
      *
      * @return Key|false
      */
-    private function saveKey()
+    private function saveKey(): Key|bool
     {
         try {
             $securedKey = Key::createNewRandomKey();

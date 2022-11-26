@@ -32,7 +32,7 @@ use SP\Util\Filter;
 final class AccountSearchTokenizer
 {
     private const SEARCH_REGEX = /** @lang RegExp */
-        '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-zа-я_]+):(?!\s]*)"?(?<filter_condition>[^":]+)"?/u';
+        '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-zа-я_]+):(?<filter_condition>[^"\'\s]+|"[^":]+")/u';
 
     private const FILTERS = [
         'condition' => [
@@ -72,13 +72,18 @@ final class AccountSearchTokenizer
             return null;
         }
 
-        $filtersAndValues = array_filter(array_combine($filters['filter_subject'], $filters['filter_condition']));
+        $filtersAndValues = array_filter(
+            array_combine(
+                $filters['filter_subject'],
+                array_map(static fn($value) => str_replace('"', '', $value), $filters['filter_condition'])
+            )
+        );
 
         return new AccountSearchTokens(
             Filter::safeSearchString(trim($filters['search'][0] ?? '')),
             $this->getConditions($filtersAndValues),
             $this->getItems($filtersAndValues),
-            $this->getOperator($filtersAndValues)[0],
+            $this->getOperator($filtersAndValues),
         );
     }
 
@@ -100,8 +105,8 @@ final class AccountSearchTokenizer
 
                     return null;
                 },
-                $filters['filter_subject'],
-                $filters['filter_condition']
+                array_keys($filters),
+                array_values($filters)
             )
         );
     }
@@ -116,15 +121,13 @@ final class AccountSearchTokenizer
         $items = array_filter(
             $filtersAndValues,
             static function ($value, $key) {
-                return in_array($key, array_keys(self::FILTERS['items']['subject']), true) && !empty($value);
+                return array_key_exists($key, self::FILTERS['items']['subject']) && !empty($value);
             },
             ARRAY_FILTER_USE_BOTH
         );
 
         return array_combine(
-            array_map(function ($key) {
-                return self::FILTERS['items']['subject'][$key];
-            }, array_keys($items)),
+            array_map(static fn($key) => self::FILTERS['items']['subject'][$key], array_keys($items)),
             array_values($items)
         );
     }
@@ -132,11 +135,11 @@ final class AccountSearchTokenizer
     /**
      * @param  array  $filtersAndValues
      *
-     * @return array
+     * @return string|null
      */
-    private function getOperator(array $filtersAndValues): array
+    private function getOperator(array $filtersAndValues): ?string
     {
-        return array_filter(
+        $operator = array_filter(
             $filtersAndValues,
             static function ($value, $key) {
                 return in_array($key, self::FILTERS['operator']['subject'], true)
@@ -144,5 +147,7 @@ final class AccountSearchTokenizer
             },
             ARRAY_FILTER_USE_BOTH
         );
+
+        return array_shift($operator);
     }
 }

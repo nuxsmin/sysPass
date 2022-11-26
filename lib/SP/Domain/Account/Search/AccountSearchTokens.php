@@ -32,15 +32,15 @@ final class AccountSearchTokens
     private string $search;
     private array  $conditions;
     private array  $items;
-    private string $operator;
+    private ?string $operator;
 
     /**
      * @param  string  $search
      * @param  array  $conditions
      * @param  array  $items
-     * @param  string  $operator
+     * @param  string|null  $operator
      */
-    public function __construct(string $search, array $conditions, array $items, string $operator)
+    public function __construct(string $search, array $conditions, array $items, ?string $operator)
     {
         $this->search = $search;
         $this->conditions = $conditions;
