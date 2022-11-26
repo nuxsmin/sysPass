@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Domain\Account\Out;
+namespace SP\Tests\Domain\Account\Adapters;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
