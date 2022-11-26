@@ -34,7 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Domain\Account\Repositories\PublicLinkRepositoryInterface;
+use SP\Domain\Account\In\PublicLinkRepositoryInterface;
 use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
