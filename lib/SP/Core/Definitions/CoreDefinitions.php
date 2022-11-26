@@ -87,6 +87,7 @@ use function DI\autowire;
 use function DI\create;
 use function DI\factory;
 use function DI\get;
+use function SP\__u;
 
 /**
  * Class CoreDefinitions
