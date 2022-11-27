@@ -48,17 +48,12 @@ use function SP\__u;
  */
 final class AccountFileService extends Service implements AccountFileServiceInterface
 {
-    private AccountFileRepositoryInterface $accountFileRepository;
-    private ImageUtilInterface             $imageUtil;
 
     public function __construct(
         Application $application,
-        AccountFileRepositoryInterface $accountFileRepository,
-        ImageUtilInterface $imageUtil
+        private AccountFileRepositoryInterface $accountFileRepository,
+        private ImageUtilInterface $imageUtil
     ) {
-        $this->accountFileRepository = $accountFileRepository;
-        $this->imageUtil = $imageUtil;
-
         parent::__construct($application);
     }
 

@@ -64,6 +64,27 @@ class AccountFileServiceTest extends UnitaryTestCase
         $this->accountFileService->create($fileData);
     }
 
+    /**
+     * @throws \SP\Core\Exceptions\InvalidImageException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function testCreateWithThumbnail(): void
+    {
+        $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData->type = 'image/jpeg';
+
+        $this->accountFileRepository
+            ->expects(self::once())
+            ->method('create')
+            ->with($fileData);
+        $this->imageUtil
+            ->expects(self::once())
+            ->method('createThumbnail');
+
+        $this->accountFileService->create($fileData);
+    }
+
     public function testGetById(): void
     {
         $fileData = FileExtData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData());
