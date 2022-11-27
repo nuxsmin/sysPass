@@ -31,6 +31,7 @@ use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
@@ -208,7 +209,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @param  \SP\Domain\Account\Services\AccountPasswordRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $accountRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */

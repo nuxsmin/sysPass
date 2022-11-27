@@ -29,9 +29,10 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Services\AccountFilterUser;
-use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -51,31 +52,6 @@ class AccountRepositoryTest extends UnitaryTestCase
     private DatabaseInterface|MockObject $database;
     private AccountRepository            $accountRepository;
     private AccountFilterUser            $accountFilterUser;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->database = $this->createMock(DatabaseInterface::class);
-        $queryFactory = new QueryFactory('mysql');
-
-        /** @noinspection PhpUnitInvalidMockingEntityInspection */
-        $this->accountFilterUser =
-            $this->getMockBuilder(AccountFilterUser::class)
-                ->enableOriginalConstructor()
-                ->enableProxyingToOriginalMethods()
-                ->setConstructorArgs(
-                    [$this->application->getContext(), $this->config->getConfigData(), $queryFactory]
-                )
-                ->getMock();
-        $this->accountRepository = new AccountRepository(
-            $this->database,
-            $this->context,
-            $queryFactory,
-            $this->application->getEventDispatcher(),
-            $this->accountFilterUser
-        );
-    }
 
     public function testGetTotalNumAccounts(): void
     {
@@ -295,10 +271,11 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdatePassword(): void
     {
-        $accountPasswordRequest = new AccountPasswordRequest();
-        $accountPasswordRequest->pass = self::$faker->password;
-        $accountPasswordRequest->key = self::$faker->password;
-        $accountPasswordRequest->id = self::$faker->randomNumber();
+        $accountPasswordRequest = new AccountPasswordRequest(
+            self::$faker->randomNumber(),
+            new EncryptedPassword(self::$faker->password, self::$faker->password),
+            self::$faker->sha1
+        );
 
         $expected = new QueryResult();
         $expected->setAffectedNumRows(1);
@@ -307,9 +284,9 @@ class AccountRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) use ($accountPasswordRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['pass'] === $accountPasswordRequest->pass
-                       && $params['key'] === $accountPasswordRequest->key
-                       && $params['id'] === $accountPasswordRequest->id
+                return $params['pass'] === $accountPasswordRequest->getEncryptedPassword()->getPass()
+                       && $params['key'] === $accountPasswordRequest->getEncryptedPassword()->getKey()
+                       && $params['id'] === $accountPasswordRequest->getId()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -554,7 +531,7 @@ class AccountRepositoryTest extends UnitaryTestCase
     /**
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testUpdateBulk()
+    public function testUpdateBulk(): void
     {
         $accountRequest = $this->buildAccountRequest();
 
@@ -587,7 +564,7 @@ class AccountRepositoryTest extends UnitaryTestCase
     /**
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testUpdateBulkNoFieldsToUpdate()
+    public function testUpdateBulkNoFieldsToUpdate(): void
     {
         $this->database->expects(self::never())
             ->method('doQuery');
@@ -595,7 +572,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals(0, $this->accountRepository->updateBulk(new AccountRequest()));
     }
 
-    public function testGetById()
+    public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -615,7 +592,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->getById($id);
     }
 
-    public function testGetAll()
+    public function testGetAll(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) {
@@ -637,7 +614,7 @@ class AccountRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByIdBatch()
+    public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
 
@@ -665,7 +642,7 @@ class AccountRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByIdBatchWithNoIds()
+    public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
             ->method('doQuery');
@@ -673,7 +650,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertEquals(0, $this->accountRepository->deleteByIdBatch([]));
     }
 
-    public function testSearch()
+    public function testSearch(): void
     {
         $item = new ItemSearchData();
         $item->seachString = self::$faker->name;
@@ -702,7 +679,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->search($item);
     }
 
-    public function testSearchWithoutString()
+    public function testSearchWithoutString(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) {
@@ -771,7 +748,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->assertFalse($this->accountRepository->incrementViewCounter($id));
     }
 
-    public function testGetDataForLink()
+    public function testGetDataForLink(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -794,7 +771,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->getDataForLink($id);
     }
 
-    public function testGetForUser()
+    public function testGetForUser(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -823,7 +800,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->getForUser($id);
     }
 
-    public function testGetForUserWithoutAccount()
+    public function testGetForUserWithoutAccount(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
@@ -850,7 +827,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->getForUser();
     }
 
-    public function testGetLinked()
+    public function testGetLinked(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -879,7 +856,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->accountRepository->getLinked($id);
     }
 
-    public function testGetAccountsPassData()
+    public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
@@ -895,5 +872,30 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountRepository->getAccountsPassData();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->database = $this->createMock(DatabaseInterface::class);
+        $queryFactory = new QueryFactory('mysql');
+
+        /** @noinspection PhpUnitInvalidMockingEntityInspection */
+        $this->accountFilterUser =
+            $this->getMockBuilder(AccountFilterUser::class)
+                ->enableOriginalConstructor()
+                ->enableProxyingToOriginalMethods()
+                ->setConstructorArgs(
+                    [$this->application->getContext(), $this->config->getConfigData(), $queryFactory]
+                )
+                ->getMock();
+        $this->accountRepository = new AccountRepository(
+            $this->database,
+            $this->context,
+            $queryFactory,
+            $this->application->getEventDispatcher(),
+            $this->accountFilterUser
+        );
     }
 }

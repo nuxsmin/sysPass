@@ -33,8 +33,6 @@ use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class AccountFilterUser
  */

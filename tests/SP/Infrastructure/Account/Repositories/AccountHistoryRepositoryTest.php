@@ -30,7 +30,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Adapters\AccountData;
-use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -46,7 +47,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     private DatabaseInterface|MockObject $database;
     private AccountHistoryRepository     $accountHistoryRepository;
 
-    public function testGetById()
+    public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -66,7 +67,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $this->accountHistoryRepository->getById($id);
     }
 
-    public function testGetHistoryForAccount()
+    public function testGetHistoryForAccount(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -90,7 +91,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function testDeleteByIdBatch()
+    public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
 
@@ -112,14 +113,13 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->deleteByIdBatch($ids);
-
     }
 
     /**
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function testDeleteByIdBatchWithoutIds()
+    public function testDeleteByIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
             ->method('doQuery');
@@ -131,13 +131,13 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testUpdatePassword()
+    public function testUpdatePassword(): void
     {
-        $accountPasswordRequest = new AccountPasswordRequest();
-        $accountPasswordRequest->pass = self::$faker->password;
-        $accountPasswordRequest->key = self::$faker->password;
-        $accountPasswordRequest->id = self::$faker->randomNumber();
-        $accountPasswordRequest->hash = sha1(self::$faker->text());
+        $accountPasswordRequest = new AccountPasswordRequest(
+            self::$faker->randomNumber(),
+            new EncryptedPassword(self::$faker->password, self::$faker->password),
+            self::$faker->sha1
+        );
 
         $expected = new QueryResult();
         $expected->setAffectedNumRows(1);
@@ -146,10 +146,10 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) use ($accountPasswordRequest) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['pass'] === $accountPasswordRequest->pass
-                       && $params['key'] === $accountPasswordRequest->key
-                       && $params['id'] === $accountPasswordRequest->id
-                       && $params['mPassHash'] === $accountPasswordRequest->hash
+                return $params['pass'] === $accountPasswordRequest->getEncryptedPassword()->getPass()
+                       && $params['key'] === $accountPasswordRequest->getEncryptedPassword()->getKey()
+                       && $params['id'] === $accountPasswordRequest->getId()
+                       && $params['mPassHash'] === $accountPasswordRequest->getHash()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -160,10 +160,9 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn($expected);
 
         $this->assertTrue($this->accountHistoryRepository->updatePassword($accountPasswordRequest));
-
     }
 
-    public function testSearch()
+    public function testSearch(): void
     {
         $item = new ItemSearchData();
         $item->seachString = self::$faker->name;
@@ -189,7 +188,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $this->accountHistoryRepository->search($item);
     }
 
-    public function testSearchWithoutString()
+    public function testSearchWithoutString(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -209,7 +208,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     }
 
 
-    public function testGetAccountsPassData()
+    public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
@@ -231,7 +230,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testCreate()
+    public function testCreate(): void
     {
         $dto = $this->buildAccountHistoryCreateDto();
 
@@ -279,7 +278,6 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn($expected);
 
         $this->assertEquals($expected->getLastId(), $this->accountHistoryRepository->create($dto));
-
     }
 
     private function buildAccountHistoryCreateDto(): AccountHistoryCreateDto
@@ -322,7 +320,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDelete()
+    public function testDelete(): void
     {
         $id = 1;
         $expected = new QueryResult();
@@ -341,14 +339,13 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn($expected);
 
         $this->assertTrue($this->accountHistoryRepository->delete($id));
-
     }
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteNoResults()
+    public function testDeleteNoResults(): void
     {
         $id = 1;
         $expected = new QueryResult();
@@ -367,10 +364,9 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn($expected);
 
         $this->assertFalse($this->accountHistoryRepository->delete($id));
-
     }
 
-    public function testGetAll()
+    public function testGetAll(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) {
@@ -386,14 +382,13 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->getAll();
-
     }
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByAccountIdBatch()
+    public function testDeleteByAccountIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
 
@@ -421,7 +416,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByAccountIdBatchWithoutIds()
+    public function testDeleteByAccountIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
             ->method('doQuery');

@@ -40,6 +40,7 @@ use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Adapters\AccountPassData;
 use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -560,7 +561,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates an already encrypted password data from a master password changing action
      *
-     * @param  \SP\Domain\Account\Services\AccountPasswordRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $accountRequest
      *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException

@@ -28,8 +28,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
-use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
@@ -382,7 +382,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  AccountPasswordRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $request
      *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException

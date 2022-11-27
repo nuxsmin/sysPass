@@ -29,8 +29,8 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
-use SP\Domain\Account\Services\AccountPasswordRequest;
 use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -93,7 +93,7 @@ interface AccountRepositoryInterface extends RepositoryInterface
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  AccountPasswordRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $request
      *
      * @return bool
      * @throws ConstraintException

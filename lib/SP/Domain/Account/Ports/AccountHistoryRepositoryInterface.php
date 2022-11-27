@@ -26,7 +26,7 @@ namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Services\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -72,7 +72,7 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  AccountPasswordRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $request
      *
      * @return bool
      */

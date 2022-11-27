@@ -22,9 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
-
-use SP\Domain\Account\Dtos\EncryptedPassword;
+namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountPasswordRequest
