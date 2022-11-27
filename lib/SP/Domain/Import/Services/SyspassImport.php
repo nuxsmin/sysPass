@@ -38,7 +38,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Export\Services\XmlVerifyService;
 use SP\Util\VersionUtil;
 
@@ -422,7 +421,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Accounts',
             'Account',
             function (DOMElement $account) {
-                $accountRequest = new AccountRequest();
+                $accountRequest = new \SP\Domain\Account\Dtos\AccountRequest();
 
                 /** @var DOMElement $node */
                 foreach ($account->childNodes as $node) {

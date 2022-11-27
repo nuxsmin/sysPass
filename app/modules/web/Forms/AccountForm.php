@@ -30,8 +30,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Http\RequestInterface;
 
 /**

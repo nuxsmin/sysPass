@@ -28,7 +28,7 @@ use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Api\Services\ApiResponse;
 
 /**
@@ -73,7 +73,7 @@ final class EditController extends AccountBase
     }
 
     /**
-     * @return \SP\Domain\Account\Services\AccountRequest
+     * @return \SP\Domain\Account\Dtos\AccountRequest
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     private function buildAccountRequest(): AccountRequest

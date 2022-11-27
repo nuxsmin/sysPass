@@ -33,8 +33,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
@@ -80,7 +80,7 @@ trait ImportTrait
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    protected function addAccount(AccountRequest $accountRequest): void
+    protected function addAccount(\SP\Domain\Account\Dtos\AccountRequest $accountRequest): void
     {
         if (empty($accountRequest->categoryId)) {
             throw new ImportException(__u('Category Id not set. Unable to import account.'));

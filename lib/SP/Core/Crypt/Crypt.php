@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,91 +28,116 @@ use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
+use SP\Core\Exceptions\CryptException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class Crypt
  *
  * @package SP\Core\Crypt
  */
-class Crypt
+class Crypt implements CryptInterface
 {
+    /**
+     * Securiza una clave de seguridad
+     *
+     * @param  string  $password
+     * @param  bool  $useAscii
+     *
+     * @return string|KeyProtectedByPassword
+     * @throws \SP\Core\Exceptions\CryptException
+     * @TODO: Update callers to use instance
+     */
+    public function makeSecuredKey(
+        string $password,
+        bool $useAscii = true
+    ): KeyProtectedByPassword|string {
+        try {
+            if ($useAscii) {
+                return KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
+            }
+
+            return KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
+        } catch (CryptoException $e) {
+            throw new CryptException($e->getMessage(), SPException::ERROR, null, $e->getCode(), $e);
+        }
+    }
+
     /**
      * Encriptar datos con una clave segura
      *
-     * @param string      $data
-     * @param string|Key  $securedKey
-     * @param string|null $password
+     * @param  string  $data
+     * @param  string|Key  $securedKey
+     * @param  string|null  $password
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\CryptException
+     *
+     * @TODO: Update callers to use instance
      */
-    public static function encrypt(
-        string  $data,
-                $securedKey,
+    public function encrypt(
+        string $data,
+        Key|string $securedKey,
         ?string $password = null
-    ): string
-    {
+    ): string {
         try {
             if ($securedKey instanceof Key) {
                 $key = $securedKey;
             } elseif (null !== $password) {
-                $key = self::unlockSecuredKey($securedKey, $password, false);
+                $key = $this->unlockSecuredKey($securedKey, $password, false);
             } else {
                 $key = Key::loadFromAsciiSafeString($securedKey);
             }
 
             return Crypto::encrypt($data, $key);
         } catch (CryptoException $e) {
-            logger($e->getMessage());
-
-            throw $e;
+            throw new CryptException($e->getMessage(), SPException::ERROR, null, $e->getCode(), $e);
         }
     }
 
     /**
+     * @param  string  $key
+     * @param  string  $password
+     * @param  bool  $useAscii
+     *
      * @return string|Key
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
+     * @TODO: Update callers to use instance
      */
-    public static function unlockSecuredKey(
+    public function unlockSecuredKey(
         string $key,
         string $password,
-        bool   $useAscii = true
-    )
-    {
+        bool $useAscii = true
+    ): Key|string {
         try {
             if ($useAscii) {
-                return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password)->saveToAsciiSafeString();
+                return KeyProtectedByPassword::loadFromAsciiSafeString($key)
+                    ->unlockKey($password)
+                    ->saveToAsciiSafeString();
             }
 
             return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password);
         } catch (CryptoException $e) {
-            logger($e->getMessage());
-
-            throw $e;
+            throw new CryptException($e->getMessage(), SPException::ERROR, null, $e->getCode(), $e);
         }
     }
 
     /**
      * Desencriptar datos con una clave segura
      *
-     * @param string                            $data
-     * @param string|Key|KeyProtectedByPassword $securedKey
-     * @param string|null                       $password
+     * @param  string  $data
+     * @param  string|Key|KeyProtectedByPassword  $securedKey
+     * @param  string|null  $password
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
+     * @throws \SP\Core\Exceptions\CryptException
+     * @TODO: Update callers to use instance
      */
-    public static function decrypt(
-        string  $data,
-                $securedKey,
+    public function decrypt(
+        string $data,
+        Key|KeyProtectedByPassword|string $securedKey,
         ?string $password = null
-    ): string
-    {
+    ): string {
         try {
             if ($securedKey instanceof Key) {
                 return Crypto::decrypt($data, $securedKey);
@@ -123,39 +148,12 @@ class Crypt
                     return Crypto::decrypt($data, $securedKey->unlockKey($password));
                 }
 
-                return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password, false));
+                return Crypto::decrypt($data, $this->unlockSecuredKey($securedKey, $password, false));
             }
 
             return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));
         } catch (CryptoException $e) {
-            logger($e->getMessage());
-
-            throw $e;
-        }
-
-    }
-
-    /**
-     * Securiza una clave de seguridad
-     *
-     * @return string|KeyProtectedByPassword
-     * @throws CryptoException
-     */
-    public static function makeSecuredKey(
-        string $password,
-        bool   $useAscii = true
-    )
-    {
-        try {
-            if ($useAscii) {
-                return KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
-            }
-
-            return KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
-        } catch (CryptoException $e) {
-            logger($e->getMessage());
-
-            throw $e;
+            throw new CryptException($e->getMessage(), SPException::ERROR, null, $e->getCode(), $e);
         }
     }
 }

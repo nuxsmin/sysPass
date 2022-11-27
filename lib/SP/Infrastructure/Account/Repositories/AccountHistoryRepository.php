@@ -394,12 +394,12 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
             ->newUpdate()
             ->table('AccountHistory')
             ->cols([
-                'pass'      => $request->pass,
-                'key'       => $request->key,
-                'mPassHash' => $request->hash,
+                'pass'      => $request->getEncryptedPassword()->getPass(),
+                'key'       => $request->getEncryptedPassword()->getKey(),
+                'mPassHash' => $request->getHash(),
             ])
             ->where('id = :id')
-            ->bindValues(['id' => $request->id]);
+            ->bindValues(['id' => $request->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 

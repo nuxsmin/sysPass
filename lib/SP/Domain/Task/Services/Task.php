@@ -27,26 +27,21 @@ namespace SP\Domain\Task\Services;
 use JsonException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Messages\TaskMessage;
+use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Task
  *
  * @package SP\Core
  */
-final class Task
+final class Task implements TaskInterface
 {
-    /**
-     * @var string Nombre de la tarea
-     */
-    private string $name;
-    /**
-     * @var string ID de la tarea
-     */
-    private string       $taskId;
     private ?FileHandler $fileOut  = null;
     private ?FileHandler $fileTask = null;
     /**
@@ -63,12 +58,10 @@ final class Task
      * Task constructor.
      *
      * @param  string  $name  Nombre de la tarea
-     * @param  string  $id
+     * @param  string  $taskId
      */
-    public function __construct(string $name, string $id)
+    public function __construct(private string $name, private string $taskId)
     {
-        $this->name = $name;
-        $this->taskId = $id;
         $this->initialized = $this->checkFile();
         $this->uid = $this->genUid();
     }
@@ -202,7 +195,7 @@ final class Task
         return $this->interval;
     }
 
-    public function setInterval(int $interval): Task
+    public function setInterval(int $interval): TaskInterface
     {
         $this->interval = $interval;
 
@@ -224,7 +217,7 @@ final class Task
      *
      * @throws FileException
      */
-    public function register(): Task
+    public function register(): TaskInterface
     {
         logger("Register Task: $this->name");
 
@@ -240,7 +233,7 @@ final class Task
      *
      * @throws FileException
      */
-    public function registerSession(): Task
+    public function registerSession(): TaskInterface
     {
         logger("Register Task (session): $this->name");
 

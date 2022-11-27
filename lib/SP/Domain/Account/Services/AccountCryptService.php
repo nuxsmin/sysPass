@@ -24,13 +24,14 @@
 
 namespace SP\Domain\Account\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
 use Exception;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\CryptInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -39,6 +40,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Util\Util;
+use function SP\__;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class AccountCryptService
@@ -47,19 +51,13 @@ use SP\Util\Util;
  */
 final class AccountCryptService extends Service implements AccountCryptServiceInterface
 {
-    private AccountService           $accountService;
-    private AccountHistoryService    $accountHistoryService;
-    private ?UpdateMasterPassRequest $request = null;
-
     public function __construct(
         Application $application,
-        AccountServiceInterface $accountService,
-        AccountHistoryServiceInterface $accountHistoryService
+        private AccountServiceInterface $accountService,
+        private AccountHistoryServiceInterface $accountHistoryService,
+        private CryptInterface $crypt
     ) {
         parent::__construct($application);
-
-        $this->accountService = $accountService;
-        $this->accountHistoryService = $accountHistoryService;
     }
 
     /**
@@ -69,8 +67,6 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
      */
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
-        $this->request = $updateMasterPassRequest;
-
         try {
             $this->eventDispatcher->notifyEvent(
                 'update.masterPassword.accounts.start',
@@ -81,9 +77,9 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 )
             );
 
-            if ($this->request->useTask()) {
-                $task = $this->request->getTask();
+            $task = $updateMasterPassRequest->getTask();
 
+            if (null !== $task) {
                 TaskFactory::update(
                     $task,
                     TaskFactory::createMessage(
@@ -97,7 +93,8 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 $this->accountService->getAccountsPassData(),
                 function (AccountPasswordRequest $request) {
                     $this->accountService->updatePasswordMasterPass($request);
-                }
+                },
+                $updateMasterPassRequest
             );
 
             $this->eventDispatcher->notifyEvent(
@@ -119,7 +116,8 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
 
     private function processAccounts(
         array $accounts,
-        callable $passUpdater
+        callable $passUpdater,
+        UpdateMasterPassRequest $updateMasterPassRequest
     ): EventMessage {
         set_time_limit(0);
 
@@ -140,11 +138,9 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
         }
 
         $configData = $this->config->getConfigData();
-        $currentMasterPassHash = $this->request->getCurrentHash();
+        $currentMasterPassHash = $updateMasterPassRequest->getCurrentHash();
 
-        if ($this->request->useTask()) {
-            $task = $this->request->getTask();
-        }
+        $task = $updateMasterPassRequest->getTask();
 
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
@@ -156,13 +152,13 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                if (isset($task)) {
+                if (null !== $task) {
                     $taskMessage = TaskFactory::createMessage(
                         $task->getTaskId(),
                         __('Update Master Password')
-                    )->setMessage(sprintf(__('Accounts updated: %d / %d'), $counter, $numAccounts))
-                        ->setProgress(round(($counter * 100) / $numAccounts, 2))
-                        ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+                    )->setMessage(
+                        sprintf(__('Accounts updated: %d / %d - ETA: %ds (%.2f/s)'), $counter, $numAccounts, ...$eta)
+                    )->setProgress(round(($counter * 100) / $numAccounts, 2));
 
                     TaskFactory::update($task, $taskMessage);
 
@@ -187,24 +183,30 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 continue;
             }
 
-            $request = new AccountPasswordRequest();
-            $request->id = $account->id;
-
             try {
-                $passData = $this->accountService->getPasswordEncrypted(
-                    Crypt::decrypt($account->pass, $account->key, $this->request->getCurrentMasterPass()),
-                    $this->request->getNewMasterPass()
+                $encryptedPassword = $this->getPasswordEncrypted(
+                    $this->crypt->decrypt(
+                        $account->pass,
+                        $account->key,
+                        $updateMasterPassRequest->getCurrentMasterPass()
+                    ),
+                    $updateMasterPassRequest->getNewMasterPass()
                 );
 
-                $request->key = $passData['key'];
-                $request->pass = $passData['pass'];
+                $request = new AccountPasswordRequest(
+                    $account->id,
+                    $encryptedPassword,
+                    $updateMasterPassRequest->getHash()
+                );
 
                 // Call the specific updater
                 $passUpdater($request);
 
                 $accountsOk[] = $account->id;
                 $counter++;
-            } catch (SPException|CryptoException $e) {
+            } catch (SPException $e) {
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
                 $errorCount++;
 
                 $eventMessage->addDescription(__u('Error while updating the account\'s password'));
@@ -219,6 +221,39 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
     }
 
     /**
+     * Devolver los datos de la clave encriptados
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): EncryptedPassword
+    {
+        try {
+            if ($masterPass === null) {
+                $masterPass = $this->getMasterKeyFromContext();
+            }
+
+            if (empty($masterPass)) {
+                throw new ServiceException(__u('Master password not set'));
+            }
+
+            $key = $this->crypt->makeSecuredKey($masterPass);
+
+            $encryptedPassword = new EncryptedPassword(
+                $this->crypt->encrypt($pass, $key, $masterPass),
+                $key
+            );
+
+            if (strlen($encryptedPassword->getPass()) > 1000 || strlen($encryptedPassword->getKey()) > 1000) {
+                throw new ServiceException(__u('Internal error'));
+            }
+
+            return $encryptedPassword;
+        } catch (CryptException $e) {
+            throw new ServiceException(__u('Internal error'), SPException::ERROR, null, $e->getCode(), $e);
+        }
+    }
+
+    /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
      * @throws ServiceException
@@ -226,8 +261,6 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
     public function updateHistoryMasterPassword(
         UpdateMasterPassRequest $updateMasterPassRequest
     ): void {
-        $this->request = $updateMasterPassRequest;
-
         try {
             $this->eventDispatcher->notifyEvent(
                 'update.masterPassword.accountsHistory.start',
@@ -238,9 +271,9 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 )
             );
 
-            if ($this->request->useTask()) {
-                $task = $this->request->getTask();
+            $task = $updateMasterPassRequest->getTask();
 
+            if (null !== $task) {
                 TaskFactory::update(
                     $task,
                     TaskFactory::createMessage(
@@ -253,10 +286,9 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
             $eventMessage = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),
                 function (AccountPasswordRequest $request) {
-                    $request->hash = $this->request->getHash();
-
                     $this->accountHistoryService->updatePasswordMasterPass($request);
-                }
+                },
+                $updateMasterPassRequest
             );
 
             $this->eventDispatcher->notifyEvent(

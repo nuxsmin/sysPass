@@ -22,22 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
-
-use Aura\SqlQuery\Common\SelectInterface;
+namespace SP\Core\Exceptions;
 
 /**
- * Class AccountFilterUser
+ * Class CryptException
  */
-interface AccountFilterUserInterface
+final class CryptException extends SPException
 {
-    /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
-     */
-    public function buildFilterHistory(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
 
-    /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
-     */
-    public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
 }

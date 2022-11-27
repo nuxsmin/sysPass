@@ -24,24 +24,20 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Account\Dtos\AccountRequest;
+use Aura\SqlQuery\Common\SelectInterface;
 
 /**
- * Class AccountPreset
- *
- * @package SP\Domain\Account\Services
+ * Class AccountFilterUser
  */
-interface AccountPresetServiceInterface
+interface AccountFilterUserInterface
 {
     /**
-     * @throws ValidationException
-     * @throws ConstraintException
-     * @throws NoSuchPropertyException
-     * @throws QueryException
+     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      */
-    public function checkPasswordPreset(AccountRequest $accountRequest): void;
+    public function buildFilterHistory(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
+
+    /**
+     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     */
+    public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,18 +33,12 @@ use JsonSerializable;
  */
 final class TaskMessage implements MessageInterface, JsonSerializable
 {
-    protected string $taskId;
-    protected string $task;
-    protected ?string $message = null;
-    protected int $time = 0;
-    protected int $progress = 0;
-    protected int $end = 0;
+    protected ?string $message  = null;
+    protected int     $time     = 0;
+    protected int     $progress = 0;
+    protected int     $end      = 0;
 
-    public function __construct(string $taskId, string $task)
-    {
-        $this->taskId = $taskId;
-        $this->task = $task;
-    }
+    public function __construct(private string $taskId, private string $task) {}
 
     public function getTask(): string
     {
@@ -120,12 +114,12 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     public function composeText(string $delimiter = ';'): string
     {
         return implode($delimiter, [
-            'taskId' => $this->taskId,
-            'task' => $this->task,
-            'message' => $this->message,
-            'time' => $this->time,
+            'taskId'   => $this->taskId,
+            'task'     => $this->task,
+            'message'  => $this->message,
+            'time'     => $this->time,
             'progress' => $this->progress,
-            'end' => $this->end
+            'end'      => $this->end,
         ]);
     }
 
@@ -134,7 +128,7 @@ final class TaskMessage implements MessageInterface, JsonSerializable
      *
      * @throws \JsonException
      */
-    public function composeJson()
+    public function composeJson(): bool|string
     {
         return json_encode($this, JSON_THROW_ON_ERROR);
     }

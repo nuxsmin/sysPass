@@ -24,9 +24,7 @@
 
 namespace SP\Domain\Account\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
@@ -41,6 +39,9 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Adapters\AccountPassData;
+use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -67,32 +68,17 @@ final class AccountService extends Service implements AccountServiceInterface
 {
     use ServiceItemTrait;
 
-    private AccountRepositoryInterface            $accountRepository;
-    private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository;
-    private AccountToUserRepositoryInterface      $accountToUserRepository;
-    private AccountToTagRepositoryInterface       $accountToTagRepository;
-    private ItemPresetServiceInterface            $itemPresetService;
-    private AccountHistoryServiceInterface        $accountHistoryService;
-    private ConfigServiceInterface                $configService;
-
     public function __construct(
         Application $application,
-        AccountRepositoryInterface $accountRepository,
-        AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
-        AccountToUserRepositoryInterface $accountToUserRepository,
-        AccountToTagRepositoryInterface $accountToTagRepository,
-        ItemPresetServiceInterface $itemPresetService,
-        AccountHistoryServiceInterface $accountHistoryService,
-        ConfigServiceInterface $configService,
+        private AccountRepositoryInterface $accountRepository,
+        private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
+        private AccountToUserRepositoryInterface $accountToUserRepository,
+        private AccountToTagRepositoryInterface $accountToTagRepository,
+        private ItemPresetServiceInterface $itemPresetService,
+        private AccountHistoryServiceInterface $accountHistoryService,
+        private ConfigServiceInterface $configService,
+        private AccountCryptServiceInterface $accountCryptService
     ) {
-        $this->accountRepository = $accountRepository;
-        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountToUserRepository = $accountToUserRepository;
-        $this->accountToTagRepository = $accountToTagRepository;
-        $this->itemPresetService = $itemPresetService;
-        $this->accountHistoryService = $accountHistoryService;
-        $this->configService = $configService;
-
         parent::__construct($application);
     }
 
@@ -228,10 +214,10 @@ final class AccountService extends Service implements AccountServiceInterface
         }
 
         if (empty($accountRequest->key)) {
-            $pass = $this->getPasswordEncrypted($accountRequest->pass);
+            $encryptedPassword = $this->accountCryptService->getPasswordEncrypted($accountRequest->pass);
 
-            $accountRequest->pass = $pass['pass'];
-            $accountRequest->key = $pass['key'];
+            $accountRequest->pass = $encryptedPassword->getPass();
+            $accountRequest->key = $encryptedPassword->getKey();
         }
 
         $this->setPresetPrivate($accountRequest);
@@ -243,35 +229,6 @@ final class AccountService extends Service implements AccountServiceInterface
         $this->addPresetPermissions($accountRequest->id);
 
         return $accountRequest->id;
-    }
-
-    /**
-     * Devolver los datos de la clave encriptados
-     *
-     * @throws \SP\Domain\Common\Services\ServiceException
-     */
-    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): array
-    {
-        try {
-            if ($masterPass === null) {
-                $masterPass = $this->getMasterKeyFromContext();
-            }
-
-            if (empty($masterPass)) {
-                throw new ServiceException(__u('Master password not set'));
-            }
-
-            $out['key'] = Crypt::makeSecuredKey($masterPass);
-            $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
-
-            if (strlen($out['pass']) > 1000 || strlen($out['key']) > 1000) {
-                throw new ServiceException(__u('Internal error'));
-            }
-
-            return $out;
-        } catch (CryptoException $e) {
-            throw new ServiceException(__u('Internal error'));
-        }
     }
 
     /**
@@ -307,9 +264,10 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @throws QueryException
-     * @throws NoSuchItemException
-     * @throws ConstraintException
+     * @param  int  $id
+     *
+     * @return \SP\DataModel\Dto\AccountEnrichedDto
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getById(int $id): AccountEnrichedDto
     {
@@ -406,7 +364,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
@@ -557,7 +515,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Update accounts in bulk mode
      *
-     * @param  \SP\Domain\Account\Services\AccountBulkRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountBulkRequest  $request
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
@@ -579,7 +537,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
@@ -602,12 +560,18 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates an already encrypted password data from a master password changing action
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param  \SP\Domain\Account\Services\AccountPasswordRequest  $accountRequest
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): bool
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): void
     {
-        return $this->accountRepository->updatePassword($accountRequest);
+        if (!$this->accountRepository->updatePassword($accountRequest)) {
+            throw new ServiceException(__u('Error while updating the password'));
+        }
     }
 
     /**

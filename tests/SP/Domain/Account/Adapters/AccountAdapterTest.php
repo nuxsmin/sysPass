@@ -46,7 +46,7 @@ class AccountAdapterTest extends UnitaryTestCase
             $this->config->getConfigData(),
             $this->createStub(CustomFieldServiceInterface::class)
         );
-        $accountData = $dataGenerator->getAccountData();
+        $accountData = $dataGenerator->buildAccountEnrichedData();
 
         $out = $adapter->transform($accountData);
 
@@ -113,7 +113,7 @@ class AccountAdapterTest extends UnitaryTestCase
         $fractal = new Manager();
         $fractal->parseIncludes('customFields');
         $out = $fractal->createData(
-            new Item(AccountDataGenerator::factory()->getAccountData(), $adapter)
+            new Item(AccountDataGenerator::factory()->buildAccountEnrichedData(), $adapter)
         )->toArray();
 
         $this->assertArrayHasKey('customFields', $out['data']);

@@ -28,6 +28,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\User\Services\UserLoginResponse;

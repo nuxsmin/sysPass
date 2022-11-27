@@ -25,8 +25,7 @@
 namespace SP\Domain\Crypt\Services;
 
 use SP\Core\Crypt\Hash;
-use SP\Domain\Task\Services\Task;
-
+use SP\Domain\Task\Ports\TaskInterface;
 
 /**
  * Class UpdateMasterPassRequest
@@ -35,11 +34,7 @@ use SP\Domain\Task\Services\Task;
  */
 final class UpdateMasterPassRequest
 {
-    private string $currentMasterPass;
-    private string $newMasterPass;
-    private ?Task  $task;
     private string $hash;
-    private string $currentHash;
 
     /**
      * UpdateMasterPassRequest constructor.
@@ -47,19 +42,15 @@ final class UpdateMasterPassRequest
      * @param  string  $currentMasterPass
      * @param  string  $newMasterPass
      * @param  string  $currentHash
-     * @param  \SP\Domain\Task\Services\Task|null  $task
+     * @param  TaskInterface|null  $task
      */
     public function __construct(
-        string $currentMasterPass,
-        string $newMasterPass,
-        string $currentHash,
-        ?Task $task = null
+        private string $currentMasterPass,
+        private string $newMasterPass,
+        private string $currentHash,
+        private ?TaskInterface $task = null
     ) {
-        $this->currentMasterPass = $currentMasterPass;
-        $this->newMasterPass = $newMasterPass;
-        $this->task = $task;
         $this->hash = Hash::hashKey($newMasterPass);
-        $this->currentHash = $currentHash;
     }
 
     public function getCurrentMasterPass(): string
@@ -72,7 +63,7 @@ final class UpdateMasterPassRequest
         return $this->newMasterPass;
     }
 
-    public function getTask(): ?Task
+    public function getTask(): ?TaskInterface
     {
         return $this->task;
     }
@@ -91,5 +82,4 @@ final class UpdateMasterPassRequest
     {
         return $this->currentHash;
     }
-
 }

@@ -22,26 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Ports;
-
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Account\Dtos\AccountRequest;
+namespace SP\Domain\Account\Dtos;
 
 /**
- * Class AccountPreset
- *
- * @package SP\Domain\Account\Services
+ * Class EncryptedPassword
  */
-interface AccountPresetServiceInterface
+final class EncryptedPassword
 {
-    /**
-     * @throws ValidationException
-     * @throws ConstraintException
-     * @throws NoSuchPropertyException
-     * @throws QueryException
-     */
-    public function checkPasswordPreset(AccountRequest $accountRequest): void;
+    public function __construct(private string $pass, private string $key) {}
+
+    public function getPass(): string
+    {
+        return $this->pass;
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
+    }
 }

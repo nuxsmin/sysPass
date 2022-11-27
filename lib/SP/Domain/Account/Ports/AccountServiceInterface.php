@@ -34,9 +34,9 @@ use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Adapters\AccountPassData;
-use SP\Domain\Account\Services\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Services\AccountPasswordRequest;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -103,13 +103,6 @@ interface AccountServiceInterface
     public function create(AccountRequest $accountRequest): int;
 
     /**
-     * Devolver los datos de la clave encriptados
-     *
-     * @throws \SP\Domain\Common\Services\ServiceException
-     */
-    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): array;
-
-    /**
      * @throws QueryException
      * @throws NoSuchItemException
      * @throws ConstraintException
@@ -119,7 +112,7 @@ interface AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
@@ -128,14 +121,14 @@ interface AccountServiceInterface
     /**
      * Update accounts in bulk mode
      *
-     * @param  \SP\Domain\Account\Services\AccountBulkRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountBulkRequest  $request
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function updateBulk(AccountBulkRequest $request): void;
 
     /**
-     * @param  \SP\Domain\Account\Services\AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
@@ -147,7 +140,7 @@ interface AccountServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): bool;
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): void;
 
     /**
      * @param  int  $historyId

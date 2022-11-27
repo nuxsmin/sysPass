@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Common\Services;
 
-
 use SP\Core\Exceptions\SPException;
 
 /**

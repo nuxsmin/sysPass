@@ -24,6 +24,7 @@
 
 namespace SP\Domain\Account\Ports;
 
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 
@@ -47,4 +48,11 @@ interface AccountCryptServiceInterface
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void;
+
+    /**
+     * Devolver los datos de la clave encriptados
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function getPasswordEncrypted(string $pass, ?string $masterPass = null): EncryptedPassword;
 }

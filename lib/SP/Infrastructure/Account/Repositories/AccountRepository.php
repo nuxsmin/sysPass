@@ -32,10 +32,10 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
-use SP\Domain\Account\Services\AccountFilterUserInterface;
 use SP\Domain\Account\Services\AccountPasswordRequest;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -153,7 +153,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @return int
      * @throws ConstraintException
@@ -192,7 +192,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @return int
      * @throws ConstraintException
@@ -233,9 +233,14 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->cols(['pass' => $request->pass, 'key' => $request->key])
+            ->cols(
+                [
+                    'pass' => $request->getEncryptedPassword()->getPass(),
+                    'key'  => $request->getEncryptedPassword()->getKey(),
+                ]
+            )
             ->where('id = :id')
-            ->bindValues(['id' => $request->id]);
+            ->bindValues(['id' => $request->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -351,7 +356,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Updates an item for bulk action
      *
-     * @param  AccountRequest  $itemData
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $itemData
      *
      * @return int
      * @throws SPException

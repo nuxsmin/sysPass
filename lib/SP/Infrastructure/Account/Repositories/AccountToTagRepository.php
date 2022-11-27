@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
@@ -92,7 +92,7 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
     /**
      * Actualizar las etiquetas de una cuenta
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
      *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException

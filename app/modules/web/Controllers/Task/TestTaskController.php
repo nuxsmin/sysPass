@@ -40,7 +40,7 @@ final class TestTaskController
      */
     public function testTaskAction(string $taskId): void
     {
-        $task = TaskFactory::create($taskId, $taskId);
+        $task = TaskFactory::register($taskId, $taskId);
 
         echo $task->getTaskId();
 

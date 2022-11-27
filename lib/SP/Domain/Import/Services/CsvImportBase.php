@@ -32,7 +32,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
-use SP\Domain\Account\Services\AccountRequest;
 use SP\Infrastructure\File\FileException;
 
 defined('APP_ROOT') || die();
@@ -113,7 +112,7 @@ abstract class CsvImportBase
                 $categoryId = $this->addCategory(new CategoryData(null, $categoryName));
 
                 // Crear la nueva cuenta
-                $accountRequest = new AccountRequest();
+                $accountRequest = new \SP\Domain\Account\Dtos\AccountRequest();
                 $accountRequest->name = $accountName;
                 $accountRequest->login = $login;
                 $accountRequest->clientId = $clientId;

@@ -24,6 +24,8 @@
 
 namespace SP\Domain\Account\Services;
 
+use SP\Domain\Account\Dtos\EncryptedPassword;
+
 /**
  * Class AccountPasswordRequest
  *
@@ -31,8 +33,29 @@ namespace SP\Domain\Account\Services;
  */
 final class AccountPasswordRequest
 {
-    public ?int    $id   = null;
-    public ?string $pass = null;
-    public ?string $key  = null;
-    public ?string $hash = null;
+    /**
+     * @param  int  $id
+     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
+     * @param  string|null  $hash
+     */
+    public function __construct(
+        private int $id,
+        private EncryptedPassword $encryptedPassword,
+        private ?string $hash = null
+    ) {}
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function getEncryptedPassword(): EncryptedPassword
+    {
+        return $this->encryptedPassword;
+    }
 }

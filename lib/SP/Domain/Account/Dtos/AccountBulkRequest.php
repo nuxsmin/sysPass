@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
+namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountBulkRequest
@@ -31,9 +31,7 @@ namespace SP\Domain\Account\Services;
  */
 final class AccountBulkRequest
 {
-    private array          $itemsId;
-    private AccountRequest $accountRequest;
-    private bool           $deleteHistory = false;
+    private bool $deleteHistory = false;
 
     /**
      * AccountBulkRequest constructor.
@@ -41,11 +39,8 @@ final class AccountBulkRequest
      * @param  int[]  $itemsId
      * @param  AccountRequest  $accountRequest
      */
-    public function __construct(array $itemsId, AccountRequest $accountRequest)
+    public function __construct(private array $itemsId, private AccountRequest $accountRequest)
     {
-        $this->itemsId = $itemsId;
-        $this->accountRequest = $accountRequest;
-
         $this->setUp();
     }
 

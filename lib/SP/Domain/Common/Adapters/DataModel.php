@@ -40,6 +40,20 @@ abstract class DataModel implements JsonSerializable
         }
     }
 
+    final public static function buildFromSimpleModel(SimpleModel $model): static
+    {
+        return new static($model->toArray());
+    }
+
+    final public function toArray(): array
+    {
+        if (count($this->properties) !== 0) {
+            return $this->properties;
+        }
+
+        return get_object_vars($this);
+    }
+
     /**
      * @param  string  $name
      *
@@ -83,14 +97,5 @@ abstract class DataModel implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
-    }
-
-    final public function toArray(): array
-    {
-        if (count($this->properties) !== 0) {
-            return $this->properties;
-        }
-
-        return get_object_vars($this);
     }
 }

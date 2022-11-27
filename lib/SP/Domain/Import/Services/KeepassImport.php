@@ -32,7 +32,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
-use SP\Domain\Account\Services\AccountRequest;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Util\Filter;
 
 defined('APP_ROOT') || die();
@@ -79,7 +79,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
         $this->getEntries();
 
-        /** @var AccountRequest[] $group */
+        /** @var \SP\Domain\Account\Dtos\AccountRequest[] $group */
         foreach ($this->items as $group => $entry) {
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
@@ -172,9 +172,9 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
         }
     }
 
-    private function mapEntryToAccount(array $entry): AccountRequest
+    private function mapEntryToAccount(array $entry): \SP\Domain\Account\Dtos\AccountRequest
     {
-        $accountRequest = new AccountRequest();
+        $accountRequest = new \SP\Domain\Account\Dtos\AccountRequest();
         $accountRequest->name = isset($entry['Title']) ? Filter::getString($entry['Title']) : '';
         $accountRequest->login = isset($entry['UserName']) ? Filter::getString($entry['UserName']) : '';
         $accountRequest->pass = $entry['Password'] ?? '';

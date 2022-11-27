@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
+namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountRequest

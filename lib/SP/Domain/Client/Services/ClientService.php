@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Services\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
@@ -49,8 +49,8 @@ final class ClientService extends Service implements ClientServiceInterface
 {
     use ServiceItemTrait;
 
-    private ClientRepositoryInterface  $clientRepository;
-    private AccountFilterUserInterface $accountFilterUser;
+    private ClientRepositoryInterface                           $clientRepository;
+    private \SP\Domain\Account\Ports\AccountFilterUserInterface $accountFilterUser;
 
     public function __construct(
         Application $application,

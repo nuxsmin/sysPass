@@ -29,6 +29,7 @@ use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
+use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;

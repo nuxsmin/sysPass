@@ -26,6 +26,7 @@ namespace SP\Domain\Task\Services;
 
 use RuntimeException;
 use SP\Core\Messages\TaskMessage;
+use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 
 /**
@@ -36,7 +37,7 @@ use SP\Infrastructure\File\FileException;
 final class TaskFactory
 {
     /**
-     * @var Task[]
+     * @var TaskInterface[]
      */
     private static array $tasks = [];
 
@@ -45,12 +46,9 @@ final class TaskFactory
      *
      * @throws FileException
      */
-    public static function create(
-        string $name,
-        string $id,
-        bool $hasSession = true
-    ): Task {
-        $task = self::add((new Task($name, $id)));
+    public static function register(TaskInterface $task, bool $hasSession = true): TaskInterface
+    {
+        $task = self::add($task);
 
         if ($hasSession) {
             return $task->registerSession();
@@ -59,7 +57,7 @@ final class TaskFactory
         return $task->register();
     }
 
-    private static function add(Task $task): Task
+    private static function add(TaskInterface $task): TaskInterface
     {
         if (!isset(self::$tasks[$task->getUid()])) {
             self::$tasks[$task->getUid()] = $task;
@@ -73,15 +71,14 @@ final class TaskFactory
     /**
      * Finalizar la tarea
      */
-    public static function end(Task $task): void
+    public static function end(TaskInterface $task): void
     {
-        self::get($task->getUid())
-            ->end();
+        self::get($task->getUid())->end();
 
         self::delete($task->getUid());
     }
 
-    private static function get(string $id): Task
+    private static function get(string $id): TaskInterface
     {
         if (isset(self::$tasks[$id])) {
             return self::$tasks[$id];
@@ -97,19 +94,16 @@ final class TaskFactory
         }
     }
 
-    public static function createMessage(
-        string $taskId,
-        string $task
-    ): TaskMessage {
+    public static function createMessage(string $taskId, string $task): TaskMessage
+    {
         return new TaskMessage($taskId, $task);
     }
 
     /**
      * Enviar un mensaje de actualización a la tarea
      */
-    public static function update(Task $task, TaskMessage $taskMessage): void
+    public static function update(TaskInterface $task, TaskMessage $taskMessage): void
     {
-        self::get($task->getUid())
-            ->writeJsonStatusAndFlush($taskMessage);
+        self::get($task->getUid())->writeJsonStatusAndFlush($taskMessage);
     }
 }

@@ -27,15 +27,26 @@ namespace SP\Tests\Generators;
 use SP\DataModel\AccountVData;
 use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemData;
+use SP\Domain\Common\Adapters\SimpleModel;
 
 /**
  * Class AccountDataGenerator
  */
 final class AccountDataGenerator extends DataGenerator
 {
-    public function getAccountData(): AccountEnrichedDto
+    public function buildAccountEnrichedData(): AccountEnrichedDto
     {
-        $accountData = new AccountVData([
+        $out = new AccountEnrichedDto(AccountVData::buildFromSimpleModel($this->buildAccountData()));
+        $out->setUsers($this->buildItemData());
+        $out->setTags($this->buildItemData());
+        $out->setUserGroups($this->buildItemData());
+
+        return $out;
+    }
+
+    public function buildAccountData(): SimpleModel
+    {
+        return new SimpleModel([
             'id'                 => $this->faker->randomNumber(),
             'name'               => $this->faker->name,
             'clientId'           => $this->faker->randomNumber(),
@@ -65,13 +76,9 @@ final class AccountDataGenerator extends DataGenerator
             'passDateChange'     => $this->faker->unixTime,
             'parentId'           => $this->faker->randomNumber(),
             'publicLinkHash'     => $this->faker->sha1,
+            'pass'               => $this->faker->password,
+            'key'                => $this->faker->sha1,
         ]);
-        $out = new AccountEnrichedDto($accountData);
-        $out->setUsers($this->buildItemData());
-        $out->setTags($this->buildItemData());
-        $out->setUserGroups($this->buildItemData());
-
-        return $out;
     }
 
     /**

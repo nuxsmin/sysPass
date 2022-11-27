@@ -27,7 +27,6 @@ namespace SP\Domain\Account\Services;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemData;
@@ -40,6 +39,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+use function SP\__u;
 
 /**
  * Class AccountHistoryService
@@ -208,13 +208,14 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @throws SPException
-     * @throws ConstraintException
+     * @param  \SP\Domain\Account\Services\AccountPasswordRequest  $accountRequest
+     *
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function updatePasswordMasterPass(
         AccountPasswordRequest $accountRequest
     ): void {
-        if ($this->accountHistoryRepository->updatePassword($accountRequest) !== 1) {
+        if (!$this->accountHistoryRepository->updatePassword($accountRequest)) {
             throw new ServiceException(__u('Error while updating the password'));
         }
     }
