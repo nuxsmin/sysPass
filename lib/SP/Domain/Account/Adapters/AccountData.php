@@ -24,17 +24,15 @@
 
 namespace SP\Domain\Account\Adapters;
 
-use JsonSerializable;
 use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
-use SP\Http\Json;
 
 /**
  * Class AccountData
  */
 class AccountData extends DataModel implements DataModelInterface
 {
-    protected int     $id;
+    protected ?int    $id                 = null;
     protected ?int    $userId             = null;
     protected ?int    $userGroupId        = null;
     protected ?int    $userEditId         = null;
@@ -58,11 +56,9 @@ class AccountData extends DataModel implements DataModelInterface
     protected ?bool   $otherUserGroupEdit = false;
     protected ?bool   $otherUserEdit      = false;
 
-    public function __construct(int $accountId = 0, ?array $properties = [])
+    public function __construct(?array $properties = [])
     {
         parent::__construct($properties);
-
-        $this->id = $accountId;
     }
 
     public function getDateAdd(): ?int

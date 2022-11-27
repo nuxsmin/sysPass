@@ -73,13 +73,12 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchData();
-        $item->seachString = self::$faker->name;
+        $item = new ItemSearchData(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->seachString.'%';
+                $searchStringLike = '%'.$item->getSeachString().'%';
 
                 return $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike

@@ -37,6 +37,7 @@ use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -164,13 +165,12 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchData();
-        $item->seachString = self::$faker->name;
+        $item = new ItemSearchData(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->seachString.'%';
+                $searchStringLike = '%'.$item->getSeachString().'%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
@@ -191,7 +191,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
-            static function (QueryData $arg) use ($item) {
+            static function (QueryData $arg) {
                 return count($arg->getQuery()->getBindValues()) === 0
                        && $arg->getMapClassName() === SimpleModel::class
                        && !empty($arg->getQuery()->getStatement());
@@ -282,34 +282,8 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
 
     private function buildAccountHistoryCreateDto(): AccountHistoryCreateDto
     {
-        $accountRequest = new AccountData();
-        $accountRequest->id = self::$faker->randomNumber();
-        $accountRequest->accountId = self::$faker->randomNumber();
-        $accountRequest->name = self::$faker->name;
-        $accountRequest->login = self::$faker->userName;
-        $accountRequest->url = self::$faker->url;
-        $accountRequest->notes = self::$faker->text;
-        $accountRequest->userEditId = self::$faker->randomNumber();
-        $accountRequest->passDateChange = self::$faker->unixTime;
-        $accountRequest->clientId = self::$faker->randomNumber();
-        $accountRequest->categoryId = self::$faker->randomNumber();
-        $accountRequest->isPrivate = self::$faker->numberBetween(0, 1);
-        $accountRequest->isPrivateGroup = self::$faker->numberBetween(0, 1);
-        $accountRequest->parentId = self::$faker->randomNumber();
-        $accountRequest->userId = self::$faker->randomNumber();
-        $accountRequest->userGroupId = self::$faker->randomNumber();
-        $accountRequest->key = self::$faker->text;
-        $accountRequest->pass = self::$faker->text;
-        $accountRequest->passDate = self::$faker->unixTime();
-        $accountRequest->passDateChange = self::$faker->unixTime();
-        $accountRequest->countView = self::$faker->randomNumber();
-        $accountRequest->countDecrypt = self::$faker->randomNumber();
-        $accountRequest->dateAdd = self::$faker->unixTime();
-        $accountRequest->dateEdit = self::$faker->unixTime();
-        $accountRequest->otherUserEdit = self::$faker->boolean();
-
         return new AccountHistoryCreateDto(
-            $accountRequest,
+            AccountData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountData()),
             self::$faker->boolean(),
             self::$faker->boolean(),
             self::$faker->sha1,

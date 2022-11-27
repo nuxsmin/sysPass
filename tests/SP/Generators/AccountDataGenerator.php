@@ -91,4 +91,27 @@ final class AccountDataGenerator extends DataGenerator
             range(0, 9)
         );
     }
+
+    public function buildAccountHistoryData(): SimpleModel
+    {
+        return new SimpleModel([
+            'id'             => $this->faker->randomNumber(),
+            'accountId'      => $this->faker->randomNumber(),
+            'name'           => $this->faker->name,
+            'login'          => $this->faker->userName,
+            'url'            => $this->faker->url,
+            'notes'          => $this->faker->text,
+            'userEditId'     => $this->faker->randomNumber(),
+            'passDateChange' => $this->faker->unixTime,
+            'clientId'       => $this->faker->randomNumber(),
+            'categoryId'     => $this->faker->randomNumber(),
+            'isPrivate'      => $this->faker->numberBetween(0, 1),
+            'isPrivateGroup' => $this->faker->numberBetween(0, 1),
+            'parentId'       => $this->faker->randomNumber(),
+            'userId'         => $this->faker->randomNumber(),
+            'userGroupId'    => $this->faker->randomNumber(),
+            'key'            => $this->faker->text,
+            'pass'           => $this->faker->text,
+        ]);
+    }
 }

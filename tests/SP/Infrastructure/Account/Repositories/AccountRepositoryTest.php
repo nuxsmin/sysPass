@@ -38,6 +38,7 @@ use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -305,24 +306,8 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testEditRestore(): void
     {
-        $accountHistoryData = new AccountHistoryData();
-        $accountHistoryData->id = self::$faker->randomNumber();
-        $accountHistoryData->accountId = self::$faker->randomNumber();
-        $accountHistoryData->name = self::$faker->name;
-        $accountHistoryData->login = self::$faker->userName;
-        $accountHistoryData->url = self::$faker->url;
-        $accountHistoryData->notes = self::$faker->text;
-        $accountHistoryData->userEditId = self::$faker->randomNumber();
-        $accountHistoryData->passDateChange = self::$faker->unixTime;
-        $accountHistoryData->clientId = self::$faker->randomNumber();
-        $accountHistoryData->categoryId = self::$faker->randomNumber();
-        $accountHistoryData->isPrivate = self::$faker->numberBetween(0, 1);
-        $accountHistoryData->isPrivateGroup = self::$faker->numberBetween(0, 1);
-        $accountHistoryData->parentId = self::$faker->randomNumber();
-        $accountHistoryData->userId = self::$faker->randomNumber();
-        $accountHistoryData->userGroupId = self::$faker->randomNumber();
-        $accountHistoryData->key = self::$faker->text;
-        $accountHistoryData->pass = self::$faker->text;
+        $accountHistoryData =
+            AccountHistoryData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
 
         $userId = 1;
 
@@ -652,13 +637,12 @@ class AccountRepositoryTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchData();
-        $item->seachString = self::$faker->name;
+        $item = new ItemSearchData(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->seachString.'%';
+                $searchStringLike = '%'.$item->getSeachString().'%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
@@ -881,6 +865,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
+        /** @noinspection ClassMockingCorrectnessInspection */
         /** @noinspection PhpUnitInvalidMockingEntityInspection */
         $this->accountFilterUser =
             $this->getMockBuilder(AccountFilterUser::class)

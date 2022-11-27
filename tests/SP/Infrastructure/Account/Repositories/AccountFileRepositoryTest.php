@@ -34,6 +34,7 @@ use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -48,7 +49,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByIdBatch()
+    public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
 
@@ -76,7 +77,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDeleteByIdBatchWithNoIds()
+    public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
             ->method('doQuery');
@@ -84,53 +85,13 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->assertEquals(0, $this->accountFileRepository->deleteByIdBatch([]));
     }
 
-    public function testGetAll()
-    {
-        $callback = new Callback(
-            static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
-                       && !empty($arg->getQuery()->getStatement());
-            }
-        );
-
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
-
-        $this->accountFileRepository->getAll();
-    }
-
-    public function testGetInfoById()
-    {
-        $id = self::$faker->randomNumber();
-
-        $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
-                $query = $arg->getQuery();
-
-                return $query->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
-                       && !empty($query->getStatement());
-            }
-        );
-
-        $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
-
-        $this->accountFileRepository->getInfoById($id);
-    }
-
     /**
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function testCreate()
+    public function testCreate(): void
     {
-        $fileData = $this->buildFileData();
+        $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
         $expected = new QueryResult();
         $expected->setLastId(1);
@@ -140,13 +101,13 @@ class AccountFileRepositoryTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return $params['accountId'] === $fileData->accountId
-                       && $params['name'] === $fileData->name
-                       && $params['type'] === $fileData->type
-                       && $params['thumb'] === $fileData->thumb
-                       && $params['content'] === $fileData->content
-                       && $params['extension'] === $fileData->extension
-                       && $params['size'] === $fileData->size
+                return $params['accountId'] === $fileData->getAccountId()
+                       && $params['name'] === $fileData->getName()
+                       && $params['type'] === $fileData->getType()
+                       && $params['thumb'] === $fileData->getThumb()
+                       && $params['content'] === $fileData->getContent()
+                       && $params['extension'] === $fileData->getExtension()
+                       && $params['size'] === $fileData->getSize()
                        && !empty($query->getStatement());
             }
         );
@@ -159,22 +120,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->assertEquals($expected->getLastId(), $this->accountFileRepository->create($fileData));
     }
 
-    private function buildFileData(): FileData
-    {
-        $fileData = new FileData();
-        $fileData->id = self::$faker->randomNumber();
-        $fileData->accountId = self::$faker->randomNumber();
-        $fileData->name = self::$faker->name;
-        $fileData->type = self::$faker->randomNumber();
-        $fileData->thumb = self::$faker->image();
-        $fileData->content = self::$faker->image();
-        $fileData->extension = self::$faker->name();
-        $fileData->size = self::$faker->randomNumber();
-
-        return $fileData;
-    }
-
-    public function testGetByAccountId()
+    public function testGetByAccountId(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -197,39 +143,10 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     */
-    public function testGetByIdBatch()
-    {
-        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
-
-        $callback = new Callback(
-            static function (QueryData $arg) use ($ids) {
-                $query = $arg->getQuery();
-                $values = $query->getBindValues();
-
-                return array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
-                       && !empty($query->getStatement());
-            }
-        );
-
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
-
-        $this->accountFileRepository->getByIdBatch($ids);
-    }
-
-    /**
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testDelete()
+    public function testDelete(): void
     {
         $id = 1;
         $expected = new QueryResult();
@@ -253,7 +170,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->assertTrue($this->accountFileRepository->delete($id));
     }
 
-    public function testGetById()
+    public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -275,15 +192,14 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->accountFileRepository->getById($id);
     }
 
-    public function testSearch()
+    public function testSearch(): void
     {
-        $item = new ItemSearchData();
-        $item->seachString = self::$faker->name;
+        $item = new ItemSearchData(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->seachString.'%';
+                $searchStringLike = '%'.$item->getSeachString().'%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
