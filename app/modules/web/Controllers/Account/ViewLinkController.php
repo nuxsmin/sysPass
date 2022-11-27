@@ -40,6 +40,7 @@ use SP\Http\Uri;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
+use SP\Util\ImageUtilInterface;
 use SP\Util\Util;
 
 /**
@@ -57,7 +58,7 @@ final class ViewLinkController extends AccountControllerBase
         WebControllerHelper $webControllerHelper,
         \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
         \SP\Domain\Account\Ports\PublicLinkServiceInterface $publicLinkService,
-        ImageUtil $imageUtil
+        ImageUtilInterface $imageUtil
     ) {
         parent::__construct(
             $application,

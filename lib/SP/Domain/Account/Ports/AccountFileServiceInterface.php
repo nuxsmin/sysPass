@@ -49,39 +49,15 @@ interface AccountFileServiceInterface
     public function create(FileData $itemData): int;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getInfoById(int $id): ?FileExtData;
-
-    /**
      * Returns the item for given id
      *
-     * @return mixed|null
+     * @param  int  $id
+     *
+     * @return FileExtData|null
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getById(int $id): mixed;
-
-    /**
-     * Returns all the items
-     *
-     * @return FileExtData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array;
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  int[]  $ids
-     *
-     * @return FileExtData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByIdBatch(array $ids): array;
+    public function getById(int $id): ?FileExtData;
 
     /**
      * Deletes all the items for given ids

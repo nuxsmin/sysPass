@@ -22,25 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Tests\Generators;
+
+use SP\DataModel\ItemSearchData;
 
 /**
- * Class FileExtData
- *
- * @package SP\DataModel
+ * Class ItemSearchDataGenerator
  */
-class FileExtData extends FileData
+final class ItemSearchDataGenerator extends DataGenerator
 {
-    protected ?string $clientName  = null;
-    protected ?string $accountName = null;
-
-    public function getClientName(): ?string
+    public function buildItemSearchData(): ItemSearchData
     {
-        return $this->clientName;
-    }
-
-    public function getAccountName(): ?string
-    {
-        return $this->accountName;
+        return new ItemSearchData(
+            $this->faker->name,
+            $this->faker->randomNumber(),
+            $this->faker->randomNumber()
+        );
     }
 }

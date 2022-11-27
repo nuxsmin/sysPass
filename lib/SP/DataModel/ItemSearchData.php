@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\DataModel;
 
 use SP\Util\Filter;
 
-
 /**
  * Class ItemSearchData
  *
@@ -34,26 +33,24 @@ use SP\Util\Filter;
  */
 class ItemSearchData
 {
-    private const ORDER_ASC = 'ASC';
-    private const ORDER_DESC = 'DESC';
-
-    public ?string $seachString = null;
-    public int $limitStart = 0;
-    public int $limitCount = 0;
-    public string $order = self::ORDER_ASC;
+    /**
+     * @param  string|null  $seachString
+     * @param  int|null  $limitStart
+     * @param  int|null  $limitCount
+     */
+    public function __construct(
+        private ?string $seachString = null,
+        private ?int $limitStart = 0,
+        private ?int $limitCount = 0,
+    ) {
+        if (!empty($seachString)) {
+            $this->seachString = Filter::safeSearchString($seachString);
+        }
+    }
 
     public function getSeachString(): ?string
     {
         return $this->seachString;
-    }
-
-    public function setSeachString(?string $seachString): void
-    {
-        if ($seachString) {
-            $this->seachString = Filter::safeSearchString($seachString);
-        } else {
-            $this->seachString = null;
-        }
     }
 
     public function getLimitStart(): int
@@ -61,28 +58,8 @@ class ItemSearchData
         return $this->limitStart;
     }
 
-    public function setLimitStart(int $limitStart): void
-    {
-        $this->limitStart = $limitStart;
-    }
-
     public function getLimitCount(): int
     {
         return $this->limitCount;
-    }
-
-    public function setLimitCount(int $limitCount): void
-    {
-        $this->limitCount = $limitCount;
-    }
-
-    public function getOrder(): string
-    {
-        return $this->order;
-    }
-
-    public function setOrder(string $order): void
-    {
-        $this->order = $order;
     }
 }

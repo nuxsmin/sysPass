@@ -36,7 +36,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-final class ImageUtil
+final class ImageUtil implements ImageUtilInterface
 {
     /**
      * @throws CheckException
@@ -98,9 +98,11 @@ final class ImageUtil
     /**
      * Convertir un texto a imagen
      *
+     * @param  string  $text
+     *
      * @return bool|string
      */
-    public function convertText(string $text)
+    public function convertText(string $text): bool|string
     {
         $width = strlen($text) * 10;
 

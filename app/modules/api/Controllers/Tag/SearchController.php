@@ -65,10 +65,10 @@ final class SearchController extends TagBase
      */
     private function buildSearchData(): ItemSearchData
     {
-        $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString($this->apiService->getParamString('text'));
-        $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
-
-        return $itemSearchData;
+        return new ItemSearchData(
+            $this->apiService->getParamString('text'),
+            0,
+            $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)
+        );
     }
 }

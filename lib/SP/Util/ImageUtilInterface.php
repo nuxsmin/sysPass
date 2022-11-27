@@ -22,25 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Util;
+
+use SP\Core\Exceptions\InvalidImageException;
 
 /**
- * Class FileExtData
+ * Class ImageUtil para la manipulación de imágenes
  *
- * @package SP\DataModel
+ * @package SP
  */
-class FileExtData extends FileData
+interface ImageUtilInterface
 {
-    protected ?string $clientName  = null;
-    protected ?string $accountName = null;
+    /**
+     * Crear miniatura de una imagen
+     *
+     * @throws InvalidImageException
+     */
+    public function createThumbnail(string $image): string;
 
-    public function getClientName(): ?string
-    {
-        return $this->clientName;
-    }
-
-    public function getAccountName(): ?string
-    {
-        return $this->accountName;
-    }
+    /**
+     * Convertir un texto a imagen
+     *
+     * @param  string  $text
+     *
+     * @return bool|string
+     */
+    public function convertText(string $text): bool|string;
 }

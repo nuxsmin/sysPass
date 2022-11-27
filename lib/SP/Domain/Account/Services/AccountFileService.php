@@ -38,7 +38,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\FileUtil;
-use SP\Util\ImageUtil;
+use SP\Util\ImageUtilInterface;
 use function SP\__u;
 
 /**
@@ -49,12 +49,12 @@ use function SP\__u;
 final class AccountFileService extends Service implements AccountFileServiceInterface
 {
     private AccountFileRepositoryInterface $accountFileRepository;
-    private ImageUtil                      $imageUtil;
+    private ImageUtilInterface             $imageUtil;
 
     public function __construct(
         Application $application,
         AccountFileRepositoryInterface $accountFileRepository,
-        ImageUtil $imageUtil
+        ImageUtilInterface $imageUtil
     ) {
         $this->accountFileRepository = $accountFileRepository;
         $this->imageUtil = $imageUtil;
@@ -84,48 +84,15 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getInfoById(int $id): ?FileExtData
-    {
-        return $this->accountFileRepository->getInfoById($id)->getData();
-    }
-
-    /**
-     * Returns the item for given id
+     * Returns the file with its content
      *
      * @param  int  $id
      *
-     * @return mixed
+     * @return \SP\DataModel\FileExtData|null
      */
-    public function getById(int $id): mixed
+    public function getById(int $id): ?FileExtData
     {
         return $this->accountFileRepository->getById($id)->getData();
-    }
-
-    /**
-     * Returns all the items
-     *
-     * @return FileExtData[]
-     */
-    public function getAll(): array
-    {
-        return $this->accountFileRepository->getAll()->getDataAsArray();
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  int[]  $ids
-     *
-     * @return FileExtData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getByIdBatch(array $ids): array
-    {
-        return $this->accountFileRepository->getByIdBatch($ids)->getDataAsArray();
     }
 
     /**

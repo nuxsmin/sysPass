@@ -50,15 +50,6 @@ interface AccountFileRepositoryInterface extends RepositoryInterface
     public function create(FileData $fileData): int;
 
     /**
-     * @param  int  $id
-     *
-     * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getInfoById(int $id): QueryResult;
-
-    /**
      * Returns the item for given id
      *
      * @param  int  $id
@@ -88,24 +79,6 @@ interface AccountFileRepositoryInterface extends RepositoryInterface
      * @return QueryResult
      */
     public function getById(int $id): QueryResult;
-
-    /**
-     * Returns all the items
-     *
-     * @return QueryResult
-     */
-    public function getAll(): QueryResult;
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByIdBatch(array $ids): QueryResult;
 
     /**
      * Deletes all the items for given ids

@@ -208,12 +208,11 @@ trait ItemTrait
      */
     protected function getSearchData(int $limitCount, RequestInterface $request): ItemSearchData
     {
-        $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString($request->analyzeString('search'));
-        $itemSearchData->setLimitStart($request->analyzeInt('start', 0));
-        $itemSearchData->setLimitCount($request->analyzeInt('count', $limitCount));
-
-        return $itemSearchData;
+        return new ItemSearchData(
+            $request->analyzeString('search'),
+            $request->analyzeInt('start', 0),
+            $request->analyzeInt('count', $limitCount)
+        );
     }
 
     protected function getItemsIdFromRequest(RequestInterface $request): ?array

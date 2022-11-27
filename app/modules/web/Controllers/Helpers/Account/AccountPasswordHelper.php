@@ -36,6 +36,7 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\View\TemplateInterface;
 use SP\Util\ImageUtil;
+use SP\Util\ImageUtilInterface;
 
 /**
  * Class AccountPasswordHelper
@@ -53,7 +54,7 @@ final class AccountPasswordHelper extends HelperBase
         TemplateInterface $template,
         RequestInterface $request,
         Acl $acl,
-        ImageUtil $imageUtil,
+        ImageUtilInterface $imageUtil,
         MasterPassServiceInterface $masterPassService
     ) {
         parent::__construct($application, $template, $request);

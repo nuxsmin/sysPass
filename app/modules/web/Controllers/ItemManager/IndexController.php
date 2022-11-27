@@ -140,8 +140,7 @@ final class IndexController extends ControllerBase
      */
     protected function getGridTabs(): void
     {
-        $this->itemSearchData = new ItemSearchData();
-        $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
+        $this->itemSearchData = new ItemSearchData(null, 0, $this->configData->getAccountCount());
 
         if ($this->checkAccess(ActionsInterface::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());

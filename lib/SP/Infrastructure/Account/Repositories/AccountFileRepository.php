@@ -73,34 +73,6 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
     }
 
     /**
-     * @param  int  $id
-     *
-     * @return QueryResult
-     */
-    public function getInfoById(int $id): QueryResult
-    {
-        $query = $this->queryFactory
-            ->newSelect()
-            ->cols([
-                'AccountFile.name',
-                'AccountFile.size',
-                'AccountFile.type',
-                'AccountFile.accountId',
-                'AccountFile.extension',
-                'Account.name AS accountName',
-                'Client.name AS clientName',
-            ])
-            ->from('AccountFile')
-            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
-            ->join('INNER', 'Client', 'Client.id = Account.clientId')
-            ->where('AccountFile.id = :id')
-            ->bindValues(['id' => $id])
-            ->limit(1);
-
-        return $this->db->doSelect(QueryData::build($query));
-    }
-
-    /**
      * Returns the item for given id
      *
      * @param  int  $id
@@ -161,72 +133,6 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
             ->limit(1);
 
         return $this->db->doSelect(QueryData::build($query));
-    }
-
-    /**
-     * Returns all the items
-     *
-     * @return QueryResult
-     */
-    public function getAll(): QueryResult
-    {
-        $query = $this->queryFactory
-            ->newSelect()
-            ->cols([
-                'AccountFile.id',
-                'AccountFile.name',
-                'AccountFile.size',
-                'AccountFile.type',
-                'AccountFile.accountId',
-                'AccountFile.extension',
-                'AccountFile.content',
-                'AccountFile.thumb',
-                'Account.name AS accountName',
-                'Client.name AS clientName',
-            ])
-            ->from('AccountFile')
-            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
-            ->join('INNER', 'Client', 'Client.id = Account.clientId')
-            ->orderBy(['AccountFile.name ASC']);
-
-        return $this->db->doSelect(QueryData::build($query));
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        if (count($ids) === 0) {
-            return new QueryResult();
-        }
-
-        $query = $this->queryFactory
-            ->newSelect()
-            ->cols([
-                'AccountFile.id',
-                'AccountFile.name',
-                'AccountFile.size',
-                'AccountFile.type',
-                'AccountFile.accountId',
-                'AccountFile.extension',
-                'AccountFile.content',
-                'AccountFile.thumb',
-                'Account.name AS accountName',
-                'Client.name AS clientName',
-            ])
-            ->from('AccountFile')
-            ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
-            ->join('INNER', 'Client', 'Client.id = Account.clientId')
-            ->where(sprintf('AccountFile.id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
-
-        return $this->db->doQuery(QueryData::build($query));
     }
 
     /**
