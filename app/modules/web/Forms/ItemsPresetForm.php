@@ -172,26 +172,24 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     private function makePasswordPreset(): Password
     {
-        $password = new Password();
-        $password->setLength($this->request->analyzeInt('length', 1));
-        $password->setExpireTime($this->request->analyzeInt('expire_time', 0));
-        $password->setScore($this->request->analyzeInt('score', 0));
-
         $regex = $this->request->analyzeUnsafeString('regex');
 
         if (!empty($regex) && Validator::isRegex($regex) === false) {
             throw new ValidationException(__u('Invalid regular expression'));
         }
 
-        $password->setRegex($regex);
-        $password->setUseNumbers($this->request->analyzeBool('use_numbers_enabled', false));
-        $password->setUseLetters($this->request->analyzeBool('use_letters_enabled', false));
-        $password->setUseSymbols($this->request->analyzeBool('use_symbols_enabled', false));
-        $password->setUseLower($this->request->analyzeBool('use_lower_enabled', false));
-        $password->setUseUpper($this->request->analyzeBool('use_upper_enabled', false));
-        $password->setUseImage($this->request->analyzeBool('use_image_enabled', false));
-
-        return $password;
+        return new Password(
+            $this->request->analyzeInt('length', 1),
+            $this->request->analyzeBool('use_numbers_enabled', false),
+            $this->request->analyzeBool('use_letters_enabled', false),
+            $this->request->analyzeBool('use_symbols_enabled', false),
+            $this->request->analyzeBool('use_upper_enabled', false),
+            $this->request->analyzeBool('use_lower_enabled', false),
+            $this->request->analyzeBool('use_image_enabled', false),
+            $this->request->analyzeInt('expire_time', 0),
+            $this->request->analyzeInt('score', 0),
+            $regex
+        );
     }
 
     /**

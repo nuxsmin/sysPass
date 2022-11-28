@@ -34,7 +34,7 @@ use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
-use SP\Mvc\Controller\Validators\PasswordValidator;
+use SP\Mvc\Controller\Validators\ValidatorInterface;
 
 /**
  * Class AccountPreset
@@ -43,16 +43,11 @@ use SP\Mvc\Controller\Validators\PasswordValidator;
  */
 final class AccountPresetService implements AccountPresetServiceInterface
 {
-    private ItemPresetServiceInterface $itemPresetService;
-    private ConfigDataInterface        $configData;
-
     public function __construct(
-        ItemPresetServiceInterface $itemPresetService,
-        ConfigDataInterface $configData
-    ) {
-        $this->itemPresetService = $itemPresetService;
-        $this->configData = $configData;
-    }
+        private ItemPresetServiceInterface $itemPresetService,
+        private ConfigDataInterface $configData,
+        private ValidatorInterface $validator
+    ) {}
 
     /**
      * @throws ValidationException
@@ -67,7 +62,7 @@ final class AccountPresetService implements AccountPresetServiceInterface
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
             $passwordPreset = $itemPreset->hydrate(Password::class);
 
-            PasswordValidator::factory($passwordPreset)->validate($accountRequest->pass);
+            $this->validator->validate($passwordPreset, $accountRequest->pass);
 
             if ($this->configData->isAccountExpireEnabled()) {
                 $expireTimePreset = $passwordPreset->getExpireTime();

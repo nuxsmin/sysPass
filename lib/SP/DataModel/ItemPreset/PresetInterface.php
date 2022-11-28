@@ -22,22 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\Controller\Validators;
-
-use SP\DataModel\ItemPreset\PresetInterface;
+namespace SP\DataModel\ItemPreset;
 
 /**
- * Interface ValidatorInterface
- *
- * @package SP\Mvc\Controller\Validators
+ * Interface PresetInterface
  */
-interface ValidatorInterface
+interface PresetInterface
 {
-    /**
-     * @param  PresetInterface  $preset
-     * @param  string  $string
-     *
-     * @return bool
-     */
-    public function validate(PresetInterface $preset, string $string): bool;
+    public function getPresetType(): string;
 }

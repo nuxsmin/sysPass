@@ -36,196 +36,49 @@ class ItemPresetData extends DataModel implements HydratableInterface
 {
     use SerializedModel;
 
-    /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $type;
-    /**
-     * @var int
-     */
-    public $userId;
-    /**
-     * @var int
-     */
-    public $userGroupId;
-    /**
-     * @var int
-     */
-    public $userProfileId;
-    /**
-     * @var int
-     */
-    public $fixed;
-    /**
-     * @var int
-     */
-    public $priority;
-    /**
-     * @var string
-     */
-    public $data;
+    protected ?int    $id            = null;
+    protected ?string $type          = null;
+    protected ?int    $userId        = null;
+    protected ?int    $userGroupId   = null;
+    protected ?int    $userProfileId = null;
+    protected ?int    $fixed         = null;
+    protected ?int    $priority      = null;
+    protected ?string $data          = null;
 
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getUserGroupId(): ?int
     {
-        return $this->id ?? 0;
+        return $this->userGroupId;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return ItemPresetData
-     */
-    public function setId(int $id)
+    public function getUserProfileId(): ?int
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->userProfileId;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getFixed(): ?int
     {
-        return $this->userId !== null ? (int)$this->userId : null;
+        return $this->fixed;
     }
 
-    /**
-     * @param int $userId
-     *
-     * @return ItemPresetData
-     */
-    public function setUserId(int $userId)
+    public function getPriority(): ?int
     {
-        $this->userId = $userId;
-
-        return $this;
+        return $this->priority;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
-    {
-        return $this->userGroupId !== null ? (int)$this->userGroupId : null;
-    }
-
-    /**
-     * @param int $userGroupId
-     *
-     * @return ItemPresetData
-     */
-    public function setUserGroupId(int $userGroupId)
-    {
-        $this->userGroupId = $userGroupId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserProfileId()
-    {
-        return $this->userProfileId !== null ? (int)$this->userProfileId : null;
-    }
-
-    /**
-     * @param int $userProfileId
-     *
-     * @return ItemPresetData
-     */
-    public function setUserProfileId(int $userProfileId)
-    {
-        $this->userProfileId = $userProfileId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFixed(): int
-    {
-        return (int)$this->fixed;
-    }
-
-    /**
-     * @param int $fixed
-     *
-     * @return ItemPresetData
-     */
-    public function setFixed(int $fixed)
-    {
-        $this->fixed = $fixed;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPriority(): int
-    {
-        return (int)$this->priority;
-    }
-
-    /**
-     * @param int $priority
-     *
-     * @return ItemPresetData
-     */
-    public function setPriority(int $priority)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): ?string
     {
         return $this->data;
     }
 
-    /**
-     * @param string $data
-     */
-    public function setData(string $data)
+    public function getHash(): string
     {
-        $this->data = $data;
+        return sha1(
+            $this->type.(int)$this->userId.(int)$this->userGroupId.(int)$this->userProfileId.(int)$this->priority
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function getHash()
-    {
-        return sha1($this->type . (int)$this->userId . (int)$this->userGroupId . (int)$this->userProfileId . (int)$this->priority);
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
     }
 }

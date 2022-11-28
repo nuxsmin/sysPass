@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,239 +29,91 @@ namespace SP\DataModel\ItemPreset;
  *
  * @package SP\DataModel\ItemPreset
  */
-class Password
+class Password implements PresetInterface
 {
-    const EXPIRE_TIME_MULTIPLIER = 86400;
+    private const PRESET_TYPE = 'password';
+
+    public const EXPIRE_TIME_MULTIPLIER = 86400;
 
     /**
-     * @var int
+     * @param  int  $length
+     * @param  bool  $useNumbers
+     * @param  bool  $useLetters
+     * @param  bool  $useSymbols
+     * @param  bool  $useUpper
+     * @param  bool  $useLower
+     * @param  bool  $useImage
+     * @param  int  $expireTime
+     * @param  int  $score
+     * @param  string|null  $regex
      */
-    private $length = 0;
-    /**
-     * @var bool
-     */
-    private $useNumbers = false;
-    /**
-     * @var bool
-     */
-    private $useLetters = false;
-    /**
-     * @var bool
-     */
-    private $useSymbols = false;
-    /**
-     * @var bool
-     */
-    private $useUpper = false;
-    /**
-     * @var bool
-     */
-    private $useLower = false;
-    /**
-     * @var bool
-     */
-    private $useImage = false;
-    /**
-     * @var int
-     */
-    private $expireTime = 0;
-    /**
-     * @var int
-     */
-    private $score = 0;
-    /**
-     * @var string
-     */
-    private $regex;
-
-    /**
-     * @return string
-     */
-    public function getRegex(): string
-    {
-        return $this->regex ?: '';
+    public function __construct(
+        private int $length,
+        private bool $useNumbers,
+        private bool $useLetters,
+        private bool $useSymbols,
+        private bool $useUpper,
+        private bool $useLower,
+        private bool $useImage,
+        private int $expireTime,
+        private int $score,
+        private ?string $regex = null
+    ) {
+        $this->expireTime = $expireTime * self::EXPIRE_TIME_MULTIPLIER;
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return Password
-     */
-    public function setRegex(string $regex): Password
+    public function getRegex(): ?string
     {
-        $this->regex = $regex;
-        return $this;
+        return $this->regex;
     }
 
-    /**
-     * @return int
-     */
     public function getScore(): int
     {
         return $this->score;
     }
 
-    /**
-     * @param int $score
-     *
-     * @return Password
-     */
-    public function setScore(int $score): Password
-    {
-        $this->score = $score;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getLength(): int
     {
         return $this->length;
     }
 
-    /**
-     * @param int $length
-     *
-     * @return Password
-     */
-    public function setLength(int $length): Password
-    {
-        $this->length = $length;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseNumbers(): bool
     {
         return $this->useNumbers;
     }
 
-    /**
-     * @param bool $useNumbers
-     *
-     * @return Password
-     */
-    public function setUseNumbers(bool $useNumbers): Password
-    {
-        $this->useNumbers = $useNumbers;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseLetters(): bool
     {
         return $this->useLetters;
     }
 
-    /**
-     * @param bool $useLetters
-     *
-     * @return Password
-     */
-    public function setUseLetters(bool $useLetters): Password
-    {
-        $this->useLetters = $useLetters;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseSymbols(): bool
     {
         return $this->useSymbols;
     }
 
-    /**
-     * @param bool $useSymbols
-     *
-     * @return Password
-     */
-    public function setUseSymbols(bool $useSymbols): Password
-    {
-        $this->useSymbols = $useSymbols;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseUpper(): bool
     {
         return $this->useUpper;
     }
 
-    /**
-     * @param bool $useUpper
-     *
-     * @return Password
-     */
-    public function setUseUpper(bool $useUpper): Password
-    {
-        $this->useUpper = $useUpper;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseLower(): bool
     {
         return $this->useLower;
     }
 
-    /**
-     * @param bool $useLower
-     *
-     * @return Password
-     */
-    public function setUseLower(bool $useLower): Password
-    {
-        $this->useLower = $useLower;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUseImage(): bool
     {
         return $this->useImage;
     }
 
-    /**
-     * @param bool $useImage
-     *
-     * @return Password
-     */
-    public function setUseImage(bool $useImage): Password
-    {
-        $this->useImage = $useImage;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getExpireTime(): int
     {
         return $this->expireTime;
     }
 
-    /**
-     * @param int $expireTime
-     *
-     * @return Password
-     */
-    public function setExpireTime(int $expireTime): Password
+    public function getPresetType(): string
     {
-        $this->expireTime = $expireTime * self::EXPIRE_TIME_MULTIPLIER;
-
-        return $this;
+        return self::PRESET_TYPE;
     }
 }

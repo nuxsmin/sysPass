@@ -24,7 +24,6 @@
 
 namespace SP\DataModel;
 
-
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Util\Util;
 
@@ -36,8 +35,8 @@ use SP\Util\Util;
 trait SerializedModel
 {
     /**
-     * @param string|null $class
-     * @param string      $property
+     * @param  string|null  $class
+     * @param  string  $property
      *
      * @return mixed|null
      * @throws NoSuchPropertyException
@@ -53,6 +52,7 @@ trait SerializedModel
                 return Util::unserialize($class, $this->{$property});
             }
 
+            /** @noinspection UnserializeExploitsInspection */
             return unserialize($this->{$property});
         }
 

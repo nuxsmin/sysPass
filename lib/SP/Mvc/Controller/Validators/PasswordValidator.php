@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,9 @@ namespace SP\Mvc\Controller\Validators;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
+use SP\DataModel\ItemPreset\PresetInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class PasswordValidator
@@ -35,38 +38,27 @@ use SP\DataModel\ItemPreset\Password;
  */
 final class PasswordValidator implements ValidatorInterface
 {
-    private Password $password;
-
-    /**
-     * PasswordValidator constructor.
-     */
-    public function __construct(Password $password)
-    {
-        $this->password = $password;
-    }
-
-    public static function factory(Password $password): PasswordValidator
-    {
-        return new self($password);
-    }
-
     /**
      * @throws ValidationException
      */
-    public function validate(string $string): bool
+    public function validate(PresetInterface $preset, string $string): bool
     {
-        if (mb_strlen($string) < $this->password->getLength()) {
+        if (!$preset instanceof Password) {
+            throw new ValidationException(__u('Preset not valid for this validator'));
+        }
+
+        if (mb_strlen($string) < $preset->getLength()) {
             throw new ValidationException(
                 sprintf(
                     __('Password needs to be %d characters long'),
-                    $this->password->getLength()
+                    $preset->getLength()
                 )
             );
         }
 
-        $regex = $this->password->getRegex();
+        $regex = $preset->getRegex();
 
-        if (!empty($this->password->getRegex()) && !Validator::matchRegex($string, $regex)) {
+        if (!empty($preset->getRegex()) && !Validator::matchRegex($string, $regex)) {
             throw new ValidationException(
                 __u('Password does not contain the required characters'),
                 SPException::ERROR,
@@ -74,25 +66,25 @@ final class PasswordValidator implements ValidatorInterface
             );
         }
 
-        if ($this->password->isUseLetters()) {
+        if ($preset->isUseLetters()) {
             if (!Validator::hasLetters($string)) {
                 throw new ValidationException(__u('Password needs to contain letters'));
             }
 
-            if ($this->password->isUseLower() && !Validator::hasLower($string)) {
+            if ($preset->isUseLower() && !Validator::hasLower($string)) {
                 throw new ValidationException(__u('Password needs to contain lower case letters'));
             }
 
-            if ($this->password->isUseUpper() && !Validator::hasUpper($string)) {
+            if ($preset->isUseUpper() && !Validator::hasUpper($string)) {
                 throw new ValidationException(__u('Password needs to contain upper case letters'));
             }
         }
 
-        if ($this->password->isUseNumbers() && !Validator::hasNumbers($string)) {
+        if ($preset->isUseNumbers() && !Validator::hasNumbers($string)) {
             throw new ValidationException(__u('Password needs to contain numbers'));
         }
 
-        if ($this->password->isUseSymbols() && !Validator::hasSymbols($string)) {
+        if ($preset->isUseSymbols() && !Validator::hasSymbols($string)) {
             throw new ValidationException(__u('Password needs to contain symbols'));
         }
 
