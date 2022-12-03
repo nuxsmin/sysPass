@@ -27,13 +27,18 @@ namespace SP\Domain\Common\Adapters;
 use JsonSerializable;
 
 /**
- * Class DataModelBase
+ * Class DataModel
  */
 abstract class DataModel implements JsonSerializable
 {
     private array $properties;
 
     public function __construct(?array $properties = [])
+    {
+        $this->assignProperties($properties);
+    }
+
+    private function assignProperties(array $properties): void
     {
         foreach ($properties as $property => $value) {
             $this->{$property} = $value;
@@ -54,12 +59,7 @@ abstract class DataModel implements JsonSerializable
         return get_object_vars($this);
     }
 
-    /**
-     * @param  string  $name
-     *
-     * @return mixed|null
-     */
-    final public function __get(string $name)
+    final public function __get(string $name): mixed
     {
         if (property_exists($this, $name)) {
             return $this->{$name};

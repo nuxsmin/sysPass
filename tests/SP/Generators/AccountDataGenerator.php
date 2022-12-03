@@ -46,7 +46,15 @@ final class AccountDataGenerator extends DataGenerator
 
     public function buildAccountData(): SimpleModel
     {
-        return new SimpleModel([
+        return new SimpleModel($this->getAccountData());
+    }
+
+    /**
+     * @return array
+     */
+    private function getAccountData(): array
+    {
+        return [
             'id'                 => $this->faker->randomNumber(),
             'name'               => $this->faker->name,
             'clientId'           => $this->faker->randomNumber(),
@@ -78,7 +86,7 @@ final class AccountDataGenerator extends DataGenerator
             'publicLinkHash'     => $this->faker->sha1,
             'pass'               => $this->faker->password,
             'key'                => $this->faker->sha1,
-        ]);
+        ];
     }
 
     /**
@@ -112,6 +120,16 @@ final class AccountDataGenerator extends DataGenerator
             'userGroupId'    => $this->faker->randomNumber(),
             'key'            => $this->faker->text,
             'pass'           => $this->faker->text,
+        ]);
+    }
+
+    public function builAccountSearchVData(): SimpleModel
+    {
+        return new SimpleModel([
+            'num_files'                 => $this->faker->randomNumber(),
+            'publicLinkDateExpire'      => $this->faker->unixTime,
+            'publicLinkTotalCountViews' => $this->faker->randomNumber(),
+            ...$this->getAccountData(),
         ]);
     }
 }

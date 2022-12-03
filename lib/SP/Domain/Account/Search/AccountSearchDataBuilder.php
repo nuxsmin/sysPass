@@ -47,11 +47,7 @@ use function SP\processException;
  */
 final class AccountSearchDataBuilder extends Service implements AccountSearchDataBuilderInterface
 {
-    private const COLORS_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'colors.cache';
-
-    /**
-     * Colores para resaltar las cuentas
-     */
+    private const COLORS_CACHE_FILE  = CACHE_PATH.DIRECTORY_SEPARATOR.'colors.cache';
     private const COLORS             = [
         '2196F3',
         '03A9F4',
@@ -114,7 +110,9 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
     public function buildFrom(QueryResult $queryResult): array
     {
         $maxTextLength = $this->configData->isResultsAsCards() ? self::TEXT_LENGTH_CARDS : self::TEXT_LENGTH_NORMAL;
-        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
+        $userPreferencesData = $this->context->getUserData()->getPreferences();
+
+        $accountLinkEnabled = (null !== $userPreferencesData && $userPreferencesData->isAccountLink())
                               || $this->configData->isAccountLink();
         $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
 
@@ -147,8 +145,8 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
                     ->getTagsByAccountId($accountSearchData->getId())
                     ->getDataAsArray();
 
-                $users = !$accountSearchData->getIsPrivate() ?: $cache->getUsers();
-                $userGroups = !$accountSearchData->getIsPrivate() ?: $cache->getUserGroups();
+                $users = !$accountSearchData->getIsPrivate() ? $cache->getUsers() : null;
+                $userGroups = !$accountSearchData->getIsPrivate() ? $cache->getUserGroups() : null;
 
                 return new AccountSearchItem(
                     $accountSearchData,

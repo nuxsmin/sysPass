@@ -54,6 +54,7 @@ final class AccountCacheService extends Service implements AccountCacheServiceIn
      * @return \SP\Domain\Account\Dtos\AccountCacheDto
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto
     {
