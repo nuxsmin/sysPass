@@ -29,9 +29,9 @@ namespace SP\Domain\Account\Search;
  */
 final class AccountSearchTokens
 {
-    private string $search;
-    private array  $conditions;
-    private array  $items;
+    private string  $search;
+    private array   $conditions;
+    private array   $items;
     private ?string $operator;
 
     /**
@@ -58,7 +58,7 @@ final class AccountSearchTokens
         return $this->items;
     }
 
-    public function getOperator(): string
+    public function getOperator(): ?string
     {
         return $this->operator;
     }

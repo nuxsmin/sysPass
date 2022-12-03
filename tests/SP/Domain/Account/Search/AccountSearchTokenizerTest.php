@@ -73,11 +73,11 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
      * @dataProvider searchUsingOperatorDataProvider
      *
      * @param  string  $search
-     * @param  string  $expectedCondition
+     * @param  string|null  $expectedCondition
      *
      * @return void
      */
-    public function testTokenizeFromFilterUsingOperator(string $search, string $expectedCondition): void
+    public function testTokenizeFromFilterUsingOperator(string $search, ?string $expectedCondition): void
     {
         $tokenizer = new AccountSearchTokenizer();
         $out = $tokenizer->tokenizeFrom($search);
@@ -178,8 +178,9 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     public function searchUsingOperatorDataProvider(): array
     {
         $conditions = [
-            'op:and' => 'and',
-            'op:or'  => 'or',
+            'test string' => null,
+            'op:and'      => 'and',
+            'op:or'       => 'or',
         ];
 
         return [
@@ -201,7 +202,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
             $faker->ipv4,
             $faker->bankAccountNumber,
             $faker->companyEmail,
-            $faker->domainName
+            $faker->domainName,
         ];
 
         return [
