@@ -31,8 +31,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\Dto\AccountEnrichedDto;
-use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemSearchData;
@@ -40,6 +38,8 @@ use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Adapters\AccountPassData;
 use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
+use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
@@ -267,7 +267,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * @param  int  $id
      *
-     * @return \SP\DataModel\Dto\AccountEnrichedDto
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getById(int $id): AccountEnrichedDto

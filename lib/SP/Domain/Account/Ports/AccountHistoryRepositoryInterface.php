@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -40,7 +40,7 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
     /**
      * Creates an item
      *
-     * @param  \SP\DataModel\Dto\AccountHistoryCreateDto  $dto
+     * @param  \SP\Domain\Account\Dtos\AccountHistoryCreateDto  $dto
      */
     public function create(AccountHistoryCreateDto $dto): int;
 

@@ -25,7 +25,6 @@
 namespace SP\Core\Context;
 
 use SP\Core\Crypt\Vault;
-use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -457,7 +456,7 @@ class SessionContext extends ContextBase
     /**
      * Devuelve la cache de cuentas
      *
-     * @return AccountCache[]|null
+     * @return \SP\Domain\Account\Dtos\AccountCacheDto[]|null
      */
     public function getAccountsCache(): ?array
     {
@@ -547,7 +546,7 @@ class SessionContext extends ContextBase
      *
      * @return mixed
      */
-    public function getPluginKey(string $pluginName, string $key)
+    public function getPluginKey(string $pluginName, string $key): mixed
     {
         /** @var ContextCollection $ctxKey */
         $ctxKey = $this->getContextKey($pluginName);

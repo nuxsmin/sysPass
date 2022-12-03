@@ -25,8 +25,8 @@
 namespace SP\Tests\Generators;
 
 use SP\DataModel\AccountVData;
-use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Adapters\SimpleModel;
 
 /**

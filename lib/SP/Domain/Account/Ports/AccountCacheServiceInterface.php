@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,51 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\Dto;
+namespace SP\Domain\Account\Ports;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AccountSearchVData;
+use SP\Domain\Account\Dtos\AccountCacheDto;
 
 /**
- * Class AccountSearchResponse
- *
- * @package SP\DataModel\Dto
+ * Class AccountCacheService
  */
-class AccountSearchResponse
+interface AccountCacheServiceInterface
 {
     /**
-     * @var int
+     * Devolver los accesos desde la caché
      */
-    private $count;
-    /**
-     * @var AccountSearchVData[]
-     */
-    private $data;
-
-    /**
-     * AccountSearchDto constructor.
-     *
-     * @param int                  $count
-     * @param AccountSearchVData[] $data
-     */
-    public function __construct($count, array $data)
-    {
-        $this->count = $count;
-        $this->data = $data;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCount()
-    {
-        return $this->count;
-    }
-
-    /**
-     * @return AccountSearchVData[]
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
+    public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto;
 }

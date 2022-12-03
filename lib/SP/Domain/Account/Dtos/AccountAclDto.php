@@ -22,10 +22,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\Dto;
+namespace SP\Domain\Account\Dtos;
 
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Common\Dtos\ItemDataTrait;
 
 /**
  * Class AccountAclDto
@@ -34,51 +35,26 @@ use SP\DataModel\ItemData;
  */
 final class AccountAclDto
 {
-    private int $accountId;
-    private int $userId;
-    private int $userGroupId;
-    private int $dateEdit;
-    /**
-     * @var ItemData[]
-     */
-    private array $usersId;
-    /**
-     * @var ItemData[]
-     */
-    private array $userGroupsId;
+    use ItemDataTrait;
 
     /**
      * @param  int  $accountId
      * @param  int  $userId
-     * @param  array  $usersId
+     * @param  ItemData[]  $usersId
      * @param  int  $userGroupId
-     * @param  array  $userGroupsId
+     * @param  ItemData[]  $userGroupsId
      * @param  int  $dateEdit
      */
     public function __construct(
-        int $accountId,
-        int $userId,
-        array $usersId,
-        int $userGroupId,
-        array $userGroupsId,
-        int $dateEdit
+        private int $accountId,
+        private int $userId,
+        private array $usersId,
+        private int $userGroupId,
+        private array $userGroupsId,
+        private int $dateEdit
     ) {
-        $this->accountId = $accountId;
-        $this->userId = $userId;
         $this->usersId = self::buildFromItemData($usersId);
-        $this->userGroupId = $userGroupId;
         $this->userGroupsId = self::buildFromItemData($userGroupsId);
-        $this->dateEdit = $dateEdit;
-    }
-
-    /**
-     * @param  ItemData[]  $items
-     *
-     * @return array
-     */
-    private static function buildFromItemData(array $items): array
-    {
-        return array_filter($items, static fn($value) => $value instanceof ItemData);
     }
 
     /**
@@ -156,5 +132,4 @@ final class AccountAclDto
     {
         return $this->userGroupsId;
     }
-
 }

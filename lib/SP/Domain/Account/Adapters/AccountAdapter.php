@@ -26,7 +26,7 @@ namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
-use SP\DataModel\Dto\AccountEnrichedDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;

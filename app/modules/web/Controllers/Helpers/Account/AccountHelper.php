@@ -32,11 +32,11 @@ use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\Dto\AccountAclDto;
-use SP\DataModel\Dto\AccountEnrichedDto;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -125,7 +125,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  AccountEnrichedDto  $accountDetailsResponse
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
      * @param  int  $actionId
      *
      * @throws \SP\Core\Acl\AccountPermissionException
@@ -288,7 +288,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param  AccountEnrichedDto  $accountDetailsResponse
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
      *
      * @return AccountAcl
      * @throws AccountPermissionException

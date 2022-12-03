@@ -31,7 +31,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\Dto\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;

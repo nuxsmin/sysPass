@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 
-use SP\DataModel\Dto\AccountEnrichedDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Services\AccountAcl;
 
 /**
@@ -36,7 +36,7 @@ final class AccountRequestHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  AccountEnrichedDto  $accountDetailsResponse
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
      * @param  int  $actionId
      *
      * @return bool

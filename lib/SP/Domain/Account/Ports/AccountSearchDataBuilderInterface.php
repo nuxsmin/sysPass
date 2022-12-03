@@ -24,24 +24,20 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class AccountSearchService para la gestión de búsquedas de cuentas
+ * Class AccountSearchDataBuilder
  */
-interface AccountSearchServiceInterface
+interface AccountSearchDataBuilderInterface
 {
     /**
-     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
-     * a mostrar.
+     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
      *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @return AccountSearchItem[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult;
+    public function buildFrom(QueryResult $queryResult): array;
 }

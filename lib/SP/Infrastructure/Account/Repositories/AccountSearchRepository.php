@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\ContextInterface;

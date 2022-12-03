@@ -22,26 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Ports;
+namespace SP\Domain\Common\Dtos;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\Search\AccountSearchFilter;
-use SP\Infrastructure\Database\QueryResult;
+use SP\DataModel\ItemData;
 
 /**
- * Class AccountSearchService para la gestión de búsquedas de cuentas
+ * Trait ItemDataTrait
  */
-interface AccountSearchServiceInterface
+trait ItemDataTrait
 {
     /**
-     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
-     * a mostrar.
+     * @param  ItemData[]  $items
      *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @return array
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult;
+    private static function buildFromItemData(array $items): array
+    {
+        return array_filter($items, static fn($value) => $value instanceof ItemData);
+    }
 }

@@ -24,11 +24,10 @@
 
 namespace SP\Domain\Account\Services;
 
-defined('APP_ROOT') || die();
-
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Common\Dtos\ItemDataTrait;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\Html;
 
@@ -39,6 +38,8 @@ use SP\Html\Html;
  */
 final class AccountSearchItem
 {
+    use ItemDataTrait;
+
     public static bool $accountLink       = false;
     public static bool $topNavbar         = false;
     public static bool $optionalActions   = false;
@@ -49,34 +50,19 @@ final class AccountSearchItem
     public static bool $publicLinkEnabled = false;
     public static bool $isDemoMode        = false;
 
-    protected AccountSearchVData $accountSearchVData;
-    protected ?string            $color         = null;
-    protected ?string            $link          = null;
-    protected bool               $favorite      = false;
-    protected int                $textMaxLength = 60;
-    /**
-     * @var ItemData[]|null
-     */
-    protected ?array $users = null;
-    /**
-     * @var ItemData[]|null
-     */
-    protected ?array $tags = null;
-    /**
-     * @var ItemData[]|null
-     */
-    protected ?array            $userGroups = null;
-    private ConfigDataInterface $configData;
-    private AccountAcl          $accountAcl;
-
     public function __construct(
-        AccountSearchVData $accountSearchVData,
-        AccountAcl $accountAcl,
-        ConfigDataInterface $configData
+        protected AccountSearchVData $accountSearchVData,
+        private AccountAcl $accountAcl,
+        private ConfigDataInterface $configData,
+        private array $tags,
+        private int $textMaxLength = 0,
+        private bool $favorite = false,
+        private ?array $users = null,
+        private ?array $userGroups = null,
+        private ?string $color = null,
+        private ?string $link = null,
     ) {
-        $this->accountSearchVData = $accountSearchVData;
-        $this->accountAcl = $accountAcl;
-        $this->configData = $configData;
+        $this->tags = self::buildFromItemData($this->tags);
     }
 
     public function isFavorite(): bool
@@ -127,7 +113,7 @@ final class AccountSearchItem
 
     public function isUrlIslink(): bool
     {
-        return preg_match('#^\w+://#i', $this->accountSearchVData->getUrl()) === 1;
+        return preg_match('#^\w+://#', $this->accountSearchVData->getUrl()) === 1;
     }
 
     public function getShortLogin(): string
@@ -261,35 +247,11 @@ final class AccountSearchItem
     }
 
     /**
-     * @param  ItemData[]  $userGroups
-     */
-    public function setUserGroups(array $userGroups): void
-    {
-        $this->userGroups = $userGroups;
-    }
-
-    /**
-     * @param  ItemData[]  $users
-     */
-    public function setUsers(array $users): void
-    {
-        $this->users = $users;
-    }
-
-    /**
      * @return ItemData[]
      */
     public function getTags(): array
     {
-        return $this->tags ?? [];
-    }
-
-    /**
-     * @param  ItemData[]  $tags
-     */
-    public function setTags(array $tags): void
-    {
-        $this->tags = $tags;
+        return $this->tags;
     }
 
     public function isWikiMatch(string $wikiFilter): bool

@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
@@ -76,7 +76,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\DataModel\Dto\AccountHistoryCreateDto  $dto
+     * @param  \SP\Domain\Account\Dtos\AccountHistoryCreateDto  $dto
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException

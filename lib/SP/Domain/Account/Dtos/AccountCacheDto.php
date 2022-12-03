@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,79 +22,46 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\Dto;
-
-use SP\DataModel\ItemData;
+namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountCacheDto
  *
  * @package SP\DataModel\Dto
  */
-class AccountCache
+class AccountCacheDto
 {
-    /**
-     * @var int
-     */
-    private $time;
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var ItemData[]
-     */
-    private $users;
-    /**
-     * @var ItemData[]
-     */
-    private $userGroups;
+    private int $time;
 
     /**
      * AccountCacheDto constructor.
      *
-     * @param int        $accountId
-     * @param ItemData[] $users
-     * @param ItemData[] $userGroups
+     * @param  int  $accountId
+     * @param  array  $users
+     * @param  array  $userGroups
      */
-    public function __construct($accountId, array $users, array $userGroups)
+    public function __construct(private int $accountId, private array $users, private array $userGroups)
     {
-        $this->accountId = $accountId;
-        $this->users = $users;
-        $this->userGroups = $userGroups;
         $this->time = time();
     }
 
-    /**
-     * @return int
-     */
-    public function getAccountId()
+    public function getAccountId(): int
     {
         return $this->accountId;
     }
 
-    /**
-     * @return ItemData[]
-     */
-    public function getUsers()
+    public function getUsers(): array
     {
         return $this->users;
     }
 
-    /**
-     * @return ItemData[]
-     */
-    public function getUserGroups()
+    public function getUserGroups(): array
     {
         return $this->userGroups;
     }
 
-    /**
-     * @return int
-     */
-    public function getTime()
+    public function getTime(): int
     {
         return $this->time;
     }
-
 }

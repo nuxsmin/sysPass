@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\Database;
 
+use SP\Core\Exceptions\SPException;
+use function SP\__u;
+
 /**
  * Class QueryResult
  *
@@ -31,12 +34,13 @@ namespace SP\Infrastructure\Database;
  */
 final class QueryResult
 {
-    private ?array $data            = null;
-    private int    $numRows         = 0;
-    private int    $totalNumRows    = 0;
-    private int    $affectedNumRows = 0;
-    private int    $statusCode      = 0;
-    private int    $lastId          = 0;
+    private ?array  $data            = null;
+    private ?string $dataType        = null;
+    private int     $numRows         = 0;
+    private int     $totalNumRows    = 0;
+    private int     $affectedNumRows = 0;
+    private int     $statusCode      = 0;
+    private int     $lastId          = 0;
 
     /**
      * QueryResult constructor.
@@ -48,18 +52,19 @@ final class QueryResult
         if (null !== $data) {
             $this->data = $data;
             $this->numRows = count($data);
+
+            if ($this->numRows > 0 && is_object($data[0])) {
+                $this->dataType = get_class($data[0]);
+            }
         }
     }
 
-    public static function fromResults(
+    public static function withTotalNumRows(
         array $data,
         ?int $totalNumRows = null
     ): QueryResult {
         $result = new self($data);
-
-        if (null !== $totalNumRows) {
-            $result->totalNumRows = $totalNumRows;
-        }
+        $result->totalNumRows = (int)$totalNumRows;
 
         return $result;
     }
@@ -72,8 +77,18 @@ final class QueryResult
         return $this->numRows === 1 ? $this->data[0] : null;
     }
 
-    public function getDataAsArray(): array
+    /**
+     * @param  string|null  $dataType  Expected data's type
+     *
+     * @return array
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getDataAsArray(?string $dataType = null): array
     {
+        if (null !== $dataType && $this->dataType !== null && $dataType !== $this->dataType) {
+            throw new SPException(__u('Invalid data\'s type'));
+        }
+
         return $this->data ?? [];
     }
 
@@ -121,5 +136,10 @@ final class QueryResult
         $this->lastId = $lastId;
 
         return $this;
+    }
+
+    public function getDataType(): ?string
+    {
+        return $this->dataType;
     }
 }

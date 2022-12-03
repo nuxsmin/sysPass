@@ -164,7 +164,7 @@ class StatelessContext extends ContextBase
     /**
      * Reset del estado de la aplicación
      *
-     * @return bool
+     * @return bool|null
      */
     public function resetAppStatus(): ?bool
     {
@@ -201,7 +201,7 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @return null
+     * @return array|null
      */
     public function getAccountsCache(): ?array
     {
@@ -242,10 +242,15 @@ class StatelessContext extends ContextBase
      *
      * @return mixed
      */
-    public function getPluginKey(string $pluginName, string $key)
+    public function getPluginKey(string $pluginName, string $key): mixed
     {
         $ctxKey = $this->getContextKey('plugins');
 
         return $ctxKey[$pluginName][$key] ?? null;
+    }
+
+    public function setAccountsCache(array $accountsCache): void
+    {
+        $this->setContextKey('accountsCache', $accountsCache);
     }
 }

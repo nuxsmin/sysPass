@@ -28,8 +28,8 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\Common\Adapters\SimpleModel;
@@ -146,7 +146,7 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @param  AccountAclDto  $accountAclDto  The ACL dto to compile the ACL for the user
+     * @param  \SP\Domain\Account\Dtos\AccountAclDto  $accountAclDto  The ACL dto to compile the ACL for the user
      * @param  AccountAcl  $example  An example ACL to test against the compiled ACL
      *
      * @throws ConstraintException

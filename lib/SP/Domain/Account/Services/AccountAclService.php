@@ -31,8 +31,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
@@ -78,7 +78,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      * Obtener la ACL de una cuenta
      *
      * @param  int  $actionId
-     * @param  AccountAclDto  $accountAclDto
+     * @param  \SP\Domain\Account\Dtos\AccountAclDto  $accountAclDto
      * @param  bool  $isHistory
      *
      * @return AccountAcl

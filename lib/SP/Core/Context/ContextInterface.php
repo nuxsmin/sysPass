@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Core\Context;
 
-use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Domain\User\Services\UserLoginResponse;
 
@@ -103,16 +102,23 @@ interface ContextInterface
     public function resetAppStatus(): ?bool;
 
     /**
-     * @return AccountCache[]|null
+     * @return \SP\Domain\Account\Dtos\AccountCacheDto[]|null
      */
     public function getAccountsCache(): ?array;
+
+    /**
+     * Establece la cache de cuentas
+     *
+     * @param  array  $accountsCache
+     */
+    public function setAccountsCache(array $accountsCache): void;
 
     /**
      * Sets an arbitrary key in the trasient collection.
      * This key is not bound to any known method or type
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $key
+     * @param  mixed  $value
      *
      * @throws ContextException
      */
@@ -122,8 +128,8 @@ interface ContextInterface
      * Gets an arbitrary key from the trasient collection.
      * This key is not bound to any known method or type
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
+     * @param  mixed  $default
      *
      * @return mixed
      */
@@ -135,11 +141,11 @@ interface ContextInterface
     public function setTemporaryMasterPass(string $password);
 
     /**
-     * @param string $pluginName
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $pluginName
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function setPluginKey(string $pluginName, string $key, $value);
 
-    public function getPluginKey(string $pluginName, string $key);
+    public function getPluginKey(string $pluginName, string $key): mixed;
 }

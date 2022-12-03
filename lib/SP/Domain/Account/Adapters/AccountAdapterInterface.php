@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\DataModel\Dto\AccountEnrichedDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 
 /**
  * Class AccountAdapterInterface

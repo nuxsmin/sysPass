@@ -43,7 +43,7 @@ interface AccountSearchConstants
     public const FILTER_IS_PRIVATE         = 'is:private';
     public const FILTER_NOT_PRIVATE        = 'not:private';
     public const FILTER_IS_EXPIRED         = 'is:expired';
-    public const FILTER_NOT_EXPIRED        = 'is:expired';
+    public const FILTER_NOT_EXPIRED        = 'not:expired';
 
     public const SORT_DIR_ASC  = 0;
     public const SORT_DIR_DESC = 1;

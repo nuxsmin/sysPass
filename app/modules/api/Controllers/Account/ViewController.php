@@ -30,7 +30,7 @@ use League\Fractal\Resource\Item;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\Dto\AccountEnrichedDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Util\Util;
 

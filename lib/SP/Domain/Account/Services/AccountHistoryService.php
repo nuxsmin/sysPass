@@ -28,9 +28,9 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -150,7 +150,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\DataModel\Dto\AccountHistoryCreateDto  $dto
+     * @param  \SP\Domain\Account\Dtos\AccountHistoryCreateDto  $dto
      *
      * @return int
      */

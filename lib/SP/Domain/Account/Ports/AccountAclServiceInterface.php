@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\User\Services\UserLoginResponse;
 

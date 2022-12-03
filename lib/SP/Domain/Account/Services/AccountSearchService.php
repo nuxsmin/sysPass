@@ -25,125 +25,40 @@
 namespace SP\Domain\Account\Services;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountSearchVData;
-use SP\DataModel\Dto\AccountAclDto;
-use SP\DataModel\Dto\AccountCache;
-use SP\Domain\Account\Ports\AccountAclServiceInterface;
+use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
 use SP\Domain\Account\Ports\AccountSearchRepositoryInterface;
 use SP\Domain\Account\Ports\AccountSearchServiceInterface;
-use SP\Domain\Account\Ports\AccountToFavoriteServiceInterface;
-use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Search\AccountSearchTokenizer;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileCache;
-use SP\Infrastructure\File\FileCacheInterface;
-use SP\Infrastructure\File\FileException;
 use SP\Util\Filter;
-
-defined('APP_ROOT') || die();
+use function SP\processException;
 
 /**
- * Class AccountSearchService para la gestión de búsquedas de cuentas
+ * Class AccountSearchService
  */
 final class AccountSearchService extends Service implements AccountSearchServiceInterface
 {
-    private const COLORS_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'colors.cache';
-
-    /**
-     * Colores para resaltar las cuentas
-     */
-    private const COLORS = [
-        '2196F3',
-        '03A9F4',
-        '00BCD4',
-        '009688',
-        '4CAF50',
-        '8BC34A',
-        'CDDC39',
-        'FFC107',
-        '795548',
-        '607D8B',
-        '9E9E9E',
-        'FF5722',
-        'F44336',
-        'E91E63',
-        '9C27B0',
-        '673AB7',
-        '3F51B5',
-    ];
-    private AccountAclServiceInterface            $accountAclService;
-    private ConfigDataInterface                   $configData;
-    private AccountToTagRepositoryInterface       $accountToTagRepository;
-    private AccountToUserRepositoryInterface      $accountToUserRepository;
-    private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository;
-    private AccountToFavoriteServiceInterface     $accountToFavoriteService;
-    private UserServiceInterface                  $userService;
-    private UserGroupServiceInterface             $userGroupService;
-    private FileCacheInterface                    $colorCache;
-    private AccountSearchRepositoryInterface      $accountSearchRepository;
-    private ?array                                $accountColor   = null;
-    private ?string                               $cleanString    = null;
-    private ?string                               $filterOperator = null;
-
     public function __construct(
         Application $application,
-        AccountAclServiceInterface $accountAclService,
-        AccountToTagRepositoryInterface $accountToTagRepository,
-        AccountToUserRepositoryInterface $accountToUserRepository,
-        AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
-        AccountToFavoriteServiceInterface $accountToFavoriteService,
-        UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
-        AccountSearchRepositoryInterface $accountSearchRepository,
+        private UserServiceInterface $userService,
+        private UserGroupServiceInterface $userGroupService,
+        private AccountSearchRepositoryInterface $accountSearchRepository,
+        private AccountSearchDataBuilderInterface $accountSearchDataBuilder
     ) {
         parent::__construct($application);
-        $this->accountAclService = $accountAclService;
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
-        $this->accountToFavoriteService = $accountToFavoriteService;
-        $this->accountToTagRepository = $accountToTagRepository;
-        $this->accountToUserRepository = $accountToUserRepository;
-        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountSearchRepository = $accountSearchRepository;
-
-        // TODO: use IoC
-        $this->colorCache = new FileCache(self::COLORS_CACHE_FILE);
-        $this->configData = $this->config->getConfigData();
-
-        $this->loadColors();
-
     }
 
     /**
-     * Load colors from cache
-     */
-    private function loadColors(): void
-    {
-        try {
-            $this->accountColor = $this->colorCache->load();
-
-            logger('Loaded accounts color cache');
-        } catch (FileException $e) {
-            processException($e);
-        }
-    }
-
-    /**
-     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
-     * a mostrar.
+     * Procesar los resultados de la búsqueda
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -152,36 +67,23 @@ final class AccountSearchService extends Service implements AccountSearchService
     public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult
     {
         if (!empty($accountSearchFilter->getTxtSearch())) {
-            $this->analyzeQueryFilters($accountSearchFilter->getTxtSearch());
-        }
+            $tokens = (new AccountSearchTokenizer())->tokenizeFrom($accountSearchFilter->getTxtSearch());
 
-        if ($this->filterOperator !== null || $accountSearchFilter->getFilterOperator() === null) {
-            $accountSearchFilter->setFilterOperator($this->filterOperator);
-        }
+            if (null !== $tokens) {
+                $accountSearchFilter->setFilterOperator($tokens->getOperator());
+                $accountSearchFilter->setCleanTxtSearch($tokens->getSearch());
 
-        if (!empty($this->cleanString)) {
-            $accountSearchFilter->setCleanTxtSearch($this->cleanString);
+                $this->processFilterItems($tokens->getItems());
+                $this->processFilterConditions($tokens->getConditions());
+            }
         }
 
         $queryResult = $this->accountSearchRepository->getByFilter($accountSearchFilter);
 
-        return QueryResult::fromResults($this->buildAccountsData($queryResult), $queryResult->getTotalNumRows());
-    }
-
-    /**
-     * Analizar la cadena de consulta por eqituetas especiales y devolver un objeto
-     * QueryCondition con los filtros
-     */
-    public function analyzeQueryFilters(string $string): void
-    {
-        $tokenizer = new AccountSearchTokenizer();
-        $tokens = $tokenizer->tokenizeFrom($string);
-
-        $this->cleanString = $tokens->getSearch();
-        $this->filterOperator = $tokens->getOperator();
-
-        $this->processFilterItems($tokens->getItems());
-        $this->processFilterConditions($tokens->getConditions());
+        return QueryResult::withTotalNumRows(
+            $this->accountSearchDataBuilder->buildFrom($queryResult),
+            $queryResult->getTotalNumRows()
+        );
     }
 
     private function processFilterItems(array $filters): void
@@ -251,132 +153,5 @@ final class AccountSearchService extends Service implements AccountSearchService
                     break;
             }
         }
-    }
-
-    /**
-     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
-     *
-     * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    private function buildAccountsData(QueryResult $queryResult): array
-    {
-        $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
-        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink()
-                              || $this->configData->isAccountLink();
-        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
-        $accountsData = [];
-
-        /** @var AccountSearchVData $accountSearchData */
-        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
-            $cache = $this->getCacheForAccount($accountSearchData);
-
-            // Obtener la ACL de la cuenta
-            $accountAcl = $this->accountAclService->getAcl(
-                ActionsInterface::ACCOUNT_SEARCH,
-                AccountAclDto::makeFromAccountSearch(
-                    $accountSearchData,
-                    $cache->getUsers(),
-                    $cache->getUserGroups()
-                )
-            );
-
-            // Propiedades de búsqueda de cada cuenta
-            $accountsSearchItem = new AccountSearchItem(
-                $accountSearchData,
-                $accountAcl,
-                $this->configData
-            );
-
-            if (!$accountSearchData->getIsPrivate()) {
-                $accountsSearchItem->setUsers($cache->getUsers());
-                $accountsSearchItem->setUserGroups($cache->getUserGroups());
-            }
-
-            $accountsSearchItem->setTags(
-                $this->accountToTagRepository
-                    ->getTagsByAccountId($accountSearchData->getId())
-                    ->getDataAsArray()
-            );
-            $accountsSearchItem->setTextMaxLength($maxTextLength);
-            $accountsSearchItem->setColor(
-                $this->pickAccountColor($accountSearchData->getClientId())
-            );
-            $accountsSearchItem->setLink($accountLinkEnabled);
-            $accountsSearchItem->setFavorite(
-                isset($favorites[$accountSearchData->getId()])
-            );
-
-            $accountsData[] = $accountsSearchItem;
-        }
-
-        return $accountsData;
-    }
-
-    /**
-     * Devolver los accesos desde la caché
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    private function getCacheForAccount(AccountSearchVData $accountSearchData): AccountCache
-    {
-        $accountId = $accountSearchData->getId();
-
-        /** @var AccountCache[] $cache */
-        $cache = $this->context->getAccountsCache();
-
-        $hasCache = $cache !== null;
-
-        if ($hasCache === false
-            || !isset($cache[$accountId])
-            || $cache[$accountId]->getTime() < (int)strtotime($accountSearchData->getDateEdit())
-        ) {
-            $cache[$accountId] = new AccountCache(
-                $accountId,
-                $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
-                $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
-            );
-
-            if ($hasCache) {
-                $this->context->setAccountsCache($cache);
-            }
-        }
-
-        return $cache[$accountId];
-    }
-
-    /**
-     * Seleccionar un color para la cuenta
-     *
-     * @param  int  $id  El id del elemento a asignar
-     */
-    private function pickAccountColor(int $id): string
-    {
-        if ($this->accountColor !== null
-            && isset($this->accountColor[$id])) {
-            return $this->accountColor[$id];
-        }
-
-        // Se asigna el color de forma aleatoria a cada id
-        $this->accountColor[$id] = '#'.self::COLORS[array_rand(self::COLORS)];
-
-        try {
-            $this->colorCache->save($this->accountColor);
-
-            logger('Saved accounts color cache');
-
-            return $this->accountColor[$id];
-        } catch (FileException $e) {
-            processException($e);
-
-            return '';
-        }
-    }
-
-    public function getCleanString(): ?string
-    {
-        return $this->cleanString;
     }
 }

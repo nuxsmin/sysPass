@@ -22,8 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\Dto;
-
+namespace SP\Domain\Account\Dtos;
 
 use SP\Domain\Account\Adapters\AccountData;
 
