@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\ThemeInterface;
@@ -48,17 +48,17 @@ use SP\Util\VersionUtil;
  */
 final class LayoutHelper extends HelperBase
 {
-    private ThemeInterface $theme;
-    private CryptPKI       $cryptPKI;
-    private PluginManager  $pluginManager;
-    private bool           $loggedIn;
+    private ThemeInterface    $theme;
+    private CryptPKIInterface $cryptPKI;
+    private PluginManager     $pluginManager;
+    private bool              $loggedIn;
 
     public function __construct(
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
         ThemeInterface $theme,
-        CryptPKI $cryptPKI,
+        CryptPKIInterface $cryptPKI,
         PluginManager $pluginManager
     ) {
         parent::__construct($application, $template, $request);
@@ -70,7 +70,6 @@ final class LayoutHelper extends HelperBase
 
         $this->view->assign('loggedIn', $this->loggedIn);
     }
-
 
     /**
      * Sets a full layout page
@@ -131,7 +130,6 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('loggedIn', $this->loggedIn);
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
-
 
         try {
             // Cargar la clave pública en la sesión

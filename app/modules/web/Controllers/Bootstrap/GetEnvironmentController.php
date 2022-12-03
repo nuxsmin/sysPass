@@ -28,6 +28,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Import\Services\ImportService;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -45,14 +46,14 @@ final class GetEnvironmentController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private CryptPKI             $cryptPKI;
+    private CryptPKIInterface    $cryptPKI;
     private PluginManager        $pluginManager;
     private BrowserAuthInterface $browser;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        CryptPKI $cryptPKI,
+        CryptPKIInterface $cryptPKI,
         PluginManager $pluginManager,
         BrowserAuthInterface $browser
     ) {

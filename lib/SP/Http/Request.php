@@ -27,7 +27,7 @@ namespace SP\Http;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Util\Filter;
@@ -46,7 +46,7 @@ class Request implements RequestInterface
     public const SECURE_DIRS = ['css', 'js'];
 
     private \Klein\Request       $request;
-    private CryptPKI             $cryptPKI;
+    private CryptPKIInterface    $cryptPKI;
     private HeaderDataCollection $headers;
     private DataCollection       $params;
     private ?string              $method = null;
@@ -55,7 +55,7 @@ class Request implements RequestInterface
     /**
      * Request constructor.
      */
-    public function __construct(\Klein\Request $request, CryptPKI $cryptPKI)
+    public function __construct(\Klein\Request $request, CryptPKIInterface $cryptPKI)
     {
         $this->request = $request;
         $this->cryptPKI = $cryptPKI;
@@ -423,9 +423,9 @@ class Request implements RequestInterface
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
             $data = [
-                'host' => trim(str_replace('"', '', $forwardedHost)),
+                'host'  => trim(str_replace('"', '', $forwardedHost)),
                 'proto' => trim(str_replace('"', '', $forwardedProto)),
-                'for' => $this->getForwardedFor(),
+                'for'   => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty

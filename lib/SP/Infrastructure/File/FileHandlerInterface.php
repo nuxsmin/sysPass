@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\File;
 
-
 /**
  * Class FileHandler
  *
@@ -141,4 +140,14 @@ interface FileHandlerInterface
      * @throws FileException
      */
     public function getFileTime(): int;
+
+    /**
+     * Changes file permissions
+     *
+     * @param  int  $permissions Octal permissions
+     *
+     * @return \SP\Infrastructure\File\FileHandlerInterface
+     * @throws \SP\Infrastructure\File\FileException
+     */
+    public function chmod(int $permissions): FileHandlerInterface;
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,35 +24,31 @@
 
 namespace SP\Core\Crypt;
 
-defined('APP_ROOT') || die();
-
 use phpseclib\Crypt\RSA;
 use SP\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileHandlerInterface;
+use function SP\processException;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
  *
  * @package SP
  */
-class CryptPKI
+final class CryptPKI implements CryptPKIInterface
 {
-    public const KEY_SIZE = 1024;
-    public const PUBLIC_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
-    public const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
-
-    protected RSA $rsa;
-    private ?FileHandler $publicKeyFile = null;
-    private ?FileHandler $privateKeyFile = null;
+    public const KEY_SIZE         = 1024;
+    public const PUBLIC_KEY_FILE  = CONFIG_PATH.DIRECTORY_SEPARATOR.'pubkey.pem';
+    public const PRIVATE_KEY_FILE = CONFIG_PATH.DIRECTORY_SEPARATOR.'key.pem';
 
     /**
      * @throws SPException
      */
-    public function __construct(RSA $rsa)
-    {
-        $this->rsa = $rsa;
-
+    public function __construct(
+        private RSA $rsa,
+        private FileHandlerInterface $publicKeyFile,
+        private FileHandlerInterface $privateKeyFile
+    ) {
         $this->setUp();
     }
 
@@ -63,9 +59,6 @@ class CryptPKI
      */
     private function setUp(): void
     {
-        $this->publicKeyFile = new FileHandler(self::PUBLIC_KEY_FILE);
-        $this->privateKeyFile = new FileHandler(self::PRIVATE_KEY_FILE);
-
         try {
             $this->publicKeyFile->checkFileExists();
             $this->privateKeyFile->checkFileExists();
@@ -86,27 +79,12 @@ class CryptPKI
         $keys = $this->rsa->createKey(self::KEY_SIZE);
 
         $this->publicKeyFile->save($keys['publickey']);
-        $this->privateKeyFile->save($keys['privatekey']);
-
-        chmod(self::PRIVATE_KEY_FILE, 0600);
+        $this->privateKeyFile->save($keys['privatekey'])->chmod(0600);
     }
 
     public static function getMaxDataSize(): int
     {
         return (self::KEY_SIZE / 8) - 11;
-    }
-
-    /**
-     * Encriptar datos con la clave pública
-     *
-     * @throws FileException
-     */
-    public function encryptRSA(string $data): string
-    {
-        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPublicKey(), RSA::PUBLIC_FORMAT_PKCS1);
-
-        return $this->rsa->encrypt($data);
     }
 
     /**
@@ -116,9 +94,7 @@ class CryptPKI
      */
     public function getPublicKey(): string
     {
-        return $this->publicKeyFile
-            ->checkFileExists()
-            ->readToString();
+        return $this->publicKeyFile->checkFileExists()->readToString();
     }
 
     /**
@@ -135,25 +111,10 @@ class CryptPKI
     }
 
     /**
-     * Devuelve la clave privada desde el archivo
-     *
-     * @throws FileException
+     * @throws \SP\Infrastructure\File\FileException
      */
-    public function getPrivateKey(): string
+    private function getPrivateKey(): string
     {
-        return $this->privateKeyFile
-            ->checkFileExists()
-            ->readToString();
-    }
-
-    /**
-     * @throws FileException
-     */
-    public function getKeySize(): int
-    {
-        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
-
-        return $this->rsa->getSize();
+        return $this->privateKeyFile->checkFileExists()->readToString();
     }
 }

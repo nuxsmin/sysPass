@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use SP\Util\Util;
+use function SP\__;
 use function SP\logger;
 
 /**
@@ -339,5 +340,20 @@ final class FileHandler implements FileHandlerInterface
         $this->checkIsReadable();
 
         return filemtime($this->file) ?: 0;
+    }
+
+    /**
+     * @param  int  $permissions  Octal permissions
+     *
+     * @return \SP\Infrastructure\File\FileHandlerInterface
+     * @throws \SP\Infrastructure\File\FileException
+     */
+    public function chmod(int $permissions): FileHandlerInterface
+    {
+        if (chmod($this->file, $permissions) === false) {
+            throw new FileException(sprintf(__('Unable to set permissions for file (%s)'), $this->file));
+        }
+
+        return $this;
     }
 }
