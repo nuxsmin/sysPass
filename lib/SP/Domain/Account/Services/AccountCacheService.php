@@ -39,8 +39,7 @@ final class AccountCacheService extends Service implements AccountCacheServiceIn
     public function __construct(
         Application $application,
         private AccountToUserRepositoryInterface $accountToUserRepository,
-        private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
-
+        private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository
     ) {
         parent::__construct($application);
     }

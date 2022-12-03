@@ -205,7 +205,7 @@ class StatelessContext extends ContextBase
      */
     public function getAccountsCache(): ?array
     {
-        return null;
+        return $this->getContextKey('accountsCache');
     }
 
     /**
