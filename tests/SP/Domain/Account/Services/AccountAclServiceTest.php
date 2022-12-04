@@ -758,28 +758,7 @@ class AccountAclServiceTest extends UnitaryTestCase
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $acl = new Acl($this->context, $this->application->getEventDispatcher());
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
-        $userToUserGroupService->method('getGroupsForUser')
-            ->willReturnMap([
-                [1, [new SimpleModel(['userGroupId' => 2])]],
-                [2, [new SimpleModel(['userGroupId' => 1])]],
-                [3, [new SimpleModel(['userGroupId' => 2])]],
-                [4, []],
-            ]);
-
-        $this->accountAclService = new AccountAclService(
-            $this->application,
-            $acl,
-            $userToUserGroupService
-        );
-    }
-
-    private function accountPropertiesProvider(): array
+    public function accountPropertiesProvider(): array
     {
         /**
          * Account |View      |Edit
@@ -828,5 +807,26 @@ class AccountAclServiceTest extends UnitaryTestCase
             [4, 3, 2, true, true],
             [4, 3, 3, true, true],
         ];
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $acl = new Acl($this->context, $this->application->getEventDispatcher());
+        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $userToUserGroupService->method('getGroupsForUser')
+            ->willReturnMap([
+                [1, [new SimpleModel(['userGroupId' => 2])]],
+                [2, [new SimpleModel(['userGroupId' => 1])]],
+                [3, [new SimpleModel(['userGroupId' => 2])]],
+                [4, []],
+            ]);
+
+        $this->accountAclService = new AccountAclService(
+            $this->application,
+            $acl,
+            $userToUserGroupService
+        );
     }
 }
