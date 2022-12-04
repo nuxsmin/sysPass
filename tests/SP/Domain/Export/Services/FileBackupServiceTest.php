@@ -24,13 +24,12 @@
 
 namespace SP\Tests\Domain\Export\Services;
 
-use SP\Core\PhpExtensionChecker;
-use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Domain\Export\Services\FileBackupService;
-use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\MysqlHandler;
-use SP\Infrastructure\File\ArchiveHandler;
+use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -64,12 +63,12 @@ class FileBackupServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $database = $this->createStub(Database::class);
+        $database = $this->createStub(DatabaseInterface::class);
         $database->method('getDbHandler')->willReturn(
-            $this->createStub(MysqlHandler::class)
+            $this->createStub(DbStorageInterface::class)
         );
 
-        $archiveHandler = $this->createMock(ArchiveHandler::class);
+        $archiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $archiveHandler->expects(self::once())
             ->method('compressFile')
             ->withAnyParameters();
@@ -80,10 +79,7 @@ class FileBackupServiceTest extends UnitaryTestCase
                 FileBackupService::BACKUP_INCLUDE_REGEX
             );
 
-        $backupFiles = $this->getMockBuilder(BackupFiles::class)
-            ->onlyMethods(['getDbBackupArchiveHandler', 'getAppBackupArchiveHandler'])
-            ->setConstructorArgs([new PhpExtensionChecker()])
-            ->getMock();
+        $backupFiles = $this->createStub(BackupFilesInterface::class);
         $backupFiles->method('getDbBackupArchiveHandler')->willReturn($archiveHandler);
         $backupFiles->method('getAppBackupArchiveHandler')->willReturn($archiveHandler);
 

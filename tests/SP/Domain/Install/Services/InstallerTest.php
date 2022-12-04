@@ -27,16 +27,14 @@ namespace SP\Tests\Domain\Install\Services;
 use Exception;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
-use SP\Domain\User\Services\UserService;
-use SP\Http\Request;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Tests\UnitaryTestCase;
@@ -434,18 +432,14 @@ class InstallerTest extends UnitaryTestCase
         $installer->run($params);
     }
 
-    /**
-     * @noinspection ClassMockingCorrectnessInspection
-     * @noinspection PhpUnitInvalidMockingEntityInspection
-     */
     protected function setUp(): void
     {
         $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
-        $this->userService = $this->createMock(UserService::class);
-        $this->request = $this->createStub(Request::class);
-        $this->configService = $this->createMock(ConfigService::class);
-        $this->userGroupService = $this->createMock(UserGroupService::class);
-        $this->userProfileService = $this->createMock(UserProfileService::class);
+        $this->userService = $this->createMock(UserServiceInterface::class);
+        $this->request = $this->createStub(RequestInterface::class);
+        $this->configService = $this->createMock(ConfigServiceInterface::class);
+        $this->userGroupService = $this->createMock(UserGroupServiceInterface::class);
+        $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
 
         parent::setUp();
     }

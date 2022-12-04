@@ -28,11 +28,10 @@ namespace SP\Core\Acl;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use function SP\__u;
 use function SP\processException;
-
-defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
@@ -40,8 +39,6 @@ defined('APP_ROOT') || die();
 class Acl implements ActionsInterface
 {
     protected static ?Actions $actions = null;
-    private ContextInterface  $context;
-    private EventDispatcher   $eventDispatcher;
 
     /**
      * Acl constructor.
@@ -51,13 +48,10 @@ class Acl implements ActionsInterface
      * @param  Actions|null  $actions
      */
     public function __construct(
-        ContextInterface $context,
-        EventDispatcher $eventDispatcher,
+        private ContextInterface $context,
+        private EventDispatcherInterface $eventDispatcher,
         Actions $actions = null
     ) {
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
-
         self::$actions = $actions;
     }
 

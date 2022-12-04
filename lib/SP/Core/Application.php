@@ -24,9 +24,8 @@
 
 namespace SP\Core;
 
-
 use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 
 /**
@@ -34,33 +33,25 @@ use SP\Domain\Config\Ports\ConfigInterface;
  */
 final class Application
 {
-    private ConfigInterface  $config;
-    private EventDispatcher  $eventDispatcher;
-    private ContextInterface $context;
-
     /**
      * Module constructor.
      *
      * @param  ConfigInterface  $config
-     * @param  EventDispatcher  $eventDispatcher
+     * @param  EventDispatcherInterface  $eventDispatcher
      * @param  ContextInterface  $context
      */
     public function __construct(
-        ConfigInterface $config,
-        EventDispatcher $eventDispatcher,
-        ContextInterface $context
-    ) {
-        $this->config = $config;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->context = $context;
-    }
+        private ConfigInterface $config,
+        private EventDispatcherInterface $eventDispatcher,
+        private ContextInterface $context
+    ) {}
 
     public function getConfig(): ConfigInterface
     {
         return $this->config;
     }
 
-    public function getEventDispatcher(): EventDispatcher
+    public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }

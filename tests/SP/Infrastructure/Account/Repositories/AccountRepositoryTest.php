@@ -32,7 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Account\Services\AccountFilterUser;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -48,9 +48,9 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountRepositoryTest extends UnitaryTestCase
 {
-    private DatabaseInterface|MockObject $database;
-    private AccountRepository            $accountRepository;
-    private AccountFilterUser            $accountFilterUser;
+    private DatabaseInterface|MockObject          $database;
+    private AccountRepository                     $accountRepository;
+    private AccountFilterUserInterface|MockObject $accountFilterUser;
 
     public function testGetTotalNumAccounts(): void
     {
@@ -762,8 +762,6 @@ class AccountRepositoryTest extends UnitaryTestCase
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['id'] === $id
-                       && $params['userId'] === $this->context->getUserData()->getId()
-                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
                        && $arg->getMapClassName() === SimpleModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -788,9 +786,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             function (QueryData $arg) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['userId'] === $this->context->getUserData()->getId()
-                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
-                       && count($params) === 2
+                return count($params) === 0
                        && $arg->getMapClassName() === SimpleModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -818,8 +814,6 @@ class AccountRepositoryTest extends UnitaryTestCase
                 $params = $arg->getQuery()->getBindValues();
 
                 return $params['parentId'] === $id
-                       && $params['userId'] === $this->context->getUserData()->getId()
-                       && $params['userGroupId'] === $this->context->getUserData()->getUserGroupId()
                        && $arg->getMapClassName() === SimpleModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -863,16 +857,11 @@ class AccountRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        /** @noinspection ClassMockingCorrectnessInspection */
-        /** @noinspection PhpUnitInvalidMockingEntityInspection */
-        $this->accountFilterUser =
-            $this->getMockBuilder(AccountFilterUser::class)
-                ->enableOriginalConstructor()
-                ->enableProxyingToOriginalMethods()
-                ->setConstructorArgs(
-                    [$this->application->getContext(), $this->config->getConfigData(), $queryFactory]
-                )
-                ->getMock();
+        $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
+        $this->accountFilterUser = $this->createMock(AccountFilterUserInterface::class);
+        $this->accountFilterUser->method('buildFilter')->willReturn($select);
+        $this->accountFilterUser->method('buildFilterHistory')->willReturn($select);
+
         $this->accountRepository = new AccountRepository(
             $this->database,
             $this->context,

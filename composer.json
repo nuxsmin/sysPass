@@ -64,8 +64,6 @@
     "fzaninotto/faker": "1.9.x-dev",
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v4.1",
-    "dg/bypass-finals": "^v1.3",
-    "jimbojsb/pseudo": "^0.5",
     "squizlabs/php_codesniffer": "^3",
     "phpstan/phpstan": "^1.9"
   },

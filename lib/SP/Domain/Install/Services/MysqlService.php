@@ -303,7 +303,8 @@ final class MysqlService implements DatabaseSetupInterface
                     )
                 );
 
-                if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                if ($this->installData->getDbAuthHostDns()
+                    && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
                     $dbc->exec(
                         sprintf(
                             'DROP USER IF EXISTS %s@%s',

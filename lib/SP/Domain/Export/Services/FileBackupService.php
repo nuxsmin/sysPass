@@ -29,15 +29,16 @@ use PDO;
 use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
-use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\File\ArchiveHandler;
@@ -55,19 +56,19 @@ final class FileBackupService implements FileBackupServiceInterface
     public const BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
 
-    private Database            $database;
-    private DatabaseUtil        $databaseUtil;
-    private EventDispatcher     $eventDispatcher;
-    private ConfigFileService   $config;
-    private ConfigDataInterface $configData;
-    private BackupFiles         $backupFiles;
-    private ?string             $backupPath = null;
+    private DatabaseInterface        $database;
+    private DatabaseUtil             $databaseUtil;
+    private EventDispatcherInterface $eventDispatcher;
+    private ConfigInterface          $config;
+    private ConfigDataInterface      $configData;
+    private BackupFilesInterface     $backupFiles;
+    private ?string                  $backupPath = null;
 
     public function __construct(
         Application $application,
-        Database $database,
+        DatabaseInterface $database,
         DatabaseUtil $databaseUtil,
-        BackupFiles $backupFiles
+        BackupFilesInterface $backupFiles
     ) {
         $this->config = $application->getConfig();
         $this->eventDispatcher = $application->getEventDispatcher();

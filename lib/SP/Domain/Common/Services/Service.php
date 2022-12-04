@@ -30,7 +30,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 use function SP\__u;
 use function SP\logger;
@@ -44,9 +44,9 @@ abstract class Service
 {
     protected const STATUS_INTERNAL_ERROR = 1000;
 
-    protected ConfigInterface  $config;
-    protected ContextInterface $context;
-    protected EventDispatcher  $eventDispatcher;
+    protected ConfigInterface          $config;
+    protected ContextInterface         $context;
+    protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(Application $application)
     {

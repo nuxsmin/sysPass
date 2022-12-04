@@ -24,21 +24,17 @@
 
 namespace SP\Tests;
 
-use DG\BypassFinals;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Domain\Config\Services\ConfigBackupService;
-use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Infrastructure\File\FileCache;
-use SP\Infrastructure\File\XmlHandler;
+use SP\Tests\Generators\ConfigDataGenerator;
 
 /**
  * A class to test using a mocked Dependency Injection Container
@@ -53,9 +49,6 @@ abstract class UnitaryTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         defined('APP_ROOT') || die();
-
-        BypassFinals::enable();
-        BypassFinals::setWhitelist([APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'*']);
 
         self::$faker = Factory::create();
 
@@ -80,7 +73,7 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConfigException
+     * @return \SP\Core\Application
      * @throws \SP\Core\Context\ContextException
      */
     private function mockApplication(): Application
@@ -97,13 +90,15 @@ abstract class UnitaryTestCase extends TestCase
         $this->context->setUserData($userLogin);
         $this->context->setUserProfile(new ProfileData());
 
-        $config = new ConfigFileService(
-            $this->createStub(XmlHandler::class),
-            $this->createStub(FileCache::class),
-            $this->context,
-            $this->createStub(ConfigBackupService::class)
-        );
+        $configData = ConfigDataGenerator::factory()->buildConfigData();
 
-        return new Application($config, $this->createStub(EventDispatcher::class), $this->context);
+        $config = $this->createStub(ConfigInterface::class);
+        $config->method('getConfigData')->willReturn($configData);
+
+        return new Application(
+            $config,
+            $this->createStub(EventDispatcherInterface::class),
+            $this->context
+        );
     }
 }

@@ -31,7 +31,7 @@ use SP\Core\Acl\ActionsInterface;
  *
  * @package SP\Domain\Account\Services
  */
-final class AccountAcl
+class AccountAcl
 {
     private const ACTIONS_VIEW = [
         ActionsInterface::ACCOUNT_VIEW,

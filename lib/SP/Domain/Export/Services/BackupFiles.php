@@ -24,19 +24,21 @@
 
 namespace SP\Domain\Export\Services;
 
-
 use SP\Core\AppInfoInterface;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * BackupFiles
  */
-final class BackupFiles
+final class BackupFiles implements BackupFilesInterface
 {
     private const BACKUP_PREFFIX = 'sysPassBackup';
     private string $hash;
@@ -96,7 +98,6 @@ final class BackupFiles
                 __u('Please, check the backup directory permissions')
             );
         }
-
     }
 
     public static function getAppBackupFilename(

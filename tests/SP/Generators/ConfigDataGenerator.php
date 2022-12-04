@@ -22,32 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Stubs;
+namespace SP\Tests\Generators;
+
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
- * A PDO stub that overrides some unimplementd methods from \Pseudo\Pdo
+ * Class ConfigDataGenerator
  */
-class Pdo extends \Pseudo\Pdo
+final class ConfigDataGenerator extends DataGenerator
 {
-    /**
-     * (PHP 5 &gt;= 5.1.0, PHP 7, PECL pdo &gt;= 0.2.1)<br/>
-     * Quotes a string for use in a query.
-     *
-     * @link https://php.net/manual/en/pdo.quote.php
-     *
-     * @param  string  $string  <p>
-     * The string to be quoted.
-     * </p>
-     * @param  int  $type  [optional] <p>
-     * Provides a data type hint for drivers that have alternate quoting styles.
-     * </p>
-     *
-     * @return string|false a quoted string that is theoretically safe to pass into an
-     * SQL statement. Returns <b>FALSE</b> if the driver does not support quoting in
-     * this way.
-     */
-    public function quote($string, $parameter_type = self::PARAM_STR)
+
+    public function buildConfigData(): ConfigData
     {
-        return $string;
+        return new ConfigData([
+            ConfigDataInterface::PASSWORD_SALT => $this->faker->sha1,
+        ]);
     }
 }

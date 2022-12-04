@@ -32,7 +32,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\Database
  */
-final class QueryResult
+class QueryResult
 {
     private ?array  $data            = null;
     private ?string $dataType        = null;

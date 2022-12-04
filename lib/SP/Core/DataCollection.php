@@ -36,20 +36,20 @@ abstract class DataCollection extends ArrayObject
 
     public function get(string $key, mixed $default = null): mixed
     {
-        if (!property_exists($this, $key)) {
-            return $default;
+        if ($this->offsetExists($key)) {
+            return $this->offsetGet($key);
         }
 
-        return $this->{$key};
+        return $default;
     }
 
     public function set(string $key, mixed $value): void
     {
-        $this->{$key} = $value;
+        $this->offsetSet($key, $value);
     }
 
     public function exists(string $key): bool
     {
-        return property_exists($this, $key);
+        return $this->offsetExists($key);
     }
 }

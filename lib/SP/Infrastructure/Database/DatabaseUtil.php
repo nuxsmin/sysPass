@@ -25,13 +25,14 @@
 namespace SP\Infrastructure\Database;
 
 use Exception;
+use function SP\processException;
 
 /**
  * Class DBUtil con utilidades de la BD
  *
  * @package SP\Storage
  */
-final class DatabaseUtil
+class DatabaseUtil
 {
     /**
      * @var array Tablas de la BBDD
@@ -122,9 +123,9 @@ final class DatabaseUtil
             return true;
         } catch (Exception $e) {
             processException($e);
-
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -149,8 +150,6 @@ final class DatabaseUtil
             }
         } catch (Exception $e) {
             processException($e);
-
-            logger($e->getMessage());
         }
 
         return $dbinfo;
