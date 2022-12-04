@@ -29,6 +29,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountSearchTokenizerTest
+ *
+ * @group unitary
  */
 class AccountSearchTokenizerTest extends UnitaryTestCase
 {

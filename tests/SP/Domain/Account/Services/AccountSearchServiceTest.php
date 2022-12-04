@@ -42,6 +42,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountSearchServiceTest
+ *
+ * @group unitary
  */
 class AccountSearchServiceTest extends UnitaryTestCase
 {

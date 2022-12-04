@@ -39,6 +39,8 @@ use SP\Util\ImageUtilInterface;
 
 /**
  * Class AccountFileServiceTest
+ *
+ * @group unitary
  */
 class AccountFileServiceTest extends UnitaryTestCase
 {

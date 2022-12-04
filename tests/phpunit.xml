@@ -63,10 +63,6 @@
         <testsuite name="cli">
             <directory suffix=".php">./SP/Modules/Cli</directory>
         </testsuite>
-        <testsuite name="unitary">
-            <directory suffix=".php">./SP/Domain</directory>
-            <directory suffix=".php">./SP/Infrastructure</directory>
-        </testsuite>
     </testsuites>
     <logging/>
 </phpunit>

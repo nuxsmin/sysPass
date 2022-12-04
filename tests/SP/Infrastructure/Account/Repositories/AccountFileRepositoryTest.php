@@ -39,6 +39,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountFileRepositoryTest
+ *
+ * @group unitary
  */
 class AccountFileRepositoryTest extends UnitaryTestCase
 {

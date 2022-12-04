@@ -41,7 +41,7 @@ use function SP\__u;
 /**
  * Class MySQLTest
  *
- * @package SP\Tests\Services\Install
+ * @group unitary
  */
 class MySQLTest extends UnitaryTestCase
 {

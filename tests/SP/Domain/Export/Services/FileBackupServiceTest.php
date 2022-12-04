@@ -36,7 +36,7 @@ use SP\Tests\UnitaryTestCase;
 /**
  * Class FileBackupServiceTest
  *
- * @package SP\Tests\Services\Backup
+ * @group unitary
  */
 class FileBackupServiceTest extends UnitaryTestCase
 {

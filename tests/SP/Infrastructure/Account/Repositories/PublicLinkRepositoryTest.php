@@ -39,6 +39,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class PublicLinkRepositoryTest
+ *
+ * @group unitary
  */
 class PublicLinkRepositoryTest extends UnitaryTestCase
 {

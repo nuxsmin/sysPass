@@ -44,9 +44,7 @@ use SP\Tests\UnitaryTestCase;
 /**
  * Class AccountRepositoryTest
  *
- * Tests de integración para comprobar las consultas a la BBDD relativas a las cuentas
- *
- * @package SP\Tests
+ * @group unitary
  */
 class AccountRepositoryTest extends UnitaryTestCase
 {

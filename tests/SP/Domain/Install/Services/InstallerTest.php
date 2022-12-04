@@ -45,7 +45,7 @@ use SP\Util\VersionUtil;
 /**
  * Class InstallerTest
  *
- * @package SP\Tests\Services\Install
+ * @group unitary
  */
 class InstallerTest extends UnitaryTestCase
 {

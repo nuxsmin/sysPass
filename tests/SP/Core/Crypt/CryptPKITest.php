@@ -36,7 +36,7 @@ use function PHPUnit\Framework\once;
 /**
  * Class CryptPKITest
  *
- * @package SP\Tests\SP\Core\Crypt
+ * @group unitary
  */
 class CryptPKITest extends UnitaryTestCase
 {

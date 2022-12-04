@@ -42,6 +42,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountHistoryRepositoryTest
+ *
+ * @group unitary
  */
 class AccountHistoryRepositoryTest extends UnitaryTestCase
 {

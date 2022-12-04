@@ -80,7 +80,7 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite unitary
+          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary
           coverageLocations: ./tests/_output/coverage-clover.xml:clover
 
 #      - name: Integration tests

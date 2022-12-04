@@ -36,6 +36,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountToUserRepositoryTest
+ *
+ * @group unitary
  */
 class AccountToUserRepositoryTest extends UnitaryTestCase
 {

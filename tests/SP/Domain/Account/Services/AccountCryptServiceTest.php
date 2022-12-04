@@ -39,6 +39,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountCryptServiceTest
+ *
+ * @group unitary
  */
 class AccountCryptServiceTest extends UnitaryTestCase
 {

@@ -41,7 +41,7 @@ use SP\Tests\UnitaryTestCase;
 /**
  * Class AccountAclServiceTest
  *
- * @package SP\Tests\Services
+ * @group unitary
  */
 class AccountAclServiceTest extends UnitaryTestCase
 {

@@ -41,6 +41,8 @@ use function PHPUnit\Framework\once;
 
 /**
  * Class AccountSearchDataBuilderTest
+ *
+ * @group unitary
  */
 class AccountSearchDataBuilderTest extends UnitaryTestCase
 {

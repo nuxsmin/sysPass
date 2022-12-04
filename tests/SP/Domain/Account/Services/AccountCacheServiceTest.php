@@ -34,6 +34,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountCacheServiceTest
+ *
+ * @group unitary
  */
 class AccountCacheServiceTest extends UnitaryTestCase
 {

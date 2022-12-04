@@ -38,6 +38,8 @@ use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AccountPresetServiceTest
+ *
+ * @group unitary
  */
 class AccountPresetServiceTest extends UnitaryTestCase
 {
