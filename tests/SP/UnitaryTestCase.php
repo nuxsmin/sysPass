@@ -48,8 +48,6 @@ abstract class UnitaryTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        defined('APP_ROOT') || die();
-
         self::$faker = Factory::create();
 
         parent::setUpBeforeClass();
@@ -61,7 +59,6 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Core\Context\ContextException
      */
     protected function setUp(): void

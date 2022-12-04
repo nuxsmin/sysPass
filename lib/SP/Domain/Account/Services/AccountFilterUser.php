@@ -64,7 +64,7 @@ final class AccountFilterUser implements AccountFilterUserInterface
             $query = $this->queryFactory->newSelect()->from('AccountHistory');
         }
 
-        if ($this->isFilterByAdminAndGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
+        if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
             $where = [
                 'AccountHistory.userId = :userId',
                 'AccountHistory.userGroupId = :userGroupId',
@@ -103,7 +103,7 @@ final class AccountFilterUser implements AccountFilterUserInterface
      *
      * @return bool
      */
-    private function isFilterByAdminAndGlobalSearch(
+    private function isFilterWithoutGlobalSearch(
         UserLoginResponse $userData,
         bool $useGlobalSearch,
         ?ProfileData $userProfile
@@ -125,7 +125,7 @@ final class AccountFilterUser implements AccountFilterUserInterface
             $query = $this->queryFactory->newSelect()->from('Account');
         }
 
-        if ($this->isFilterByAdminAndGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
+        if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
             $where = [
                 'Account.userId = :userId',
                 'Account.userGroupId = :userGroupId',
@@ -143,10 +143,10 @@ final class AccountFilterUser implements AccountFilterUserInterface
         }
 
         $query->where(
-            'Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userId)'
+            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userId))'
         );
         $query->where(
-            'Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId)'
+            '(Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId))'
         );
 
         $query->bindValues([
