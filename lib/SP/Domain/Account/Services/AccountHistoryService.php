@@ -25,17 +25,12 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -49,20 +44,10 @@ use function SP\__u;
  */
 final class AccountHistoryService extends Service implements AccountHistoryServiceInterface
 {
-    private AccountHistoryRepositoryInterface     $accountHistoryRepository;
-    private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository;
-    private AccountToUserRepositoryInterface      $accountToUserRepository;
-
     public function __construct(
         Application $application,
-        AccountHistoryRepositoryInterface $accountHistoryRepository,
-        AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
-        AccountToUserRepositoryInterface $accountToUserRepository
+        private AccountHistoryRepositoryInterface $accountHistoryRepository
     ) {
-        $this->accountHistoryRepository = $accountHistoryRepository;
-        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountToUserRepository = $accountToUserRepository;
-
         parent::__construct($application);
     }
 
@@ -85,56 +70,14 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     /**
      * Obtiene el listado del histórico de una cuenta.
      *
+     * @param  int  $id
+     *
      * @return array Con los registros con id como clave y fecha - usuario como valor
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getHistoryForAccount(int $id): array
     {
-        return self::mapHistoryForDateSelect(
-            $this->accountHistoryRepository->getHistoryForAccount($id)->getDataAsArray()
-        );
-    }
-
-    /**
-     * Masps history items to fill in a date select
-     */
-    private static function mapHistoryForDateSelect(array $history): array
-    {
-        $items = [];
-
-        foreach ($history as $item) {
-            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
-            if (empty($item->dateEdit) || $item->dateEdit === '0000-00-00 00:00:00') {
-                $date = $item->dateAdd.' - '.$item->userAdd;
-            } else {
-                $date = $item->dateEdit.' - '.$item->userEdit;
-            }
-
-            $items[$item->id] = $date;
-        }
-
-        return $items;
-    }
-
-    /**
-     * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getUsersByAccountId(int $id): array
-    {
-        return $this->accountToUserRepository->getUsersByAccountId($id)->getDataAsArray();
-    }
-
-    /**
-     * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getUserGroupsByAccountId(int $id): array
-    {
-        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray();
+        return $this->accountHistoryRepository->getHistoryForAccount($id)->getDataAsArray();
     }
 
     /**
@@ -160,8 +103,8 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return array
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountsPassData(): array
     {
@@ -177,7 +120,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
      */
     public function delete(int $id): void
     {
-        if ($this->accountHistoryRepository->delete($id) === 0) {
+        if (!$this->accountHistoryRepository->delete($id)) {
             throw new ServiceException(__u('Error while deleting the account'));
         }
     }
@@ -200,8 +143,6 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
      * @param  int[]  $ids
      *
      * @return int
-     * @throws QueryException
-     * @throws ConstraintException
      */
     public function deleteByAccountIdBatch(array $ids): int
     {
@@ -209,26 +150,14 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $accountRequest
+     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $accountPasswordRequest
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function updatePasswordMasterPass(
-        AccountPasswordRequest $accountRequest
-    ): void {
-        if (!$this->accountHistoryRepository->updatePassword($accountRequest)) {
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountPasswordRequest): void
+    {
+        if (!$this->accountHistoryRepository->updatePassword($accountPasswordRequest)) {
             throw new ServiceException(__u('Error while updating the password'));
         }
-    }
-
-    /**
-     * Returns all the items
-     *
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function getAll(): array
-    {
-        return $this->accountHistoryRepository->getAll()->getDataAsArray();
     }
 }

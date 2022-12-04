@@ -60,20 +60,6 @@ interface AccountHistoryServiceInterface
     public function getHistoryForAccount(int $id): array;
 
     /**
-     * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getUsersByAccountId(int $id): array;
-
-    /**
-     * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function getUserGroupsByAccountId(int $id): array;
-
-    /**
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -128,13 +114,5 @@ interface AccountHistoryServiceInterface
      * @throws SPException
      * @throws ConstraintException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): void;
-
-    /**
-     * Returns all the items
-     *
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function getAll(): array;
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountPasswordRequest): void;
 }

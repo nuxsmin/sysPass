@@ -26,16 +26,9 @@ namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountPasswordRequest
- *
- * @package SP\Domain\Account\Services
  */
 final class AccountPasswordRequest
 {
-    /**
-     * @param  int  $id
-     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
-     * @param  string|null  $hash
-     */
     public function __construct(
         private int $id,
         private EncryptedPassword $encryptedPassword,

@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
+use SP\Domain\Account\Ports\AccountToUserGroupServiceInterface;
+use SP\Domain\Account\Ports\AccountToUserServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
@@ -49,33 +49,25 @@ use SP\Mvc\View\TemplateInterface;
  */
 final class AccountHistoryHelper extends AccountHelperBase
 {
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountAclServiceInterface     $accountAclService;
-    private ?int                           $accountId  = null;
-    private ?AccountAcl                    $accountAcl = null;
-    private CategoryServiceInterface       $categoryService;
-    private ClientServiceInterface         $clientService;
+    private ?int        $accountId  = null;
+    private ?AccountAcl $accountAcl = null;
 
     public function __construct(
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
         Acl $acl,
-        \SP\Domain\Account\Ports\AccountHistoryServiceInterface $accountHistoryService,
         AccountActionsHelper $accountActionsHelper,
         MasterPassServiceInterface $masterPassService,
-        AccountAclServiceInterface $accountAclService,
-        CategoryServiceInterface $categoryService,
-        ClientServiceInterface $clientService
+        private AccountHistoryServiceInterface $accountHistoryService,
+        private AccountAclServiceInterface $accountAclService,
+        private CategoryServiceInterface $categoryService,
+        private ClientServiceInterface $clientService,
+        private AccountToUserServiceInterface $accountToUserService,
+        private AccountToUserGroupServiceInterface $accountToUserGroupService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
-
-        $this->accountHistoryService = $accountHistoryService;
-        $this->accountAclService = $accountAclService;
-        $this->categoryService = $categoryService;
-        $this->clientService = $clientService;
     }
-
 
     /**
      * @param  AccountHistoryData  $accountHistoryData
@@ -85,14 +77,13 @@ final class AccountHistoryHelper extends AccountHelperBase
      * @throws \SP\Core\Acl\UnauthorizedPageException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function setView(
-        AccountHistoryData $accountHistoryData,
-        int $actionId
-    ): void {
+    public function setView(AccountHistoryData $accountHistoryData, int $actionId): void
+    {
         $this->actionId = $actionId;
         $this->accountId = $accountHistoryData->getAccountId();
 
@@ -108,7 +99,7 @@ final class AccountHistoryHelper extends AccountHelperBase
 
         $this->view->assign(
             'historyData',
-            SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
+            SelectItemAdapter::factory(self::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId)))
                 ->getItemsFromArraySelected([$accountHistoryData->getId()])
         );
 
@@ -153,16 +144,17 @@ final class AccountHistoryHelper extends AccountHelperBase
      *
      * @param  AccountHistoryData  $accountHistoryData
      *
-     * @throws AccountPermissionException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws \SP\Core\Acl\AccountPermissionException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function checkAccess(AccountHistoryData $accountHistoryData): void
     {
         $acccountAclDto = AccountAclDto::makeFromAccountHistory(
             $accountHistoryData,
-            $this->accountHistoryService->getUsersByAccountId($this->accountId),
-            $this->accountHistoryService->getUserGroupsByAccountId($this->accountId)
+            $this->accountToUserService->getUsersByAccountId($this->accountId),
+            $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId)
         );
 
         $this->accountAcl = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);
@@ -170,5 +162,24 @@ final class AccountHistoryHelper extends AccountHelperBase
         if ($this->accountAcl->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(SPException::INFO);
         }
+    }
+
+    /**
+     * Maps history items to fill in a date select
+     */
+    public static function mapHistoryForDateSelect(array $history): array
+    {
+        $values = array_map(static function ($item) {
+            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
+            if (empty($item->dateEdit) || $item->dateEdit === '0000-00-00 00:00:00') {
+                return sprintf('%s - %s', $item->dateAdd, $item->userAdd);
+            }
+
+            return sprintf('%s - %s', $item->dateEdit, $item->userEdit);
+        }, $history);
+
+        $keys = array_map(static fn($item) => $item->id, $history);
+
+        return array_combine($keys, $values);
     }
 }

@@ -121,7 +121,6 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign('chkGroupEdit', false);
     }
 
-
     /**
      * Sets account's view variables
      *
@@ -201,7 +200,7 @@ final class AccountHelper extends AccountHelperBase
         );
         $this->view->assign(
             'historyData',
-            SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
+            SelectItemAdapter::factory(AccountHistoryHelper::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId)))
                 ->getItemsFromArray()
         );
         $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);

@@ -22,39 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Dtos;
+namespace SP\Domain\Account\Ports;
 
-use SP\Domain\Account\Adapters\AccountData;
+use SP\DataModel\ItemData;
 
 /**
- * Class AccountHistoryCreateDto
+ * Class AccountToUserService
  */
-class AccountHistoryCreateDto
+interface AccountToUserServiceInterface
 {
-    public function __construct(
-        private AccountData $accountData,
-        private bool $isModify,
-        private bool $isDelete,
-        private string $masterPassHash
-    ) {}
-
-    public function isModify(): bool
-    {
-        return $this->isModify;
-    }
-
-    public function isDelete(): bool
-    {
-        return $this->isDelete;
-    }
-
-    public function getMasterPassHash(): string
-    {
-        return $this->masterPassHash;
-    }
-
-    public function getAccountData(): AccountData
-    {
-        return $this->accountData;
-    }
+    /**
+     * @param  int  $id
+     *
+     * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getUsersByAccountId(int $id): array;
 }
