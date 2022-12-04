@@ -32,7 +32,7 @@
          convertNoticesToExceptions="false"
          convertWarningsToExceptions="false"
          processIsolation="false"
-         stopOnFailure="true">
+         stopOnFailure="false">
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">../lib/SP</directory>
