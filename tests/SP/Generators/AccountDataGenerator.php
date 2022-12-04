@@ -125,11 +125,13 @@ final class AccountDataGenerator extends DataGenerator
 
     public function builAccountSearchVData(): SimpleModel
     {
-        return new SimpleModel([
-            'num_files'                 => $this->faker->randomNumber(),
-            'publicLinkDateExpire'      => $this->faker->unixTime,
-            'publicLinkTotalCountViews' => $this->faker->randomNumber(),
-            ...$this->getAccountData(),
-        ]);
+        return new SimpleModel(array_merge(
+            [
+                'num_files'                 => $this->faker->randomNumber(),
+                'publicLinkDateExpire'      => $this->faker->unixTime,
+                'publicLinkTotalCountViews' => $this->faker->randomNumber(),
+            ],
+            $this->getAccountData()
+        ));
     }
 }
