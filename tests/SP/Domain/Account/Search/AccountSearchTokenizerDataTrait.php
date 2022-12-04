@@ -32,7 +32,7 @@ use SP\Domain\Account\Search\AccountSearchConstants;
  */
 trait AccountSearchTokenizerDataTrait
 {
-    protected function searchByItemDataProvider(): array
+    public function searchByItemDataProvider(): array
     {
         $faker = Factory::create();
         $id = $faker->randomNumber();
@@ -78,7 +78,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    protected function searchByConditionDataProvider(): array
+    public function searchByConditionDataProvider(): array
     {
         $conditions = [
             'is:expired',
@@ -93,7 +93,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    protected function searchUsingOperatorDataProvider(): array
+    public function searchUsingOperatorDataProvider(): array
     {
         $conditions = [
             'test string' => null,
@@ -107,7 +107,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    protected function searchUsingStringDataProvider(): array
+    public function searchUsingStringDataProvider(): array
     {
         $faker = Factory::create();
 
