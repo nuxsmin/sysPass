@@ -32,7 +32,10 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Crypt\CSRF;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -60,6 +63,7 @@ use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
 use SP\Mvc\View\Template;
@@ -192,6 +196,11 @@ final class CoreDefinitions
             }),
             QueryFactory::class           => create(QueryFactory::class)
                 ->constructor('mysql', QueryFactory::COMMON),
+            CryptInterface::class         => create(Crypt::class),
+            CryptPKIInterface::class      => autowire(CryptPKI::class)
+                ->constructorParameter('publicKeyFile', new FileHandler(CryptPKI::PUBLIC_KEY_FILE))
+                ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
+            FileCacheInterface::class     => create(FileCache::class),
         ];
     }
 }

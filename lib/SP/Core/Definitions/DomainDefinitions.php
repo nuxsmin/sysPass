@@ -24,6 +24,8 @@
 
 namespace SP\Core\Definitions;
 
+use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
+use SP\Domain\Account\Search\AccountSearchDataBuilder;
 use function DI\autowire;
 
 /**
@@ -39,6 +41,7 @@ final class DomainDefinitions
             'SP\Domain\Account\Ports\*RepositoryInterface'      => autowire(
                 'SP\Infrastructure\Account\Repositories\*Repository'
             ),
+            AccountSearchDataBuilderInterface::class            => autowire(AccountSearchDataBuilder::class),
             'SP\Domain\Category\Ports\*ServiceInterface'        => autowire('SP\Domain\Category\Services\*Service'),
             'SP\Domain\Category\Adapters\*AdapterInterface'     => autowire('SP\Domain\Category\Out\*Adapter'),
             'SP\Domain\Category\Ports\*RepositoryInterface'     => autowire(

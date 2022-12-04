@@ -48,10 +48,8 @@ class Crypt implements CryptInterface
      * @throws \SP\Core\Exceptions\CryptException
      * @TODO: Update callers to use instance
      */
-    public function makeSecuredKey(
-        string $password,
-        bool $useAscii = true
-    ): KeyProtectedByPassword|string {
+    public function makeSecuredKey(string $password, bool $useAscii = true): KeyProtectedByPassword|string
+    {
         try {
             if ($useAscii) {
                 return KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
@@ -75,11 +73,8 @@ class Crypt implements CryptInterface
      *
      * @TODO: Update callers to use instance
      */
-    public function encrypt(
-        string $data,
-        Key|string $securedKey,
-        ?string $password = null
-    ): string {
+    public function encrypt(string $data, Key|string $securedKey, ?string $password = null): string
+    {
         try {
             if ($securedKey instanceof Key) {
                 $key = $securedKey;
@@ -104,11 +99,8 @@ class Crypt implements CryptInterface
      * @throws \SP\Core\Exceptions\CryptException
      * @TODO: Update callers to use instance
      */
-    public function unlockSecuredKey(
-        string $key,
-        string $password,
-        bool $useAscii = true
-    ): Key|string {
+    public function unlockSecuredKey(string $key, string $password, bool $useAscii = true): Key|string
+    {
         try {
             if ($useAscii) {
                 return KeyProtectedByPassword::loadFromAsciiSafeString($key)

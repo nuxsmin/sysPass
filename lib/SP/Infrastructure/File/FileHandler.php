@@ -37,20 +37,16 @@ final class FileHandler implements FileHandlerInterface
 {
     private const CHUNK_LENGTH = 8192;
     public const  CHUNK_FACTOR = 3;
-    protected string $file;
     /**
      * @var resource
      */
-    protected    $handle;
+    private      $handle;
     private bool $locked = false;
 
     /**
      * FileHandler constructor.
      */
-    public function __construct(string $file)
-    {
-        $this->file = $file;
-    }
+    public function __construct(private string $file) {}
 
     /**
      * Writes data into file
