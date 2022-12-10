@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,9 +37,9 @@ final class DateUtil
      * @param  int|string  $date
      * @param  string  $format
      *
-     * @return false|string
+     * @return int|string
      */
-    public static function getDateFromUnix($date, string $format = 'Y-m-d H:i')
+    public static function getDateFromUnix(int|string $date, string $format = 'Y-m-d H:i'): int|string
     {
         return is_numeric($date) ? date($format, $date) : $date;
     }

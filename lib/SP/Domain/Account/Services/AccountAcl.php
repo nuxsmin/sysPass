@@ -432,13 +432,4 @@ class AccountAcl
 
         return $this;
     }
-
-    public function reset(): void
-    {
-        foreach (get_class_vars(__CLASS__) as $property => $value) {
-            if (str_starts_with($property, 'show')) {
-                $this->{$property} = false;
-            }
-        }
-    }
 }

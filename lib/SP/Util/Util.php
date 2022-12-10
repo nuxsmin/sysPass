@@ -24,8 +24,10 @@
 
 namespace SP\Util;
 
+use JetBrains\PhpStorm\NoReturn;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+use function SP\logger;
 
 defined('APP_ROOT') || die();
 
@@ -39,12 +41,13 @@ final class Util
      *
      * @return bool|string
      */
-    public static function getTempDir()
+    public static function getTempDir(): bool|string
     {
         $sysTmp = sys_get_temp_dir();
-        $file = 'syspass.test';
 
-        $checkDir = static function ($dir) use ($file) {
+        $checkDir = static function ($dir) {
+            $file = 'syspass.test';
+
             if (file_exists($dir.DIRECTORY_SEPARATOR.$file)) {
                 return $dir;
             }
@@ -70,7 +73,7 @@ final class Util
      *
      * FIXME
      */
-    public static function logout(): void
+    #[NoReturn] public static function logout(): void
     {
         exit('<script>sysPassApp.actions.main.logout();</script>');
     }
@@ -116,7 +119,7 @@ final class Util
      * @author Samuel Levy <sam+nospam@samuellevy.com>
      *
      */
-    public static function boolval($in, bool $strict = false): bool
+    public static function boolval(mixed $in, bool $strict = false): bool
     {
         $in = is_string($in) ? strtolower($in) : $in;
 
@@ -240,7 +243,7 @@ final class Util
      * @return bool|string
      * @throws \JsonException
      */
-    public static function getAppLock()
+    public static function getAppLock(): bool|string
     {
         try {
             $file = new FileHandler(LOCK_FILE);
@@ -251,7 +254,7 @@ final class Util
                 512,
                 JSON_THROW_ON_ERROR
             );
-        } catch (FileException $e) {
+        } catch (FileException) {
             return false;
         }
     }

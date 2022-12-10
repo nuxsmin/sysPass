@@ -49,7 +49,7 @@ final class VersionUtil
      *
      * @return bool True if $currentVersion is lower than $upgradeableVersion
      */
-    public static function checkVersion(string $currentVersion, $upgradeableVersion): bool
+    public static function checkVersion(string $currentVersion, array|string $upgradeableVersion): bool
     {
         if (is_array($upgradeableVersion)) {
             $upgradeableVersion = array_pop($upgradeableVersion);
@@ -78,9 +78,11 @@ final class VersionUtil
     /**
      * Return a normalized version string to be compared
      *
-     * @param  string|array  $versionIn
+     * @param  array|string  $versionIn
+     *
+     * @return string
      */
-    public static function normalizeVersionForCompare($versionIn): string
+    public static function normalizeVersionForCompare(array|string $versionIn): string
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {
@@ -105,9 +107,11 @@ final class VersionUtil
     }
 
     /**
+     * @param  string  $version
+     *
      * @return float|int
      */
-    public static function versionToInteger(string $version)
+    public static function versionToInteger(string $version): float|int
     {
         $intVersion = 0;
 
@@ -138,13 +142,5 @@ final class VersionUtil
         }
 
         return $version;
-    }
-
-    /**
-     * Devolver versión normalizada en array
-     */
-    public static function getVersionArrayNormalized(): array
-    {
-        return [implode('', InstallerService::VERSION), InstallerService::BUILD];
     }
 }

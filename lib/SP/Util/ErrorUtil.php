@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
+use function SP\processException;
 
 /**
  * Class ErrorUtil
