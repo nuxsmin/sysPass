@@ -77,7 +77,7 @@ final class SaveEditPassController extends AccountControllerBase
 
             $this->accountService->editPassword($this->accountForm->getItemData());
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.pass',

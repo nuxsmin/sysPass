@@ -67,12 +67,12 @@ final class DeleteController extends AccountControllerBase
     public function deleteAction(?int $id = null): void
     {
         try {
-            $accountDetailsResponse = $this->accountService->getById($id);
-            $this->accountService
-                ->withUsersById($accountDetailsResponse)
-                ->withUserGroupsById($accountDetailsResponse);
+            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_DELETE);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto, ActionsInterface::ACCOUNT_DELETE);
 
             $this->view->addTemplate('account');
             $this->view->assign(

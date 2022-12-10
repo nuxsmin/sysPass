@@ -70,24 +70,45 @@ class QueryResult
     }
 
     /**
-     * @return mixed|null
+     * @template T
+     *
+     * @param  class-string<T>|null  $dataType
+     *
+     * @return T|mixed|null
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function getData(): mixed
+    public function getData(?string $dataType = null): mixed
     {
+        $this->checkDataType($dataType);
+
         return $this->numRows === 1 ? $this->data[0] : null;
     }
 
     /**
-     * @param  string|null  $dataType  Expected data's type
+     * @param  string|null  $dataType
      *
-     * @return array
+     * @return void
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function checkDataType(?string $dataType = null): void
+    {
+        if (null !== $dataType && $this->dataType !== null && $dataType !== $this->dataType) {
+            throw new SPException(sprintf(__u('Invalid data\'s type: %s - Expected: %s'), $dataType, $this->dataType));
+        }
+    }
+
+    /**
+     * @template T
+     *
+     * @param  class-string<T>|null  $dataType
+     *
+     * @return T[]
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getDataAsArray(?string $dataType = null): array
     {
-        if (null !== $dataType && $this->dataType !== null && $dataType !== $this->dataType) {
-            throw new SPException(__u('Invalid data\'s type'));
-        }
+        $this->checkDataType($dataType);
 
         return $this->data ?? [];
     }

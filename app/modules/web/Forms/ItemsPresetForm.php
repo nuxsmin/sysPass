@@ -31,7 +31,7 @@ use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
@@ -79,7 +79,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $itemPresetData = new ItemPresetData();
+        $itemPresetData = new ItemPreset();
 
         if ($this->itemId > 0) {
             $itemPresetData->setId($this->itemId);
@@ -143,11 +143,10 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     private function makePrivatePreset(): AccountPrivate
     {
-        $accountPrivate = new AccountPrivate();
-        $accountPrivate->setPrivateUser($this->request->analyzeBool('private_user_enabled', false));
-        $accountPrivate->setPrivateGroup($this->request->analyzeBool('private_group_enabled', false));
-
-        return $accountPrivate;
+        return new AccountPrivate(
+            $this->request->analyzeBool('private_user_enabled', false),
+            $this->request->analyzeBool('private_group_enabled', false)
+        );
     }
 
     /**

@@ -29,9 +29,8 @@ use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPresetRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
@@ -109,7 +108,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 1;
         $data->userGroupId = 1;
         $data->fixed = 1;
@@ -130,7 +129,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 1;
         $data->userGroupId = 1;
         $data->fixed = 1;
@@ -149,7 +148,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 2;
         $data->userId = 10;
         $data->fixed = 1;
@@ -168,7 +167,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 2;
         $data->userGroupId = 10;
         $data->fixed = 1;
@@ -187,7 +186,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 2;
         $data->userProfileId = 10;
         $data->fixed = 1;
@@ -204,7 +203,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      */
     public function testUpdateUnknownId()
     {
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 10;
         $data->userGroupId = 1;
         $data->fixed = 1;
@@ -223,7 +222,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 1;
         $data->userId = 1;
         $data->fixed = 0;
@@ -247,11 +246,11 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
         $result = self::$repository->getAll();
         $this->assertEquals($count, $result->getNumRows());
 
-        /** @var ItemPresetData[] $data */
+        /** @var ItemPreset[] $data */
         $data = $result->getDataAsArray();
         $this->assertCount($count, $data);
 
-        $this->assertInstanceOf(ItemPresetData::class, $data[0]);
+        $this->assertInstanceOf(ItemPreset::class, $data[0]);
         $this->assertEquals(1, $data[0]->getId());
         $this->assertEquals('permission', $data[0]->getType());
         $this->assertEquals(1, $data[0]->getUserId());
@@ -261,11 +260,11 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
         $this->assertEquals(0, $data[0]->getFixed());
         $this->assertEquals(0, $data[0]->getPriority());
 
-        $this->assertInstanceOf(ItemPresetData::class, $data[1]);
+        $this->assertInstanceOf(ItemPreset::class, $data[1]);
         $this->assertEquals(2, $data[1]->getId());
         $this->assertEquals('permission', $data[1]->getType());
 
-        $this->assertInstanceOf(ItemPresetData::class, $data[2]);
+        $this->assertInstanceOf(ItemPreset::class, $data[2]);
         $this->assertEquals(3, $data[2]->getId());
         $this->assertEquals('permission', $data[2]->getType());
     }
@@ -357,7 +356,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->id = 6;
         $data->userGroupId = 1;
         $data->fixed = 1;
@@ -379,7 +378,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new ItemPresetData();
+        $data = new ItemPreset();
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 10;
@@ -406,10 +405,10 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
 
-        /** @var ItemPresetData $data */
+        /** @var ItemPreset $data */
         $data = $result->getData();
 
-        $this->assertInstanceOf(ItemPresetData::class, $data);
+        $this->assertInstanceOf(ItemPreset::class, $data);
         $this->assertEquals($expected, $data->getId());
     }
 

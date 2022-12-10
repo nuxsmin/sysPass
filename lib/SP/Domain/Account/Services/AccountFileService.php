@@ -84,6 +84,7 @@ final class AccountFileService extends Service implements AccountFileServiceInte
      * @param  int  $id
      *
      * @return \SP\DataModel\FileExtData|null
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getById(int $id): ?FileExtData
     {

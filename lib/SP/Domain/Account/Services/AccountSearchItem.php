@@ -25,16 +25,14 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\Html;
 
 /**
  * Class AccountSearchItem para contener los datos de cada cuenta en la búsqueda
- *
- * @package SP\Controller
  */
 final class AccountSearchItem
 {
@@ -51,7 +49,7 @@ final class AccountSearchItem
     public static bool $isDemoMode        = false;
 
     public function __construct(
-        protected AccountSearchVData $accountSearchVData,
+        protected AccountSearchView $accountSearchView,
         private AccountAcl $accountAcl,
         private ConfigDataInterface $configData,
         private array $tags,
@@ -108,39 +106,39 @@ final class AccountSearchItem
 
     public function getShortUrl(): string
     {
-        return Html::truncate($this->accountSearchVData->getUrl(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getUrl(), $this->textMaxLength);
     }
 
     public function isUrlIslink(): bool
     {
-        return preg_match('#^\w+://#', $this->accountSearchVData->getUrl()) === 1;
+        return preg_match('#^\w+://#', $this->accountSearchView->getUrl()) === 1;
     }
 
     public function getShortLogin(): string
     {
-        return Html::truncate($this->accountSearchVData->getLogin(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getLogin(), $this->textMaxLength);
     }
 
     public function getShortClientName(): string
     {
-        return Html::truncate($this->accountSearchVData->getClientName(), $this->textMaxLength / 3);
+        return Html::truncate($this->accountSearchView->getClientName(), $this->textMaxLength / 3);
     }
 
     public function getClientLink(): ?string
     {
         return self::$wikiEnabled
-            ? $this->configData->getWikiSearchurl().$this->accountSearchVData->getClientName()
+            ? $this->configData->getWikiSearchurl().$this->accountSearchView->getClientName()
             : null;
     }
 
     public function getPublicLink(): ?string
     {
         if (self::$publicLinkEnabled
-            && $this->accountSearchVData->getPublicLinkHash() !== null
+            && $this->accountSearchView->getPublicLinkHash() !== null
         ) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
-            return PublicLinkService::getLinkForHash($baseUrl, $this->accountSearchVData->getPublicLinkHash());
+            return PublicLinkService::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
         }
 
         return null;
@@ -169,12 +167,12 @@ final class AccountSearchItem
     public function getAccesses(): array
     {
         $accesses = [
-            '(G*) <em>'.$this->accountSearchVData->getUserGroupName().'</em>',
-            '(U*) <em>'.$this->accountSearchVData->getUserLogin().'</em>',
+            '(G*) <em>'.$this->accountSearchView->getUserGroupName().'</em>',
+            '(U*) <em>'.$this->accountSearchView->getUserLogin().'</em>',
         ];
 
-        $userLabel = $this->accountSearchVData->getOtherUserEdit() === 1 ? 'U+' : 'U';
-        $userGroupLabel = $this->accountSearchVData->getOtherUserGroupEdit() === 1 ? 'G+' : 'G';
+        $userLabel = $this->accountSearchView->getOtherUserEdit() === 1 ? 'U+' : 'U';
+        $userGroupLabel = $this->accountSearchView->getOtherUserGroupEdit() === 1 ? 'G+' : 'G';
 
         foreach ($this->userGroups ?? [] as $group) {
             $accesses[] = sprintf(
@@ -198,7 +196,7 @@ final class AccountSearchItem
     public function getNumFiles(): int
     {
         return $this->configData->isFilesEnabled()
-            ? $this->accountSearchVData->getNumFiles()
+            ? $this->accountSearchView->getNumFiles()
             : 0;
     }
 
@@ -222,15 +220,15 @@ final class AccountSearchItem
         return $this->accountAcl->isShowDelete();
     }
 
-    public function getAccountSearchVData(): AccountSearchVData
+    public function getAccountSearchView(): AccountSearchView
     {
-        return $this->accountSearchVData;
+        return $this->accountSearchView;
     }
 
     public function getShortNotes(): string
     {
-        if ($this->accountSearchVData->getNotes()) {
-            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchVData->getNotes(), 300), ENT_QUOTES));
+        if ($this->accountSearchView->getNotes()) {
+            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchView->getNotes(), 300), ENT_QUOTES));
         }
 
         return '';
@@ -242,8 +240,8 @@ final class AccountSearchItem
     public function isPasswordExpired(): bool
     {
         return $this->configData->isAccountExpireEnabled()
-               && $this->accountSearchVData->getPassDateChange() > 0
-               && time() > $this->accountSearchVData->getPassDateChange();
+               && $this->accountSearchView->getPassDateChange() > 0
+               && time() > $this->accountSearchView->getPassDateChange();
     }
 
     /**
@@ -256,6 +254,6 @@ final class AccountSearchItem
 
     public function isWikiMatch(string $wikiFilter): bool
     {
-        return preg_match('/^'.$wikiFilter.'/i', $this->accountSearchVData->getName()) === 1;
+        return preg_match('/^'.$wikiFilter.'/i', $this->accountSearchView->getName()) === 1;
     }
 }

@@ -69,7 +69,7 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
 
     public function transform(AccountEnrichedDto $data): array
     {
-        $account = $data->getAccountVData();
+        $account = $data->getAccountDataView();
 
         return [
             'id'                 => (int)$account->getId(),

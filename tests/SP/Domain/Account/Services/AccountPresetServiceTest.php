@@ -27,12 +27,13 @@ namespace SP\Tests\Domain\Account\Services;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPresetData;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Services\AccountPresetService;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Mvc\Controller\Validators\ValidatorInterface;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -59,10 +60,8 @@ class AccountPresetServiceTest extends UnitaryTestCase
         $this->config->getConfigData()->setAccountExpireEnabled(true);
 
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
-        $itemPreset = ItemPresetData::buildFromSimpleModel(
-            $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPasswordPreset())
-        );
-        $itemPreset->fixed = 1;
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPassword())
+                                              ->mutate(['fixed' => 1]);
 
         $this->itemPresetService
             ->expects(self::once())
@@ -74,30 +73,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
             ->method('validate')
             ->with(self::callback(static fn($password) => $password instanceof Password));
 
-        $this->accountPresetService->checkPasswordPreset($this->buildAccountRequest());
-    }
-
-    private function buildAccountRequest(): AccountRequest
-    {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = self::$faker->randomNumber();
-        $accountRequest->name = self::$faker->name;
-        $accountRequest->login = self::$faker->userName;
-        $accountRequest->url = self::$faker->url;
-        $accountRequest->notes = self::$faker->text;
-        $accountRequest->userEditId = self::$faker->randomNumber();
-        $accountRequest->passDateChange = self::$faker->unixTime;
-        $accountRequest->clientId = self::$faker->randomNumber();
-        $accountRequest->categoryId = self::$faker->randomNumber();
-        $accountRequest->isPrivate = self::$faker->numberBetween(0, 1);
-        $accountRequest->isPrivateGroup = self::$faker->numberBetween(0, 1);
-        $accountRequest->parentId = self::$faker->randomNumber();
-        $accountRequest->userId = self::$faker->randomNumber();
-        $accountRequest->userGroupId = self::$faker->randomNumber();
-        $accountRequest->key = self::$faker->password;
-        $accountRequest->pass = self::$faker->password(10, 10);
-
-        return $accountRequest;
+        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -111,10 +87,8 @@ class AccountPresetServiceTest extends UnitaryTestCase
         $this->config->getConfigData()->setAccountExpireEnabled(true);
 
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
-        $itemPreset = ItemPresetData::buildFromSimpleModel(
-            $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPasswordPreset())
-        );
-        $itemPreset->fixed = 1;
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPassword())
+                                              ->mutate(['fixed' => 1]);
 
         $this->itemPresetService
             ->expects(self::once())
@@ -129,7 +103,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
 
         $this->expectException(ValidationException::class);
 
-        $this->accountPresetService->checkPasswordPreset($this->buildAccountRequest());
+        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -141,11 +115,8 @@ class AccountPresetServiceTest extends UnitaryTestCase
     public function testCheckPasswordPresetWithoutFixed(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
-        $itemPreset = ItemPresetData::buildFromSimpleModel(
-            $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPasswordPreset())
-        );
-
-        $itemPreset->fixed = 0;
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPassword())
+                                              ->mutate(['fixed' => 0]);
 
         $this->itemPresetService
             ->expects(self::once())
@@ -156,7 +127,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('validate');
 
-        $this->accountPresetService->checkPasswordPreset($this->buildAccountRequest());
+        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -168,12 +139,9 @@ class AccountPresetServiceTest extends UnitaryTestCase
     public function testCheckPasswordPresetWithPassDateChangeModified(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
-        $passwordPreset = $itemPresetDataGenerator->buildPasswordPreset();
+        $passwordPreset = $itemPresetDataGenerator->buildPassword();
 
-        $itemPreset = ItemPresetData::buildFromSimpleModel(
-            $itemPresetDataGenerator->buildItemPresetData($passwordPreset)
-        );
-        $itemPreset->fixed = 1;
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($passwordPreset)->mutate(['fixed' => 1]);
 
         $this->itemPresetService
             ->expects(self::once())
@@ -184,12 +152,12 @@ class AccountPresetServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('validate');
 
-        $accountRequest = $this->buildAccountRequest();
-        $accountRequest->passDateChange = 0;
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
+        $accountDto = $accountDto->set('passDateChange', 0);
 
-        $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $out = $this->accountPresetService->checkPasswordPreset($accountDto);
 
-        $this->assertGreaterThan(0, $accountRequest->passDateChange);
+        $this->assertGreaterThan(0, $out->getPassDateChange());
     }
 
     protected function setUp(): void
@@ -201,8 +169,17 @@ class AccountPresetServiceTest extends UnitaryTestCase
 
         $this->itemPresetService = $this->createMock(ItemPresetServiceInterface::class);
         $this->passwordValidator = $this->createMock(ValidatorInterface::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
 
         $this->accountPresetService =
-            new AccountPresetService($this->itemPresetService, $configData, $this->passwordValidator);
+            new AccountPresetService(
+                $this->application,
+                $this->itemPresetService,
+                $this->accountToUserGroupRepository,
+                $this->accountToUserRepository,
+                $configData,
+                $this->passwordValidator
+            );
     }
 }

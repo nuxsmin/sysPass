@@ -82,7 +82,7 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(int $accountId, array $items, bool $isEdit): void
+    public function addByType(int $accountId, array $items, bool $isEdit = false): void
     {
         $values = array_map(static function ($item) use ($accountId, $isEdit) {
             return [$accountId, (int)$item, (int)$isEdit];

@@ -27,11 +27,12 @@ namespace SP\Domain\Account\Ports;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountHistoryData;
-use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -48,7 +49,7 @@ interface AccountHistoryServiceInterface
      *
      * @throws NoSuchItemException
      */
-    public function getById(int $id): AccountHistoryData;
+    public function getById(int $id): AccountHistory;
 
     /**
      * Obtiene el listado del histórico de una cuenta.
@@ -114,5 +115,5 @@ interface AccountHistoryServiceInterface
      * @throws SPException
      * @throws ConstraintException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountPasswordRequest): void;
+    public function updatePasswordMasterPass(int $accountId, EncryptedPassword $encryptedPassword): void;
 }

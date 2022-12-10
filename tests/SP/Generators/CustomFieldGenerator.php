@@ -24,14 +24,14 @@
 
 namespace SP\Tests\Generators;
 
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 
 /**
  * Class CustomFieldGenerator
  */
 final class CustomFieldGenerator extends DataGenerator
 {
-    public function buildSimpleModel(bool $useEncryption = false): SimpleModel
+    public function buildSimpleModel(bool $useEncryption = false): Simple
     {
         $data = null;
         $key = null;
@@ -41,7 +41,7 @@ final class CustomFieldGenerator extends DataGenerator
             $key = $this->faker->sha1;
         }
 
-        return new SimpleModel([
+        return new Simple([
             'required'       => $this->faker->boolean,
             'showInList'     => $this->faker->boolean,
             'help'           => $this->faker->text,

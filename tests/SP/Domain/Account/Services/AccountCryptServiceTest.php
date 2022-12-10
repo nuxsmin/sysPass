@@ -58,11 +58,11 @@ class AccountCryptServiceTest extends UnitaryTestCase
     {
         $task = $this->createMock(TaskInterface::class);
         $task->method('getUid')
-            ->willReturn(self::$faker->uuid);
+             ->willReturn(self::$faker->uuid);
         $task->method('getTaskId')
-            ->willReturn((string)self::$faker->randomNumber());
+             ->willReturn((string)self::$faker->randomNumber());
         $task->method('registerSession')
-            ->willReturnSelf();
+             ->willReturnSelf();
 
         $request =
             new UpdateMasterPassRequest(
@@ -71,23 +71,23 @@ class AccountCryptServiceTest extends UnitaryTestCase
                 self::$faker->sha1,
                 TaskFactory::register($task)
             );
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountData(), range(0, 9));
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->accountService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn($accountData);
+                             ->method('getAccountsPassData')
+                             ->willReturn($accountData);
         $this->accountService->expects(self::exactly(10))
-            ->method('updatePasswordMasterPass');
+                             ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::exactly(10))
-            ->method('decrypt');
+                    ->method('decrypt');
         $this->crypt->expects(self::exactly(10))
-            ->method('makeSecuredKey')
-            ->willReturn(self::$faker->password);
+                    ->method('makeSecuredKey')
+                    ->willReturn(self::$faker->password);
         $this->crypt->expects(self::exactly(10))
-            ->method('encrypt')
-            ->willReturn(self::$faker->password);
+                    ->method('encrypt')
+                    ->willReturn(self::$faker->password);
         $task->expects(self::exactly(2))
-            ->method('writeJsonStatusAndFlush');
+             ->method('writeJsonStatusAndFlush');
 
         $this->accountCryptService->updateMasterPassword($request);
     }
@@ -105,16 +105,16 @@ class AccountCryptServiceTest extends UnitaryTestCase
             );
 
         $this->accountService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn([]);
+                             ->method('getAccountsPassData')
+                             ->willReturn([]);
         $this->accountService->expects(self::never())
-            ->method('updatePasswordMasterPass');
+                             ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::never())
-            ->method('decrypt');
+                    ->method('decrypt');
         $this->crypt->expects(self::never())
-            ->method('makeSecuredKey');
+                    ->method('makeSecuredKey');
         $this->crypt->expects(self::never())
-            ->method('encrypt');
+                    ->method('encrypt');
 
         $this->accountCryptService->updateMasterPassword($request);
     }
@@ -125,14 +125,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
     public function testUpdateMasterPasswordDoesNotThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountData(), range(0, 9));
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->accountService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn($accountData);
+                             ->method('getAccountsPassData')
+                             ->willReturn($accountData);
         $this->crypt->expects(self::exactly(10))
-            ->method('decrypt')
-            ->willThrowException(new SPException('test'));
+                    ->method('decrypt')
+                    ->willThrowException(new SPException('test'));
 
         $this->accountCryptService->updateMasterPassword($request);
     }
@@ -145,8 +145,8 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
         $this->accountService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willThrowException(new \RuntimeException('test'));
+                             ->method('getAccountsPassData')
+                             ->willThrowException(new \RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords');
@@ -162,30 +162,29 @@ class AccountCryptServiceTest extends UnitaryTestCase
     {
         $task = $this->createMock(TaskInterface::class);
         $task->method('getUid')
-            ->willReturn(self::$faker->uuid);
+             ->willReturn(self::$faker->uuid);
         $task->method('getTaskId')
-            ->willReturn((string)self::$faker->randomNumber());
+             ->willReturn((string)self::$faker->randomNumber());
         $task->method('registerSession')
-            ->willReturnSelf();
+             ->willReturnSelf();
 
-        $request =
-            new UpdateMasterPassRequest(
-                self::$faker->password,
-                self::$faker->password,
-                self::$faker->sha1,
-                TaskFactory::register($task)
-            );
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountData(), range(0, 9));
+        $request = new UpdateMasterPassRequest(
+            self::$faker->password,
+            self::$faker->password,
+            self::$faker->sha1,
+            TaskFactory::register($task)
+        );
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->accountHistoryService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn($accountData);
+                                    ->method('getAccountsPassData')
+                                    ->willReturn($accountData);
         $this->accountHistoryService->expects(self::exactly(10))
-            ->method('updatePasswordMasterPass');
+                                    ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::exactly(10))
-            ->method('decrypt');
+                    ->method('decrypt');
         $task->expects(self::exactly(2))
-            ->method('writeJsonStatusAndFlush');
+             ->method('writeJsonStatusAndFlush');
 
         $this->accountCryptService->updateHistoryMasterPassword($request);
     }
@@ -203,16 +202,16 @@ class AccountCryptServiceTest extends UnitaryTestCase
             );
 
         $this->accountHistoryService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn([]);
+                                    ->method('getAccountsPassData')
+                                    ->willReturn([]);
         $this->accountHistoryService->expects(self::never())
-            ->method('updatePasswordMasterPass');
+                                    ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::never())
-            ->method('decrypt');
+                    ->method('decrypt');
         $this->crypt->expects(self::never())
-            ->method('makeSecuredKey');
+                    ->method('makeSecuredKey');
         $this->crypt->expects(self::never())
-            ->method('encrypt');
+                    ->method('encrypt');
 
         $this->accountCryptService->updateHistoryMasterPassword($request);
     }
@@ -225,9 +224,8 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
         $this->accountHistoryService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willThrowException(new \RuntimeException('test'));
-
+                                    ->method('getAccountsPassData')
+                                    ->willThrowException(new \RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords in history');
@@ -241,14 +239,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
     public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountData(), range(0, 9));
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->accountHistoryService->expects(self::once())
-            ->method('getAccountsPassData')
-            ->willReturn($accountData);
+                                    ->method('getAccountsPassData')
+                                    ->willReturn($accountData);
         $this->crypt->expects(self::exactly(10))
-            ->method('decrypt')
-            ->willThrowException(new SPException('test'));
+                    ->method('decrypt')
+                    ->willThrowException(new SPException('test'));
 
         $this->accountCryptService->updateHistoryMasterPassword($request);
     }
@@ -263,14 +261,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $masterPass = self::$faker->password;
 
         $this->crypt->expects(self::once())
-            ->method('makeSecuredKey')
-            ->with($masterPass)
-            ->willReturn($key);
+                    ->method('makeSecuredKey')
+                    ->with($masterPass)
+                    ->willReturn($key);
 
         $this->crypt->expects(self::once())
-            ->method('encrypt')
-            ->with($pass)
-            ->willReturn($pass);
+                    ->method('encrypt')
+                    ->with($pass)
+                    ->willReturn($pass);
 
         $out = $this->accountCryptService->getPasswordEncrypted($pass, $masterPass);
 
@@ -287,10 +285,10 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->context->setTrasientKey('_masterpass', '');
 
         $this->crypt->expects(self::never())
-            ->method('makeSecuredKey');
+                    ->method('makeSecuredKey');
 
         $this->crypt->expects(self::never())
-            ->method('encrypt');
+                    ->method('encrypt');
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while retrieving master password from context');
@@ -304,10 +302,10 @@ class AccountCryptServiceTest extends UnitaryTestCase
     public function testGetPasswordEncryptedThrowsExceptionWithEmptyMasterPassword(): void
     {
         $this->crypt->expects(self::never())
-            ->method('makeSecuredKey');
+                    ->method('makeSecuredKey');
 
         $this->crypt->expects(self::never())
-            ->method('encrypt');
+                    ->method('encrypt');
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Master password not set');
@@ -321,12 +319,12 @@ class AccountCryptServiceTest extends UnitaryTestCase
     public function testGetPasswordEncryptedThrowsExceptionWithLongPass(): void
     {
         $this->crypt->expects(self::once())
-            ->method('makeSecuredKey')
-            ->willReturn(self::$faker->password);
+                    ->method('makeSecuredKey')
+                    ->willReturn(self::$faker->password);
 
         $this->crypt->expects(self::once())
-            ->method('encrypt')
-            ->willReturn(self::$faker->text(1500));
+                    ->method('encrypt')
+                    ->willReturn(self::$faker->text(1500));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
@@ -340,12 +338,12 @@ class AccountCryptServiceTest extends UnitaryTestCase
     public function testGetPasswordEncryptedThrowsExceptionWithLongKey(): void
     {
         $this->crypt->expects(self::once())
-            ->method('makeSecuredKey')
-            ->willReturn(self::$faker->text(1500));
+                    ->method('makeSecuredKey')
+                    ->willReturn(self::$faker->text(1500));
 
         $this->crypt->expects(self::once())
-            ->method('encrypt')
-            ->willReturn(self::$faker->password);
+                    ->method('encrypt')
+                    ->willReturn(self::$faker->password);
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');

@@ -48,7 +48,7 @@ final class SaveCopyController extends AccountSaveBase
 
             $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'create.account',

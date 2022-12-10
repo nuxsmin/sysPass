@@ -31,7 +31,7 @@ use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -71,7 +71,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPermissionView(ItemPresetData $itemPresetData): void
+    public function makeAccountPermissionView(ItemPreset $itemPresetData): void
     {
         $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?? new AccountPermission();
 
@@ -101,7 +101,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPrivateView(ItemPresetData $itemPresetData): void
+    public function makeAccountPrivateView(ItemPreset $itemPresetData): void
     {
         $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class) ?? new AccountPrivate();
 
@@ -115,7 +115,7 @@ final class ItemPresetHelper extends HelperBase
      * @throws NoSuchPropertyException
      * @throws InvalidArgumentException
      */
-    public function makeSessionTimeoutView(ItemPresetData $itemPresetData): void
+    public function makeSessionTimeoutView(ItemPreset $itemPresetData): void
     {
         $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class)
                           ?? new SessionTimeout($this->request->getClientAddress(), 3600);
@@ -129,7 +129,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPasswordView(ItemPresetData $itemPresetData): void
+    public function makeAccountPasswordView(ItemPreset $itemPresetData): void
     {
         $password = $itemPresetData->hydrate(Password::class) ?? new Password;
 
@@ -145,7 +145,7 @@ final class ItemPresetHelper extends HelperBase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function setCommon(ItemPresetData $itemPresetData): void
+    public function setCommon(ItemPreset $itemPresetData): void
     {
         $this->users = SelectItemAdapter::factory($this->userService->getAllBasic());
         $this->userGroups = SelectItemAdapter::factory($this->userGroupService->getAllBasic());

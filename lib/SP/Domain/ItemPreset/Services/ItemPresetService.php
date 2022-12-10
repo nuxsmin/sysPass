@@ -28,8 +28,8 @@ use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
@@ -95,7 +95,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ItemPresetData
+    public function getById(int $id): ItemPreset
     {
         $result = $this->itemPresetRepository->getById($id);
 
@@ -109,7 +109,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
     /**
      * Returns all the items
      *
-     * @return ItemPresetData[]
+     * @return \SP\Domain\Account\Models\ItemPreset[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -133,7 +133,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForCurrentUser(string $type): ?ItemPresetData
+    public function getForCurrentUser(string $type): ?ItemPreset
     {
         $userData = $this->context->getUserData();
 
@@ -154,7 +154,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
         int $userId,
         int $userGroupId,
         int $userProfileId
-    ): ?ItemPresetData {
+    ): ?ItemPreset {
         $result = $this->itemPresetRepository->getByFilter(
             $type,
             $userId,

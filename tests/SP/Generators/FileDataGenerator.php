@@ -24,30 +24,30 @@
 
 namespace SP\Tests\Generators;
 
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 
 /**
  * Class FileDataGenerator
  */
 final class FileDataGenerator extends DataGenerator
 {
-    public function buildFileExtData(): SimpleModel
+    public function buildFileExtData(): Simple
     {
-        return new SimpleModel(
+        return new Simple(
             array_merge(
-                $this->buildFileData()->toArray(),
+                $this->buildFileData()->toArray(null, null, true),
                 ['clientName' => $this->faker->name, 'accountName' => $this->faker->name]
             )
         );
     }
 
-    public function buildFileData(): SimpleModel
+    public function buildFileData(): Simple
     {
-        return new SimpleModel([
+        return new Simple([
             'id' => $this->faker->randomNumber(),
             'accountId' => $this->faker->randomNumber(),
             'name' => $this->faker->colorName,
-            'type' => $this->faker->mimeType,
+            'type' => 'image/jpeg',
             'content' => $this->faker->image(null, 32, 32),
             'extension' => $this->faker->fileExtension,
             'thumb' => $this->faker->image(null, 32, 32),

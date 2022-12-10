@@ -46,7 +46,7 @@ final class DeleteController extends AccountBase
 
             $id = $this->apiService->getParamInt('id', true);
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->accountService->delete($id);
 

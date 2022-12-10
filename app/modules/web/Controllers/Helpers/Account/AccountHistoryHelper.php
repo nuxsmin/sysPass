@@ -28,8 +28,8 @@ use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountHistoryData;
 use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountToUserGroupServiceInterface;
@@ -70,7 +70,7 @@ final class AccountHistoryHelper extends AccountHelperBase
     }
 
     /**
-     * @param  AccountHistoryData  $accountHistoryData
+     * @param  \SP\Domain\Account\Models\AccountHistory  $accountHistoryData
      * @param  int  $actionId
      *
      * @throws \SP\Core\Acl\AccountPermissionException
@@ -82,7 +82,7 @@ final class AccountHistoryHelper extends AccountHelperBase
      * @throws \SP\Domain\User\Services\UpdatedMasterPassException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function setView(AccountHistoryData $accountHistoryData, int $actionId): void
+    public function setView(AccountHistory $accountHistoryData, int $actionId): void
     {
         $this->actionId = $actionId;
         $this->accountId = $accountHistoryData->getAccountId();
@@ -142,14 +142,14 @@ final class AccountHistoryHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param  AccountHistoryData  $accountHistoryData
+     * @param  AccountHistory  $accountHistoryData
      *
      * @throws \SP\Core\Acl\AccountPermissionException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function checkAccess(AccountHistoryData $accountHistoryData): void
+    protected function checkAccess(AccountHistory $accountHistoryData): void
     {
         $acccountAclDto = AccountAclDto::makeFromAccountHistory(
             $accountHistoryData,

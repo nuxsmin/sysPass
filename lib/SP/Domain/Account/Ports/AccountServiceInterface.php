@@ -25,20 +25,20 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountExtData;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Adapters\AccountData;
-use SP\Domain\Account\Adapters\AccountPassData;
-use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountHistoryDto;
+use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -49,90 +49,124 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountServiceInterface
 {
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountEnrichedDto
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function withUsersById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
+    public function withUsers(AccountEnrichedDto $accountEnrichedDto): AccountEnrichedDto;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountEnrichedDto
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function withUserGroupsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
+    public function withUserGroups(AccountEnrichedDto $accountEnrichedDto): AccountEnrichedDto;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountEnrichedDto
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function withTagsById(AccountEnrichedDto $accountDetailsResponse): AccountServiceInterface;
+    public function withTags(AccountEnrichedDto $accountEnrichedDto): AccountEnrichedDto;
 
     /**
+     * @param  int  $id  The account ID
+     *
+     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function incrementViewCounter(int $id): bool;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  int  $id  The account ID
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function incrementDecryptCounter(int $id): bool;
 
     /**
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Account\Models\Account
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function getPasswordForId(int $id): AccountPassData;
+    public function getPasswordForId(int $id): Account;
 
     /**
-     * @param  \SP\DataModel\AccountHistoryData  $data
+     * @param  \SP\Domain\Account\Dtos\AccountHistoryDto  $accountHistoryDto
      *
-     * @return int
+     * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function createFromHistory(AccountHistoryData $data): int;
+    public function restoreRemoved(AccountHistoryDto $accountHistoryDto): void;
 
     /**
-     * @throws QueryException
-     * @throws SPException
-     * @throws ConstraintException
-     * @throws NoSuchPropertyException
+     * @param  \SP\Domain\Account\Dtos\AccountCreateDto  $accountCreateDto
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
-    public function create(AccountRequest $accountRequest): int;
+    public function create(AccountCreateDto $accountCreateDto): int;
 
     /**
-     * @throws QueryException
-     * @throws NoSuchItemException
-     * @throws ConstraintException
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Account\Models\AccountDataView
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function getById(int $id): AccountEnrichedDto;
+    public function getByIdEnriched(int $id): AccountDataView;
+
+    /**
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Account\Models\Account
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     */
+    public function getById(int $id): Account;
 
     /**
      * Updates external items for the account
      *
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
+     * @param  int  $id  The account ID
+     * @param  \SP\Domain\Account\Dtos\AccountUpdateDto  $accountUpdateDto
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function update(AccountRequest $accountRequest): void;
+    public function update(int $id, AccountUpdateDto $accountUpdateDto): void;
 
     /**
      * Update accounts in bulk mode
      *
-     * @param  \SP\Domain\Account\Dtos\AccountBulkRequest  $request
+     * @param  \SP\Domain\Account\Dtos\AccountUpdateBulkDto  $accountUpdateBulkDto
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function updateBulk(AccountBulkRequest $request): void;
+    public function updateBulk(AccountUpdateBulkDto $accountUpdateBulkDto): void;
 
     /**
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
+     * @param  int  $id  The account ID
+     * @param  \SP\Domain\Account\Dtos\AccountUpdateDto  $accountUpdateDto
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function editPassword(AccountRequest $accountRequest): void;
+    public function editPassword(int $id, AccountUpdateDto $accountUpdateDto): void;
 
     /**
      * Updates an already encrypted password data from a master password changing action
@@ -140,48 +174,59 @@ interface AccountServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest): void;
+    public function updatePasswordMasterPass(int $id, EncryptedPassword $encryptedPassword): void;
 
     /**
-     * @param  int  $historyId
-     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Dtos\AccountHistoryDto  $accountHistoryDto
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function editRestore(int $historyId, int $accountId): void;
+    public function restoreModified(AccountHistoryDto $accountHistoryDto): void;
 
     /**
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Account\Ports\AccountServiceInterface
      * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function delete(int $id): AccountServiceInterface;
 
     /**
-     * @param  int[]  $ids
+     * @param  int[]  $ids  The accounts ID
      *
      * @throws SPException
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids): AccountServiceInterface;
+    public function deleteByIdBatch(array $ids): void;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  int|null  $id  The account ID
+     *
+     * @return array
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function getForUser(?int $accountId = null): array;
+    public function getForUser(?int $id = null): array;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
+     * @param  int  $id  The account ID
+     *
+     * @return array
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function getLinked(int $accountId): array;
+    public function getLinked(int $id): array;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws NoSuchItemException
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Common\Models\Simple
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function getPasswordHistoryForId(int $id): AccountPassData;
+    public function getPasswordHistoryForId(int $id): Simple;
 
     /**
      * @return AccountData[]
@@ -206,11 +251,14 @@ interface AccountServiceInterface
     /**
      * Obtener los datos de una cuenta.
      *
+     * @param  int  $id  The account ID
+     *
+     * @return \SP\Domain\Common\Models\Simple
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
-    public function getDataForLink(int $id): AccountExtData;
+    public function getDataForLink(int $id): Simple;
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.

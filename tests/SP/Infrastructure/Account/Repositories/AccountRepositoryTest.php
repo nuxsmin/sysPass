@@ -27,17 +27,16 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
-use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Account\Repositories\AccountRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -56,14 +55,11 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class && !empty($arg->getQuery());
+                return $arg->getMapClassName() === Simple::class && !empty($arg->getQuery());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback, false)
-            ->willReturn(new QueryResult([new SimpleModel(['num' => 1])]));
+        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
         $this->accountRepository->getTotalNumAccounts();
     }
@@ -73,11 +69,12 @@ class AccountRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
+                $params = $query->getBindValues();
 
-                return
-                    $query->getBindValues()['id'] === 1
-                    && $arg->getMapClassName() === SimpleModel::class
-                    && !empty($query->getStatement());
+                return count($params) === 1
+                       && $params['id'] === 1
+                       && $arg->getMapClassName() === Account::class
+                       && !empty($query->getStatement());
             }
         );
 
@@ -85,10 +82,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback, false)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
         $this->accountRepository->getPasswordForId(1);
     }
@@ -98,11 +92,12 @@ class AccountRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
+                $params = $query->getBindValues();
 
-                return
-                    $query->getBindValues()['id'] === 1
-                    && $arg->getMapClassName() === SimpleModel::class
-                    && !empty($query->getStatement());
+                return count($params) === 1
+                       && $params['accountId'] === 1
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($query->getStatement());
             }
         );
 
@@ -110,10 +105,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilterHistory');
 
-        $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback, false)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
         $this->accountRepository->getPasswordHistoryForId(1);
     }
@@ -126,21 +118,19 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $id = 1;
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery()->getStatement());
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertTrue($this->accountRepository->incrementDecryptCounter($id));
+        $this->accountRepository->incrementDecryptCounter($id);
     }
 
     /**
@@ -151,21 +141,19 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $id = 1;
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(0);
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery());
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && !empty($arg->getQuery());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertFalse($this->accountRepository->incrementDecryptCounter($id));
+        $this->accountRepository->incrementDecryptCounter($id);
     }
 
     /**
@@ -174,62 +162,38 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testCreate(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-
-        $expected = new QueryResult();
-        $expected->setLastId(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['clientId'] === $accountRequest->clientId
-                       && $params['categoryId'] === $accountRequest->categoryId
-                       && $params['name'] === $accountRequest->name
-                       && $params['login'] === $accountRequest->login
-                       && $params['url'] === $accountRequest->url
-                       && $params['pass'] === $accountRequest->pass
-                       && $params['key'] === $accountRequest->key
-                       && $params['notes'] === $accountRequest->notes
-                       && $params['userId'] === $accountRequest->userId
-                       && $params['userGroupId'] === $accountRequest->userGroupId
-                       && $params['isPrivate'] === $accountRequest->isPrivate
-                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['parentId'] === $accountRequest->parentId
+                return count($params) === 18
+                       && $params['userId'] === $account->getUserId()
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['name'] === $account->getName()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['login'] === $account->getLogin()
+                       && $params['url'] === $account->getUrl()
+                       && $params['pass'] === $account->getPass()
+                       && $params['key'] === $account->getKey()
+                       && $params['notes'] === $account->getNotes()
+                       && $params['isPrivate'] === $account->getIsPrivate()
+                       && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
+                       && $params['passDate'] === $account->getPassDate()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['parentId'] === $account->getParentId()
+                       && $params['otherUserEdit'] === $account->getOtherUserEdit()
+                       && $params['otherUserGroupEdit'] === $account->getOtherUserGroupEdit()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertEquals($expected->getLastId(), $this->accountRepository->create($accountRequest));
-    }
-
-    private function buildAccountRequest(): AccountRequest
-    {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = self::$faker->randomNumber();
-        $accountRequest->name = self::$faker->name;
-        $accountRequest->login = self::$faker->userName;
-        $accountRequest->url = self::$faker->url;
-        $accountRequest->notes = self::$faker->text;
-        $accountRequest->userEditId = self::$faker->randomNumber();
-        $accountRequest->passDateChange = self::$faker->unixTime;
-        $accountRequest->clientId = self::$faker->randomNumber();
-        $accountRequest->categoryId = self::$faker->randomNumber();
-        $accountRequest->isPrivate = self::$faker->numberBetween(0, 1);
-        $accountRequest->isPrivateGroup = self::$faker->numberBetween(0, 1);
-        $accountRequest->parentId = self::$faker->randomNumber();
-        $accountRequest->userId = self::$faker->randomNumber();
-        $accountRequest->userGroupId = self::$faker->randomNumber();
-        $accountRequest->key = self::$faker->text;
-        $accountRequest->pass = self::$faker->text;
-
-        return $accountRequest;
+        $this->accountRepository->create($account);
     }
 
     /**
@@ -238,30 +202,25 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testEditPassword(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['pass'] === $accountRequest->pass
-                       && $params['key'] === $accountRequest->key
-                       && $params['userEditId'] === $accountRequest->userEditId
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['id'] === $accountRequest->id
+                return count($params) === 5
+                       && $params['pass'] === $account->getPass()
+                       && $params['key'] === $account->getKey()
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['id'] === $account->getId()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->editPassword($accountRequest));
+        $this->accountRepository->editPassword($account->getId(), $account);
     }
 
     /**
@@ -270,32 +229,24 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdatePassword(): void
     {
-        $accountPasswordRequest = new AccountPasswordRequest(
-            self::$faker->randomNumber(),
-            new EncryptedPassword(self::$faker->password, self::$faker->password),
-            self::$faker->sha1
-        );
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $id = self::$faker->randomNumber();
+        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountPasswordRequest) {
+            static function (QueryData $arg) use ($id, $encryptedPassword) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['pass'] === $accountPasswordRequest->getEncryptedPassword()->getPass()
-                       && $params['key'] === $accountPasswordRequest->getEncryptedPassword()->getKey()
-                       && $params['id'] === $accountPasswordRequest->getId()
+                return count($params) === 3
+                       && $params['pass'] === $encryptedPassword->getPass()
+                       && $params['key'] === $encryptedPassword->getKey()
+                       && $params['id'] === $id
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertTrue($this->accountRepository->updatePassword($accountPasswordRequest));
+        $this->accountRepository->updatePassword($id, $encryptedPassword);
     }
 
     /**
@@ -304,43 +255,38 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testEditRestore(): void
     {
-        $accountHistoryData =
-            AccountHistoryData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
-
-        $userId = 1;
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountHistoryData, $userId) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['id'] === $accountHistoryData->getAccountId()
-                       && $params['name'] === $accountHistoryData->getName()
-                       && $params['login'] === $accountHistoryData->getLogin()
-                       && $params['url'] === $accountHistoryData->getUrl()
-                       && $params['notes'] === $accountHistoryData->getNotes()
-                       && $params['userEditId'] === $userId
-                       && $params['passDateChange'] === $accountHistoryData->getPassDateChange()
-                       && $params['clientId'] === $accountHistoryData->getClientId()
-                       && $params['categoryId'] === $accountHistoryData->getCategoryId()
-                       && $params['isPrivate'] === $accountHistoryData->getIsPrivate()
-                       && $params['isPrivateGroup'] === $accountHistoryData->getIsPrivateGroup()
-                       && $params['parentId'] === $accountHistoryData->getParentId()
-                       && $params['userGroupId'] === $accountHistoryData->getUserGroupId()
-                       && $params['key'] === $accountHistoryData->getKey()
-                       && $params['pass'] === $accountHistoryData->getPass()
+                return count($params) === 18
+                       && $params['id'] === $account->getId()
+                       && $params['userId'] === $account->getUserId()
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['name'] === $account->getName()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['login'] === $account->getLogin()
+                       && $params['url'] === $account->getUrl()
+                       && $params['pass'] === $account->getPass()
+                       && $params['key'] === $account->getKey()
+                       && $params['notes'] === $account->getNotes()
+                       && $params['isPrivate'] === $account->getIsPrivate()
+                       && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['parentId'] === $account->getParentId()
+                       && $params['otherUserGroupEdit'] === $account->getOtherUserGroupEdit()
+                       && $params['otherUserEdit'] === $account->getOtherUserEdit()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertTrue($this->accountRepository->editRestore($accountHistoryData, $userId));
+        $this->accountRepository->restoreModified($account->getId(), $account);
     }
 
     /**
@@ -350,8 +296,6 @@ class AccountRepositoryTest extends UnitaryTestCase
     public function testDelete(): void
     {
         $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
@@ -360,12 +304,9 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertTrue($this->accountRepository->delete($id));
+        $this->accountRepository->delete($id);
     }
 
     /**
@@ -375,22 +316,20 @@ class AccountRepositoryTest extends UnitaryTestCase
     public function testDeleteWithouResults(): void
     {
         $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(0);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertFalse($this->accountRepository->delete($id));
+        $this->accountRepository->delete($id);
     }
 
     /**
@@ -398,117 +337,110 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdate(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['clientId'] === $accountRequest->clientId
-                       && $params['categoryId'] === $accountRequest->categoryId
-                       && $params['name'] === $accountRequest->name
-                       && $params['login'] === $accountRequest->login
-                       && $params['url'] === $accountRequest->url
-                       && $params['notes'] === $accountRequest->notes
-                       && $params['userEditId'] === $accountRequest->userEditId
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['isPrivate'] === $accountRequest->isPrivate
-                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
-                       && $params['parentId'] === $accountRequest->parentId
-                       && $params['id'] === $accountRequest->id
+                return count($params) === 16
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['name'] === $account->getName()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['login'] === $account->getLogin()
+                       && $params['url'] === $account->getUrl()
+                       && $params['notes'] === $account->getNotes()
+                       && $params['isPrivate'] === $account->getIsPrivate()
+                       && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['parentId'] === $account->getParentId()
+                       && $params['otherUserEdit'] === $account->getOtherUserEdit()
+                       && $params['otherUserGroupEdit'] === $account->getOtherUserGroupEdit()
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['userId'] === $account->getUserId()
+                       && $params['id'] === $account->getId()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
+        $this->accountRepository->update($account->getId(), $account, true, true);
     }
 
     /**
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testUpdateWithChangeGroup(): void
+    public function testUpdateWithoutGroup(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-        $accountRequest->changeUserGroup = true;
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['clientId'] === $accountRequest->clientId
-                       && $params['categoryId'] === $accountRequest->categoryId
-                       && $params['name'] === $accountRequest->name
-                       && $params['login'] === $accountRequest->login
-                       && $params['url'] === $accountRequest->url
-                       && $params['notes'] === $accountRequest->notes
-                       && $params['userEditId'] === $accountRequest->userEditId
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['isPrivate'] === $accountRequest->isPrivate
-                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
-                       && $params['parentId'] === $accountRequest->parentId
-                       && $params['userGroupId'] === $accountRequest->userGroupId
-                       && $params['id'] === $accountRequest->id
+                return count($params) === 15
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['name'] === $account->getName()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['login'] === $account->getLogin()
+                       && $params['url'] === $account->getUrl()
+                       && $params['notes'] === $account->getNotes()
+                       && $params['isPrivate'] === $account->getIsPrivate()
+                       && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['parentId'] === $account->getParentId()
+                       && $params['otherUserEdit'] === $account->getOtherUserEdit()
+                       && $params['otherUserGroupEdit'] === $account->getOtherUserGroupEdit()
+                       && $params['userId'] === $account->getUserId()
+                       && $params['id'] === $account->getId()
+                       && !isset($params['userGroupId'])
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
+        $this->accountRepository->update($account->getId(), $account, true, false);
     }
 
     /**
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testUpdateWithChangeOwner(): void
+    public function testUpdateWithoutOwner(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-        $accountRequest->changeOwner = true;
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['clientId'] === $accountRequest->clientId
-                       && $params['categoryId'] === $accountRequest->categoryId
-                       && $params['name'] === $accountRequest->name
-                       && $params['login'] === $accountRequest->login
-                       && $params['url'] === $accountRequest->url
-                       && $params['notes'] === $accountRequest->notes
-                       && $params['userEditId'] === $accountRequest->userEditId
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['isPrivate'] === $accountRequest->isPrivate
-                       && $params['isPrivateGroup'] === $accountRequest->isPrivateGroup
-                       && $params['parentId'] === $accountRequest->parentId
-                       && $params['userId'] === $accountRequest->userId
-                       && $params['id'] === $accountRequest->id
+                return count($params) === 15
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['name'] === $account->getName()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['login'] === $account->getLogin()
+                       && $params['url'] === $account->getUrl()
+                       && $params['notes'] === $account->getNotes()
+                       && $params['isPrivate'] === $account->getIsPrivate()
+                       && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['parentId'] === $account->getParentId()
+                       && $params['otherUserEdit'] === $account->getOtherUserEdit()
+                       && $params['otherUserGroupEdit'] === $account->getOtherUserGroupEdit()
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['id'] === $account->getId()
+                       && !isset($params['userId'])
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->update($accountRequest));
+        $this->accountRepository->update($account->getId(), $account, false, true);
     }
 
     /**
@@ -516,32 +448,89 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdateBulk(): void
     {
-        $accountRequest = $this->buildAccountRequest();
-
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $account = AccountDataGenerator::factory()->buildAccount();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountRequest) {
+            static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['userEditId'] === $accountRequest->userEditId
-                       && $params['clientId'] === $accountRequest->clientId
-                       && $params['categoryId'] === $accountRequest->categoryId
-                       && $params['userId'] === $accountRequest->userId
-                       && $params['userGroupId'] === $accountRequest->userGroupId
-                       && $params['passDateChange'] === $accountRequest->passDateChange
-                       && $params['id'] === $accountRequest->id
+                return count($params) === 7
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['userId'] === $account->getUserId()
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['id'] === $account->getId()
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback);
 
-        $this->assertEquals($expected->getAffectedNumRows(), $this->accountRepository->updateBulk($accountRequest));
+        $this->accountRepository->updateBulk($account->getId(), $account, true, true);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testUpdateBulkWithoutOwner(): void
+    {
+        $account = AccountDataGenerator::factory()->buildAccount();
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($account) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 6
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && !isset($params['userId'])
+                       && $params['userGroupId'] === $account->getUserGroupId()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['id'] === $account->getId()
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database->expects(self::once())
+                       ->method('doQuery')
+                       ->with($callback);
+
+        $this->accountRepository->updateBulk($account->getId(), $account, false, true);
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testUpdateBulkWithoutGroup(): void
+    {
+        $account = AccountDataGenerator::factory()->buildAccount();
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($account) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 6
+                       && $params['userEditId'] === $account->getUserEditId()
+                       && $params['clientId'] === $account->getClientId()
+                       && $params['categoryId'] === $account->getCategoryId()
+                       && $params['userId'] === $account->getUserId()
+                       && $params['passDateChange'] === $account->getPassDateChange()
+                       && $params['id'] === $account->getId()
+                       && !isset($params['userGroupId'])
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database->expects(self::once())
+                       ->method('doQuery')
+                       ->with($callback);
+
+        $this->accountRepository->updateBulk($account->getId(), $account, true, false);
     }
 
     /**
@@ -549,10 +538,9 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testUpdateBulkNoFieldsToUpdate(): void
     {
-        $this->database->expects(self::never())
-            ->method('doQuery');
+        $this->database->expects(self::never())->method('doQuery');
 
-        $this->assertEquals(0, $this->accountRepository->updateBulk(new AccountRequest()));
+        $this->accountRepository->updateBulk(0, new Account(), false, false);
     }
 
     public function testGetById(): void
@@ -561,34 +549,50 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === Account::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getById($id);
+    }
+
+    public function testGetByIdEnriched(): void
+    {
+        $id = self::$faker->randomNumber();
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($id) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === AccountDataView::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
+
+        $this->accountRepository->getByIdEnriched($id);
     }
 
     public function testGetAll(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
+                return $arg->getMapClassName() === Account::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getAll();
     }
@@ -605,18 +609,16 @@ class AccountRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) use ($ids) {
                 $values = $arg->getQuery()->getBindValues();
 
-                return array_shift($values) === array_shift($ids)
+                return count($values) === 3
                        && array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && array_shift($values) === array_shift($ids)
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
         $this->accountRepository->deleteByIdBatch($ids);
     }
@@ -627,10 +629,9 @@ class AccountRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithNoIds(): void
     {
-        $this->database->expects(self::never())
-            ->method('doQuery');
+        $this->database->expects(self::never())->method('doQuery');
 
-        $this->assertEquals(0, $this->accountRepository->deleteByIdBatch([]));
+        $this->accountRepository->deleteByIdBatch([]);
     }
 
     public function testSearch(): void
@@ -642,21 +643,18 @@ class AccountRepositoryTest extends UnitaryTestCase
                 $params = $arg->getQuery()->getBindValues();
                 $searchStringLike = '%'.$item->getSeachString().'%';
 
-                return $params['name'] === $searchStringLike
+                return count($params) === 5
+                       && $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
                        && $params['categoryName'] === $searchStringLike
                        && $params['userName'] === $searchStringLike
                        && $params['userGroupName'] === $searchStringLike
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === AccountSearchView::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->search($item);
     }
@@ -666,16 +664,12 @@ class AccountRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 return count($arg->getQuery()->getBindValues()) === 0
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === AccountSearchView::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->search(new ItemSearchData());
     }
@@ -688,21 +682,20 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $id = 1;
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery()->getStatement());
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertTrue($this->accountRepository->incrementViewCounter($id));
+        $this->accountRepository->incrementViewCounter($id);
     }
 
     /**
@@ -713,21 +706,20 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $id = 1;
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(0);
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id && !empty($arg->getQuery());
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($arg->getQuery());
             }
         );
 
-        $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+        $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->assertFalse($this->accountRepository->incrementViewCounter($id));
+        $this->accountRepository->incrementViewCounter($id);
     }
 
     public function testGetDataForLink(): void
@@ -738,17 +730,14 @@ class AccountRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) use ($id) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getDataForLink($id);
     }
@@ -761,21 +750,16 @@ class AccountRepositoryTest extends UnitaryTestCase
             function (QueryData $arg) use ($id) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                return count($params) === 1
+                       && $params['id'] === $id
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->accountFilterUser
-            ->expects(self::once())
-            ->method('buildFilter');
+        $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getForUser($id);
     }
@@ -787,20 +771,14 @@ class AccountRepositoryTest extends UnitaryTestCase
                 $params = $arg->getQuery()->getBindValues();
 
                 return count($params) === 0
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->accountFilterUser
-            ->expects(self::once())
-            ->method('buildFilter');
+        $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getForUser();
     }
@@ -813,21 +791,16 @@ class AccountRepositoryTest extends UnitaryTestCase
             function (QueryData $arg) use ($id) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['parentId'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                return count($params) === 1
+                       && $params['parentId'] === $id
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->accountFilterUser
-            ->expects(self::once())
-            ->method('buildFilter');
+        $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getLinked($id);
     }
@@ -836,16 +809,12 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
+                return $arg->getMapClassName() === Account::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
-        $this->database
-            ->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+        $this->database->expects(self::once())->method('doSelect')->with($callback);
 
         $this->accountRepository->getAccountsPassData();
     }

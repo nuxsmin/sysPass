@@ -31,6 +31,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -44,22 +45,12 @@ use function SP\logger;
  */
 abstract class Repository implements RepositoryInterface
 {
-    protected ContextInterface         $context;
-    protected DatabaseInterface        $db;
-    protected QueryFactory             $queryFactory;
-    protected EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        DatabaseInterface $database,
-        ContextInterface $session,
-        EventDispatcherInterface $eventDispatcher,
-        QueryFactory $queryFactory
+        protected DatabaseInterface $db,
+        protected ContextInterface $context,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected QueryFactory $queryFactory
     ) {
-        $this->db = $database;
-        $this->context = $session;
-        $this->queryFactory = $queryFactory;
-        $this->eventDispatcher = $eventDispatcher;
-
         if (method_exists($this, 'initialize')) {
             $this->initialize();
         }
@@ -69,16 +60,16 @@ abstract class Repository implements RepositoryInterface
      * Bubbles a Closure in a database transaction
      *
      * @param  \Closure  $closure
+     * @param  object  $newThis
      *
      * @return mixed
      * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \Exception
      */
-    final public function transactionAware(Closure $closure): mixed
+    final public function transactionAware(Closure $closure, object $newThis): mixed
     {
         if ($this->db->beginTransaction()) {
             try {
-                $result = $closure->call($this);
+                $result = $closure->call($newThis);
 
                 $this->db->endTransaction();
 
@@ -92,8 +83,9 @@ abstract class Repository implements RepositoryInterface
                     'database.rollback',
                     new Event($this, EventMessage::factory()->addDescription(__u('Rollback')))
                 );
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-                throw $e;
+                throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
             }
         } else {
             throw new ServiceException(__u('Unable to start a transaction'));

@@ -29,7 +29,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -85,7 +85,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                 return $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -106,7 +106,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($itemId) {
                 return $arg->getQuery()->getBindValues()['itemId'] === $itemId
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -126,7 +126,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -266,7 +266,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
+                return $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -326,7 +326,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                 return array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -358,7 +358,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($hash) {
                 return $arg->getQuery()->getBindValues()['hash'] === $hash
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -412,7 +412,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($query->getStatement());
             }
         );

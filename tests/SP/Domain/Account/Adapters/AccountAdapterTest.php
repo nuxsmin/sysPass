@@ -48,7 +48,7 @@ class AccountAdapterTest extends UnitaryTestCase
             $this->config->getConfigData(),
             $this->createStub(CustomFieldServiceInterface::class)
         );
-        $accountData = $dataGenerator->buildAccountEnrichedData();
+        $accountData = $dataGenerator->buildAccountEnrichedDto();
 
         $out = $adapter->transform($accountData);
 
@@ -66,7 +66,7 @@ class AccountAdapterTest extends UnitaryTestCase
             $out['userGroups']
         );
 
-        $accountVData = $accountData->getAccountVData();
+        $accountVData = $accountData->getAccountDataView();
 
         $this->assertEquals($accountVData->getName(), $out['name']);
         $this->assertEquals($accountVData->getClientId(), $out['clientId']);
@@ -107,15 +107,15 @@ class AccountAdapterTest extends UnitaryTestCase
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();
         $customFieldsService = $this->createStub(CustomFieldServiceInterface::class);
         $customFieldsService->expects(self::once())
-            ->method('getForModuleAndItemId')
-            ->willReturn([$customFieldData]);
+                            ->method('getForModuleAndItemId')
+                            ->willReturn([$customFieldData]);
 
         $adapter = new AccountAdapter($this->config->getConfigData(), $customFieldsService);
 
         $fractal = new Manager();
         $fractal->parseIncludes('customFields');
         $out = $fractal->createData(
-            new Item(AccountDataGenerator::factory()->buildAccountEnrichedData(), $adapter)
+            new Item(AccountDataGenerator::factory()->buildAccountEnrichedDto(), $adapter)
         )->toArray();
 
         $this->assertArrayHasKey('customFields', $out['data']);

@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class EventlogData
  *
  * @package SP\DataModel
  */
-class EventlogData extends DataModel
+class EventlogData extends Model
 {
     /**
      * @var int

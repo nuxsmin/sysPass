@@ -25,10 +25,10 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Common\Services\Service;
@@ -56,7 +56,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
      *
      * @throws NoSuchItemException
      */
-    public function getById(int $id): AccountHistoryData
+    public function getById(int $id): AccountHistory
     {
         $results = $this->accountHistoryRepository->getById($id);
 
@@ -150,13 +150,14 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $accountPasswordRequest
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
      *
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function updatePasswordMasterPass(AccountPasswordRequest $accountPasswordRequest): void
+    public function updatePasswordMasterPass(int $accountId, EncryptedPassword $encryptedPassword): void
     {
-        if (!$this->accountHistoryRepository->updatePassword($accountPasswordRequest)) {
+        if (!$this->accountHistoryRepository->updatePassword($accountId, $encryptedPassword)) {
             throw new ServiceException(__u('Error while updating the password'));
         }
     }

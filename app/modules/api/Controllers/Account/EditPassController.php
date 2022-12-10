@@ -50,7 +50,7 @@ final class EditPassController extends AccountBase
 
             $this->accountService->editPassword($accountRequest);
 
-            $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.pass',

@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class AccountSearchData
  *
  * @package SP\DataModel
  */
-class AccountSearchVData extends DataModel
+class AccountSearchVData extends Model
 {
     public ?string    $publicLinkHash            = null;
     protected ?int    $id                        = 0;

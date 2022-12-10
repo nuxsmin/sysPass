@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Database;
 use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryInterface;
 use SP\Core\Exceptions\QueryException;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use function SP\__u;
 
 /**
@@ -37,19 +37,10 @@ use function SP\__u;
  */
 final class QueryData
 {
-    protected array          $params         = [];
-    protected QueryInterface $query;
-    protected ?string        $mapClassName   = SimpleModel::class;
-    protected bool           $useKeyPair     = false;
-    protected ?string        $select         = null;
-    protected ?string        $from           = null;
-    protected ?string        $where          = null;
-    protected ?string        $groupBy        = null;
-    protected ?string        $order          = null;
-    protected ?string        $limit          = null;
-    protected ?string        $onErrorMessage = null;
+    protected string  $mapClassName   = Simple::class;
+    protected ?string $onErrorMessage = null;
 
-    public function __construct(QueryInterface $query)
+    public function __construct(private QueryInterface $query)
     {
         $this->query = $query;
     }
@@ -59,31 +50,34 @@ final class QueryData
         return new self($query);
     }
 
+    public static function buildWithMapper(QueryInterface $query, string $class): QueryData
+    {
+        $self = new self($query);
+        $self->mapClassName = self::checkClassOrDefault($class);
+
+        return $self;
+    }
+
+    private static function checkClassOrDefault(string $class): string
+    {
+        return class_exists($class) ? $class : Simple::class;
+    }
+
     public function getQuery(): QueryInterface
     {
         return $this->query;
     }
 
-    public function getMapClassName(): ?string
+    public function getMapClassName(): string
     {
         return $this->mapClassName;
     }
 
-    public function setMapClassName(string $mapClassName): QueryData
+    public function setMapClassName(string $class): QueryData
     {
-        $this->mapClassName = $mapClassName;
+        $this->mapClassName = self::checkClassOrDefault($class);
 
         return $this;
-    }
-
-    public function isUseKeyPair(): bool
-    {
-        return $this->useKeyPair;
-    }
-
-    public function addParams(array $params): void
-    {
-        $this->params = array_merge($this->params, $params);
     }
 
     /**

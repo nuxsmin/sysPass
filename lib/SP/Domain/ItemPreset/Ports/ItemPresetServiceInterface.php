@@ -26,8 +26,8 @@ namespace SP\Domain\ItemPreset\Ports;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Domain\ItemPreset\Services\ItemPresetService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -68,12 +68,12 @@ interface ItemPresetServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ItemPresetData;
+    public function getById(int $id): ItemPreset;
 
     /**
      * Returns all the items
      *
-     * @return ItemPresetData[]
+     * @return ItemPreset[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -91,13 +91,13 @@ interface ItemPresetServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForCurrentUser(string $type): ?ItemPresetData;
+    public function getForCurrentUser(string $type): ?ItemPreset;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId): ?ItemPresetData;
+    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId): ?ItemPreset;
 
     /**
      * @param  int[]  $ids

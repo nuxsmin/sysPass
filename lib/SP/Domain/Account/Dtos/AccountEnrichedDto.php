@@ -24,16 +24,19 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\AccountVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Common\Dtos\ItemDataTrait;
 
 /**
  * Class AccountEnrichedDto
  */
 class AccountEnrichedDto
 {
-    private int          $id;
-    private AccountVData $accountVData;
+    use ItemDataTrait;
+
+    private int $id;
     /**
      * @var ItemData[] Los usuarios secundarios de la cuenta.
      */
@@ -50,12 +53,11 @@ class AccountEnrichedDto
     /**
      * AccountDetailsResponse constructor.
      *
-     * @param  AccountVData  $accountVData
+     * @param  \SP\Domain\Account\Models\AccountDataView  $accountDataView
      */
-    public function __construct(AccountVData $accountVData)
+    public function __construct(private AccountDataView $accountDataView)
     {
-        $this->id = $accountVData->getId();
-        $this->accountVData = $accountVData;
+        $this->id = $accountDataView->getId();
     }
 
     /**
@@ -67,19 +69,50 @@ class AccountEnrichedDto
     }
 
     /**
+     * @param  ItemData[]  $users
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     */
+    public function withUsers(array $users): AccountEnrichedDto
+    {
+        $self = clone $this;
+        $self->users = self::buildFromItemData($users);
+
+        return $self;
+    }
+
+    /**
+     * @param  ItemData[]  $groups
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     */
+    public function withUserGroups(array $groups): AccountEnrichedDto
+    {
+        $self = clone $this;
+        $self->userGroups = self::buildFromItemData($groups);
+
+        return $self;
+    }
+
+    /**
+     * @param  ItemData[]  $tags
+     *
+     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     */
+    public function withTags(array $tags): AccountEnrichedDto
+    {
+        $self = clone $this;
+        $self->tags = self::buildFromItemData($tags);
+
+        return $self;
+    }
+
+    /**
      * @return ItemData[]
      */
     public function getUsers(): array
     {
         return $this->users;
-    }
-
-    /**
-     * @param  ItemData[]  $users
-     */
-    public function setUsers(array $users): void
-    {
-        $this->users = $users;
     }
 
     /**
@@ -91,14 +124,6 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param  ItemData[]  $userGroups
-     */
-    public function setUserGroups(array $userGroups): void
-    {
-        $this->userGroups = $userGroups;
-    }
-
-    /**
      * @return ItemData[]
      */
     public function getTags(): array
@@ -106,19 +131,8 @@ class AccountEnrichedDto
         return $this->tags;
     }
 
-    /**
-     * @param  ItemData[]  $tags
-     */
-    public function setTags(array $tags): void
+    public function getAccountDataView(): AccountDataView
     {
-        $this->tags = $tags;
-    }
-
-    /**
-     * @return AccountVData
-     */
-    public function getAccountVData(): AccountVData
-    {
-        return $this->accountVData;
+        return $this->accountDataView;
     }
 }

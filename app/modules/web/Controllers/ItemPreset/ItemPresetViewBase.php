@@ -32,7 +32,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -79,7 +79,7 @@ abstract class ItemPresetViewBase extends ControllerBase
 
         $itemPresetData = $id
             ? $this->itemPresetService->getById($id)
-            : new ItemPresetData();
+            : new ItemPreset();
 
         $this->itemPresetHelper->setCommon($itemPresetData);
 

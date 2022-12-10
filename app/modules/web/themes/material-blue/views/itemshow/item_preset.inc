@@ -23,7 +23,7 @@
  */
 
 /**
- * @var ItemPresetData $preset
+ * @var ItemPreset $preset
  * @var ThemeIcons $icons
  * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
  * @var callable $_getvar
@@ -31,7 +31,7 @@
  */
 
 use SP\Core\UI\ThemeIcons;
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Mvc\View\Components\SelectItem;
 
 $preset = $_getvar('preset');

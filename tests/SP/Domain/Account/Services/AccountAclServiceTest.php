@@ -32,7 +32,7 @@ use SP\DataModel\ItemData;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountAclService;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
@@ -776,9 +776,9 @@ class AccountAclServiceTest extends UnitaryTestCase
          */
         return [
             [1, 2, 2, true, true],
-            [1, 3, 0, true, true],
+             [1, 3, 0, true, true],
             [1, 3, 1, true, true],
-            [1, 3, 2, true, true],
+             [1, 3, 2, true, true],
             [1, 4, 0, false, false],
             [1, 4, 3, false, false],
             [1, 4, 4, false, false],
@@ -786,11 +786,11 @@ class AccountAclServiceTest extends UnitaryTestCase
             [2, 2, 2, true, true],
             [2, 2, 3, true, true],
             [2, 3, 0, false, false],
-            [2, 3, 3, true, true],
+             [2, 3, 3, true, true],
             [2, 4, 0, false, false],
             [2, 4, 1, true, true],
-            [2, 4, 2, true, true],
-            [2, 4, 3, true, true],
+             [2, 4, 2, true, true],
+             [2, 4, 3, true, true],
             [2, 4, 4, false, false],
             [3, 1, 1, false, false],
             [3, 1, 2, false, false],
@@ -817,9 +817,9 @@ class AccountAclServiceTest extends UnitaryTestCase
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')
             ->willReturnMap([
-                [1, [new SimpleModel(['userGroupId' => 2])]],
-                [2, [new SimpleModel(['userGroupId' => 1])]],
-                [3, [new SimpleModel(['userGroupId' => 2])]],
+                [1, [new Simple(['userGroupId' => 2])]],
+                [2, [new Simple(['userGroupId' => 1])]],
+                [3, [new Simple(['userGroupId' => 2])]],
                 [4, []],
             ]);
 

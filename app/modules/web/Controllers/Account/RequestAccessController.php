@@ -65,7 +65,7 @@ final class RequestAccessController extends ControllerBase
         try {
             $this->accountRequestHelper->setIsView(true);
             $this->accountRequestHelper->setViewForRequest(
-                $this->accountService->getById($id),
+                $this->accountService->getByIdEnriched($id),
                 ActionsInterface::ACCOUNT_REQUEST
             );
 

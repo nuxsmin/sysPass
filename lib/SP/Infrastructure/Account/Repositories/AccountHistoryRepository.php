@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -84,7 +84,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
      */
     public function create(AccountHistoryCreateDto $dto): int
     {
-        $accountData = $dto->getAccountData();
+        $accountData = $dto->getAccount();
 
         $query = $this->queryFactory
             ->newInsert()
@@ -382,24 +382,25 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $request
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
      *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updatePassword(AccountPasswordRequest $request): bool
+    public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): bool
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('AccountHistory')
             ->cols([
-                'pass'      => $request->getEncryptedPassword()->getPass(),
-                'key'       => $request->getEncryptedPassword()->getKey(),
-                'mPassHash' => $request->getHash(),
+                'pass'      => $encryptedPassword->getPass(),
+                'key'       => $encryptedPassword->getKey(),
+                'mPassHash' => $encryptedPassword->getHash(),
             ])
             ->where('id = :id')
-            ->bindValues(['id' => $request->getId()]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 

@@ -29,7 +29,7 @@ use Closure;
 /**
  * Interface RepositoryItemInterface
  *
- * @package SP\Domain\Common\In
+ * @package SP\Domain\Common\Ports
  */
 interface RepositoryInterface
 {
@@ -37,10 +37,11 @@ interface RepositoryInterface
      * Bubbles a Closure in a database transaction
      *
      * @param  \Closure  $closure
+     * @param  object  $newThis
      *
      * @return mixed
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \Exception
      */
-    public function transactionAware(Closure $closure): mixed;
+    public function transactionAware(Closure $closure, object $newThis): mixed;
 }

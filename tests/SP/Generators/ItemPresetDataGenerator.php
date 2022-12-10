@@ -24,29 +24,30 @@
 
 namespace SP\Tests\Generators;
 
+use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Account\Models\ItemPreset;
 
 /**
  * Class ItemPresetDataGenerator
  */
 final class ItemPresetDataGenerator extends DataGenerator
 {
-    public function buildItemPresetData(object $data): SimpleModel
+    public function buildItemPresetData(object $data): ItemPreset
     {
-        return new SimpleModel([
+        return new ItemPreset([
             'id'            => $this->faker->randomNumber(),
             'type'          => $this->faker->colorName,
             'userId'        => $this->faker->randomNumber(),
             'userGroupId'   => $this->faker->randomNumber(),
             'userProfileId' => $this->faker->randomNumber(),
-            'fixed'         => $this->faker->numberBetween(0, 1),
+            'fixed'         => (int)$this->faker->boolean,
             'priority'      => $this->faker->randomNumber(),
             'data'          => serialize($data),
         ]);
     }
 
-    public function buildPasswordPreset(): Password
+    public function buildPassword(): Password
     {
         return new Password(
             $this->faker->numberBetween(1, 12),
@@ -60,5 +61,10 @@ final class ItemPresetDataGenerator extends DataGenerator
             $this->faker->randomNumber(),
             $this->faker->regexify('abc123')
         );
+    }
+
+    public function buildAccountPrivate(): AccountPrivate
+    {
+        return new AccountPrivate($this->faker->boolean, $this->faker->boolean);
     }
 }

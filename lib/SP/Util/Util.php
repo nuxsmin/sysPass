@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -147,7 +147,7 @@ final class Util
      *
      * @return mixed
      */
-    public static function unserialize(string $dstClass, $serialized, ?string $srcClass = null)
+    public static function unserialize(string $dstClass, string|object $serialized, ?string $srcClass = null): mixed
     {
         if (!is_object($serialized)) {
             $match = preg_match_all('/O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);

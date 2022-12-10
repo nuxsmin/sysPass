@@ -83,7 +83,7 @@ final class SaveRequestController extends AccountControllerBase
                 throw new ValidationException(__u('A description is needed'));
             }
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 

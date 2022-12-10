@@ -47,12 +47,11 @@ final class EditPassController extends AccountViewBase
     public function editPassAction(int $id): void
     {
         try {
-            $accountDetailsResponse = $this->accountService->getById($id);
-            $this->accountService
-                ->withUsersById($accountDetailsResponse)
-                ->withUserGroupsById($accountDetailsResponse);
+            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto, ActionsInterface::ACCOUNT_EDIT_PASS);
 
             $this->view->addTemplate('account-editpass');
             $this->view->assign(

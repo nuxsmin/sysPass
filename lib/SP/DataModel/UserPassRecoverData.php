@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class UserPassRecoverData
  *
  * @package SP\DataModel
  */
-class UserPassRecoverData extends DataModel
+class UserPassRecoverData extends Model
 {
     /**
      * @var int

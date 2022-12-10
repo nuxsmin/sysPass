@@ -26,6 +26,7 @@ namespace SP\Domain\Account\Dtos;
 
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
 /**
@@ -66,11 +67,11 @@ final class AccountAclDto
     {
         return new self(
             $accountDetailsResponse->getId(),
-            $accountDetailsResponse->getAccountVData()->getUserId(),
+            $accountDetailsResponse->getAccountDataView()->getUserId(),
             $accountDetailsResponse->getUsers(),
-            $accountDetailsResponse->getAccountVData()->getUserGroupId(),
+            $accountDetailsResponse->getAccountDataView()->getUserGroupId(),
             $accountDetailsResponse->getUserGroups(),
-            strtotime($accountDetailsResponse->getAccountVData()->getDateEdit())
+            strtotime($accountDetailsResponse->getAccountDataView()->getDateEdit())
         );
     }
 
@@ -90,7 +91,7 @@ final class AccountAclDto
     }
 
     /**
-     * @param  AccountSearchVData  $accountSearchVData
+     * @param  AccountSearchView  $accountSearchView
      *
      * @param  array  $users
      * @param  array  $userGroups
@@ -98,17 +99,17 @@ final class AccountAclDto
      * @return AccountAclDto
      */
     public static function makeFromAccountSearch(
-        AccountSearchVData $accountSearchVData,
+        AccountSearchView $accountSearchView,
         array $users,
         array $userGroups
     ): AccountAclDto {
         return new self(
-            $accountSearchVData->getId(),
-            $accountSearchVData->getUserId(),
+            $accountSearchView->getId(),
+            $accountSearchView->getUserId(),
             $users,
-            $accountSearchVData->getUserGroupId(),
+            $accountSearchView->getUserGroupId(),
             $userGroups,
-            strtotime($accountSearchVData->getDateEdit())
+            strtotime($accountSearchView->getDateEdit())
         );
     }
 

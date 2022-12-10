@@ -49,16 +49,16 @@ final class AccountRequestHelper extends AccountHelperBase
         AccountEnrichedDto $accountDetailsResponse,
         int $actionId
     ): bool {
-        $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
+        $this->accountId = $accountDetailsResponse->getAccountDataView()->getId();
         $this->actionId = $actionId;
         $this->accountAcl = new AccountAcl($actionId);
 
         $this->checkActionAccess();
 
-        $accountData = $accountDetailsResponse->getAccountVData();
+        $accountData = $accountDetailsResponse->getAccountDataView();
 
         $this->view->assign('accountId', $accountData->getId());
-        $this->view->assign('accountData', $accountDetailsResponse->getAccountVData());
+        $this->view->assign('accountData', $accountDetailsResponse->getAccountDataView());
         $this->view->assign(
             'accountActions',
             $this->accountActionsHelper->getActionsForAccount(

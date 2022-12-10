@@ -79,8 +79,8 @@ abstract class UnitaryTestCase extends TestCase
         $userLogin
             ->setLogin(self::$faker->userName)
             ->setName(self::$faker->userName)
-            ->setId(self::$faker->randomNumber())
-            ->setUserGroupId(self::$faker->randomNumber());
+            ->setId(self::$faker->randomNumber(2))
+            ->setUserGroupId(self::$faker->randomNumber(2));
 
         $this->context = new StatelessContext();
         $this->context->initialize();

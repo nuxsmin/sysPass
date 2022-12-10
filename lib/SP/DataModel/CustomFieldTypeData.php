@@ -25,15 +25,15 @@
 namespace SP\DataModel;
 
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class CustomFieldTypeData
  *
  * @package SP\DataModel
  */
-class CustomFieldTypeData extends DataModel implements DataModelInterface
+class CustomFieldTypeData extends Model implements DataModelInterface
 {
     /**
      * @var int

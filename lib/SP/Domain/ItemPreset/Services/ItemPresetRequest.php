@@ -24,7 +24,7 @@
 
 namespace SP\Domain\ItemPreset\Services;
 
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Account\Models\ItemPreset;
 
 /**
  * Class ItemPresetRequest
@@ -33,19 +33,19 @@ use SP\DataModel\ItemPresetData;
  */
 final class ItemPresetRequest
 {
-    private ItemPresetData $itemPresetData;
-    private                $data;
+    private ItemPreset $itemPresetData;
+    private            $data;
 
     /**
      * ItemPresetRequest constructor.
      */
-    public function __construct(ItemPresetData $itemPresetData, $data)
+    public function __construct(ItemPreset $itemPresetData, $data)
     {
         $this->itemPresetData = $itemPresetData;
         $this->data = $data;
     }
 
-    public function getItemPresetData(): ItemPresetData
+    public function getItemPresetData(): ItemPreset
     {
         return $this->itemPresetData;
     }
@@ -58,7 +58,7 @@ final class ItemPresetRequest
         return $this->data;
     }
 
-    public function prepareToPersist(): ItemPresetData
+    public function prepareToPersist(): ItemPreset
     {
         $this->itemPresetData->setData(serialize($this->data));
 

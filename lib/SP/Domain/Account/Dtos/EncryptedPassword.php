@@ -29,7 +29,7 @@ namespace SP\Domain\Account\Dtos;
  */
 final class EncryptedPassword
 {
-    public function __construct(private string $pass, private string $key) {}
+    public function __construct(private string $pass, private string $key, private ?string $hash = null) {}
 
     public function getPass(): string
     {
@@ -39,5 +39,10 @@ final class EncryptedPassword
     public function getKey(): string
     {
         return $this->key;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
     }
 }

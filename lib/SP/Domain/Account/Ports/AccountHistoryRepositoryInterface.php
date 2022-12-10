@@ -27,6 +27,7 @@ namespace SP\Domain\Account\Ports;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -72,11 +73,12 @@ interface AccountHistoryRepositoryInterface extends RepositoryInterface
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  \SP\Domain\Account\Dtos\AccountPasswordRequest  $request
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
      *
      * @return bool
      */
-    public function updatePassword(AccountPasswordRequest $request): bool;
+    public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): bool;
 
     /**
      * Elimina los datos de una cuenta en la BBDD.

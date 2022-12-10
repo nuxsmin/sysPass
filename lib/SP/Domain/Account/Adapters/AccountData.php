@@ -24,13 +24,13 @@
 
 namespace SP\Domain\Account\Adapters;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class AccountData
  */
-class AccountData extends DataModel implements DataModelInterface
+class AccountData extends Model implements DataModelInterface
 {
     protected ?int    $id                 = null;
     protected ?int    $userId             = null;
@@ -55,11 +55,6 @@ class AccountData extends DataModel implements DataModelInterface
     protected ?int    $parentId           = 0;
     protected ?bool   $otherUserGroupEdit = false;
     protected ?bool   $otherUserEdit      = false;
-
-    public function __construct(?array $properties = [])
-    {
-        parent::__construct($properties);
-    }
 
     public function getDateAdd(): ?int
     {

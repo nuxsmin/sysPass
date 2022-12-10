@@ -25,12 +25,10 @@
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Services\AccountHistoryService;
 use SP\Domain\Common\Services\ServiceException;
@@ -52,7 +50,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
     public function testCreate()
     {
-        $accountData = AccountData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountData());
+        $accountData = AccountDataGenerator::factory()->buildAccount();
         $dto = new AccountHistoryCreateDto(
             $accountData,
             self::$faker->boolean,
@@ -130,7 +128,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountHistoryData =
-            AccountHistoryData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
+            AccountHistory::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
         $queryResult = new QueryResult([$accountHistoryData]);
 
         $this->accountHistoryRepository->expects(self::once())->method('getById')->with($id)->willReturn($queryResult);
@@ -178,17 +176,15 @@ class AccountHistoryServiceTest extends UnitaryTestCase
      */
     public function testUpdatePasswordMasterPass()
     {
-        $accountPasswordRequest = new AccountPasswordRequest(
-            self::$faker->randomNumber(),
-            new EncryptedPassword(self::$faker->password, self::$faker->password),
-        );
+        $id = self::$faker->randomNumber();
+        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
         $this->accountHistoryRepository->expects(self::once())
-            ->method('updatePassword')
-            ->with($accountPasswordRequest)
-            ->willReturn(true);
+                                       ->method('updatePassword')
+                                       ->with($id, $encryptedPassword)
+                                       ->willReturn(true);
 
-        $this->accountHistoryService->updatePasswordMasterPass($accountPasswordRequest);
+        $this->accountHistoryService->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     /**
@@ -196,20 +192,18 @@ class AccountHistoryServiceTest extends UnitaryTestCase
      */
     public function testUpdatePasswordMasterPassError()
     {
-        $accountPasswordRequest = new AccountPasswordRequest(
-            self::$faker->randomNumber(),
-            new EncryptedPassword(self::$faker->password, self::$faker->password),
-        );
+        $id = self::$faker->randomNumber();
+        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
         $this->accountHistoryRepository->expects(self::once())
-            ->method('updatePassword')
-            ->with($accountPasswordRequest)
-            ->willReturn(false);
+                                       ->method('updatePassword')
+                                       ->with($id, $encryptedPassword)
+                                       ->willReturn(false);
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the password');
 
-        $this->accountHistoryService->updatePasswordMasterPass($accountPasswordRequest);
+        $this->accountHistoryService->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     protected function setUp(): void

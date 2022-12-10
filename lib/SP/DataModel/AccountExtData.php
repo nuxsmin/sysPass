@@ -33,9 +33,6 @@ use SP\Domain\Account\Adapters\AccountData;
  */
 class AccountExtData extends AccountData
 {
-    protected array   $usersId        = [];
-    protected array   $userGroupsId   = [];
-    protected array   $tags           = [];
     protected ?string $categoryName   = null;
     protected ?string $clientName     = null;
     protected ?string $userGroupName  = null;
@@ -43,7 +40,6 @@ class AccountExtData extends AccountData
     protected ?string $userLogin      = null;
     protected ?string $userEditName   = null;
     protected ?string $userEditLogin  = null;
-    protected ?string $publicLinkHash = null;
 
     public function getUserEditName(): ?string
     {

@@ -51,7 +51,7 @@ final class CreateController extends AccountBase
 
             $accountId = $this->accountService->create($accountRequest);
 
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'create.account',

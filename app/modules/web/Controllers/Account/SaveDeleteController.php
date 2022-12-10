@@ -72,7 +72,7 @@ final class SaveDeleteController extends AccountControllerBase
     public function saveDeleteAction(int $id): bool
     {
         try {
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->accountService->delete($id);
 

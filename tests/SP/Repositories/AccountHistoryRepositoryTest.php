@@ -31,10 +31,10 @@ use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Tests\DatabaseTestCase;
@@ -201,11 +201,11 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
     public function testGetById()
     {
         $result = self::$repository->getById(3);
-        /** @var AccountHistoryData $data */
+        /** @var AccountHistory $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(AccountHistoryData::class, $data);
+        $this->assertInstanceOf(AccountHistory::class, $data);
         $this->assertEquals(3, $data->getId());
         $this->assertEquals('2018-06-06 22:20:29', $data->getDateEdit());
         $this->assertEquals('2018-06-05 22:49:34', $data->getDateAdd());
@@ -233,7 +233,7 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->updatePassword($request));
 
         $result = self::$repository->getById(3);
-        /** @var AccountHistoryData $data */
+        /** @var AccountHistory $data */
         $data = $result->getData();
 
         $this->assertEquals($request->pass, $data->getPass());

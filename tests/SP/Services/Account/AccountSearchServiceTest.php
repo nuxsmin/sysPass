@@ -164,7 +164,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
             $i = 0;
 
             foreach ($data as $searchItem) {
-                $this->assertEquals($accountsId[$i], $searchItem->getAccountSearchVData()->getId());
+                $this->assertEquals($accountsId[$i], $searchItem->getAccountSearchView()->getId());
                 $i++;
             }
         }
@@ -214,7 +214,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
             $i = 0;
 
             foreach ($data as $searchItem) {
-                $this->assertEquals($accountsId[$i], $searchItem->getAccountSearchVData()->getId());
+                $this->assertEquals($accountsId[$i], $searchItem->getAccountSearchView()->getId());
                 $i++;
             }
         }
@@ -248,7 +248,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
-            $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
+            $this->assertEquals($accountsId[$i], $item->getAccountSearchView()->getId());
             $i++;
         }
     }
@@ -295,7 +295,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
-            $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
+            $this->assertEquals($accountsId[$i], $item->getAccountSearchView()->getId());
 
             $i++;
         }
@@ -324,7 +324,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
-            $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
+            $this->assertEquals($accountsId[$i], $item->getAccountSearchView()->getId());
             $i++;
         }
     }
@@ -359,7 +359,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $i = 0;
 
         foreach ($data as $item) {
-            $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
+            $this->assertEquals($accountsId[$i], $item->getAccountSearchView()->getId());
             $i++;
         }
     }

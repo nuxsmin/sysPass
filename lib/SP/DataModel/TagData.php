@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Mgmt\Tags
  */
-class TagData extends DataModel implements DataModelInterface
+class TagData extends Model implements DataModelInterface
 {
     /**
      * @var int

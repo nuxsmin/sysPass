@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class UserPassData
  *
  * @package SP\DataModel
  */
-class UserPassData extends DataModel
+class UserPassData extends Model
 {
     protected ?int    $id              = null;
     protected ?string $pass            = null;

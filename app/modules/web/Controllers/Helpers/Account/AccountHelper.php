@@ -140,14 +140,14 @@ final class AccountHelper extends AccountHelperBase
         AccountEnrichedDto $accountDetailsResponse,
         int $actionId
     ): void {
-        $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
+        $this->accountId = $accountDetailsResponse->getAccountDataView()->getId();
         $this->actionId = $actionId;
 
         $this->checkActionAccess();
 
         $this->accountAcl = $this->checkAccess($accountDetailsResponse);
 
-        $accountData = $accountDetailsResponse->getAccountVData();
+        $accountData = $accountDetailsResponse->getAccountDataView();
 
         $accountActionsDto = new AccountActionsDto($this->accountId, null, $accountData->getParentId());
 

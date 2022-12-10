@@ -48,7 +48,7 @@ final class EditController extends AccountBase
 
             $this->accountService->update($accountRequest);
 
-            $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account',

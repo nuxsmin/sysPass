@@ -24,15 +24,15 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class ItemData
  *
  * @package SP\DataModel
  */
-class ItemData extends DataModel implements DataModelInterface
+class ItemData extends Model implements DataModelInterface
 {
     protected ?int    $id   = null;
     protected ?string $name = null;

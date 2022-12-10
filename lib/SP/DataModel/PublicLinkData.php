@@ -24,30 +24,30 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class PublicLinkData
  *
  * @package SP\DataModel
  */
-class PublicLinkData extends DataModel implements DataModelInterface
+class PublicLinkData extends Model implements DataModelInterface
 {
-    protected ?int    $id;
-    protected ?int    $itemId;
-    protected ?string $hash;
-    protected ?int    $userId;
-    protected ?int    $typeId;
-    protected ?bool   $notify;
-    protected ?int    $dateAdd;
-    protected ?int    $dateUpdate;
-    protected ?int    $dateExpire;
-    protected ?int    $countViews;
-    protected ?int    $totalCountViews;
-    protected ?int    $maxCountViews;
-    protected ?string $useInfo;
-    protected ?string $data;
+    protected ?int    $id              = null;
+    protected ?int    $itemId          = null;
+    protected ?string $hash            = null;
+    protected ?int    $userId          = null;
+    protected ?int    $typeId          = null;
+    protected ?bool   $notify          = null;
+    protected ?int    $dateAdd         = null;
+    protected ?int    $dateUpdate      = null;
+    protected ?int    $dateExpire      = null;
+    protected ?int    $countViews      = null;
+    protected ?int    $totalCountViews = null;
+    protected ?int    $maxCountViews   = null;
+    protected ?string $useInfo         = null;
+    protected ?string $data            = null;
 
     public function getData(): ?string
     {

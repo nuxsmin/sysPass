@@ -24,35 +24,39 @@
 
 namespace SP\Tests\Generators;
 
-use SP\DataModel\AccountVData;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Account\Dtos\AccountHistoryDto;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Common\Models\Simple;
 
 /**
  * Class AccountDataGenerator
  */
 final class AccountDataGenerator extends DataGenerator
 {
-    public function buildAccountEnrichedData(): AccountEnrichedDto
+    public function buildAccountEnrichedDto(): AccountEnrichedDto
     {
-        $out = new AccountEnrichedDto(AccountVData::buildFromSimpleModel($this->buildAccountData()));
-        $out->setUsers($this->buildItemData());
-        $out->setTags($this->buildItemData());
-        $out->setUserGroups($this->buildItemData());
+        $out = new AccountEnrichedDto($this->builAccountDataView());
+        $out = $out->withUsers($this->buildItemData());
+        $out = $out->withTags($this->buildItemData());
 
-        return $out;
+        return $out->withUserGroups($this->buildItemData());
     }
 
-    public function buildAccountData(): SimpleModel
+    public function builAccountDataView(): AccountDataView
     {
-        return new SimpleModel($this->getAccountData());
+        return new AccountDataView($this->getAccountProperties());
     }
 
     /**
      * @return array
      */
-    private function getAccountData(): array
+    private function getAccountProperties(): array
     {
         return [
             'id'                 => $this->faker->randomNumber(),
@@ -100,9 +104,28 @@ final class AccountDataGenerator extends DataGenerator
         );
     }
 
-    public function buildAccountHistoryData(): SimpleModel
+    public function builAccountSearchView(): AccountSearchView
     {
-        return new SimpleModel([
+        return new AccountSearchView(
+            array_merge(
+                [
+                    'num_files'                 => $this->faker->randomNumber(),
+                    'publicLinkDateExpire'      => $this->faker->unixTime,
+                    'publicLinkTotalCountViews' => $this->faker->randomNumber(),
+                ],
+                $this->getAccountProperties()
+            )
+        );
+    }
+
+    public function buildAccount(): Account
+    {
+        return new Account($this->getAccountProperties());
+    }
+
+    public function buildAccountHistoryData(): Simple
+    {
+        return new Simple([
             'id'             => $this->faker->randomNumber(),
             'accountId'      => $this->faker->randomNumber(),
             'name'           => $this->faker->name,
@@ -123,15 +146,89 @@ final class AccountDataGenerator extends DataGenerator
         ]);
     }
 
-    public function builAccountSearchVData(): SimpleModel
+    public function buildAccountUpdateDto(): AccountUpdateDto
     {
-        return new SimpleModel(array_merge(
-            [
-                'num_files'                 => $this->faker->randomNumber(),
-                'publicLinkDateExpire'      => $this->faker->unixTime,
-                'publicLinkTotalCountViews' => $this->faker->randomNumber(),
-            ],
-            $this->getAccountData()
-        ));
+        return new AccountUpdateDto(
+            name              : $this->faker->name,
+            login             : $this->faker->userName,
+            clientId          : $this->faker->randomNumber(),
+            categoryId        : $this->faker->randomNumber(),
+            pass              : $this->faker->password,
+            userId            : $this->faker->randomNumber(),
+            key               : $this->faker->password,
+            url               : $this->faker->url,
+            notes             : $this->faker->text,
+            userEditId        : $this->faker->randomNumber(),
+            isPrivate         : $this->faker->boolean,
+            isPrivateGroup    : $this->faker->boolean,
+            passDateChange    : $this->faker->unixTime,
+            parentId          : $this->faker->randomNumber(),
+            userGroupId       : $this->faker->randomNumber(),
+            otherUserEdit     : $this->faker->boolean,
+            otherUserGroupEdit: $this->faker->boolean,
+            usersView         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            usersEdit         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            userGroupsView    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            userGroupsEdit    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            tags              : array_map(fn() => $this->faker->randomNumber(), range(0, 4))
+        );
+    }
+
+    public function buildAccountCreateDto(): AccountCreateDto
+    {
+        return new AccountCreateDto(
+            name              : $this->faker->name,
+            login             : $this->faker->userName,
+            clientId          : $this->faker->randomNumber(),
+            categoryId        : $this->faker->randomNumber(),
+            pass              : $this->faker->password,
+            userId            : $this->faker->randomNumber(),
+            url               : $this->faker->url,
+            notes             : $this->faker->text,
+            userEditId        : $this->faker->randomNumber(),
+            isPrivate         : $this->faker->boolean,
+            isPrivateGroup    : $this->faker->boolean,
+            passDateChange    : $this->faker->unixTime,
+            parentId          : $this->faker->randomNumber(),
+            userGroupId       : $this->faker->randomNumber(),
+            otherUserEdit     : $this->faker->boolean,
+            otherUserGroupEdit: $this->faker->boolean,
+            usersView         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            usersEdit         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            userGroupsView    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            userGroupsEdit    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
+            tags              : array_map(fn() => $this->faker->randomNumber(), range(0, 4))
+        );
+    }
+
+    public function buildAccountHistoryDto(): AccountHistoryDto
+    {
+        return new AccountHistoryDto(
+            accountId         : $this->faker->randomNumber(),
+            isDelete          : $this->faker->boolean,
+            isModify          : $this->faker->boolean,
+            dateAdd           : $this->faker->unixTime,
+            dateEdit          : $this->faker->unixTime,
+            passDate          : $this->faker->unixTime,
+            countView         : $this->faker->randomNumber(),
+            countDecrypt      : $this->faker->randomNumber(),
+            name              : $this->faker->name,
+            login             : $this->faker->userName,
+            clientId          : $this->faker->randomNumber(),
+            categoryId        : $this->faker->randomNumber(),
+            pass              : $this->faker->password,
+            userId            : $this->faker->randomNumber(),
+            key               : $this->faker->password,
+            url               : $this->faker->url,
+            notes             : $this->faker->text,
+            userEditId        : $this->faker->randomNumber(),
+            isPrivate         : $this->faker->boolean,
+            isPrivateGroup    : $this->faker->boolean,
+            passDateChange    : $this->faker->unixTime,
+            parentId          : $this->faker->randomNumber(),
+            userGroupId       : $this->faker->randomNumber(),
+            otherUserEdit     : $this->faker->boolean,
+            otherUserGroupEdit: $this->faker->boolean,
+        );
     }
 }

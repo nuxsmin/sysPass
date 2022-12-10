@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Import;
@@ -115,7 +115,7 @@ class CsvImportTest extends DatabaseTestCase
 
         // 1st account
         $expectedId = 5;
-        $data = $accountService->getById($expectedId)->getAccountVData();
+        $data = $accountService->getByIdEnriched($expectedId)->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 1', $data->getName());
@@ -131,7 +131,7 @@ class CsvImportTest extends DatabaseTestCase
 
         // 2nd account
         $expectedId = 6;
-        $data = $accountService->getById($expectedId)->getAccountVData();
+        $data = $accountService->getByIdEnriched($expectedId)->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 2', $data->getName());
@@ -147,7 +147,7 @@ class CsvImportTest extends DatabaseTestCase
 
         // 3rd account
         $expectedId = 7;
-        $data = $accountService->getById($expectedId)->getAccountVData();
+        $data = $accountService->getByIdEnriched($expectedId)->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 3', $data->getName());

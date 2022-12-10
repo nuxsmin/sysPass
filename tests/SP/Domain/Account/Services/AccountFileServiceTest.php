@@ -74,7 +74,6 @@ class AccountFileServiceTest extends UnitaryTestCase
     public function testCreateWithThumbnail(): void
     {
         $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
-        $fileData->type = 'image/jpeg';
 
         $this->accountFileRepository
             ->expects(self::once())

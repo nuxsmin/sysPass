@@ -55,7 +55,7 @@ final class ViewPassController extends AccountBase
 
             $this->accountService->incrementDecryptCounter($id);
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'show.account.pass',

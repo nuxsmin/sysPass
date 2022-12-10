@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -74,7 +74,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Update Master Password'))
+                                ->addDescription(__u('Update Master Password'))
                 )
             );
 
@@ -92,8 +92,8 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
 
             $eventMessage = $this->processAccounts(
                 $this->accountService->getAccountsPassData(),
-                function (AccountPasswordRequest $request) {
-                    $this->accountService->updatePasswordMasterPass($request);
+                function (int $accountId, EncryptedPassword $encryptedPassword) {
+                    $this->accountService->updatePasswordMasterPass($accountId, $encryptedPassword);
                 },
                 $updateMasterPassRequest
             );
@@ -115,6 +115,13 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
         }
     }
 
+    /**
+     * @param  \SP\Domain\Account\Models\Account[]  $accounts
+     * @param  callable  $passUpdater
+     * @param  \SP\Domain\Crypt\Services\UpdateMasterPassRequest  $updateMasterPassRequest
+     *
+     * @return \SP\Core\Events\EventMessage
+     */
     private function processAccounts(
         array $accounts,
         callable $passUpdater,
@@ -146,7 +153,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
             if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->id;
+                $accountsOk[] = $account->getId();
                 continue;
             }
 
@@ -180,30 +187,24 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
                 $eventMessage->addDescription(__u('The record\'s master password does not match'));
-                $eventMessage->addDetail($account->name, $account->id);
+                $eventMessage->addDetail($account->getName(), $account->getId());
                 continue;
             }
 
             try {
                 $encryptedPassword = $this->getPasswordEncrypted(
                     $this->crypt->decrypt(
-                        $account->pass,
-                        $account->key,
+                        $account->getPass(),
+                        $account->getKey(),
                         $updateMasterPassRequest->getCurrentMasterPass()
                     ),
                     $updateMasterPassRequest->getNewMasterPass()
                 );
 
-                $request = new AccountPasswordRequest(
-                    $account->id,
-                    $encryptedPassword,
-                    $updateMasterPassRequest->getHash()
-                );
-
                 // Call the specific updater
-                $passUpdater($request);
+                $passUpdater($account->getId(), $encryptedPassword);
 
-                $accountsOk[] = $account->id;
+                $accountsOk[] = $account->getId();
                 $counter++;
             } catch (SPException $e) {
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -211,7 +212,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 $errorCount++;
 
                 $eventMessage->addDescription(__u('Error while updating the account\'s password'));
-                $eventMessage->addDetail($account->name, $account->id);
+                $eventMessage->addDetail($account->getName(), $account->getId());
             }
         }
 
@@ -268,7 +269,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Update Master Password (H)'))
+                                ->addDescription(__u('Update Master Password (H)'))
                 )
             );
 
@@ -286,8 +287,8 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
 
             $eventMessage = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),
-                function (AccountPasswordRequest $request) {
-                    $this->accountHistoryService->updatePasswordMasterPass($request);
+                function (int $accountId, EncryptedPassword $encryptedPassword) {
+                    $this->accountHistoryService->updatePasswordMasterPass($accountId, $encryptedPassword);
                 },
                 $updateMasterPassRequest
             );

@@ -29,7 +29,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\FileData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -62,7 +62,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
                 return array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -131,7 +131,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($query->getStatement());
             }
         );
@@ -181,7 +181,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($query->getStatement());
             }
         );
@@ -207,7 +207,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
                        && $params['clientName'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['type'] === $searchStringLike
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

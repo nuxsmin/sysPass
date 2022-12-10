@@ -29,21 +29,19 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
-use SP\Domain\Common\Adapters\SimpleModel;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class AccountRepository
@@ -54,39 +52,35 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
 {
     use RepositoryItemTrait;
 
-    private AccountFilterUserInterface $accountFilterUser;
-
     public function __construct(
         DatabaseInterface $database,
         ContextInterface $session,
         QueryFactory $queryFactory,
         EventDispatcherInterface $eventDispatcher,
-        AccountFilterUserInterface $accountFilterUser
+        private AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
-
-        $this->accountFilterUser = $accountFilterUser;
     }
 
     /**
      * Devolver el número total de cuentas
      */
-    public function getTotalNumAccounts(): SimpleModel
+    public function getTotalNumAccounts(): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['SUM(n) AS num'])
             ->fromSubSelect('SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory', 'a');
 
-        return $this->db->doSelect(QueryData::build($query))->getData();
+        return $this->db->doSelect(QueryData::build($query));
     }
 
     /**
-     * @param  int  $id
+     * @param  int  $accountId
      *
      * @return QueryResult
      */
-    public function getPasswordForId(int $id): QueryResult
+    public function getPasswordForId(int $accountId): QueryResult
     {
         $query = $this->accountFilterUser
             ->buildFilter()
@@ -99,18 +93,18 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'Account.parentId',
             ])
             ->where('Account.id = :id')
-            ->bindValues(['id' => $id])
+            ->bindValues(['id' => $accountId])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Account::class));
     }
 
     /**
-     * @param  int  $id
+     * @param  int  $accountId
      *
      * @return QueryResult
      */
-    public function getPasswordHistoryForId(int $id): QueryResult
+    public function getPasswordHistoryForId(int $accountId): QueryResult
     {
         $query = $this->accountFilterUser
             ->buildFilterHistory()
@@ -123,8 +117,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'AccountHistory.parentId',
                 'AccountHistory.mPassHash',
             ])
-            ->where('AccountHistory.id = :id')
-            ->bindValues(['id' => $id]);
+            ->where('AccountHistory.accountId = :accountId')
+            ->bindValues(['accountId' => $accountId]);
 
         return $this->db->doSelect(QueryData::build($query));
     }
@@ -132,317 +126,318 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
      *
-     * @param  int  $id
+     * @param  int  $accountId
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return \SP\Infrastructure\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function incrementDecryptCounter(int $id): bool
+    public function incrementDecryptCounter(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
             ->set('countDecrypt', '(countDecrypt + 1)')
             ->where('id = :id')
-            ->bindValues(['id' => $id]);
+            ->bindValues(['id' => $accountId]);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query));
     }
 
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
+     * @param  \SP\Domain\Account\Models\Account  $account
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create(AccountRequest $accountRequest): int
+    public function create(Account $account): QueryResult
     {
         $query = $this->queryFactory
             ->newInsert()
             ->into('Account')
-            ->cols([
-                'clientId'       => $accountRequest->clientId,
-                'categoryId'     => $accountRequest->categoryId,
-                'name'           => $accountRequest->name,
-                'login'          => $accountRequest->login,
-                'url'            => $accountRequest->url,
-                'pass'           => $accountRequest->pass,
-                'key'            => $accountRequest->key,
-                'notes'          => $accountRequest->notes,
-                'userId'         => $accountRequest->userId,
-                'userGroupId'    => $accountRequest->userGroupId,
-                'userEditId'     => $accountRequest->userId,
-                'isPrivate'      => $accountRequest->isPrivate,
-                'isPrivateGroup' => $accountRequest->isPrivateGroup,
-                'passDateChange' => $accountRequest->passDateChange,
-                'parentId'       => $accountRequest->parentId,
-            ])
+            ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id']))
             ->set('dateAdd', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Create an account from deleted
+     *
+     * @param  \SP\Domain\Account\Models\Account  $account
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function createRemoved(Account $account): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into('Account')
+            ->cols($account->toArray(null, ['id']));
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
+
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Models\Account  $account
      *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function editPassword(AccountRequest $accountRequest): int
+    public function editPassword(int $accountId, Account $account): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->cols([
-                'pass'           => $accountRequest->pass,
-                'key'            => $accountRequest->key,
-                'userEditId'     => $accountRequest->userEditId,
-                'passDateChange' => $accountRequest->passDateChange,
-            ])
+            ->cols($account->toArray(['pass', 'key', 'userEditId', 'passDateChange']))
             ->set('dateEdit', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()')
             ->where('id = :id')
-            ->bindValues(['id' => $accountRequest->id]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  AccountPasswordRequest  $request
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
      *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updatePassword(AccountPasswordRequest $request): bool
+    public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->cols(
-                [
-                    'pass' => $request->getEncryptedPassword()->getPass(),
-                    'key'  => $request->getEncryptedPassword()->getKey(),
-                ]
-            )
+            ->cols(['pass' => $encryptedPassword->getPass(), 'key' => $encryptedPassword->getKey()])
             ->where('id = :id')
-            ->bindValues(['id' => $request->getId()]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Restaurar una cuenta desde el histórico.
      *
-     * @param  \SP\DataModel\AccountHistoryData  $accountHistoryData
-     * @param  int  $userId  User's Id
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Models\Account  $account
      *
-     * @return bool
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function editRestore(AccountHistoryData $accountHistoryData, int $userId): bool
+    public function restoreModified(int $accountId, Account $account): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->cols([
-                'clientId'       => $accountHistoryData->getClientId(),
-                'categoryId'     => $accountHistoryData->getCategoryId(),
-                'name'           => $accountHistoryData->getName(),
-                'login'          => $accountHistoryData->getLogin(),
-                'url'            => $accountHistoryData->getUrl(),
-                'notes'          => $accountHistoryData->getNotes(),
-                'userGroupId'    => $accountHistoryData->getUserGroupId(),
-                'userEditId'     => $userId,
-                'pass'           => $accountHistoryData->getPass(),
-                'key'            => $accountHistoryData->getKey(),
-                'passDate'       => $accountHistoryData->getPassDate(),
-                'passDateChange' => $accountHistoryData->getPassDateChange(),
-                'parentId'       => $accountHistoryData->getParentId(),
-                'isPrivate'      => $accountHistoryData->getIsPrivate(),
-                'isPrivateGroup' => $accountHistoryData->getIsPrivateGroup(),
-            ])
+            ->cols(
+                $account->toArray(
+                    null,
+                    [
+                        'passDate',
+                        'dateAdd',
+                        'countDecrypt',
+                        'countView',
+                        'dateEdit',
+                        'id',
+                    ]
+                )
+            )
             ->set('dateEdit', 'NOW()')
             ->where('id = :id')
-            ->bindValues(['id' => $accountHistoryData->getAccountId()]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error on restoring the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
-     * @param  int  $id
+     * @param  int  $accountId
      *
-     * @return bool
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete(int $id): bool
+    public function delete(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newDelete()
             ->from('Account')
             ->where('id = :id')
-            ->bindValues(['id' => $id]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Updates an item
      *
-     * @param  AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param  bool  $changeOwner
+     * @param  bool  $changeUserGroup
      *
-     * @return int
-     * @throws SPException
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(AccountRequest $accountRequest): int
+    public function update(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
             ->where('id = :id')
-            ->cols([
-                'clientId'       => $accountRequest->clientId,
-                'categoryId'     => $accountRequest->categoryId,
-                'name'           => $accountRequest->name,
-                'login'          => $accountRequest->login,
-                'url'            => $accountRequest->url,
-                'notes'          => $accountRequest->notes,
-                'userEditId'     => $accountRequest->userEditId,
-                'passDateChange' => $accountRequest->passDateChange,
-                'isPrivate'      => $accountRequest->isPrivate,
-                'isPrivateGroup' => $accountRequest->isPrivateGroup,
-                'parentId'       => $accountRequest->parentId,
-            ])
+            ->cols(
+                $account->toArray(
+                    null,
+                    [
+                        'passDate',
+                        'dateAdd',
+                        'key',
+                        'pass',
+                        'countDecrypt',
+                        'countView',
+                        'dateEdit',
+                        'userGroupId',
+                        'userId',
+                        'id',
+                    ]
+                )
+            )
             ->set('dateEdit', 'NOW()')
-            ->bindValues(['id' => $accountRequest->id]);
+            ->bindValues(['id' => $accountId]);
 
-        if ($accountRequest->changeUserGroup) {
-            $query->col('userGroupId', $accountRequest->userGroupId);
+        if ($changeUserGroup) {
+            $query->col('userGroupId', $account->getUserGroupId());
         }
 
-        if ($accountRequest->changeOwner) {
-            $query->col('userId', $accountRequest->userId);
+        if ($changeOwner) {
+            $query->col('userId', $account->getUserId());
         }
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Updates an item for bulk action
      *
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $itemData
+     * @param  int  $accountId
+     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param  bool  $changeOwner
+     * @param  bool  $changeUserGroup
      *
-     * @return int
-     * @throws SPException
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateBulk(AccountRequest $itemData): int
+    public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult
     {
+        $optional = ['clientId', 'categoryId', 'passDateChange'];
+
+        if ($changeOwner) {
+            $optional[] = 'userId';
+        }
+
+        if ($changeUserGroup) {
+            $optional[] = 'userGroupId';
+        }
+
+        $cols = array_filter($account->toArray($optional), fn($value) => !empty($value));
+
+        if (count($cols) === 0) {
+            return new QueryResult();
+        }
+
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
-            ->cols([
-                'userEditId' => $itemData->userEditId,
-            ])
+            ->cols(
+                array_merge(
+                    $cols,
+                    ['userEditId' => $account->getUserEditId(),]
+                )
+            )
             ->set('dateEdit', 'NOW()')
             ->where('id = :id')
-            ->bindValues(['id' => $itemData->id]);
-
-        $optional = ['clientId', 'categoryId', 'userId', 'userGroupId', 'passDateChange'];
-
-        $optionalCount = 0;
-
-        foreach ($optional as $field) {
-            if (!empty($itemData->{$field})) {
-                $query->col($field, $itemData->{$field});
-                $optionalCount++;
-            } else {
-                logger(sprintf('Field \'%s\' not found in $itemData', $field), 'ERROR');
-            }
-        }
-
-        if ($optionalCount === 0) {
-            return 0;
-        }
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Returns the item for given id with referential data
+     *
+     * @param  int  $accountId
+     *
+     * @return QueryResult
+     */
+    public function getByIdEnriched(int $accountId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('account_data_v')
+            ->cols(AccountDataView::getCols())
+            ->where('id = :id')
+            ->bindValues(['id' => $accountId])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, AccountDataView::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param  int  $accountId
      *
      * @return QueryResult
      */
-    public function getById(int $id): QueryResult
+    public function getById(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('account_data_v')
-            ->cols([
-                'id',
-                'name',
-                'categoryId',
-                'userId',
-                'clientId',
-                'userGroupId',
-                'userEditId',
-                'login',
-                'url',
-                'notes',
-                'countView',
-                'countDecrypt',
-                'dateAdd',
-                'dateEdit',
-                'otherUserEdit',
-                'otherUserGroupEdit',
-                'isPrivate',
-                'isPrivateGroup',
-                'passDate',
-                'passDateChange',
-                'parentId',
-                'categoryName',
-                'clientName',
-                'userGroupName',
-                'userName',
-                'userLogin',
-                'userEditName',
-                'userEditLogin',
-                'publicLinkHash',
-            ])
+            ->from('Account')
+            ->cols(Account::getCols())
             ->where('id = :id')
-            ->bindValues(['id' => $id])
+            ->bindValues(['id' => $accountId])
             ->limit(1);
 
-        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+        $queryData = QueryData::buildWithMapper($query, Account::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->doSelect($queryData);
     }
@@ -457,56 +452,34 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newSelect()
             ->from('Account')
-            ->cols([
-                'id',
-                'name',
-                'categoryId',
-                'userId',
-                'clientId',
-                'userGroupId',
-                'userEditId',
-                'login',
-                'url',
-                'notes',
-                'countView',
-                'countDecrypt',
-                'dateAdd',
-                'dateEdit',
-                'otherUserEdit',
-                'otherUserGroupEdit',
-                'isPrivate',
-                'isPrivateGroup',
-                'passDate',
-                'passDateChange',
-                'parentId',
-            ]);
+            ->cols(Account::getCols(['pass', 'key']));
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, Account::class));
     }
 
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $ids
+     * @param  array  $accountsId
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int
+    public function deleteByIdBatch(array $accountsId): QueryResult
     {
-        if (count($ids) === 0) {
-            return 0;
+        if (count($accountsId) === 0) {
+            return new QueryResult();
         }
 
         $query = $this->queryFactory
             ->newDelete()
             ->from('Account')
-            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($accountsId)), ...$accountsId);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData);
     }
 
     /**
@@ -521,25 +494,17 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newSelect()
             ->from('account_search_v')
-            ->cols([
-                'id',
-                'name',
-                'clientName',
-                'categoryName',
-                'userName',
-                'userGroupName',
-
-            ])
+            ->cols(AccountSearchView::getCols())
             ->orderBy(['name ASC', 'clientName ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
             $query->where('name LIKE :name')
-                ->orWhere('clientName LIKE :clientName')
-                ->orWhere('categoryName LIKE :categoryName')
-                ->orWhere('userName LIKE :userName')
-                ->orWhere('userGroupName LIKE :userGroupName');
+                  ->orWhere('clientName LIKE :clientName')
+                  ->orWhere('categoryName LIKE :categoryName')
+                  ->orWhere('userName LIKE :userName')
+                  ->orWhere('userGroupName LIKE :userGroupName');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
 
@@ -552,44 +517,42 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ]);
         }
 
-        return $this->db->doSelect(QueryData::build($query), true);
+        return $this->db->doSelect(QueryData::buildWithMapper($query, AccountSearchView::class), true);
     }
 
     /**
      * Incrementa el contador de visitas de una cuenta en la BBDD
      *
-     * @param  int  $id
+     * @param  int  $accountId
      *
-     * @return bool
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function incrementViewCounter(int $id): bool
+    public function incrementViewCounter(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newUpdate()
             ->table('Account')
             ->set('countView', '(countView + 1)')
             ->where('id = :id')
-            ->bindValues(['id' => $id]);
+            ->bindValues(['id' => $accountId]);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query));
     }
 
     /**
      * Obtener los datos de una cuenta.
      *
-     * @param  int  $id
+     * @param  int  $accountId
      *
      * @return QueryResult
      */
-    public function getDataForLink(int $id): QueryResult
+    public function getDataForLink(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
             ->from('Account')
-            ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->cols([
                 'Account.name',
                 'Account.login',
@@ -600,8 +563,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                 'Client.name AS clientName',
                 'Category.name AS categoryName',
             ])
+            ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->where('Account.id = :id')
-            ->bindValues(['id' => $id]);
+            ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
@@ -617,14 +582,12 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     {
         $query = $this->accountFilterUser
             ->buildFilter()
-            ->cols(
-                [
-                    'Account.id',
-                    'Account.name',
-                    'C.name AS clientName',
-                ]
-            )
-            ->join('LEFT', 'Client AS C', 'Account.clientId = C.id')
+            ->cols([
+                'Account.id',
+                'Account.name',
+                'Client.name AS clientName',
+            ])
+            ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->orderBy(['Account.name ASC']);
 
         if ($accountId) {
@@ -646,13 +609,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     {
         $query = $this->accountFilterUser
             ->buildFilter()
-            ->cols(
-                [
-                    'Account.id',
-                    'Account.name',
-                    'Client.name AS clientName',
-                ]
-            )
+            ->cols([
+                'Account.id',
+                'Account.name',
+                'Client.name AS clientName',
+            ])
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->where('Account.parentId = :parentId')
             ->bindValues(['parentId' => $accountId])
@@ -671,16 +632,14 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newSelect()
             ->from('Account')
-            ->cols(
-                [
-                    'id',
-                    'name',
-                    'pass',
-                    'key',
-                ]
-            )
+            ->cols([
+                'id',
+                'name',
+                'pass',
+                'key',
+            ])
             ->where('BIT_LENGTH(pass) > 0');
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, Account::class));
     }
 }

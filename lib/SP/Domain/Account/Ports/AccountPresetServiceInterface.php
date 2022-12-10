@@ -28,7 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountDto;
 
 /**
  * Class AccountPreset
@@ -43,5 +43,12 @@ interface AccountPresetServiceInterface
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    public function checkPasswordPreset(AccountRequest $accountRequest): void;
+    public function checkPasswordPreset(AccountDto $accountDto): AccountDto;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     */
+    public function addPresetPermissions(int $accountId): void;
 }

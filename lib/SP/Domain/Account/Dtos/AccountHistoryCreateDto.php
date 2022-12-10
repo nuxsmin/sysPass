@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\Domain\Account\Adapters\AccountData;
+use SP\Domain\Account\Models\Account;
 
 /**
  * Class AccountHistoryCreateDto
@@ -32,7 +32,7 @@ use SP\Domain\Account\Adapters\AccountData;
 class AccountHistoryCreateDto
 {
     public function __construct(
-        private AccountData $accountData,
+        private Account $account,
         private bool $isModify,
         private bool $isDelete,
         private string $masterPassHash
@@ -53,8 +53,8 @@ class AccountHistoryCreateDto
         return $this->masterPassHash;
     }
 
-    public function getAccountData(): AccountData
+    public function getAccount(): Account
     {
-        return $this->accountData;
+        return $this->account;
     }
 }

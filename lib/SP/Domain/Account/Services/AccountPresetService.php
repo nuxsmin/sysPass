@@ -24,13 +24,18 @@
 
 namespace SP\Domain\Account\Services;
 
+use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
+use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
+use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
@@ -41,13 +46,18 @@ use SP\Mvc\Controller\Validators\ValidatorInterface;
  *
  * @package SP\Domain\Account\Services
  */
-final class AccountPresetService implements AccountPresetServiceInterface
+final class AccountPresetService extends Service implements AccountPresetServiceInterface
 {
     public function __construct(
+        Application $application,
         private ItemPresetServiceInterface $itemPresetService,
+        private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
+        private AccountToUserRepositoryInterface $accountToUserRepository,
         private ConfigDataInterface $configData,
         private ValidatorInterface $validator
-    ) {}
+    ) {
+        parent::__construct($application);
+    }
 
     /**
      * @throws ValidationException
@@ -55,24 +65,63 @@ final class AccountPresetService implements AccountPresetServiceInterface
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    public function checkPasswordPreset(AccountRequest $accountRequest): void
+    public function checkPasswordPreset(AccountDto $accountDto): AccountDto
     {
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
 
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
             $passwordPreset = $itemPreset->hydrate(Password::class);
 
-            $this->validator->validate($passwordPreset, $accountRequest->pass);
+            $this->validator->validate($passwordPreset, $accountDto->getPass());
 
             if ($this->configData->isAccountExpireEnabled()) {
                 $expireTimePreset = $passwordPreset->getExpireTime();
 
                 if ($expireTimePreset > 0
-                    && ($accountRequest->passDateChange === 0
-                        || $accountRequest->passDateChange < time() + $expireTimePreset)
+                    && ($accountDto->getPassDateChange() === 0
+                        || $accountDto->getPassDateChange() < time() + $expireTimePreset)
                 ) {
-                    $accountRequest->passDateChange = time() + $expireTimePreset;
+                    return $accountDto->withPassDateChange(time() + $expireTimePreset);
                 }
+            }
+        }
+
+        return $accountDto;
+    }
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     */
+    public function addPresetPermissions(int $accountId): void
+    {
+        $itemPresetData =
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
+
+        if ($itemPresetData !== null && $itemPresetData->getFixed()) {
+            $userData = $this->context->getUserData();
+            $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
+
+            $usersView = array_diff($accountPermission->getUsersView(), [$userData->getId()]);
+            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->getId()]);
+            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->getUserGroupId()]);
+            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
+
+            if (count($usersView) > 0) {
+                $this->accountToUserRepository->addByType($accountId, $usersView);
+            }
+
+            if (count($usersEdit) > 0) {
+                $this->accountToUserRepository->addByType($accountId, $usersEdit, true);
+            }
+
+            if (count($userGroupsView) > 0) {
+                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsView);
+            }
+
+            if (count($userGroupsEdit) > 0) {
+                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsEdit, true);
             }
         }
     }

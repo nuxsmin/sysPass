@@ -22,21 +22,40 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Common\Models;
+
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Util\Util;
 
 /**
- * Class AccountHistoryData
+ * Trait Datamodel
  *
  * @package SP\DataModel
  */
-class AccountHistoryData extends AccountExtData
+trait SerializedModel
 {
-    protected int  $isModify  = 0;
-    protected int  $isDeleted = 0;
-    protected ?int $accountId = null;
-
-    public function getAccountId(): ?int
+    /**
+     * @param  string|null  $class
+     * @param  string  $property
+     *
+     * @return mixed|null
+     * @throws NoSuchPropertyException
+     */
+    public function hydrate(?string $class = null, string $property = 'data'): mixed
     {
-        return $this->accountId;
+        if (property_exists($this, $property)) {
+            if ($this->{$property} === null) {
+                return null;
+            }
+
+            if ($class !== null) {
+                return Util::unserialize($class, $this->{$property});
+            }
+
+            /** @noinspection UnserializeExploitsInspection */
+            return unserialize($this->{$property});
+        }
+
+        throw new NoSuchPropertyException($property);
     }
 }

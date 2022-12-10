@@ -128,7 +128,7 @@ final class UploadController extends ControllerBase
 
             $this->accountFileService->create($fileData);
 
-            $account = $this->accountService->getById($accountId)->getAccountVData();
+            $account = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'upload.accountFile',

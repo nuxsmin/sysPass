@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Import;
@@ -116,7 +116,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         // 1st account
         $expectedId = 5;
-        $result = $accountService->getById($expectedId);
+        $result = $accountService->getByIdEnriched($expectedId);
         $data = $result->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
@@ -129,7 +129,7 @@ class SyspassImportTest extends DatabaseTestCase
         $this->assertEmpty($data->getNotes());
         $this->assertEquals('admin', $data->getLogin());
 
-        $accountService->withTagsById($result);
+        $accountService->withTags($result);
 
         $expectedTags = [7, 8, 9];
         $i = 0;
@@ -145,7 +145,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         // 2nd account
         $expectedId = 6;
-        $result = $accountService->getById($expectedId);
+        $result = $accountService->getByIdEnriched($expectedId);
         $data = $result->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
@@ -158,7 +158,7 @@ class SyspassImportTest extends DatabaseTestCase
         $this->assertEquals('blablacar', $data->getNotes());
         $this->assertEquals('admin', $data->getLogin());
 
-        $accountService->withTagsById($result);
+        $accountService->withTags($result);
 
         $expectedTags = [8, 9, 1];
         $i = 0;
@@ -174,7 +174,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         // 3rd account
         $expectedId = 7;
-        $result = $accountService->getById($expectedId);
+        $result = $accountService->getByIdEnriched($expectedId);
         $data = $result->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
@@ -193,7 +193,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         // 4th account
         $expectedId = 8;
-        $result = $accountService->getById($expectedId);
+        $result = $accountService->getByIdEnriched($expectedId);
         $data = $result->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());
@@ -212,7 +212,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         // 5th account
         $expectedId = 9;
-        $result = $accountService->getById($expectedId);
+        $result = $accountService->getByIdEnriched($expectedId);
         $data = $result->getAccountVData();
 
         $this->assertEquals($expectedId, $data->getId());

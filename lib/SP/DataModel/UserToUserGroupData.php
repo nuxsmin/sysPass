@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
+use SP\Domain\Common\Models\Model;
 
 defined('APP_ROOT') || die();
 
@@ -33,7 +33,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class UserToUserGroupData extends DataModel
+class UserToUserGroupData extends Model
 {
     /**
      * @var int

@@ -27,8 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Account\Dtos\AccountRequest;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Account\Repositories\AccountToTagRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -54,7 +53,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($query->getStatement());
             }
         );
@@ -104,34 +103,33 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
      */
     public function testAdd(): void
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = self::$faker->randomNumber();
-        $accountRequest->tags = self::getRandomNumbers(10);
+        $id = self::$faker->randomNumber();
+        $tags = self::getRandomNumbers(10);
 
         $callbacks = array_map(
-            static function ($tag) use ($accountRequest) {
+            static function ($tag) use ($id) {
                 return [
                     new Callback(
-                        static function (QueryData $arg) use ($accountRequest, $tag) {
+                        static function (QueryData $arg) use ($id, $tag) {
                             $query = $arg->getQuery();
                             $params = $query->getBindValues();
 
-                            return $params['accountId'] === $accountRequest->id
+                            return $params['accountId'] === $id
                                    && $params['tagId'] === $tag
                                    && !empty($query->getStatement());
                         }
                     ),
                 ];
             },
-            $accountRequest->tags
+            $tags
         );
 
         $this->database
-            ->expects(self::exactly(count($accountRequest->tags)))
+            ->expects(self::exactly(count($tags)))
             ->method('doQuery')
             ->withConsecutive(...$callbacks);
 
-        $this->accountToTagRepository->add($accountRequest);
+        $this->accountToTagRepository->add($id, $tags);
     }
 
     protected function setUp(): void

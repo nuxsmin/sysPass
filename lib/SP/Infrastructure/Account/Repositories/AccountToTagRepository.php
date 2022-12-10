@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
+use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
@@ -92,20 +93,21 @@ final class AccountToTagRepository extends Repository implements AccountToTagRep
     /**
      * Actualizar las etiquetas de una cuenta
      *
-     * @param  \SP\Domain\Account\Dtos\AccountRequest  $accountRequest
+     * @param  int  $accountId
+     * @param  array  $tags
      *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add(AccountRequest $accountRequest): void
+    public function add(int $accountId, array $tags): void
     {
-        foreach ($accountRequest->tags as $tag) {
+        foreach ($tags as $tag) {
             $query = $this->queryFactory
                 ->newInsert()
                 ->into('AccountToTag')
                 ->cols([
-                    'accountId' => $accountRequest->id,
+                    'accountId' => $accountId,
                     'tagId'     => $tag,
                 ]);
 

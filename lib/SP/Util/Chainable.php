@@ -22,40 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Util;
 
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Util\Util;
+use Closure;
 
 /**
- * Trait Datamodel
- *
- * @package SP\DataModel
+ * Class Chainable
  */
-trait SerializedModel
+final class Chainable
 {
-    /**
-     * @param  string|null  $class
-     * @param  string  $property
-     *
-     * @return mixed|null
-     * @throws NoSuchPropertyException
-     */
-    public function hydrate(?string $class = null, string $property = 'data'): mixed
+    private array $args;
+
+    public function __construct(private Closure $next, private object $bindTo, ...$args)
     {
-        if (property_exists($this, $property)) {
-            if ($this->{$property} === null) {
-                return null;
-            }
+        $this->args = $args;
+    }
 
-            if ($class !== null) {
-                return Util::unserialize($class, $this->{$property});
-            }
+    public function next(Closure $next): Chainable
+    {
+        $resolved = $this->next->call($this->bindTo, ...$this->args);
 
-            /** @noinspection UnserializeExploitsInspection */
-            return unserialize($this->{$property});
-        }
+        return new self($next, $this->bindTo, $resolved);
+    }
 
-        throw new NoSuchPropertyException($property);
+    public function resolve(): mixed
+    {
+        return $this->next->call($this->bindTo, ...$this->args);
     }
 }

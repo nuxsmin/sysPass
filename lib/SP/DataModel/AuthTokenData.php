@@ -25,15 +25,15 @@
 namespace SP\DataModel;
 
 use SP\Core\Crypt\Vault;
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class AuthTokenData
  *
  * @package SP\DataModel
  */
-class AuthTokenData extends DataModel implements DataModelInterface
+class AuthTokenData extends Model implements DataModelInterface
 {
     /**
      * @var int

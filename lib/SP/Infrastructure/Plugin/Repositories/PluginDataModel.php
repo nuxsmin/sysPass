@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Plugin\Repositories;
 
 use SP\DataModel\EncryptedModel;
-use SP\DataModel\SerializedModel;
 use SP\Domain\Common\Adapters\HydratableInterface;
+use SP\Domain\Common\Models\SerializedModel;
 
 /**
  * Class PluginData

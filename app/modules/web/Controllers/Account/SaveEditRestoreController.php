@@ -70,9 +70,9 @@ final class SaveEditRestoreController extends AccountControllerBase
     public function saveEditRestoreAction(int $historyId, int $id): bool
     {
         try {
-            $this->accountService->editRestore($historyId, $id);
+            $this->accountService->restoreModified($historyId, $id);
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.restore',

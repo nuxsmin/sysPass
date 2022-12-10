@@ -87,7 +87,7 @@ final class DeleteController extends ControllerBase
                 return $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
             }
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->accountService->delete($id);
 

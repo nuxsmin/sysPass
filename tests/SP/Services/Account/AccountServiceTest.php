@@ -40,7 +40,7 @@ use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountData;
-use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -128,11 +128,11 @@ class AccountServiceTest extends DatabaseTestCase
 
         $this->assertEquals($expectedId, self::$service->create($accountRequest));
 
-        $result = self::$service->getById($expectedId);
+        $result = self::$service->getByIdEnriched($expectedId);
 
-        self::$service->withTagsById($result);
-        self::$service->withUsersById($result);
-        self::$service->withUserGroupsById($result);
+        self::$service->withTags($result);
+        self::$service->withUsers($result);
+        self::$service->withUserGroups($result);
 
         $data = $result->getAccountVData();
 
@@ -267,12 +267,12 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testEditRestore()
     {
-        self::$service->editRestore(3, 1);
+        self::$service->restoreModified(3, 1);
 
         $this->expectException(ServiceException::class);
 
-        self::$service->editRestore(1, 1);
-        self::$service->editRestore(3, 10);
+        self::$service->restoreModified(1, 1);
+        self::$service->restoreModified(3, 10);
 
         $this->assertEquals(6, self::getRowCount('AccountHistory'));
     }
@@ -372,11 +372,11 @@ class AccountServiceTest extends DatabaseTestCase
 
         self::$service->update($accountRequest);
 
-        $result = self::$service->getById(1);
+        $result = self::$service->getByIdEnriched(1);
 
-        self::$service->withTagsById($result);
-        self::$service->withUsersById($result);
-        self::$service->withUserGroupsById($result);
+        self::$service->withTags($result);
+        self::$service->withUsers($result);
+        self::$service->withUserGroups($result);
 
         $data = $result->getAccountVData();
 
@@ -444,7 +444,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         self::$service->update($accountRequest);
 
-        $result = self::$service->getById(1);
+        $result = self::$service->getByIdEnriched(1);
 
         $data = $result->getAccountVData();
 
@@ -493,7 +493,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         self::$service->update($accountRequest);
 
-        $result = self::$service->getById(1);
+        $result = self::$service->getByIdEnriched(1);
 
         $data = $result->getAccountVData();
 
@@ -546,7 +546,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         self::$service->update($accountRequest);
 
-        $result = self::$service->getById(1);
+        $result = self::$service->getByIdEnriched(1);
 
         $data = $result->getAccountVData();
 
@@ -599,7 +599,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         self::$service->update($accountRequest);
 
-        $result = self::$service->getById(1);
+        $result = self::$service->getByIdEnriched(1);
 
         $data = $result->getAccountVData();
 
@@ -643,7 +643,7 @@ class AccountServiceTest extends DatabaseTestCase
     {
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->getById(10);
+        self::$service->getByIdEnriched(10);
     }
 
     /**
@@ -788,12 +788,12 @@ class AccountServiceTest extends DatabaseTestCase
     public function testIncrementDecryptCounter()
     {
         /** @var AccountVData $accountBefore */
-        $accountBefore = self::$service->getById(1)->getAccountVData();
+        $accountBefore = self::$service->getByIdEnriched(1)->getAccountVData();
 
         $this->assertTrue(self::$service->incrementDecryptCounter(1));
 
         /** @var AccountVData $accountAfter */
-        $accountAfter = self::$service->getById(1)->getAccountVData();
+        $accountAfter = self::$service->getByIdEnriched(1)->getAccountVData();
 
         $this->assertEquals($accountBefore->getCountDecrypt() + 1, $accountAfter->getCountDecrypt());
     }
@@ -806,12 +806,12 @@ class AccountServiceTest extends DatabaseTestCase
     public function testIncrementViewCounter()
     {
         /** @var AccountVData $accountBefore */
-        $accountBefore = self::$service->getById(1)->getAccountVData();
+        $accountBefore = self::$service->getByIdEnriched(1)->getAccountVData();
 
         $this->assertTrue(self::$service->incrementViewCounter(1));
 
         /** @var AccountVData $accountAfter */
-        $accountAfter = self::$service->getById(1)->getAccountVData();
+        $accountAfter = self::$service->getByIdEnriched(1)->getAccountVData();
 
         $this->assertEquals($accountBefore->getCountView() + 1, $accountAfter->getCountView());
     }
@@ -866,9 +866,9 @@ class AccountServiceTest extends DatabaseTestCase
 
         $expectedId = 5;
 
-        $this->assertEquals($expectedId, self::$service->createFromHistory($data));
+        $this->assertEquals($expectedId, self::$service->restoreRemoved($data));
 
-        $result = self::$service->getById($expectedId);
+        $result = self::$service->getByIdEnriched($expectedId);
         $resultData = $result->getAccountVData();
 
         $this->assertEquals($data->getName(), $resultData->getName());
@@ -911,7 +911,7 @@ class AccountServiceTest extends DatabaseTestCase
         $accountRequest->userGroupsView = [2, 3];
         $accountRequest->userGroupsEdit = [2];
 
-        $bulkRequest = new AccountBulkRequest([1, 2], $accountRequest);
+        $bulkRequest = new AccountUpdateBulkDto([1, 2], $accountRequest);
 
         self::$service->updateBulk($bulkRequest);
 
@@ -929,11 +929,11 @@ class AccountServiceTest extends DatabaseTestCase
      */
     private function checkBulkData(AccountRequest $accountRequest, $accountId)
     {
-        $result = self::$service->getById($accountId);
+        $result = self::$service->getByIdEnriched($accountId);
 
-        self::$service->withTagsById($result);
-        self::$service->withUsersById($result);
-        self::$service->withUserGroupsById($result);
+        self::$service->withTags($result);
+        self::$service->withUsers($result);
+        self::$service->withUserGroups($result);
 
         $data = $result->getAccountVData();
 

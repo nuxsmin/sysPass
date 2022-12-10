@@ -59,7 +59,7 @@ interface AccountToUserRepositoryInterface extends RepositoryInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addByType(int $accountId, array $items, bool $isEdit): void;
+    public function addByType(int $accountId, array $items, bool $isEdit = false): void;
 
     /**
      * Eliminar la asociación de grupos con cuentas.

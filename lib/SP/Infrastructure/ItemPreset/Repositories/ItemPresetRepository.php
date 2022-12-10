@@ -27,8 +27,8 @@ namespace SP\Infrastructure\ItemPreset\Repositories;
 use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
@@ -48,7 +48,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
     /**
      * Creates an item
      *
-     * @param  ItemPresetData  $itemData
+     * @param  ItemPreset  $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -86,7 +86,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
     /**
      * Updates an item
      *
-     * @param  ItemPresetData  $itemData
+     * @param  ItemPreset  $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -154,7 +154,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(ItemPresetData::class);
+        $queryData->setMapClassName(ItemPreset::class);
         $queryData->setQuery(
             'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
         FROM ItemPreset WHERE id = ? LIMIT 1'
@@ -183,7 +183,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
         int $userProfileId
     ): QueryResult {
         $queryData = new QueryData();
-        $queryData->setMapClassName(ItemPresetData::class);
+        $queryData->setMapClassName(ItemPreset::class);
         $queryData->setQuery(
             'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data`,
                     IF(userId IS NOT NULL, priority + 3,
@@ -217,7 +217,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
     public function getAll(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(ItemPresetData::class);
+        $queryData->setMapClassName(ItemPreset::class);
         $queryData->setQuery(
             'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
         FROM ItemPreset'
@@ -242,7 +242,7 @@ class ItemPresetRepository extends Repository implements RepositoryInterface, It
         }
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(ItemPresetData::class);
+        $queryData->setMapClassName(ItemPreset::class);
         $queryData->setQuery(
             'SELECT type, userId, userGroupId, userProfileId, `fixed`, priority, `data`
             FROM ItemPreset WHERE id IN ('.$this->buildParamsFromArray($ids).')'

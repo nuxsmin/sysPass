@@ -28,7 +28,6 @@ use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
-use SP\Http\Request;
 use SP\Http\RequestInterface;
 
 /**
@@ -38,11 +37,9 @@ use SP\Http\RequestInterface;
  */
 abstract class FormBase
 {
-    protected ?int                $itemId;
     protected ConfigFileService   $config;
     protected ConfigDataInterface $configData;
     protected ContextInterface    $context;
-    protected Request             $request;
 
     /**
      * FormBase constructor.
@@ -53,14 +50,12 @@ abstract class FormBase
      */
     public function __construct(
         Application $application,
-        RequestInterface $request,
-        ?int $itemId = null
+        protected RequestInterface $request,
+        protected ?int $itemId = null
     ) {
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->context = $application->getContext();
-        $this->request = $request;
-        $this->itemId = $itemId;
     }
 
     /**
@@ -70,9 +65,4 @@ abstract class FormBase
     {
         return $this->itemId;
     }
-
-    /**
-     * Analizar los datos de la petición HTTP
-     */
-    abstract protected function analyzeRequestData();
 }

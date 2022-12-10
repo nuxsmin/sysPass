@@ -62,8 +62,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     public function testBuildFrom(): void
     {
         $accountSearchVData =
-            array_map(static fn() => AccountSearchVData::buildFromSimpleModel(AccountDataGenerator::factory()
-                ->builAccountSearchVData()), range(0, 4));
+            array_map(static fn() => AccountDataGenerator::factory()->builAccountSearchView(), range(0, 4));
         $numResults = count($accountSearchVData);
 
         $queryResult = new QueryResult($accountSearchVData);
@@ -101,8 +100,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     public function testBuildFromWithColorCacheException(): void
     {
         $accountSearchVData =
-            array_map(static fn() => AccountSearchVData::buildFromSimpleModel(AccountDataGenerator::factory()
-                ->builAccountSearchVData()), range(0, 4));
+            array_map(static fn() => AccountDataGenerator::factory()->builAccountSearchView(), range(0, 4));
         $numResults = count($accountSearchVData);
 
         $queryResult = new QueryResult($accountSearchVData);

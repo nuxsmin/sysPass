@@ -22,17 +22,16 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Account\Models;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\HydratableInterface;
+use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Models\SerializedModel;
 
 /**
- * Class ItemPresetData
- *
- * @package SP\DataModel
+ * Class ItemPreset
  */
-class ItemPresetData extends DataModel implements HydratableInterface
+class ItemPreset extends Model implements HydratableInterface
 {
     use SerializedModel;
 

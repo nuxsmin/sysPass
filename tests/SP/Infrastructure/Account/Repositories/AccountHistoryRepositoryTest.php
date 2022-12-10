@@ -28,11 +28,9 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Common\Adapters\SimpleModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -57,15 +55,15 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doSelect')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->getById($id);
     }
@@ -77,15 +75,15 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doSelect')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->getHistoryForAccount($id);
     }
@@ -105,15 +103,15 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                 return array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->deleteByIdBatch($ids);
     }
@@ -125,7 +123,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     public function testDeleteByIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
-            ->method('doQuery');
+                       ->method('doQuery');
 
         $this->accountHistoryRepository->deleteByIdBatch([]);
     }
@@ -136,33 +134,30 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
      */
     public function testUpdatePassword(): void
     {
-        $accountPasswordRequest = new AccountPasswordRequest(
-            self::$faker->randomNumber(),
-            new EncryptedPassword(self::$faker->password, self::$faker->password),
-            self::$faker->sha1
-        );
+        $id = self::$faker->randomNumber();
+        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
         $expected = new QueryResult();
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountPasswordRequest) {
+            static function (QueryData $arg) use ($id, $encryptedPassword) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return $params['pass'] === $accountPasswordRequest->getEncryptedPassword()->getPass()
-                       && $params['key'] === $accountPasswordRequest->getEncryptedPassword()->getKey()
-                       && $params['id'] === $accountPasswordRequest->getId()
-                       && $params['mPassHash'] === $accountPasswordRequest->getHash()
+                return $params['pass'] === $encryptedPassword->getPass()
+                       && $params['key'] === $encryptedPassword->getKey()
+                       && $params['mPassHash'] === $encryptedPassword->getHash()
+                       && $params['id'] === $id
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
-        $this->assertTrue($this->accountHistoryRepository->updatePassword($accountPasswordRequest));
+        $this->assertTrue($this->accountHistoryRepository->updatePassword($id, $encryptedPassword));
     }
 
     public function testSearch(): void
@@ -176,7 +171,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -195,7 +190,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 return count($arg->getQuery()->getBindValues()) === 0
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -209,12 +204,11 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $this->accountHistoryRepository->search(new ItemSearchData());
     }
 
-
     public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
+                return $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -242,7 +236,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($dto) {
                 $params = $arg->getQuery()->getBindValues();
-                $accountData = $dto->getAccountData();
+                $accountData = $dto->getAccount();
 
                 return $params['clientId'] === $accountData->getClientId()
                        && $params['categoryId'] === $accountData->getCategoryId()
@@ -275,9 +269,9 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
         $this->assertEquals($expected->getLastId(), $this->accountHistoryRepository->create($dto));
     }
@@ -285,7 +279,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     private function buildAccountHistoryCreateDto(): AccountHistoryCreateDto
     {
         return new AccountHistoryCreateDto(
-            AccountData::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountData()),
+            AccountDataGenerator::factory()->buildAccount(),
             self::$faker->boolean(),
             self::$faker->boolean(),
             self::$faker->sha1,
@@ -310,9 +304,9 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
         $this->assertTrue($this->accountHistoryRepository->delete($id));
     }
@@ -335,9 +329,9 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
         $this->assertFalse($this->accountHistoryRepository->delete($id));
     }
@@ -346,7 +340,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === SimpleModel::class
+                return $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -375,15 +369,15 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                 return array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
                        && array_shift($values) === array_shift($ids)
-                       && $arg->getMapClassName() === SimpleModel::class
+                       && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->accountHistoryRepository->deleteByAccountIdBatch($ids);
     }
@@ -395,11 +389,10 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
     public function testDeleteByAccountIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
-            ->method('doQuery');
+                       ->method('doQuery');
 
         $this->accountHistoryRepository->deleteByAccountIdBatch([]);
     }
-
 
     protected function setUp(): void
     {

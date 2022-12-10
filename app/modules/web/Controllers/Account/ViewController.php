@@ -46,9 +46,9 @@ final class ViewController extends AccountViewBase
         try {
             $this->view->addTemplate('account');
 
-            $accountDetailsResponse = $this->accountService->getById($id);
+            $accountDetailsResponse = $this->accountService->getByIdEnriched($id);
             $this->accountService
-                ->withUsersById($accountDetailsResponse)
+                ->withUsers($accountDetailsResponse)
                 ->withUserGroupsById($accountDetailsResponse)
                 ->withTagsById($accountDetailsResponse);
 

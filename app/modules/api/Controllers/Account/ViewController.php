@@ -55,16 +55,14 @@ final class ViewController extends AccountBase
                 $this->apiService->requireMasterPass();
             }
 
-            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
             $this->accountService->incrementViewCounter($id);
 
-            $accountResponse = new AccountEnrichedDto($accountDetails);
-
-            $this->accountService
-                ->withUsersById($accountResponse)
-                ->withUserGroupsById($accountResponse)
-                ->withTagsById($accountResponse);
+            $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
+            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
             $this->eventDispatcher->notifyEvent(
                 'show.account',
@@ -78,7 +76,7 @@ final class ViewController extends AccountBase
                 )
             );
 
-            $out = $this->fractal->createData(new Item($accountResponse, $this->accountAdapter));
+            $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
 
             if ($customFields) {
                 $this->fractal->parseIncludes(['customFields']);

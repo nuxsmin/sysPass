@@ -28,6 +28,8 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountCacheServiceInterface;
 use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
@@ -118,50 +120,50 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
 
         return array_map(
         /**
-         * @param  AccountSearchVData  $accountSearchData
+         * @param  AccountSearchView  $accountSearchView
          *
          * @return \SP\Domain\Account\Services\AccountSearchItem
          * @throws \SP\Core\Exceptions\ConstraintException
          * @throws \SP\Core\Exceptions\QueryException
          * @throws \SP\Core\Exceptions\SPException
          */
-            function (AccountSearchVData $accountSearchData) use ($maxTextLength, $accountLinkEnabled, $favorites) {
+            function (AccountSearchView $accountSearchView) use ($maxTextLength, $accountLinkEnabled, $favorites) {
                 $cache = $this->accountCacheService->getCacheForAccount(
-                    $accountSearchData->getId(),
-                    (int)strtotime($accountSearchData->getDateEdit())
+                    $accountSearchView->getId(),
+                    (int)strtotime($accountSearchView->getDateEdit())
                 );
 
                 // Obtener la ACL de la cuenta
                 $accountAcl = $this->accountAclService->getAcl(
                     ActionsInterface::ACCOUNT_SEARCH,
                     AccountAclDto::makeFromAccountSearch(
-                        $accountSearchData,
+                        $accountSearchView,
                         $cache->getUsers(),
                         $cache->getUserGroups()
                     )
                 );
 
                 $tags = $this->accountToTagRepository
-                    ->getTagsByAccountId($accountSearchData->getId())
+                    ->getTagsByAccountId($accountSearchView->getId())
                     ->getDataAsArray();
 
-                $users = !$accountSearchData->getIsPrivate() ? $cache->getUsers() : null;
-                $userGroups = !$accountSearchData->getIsPrivate() ? $cache->getUserGroups() : null;
+                $users = !$accountSearchView->getIsPrivate() ? $cache->getUsers() : null;
+                $userGroups = !$accountSearchView->getIsPrivate() ? $cache->getUserGroups() : null;
 
                 return new AccountSearchItem(
-                    $accountSearchData,
+                    $accountSearchView,
                     $accountAcl,
                     $this->configData,
                     $tags,
                     $maxTextLength,
-                    isset($favorites[$accountSearchData->getId()]),
+                    isset($favorites[$accountSearchView->getId()]),
                     $users,
                     $userGroups,
-                    $this->pickAccountColor($accountSearchData->getClientId()),
+                    $this->pickAccountColor($accountSearchView->getClientId()),
                     $accountLinkEnabled
                 );
             },
-            $queryResult->getDataAsArray(AccountSearchVData::class)
+            $queryResult->getDataAsArray(AccountSearchView::class)
         );
     }
 

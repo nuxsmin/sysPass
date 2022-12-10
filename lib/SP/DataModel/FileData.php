@@ -24,15 +24,15 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class FileData
  *
  * @package SP\DataModel
  */
-class FileData extends DataModel implements DataModelInterface
+class FileData extends Model implements DataModelInterface
 {
     protected ?int    $id        = null;
     protected ?int    $accountId = null;
@@ -41,7 +41,7 @@ class FileData extends DataModel implements DataModelInterface
     protected ?string $content   = null;
     protected ?string $extension = null;
     protected ?string $thumb     = null;
-    protected ?int    $size;
+    protected ?int    $size      = null;
 
     public function getId(): ?int
     {

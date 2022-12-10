@@ -22,16 +22,33 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Adapters;
+namespace SP\Domain\Account\Ports;
+
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
 
 /**
- * Class SimpleModel
- *
- * This model does not contain any properties, they will be set on $properties property.
- *
- * It's intended to be used when returned non-well defined objects from the repository.
+ * Class AccountItemsService
  */
-final class SimpleModel extends DataModel
+interface AccountItemsServiceInterface
 {
+    /**
+     * Updates external items for the account
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    public function updateItems(
+        bool $userCanChangePermissions,
+        int $accountId,
+        AccountUpdateDto $accountUpdateDto
+    ): void;
 
+    /**
+     * Adds external items to the account
+     */
+    public function addItems(bool $userCanChangePermissions, int $accountId, AccountCreateDto $accountCreateDto): void;
 }

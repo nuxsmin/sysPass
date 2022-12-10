@@ -52,7 +52,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
 <div id="data-search">
     <?php foreach ($data->getData()->getData() as $index => $accountSearchItem):
         if ($index === 'count'): continue; endif;
-        $accountSearchData = $accountSearchItem->getAccountSearchVData();
+        $accountSearchData = $accountSearchItem->getAccountSearchView();
         ?>
 
         <div class="account-label round shadow">

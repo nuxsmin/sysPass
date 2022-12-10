@@ -29,7 +29,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountBulkRequest;
+use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -40,6 +40,7 @@ use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
+use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -74,24 +75,26 @@ final class SaveBulkEditController extends ControllerBase
      * saveBulkEditAction
      *
      * @return bool
-     * @throws \JsonException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function saveBulkEditAction(): bool
     {
         try {
-            $this->accountForm->validateFor(ActionsInterface::ACCOUNTMGR_BULK_EDIT, null);
+            $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
 
-            $request = new AccountBulkRequest(
-                Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
-                $this->accountForm->getItemData()
+            $accountBulkDto = new AccountUpdateBulkDto(
+                array_map(function ($itemId) {
+                    $this->accountForm->validateFor(ActionsInterface::ACCOUNTMGR_BULK_EDIT, $itemId);
+
+                    return $this->accountForm->getItemData();
+                }, $itemsId)
             );
-            $request->setDeleteHistory($this->request->analyzeBool('delete_history', false));
 
-            if ($request->isDeleteHistory()) {
-                $this->accountHistoryService->deleteByAccountIdBatch($request->getItemsId());
+            if ($this->request->analyzeBool('delete_history', false)) {
+                $this->accountHistoryService->deleteByAccountIdBatch($itemsId);
             }
 
-            $this->accountService->updateBulk($request);
+            $this->accountService->updateBulk($accountBulkDto);
 
             $this->eventDispatcher->notifyEvent(
                 'edit.account.bulk',

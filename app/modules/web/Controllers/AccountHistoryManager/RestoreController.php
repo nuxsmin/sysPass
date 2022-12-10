@@ -76,9 +76,9 @@ final class RestoreController extends ControllerBase
             $accountDetails = $this->accountHistoryService->getById($id);
 
             if ($accountDetails->isModify) {
-                $this->accountService->editRestore($id, $accountDetails->getAccountId());
+                $this->accountService->restoreModified($id, $accountDetails->getAccountId());
             } else {
-                $this->accountService->createFromHistory($accountDetails);
+                $this->accountService->restoreRemoved($accountDetails);
             }
 
             $this->eventDispatcher->notifyEvent(

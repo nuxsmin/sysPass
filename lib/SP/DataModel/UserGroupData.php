@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModel;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class UserGroupData extends DataModel implements DataModelInterface
+class UserGroupData extends Model implements DataModelInterface
 {
     public int     $id          = 0;
     public ?string $name        = null;
