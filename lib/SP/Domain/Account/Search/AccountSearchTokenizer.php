@@ -31,8 +31,10 @@ use SP\Util\Filter;
  */
 final class AccountSearchTokenizer
 {
-    private const SEARCH_REGEX = /** @lang RegExp */
-        '/(?<search>(?<!:)\b[^:]+\b(?!:))|(?<filter_subject>[a-zа-я_]+):(?<filter_condition>[^"\'\s]+|"[^":]+")/u';
+    private const FILTER_KEY_SUBJECT   = 'subject';
+    private const FILTER_KEY_CONDITION = 'condition';
+    private const SEARCH_REGEX_FILTERS = /** @lang RegExp */
+        '/\b(?<subject>\w+):(?<condition>[^\s"]+|["\'][^"]+["\'])/u';
 
     private const FILTERS = [
         'condition' => [
@@ -66,24 +68,33 @@ final class AccountSearchTokenizer
      */
     public function tokenizeFrom(string $search): ?AccountSearchTokens
     {
-        $match = preg_match_all(self::SEARCH_REGEX, $search, $filters);
+        $matchFilters = preg_match_all(self::SEARCH_REGEX_FILTERS, $search, $filters);
 
-        if (empty($match)) {
+        $searchWithoutFilters = $search;
+        $filtersAndConditions = [];
+
+        if ($matchFilters !== false && $matchFilters > 0) {
+            $filtersAndConditions = array_combine(
+                array_values($filters[self::FILTER_KEY_SUBJECT]),
+                array_map(static fn($v) => trim($v, '"'), $filters[self::FILTER_KEY_CONDITION])
+            );
+
+            $searchWithoutFilters = array_reduce(
+                $filters[0],
+                static fn($out, $filter) => str_replace($filter, '', $out),
+                $search
+            );
+        }
+
+        if (empty($searchWithoutFilters) && empty($filtersAndConditions)) {
             return null;
         }
 
-        $filtersAndValues = array_filter(
-            array_combine(
-                $filters['filter_subject'],
-                array_map(static fn($value) => str_replace('"', '', $value), $filters['filter_condition'])
-            )
-        );
-
         return new AccountSearchTokens(
-            Filter::safeSearchString(trim($filters['search'][0] ?? '')),
-            $this->getConditions($filtersAndValues),
-            $this->getItems($filtersAndValues),
-            $this->getOperator($filtersAndValues),
+            Filter::safeSearchString(trim($searchWithoutFilters)),
+            $this->getConditions($filtersAndConditions),
+            $this->getItems($filtersAndConditions),
+            $this->getOperator($filtersAndConditions),
         );
     }
 
@@ -97,8 +108,8 @@ final class AccountSearchTokenizer
         return array_filter(
             array_map(
                 static function ($subject, $condition) {
-                    if (in_array($subject, self::FILTERS['condition']['subject'], true)
-                        && in_array($condition, self::FILTERS['condition']['condition'], true)
+                    if (in_array($subject, self::FILTERS['condition'][self::FILTER_KEY_SUBJECT], true)
+                        && in_array($condition, self::FILTERS['condition'][self::FILTER_KEY_CONDITION], true)
                     ) {
                         return sprintf("%s:%s", $subject, $condition);
                     }
@@ -120,14 +131,13 @@ final class AccountSearchTokenizer
     {
         $items = array_filter(
             $filtersAndValues,
-            static function ($value, $key) {
-                return array_key_exists($key, self::FILTERS['items']['subject']) && !empty($value);
-            },
+            static fn($value, $key) => array_key_exists($key, self::FILTERS['items'][self::FILTER_KEY_SUBJECT])
+                                       && !empty($value),
             ARRAY_FILTER_USE_BOTH
         );
 
         return array_combine(
-            array_map(static fn($key) => self::FILTERS['items']['subject'][$key], array_keys($items)),
+            array_map(static fn($key) => self::FILTERS['items'][self::FILTER_KEY_SUBJECT][$key], array_keys($items)),
             array_values($items)
         );
     }
@@ -142,8 +152,8 @@ final class AccountSearchTokenizer
         $operator = array_filter(
             $filtersAndValues,
             static function ($value, $key) {
-                return in_array($key, self::FILTERS['operator']['subject'], true)
-                       && in_array($value, self::FILTERS['operator']['condition'], true);
+                return in_array($key, self::FILTERS['operator'][self::FILTER_KEY_SUBJECT], true)
+                       && in_array($value, self::FILTERS['operator'][self::FILTER_KEY_CONDITION], true);
             },
             ARRAY_FILTER_USE_BOTH
         );

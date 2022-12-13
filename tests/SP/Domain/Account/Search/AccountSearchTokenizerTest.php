@@ -110,7 +110,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     public function testTokenizeFromFilterUsingSearchStringWithIsNull(): void
     {
         $tokenizer = new AccountSearchTokenizer();
-        $out = $tokenizer->tokenizeFrom('$');
+        $out = $tokenizer->tokenizeFrom('');
 
         $this->assertNull($out);
     }
