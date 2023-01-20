@@ -61,8 +61,7 @@ $group = $_getvar('group');
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <select id="default_client_id" name="default_client_id"
-                                    class="select-box"
-                                    required <?php echo $_getvar('disabled'); ?>>
+                                    class="select-box" <?php echo $_getvar('disabled'); ?>>
                             <option value=""><?php echo __('Select Client'); ?></option>
                             <?php /** @var SelectItem $client */
                             foreach ($_getvar('clients') as $client): ?>
