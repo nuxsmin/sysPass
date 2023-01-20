@@ -558,9 +558,10 @@ DROP TABLE IF EXISTS `UserGroup`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `UserGroup`
 (
-  `id`          smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `name`        varchar(50)          NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `id`              smallint(5) unsigned  NOT NULL AUTO_INCREMENT,
+  `name`            varchar(50)           NOT NULL,
+  `description`     varchar(255)                   DEFAULT NULL,
+  `defaultClientId` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB

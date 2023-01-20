@@ -72,6 +72,7 @@ final class UserGroupForm extends FormBase implements FormInterface
         $this->groupData->setId($this->itemId);
         $this->groupData->setName($this->request->analyzeString('name'));
         $this->groupData->setDescription($this->request->analyzeString('description'));
+        $this->groupData->setDefaultClientId($this->request->analyzeInt('default_client_id'));
         $this->groupData->setUsers($this->request->analyzeArray('users', null, []));
     }
 

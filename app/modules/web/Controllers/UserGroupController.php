@@ -46,6 +46,7 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Auth\AuthException;
 use SP\Services\ServiceException;
+use SP\Services\Client\ClientService;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserGroup\UserToUserGroupService;
@@ -158,6 +159,10 @@ final class UserGroupController extends ControllerBase implements CrudController
         $userGroupData = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 
         $this->view->assign('group', $userGroupData);
+
+        $clients = SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModel();
+
+        $this->view->assign('clients', $clients);
 
         $users = $userGroupData->getUsers() ?: [];
 
