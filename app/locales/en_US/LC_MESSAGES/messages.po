@@ -4950,6 +4950,7 @@ msgstr "Permissions"
 #: app/modules/web/themes/material-blue/views/account/account.inc:100
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
+#: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:66
 msgid "Select Client"
 msgstr "Select Client"
 
@@ -5570,6 +5571,10 @@ msgstr "Domain name"
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:281
 msgid "Default Group"
 msgstr "Default Group"
+
+#: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:60
+msgid "Default Client"
+msgstr "Default Client"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:91
 msgid "Sets the default users group for newly created SSO users"

@@ -168,7 +168,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE id = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `name`, description, defaultClientId FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
         return $this->db->doSelect($queryData);
@@ -187,7 +187,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE name = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `name`, description, defaultClientId FROM UserGroup WHERE name = ? LIMIT 1');
         $queryData->addParam($name);
 
         return $this->db->doSelect($queryData);
@@ -204,7 +204,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup ORDER BY name');
+        $queryData->setQuery('SELECT id, `name`, description, defaultClientId FROM UserGroup ORDER BY name');
 
         return $this->db->doSelect($queryData);
     }
@@ -225,7 +225,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         }
 
         $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, name, description, defaultClientId FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
@@ -270,7 +270,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setSelect('id, name, description');
+        $queryData->setSelect('id, name, description, defaultClientId');
         $queryData->setFrom('UserGroup');
         $queryData->setOrder('name');
 
@@ -307,11 +307,11 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO UserGroup SET `name` = ?, description = ?';
+            'INSERT INTO UserGroup SET `name` = ?, description = ?, defaultClientId = ?';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$itemData->getName(), $itemData->getDescription()]);
+        $queryData->setParams([$itemData->getName(), $itemData->getDescription(), $itemData->getDefaultClientId()]);
         $queryData->setOnErrorMessage(__u('Error while creating the group'));
 
         return $this->db->doQuery($queryData)->getLastId();
@@ -352,10 +352,11 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE UserGroup SET `name` = ?, description = ? WHERE id = ? LIMIT 1');
+        $queryData->setQuery('UPDATE UserGroup SET `name` = ?, description = ?, defaultClientId = ? WHERE id = ? LIMIT 1');
         $queryData->setParams([
             $itemData->getName(),
             $itemData->getDescription(),
+            $itemData->getDefaultClientId(),
             $itemData->getId()
         ]);
         $queryData->setOnErrorMessage(__u('Error while updating the group'));

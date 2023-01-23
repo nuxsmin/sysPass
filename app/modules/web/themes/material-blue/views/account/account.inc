@@ -38,6 +38,7 @@ use SP\Services\Account\AccountAcl;
 
 $accountData = $_getvar('accountData');
 $accountAcl = $_getvar('accountAcl');
+$accountClientId = $_getvar('accountClientId');
 $gotData = $_getvar('gotData', false);
 $showLinked = $gotData && count($_getvar('linkedAccounts', [])) > 0;
 $showFiles = $gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles();
@@ -128,7 +129,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 foreach ($_getvar('clients') as $client): ?>
                                     <option
                                             value="<?php echo $client->getId(); ?>"
-                                        <?php echo ($gotData && $client->getId() === $accountData->getClientId())
+                                        <?php echo ($client->getId() === $accountClientId)
                                             ? 'selected'
                                             : ''; ?>
                                     >

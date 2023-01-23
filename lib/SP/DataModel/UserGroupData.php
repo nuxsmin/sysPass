@@ -46,6 +46,10 @@ class UserGroupData extends DataModelBase implements DataModelInterface
      */
     public $description;
     /**
+     * @var int
+     */
+    public $defaultClientId = 0;
+    /**
      * @var array
      */
     public $users;
@@ -83,6 +87,14 @@ class UserGroupData extends DataModelBase implements DataModelInterface
     }
 
     /**
+     * @return int
+     */
+    public function getDefaultClientId()
+    {
+        return (int)$this->defaultClientId;
+    }
+
+    /**
      * @return array
      */
     public function getUsers()
@@ -112,5 +124,13 @@ class UserGroupData extends DataModelBase implements DataModelInterface
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param int $defaultClientId
+     */
+    public function setDefaultClientId($defaultClientId)
+    {
+        $this->defaultClientId = (int)$defaultClientId;
     }
 }

@@ -92,6 +92,10 @@ final class AccountHelper extends HelperBase
      */
     private $itemPresetService;
     /**
+     * @var UserGroupService
+     */
+    private $userGroupService;
+    /**
      * @var string
      */
     private $actionId;
@@ -217,6 +221,8 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountId', $accountData->getId());
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
+
+        $this->view->assign('accountClientId', $accountData->getClientId());
 
         $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
 
@@ -403,6 +409,9 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
+        $userGroupData = $this->userGroupService->getById($userData->getUserGroupId());
+        $this->view->assign('accountClientId', $userGroupData->getDefaultClientId());
+
         $this->view->assign('accountActions',
             $this->dic->get(AccountActionsHelper::class)
                 ->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
@@ -463,6 +472,7 @@ final class AccountHelper extends HelperBase
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
         $this->publicLinkService = $this->dic->get(PublicLinkService::class);
         $this->itemPresetService = $this->dic->get(ItemPresetService::class);
+        $this->userGroupService = $this->dic->get(UserGroupService::class);
 
         $this->view->assign('changesHash', '');
         $this->view->assign('chkUserEdit', false);
