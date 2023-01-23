@@ -222,8 +222,7 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $userGroupData = $this->userGroupService->getById($userData->getUserGroupId());
-        $this->view->assign('accountClientId', $userGroupData->getDefaultClientId());
+        $this->view->assign('accountClientId', $accountData->getClientId());
 
         $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
 
