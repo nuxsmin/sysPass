@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,13 +37,11 @@ use function SP\__u;
  */
 final class QueryData
 {
-    protected string  $mapClassName   = Simple::class;
+    private const DEFAULT_MAP_CLASS = Simple::class;
+    protected string  $mapClassName   = self::DEFAULT_MAP_CLASS;
     protected ?string $onErrorMessage = null;
 
-    public function __construct(private QueryInterface $query)
-    {
-        $this->query = $query;
-    }
+    public function __construct(private QueryInterface $query) {}
 
     public static function build(QueryInterface $query): QueryData
     {
@@ -60,7 +58,7 @@ final class QueryData
 
     private static function checkClassOrDefault(string $class): string
     {
-        return class_exists($class) ? $class : Simple::class;
+        return class_exists($class) ? $class : self::DEFAULT_MAP_CLASS;
     }
 
     public function getQuery(): QueryInterface

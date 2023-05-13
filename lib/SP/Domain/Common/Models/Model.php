@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -80,7 +80,7 @@ abstract class Model implements JsonSerializable
     /**
      * @param  array|null  $only  Include only these properties
      * @param  array|null  $filter  Filter out these properties
-     * @param  bool  $includeOuter
+     * @param  bool  $includeOuter  Whether to include non-class properties
      *
      * @return array
      */

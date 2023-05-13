@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,7 @@ use SP\Core\Application;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToTagServiceInterface;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 
 /**
@@ -49,14 +50,20 @@ final class AccountToTagService extends Service implements AccountToTagServiceIn
     }
 
     /**
+     * @param  int  $id
+     *
      * @return ItemData[]
+     *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getTagsByAccountId(int $id): array
     {
-        return $this->accountToTagRepository
+        $tags = $this->accountToTagRepository
             ->getTagsByAccountId($id)
-            ->getDataAsArray();
+            ->getDataAsArray(Simple::class);
+
+        return array_map(fn($tag) => ItemData::buildFromSimpleModel($tag), $tags);
     }
 }
