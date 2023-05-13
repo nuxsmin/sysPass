@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,6 +35,9 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Database
@@ -90,6 +93,8 @@ final class Database implements DatabaseInterface
     }
 
     /**
+     * Perform a SELECT type query
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -125,7 +130,7 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Realizar una consulta a la BBDD.
+     * Perform any type of query
      *
      * @throws QueryException
      * @throws ConstraintException
@@ -213,26 +218,8 @@ final class Database implements DatabaseInterface
         }
     }
 
-    /**
-     * Strips out the unused params from the query count
-     *
-     * TODO: remove??
-     */
-    private function getParamsForCount(QueryData $queryData): array
-    {
-        $countSelect = substr_count($queryData->getSelect(), '?');
-        $countFrom = substr_count($queryData->getFrom(), '?');
-        $countWhere = substr_count($queryData->getWhere(), '?');
-
-        return array_slice($queryData->getParams(), $countSelect, $countFrom + $countWhere);
-    }
-
     private function fetch(QueryData $queryData, PDOStatement $stmt): array
     {
-        if ($queryData->isUseKeyPair()) {
-            return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        }
-
         if ($queryData->getMapClassName()) {
             return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
         }
@@ -284,7 +271,7 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Iniciar una transacción
+     * Start a transaction
      */
     public function beginTransaction(): bool
     {
@@ -310,7 +297,7 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Finalizar una transacción
+     * Finish a transaction
      */
     public function endTransaction(): bool
     {
@@ -330,7 +317,7 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Rollback de una transacción
+     * Rollback a transaction
      */
     public function rollbackTransaction(): bool
     {
@@ -349,6 +336,13 @@ final class Database implements DatabaseInterface
         return $result;
     }
 
+    /**
+     * Get the columns of a table
+     *
+     * @param  string  $table
+     *
+     * @return array
+     */
     public function getColumnsForTable(string $table): array
     {
         $conn = $this->dbHandler->getConnection()->query("SELECT * FROM `$table` LIMIT 0");

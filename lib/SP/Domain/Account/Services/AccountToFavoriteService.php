@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -54,6 +54,7 @@ final class AccountToFavoriteService extends Service implements AccountToFavorit
      *
      * @throws ConstraintException
      * @throws QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getForUserId(int $id): array
     {
