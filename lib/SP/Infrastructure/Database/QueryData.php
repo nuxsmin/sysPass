@@ -85,7 +85,6 @@ final class QueryData
     {
         if ($this->query instanceof Select) {
             $countQuery = (clone $this->query)
-                ->resetFlags()
                 ->resetCols()
                 ->resetOrderBy()
                 ->resetGroupBy()

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -119,7 +119,7 @@ final class PublicLinkRepository extends Repository implements \SP\Domain\Accoun
         $query = $this->queryFactory
             ->newDelete()
             ->from('PublicLink')
-            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+            ->where('id IN (:ids)', ['ids' => $ids]);
 
         return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -165,8 +165,8 @@ final class PublicLinkRepository extends Repository implements \SP\Domain\Accoun
 
         if (!empty($itemSearchData->getSeachString())) {
             $query->where('User.login LIKE :login')
-                ->orWhere('Account.name LIKE :accountName')
-                ->orWhere('Client.name LIKE :clientName');
+                  ->orWhere('Account.name LIKE :accountName')
+                  ->orWhere('Client.name LIKE :clientName');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
 

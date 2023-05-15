@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -279,7 +279,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
         $query = $this->queryFactory
             ->newDelete()
             ->from('AccountHistory')
-            ->where(sprintf('id IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+            ->where('id IN (:ids)', ['ids' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
@@ -304,7 +304,7 @@ final class AccountHistoryRepository extends Repository implements AccountHistor
         $query = $this->queryFactory
             ->newDelete()
             ->from('AccountHistory')
-            ->where(sprintf('accountId IN (%s)', $this->buildParamsFromArray($ids)), ...$ids);
+            ->where('accountId IN (:accountIds)', ['accountIds' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 

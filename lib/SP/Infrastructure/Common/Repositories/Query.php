@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,29 +24,14 @@
 
 namespace SP\Infrastructure\Common\Repositories;
 
+use Aura\SqlQuery\Common\Quoter;
 use Aura\SqlQuery\QueryInterface;
-use Aura\SqlQuery\Quoter;
 
 /**
  * Class Query
  */
 final class Query implements QueryInterface
 {
-    /**
-     *
-     * The quote prefix/suffix to use for each type.
-     *
-     * @var array
-     *
-     */
-    private const QUOTES = [
-        'Common' => ['"', '"'],
-        'Mysql'  => ['`', '`'],
-        'Pgsql'  => ['"', '"'],
-        'Sqlite' => ['"', '"'],
-        'Sqlsrv' => ['[', ']'],
-    ];
-
     private string $query;
     private array  $values;
     private Quoter $quoter;
@@ -55,7 +40,7 @@ final class Query implements QueryInterface
     {
         $this->query = $query;
         $this->values = $values;
-        $this->quoter = new Quoter(self::QUOTES[$db][0], self::QUOTES[$db][1]);
+        $this->quoter = new Quoter();
     }
 
     /**
@@ -64,7 +49,7 @@ final class Query implements QueryInterface
      * @param  string  $query
      * @param  array  $values
      *
-     * @return \SP\Domain\Common\In\Query
+     * @return \SP\Infrastructure\Common\Repositories\Query
      */
     public static function buildForMySQL(string $query, array $values): Query
     {
@@ -155,5 +140,10 @@ final class Query implements QueryInterface
     public function getStatement(): string
     {
         return $this->query;
+    }
+
+    public function resetFlags()
+    {
+        // TODO: Implement resetFlags() method.
     }
 }
