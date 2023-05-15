@@ -26,66 +26,75 @@ namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
-use SP\Domain\Account\Services\AccountToTagService;
-use SP\Domain\Common\Models\Simple;
+use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
+use SP\Domain\Account\Services\AccountToUserGroupService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
- * Class AccountToTagServiceTest
+ * Class AccountToUserGroupServiceTest
  *
  * @group unitary
  */
-class AccountToTagServiceTest extends UnitaryTestCase
+class AccountToUserGroupServiceTest extends UnitaryTestCase
 {
 
-    private AccountToTagService                        $accountToTagService;
-    private AccountToTagRepositoryInterface|MockObject $accountToTagRepository;
+    private AccountToUserGroupService                        $accountToUserGroupService;
+    private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testGetTagsByAccountId()
+    public function testGetUserGroupsByAccountId()
     {
         $accountId = self::$faker->randomNumber();
 
         $result =
-            new QueryResult([new Simple(['id' => self::$faker->randomNumber(), 'name' => self::$faker->colorName])]);
+            new QueryResult(
+                [
+                    new ItemData(
+                        [
+                            'id'     => self::$faker->randomNumber(),
+                            'name'   => self::$faker->colorName,
+                            'isEdit' => self::$faker->boolean,
+                        ]
+                    ),
+                ]
+            );
 
-        $this->accountToTagRepository
+        $this->accountToUserGroupRepository
             ->expects(self::once())
-            ->method('getTagsByAccountId')
+            ->method('getUserGroupsByAccountId')
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToTagService->getTagsByAccountId($accountId);
-        $expected = $result->getData(Simple::class)->toArray(null, null, true);
+        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
+        $expected = $result->getData(ItemData::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof ItemData);
-        $this->assertEquals($expected, $actual[0]->toArray());
+        $this->assertEquals($expected, $actual[0]->toArray(null, null, true));
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testGetTagsByAccountIdWithNotags()
+    public function testGetUserGroupsByAccountIdWithNoUserGroups()
     {
         $accountId = self::$faker->randomNumber();
 
         $result = new QueryResult([]);
 
-        $this->accountToTagRepository
+        $this->accountToUserGroupRepository
             ->expects(self::once())
-            ->method('getTagsByAccountId')
+            ->method('getUserGroupsByAccountId')
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToTagService->getTagsByAccountId($accountId);
+        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
 
         $this->assertEmpty($actual);
     }
@@ -94,9 +103,10 @@ class AccountToTagServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
 
-        $this->accountToTagService =
-            new AccountToTagService($this->application, $this->accountToTagRepository);
+        $this->accountToUserGroupService =
+            new AccountToUserGroupService($this->application, $this->accountToUserGroupRepository);
     }
+
 }
