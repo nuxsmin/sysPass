@@ -26,28 +26,28 @@ namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Services\AccountToUserGroupService;
+use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
+use SP\Domain\Account\Services\AccountToUserService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
- * Class AccountToUserGroupServiceTest
+ * Class AccountToUserServiceTest
  *
  * @group unitary
  */
-class AccountToUserGroupServiceTest extends UnitaryTestCase
+class AccountToUserServiceTest extends UnitaryTestCase
 {
 
-    private AccountToUserGroupService                        $accountToUserGroupService;
-    private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
+    private AccountToUserRepositoryInterface|MockObject $accountToUserRepository;
+    private AccountToUserService                        $accountToUserService;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testGetUserGroupsByAccountId()
+    public function testGetUsersByAccountId()
     {
         $accountId = self::$faker->randomNumber();
 
@@ -59,18 +59,19 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
                             'id'     => self::$faker->randomNumber(),
                             'name'   => self::$faker->colorName,
                             'isEdit' => self::$faker->boolean,
+                            'login'  => self::$faker->colorName,
                         ]
                     ),
                 ]
             );
 
-        $this->accountToUserGroupRepository
+        $this->accountToUserRepository
             ->expects(self::once())
-            ->method('getUserGroupsByAccountId')
+            ->method('getUsersByAccountId')
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
+        $actual = $this->accountToUserService->getUsersByAccountId($accountId);
         $expected = $result->getData(ItemData::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof ItemData);
@@ -78,23 +79,23 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function testGetUserGroupsByAccountIdWithNoUserGroups()
+    public function testGetUsersByAccountIdWithNoUsers()
     {
         $accountId = self::$faker->randomNumber();
 
         $result = new QueryResult([]);
 
-        $this->accountToUserGroupRepository
+        $this->accountToUserRepository
             ->expects(self::once())
-            ->method('getUserGroupsByAccountId')
+            ->method('getUsersByAccountId')
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
+        $actual = $this->accountToUserService->getUsersByAccountId($accountId);
 
         $this->assertEmpty($actual);
     }
@@ -103,9 +104,9 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
 
-        $this->accountToUserGroupService =
-            new AccountToUserGroupService($this->application, $this->accountToUserGroupRepository);
+        $this->accountToUserService =
+            new AccountToUserService($this->application, $this->accountToUserRepository);
     }
 }
