@@ -22,43 +22,40 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services;
+namespace SP\Tests\Domain\Account\Services;
 
-use SP\Util\PasswordUtil;
+use SP\Domain\Account\Services\PublicLinkKey;
+use SP\Tests\UnitaryTestCase;
 
 /**
- * Class PublicLinkKey
+ * Class PublicLinkKeyTest
  *
- * @package SP\Domain\Common\Services\PublicLink
+ * @group unitary
  */
-final class PublicLinkKey
+class PublicLinkKeyTest extends UnitaryTestCase
 {
-    private string $hash;
-    private string $salt;
 
     /**
-     * PublicLinkKey constructor.
-     *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    public function __construct(string $salt, ?string $hash = null)
+    public function testGetKeyWithoutHash()
     {
-        $this->salt = $salt;
+        $publicLinkKey = new PublicLinkKey(self::$faker->sha1);
 
-        if ($hash === null) {
-            $this->hash = PasswordUtil::generateRandomBytes();
-        } else {
-            $this->hash = $hash;
-        }
+        $this->assertNotEmpty($publicLinkKey->getKey());
+        $this->assertNotEmpty($publicLinkKey->getHash());
     }
 
-    public function getKey(): string
+    /**
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function testGetKeyWithHash()
     {
-        return sha1($this->salt.$this->hash);
-    }
+        $hash = self::$faker->sha1;
 
-    public function getHash(): string
-    {
-        return $this->hash;
+        $publicLinkKey = new PublicLinkKey(self::$faker->sha1, $hash);
+
+        $this->assertNotEmpty($publicLinkKey->getKey());
+        $this->assertEquals($hash, $publicLinkKey->getHash());
     }
 }
