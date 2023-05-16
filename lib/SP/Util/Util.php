@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,6 @@ use JetBrains\PhpStorm\NoReturn;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use function SP\logger;
-
-defined('APP_ROOT') || die();
 
 /**
  * Clase con utilizades para la aplicación

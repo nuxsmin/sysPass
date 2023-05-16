@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,12 +30,12 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\PublickLinkOldData;
 use SP\DataModel\PublicLinkData;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Domain\Account\Ports\UpgradePublicLinkServiceInterface;
 use SP\Domain\Common\Services\Service;
-use SP\Infrastructure\Database\DatabaseInterface;
-use SP\Infrastructure\Database\QueryData;
 use SP\Util\Util;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class UpgradePublicLink
@@ -44,18 +44,11 @@ use SP\Util\Util;
  */
 final class UpgradePublicLinkService extends Service implements UpgradePublicLinkServiceInterface
 {
-    protected PublicLinkServiceInterface $publicLinkService;
-    protected DatabaseInterface          $database;
-
     public function __construct(
         Application $application,
-        PublicLinkServiceInterface $publicLinkService,
-        DatabaseInterface $database
+        protected PublicLinkRepositoryInterface $publicLinkRepository
     ) {
         parent::__construct($application);
-
-        $this->publicLinkService = $publicLinkService;
-        $this->database = $database;
     }
 
     /**
@@ -68,53 +61,52 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDescription(__u('Public links update'))
-                    ->addDescription(__FUNCTION__)
+                            ->addDescription(__u('Public links update'))
+                            ->addDescription(__FUNCTION__)
             )
         );
 
         try {
-            $this->transactionAware(
+            $this->publicLinkRepository->transactionAware(
                 function () {
-                    $queryData = new QueryData();
-                    $queryData->setQuery('SELECT id, `data` FROM PublicLink');
+                    $items = $this->publicLinkRepository->getAny(['id', 'data'], 'PublicLink')->getDataAsArray();
 
-                    foreach ($this->database->doSelect($queryData)->getDataAsArray() as $item) {
-                        /** @var PublickLinkOldData $data */
+                    foreach ($items as $item) {
                         $data = Util::unserialize(
                             PublickLinkOldData::class,
-                            $item->data,
+                            $item['data'],
                             PublicLinkData::class
                         );
 
-                        $itemData = new PublicLinkData();
-                        $itemData->setId($item->id);
-                        $itemData->setItemId($data->getItemId());
-                        $itemData->setHash($data->getLinkHash());
-                        $itemData->setUserId($data->getUserId());
-                        $itemData->setTypeId($data->getTypeId());
-                        $itemData->setNotify($data->isNotify());
-                        $itemData->setDateAdd($data->getDateAdd());
-                        $itemData->setDateExpire($data->getDateExpire());
-                        $itemData->setCountViews($data->getCountViews());
-                        $itemData->setMaxCountViews($data->getCountViews());
-                        $itemData->setUseInfo($data->getUseInfo());
-                        $itemData->setData($data->getData());
+                        $itemData = new PublicLinkData([
+                            'id'            => $item['id'],
+                            'itemId'        => $data->getItemId(),
+                            'hash'          => $data->getLinkHash(),
+                            'userId'        => $data->getUserId(),
+                            'typeId'        => $data->getTypeId(),
+                            'notify'        => $data->isNotify(),
+                            'dateAdd'       => $data->getDateAdd(),
+                            'dateExpire'    => $data->getDateExpire(),
+                            'countViews'    => $data->getCountViews(),
+                            'maxCountViews' => $data->getMaxCountViews(),
+                            'useInfo'       => serialize($data->getUseInfo()),
+                            'data'          => $data->getData(),
+                        ]);
 
-                        $this->publicLinkService->update($itemData);
+                        $this->publicLinkRepository->update($itemData);
 
                         $this->eventDispatcher->notifyEvent(
                             'upgrade.publicLink.process',
                             new Event(
                                 $this,
                                 EventMessage::factory()
-                                    ->addDescription(__u('Link updated'))
-                                    ->addDetail(__u('Link'), $item->id)
+                                            ->addDescription(__u('Link updated'))
+                                            ->addDetail(__u('Link'), $item['id'])
                             )
                         );
                     }
                 },
-                $this->database
+                $this
             );
         } catch (Exception $e) {
             processException($e);
@@ -127,8 +119,8 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDescription(__u('Public links update'))
-                    ->addDescription(__FUNCTION__)
+                            ->addDescription(__u('Public links update'))
+                            ->addDescription(__FUNCTION__)
             )
         );
     }

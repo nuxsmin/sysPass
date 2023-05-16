@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -1300,9 +1300,7 @@ class AccountServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $methods = array_diff(get_class_methods(AccountRepositoryStub::class), ['transactionAware']);
-
-        $this->accountRepository = $this->createPartialMock(AccountRepositoryStub::class, $methods);
+        $this->accountRepository = $this->getMockForAbstractClass(AccountRepositoryStub::class);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
         $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);

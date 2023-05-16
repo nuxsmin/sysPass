@@ -25,12 +25,12 @@
 namespace SP\Tests\Stubs;
 
 use Closure;
-use SP\Domain\Account\Ports\AccountRepositoryInterface;
+use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 
 /**
- * Class AccountRepositoryStub
+ * Class AbstractPublicLinkRepositoryStub
  */
-abstract class AccountRepositoryStub implements AccountRepositoryInterface
+abstract class PublicLinkRepositoryStub implements PublicLinkRepositoryInterface
 {
     public function transactionAware(Closure $closure, object $newThis): mixed
     {

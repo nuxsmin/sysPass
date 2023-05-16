@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,6 +35,8 @@ use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\DatabaseInterface;
+use SP\Infrastructure\Database\QueryData;
+use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 use function SP\logger;
 
@@ -90,5 +92,33 @@ abstract class Repository implements RepositoryInterface
         } else {
             throw new ServiceException(__u('Unable to start a transaction'));
         }
+    }
+
+    /**
+     * Run a SQL select query to get any data from any table
+     *
+     * @param  array  $columns
+     * @param  string  $from
+     * @param  string|null  $where
+     * @param  array|null  $bindValues
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
+     */
+    final public function getAny(
+        array $columns,
+        string $from,
+        ?string $where = null,
+        ?array $bindValues = null
+    ): QueryResult {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols($columns)
+            ->from($from);
+
+        if (!empty($where)) {
+            $query->where($where)->bindValues($bindValues);
+        }
+
+        return $this->db->doSelect(QueryData::build($query));
     }
 }

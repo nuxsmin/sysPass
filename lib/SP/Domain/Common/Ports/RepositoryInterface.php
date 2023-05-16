@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Domain\Common\Ports;
 
 use Closure;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Interface RepositoryItemInterface
@@ -44,4 +45,21 @@ interface RepositoryInterface
      * @throws \Exception
      */
     public function transactionAware(Closure $closure, object $newThis): mixed;
+
+    /**
+     * Run a SQL select query to get any data from any table
+     *
+     * @param  array  $columns
+     * @param  string  $from
+     * @param  string|null  $where
+     * @param  array|null  $bindValues
+     *
+     * @return \SP\Infrastructure\Database\QueryResult
+     */
+    public function getAny(
+        array $columns,
+        string $from,
+        ?string $where = null,
+        ?array $bindValues = null
+    ): QueryResult;
 }
