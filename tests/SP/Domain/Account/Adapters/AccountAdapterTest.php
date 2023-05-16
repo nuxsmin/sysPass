@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -119,16 +119,16 @@ class AccountAdapterTest extends UnitaryTestCase
         )->toArray();
 
         $this->assertArrayHasKey('customFields', $out['data']);
-        $this->assertEquals($customFieldData->typeName, $out['data']['customFields']['data'][0]['type']);
-        $this->assertEquals($customFieldData->typeText, $out['data']['customFields']['data'][0]['typeText']);
-        $this->assertEquals($customFieldData->definitionId, $out['data']['customFields']['data'][0]['definitionId']);
+        $this->assertEquals($customFieldData['typeName'], $out['data']['customFields']['data'][0]['type']);
+        $this->assertEquals($customFieldData['typeText'], $out['data']['customFields']['data'][0]['typeText']);
+        $this->assertEquals($customFieldData['definitionId'], $out['data']['customFields']['data'][0]['definitionId']);
         $this->assertEquals(
-            $customFieldData->definitionName,
+            $customFieldData['definitionName'],
             $out['data']['customFields']['data'][0]['definitionName']
         );
-        $this->assertEquals($customFieldData->help, $out['data']['customFields']['data'][0]['help']);
-        $this->assertEquals($customFieldData->value, $out['data']['customFields']['data'][0]['value']);
-        $this->assertEquals($customFieldData->encrypted, $out['data']['customFields']['data'][0]['isEncrypted']);
-        $this->assertEquals($customFieldData->required, $out['data']['customFields']['data'][0]['required']);
+        $this->assertEquals($customFieldData['help'], $out['data']['customFields']['data'][0]['help']);
+        $this->assertEquals($customFieldData['value'], $out['data']['customFields']['data'][0]['value']);
+        $this->assertEquals($customFieldData['encrypted'], $out['data']['customFields']['data'][0]['isEncrypted']);
+        $this->assertEquals($customFieldData['required'], $out['data']['customFields']['data'][0]['required']);
     }
 }

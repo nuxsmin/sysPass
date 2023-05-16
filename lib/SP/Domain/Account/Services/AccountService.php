@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -618,7 +618,7 @@ final class AccountService extends Service implements AccountServiceInterface
     {
         $data = $this->accountRepository->getTotalNumAccounts()->getData(Simple::class);
 
-        return (int)$data->num;
+        return (int)$data['num'];
     }
 
     /**

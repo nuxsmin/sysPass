@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -229,7 +229,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
 
         if ($this->accountAcl->isUserInUsers()) {
             $this->accountAcl->setResultView(true);
-            $this->accountAcl->setResultEdit((int)$userInUsers[0]->isEdit === 1);
+            $this->accountAcl->setResultEdit((int)$userInUsers[0]['isEdit'] === 1);
 
             return;
         }
@@ -261,7 +261,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
 
         if ($this->accountAcl->isUserInGroups()) {
             $this->accountAcl->setResultView(true);
-            $this->accountAcl->setResultEdit((int)$userGroupsInSecondaryUserGroups[0]->isEdit === 1);
+            $this->accountAcl->setResultEdit((int)$userGroupsInSecondaryUserGroups[0]['isEdit'] === 1);
         }
     }
 

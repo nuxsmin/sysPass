@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,26 +58,24 @@ trait ItemTrait
         foreach ($customFieldService->getForModuleAndItemId($moduleId, $itemId) as $item) {
             try {
                 $customField = new CustomFieldItem();
-                $customField->required = (bool)$item->required;
-                $customField->showInList = (bool)$item->showInList;
-                $customField->help = $item->help;
-                $customField->definitionId = (int)$item->definitionId;
-                $customField->definitionName = $item->definitionName;
-                $customField->typeId = (int)$item->typeId;
-                $customField->typeName = $item->typeName;
-                $customField->typeText = $item->typeText;
-                $customField->moduleId = (int)$item->moduleId;
-                $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
-                $customField->isEncrypted = (int)$item->isEncrypted;
+                $customField->required = (bool)$item['required'];
+                $customField->showInList = (bool)$item['showInList'];
+                $customField->help = $item['help'];
+                $customField->definitionId = (int)$item['definitionId'];
+                $customField->definitionName = $item['definitionName'];
+                $customField->typeId = (int)$item['typeId'];
+                $customField->typeName = $item['typeName'];
+                $customField->typeText = $item['typeText'];
+                $customField->moduleId = (int)$item['moduleId'];
+                $customField->formId = CustomFieldService::getFormIdForName($item['definitionName']);
+                $customField->isEncrypted = (int)$item['isEncrypted'];
 
-                if ($item->data !== null
-                    && $item->key !== null
-                ) {
+                if (!empty($item['data']) && !empty($item['key'])) {
                     $customField->isValueEncrypted = true;
-                    $customField->value = $customFieldService->decryptData($item->data, $item->key);
+                    $customField->value = $customFieldService->decryptData($item['data'], $item['key']);
                 } else {
                     $customField->isValueEncrypted = false;
-                    $customField->value = $item->data;
+                    $customField->value = $item['data'];
                 }
 
                 $customFields[] = $customField;

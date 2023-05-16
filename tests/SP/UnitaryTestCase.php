@@ -86,7 +86,6 @@ abstract class UnitaryTestCase extends TestCase
         $this->context->initialize();
         $this->context->setUserData($userLogin);
         $this->context->setUserProfile(new ProfileData());
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, self::$faker->password);
 
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 

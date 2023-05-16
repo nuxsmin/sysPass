@@ -570,6 +570,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountServiceInterface::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
+        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, self::$faker->password);
+
         $this->publicLinkService =
             new PublicLinkService(
                 $this->application,

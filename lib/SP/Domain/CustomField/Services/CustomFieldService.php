@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -59,7 +59,6 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
         $this->customFieldDefRepository = $customFieldDefRepository;
     }
 
-
     /**
      * Returns the form Id for a given name
      */
@@ -104,6 +103,7 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): array
     {
