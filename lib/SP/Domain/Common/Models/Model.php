@@ -29,11 +29,10 @@ use JsonSerializable;
 /**
  * Class DataModel
  */
-abstract class Model implements JsonSerializable
+abstract class Model implements JsonSerializable, \ArrayAccess
 {
-    private ?array $fields = null;
     /**
-     * Dynamically declared properties must not be class' properties
+     * Dynamically declared properties. Must not be class' properties
      */
     private array $properties = [];
 
@@ -99,8 +98,6 @@ abstract class Model implements JsonSerializable
         if (null !== $filter) {
             $fields = array_diff_key($fields, array_flip($filter));
         }
-
-        $this->fields = array_keys($fields);
 
         return $fields;
     }
@@ -168,24 +165,21 @@ abstract class Model implements JsonSerializable
         return $this->toArray();
     }
 
-    public function getFields(): ?array
-    {
-        return $this->fields;
-    }
-
     /**
+     * Get non-class properties
+     *
      * @param  string  $name
      *
      * @return void
      */
     public function __get(string $name)
     {
-        if (array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+        $this->offsetGet($name);
     }
 
     /**
+     * Set non-class properties
+     *
      * @param  string  $name
      * @param $value
      *
@@ -193,6 +187,62 @@ abstract class Model implements JsonSerializable
      */
     public function __set(string $name, $value): void
     {
-        $this->properties[$name] = $value;
+        $this->offsetSet($name, $value);
+    }
+
+    /**
+     * Get non-class properties
+     *
+     * @param  mixed  $offset
+     *
+     * @return mixed
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->properties[$offset];
+    }
+
+    /**
+     * Set non-class properties
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     *
+     * @return void
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->properties[$offset] = $value;
+    }
+
+    /**
+     * Whether an offset exists in non-class properties
+     *
+     * @link https://php.net/manual/en/arrayaccess.offsetexists.php
+     *
+     * @param  mixed  $offset  <p>
+     * An offset to check for.
+     * </p>
+     *
+     * @return bool true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return array_key_exists($offset, $this->properties);
+    }
+
+    /**
+     * Unset a non-class property
+     *
+     * @param  mixed  $offset
+     *
+     * @return void
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->properties[$offset]);
     }
 }

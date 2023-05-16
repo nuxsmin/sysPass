@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -94,7 +94,7 @@ class QueryResult
     private function checkDataType(?string $dataType = null): void
     {
         if (null !== $dataType && $this->dataType !== null && $dataType !== $this->dataType) {
-            throw new SPException(sprintf(__u('Invalid data\'s type: %s - Expected: %s'), $dataType, $this->dataType));
+            throw new SPException(sprintf(__u('Invalid data\'s type: %s - Current: %s'), $dataType, $this->dataType));
         }
     }
 

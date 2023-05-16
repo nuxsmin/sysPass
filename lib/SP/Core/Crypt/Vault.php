@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
 use RuntimeException;
 
 /**
@@ -34,35 +33,46 @@ use RuntimeException;
  */
 final class Vault
 {
-    private ?string $data = null;
-    private ?string $key = null;
-    private int $timeSet = 0;
-    private int $timeUpdated = 0;
+    private ?string $data    = null;
+    private ?string $key     = null;
+    private int     $timeSet = 0;
 
-    public static function getInstance(): Vault
+    private function __construct(private CryptInterface $crypt) {}
+
+    public static function factory(CryptInterface $crypt): Vault
     {
-        return new self();
+        return new self($crypt);
     }
 
     /**
-     * Regenerar la clave de sesión
+     * Re-key this vault
      *
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
     public function reKey(string $newSeed, string $oldSeed): Vault
     {
-        $this->timeUpdated = time();
-        $sessionMPass = $this->getData($oldSeed);
-
-        $this->saveData($sessionMPass, $newSeed);
-
-        return $this;
+        return $this->saveData($this->getData($oldSeed), $newSeed);
     }
 
     /**
-     * Devolver la clave maestra de la sesión
+     * Create a new vault with the saved data
      *
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
+     */
+    public function saveData($data, string $key): Vault
+    {
+        $vault = new Vault($this->crypt);
+        $vault->timeSet = time();
+        $vault->key = $this->crypt->makeSecuredKey($key);
+        $vault->data = $this->crypt->encrypt($data, $vault->key, $key);
+
+        return $vault;
+    }
+
+    /**
+     * Get the data decrypted
+     *
+     * @throws \SP\Core\Exceptions\CryptException
      */
     public function getData(string $key): string
     {
@@ -70,41 +80,24 @@ final class Vault
             throw new RuntimeException('Either data or key must be set');
         }
 
-        return Crypt::decrypt($this->data, $this->key, $key);
+        return $this->crypt->decrypt($this->data, $this->key, $key);
     }
 
     /**
-     * Guardar la clave maestra en la sesión
-     *
-     * @throws CryptoException
-     */
-    public function saveData($data, string $key): Vault
-    {
-        if ($this->timeSet === 0) {
-            $this->timeSet = time();
-        }
-
-        $this->key = Crypt::makeSecuredKey($key);
-        $this->data = Crypt::encrypt($data, $this->key, $key);
-
-        return $this;
-    }
-
-    public function getTimeSet(): int
-    {
-        return $this->timeSet;
-    }
-
-    public function getTimeUpdated(): int
-    {
-        return $this->timeUpdated;
-    }
-
-    /**
-     * Serializaes the current object
+     * Serialize the current vault
      */
     public function getSerialized(): string
     {
         return serialize($this);
+    }
+
+    /**
+     * Get the last time the key and data were set
+     *
+     * @return int
+     */
+    public function getTimeSet(): int
+    {
+        return $this->timeSet;
     }
 }

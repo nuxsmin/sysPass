@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -64,7 +64,7 @@ abstract class Service
             if ($this->context instanceof SessionContext) {
                 $key = Session::getSessionKey($this->context);
             } else {
-                $key = $this->context->getTrasientKey('_masterpass');
+                $key = $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY);
             }
 
             if (empty($key)) {

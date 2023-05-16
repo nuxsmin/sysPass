@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,9 +31,9 @@ namespace SP\DataModel;
  */
 class PublicLinkListData extends PublicLinkData
 {
-    protected ?string $userName;
-    protected ?string $userLogin;
-    protected ?string $accountName;
+    protected ?string $userName    = null;
+    protected ?string $userLogin   = null;
+    protected ?string $accountName = null;
 
     public function getName(): ?string
     {

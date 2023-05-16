@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,7 +53,7 @@ abstract class ContextBase implements ContextInterface
      *
      * @throws ContextException
      */
-    public function setTrasientKey(string $key, $value)
+    public function setTrasientKey(string $key, mixed $value)
     {
         // If the key starts with "_" it's a protected key, thus cannot be overwritten
         if (str_starts_with($key, '_')
@@ -72,7 +72,7 @@ abstract class ContextBase implements ContextInterface
      * Gets an arbitrary key from the trasient collection.
      * This key is not bound to any known method or type
      */
-    public function getTrasientKey(string $key, $default = null)
+    public function getTrasientKey(string $key, mixed $default = null): mixed
     {
         return is_numeric($default) ?
             (int)$this->trasient->get($key, $default)

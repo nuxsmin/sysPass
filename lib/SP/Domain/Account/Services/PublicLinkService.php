@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Domain\Account\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -38,6 +38,7 @@ use SP\DataModel\PublicLinkListData;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Domain\Account\Ports\PublicLinkServiceInterface;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
@@ -62,21 +63,14 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      */
     public const TYPE_ACCOUNT = 1;
 
-    private PublicLinkRepositoryInterface $publicLinkRepository;
-    private RequestInterface              $request;
-    private AccountServiceInterface       $accountService;
-
     public function __construct(
         Application $application,
-        PublicLinkRepositoryInterface $publicLinkRepository,
-        RequestInterface $request,
-        AccountServiceInterface $accountService
+        private PublicLinkRepositoryInterface $publicLinkRepository,
+        private RequestInterface $request,
+        private AccountServiceInterface $accountService,
+        private CryptInterface $crypt
     ) {
         parent::__construct($application);
-
-        $this->publicLinkRepository = $publicLinkRepository;
-        $this->request = $request;
-        $this->accountService = $accountService;
     }
 
     /**
@@ -93,11 +87,6 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     public static function createLinkHash(): string
     {
         return hash('sha256', uniqid('sysPassPublicLink', true));
-    }
-
-    public static function getKeyForHash(string $salt, PublicLinkData $publicLinkData): string
-    {
-        return sha1($salt.$publicLinkData->getHash());
     }
 
     /**
@@ -127,22 +116,15 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        $key = $this->getPublicLinkKey();
-
-        /** @var PublicLinkData $publicLinkData */
-        $publicLinkData = $result->getData();
-        $publicLinkData->setHash($key->getHash());
-        $publicLinkData->setData($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
-        $publicLinkData->setDateExpire(self::calcDateExpire($this->config));
-        $publicLinkData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
-
-        return $this->publicLinkRepository->refresh($publicLinkData);
+        return $this->publicLinkRepository
+            ->refresh($this->buildPublicLink(PublicLinkData::buildFromSimpleModel($result->getData())));
     }
 
     /**
      * @param  int  $id
      *
      * @return \SP\DataModel\PublicLinkListData
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getById(int $id): PublicLinkListData
@@ -153,7 +135,36 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return $result->getData();
+        return PublicLinkListData::buildFromSimpleModel($result->getData());
+    }
+
+    /**
+     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     *
+     * @return \SP\DataModel\PublicLinkData
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\CryptException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     */
+    private function buildPublicLink(PublicLinkData $publicLinkData): PublicLinkData
+    {
+        $key = $this->getPublicLinkKey();
+
+        $publicLinkDataClone = clone $publicLinkData;
+
+        $publicLinkDataClone->setHash($key->getHash());
+        $publicLinkDataClone->setData($this->getSecuredLinkData($publicLinkDataClone->getItemId(), $key));
+        $publicLinkDataClone->setDateExpire(self::calcDateExpire($this->config));
+        $publicLinkDataClone->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
+
+        if ($publicLinkDataClone->getUserId() === null) {
+            $publicLinkDataClone->setUserId($this->context->getUserData()->getId());
+        }
+
+        return $publicLinkDataClone;
     }
 
     /**
@@ -170,28 +181,30 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @param  int  $itemId
+     * @param  \SP\Domain\Account\Services\PublicLinkKey  $key
+     *
+     * @return string
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\CryptException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     private function getSecuredLinkData(int $itemId, PublicLinkKey $key): string
     {
-        // Obtener los datos de la cuenta
         $accountData = $this->accountService->getDataForLink($itemId);
 
-        // Desencriptar la clave de la cuenta
-        $accountData->setPass(
-            Crypt::decrypt(
-                $accountData->getPass(),
-                $accountData->getKey(),
+        $accountDataClone = $accountData->mutate([
+            'pass' => $this->crypt->decrypt(
+                $accountData['pass'],
+                $accountData['key'],
                 $this->getMasterKeyFromContext()
-            )
-        );
-        $accountData->setKey(null);
+            ),
+            'key'  => null,
+        ]);
 
-        return (new Vault())->saveData(serialize($accountData), $key->getKey())->getSerialized();
+        return Vault::factory($this->crypt)->saveData(serialize($accountDataClone), $key->getKey())->getSerialized();
     }
 
     /**
@@ -244,25 +257,15 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      */
     public function create(PublicLinkData $itemData): int
     {
-        $key = $this->getPublicLinkKey();
-
-        $itemData->setHash($key->getHash());
-        $itemData->setData($this->getSecuredLinkData($itemData->getItemId(), $key));
-        $itemData->setDateExpire(self::calcDateExpire($this->config));
-        $itemData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
-        $itemData->setUserId($this->context->getUserData()->getId());
-
-        return $this->publicLinkRepository->create($itemData)->getLastId();
+        return $this->publicLinkRepository->create($this->buildPublicLink($itemData))->getLastId();
     }
 
     /**
-     * Get all items from the service's repository
-     *
-     * @return PublicLinkListData[]
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAllBasic(): array
     {
-        return $this->publicLinkRepository->getAll()->getDataAsArray();
+        throw new ServiceException(__u('Not implemented'));
     }
 
     /**
@@ -272,15 +275,30 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Domain\Common\Services\ServiceException
      */
     public function addLinkView(PublicLinkData $publicLinkData): void
     {
-        /** @var array $useInfo */
-        $useInfo = unserialize($publicLinkData->getUseInfo(), false);
-        $useInfo[] = self::getUseInfo($publicLinkData->getHash(), $this->request);
-        $publicLinkData->setUseInfo($useInfo);
+        $useInfo = array();
 
-        $this->publicLinkRepository->addLinkView($publicLinkData);
+        if (empty($publicLinkData->getHash())) {
+            throw new ServiceException(__u('Public link hash not set'));
+        }
+
+        if (!empty($publicLinkData->getUseInfo())) {
+            $publicLinkUseInfo = unserialize($publicLinkData->getUseInfo(), ['allowed_classes' => false]);
+
+            if (is_array($publicLinkUseInfo)) {
+                $useInfo = $publicLinkUseInfo;
+            }
+        }
+
+        $useInfo[] = self::getUseInfo($publicLinkData->getHash(), $this->request);
+
+        $publicLinkDataClone = clone $publicLinkData;
+        $publicLinkDataClone->setUseInfo($useInfo);
+
+        $this->publicLinkRepository->addLinkView($publicLinkDataClone);
     }
 
     /**
@@ -308,7 +326,7 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return $result->getData();
+        return PublicLinkData::buildFromSimpleModel($result->getData(Simple::class));
     }
 
     /**
@@ -317,6 +335,7 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      * @param  int  $itemId
      *
      * @return \SP\DataModel\PublicLinkData
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
      */
     public function getHashForItem(int $itemId): PublicLinkData
@@ -327,7 +346,7 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return $result->getData();
+        return PublicLinkData::buildFromSimpleModel($result->getData(Simple::class));
     }
 
     /**

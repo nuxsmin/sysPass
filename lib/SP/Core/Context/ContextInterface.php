@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,6 +34,8 @@ use SP\Domain\User\Services\UserLoginResponse;
  */
 interface ContextInterface
 {
+    const MASTER_PASSWORD_KEY = '_masterpass';
+
     /**
      * @throws ContextException
      */
@@ -122,18 +124,18 @@ interface ContextInterface
      *
      * @throws ContextException
      */
-    public function setTrasientKey(string $key, $value);
+    public function setTrasientKey(string $key, mixed $value);
 
     /**
      * Gets an arbitrary key from the trasient collection.
      * This key is not bound to any known method or type
      *
      * @param  string  $key
-     * @param  mixed  $default
+     * @param  mixed|null  $default
      *
      * @return mixed
      */
-    public function getTrasientKey(string $key, $default = null);
+    public function getTrasientKey(string $key, mixed $default = null): mixed;
 
     /**
      * Sets a temporary master password
@@ -145,7 +147,7 @@ interface ContextInterface
      * @param  string  $key
      * @param  mixed  $value
      */
-    public function setPluginKey(string $pluginName, string $key, $value);
+    public function setPluginKey(string $pluginName, string $key, mixed $value);
 
     public function getPluginKey(string $pluginName, string $key): mixed;
 }

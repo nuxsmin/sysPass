@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -86,6 +86,7 @@ abstract class UnitaryTestCase extends TestCase
         $this->context->initialize();
         $this->context->setUserData($userLogin);
         $this->context->setUserProfile(new ProfileData());
+        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, self::$faker->password);
 
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 

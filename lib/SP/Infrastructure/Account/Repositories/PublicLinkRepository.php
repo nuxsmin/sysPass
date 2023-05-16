@@ -29,6 +29,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -41,7 +42,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\Common\Repositories\PublicLink
  */
-final class PublicLinkRepository extends Repository implements \SP\Domain\Account\Ports\PublicLinkRepositoryInterface
+final class PublicLinkRepository extends Repository implements PublicLinkRepositoryInterface
 {
     use RepositoryItemTrait;
 
