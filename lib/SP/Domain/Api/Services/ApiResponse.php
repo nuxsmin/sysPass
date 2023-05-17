@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,22 +34,20 @@ final class ApiResponse
     private const RESULT_SUCCESS = 0;
     private const RESULT_ERROR   = 1;
 
-    private         $result;
-    private ?int    $resultCode    = null;
-    private int     $itemId;
-    private ?string $resultMessage = null;
-
     /**
      * ApiResponse constructor.
      *
      * @param  mixed  $result
-     * @param  null  $itemId
+     * @param  int  $resultCode
+     * @param  string|null  $resultMessage
+     * @param  int|null  $itemId
      */
-    public function __construct($result, $itemId = null)
-    {
-        $this->result = $result;
-        $this->itemId = (int)$itemId;
-    }
+    public function __construct(
+        private mixed $result,
+        private int $resultCode,
+        private ?string $resultMessage = null,
+        private ?int $itemId = null
+    ) {}
 
     /**
      * @param  mixed  $result
@@ -59,15 +57,11 @@ final class ApiResponse
      * @return ApiResponse
      */
     public static function makeSuccess(
-        $result,
+        mixed $result,
+        string $message = null,
         ?int $itemId = null,
-        string $message = null
     ): ApiResponse {
-        $out = new self($result, $itemId);
-        $out->resultCode = self::RESULT_SUCCESS;
-        $out->resultMessage = $message;
-
-        return $out;
+        return new self($result, self::RESULT_SUCCESS, $message, $itemId);
     }
 
     /**
@@ -77,14 +71,10 @@ final class ApiResponse
      * @return ApiResponse
      */
     public static function makeError(
-        $result,
+        mixed $result,
         ?string $message = null
     ): ApiResponse {
-        $out = new self($result);
-        $out->resultCode = self::RESULT_ERROR;
-        $out->resultMessage = $message;
-
-        return $out;
+        return new self($result, self::RESULT_ERROR, $message);
     }
 
     /**
