@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ abstract class CliTestCase extends TestCase
         $builder = new ContainerBuilder();
         $builder->addDefinitions(
             APP_DEFINITIONS_FILE,
-            MODULES_PATH . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'module.php'
+            MODULES_PATH.DIRECTORY_SEPARATOR.'cli'.DIRECTORY_SEPARATOR.'module.php'
         );
 
         self::$dic = $builder->build();
@@ -77,9 +77,8 @@ abstract class CliTestCase extends TestCase
     protected function executeCommandTest(
         string $commandClass,
         ?array $inputData = null,
-        bool   $useInputData = true
-    ): CommandTester
-    {
+        bool $useInputData = true
+    ): CommandTester {
         $installCommand = self::$dic->get($commandClass);
 
         if (null === $inputData && $useInputData) {

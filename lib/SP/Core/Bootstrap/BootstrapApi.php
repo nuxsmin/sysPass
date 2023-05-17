@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,6 +34,8 @@ use SP\Core\HttpModuleBase;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Modules\Api\Init as InitApi;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Bootstrap API interface

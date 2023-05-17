@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Domain\Api\Services;
 
 use JsonException;
 use SP\Core\Exceptions\SPException;
+use function SP\__u;
 
 /**
  * Class ApiRequest
@@ -34,39 +35,53 @@ use SP\Core\Exceptions\SPException;
  */
 final class ApiRequest
 {
+    private const PHP_REQUEST_STREAM = 'php://input';
+
     protected ?string         $method = null;
     protected ?int            $id     = null;
     protected ?ApiRequestData $data   = null;
 
+    private function __construct() {}
+
     /**
-     * ApiRequest constructor.
+     * Build the ApiRequest from the request itself.
      *
+     * It will read the 'php://input' strean and get the contents into a JSON format
+     *
+     * @param  string  $stream
+     *
+     * @return \SP\Domain\Api\Services\ApiRequest
      * @throws \SP\Domain\Api\Services\ApiRequestException
      */
-    public function __construct(?string $request = null)
+    public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequest
     {
-        if ($request === null) {
-            $this->requestFromJsonData($this->getDataFromRequest());
-        } else {
-            $this->requestFromJsonData($request);
+        $content = file_get_contents($stream);
+
+        if (empty($content)) {
+            throw new ApiRequestException(
+                __u('Invalid data'),
+                SPException::ERROR,
+                null,
+                JsonRpcResponse::PARSE_ERROR
+            );
         }
+
+        return self::buildFromJson($content);
     }
 
     /**
-     * Obtener los datos de la petición
+     * Build the ApiRequest from a JSON data structure.
      *
-     * Comprueba que el JSON esté bien formado
-     *
-     * @param  string  $request
+     * @param  string  $json
      *
      * @return ApiRequest
      * @throws \SP\Domain\Api\Services\ApiRequestException
      */
-    public function requestFromJsonData(string $request): ApiRequest
+    private static function buildFromJson(string $json): ApiRequest
     {
         try {
             $data = json_decode(
-                $request,
+                $json,
                 true,
                 512,
                 JSON_THROW_ON_ERROR
@@ -95,45 +110,21 @@ final class ApiRequest
             );
         }
 
-        $this->method = preg_replace(
-            '#[^a-z/]+#i',
-            '',
-            $data['method']
-        );
-        $this->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
-        $this->data = new ApiRequestData();
-        $this->data->replace($data['params']);
+        $apiRequest = new ApiRequest();
+        $apiRequest->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
+        $apiRequest->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
+        $apiRequest->data = new ApiRequestData($data['params']);
 
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @throws ApiRequestException
-     */
-    public function getDataFromRequest(): string
-    {
-        $content = file_get_contents('php://input');
-
-        if (empty($content)) {
-            throw new ApiRequestException(
-                __u('Invalid data'),
-                SPException::ERROR,
-                null,
-                JsonRpcResponse::PARSE_ERROR
-            );
-        }
-
-        return $content;
+        return $apiRequest;
     }
 
     /**
      * @param  string  $key
-     * @param  mixed  $default
+     * @param  mixed|null  $default
      *
      * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->data->get($key, $default);
     }

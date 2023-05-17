@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,8 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
+use function SP\initModule;
+use function SP\processException;
 
 defined('APP_ROOT') || die();
 
