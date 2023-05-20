@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die();
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class ProfileData
  *
  * @package SP\DataModel
  */
-class ProfileData
+class ProfileData extends Model
 {
     protected bool $accView          = false;
     protected bool $accViewPass      = false;

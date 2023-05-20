@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -62,7 +62,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     public function testBuildFrom(): void
     {
         $accountSearchVData =
-            array_map(static fn() => AccountDataGenerator::factory()->builAccountSearchView(), range(0, 4));
+            array_map(static fn() => AccountDataGenerator::factory()->buildAccountSearchView(), range(0, 4));
         $numResults = count($accountSearchVData);
 
         $queryResult = new QueryResult($accountSearchVData);
@@ -100,7 +100,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     public function testBuildFromWithColorCacheException(): void
     {
         $accountSearchVData =
-            array_map(static fn() => AccountDataGenerator::factory()->builAccountSearchView(), range(0, 4));
+            array_map(static fn() => AccountDataGenerator::factory()->buildAccountSearchView(), range(0, 4));
         $numResults = count($accountSearchVData);
 
         $queryResult = new QueryResult($accountSearchVData);

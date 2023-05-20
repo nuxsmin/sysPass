@@ -476,7 +476,7 @@ class AccountServiceTest extends UnitaryTestCase
     public function testGetByIdEnriched()
     {
         $id = self::$faker->randomNumber();
-        $accountDataView = AccountDataGenerator::factory()->builAccountDataView();
+        $accountDataView = AccountDataGenerator::factory()->buildAccountDataView();
         $result = new QueryResult([$accountDataView]);
 
         $this->accountRepository->expects(self::once())->method('getByIdEnriched')

@@ -31,7 +31,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\HttpModuleBase;
-use SP\Domain\Api\Services\ApiRequest;
+use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Modules\Api\Init as InitApi;
 use function SP\logger;
@@ -78,7 +78,7 @@ final class BootstrapApi extends BootstrapBase
             try {
                 logger('API route');
 
-                $apiRequest = $this->createObjectFor(ApiRequest::class);
+                $apiRequest = $this->createObjectFor(ApiRequestInterface::class);
 
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
 

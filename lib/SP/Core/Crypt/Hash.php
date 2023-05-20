@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Core\Crypt;
 
+use function SP\logger;
+
 /**
  * Class Hash
  *
@@ -34,14 +36,14 @@ final class Hash
     /**
      * Longitud máxima aceptada para hashing
      */
-    public const MAX_KEY_LENGTH = 72;
-    private const HASH_ALGO = 'sha256';
+    public const  MAX_KEY_LENGTH = 72;
+    private const HASH_ALGO      = 'sha256';
 
     /**
      * Comprobar el hash de una clave.
      *
-     * @param string $key  con la clave a comprobar
-     * @param string $hash con el hash a comprobar
+     * @param  string  $key  con la clave a comprobar
+     * @param  string  $hash  con el hash a comprobar
      */
     public static function checkHashKey(string $key, string $hash): bool
     {
@@ -51,8 +53,8 @@ final class Hash
     /**
      * Devolver la clave preparada. Se crea un hash si supera la longitud máxima.
      *
-     * @param string $key
-     * @param bool   $isCheck Indica si la operación es de comprobación o no
+     * @param  string  $key
+     * @param  bool  $isCheck  Indica si la operación es de comprobación o no
      *
      * @return string
      */
@@ -72,7 +74,7 @@ final class Hash
     /**
      * Generar un hash de una clave criptográficamente segura
      *
-     * @param string $key con la clave a 'hashear'
+     * @param  string  $key  con la clave a 'hashear'
      *
      * @return string con el hash de la clave
      */
@@ -88,8 +90,7 @@ final class Hash
         string $message,
         string $key,
         string $hash
-    ): bool
-    {
+    ): bool {
         return hash_equals($hash, self::signMessage($message, $key));
     }
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -65,10 +65,7 @@ class UserData extends UserPassData implements DataModelInterface
         return $this->lastLogin;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastUpdate()
+    public function getLastUpdate(): ?string
     {
         return $this->lastUpdate;
     }
@@ -88,19 +85,9 @@ class UserData extends UserPassData implements DataModelInterface
         return $this->email;
     }
 
-    public function setEmail(string $email)
-    {
-        $this->email = $email;
-    }
-
     public function getNotes(): ?string
     {
         return $this->notes;
-    }
-
-    public function setNotes(string $notes)
-    {
-        $this->notes = $notes;
     }
 
     public function getUserGroupId(): int
@@ -108,19 +95,9 @@ class UserData extends UserPassData implements DataModelInterface
         return (int)$this->userGroupId;
     }
 
-    public function setUserGroupId(int $userGroupId)
-    {
-        $this->userGroupId = (int)$userGroupId;
-    }
-
     public function getUserProfileId(): int
     {
         return (int)$this->userProfileId;
-    }
-
-    public function setUserProfileId(int $userProfileId)
-    {
-        $this->userProfileId = (int)$userProfileId;
     }
 
     public function isAdminApp(): int
@@ -128,19 +105,9 @@ class UserData extends UserPassData implements DataModelInterface
         return (int)$this->isAdminApp;
     }
 
-    public function setIsAdminApp(bool $isAdminApp)
-    {
-        $this->isAdminApp = $isAdminApp;
-    }
-
     public function isAdminAcc(): int
     {
         return (int)$this->isAdminAcc;
-    }
-
-    public function setIsAdminAcc(bool $isAdminAcc)
-    {
-        $this->isAdminAcc = $isAdminAcc;
     }
 
     public function isDisabled(): int
@@ -148,19 +115,9 @@ class UserData extends UserPassData implements DataModelInterface
         return (int)$this->isDisabled;
     }
 
-    public function setIsDisabled(bool $isDisabled)
-    {
-        $this->isDisabled = $isDisabled;
-    }
-
     public function isChangePass(): int
     {
         return (int)$this->isChangePass;
-    }
-
-    public function setIsChangePass(bool $isChangePass)
-    {
-        $this->isChangePass = $isChangePass;
     }
 
     public function isLdap(): int
@@ -168,29 +125,14 @@ class UserData extends UserPassData implements DataModelInterface
         return (int)$this->isLdap;
     }
 
-    public function setIsLdap(bool $isLdap)
-    {
-        $this->isLdap = $isLdap;
-    }
-
     public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    public function setLogin(string $login)
-    {
-        $this->login = $login;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name)
-    {
-        $this->name = $name;
     }
 
     public function getUserGroupName(): ?string
@@ -206,10 +148,5 @@ class UserData extends UserPassData implements DataModelInterface
     public function getSsoLogin(): ?string
     {
         return $this->ssoLogin;
-    }
-
-    public function setSsoLogin(string $ssoLogin)
-    {
-        $this->ssoLogin = $ssoLogin;
     }
 }

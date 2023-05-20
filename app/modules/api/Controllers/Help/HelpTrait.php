@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,19 +32,19 @@ namespace SP\Modules\Api\Controllers\Help;
 trait HelpTrait
 {
     /**
-     * @param string $action
+     * @param  string  $action
      *
      * @return array
      */
     public static function getHelpFor(string $action): array
     {
-        if (strpos($action, '/') !== false) {
+        if (str_contains($action, '/')) {
             [, $action] = explode('/', $action);
         }
 
         if (method_exists(static::class, $action)) {
             return [
-                'help' => static::$action()
+                'help' => static::$action(),
             ];
         }
 
@@ -52,19 +52,19 @@ trait HelpTrait
     }
 
     /**
-     * @param string $name
-     * @param string $description
-     * @param bool   $required
+     * @param  string  $name
+     * @param  string  $description
+     * @param  bool  $required
      *
      * @return array
      */
     private static function getItem(
         string $name,
         string $description,
-        bool   $required = false): array
-    {
+        bool $required = false
+    ): array {
         return [
-            $name => ['description' => $description, 'required' => $required]
+            $name => ['description' => $description, 'required' => $required],
         ];
     }
 }

@@ -22,6 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\ApiRequest;
 use function DI\factory;
 
@@ -29,5 +30,5 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH.DIRECTORY_SEPARATOR.'plugins';
 
 return [
-    ApiRequest::class => factory([ApiRequest::class, 'buildFromRequest']),
+    ApiRequestInterface::class => factory([ApiRequest::class, 'buildFromRequest']),
 ];

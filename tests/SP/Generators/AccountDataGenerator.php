@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -41,14 +41,14 @@ final class AccountDataGenerator extends DataGenerator
 {
     public function buildAccountEnrichedDto(): AccountEnrichedDto
     {
-        $out = new AccountEnrichedDto($this->builAccountDataView());
+        $out = new AccountEnrichedDto($this->buildAccountDataView());
         $out = $out->withUsers($this->buildItemData());
         $out = $out->withTags($this->buildItemData());
 
         return $out->withUserGroups($this->buildItemData());
     }
 
-    public function builAccountDataView(): AccountDataView
+    public function buildAccountDataView(): AccountDataView
     {
         return new AccountDataView($this->getAccountProperties());
     }
@@ -104,7 +104,7 @@ final class AccountDataGenerator extends DataGenerator
         );
     }
 
-    public function builAccountSearchView(): AccountSearchView
+    public function buildAccountSearchView(): AccountSearchView
     {
         return new AccountSearchView(
             array_merge(

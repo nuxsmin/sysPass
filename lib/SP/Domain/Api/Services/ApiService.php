@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,28 +24,33 @@
 
 namespace SP\Domain\Api\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
 use Exception;
 use SP\Core\Application;
-use SP\Core\Context\ContextException;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
+use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Security\Ports\TrackServiceInterface;
-use SP\Domain\Security\Services\TrackService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
+use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Util\Filter;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class ApiService
@@ -54,33 +59,29 @@ use SP\Util\Filter;
  */
 final class ApiService extends Service implements ApiServiceInterface
 {
-    private AuthTokenService            $authTokenService;
-    private TrackService                $trackService;
-    private UserServiceInterface        $userService;
-    private UserProfileServiceInterface $userProfileService;
-    private ApiRequest                  $apiRequest;
-    private TrackRequest                $trackRequest;
-    private ?AuthTokenData              $authTokenData = null;
-    private ?string                     $helpClass     = null;
-    private                             $initialized   = false;
+    private const STATUS_INITIALIZED  = 0;
+    private const STATUS_INITIALIZING = 1;
+    private TrackServiceInterface $trackService;
+    private TrackRequest          $trackRequest;
+    private ?AuthTokenData        $authTokenData = null;
+    private ?string               $helpClass     = null;
+    private ?int                  $status        = null;
 
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
     public function __construct(
         Application $application,
-        ApiRequest $apiRequest,
         TrackServiceInterface $trackService,
-        AuthTokenServiceInterface $authTokenService,
-        UserServiceInterface $userService,
-        UserProfileServiceInterface $userProfileService
+        private ApiRequestInterface $apiRequest,
+        private AuthTokenServiceInterface $authTokenService,
+        private UserServiceInterface $userService,
+        private UserProfileServiceInterface $userProfileService
     ) {
         parent::__construct($application);
 
-        $this->apiRequest = $apiRequest;
         $this->trackService = $trackService;
-        $this->authTokenService = $authTokenService;
-        $this->userService = $userService;
-        $this->userProfileService = $userProfileService;
-
-        $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
+        $this->trackRequest = $trackService->getTrackRequest(__CLASS__);
     }
 
     /**
@@ -92,7 +93,7 @@ final class ApiService extends Service implements ApiServiceInterface
      */
     public function setup(int $actionId): void
     {
-        $this->initialized = false;
+        $this->status = self::STATUS_INITIALIZING;
 
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
@@ -130,7 +131,7 @@ final class ApiService extends Service implements ApiServiceInterface
             $this->requireMasterPass();
         }
 
-        $this->initialized = true;
+        $this->status = self::STATUS_INITIALIZED;
     }
 
     /**
@@ -143,6 +144,8 @@ final class ApiService extends Service implements ApiServiceInterface
         try {
             $this->trackService->add($this->trackRequest);
         } catch (Exception $e) {
+            processException($e);
+
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
@@ -157,18 +160,18 @@ final class ApiService extends Service implements ApiServiceInterface
      *
      * @param  string  $param
      * @param  bool  $required  Si es requerido
-     * @param  mixed  $default  Valor por defecto
+     * @param  mixed|null  $default  Valor por defecto
      *
      * @return mixed
      * @throws ServiceException
      */
-    public function getParam(string $param, bool $required = false, $default = null)
+    public function getParam(string $param, bool $required = false, mixed $default = null): mixed
     {
         if ($required && !$this->apiRequest->exists($param)) {
             throw new ServiceException(
                 __u('Wrong parameters'),
                 SPException::ERROR,
-                $this->getHelp($this->apiRequest->getMethod()),
+                join(PHP_EOL, $this->getHelp($this->apiRequest->getMethod())),
                 JsonRpcResponse::INVALID_PARAMS
             );
         }
@@ -183,7 +186,7 @@ final class ApiService extends Service implements ApiServiceInterface
      *
      * @return array
      */
-    public function getHelp(string $action): array
+    private function getHelp(string $action): array
     {
         if ($this->helpClass !== null) {
             return call_user_func([$this->helpClass, 'getHelpFor'], $action);
@@ -226,12 +229,12 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
+     * @throws \SP\Core\Context\ContextException
      * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws ContextException
      */
     public function requireMasterPass(): void
     {
-        $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
+        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, $this->getMasterPassFromVault());
     }
 
     /**
@@ -241,15 +244,19 @@ final class ApiService extends Service implements ApiServiceInterface
      */
     private function getMasterPassFromVault(): string
     {
+        $this->requireInitialized();
+
         try {
             $tokenPass = $this->getParam('tokenPass', true);
 
             Hash::checkHashKey($tokenPass, $this->authTokenData->getHash()) || $this->accessDenied();
 
             /** @var Vault $vault */
-            $vault = unserialize($this->authTokenData->getVault());
+            $vault = unserialize($this->authTokenData->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
 
-            if ($vault && ($pass = $vault->getData($tokenPass.$this->getParam('authToken')))) {
+            $key = sha1($tokenPass.$this->getParam('authToken'));
+
+            if ($vault && ($pass = $vault->getData($key))) {
                 return $pass;
             }
 
@@ -259,11 +266,26 @@ final class ApiService extends Service implements ApiServiceInterface
                 __u('Invalid data'),
                 JsonRpcResponse::INTERNAL_ERROR
             );
-        } catch (CryptoException $e) {
+        } catch (CryptException $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 $e->getMessage(),
+                JsonRpcResponse::INTERNAL_ERROR
+            );
+        }
+    }
+
+    /**
+     * @throws \SP\Domain\Common\Services\ServiceException
+     */
+    private function requireInitialized(): void
+    {
+        if ($this->status === null) {
+            throw new ServiceException(
+                __u('API not initialized'),
+                SPException::ERROR,
+                __u('Please run setup method before'),
                 JsonRpcResponse::INTERNAL_ERROR
             );
         }
@@ -319,7 +341,7 @@ final class ApiService extends Service implements ApiServiceInterface
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
-            return Filter::getRaw($value);
+            return $value;
         }
 
         return $default;
@@ -330,14 +352,9 @@ final class ApiService extends Service implements ApiServiceInterface
      */
     public function getMasterPass(): string
     {
+        $this->requireInitialized();
+
         return $this->getMasterKeyFromContext();
-    }
-
-    public function setApiRequest(ApiRequest $apiRequest): ApiServiceInterface
-    {
-        $this->apiRequest = $apiRequest;
-
-        return $this;
     }
 
     public function getRequestId(): int
@@ -345,17 +362,12 @@ final class ApiService extends Service implements ApiServiceInterface
         return $this->apiRequest->getId();
     }
 
-    public function isInitialized(): bool
-    {
-        return $this->initialized;
-    }
-
     /**
      * @throws InvalidClassException
      */
     public function setHelpClass(string $helpClass): void
     {
-        if (class_exists($helpClass)) {
+        if (class_exists($helpClass) && is_subclass_of($helpClass, HelpInterface::class)) {
             $this->helpClass = $helpClass;
 
             return;

@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -264,15 +264,15 @@ final class InstallerService implements InstallerServiceInterface
     private function setupConfig(): ConfigDataInterface
     {
         $configData = $this->config->getConfigData()
-            ->setConfigVersion(VersionUtil::getVersionStringNormalized())
-            ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
-            ->setAppVersion(VersionUtil::getVersionStringNormalized())
-            ->setUpgradeKey(null)
-            ->setDbHost($this->installData->getDbHost())
-            ->setDbSocket($this->installData->getDbSocket())
-            ->setDbPort($this->installData->getDbPort())
-            ->setDbName($this->installData->getDbName())
-            ->setSiteLang($this->installData->getSiteLang());
+                                   ->setConfigVersion(VersionUtil::getVersionStringNormalized())
+                                   ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
+                                   ->setAppVersion(VersionUtil::getVersionStringNormalized())
+                                   ->setUpgradeKey(null)
+                                   ->setDbHost($this->installData->getDbHost())
+                                   ->setDbSocket($this->installData->getDbSocket())
+                                   ->setDbPort($this->installData->getDbPort())
+                                   ->setDbName($this->installData->getDbName())
+                                   ->setSiteLang($this->installData->getSiteLang());
 
         $this->config->updateConfig($configData);
 
@@ -343,12 +343,13 @@ final class InstallerService implements InstallerServiceInterface
 
             $userProfileData = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
 
-            $userData = new UserData();
-            $userData->setUserGroupId($this->userGroupService->create($userGroupData));
-            $userData->setUserProfileId($this->userProfileService->create($userProfileData));
-            $userData->setLogin($this->installData->getAdminLogin());
-            $userData->setName('sysPass Admin');
-            $userData->setIsAdminApp(1);
+            $userData = new UserData([
+                'userGroupId'   => $this->userGroupService->create($userGroupData),
+                'userProfileId' => $this->userProfileService->create($userProfileData),
+                'login'         => $this->installData->getAdminLogin(),
+                'name'          => 'sysPass Admin',
+                'isAdminApp'    => 1,
+            ]);
 
             $id = $this->userService->createWithMasterPass(
                 $userData,

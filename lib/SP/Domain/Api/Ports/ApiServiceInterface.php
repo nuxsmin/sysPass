@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,10 @@
 
 namespace SP\Domain\Api\Ports;
 
-
 use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Common\Services\ServiceException;
 
 /**
@@ -53,21 +51,12 @@ interface ApiServiceInterface
      *
      * @param  string  $param
      * @param  bool  $required  Si es requerido
-     * @param  mixed  $default  Valor por defecto
+     * @param  mixed|null  $default  Valor por defecto
      *
      * @return mixed
      * @throws \SP\Domain\Common\Services\ServiceException
      */
-    public function getParam(string $param, bool $required = false, $default = null);
-
-    /**
-     * Devuelve la ayuda para una acción
-     *
-     * @param  string  $action
-     *
-     * @return array
-     */
-    public function getHelp(string $action): array;
+    public function getParam(string $param, bool $required = false, mixed $default = null): mixed;
 
     /**
      * @throws ServiceException
@@ -100,11 +89,7 @@ interface ApiServiceInterface
      */
     public function getMasterPass(): string;
 
-    public function setApiRequest(ApiRequest $apiRequest): ApiServiceInterface;
-
     public function getRequestId(): int;
-
-    public function isInitialized(): bool;
 
     /**
      * @throws InvalidClassException

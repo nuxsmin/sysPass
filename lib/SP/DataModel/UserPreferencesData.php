@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,188 +24,65 @@
 
 namespace SP\DataModel;
 
+use SP\Domain\Common\Models\Model;
+
 /**
  * Class UserPreferencesData
  *
  * @package SP\DataModel
  */
-class UserPreferencesData
+class UserPreferencesData extends Model
 {
-    /**
-     * @var int
-     */
-    public $user_id = 0;
-    /**
-     * Lenguaje del usuario
-     *
-     * @var string
-     */
-    public $lang = '';
-    /**
-     * Tema del usuario
-     *
-     * @var string
-     */
-    public $theme = '';
-    /**
-     * @var int
-     */
-    public $resultsPerPage = 0;
-    /**
-     * @var bool
-     */
-    public $accountLink = false;
-    /**
-     * @var bool
-     */
-    public $sortViews = false;
-    /**
-     * @var bool
-     */
-    public $topNavbar = false;
-    /**
-     * @var bool
-     */
-    public $optionalActions = false;
-    /**
-     * @var bool
-     */
-    public $resultsAsCards = false;
-    /**
-     * @var bool
-     */
-    public $checkNotifications = true;
-    /**
-     * @var bool
-     */
-    public $showAccountSearchFilters = false;
+    protected ?string $lang                     = null;
+    protected ?string $theme                    = null;
+    protected int     $resultsPerPage           = 0;
+    protected bool    $accountLink              = false;
+    protected bool    $sortViews                = false;
+    protected bool    $topNavbar                = false;
+    protected bool    $optionalActions          = false;
+    protected bool    $resultsAsCards           = false;
+    protected bool    $checkNotifications       = true;
+    protected bool    $showAccountSearchFilters = false;
+    protected ?int    $user_id                  = null;
 
-    /**
-     * @return string
-     */
-    public function getLang()
+    public function getLang(): ?string
     {
         return $this->lang;
     }
 
-    /**
-     * @param string $lang
-     */
-    public function setLang($lang)
-    {
-        $this->lang = $lang;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTheme()
+    public function getTheme(): ?string
     {
         return $this->theme;
     }
 
-    /**
-     * @param string $theme
-     */
-    public function setTheme($theme)
-    {
-        $this->theme = $theme;
-    }
-
-    /**
-     * @return int
-     */
-    public function getResultsPerPage()
+    public function getResultsPerPage(): int
     {
         return $this->resultsPerPage;
     }
 
-    /**
-     * @param int $resultsPerPage
-     */
-    public function setResultsPerPage($resultsPerPage)
-    {
-        $this->resultsPerPage = $resultsPerPage;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAccountLink()
+    public function isAccountLink(): bool
     {
         return $this->accountLink;
     }
 
-    /**
-     * @param boolean $accountLink
-     */
-    public function setAccountLink($accountLink)
-    {
-        $this->accountLink = $accountLink;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isSortViews()
+    public function isSortViews(): bool
     {
         return $this->sortViews;
     }
 
-    /**
-     * @param boolean $sortViews
-     */
-    public function setSortViews($sortViews)
-    {
-        $this->sortViews = $sortViews;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isTopNavbar()
+    public function isTopNavbar(): bool
     {
         return $this->topNavbar;
     }
 
-    /**
-     * @param boolean $topNavbar
-     */
-    public function setTopNavbar($topNavbar)
-    {
-        $this->topNavbar = $topNavbar;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isOptionalActions()
+    public function isOptionalActions(): bool
     {
         return $this->optionalActions;
     }
 
-    /**
-     * @param boolean $optionalActions
-     */
-    public function setOptionalActions($optionalActions)
-    {
-        $this->optionalActions = $optionalActions;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->user_id;
-    }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId($user_id)
-    {
-        $this->user_id = $user_id;
     }
 
     /**
@@ -221,7 +98,7 @@ class UserPreferencesData
     {
         // Para realizar la conversión de nombre de propiedades que empiezan por _
         foreach (get_object_vars($this) as $name => $value) {
-            if (strpos($name, '_') === 0) {
+            if (str_starts_with($name, '_')) {
                 $newName = substr($name, 1);
                 $this->$newName = $value;
 
@@ -231,51 +108,18 @@ class UserPreferencesData
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isResultsAsCards()
+    public function isResultsAsCards(): bool
     {
         return $this->resultsAsCards;
     }
 
-    /**
-     * @param bool $resultsAsCards
-     */
-    public function setResultsAsCards($resultsAsCards)
-    {
-        $this->resultsAsCards = $resultsAsCards;
-    }
-
-    /**
-     * @return bool
-     */
     public function isCheckNotifications(): bool
     {
         return $this->checkNotifications;
     }
 
-    /**
-     * @param bool $checkNotifications
-     */
-    public function setCheckNotifications(bool $checkNotifications)
-    {
-        $this->checkNotifications = $checkNotifications;
-    }
-
-    /**
-     * @return bool
-     */
     public function isShowAccountSearchFilters(): bool
     {
         return $this->showAccountSearchFilters;
-    }
-
-    /**
-     * @param bool $showAccountSearchFilters
-     */
-    public function setShowAccountSearchFilters(bool $showAccountSearchFilters)
-    {
-        $this->showAccountSearchFilters = $showAccountSearchFilters;
     }
 }
