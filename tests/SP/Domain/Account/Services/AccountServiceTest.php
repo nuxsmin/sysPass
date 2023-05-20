@@ -519,12 +519,18 @@ class AccountServiceTest extends UnitaryTestCase
         sort($consecutive);
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->withConsecutive(...array_map(fn($v) => [$v], $consecutive))
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
-                                  ->withConsecutive(...array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId));
+                                  ->with(
+                                      ...
+                                      self::withConsecutive(
+                                          ...
+                                          array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId)
+                                      )
+                                  );
 
         $this->accountService->updateBulk($accountUpdateBulkDto);
     }
@@ -542,12 +548,18 @@ class AccountServiceTest extends UnitaryTestCase
         $this->context->getUserData()->setIsAdminApp(false);
 
         $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
-                                ->withConsecutive(...array_map(fn($v) => [$v], $accountsId))
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
-                                  ->withConsecutive(...array_map(fn($v) => [$v, false, $accounts[$v]], $accountsId));
+                                  ->with(
+                                      ...
+                                      self::withConsecutive(
+                                          ...
+                                          array_map(fn($v) => [$v, false, $accounts[$v]], $accountsId)
+                                      )
+                                  );
 
         $this->accountService->updateBulk($accountUpdateBulkDto);
     }
@@ -570,12 +582,18 @@ class AccountServiceTest extends UnitaryTestCase
         sort($consecutive);
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->withConsecutive(...array_map(fn($v) => [$v], $consecutive))
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
-                                  ->withConsecutive(...array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId));
+                                  ->with(
+                                      ...
+                                      self::withConsecutive(
+                                          ...
+                                          array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId)
+                                      )
+                                  );
 
         $this->accountService->updateBulk($accountUpdateBulkDto);
     }
@@ -598,12 +616,17 @@ class AccountServiceTest extends UnitaryTestCase
         sort($consecutive);
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->withConsecutive(...array_map(fn($v) => [$v], $consecutive))
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
-                                  ->withConsecutive(...array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId));
+                                  ->with(
+                                      ...self::withConsecutive(
+                                      ...array_map(fn($v) => [$v, true, $accounts[$v]],
+                                      $accountsId)
+                                  )
+                                  );
 
         $this->accountService->updateBulk($accountUpdateBulkDto);
     }

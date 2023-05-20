@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -67,6 +67,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @param  array|null  $whereConsecutiveArgs
      *
      * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     private function setExpectationWithoutGlobalSearch(string $tableName, ?array $whereConsecutiveArgs = null): void
     {
@@ -77,14 +78,14 @@ class AccountFilterUserTest extends UnitaryTestCase
 
         $select->expects(self::exactly(1))->method('from')->with($tableName)->willReturnSelf();
         $select->expects(self::exactly(3))
-            ->method('where')
-            ->withConsecutive(...$whereConsecutiveArgs)
-            ->willReturnSelf();
+               ->method('where')
+               ->with(...self::withConsecutive(...$whereConsecutiveArgs))
+               ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-            ->with([
-                'userId'      => $this->context->getUserData()->getId(),
-                'userGroupId' => $this->context->getUserData()->getUserGroupId(),
-            ]);
+               ->with([
+                   'userId'      => $this->context->getUserData()->getId(),
+                   'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+               ]);
     }
 
     private function buildConsecutiveArgsFor(string $tableName): array
@@ -116,7 +117,8 @@ class AccountFilterUserTest extends UnitaryTestCase
             [
                 [
                     new Callback(static fn($where) => sha1($where)
-                                                      === self::WHERE_HASHES['Account']['withoutGlobalSearchAndFullGroupAccess']),
+                                                      === self::WHERE_HASHES['Account']['withoutGlobalSearchAndFullGroupAccess']
+                    ),
                 ],
             ]
         );
@@ -134,10 +136,10 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::never())->method('from');
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-            ->with([
-                'userId'      => $this->context->getUserData()->getId(),
-                'userGroupId' => $this->context->getUserData()->getUserGroupId(),
-            ]);
+               ->with([
+                   'userId'      => $this->context->getUserData()->getId(),
+                   'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+               ]);
 
         $this->accountFilterUser->buildFilter(false, $select);
     }
@@ -155,6 +157,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @param  string  $tableName
      *
      * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     private function setExpectationForGlobalSearch(string $tableName): void
     {
@@ -165,14 +168,14 @@ class AccountFilterUserTest extends UnitaryTestCase
 
         $select->expects(self::exactly(1))->method('from')->with($tableName)->willReturnSelf();
         $select->expects(self::exactly(2))
-            ->method('where')
-            ->withConsecutive(...$whereConsecutiveArgs)
-            ->willReturnSelf();
+               ->method('where')
+               ->with(...self::withConsecutive(...$whereConsecutiveArgs))
+               ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-            ->with([
-                'userId'      => $this->context->getUserData()->getId(),
-                'userGroupId' => $this->context->getUserData()->getUserGroupId(),
-            ]);
+               ->with([
+                   'userId'      => $this->context->getUserData()->getId(),
+                   'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+               ]);
     }
 
     public function testBuildFilterWithGlobalSearchForAdminApp()
@@ -237,10 +240,10 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::never())->method('from');
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-            ->with([
-                'userId'      => $this->context->getUserData()->getId(),
-                'userGroupId' => $this->context->getUserData()->getUserGroupId(),
-            ]);
+               ->with([
+                   'userId'      => $this->context->getUserData()->getId(),
+                   'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+               ]);
 
         $this->accountFilterUser->buildFilterHistory(false, $select);
     }
@@ -256,7 +259,8 @@ class AccountFilterUserTest extends UnitaryTestCase
             [
                 [
                     new Callback(static fn($where) => sha1($where)
-                                                      === self::WHERE_HASHES['AccountHistory']['withoutGlobalSearchAndFullGroupAccess']),
+                                                      === self::WHERE_HASHES['AccountHistory']['withoutGlobalSearchAndFullGroupAccess']
+                    ),
                 ],
             ]
         );

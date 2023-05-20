@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,8 +31,8 @@ namespace SP\Util;
  */
 final class Checks
 {
-    private const MIN_PHP_VERSION = 70400;
-    private const MAX_PHP_VERSION = 81000;
+    private const MIN_PHP_VERSION = 81000;
+    private const MAX_PHP_VERSION = 82000;
 
     /**
      * Comprobar si sysPass se ejecuta en W$indows.

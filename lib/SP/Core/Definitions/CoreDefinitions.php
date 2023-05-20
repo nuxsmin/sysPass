@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -111,7 +111,7 @@ final class CoreDefinitions
                         ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
                     create(FileCache::class)->constructor(ConfigFileService::CONFIG_CACHE_FILE),
                     get(ContextInterface::class),
-                    autowire(ConfigBackupService::class)->lazy()
+                    autowire(ConfigBackupService::class)
                 ),
             ConfigDataInterface::class    =>
                 static fn(ConfigInterface $config) => $config->getConfigData(),

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -66,9 +66,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
         $this->publicLinkRepository->delete($id);
     }
@@ -112,9 +112,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doSelect')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->getHashForItem($itemId);
     }
@@ -132,9 +132,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doSelect')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->getById($id);
     }
@@ -162,9 +162,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn($expected);
 
         $this->assertTrue($this->publicLinkRepository->addLinkView($publicLinkData));
     }
@@ -226,9 +226,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::exactly(2))
-            ->method('doQuery')
-            ->withConsecutive([$callbackCheckDuplicate], [$callbackCreate])
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with(...self::withConsecutive([$callbackCheckDuplicate], [$callbackCreate]))
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->create($publicLinkData);
     }
@@ -252,9 +252,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult([1]));
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult([1]));
 
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Link already created');
@@ -304,9 +304,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->refresh($publicLinkData);
     }
@@ -332,9 +332,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->deleteByIdBatch($ids);
     }
@@ -346,7 +346,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
-            ->method('doQuery');
+                       ->method('doQuery');
 
         $this->assertEquals(0, $this->publicLinkRepository->deleteByIdBatch([]));
     }
@@ -364,9 +364,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doSelect')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->getByHash($hash);
     }
@@ -398,9 +398,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult());
+                       ->method('doQuery')
+                       ->with($callback)
+                       ->willReturn(new QueryResult());
 
         $this->publicLinkRepository->update($publicLinkData);
     }
@@ -425,7 +425,6 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
 
         $this->publicLinkRepository->search(new ItemSearchData());
     }
-
 
     protected function setUp(): void
     {

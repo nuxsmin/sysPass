@@ -19,7 +19,7 @@
   "config": {
     "classmap-authoritative": false,
     "platform": {
-      "php": "8.0"
+      "php": "8.1"
     },
     "allow-plugins": {
       "ocramius/package-versions": true
@@ -31,13 +31,13 @@
   "minimum-stability": "stable",
   "name": "syspass/syspass",
   "require": {
-    "php": "~8.0 || ~8.1 || ~8.2",
+    "php": "~8.1 || ~8.2",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^2.0",
     "klein/klein": "^2.1",
-    "php-di/php-di": "^6.0",
+    "php-di/php-di": "^7.0",
     "doctrine/common": "^v2.7",
     "guzzlehttp/guzzle": "^6.3",
     "monolog/monolog": "^1.23",
@@ -54,13 +54,12 @@
     "league/fractal": "^0.20",
     "symfony/console": "^v5.1",
     "symfony/lock": "^v5.0",
-    "ocramius/proxy-manager": "~2.0",
     "aura/sqlquery": "~3.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "symfony/debug": "^v3.4",
-    "phpunit/phpunit": "^9",
+    "phpunit/phpunit": "^10",
     "fzaninotto/faker": "1.9.x-dev",
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v4.1",

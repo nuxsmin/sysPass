@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -501,6 +501,8 @@ class AccountRepositoryTest extends UnitaryTestCase
                        ->with($callback);
 
         $this->accountRepository->updateBulk($account->getId(), $account, false, true);
+
+        $this->assertTrue(true);
     }
 
     /**

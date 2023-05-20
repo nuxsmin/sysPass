@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -43,7 +43,7 @@ interface ConfigBackupServiceInterface
      * @throws FileException
      * @throws ServiceException
      */
-    public function restore(): ConfigDataInterface;
+    public function restore(ConfigInterface $config): ConfigDataInterface;
 
     /**
      * @throws \SP\Domain\Common\Services\ServiceException

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,6 +35,7 @@ use SP\Http\Json;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Util\Util;
+use function SP\processException;
 
 /**
  * Class ConfigBackupService
@@ -43,13 +44,11 @@ use SP\Util\Util;
  */
 class ConfigBackupService implements ConfigBackupServiceInterface
 {
-    private ConfigService   $configService;
-    private ConfigInterface $config;
+    private ConfigService $configService;
 
-    public function __construct(ConfigService $configService, ConfigInterface $config)
+    public function __construct(ConfigService $configService)
     {
         $this->configService = $configService;
-        $this->config = $config;
     }
 
     /**
@@ -82,9 +81,9 @@ class ConfigBackupService implements ConfigBackupServiceInterface
      * @throws FileException
      * @throws ServiceException
      */
-    public function restore(): ConfigDataInterface
+    public function restore(ConfigInterface $config): ConfigDataInterface
     {
-        return $this->config->saveConfig(
+        return $config->saveConfig(
             Util::unserialize(ConfigData::class, $this->getBackup())
         )->getConfigData();
     }

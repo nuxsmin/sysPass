@@ -204,7 +204,7 @@ abstract class BootstrapBase
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__('Required PHP version >= %s <= %s'), '7.4', '8.0'),
+                sprintf(__('Required PHP version >= %s <= %s'), '8.1', '8.2'),
                 SPException::ERROR,
                 __u('Please update the PHP version to run sysPass')
             );

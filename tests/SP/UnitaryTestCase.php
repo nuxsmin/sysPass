@@ -41,6 +41,8 @@ use SP\Tests\Generators\ConfigDataGenerator;
  */
 abstract class UnitaryTestCase extends TestCase
 {
+    use PHPUnitHelper;
+    
     protected static Generator $faker;
     protected ConfigInterface  $config;
     protected Application      $application;
