@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,6 +53,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     /**
      * @throws \SP\Domain\Common\Services\ServiceException
      * @throws \SP\Infrastructure\File\FileException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testUpdateMasterPassword(): void
     {

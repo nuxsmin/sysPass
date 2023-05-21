@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,101 +19,84 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Core\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
-use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\CryptException;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class CryptTest
  *
- * Tests unitarios para comprobar el funcionamiento de la clase SP\Core\Crypt\Crypt
- *
- * @package SP\Tests
+ * @group unitary
  */
-class CryptTest extends TestCase
+class CryptTest extends UnitaryTestCase
 {
-    const PASSWORD = 'test_password';
+    /**
+     * Comprobar la generación de una llave de cifrado
+     *
+     * @throws \SP\Core\Exceptions\CryptException
+     */
+    public function testMakeSecuredKey()
+    {
+        (new Crypt())->makeSecuredKey(self::$faker->password);
+
+        $this->assertTrue(true);
+    }
 
     /**
      * Comprobar la generación de una llave de cifrado
      *
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
-    public function testMakeSecuredKey()
+    public function testMakeSecuredKeyNoAscii()
     {
+        (new Crypt())->makeSecuredKey(self::$faker->password, false);
+
         $this->assertTrue(true);
-
-        return Crypt::makeSecuredKey(self::PASSWORD);
-    }
-
-    /**
-     * Comprobar el desbloqueo de una llave de cifrado
-     *
-     * @depends testMakeSecuredKey
-     *
-     * @param string $key LLave de cifrado
-     *
-     * @throws CryptoException
-     */
-    public function testUnlockSecuredKey($key)
-    {
-        $this->assertTrue(true);
-
-        Crypt::unlockSecuredKey($key, self::PASSWORD);
-    }
-
-    /**
-     * Comprobar el desbloqueo de una llave de cifrado
-     *
-     * @depends testMakeSecuredKey
-     *
-     * @param string $key LLave de cifrado
-     *
-     * @throws CryptoException
-     */
-    public function testUnlockSecuredKeyWithWrongPassword($key)
-    {
-        $this->expectException(CryptoException::class);
-
-        Crypt::unlockSecuredKey($key, 'test');
     }
 
     /**
      * Comprobar la encriptación y desencriptado de datos
      *
-     * @depends testMakeSecuredKey
-     *
-     * @param string $key LLave de cifrado
-     *
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
-    public function testEncryptAndDecrypt($key)
+    public function testEncryptAndDecrypt()
     {
-        $data = Crypt::encrypt('prueba', $key, self::PASSWORD);
+        $crypt = new Crypt();
 
-        $this->assertSame('prueba', Crypt::decrypt($data, $key, self::PASSWORD));
+        $password = self::$faker->password;
+
+        $key = $crypt->makeSecuredKey($password);
+
+        $data = self::$faker->text;
+
+        $out = $crypt->encrypt($data, $key, $password);
+
+        $this->assertSame($data, $crypt->decrypt($out, $key, $password));
     }
 
     /**
      * Comprobar la encriptación y desencriptado de datos
      *
-     * @depends testMakeSecuredKey
-     *
-     * @param string $key LLave de cifrado
-     *
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
-    public function testEncryptAndDecryptWithDifferentPassword($key)
+    public function testEncryptAndDecryptWithDifferentPassword()
     {
-        $data = Crypt::encrypt('prueba', $key, self::PASSWORD);
+        $crypt = new Crypt();
 
-        $this->expectException(CryptoException::class);
+        $password = self::$faker->password;
 
-        $this->assertSame('prueba', Crypt::decrypt($data, $key, 'test'));
+        $key = $crypt->makeSecuredKey($password);
+
+        $data = $crypt->encrypt('prueba', $key, $password);
+
+        $this->expectException(CryptException::class);
+
+        $crypt->decrypt($data, $key, 'test');
     }
 }

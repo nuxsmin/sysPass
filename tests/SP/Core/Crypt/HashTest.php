@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,31 +19,26 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Core\Crypt;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Faker\Factory;
-use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Hash;
-use SP\Util\PasswordUtil;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class HashTest
  *
- * @package SP\Tests\SP\Core\Crypt
+ * @group unitary
  */
-class HashTest extends TestCase
+class HashTest extends UnitaryTestCase
 {
-    /**
-     * @throws EnvironmentIsBrokenException
-     */
     public function testHashKey()
     {
         for ($i = 2; $i <= 128; $i *= 2) {
-            $key = PasswordUtil::generateRandomBytes($i);
+            $key = self::$faker->password(2, $i);
             $hash = Hash::hashKey($key);
 
             $this->assertNotEmpty($hash);
@@ -51,9 +46,6 @@ class HashTest extends TestCase
         }
     }
 
-    /**
-     * @throws EnvironmentIsBrokenException
-     */
     public function testSignMessage()
     {
         $faker = Factory::create();
@@ -61,7 +53,7 @@ class HashTest extends TestCase
         for ($i = 2; $i <= 128; $i *= 2) {
             $text = $faker->text;
 
-            $key = PasswordUtil::generateRandomBytes($i);
+            $key = self::$faker->password(2, $i);
             $hash = Hash::signMessage($text, $key);
 
             $this->assertNotEmpty($hash);

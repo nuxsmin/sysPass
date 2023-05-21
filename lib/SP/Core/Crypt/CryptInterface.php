@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -56,16 +56,6 @@ interface CryptInterface
      * @throws \SP\Core\Exceptions\CryptException
      */
     public function encrypt(string $data, Key|string $securedKey, ?string $password = null): string;
-
-    /**
-     * @param  string  $key
-     * @param  string  $password
-     * @param  bool  $useAscii
-     *
-     * @return string|Key
-     * @throws \SP\Core\Exceptions\CryptException
-     */
-    public function unlockSecuredKey(string $key, string $password, bool $useAscii = true): Key|string;
 
     /**
      * Desencriptar datos con una clave segura

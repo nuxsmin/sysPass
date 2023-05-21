@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,95 +19,58 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use PHPUnit\Framework\TestCase;
+use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\Util\PasswordUtil;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class VaultTest
  *
- * @package SP\Tests
+ * @group unitary
  */
-class VaultTest extends TestCase
+class VaultTest extends UnitaryTestCase
 {
     /**
-     * @var string
-     */
-    private $key;
-
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     * @throws EnvironmentIsBrokenException
-     */
-    protected function setUp(): void
-    {
-        $this->key = PasswordUtil::generateRandomBytes();
-    }
-
-    /**
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
     public function testGetData()
     {
-        $vault = new Vault();
-        $vault->saveData('prueba', $this->key);
-        $this->assertEquals('prueba', $vault->getData($this->key));
+        $data = self::$faker->text;
+        $key = self::$faker->password;
 
-        $randomData = PasswordUtil::generateRandomBytes();
-
-        $vault = new Vault();
-        $vault->saveData($randomData, $this->key);
-        $this->assertEquals($randomData, $vault->getData($this->key));
+        $vault = Vault::factory(new Crypt())->saveData($data, $key);
+        $this->assertEquals($data, $vault->getData($key));
     }
 
-
     /**
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
     public function testGetTimeSet()
     {
-        $vault = new Vault();
-        $vault->saveData('test', $this->key);
+        $vault = Vault::factory(new Crypt())->saveData(self::$faker->text, self::$faker->password);
         $this->assertTrue($vault->getTimeSet() !== 0);
     }
 
     /**
-     * @throws CryptoException
+     * @throws \SP\Core\Exceptions\CryptException
      */
     public function testReKey()
     {
-        $vault = new Vault();
-        $vault->saveData('prueba', $this->key);
+        $data = self::$faker->text;
+        $key = self::$faker->password;
 
-        $this->assertEquals('prueba', $vault->getData($this->key));
+        $vault = Vault::factory(new Crypt())->saveData($data, $key);
 
-        $vault->reKey(1234, $this->key);
+        $newKey = self::$faker->password;
 
-        $this->assertEquals('prueba', $vault->getData(1234));
-    }
+        $vaultRekey = $vault->reKey($newKey, $key);
 
-    /**
-     * @throws CryptoException
-     */
-    public function testGetTimeUpdated()
-    {
-        $vault = new Vault();
-        $vault->saveData('test', $this->key);
-
-        $this->assertTrue($vault->getTimeUpdated() === 0);
-
-        $vault->reKey(1234, $this->key);
-
-        $this->assertTrue(is_int($vault->getTimeUpdated()));
-        $this->assertTrue($vault->getTimeUpdated() > 0);
+        $this->assertEquals($data, $vaultRekey->getData($newKey));
+        $this->assertGreaterThan($vault->getTimeSet(), $vaultRekey->getTimeSet());
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -108,6 +108,7 @@ class CryptPKITest extends UnitaryTestCase
      * This method is called before a test is executed.
      *
      * @throws SPException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     protected function setUp(): void
     {

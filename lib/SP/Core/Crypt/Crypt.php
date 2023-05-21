@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -97,15 +97,14 @@ class Crypt implements CryptInterface
      *
      * @return string|Key
      * @throws \SP\Core\Exceptions\CryptException
-     * @TODO: Update callers to use instance
      */
-    public function unlockSecuredKey(string $key, string $password, bool $useAscii = true): Key|string
+    private function unlockSecuredKey(string $key, string $password, bool $useAscii = true): Key|string
     {
         try {
             if ($useAscii) {
                 return KeyProtectedByPassword::loadFromAsciiSafeString($key)
-                    ->unlockKey($password)
-                    ->saveToAsciiSafeString();
+                                             ->unlockKey($password)
+                                             ->saveToAsciiSafeString();
             }
 
             return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password);

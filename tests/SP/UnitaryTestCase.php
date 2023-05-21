@@ -62,6 +62,7 @@ abstract class UnitaryTestCase extends TestCase
 
     /**
      * @throws \SP\Core\Context\ContextException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     protected function setUp(): void
     {
@@ -73,7 +74,7 @@ abstract class UnitaryTestCase extends TestCase
 
     /**
      * @return \SP\Core\Application
-     * @throws \SP\Core\Context\ContextException
+     * @throws \SP\Core\Context\ContextException|\PHPUnit\Framework\MockObject\Exception
      */
     private function mockApplication(): Application
     {
