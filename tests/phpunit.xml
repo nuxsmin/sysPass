@@ -44,6 +44,14 @@
             <exclude>./SP/Modules</exclude>
             <exclude>./SP/Services/Install/</exclude>
             <exclude>./SP/Services/Backup</exclude>
+            <exclude>./SP/Generators</exclude>
+            <exclude>./SP/Domain/Account/Search/AccountSearchTokenizerDataTrait.php</exclude>
+            <exclude>./SP/DatabaseTestCase.php</exclude>
+            <exclude>./SP/DatabaseTrait.php</exclude>
+            <exclude>./SP/DatabaseUtil.php</exclude>
+            <exclude>./SP/PHPUnitHelper.php</exclude>
+            <exclude>./SP/UnitaryTestCase.php</exclude>
+            <exclude>./SP/bootstrap.php</exclude>
         </testsuite>
         <testsuite name="api">
             <directory suffix=".php">./SP/Modules/Api</directory>
