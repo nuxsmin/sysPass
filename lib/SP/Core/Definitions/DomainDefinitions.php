@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,19 @@
 
 namespace SP\Core\Definitions;
 
+use Psr\Container\ContainerInterface;
+use SP\Core\Application;
+use SP\Core\Crypt\CryptInterface;
+use SP\Core\Crypt\RequestBasedPassword;
+use SP\Core\Crypt\UUIDCookie;
 use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
 use SP\Domain\Account\Search\AccountSearchDataBuilder;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
+use SP\Domain\Crypt\Services\SecureSessionService;
+use SP\Infrastructure\File\FileCache;
 use function DI\autowire;
+use function DI\factory;
 
 /**
  * Class DomainDefinitions
@@ -91,6 +101,23 @@ final class DomainDefinitions
             ),
             'SP\Domain\Plugin\Ports\*RepositoryInterface'       => autowire(
                 'SP\Infrastructure\Plugin\Repositories\*Repository'
+            ),
+            SecureSessionServiceInterface::class => factory(
+                static function (ContainerInterface $c) {
+                    $fileCache = new FileCache(
+                        SecureSessionService::getFileNameFrom(
+                            $c->get(UUIDCookie::class),
+                            $c->get(ConfigDataInterface::class)->getPasswordSalt()
+                        )
+                    );
+
+                    return new SecureSessionService(
+                        $c->get(Application::class),
+                        $c->get(CryptInterface::class),
+                        $fileCache,
+                        $c->get(RequestBasedPassword::class)
+                    );
+                }
             ),
         ];
     }

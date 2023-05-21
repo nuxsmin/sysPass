@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Domain\Crypt\Ports;
 
 use Defuse\Crypto\Key;
 use SP\Core\Crypt\UUIDCookie;
+use SP\Domain\Common\Services\ServiceException;
 
 /**
  * Class SecureSessionService
@@ -35,13 +36,17 @@ use SP\Core\Crypt\UUIDCookie;
 interface SecureSessionServiceInterface
 {
     /**
+     * Returns an unique filename from a browser cookie
+     *
+     * @throws ServiceException
+     */
+    public static function getFileNameFrom(UUIDCookie $cookie, string $seed): string;
+
+    /**
      * Returns the encryption key
      *
-     * @param  UUIDCookie  $cookie
      *
      * @return Key|false
      */
-    public function getKey(UUIDCookie $cookie): Key|bool;
-
-    public function getFilename(): string;
+    public function getKey(): Key|bool;
 }

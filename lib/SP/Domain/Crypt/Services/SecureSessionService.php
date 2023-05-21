@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,13 +27,15 @@ namespace SP\Domain\Crypt\Services;
 use Defuse\Crypto\Key;
 use Exception;
 use SP\Core\Application;
+use SP\Core\Crypt\CryptInterface;
+use SP\Core\Crypt\RequestBasedPassword;
+use SP\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
-use SP\Http\RequestInterface;
-use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use function SP\logger;
 use function SP\processException;
@@ -48,50 +50,13 @@ final class SecureSessionService extends Service implements SecureSessionService
     private const CACHE_EXPIRE_TIME = 86400;
     private const CACHE_PATH        = CACHE_PATH.DIRECTORY_SEPARATOR.'secure_session';
 
-    private RequestInterface $request;
-    private string           $seed;
-    private ?UUIDCookie      $cookie   = null;
-    private ?string          $filename = null;
-
-    public function __construct(Application $application, RequestInterface $request)
-    {
+    public function __construct(
+        Application $application,
+        private readonly CryptInterface $crypt,
+        private readonly FileCacheInterface $fileCache,
+        private readonly RequestBasedPasswordInterface $requestBasedPassword
+    ) {
         parent::__construct($application);
-
-        $this->request = $request;
-        $this->seed = $this->config->getConfigData()->getPasswordSalt();
-    }
-
-
-    /**
-     * Returns the encryption key
-     *
-     * @param  UUIDCookie  $cookie
-     *
-     * @return Key|false
-     */
-    public function getKey(UUIDCookie $cookie): Key|bool
-    {
-        $this->cookie = $cookie;
-
-        try {
-            $cache = FileCache::factory($this->getFileNameFromCookie());
-
-            if ($cache->isExpired(self::CACHE_EXPIRE_TIME)) {
-                logger('Session key expired or does not exist', 'ERROR');
-
-                return $this->saveKey();
-            }
-
-            if (($vault = $cache->load()) instanceof Vault) {
-                return Key::loadFromAsciiSafeString($vault->getData($this->getCypher()));
-            }
-        } catch (FileException $e) {
-            return $this->saveKey();
-        } catch (Exception $e) {
-            processException($e);
-        }
-
-        return false;
     }
 
     /**
@@ -99,19 +64,42 @@ final class SecureSessionService extends Service implements SecureSessionService
      *
      * @throws ServiceException
      */
-    private function getFileNameFromCookie(): string
+    public static function getFileNameFrom(UUIDCookie $cookie, string $seed): string
     {
-        if (empty($this->filename)) {
-            if (($uuid = $this->cookie->loadCookie($this->seed)) === false
-                && ($uuid = $this->cookie->createCookie($this->seed)) === false
-            ) {
-                throw new ServiceException('Unable to get UUID for filename');
-            }
-
-            $this->filename = self::CACHE_PATH.DIRECTORY_SEPARATOR.$uuid;
+        if (($uuid = $cookie->load($seed)) === false
+            && ($uuid = $cookie->create($seed)) === false
+        ) {
+            throw new ServiceException('Unable to get UUID for filename');
         }
 
-        return $this->filename;
+        return self::CACHE_PATH.DIRECTORY_SEPARATOR.$uuid;
+    }
+
+    /**
+     * Returns the encryption key
+     *
+     *
+     * @return Key|false
+     */
+    public function getKey(): Key|bool
+    {
+        try {
+            if ($this->fileCache->isExpired(self::CACHE_EXPIRE_TIME)) {
+                logger('Session key expired or does not exist', 'ERROR');
+
+                return $this->saveKey();
+            }
+
+            $vault = $this->fileCache->load(null, Vault::class);
+
+            return Key::loadFromAsciiSafeString($vault->getData($this->requestBasedPassword->build()));
+        } catch (FileException) {
+            return $this->saveKey();
+        } catch (Exception $e) {
+            processException($e);
+        }
+
+        return false;
     }
 
     /**
@@ -124,13 +112,13 @@ final class SecureSessionService extends Service implements SecureSessionService
         try {
             $securedKey = Key::createNewRandomKey();
 
-            FileCache::factory($this->getFileNameFromCookie())
-                ->save(
-                    (new Vault())->saveData(
-                        $securedKey->saveToAsciiSafeString(),
-                        $this->getCypher()
-                    )
-                );
+            $data = Vault::factory($this->crypt)
+                         ->saveData(
+                             $securedKey->saveToAsciiSafeString(),
+                             $this->requestBasedPassword->build()
+                         );
+
+            $this->fileCache->save($data);
 
             logger('Saved session key');
 
@@ -140,27 +128,5 @@ final class SecureSessionService extends Service implements SecureSessionService
         }
 
         return false;
-    }
-
-    /**
-     * Returns the key to be used for encrypting the session data
-     */
-    private function getCypher(): string
-    {
-        return hash_pbkdf2(
-            'sha1',
-            sha1(
-                $this->request->getHeader('User-Agent').
-                $this->request->getClientAddress()
-            ),
-            $this->seed,
-            500,
-            32
-        );
-    }
-
-    public function getFilename(): string
-    {
-        return $this->filename;
     }
 }

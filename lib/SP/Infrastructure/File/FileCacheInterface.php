@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,14 +32,19 @@ namespace SP\Infrastructure\File;
 interface FileCacheInterface
 {
     /**
-     * @param  string|null  $path
+     * Load file data unserializing the data
+     *
+     * @param  string|null  $path  The path to the file
+     * @param  string|null  $class  The class to unserialize the data
      *
      * @return mixed
      * @throws \SP\Infrastructure\File\FileException
      */
-    public function load(?string $path = null): mixed;
+    public function load(?string $path = null, ?string $class = null): mixed;
 
     /**
+     * Save file data serializing the data
+     *
      * @throws FileException
      */
     public function save(mixed $data, ?string $path = null): FileCacheInterface;

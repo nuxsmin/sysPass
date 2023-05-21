@@ -24,52 +24,38 @@
 
 namespace SP\Core\Crypt;
 
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\RequestInterface;
 
 /**
- * Class SecureCookie
- *
- * @package SP\Core\Crypt
+ * Class RequestBasedPassword
  */
-class UUIDCookie extends Cookie
+final class RequestBasedPassword implements RequestBasedPasswordInterface
 {
-    /**
-     * Nombre de la cookie
-     */
-    public const COOKIE_NAME = 'SYSPASS_UUID';
+    public function __construct(
+        private readonly RequestInterface $request,
+        private readonly ConfigDataInterface $configData
+    ) {}
 
-    public static function factory(RequestInterface $request): UUIDCookie
+    public function build(): string
     {
-        return new self(self::COOKIE_NAME, $request);
+        return hash_pbkdf2(
+            'sha1',
+            $this->getWellKnownData(),
+            $this->configData->getPasswordSalt(),
+            5000,
+            32
+        );
     }
 
     /**
-     * Creates a cookie and sets its data
-     *
-     * @return string|false
+     * @return string
      */
-    public function create(string $signKey): bool|string
+    private function getWellKnownData(): string
     {
-        $uuid = uniqid('', true);
-
-        if ($this->setCookie($this->sign($uuid, $signKey))) {
-            return $uuid;
-        }
-
-        return false;
-    }
-
-    /**
-     * Loads cookie data
-     *
-     * @return false|string
-     */
-    public function load(string $signKey): bool|string
-    {
-        $data = $this->getCookie();
-
-        return $data !== false
-            ? $this->getCookieData($data, $signKey)
-            : false;
+        return sha1(
+            $this->request->getHeader('User-Agent').
+            $this->request->getClientAddress()
+        );
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SP\Core\Crypt;
 
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Http\Request;
 use SP\Http\RequestInterface;
+use function SP\logger;
 
 /**
  * Class Cookie
@@ -35,20 +35,13 @@ use SP\Http\RequestInterface;
  */
 abstract class Cookie
 {
-    protected Request $request;
-    private string $cookieName;
-
     /**
      * Cookie constructor.
      *
      * @param  string  $cookieName
      * @param  RequestInterface  $request
      */
-    protected function __construct(string $cookieName, RequestInterface $request)
-    {
-        $this->cookieName = $cookieName;
-        $this->request = $request;
-    }
+    protected function __construct(private readonly string $cookieName, protected readonly RequestInterface $request) {}
 
     /**
      * Firmar la cookie para autentificación
@@ -57,17 +50,20 @@ abstract class Cookie
     {
         $data = base64_encode($data);
 
-        return Hash::signMessage($data, $cypher) . ';' . $data;
+        return Hash::signMessage($data, $cypher).';'.$data;
     }
 
     /**
      * Comprobar la firma de la cookie y devolver los datos
      *
+     * @param  string  $data
+     * @param  string  $cypher
+     *
      * @return bool|string
      */
-    final public function getCookieData(string $data, string $cypher)
+    final public function getCookieData(string $data, string $cypher): bool|string
     {
-        if (strpos($data, ';') === false) {
+        if (!str_contains($data, ';')) {
             return false;
         }
 
@@ -83,7 +79,7 @@ abstract class Cookie
      *
      * @return bool|string
      */
-    protected function getCookie()
+    protected function getCookie(): bool|string
     {
         return $this->request
             ->getRequest()

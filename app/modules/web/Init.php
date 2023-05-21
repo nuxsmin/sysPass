@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -311,7 +311,7 @@ final class Init extends HttpModuleBase
     {
         if ($encrypt === true
             && BootstrapBase::$checkPhpVersion
-            && ($key = $this->secureSessionService->getKey(UUIDCookie::factory($this->request))) !== false) {
+            && ($key = $this->secureSessionService->getKey()) !== false) {
             session_set_save_handler(new CryptSessionHandler($key), true);
         }
 

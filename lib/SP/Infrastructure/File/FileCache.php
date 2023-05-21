@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\File;
 
+use SP\Core\Exceptions\InvalidClassException;
+use function SP\__u;
+
 /**
  * Class FileCache
  *
@@ -33,13 +36,22 @@ class FileCache extends FileCacheBase
 {
     /**
      * @throws FileException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    public function load(?string $path = null): mixed
+    public function load(?string $path = null, ?string $class = null): mixed
     {
         $this->checkOrInitializePath($path);
 
         /** @noinspection UnserializeExploitsInspection */
-        return unserialize($this->path->checkIsReadable()->readToString());
+        $data = unserialize($this->path->checkIsReadable()->readToString());
+
+        if ($class && (!class_exists($class) || !($data instanceof $class))) {
+            throw new InvalidClassException(
+                sprintf(__u('Either class does not exist or file data cannot unserialized into: %s'), $class)
+            );
+        }
+
+        return $data;
     }
 
     /**
@@ -50,10 +62,8 @@ class FileCache extends FileCacheBase
         $this->checkOrInitializePath($path);
         $this->createPath();
 
-        $this->path->checkIsWritable();
-        $this->path->open('wb', true);
-        $this->path->write(serialize($data));
-        $this->path->close();
+        $this->path->checkIsWritable()->open('wb', true);
+        $this->path->write(serialize($data))->close();
 
         return $this;
     }
