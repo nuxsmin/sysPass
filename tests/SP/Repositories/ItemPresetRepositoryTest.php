@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,6 +61,20 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         // Inicializar el repositorio
         self::$repository = $dic->get(ItemPresetRepository::class);
+    }
+
+    public static function userDataProvider(): array
+    {
+        return [
+            [1, 1, 1, 3],
+            [1, 2, 2, 1],
+            [1, 1, 3, 2],
+            [2, 2, 2, 2],
+            [2, 2, 3, 2],
+            [2, 1, 3, 2],
+            [3, 1, 1, 3],
+            [3, 1, 2, 2],
+        ];
     }
 
     /**
@@ -391,10 +405,10 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     /**
      * @dataProvider userDataProvider
      *
-     * @param int $userId
-     * @param int $userGroupId
-     * @param int $userProfileId
-     * @param int $expected
+     * @param  int  $userId
+     * @param  int  $userGroupId
+     * @param  int  $userProfileId
+     * @param  int  $expected
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -410,22 +424,5 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertInstanceOf(ItemPreset::class, $data);
         $this->assertEquals($expected, $data->getId());
-    }
-
-    /**
-     * @return array
-     */
-    public function userDataProvider()
-    {
-        return [
-            [1, 1, 1, 3],
-            [1, 2, 2, 1],
-            [1, 1, 3, 2],
-            [2, 2, 2, 2],
-            [2, 2, 3, 2],
-            [2, 1, 3, 2],
-            [3, 1, 1, 3],
-            [3, 1, 2, 2],
-        ];
     }
 }

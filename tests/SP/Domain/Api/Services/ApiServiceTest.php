@@ -66,6 +66,85 @@ class ApiServiceTest extends UnitaryTestCase
     private ApiService                             $apiService;
     private TrackRequest                           $trackRequest;
 
+    private static function getParamIntDataProvider(): array
+    {
+        $faker = Factory::create();
+        $number = $faker->randomNumber();
+
+        return [
+            [$number, $number, false, true],
+            [$number, $number, true, true],
+            [$number, $number, true, false],
+            [(string)$number, $number, false, true],
+            [$faker->colorName, null, false, true],
+            [null, $faker->randomNumber(), false, true],
+        ];
+    }
+
+    private static function getParamStringDataProvider(): array
+    {
+        $faker = Factory::create();
+        $string = $faker->colorName;
+
+        // mixed $value, mixed $expected, bool $required, bool $present
+        return [
+            [$string, $string, false, true],
+            [$string, $string, true, true],
+            [$string, $string, true, false],
+            [null, null, false, true],
+            [null, $faker->colorName, false, true],
+        ];
+    }
+
+    private static function getParamDataProvider(): array
+    {
+        $faker = Factory::create();
+        $string = $faker->colorName;
+
+        // mixed $value, mixed $expected, bool $required, bool $present
+        return [
+            [$string, $string, false, true],
+            [$string, $string, true, true],
+            [$string, $string, true, false],
+            [$string, $string, false, false],
+        ];
+    }
+
+    private static function getParamArrayDataProvider(): array
+    {
+        $faker = Factory::create();
+        $numbers = array_map(fn() => $faker->randomNumber(), range(0, 4));
+        $strings = array_map(fn() => $faker->colorName, range(0, 4));
+
+        // mixed $value, mixed $expected, bool $required, bool $present
+        return [
+            [$numbers, $numbers, false, true],
+            [$strings, $strings, false, true],
+            [$numbers, $numbers, true, true],
+            [$strings, $strings, true, true],
+            [$numbers, $numbers, true, false],
+            [$strings, $strings, true, false],
+            [$numbers, $numbers, false, false],
+            [$strings, $strings, false, false],
+            [null, null, false, false],
+        ];
+    }
+
+    private static function getParamRawDataProvider(): array
+    {
+        $faker = Factory::create();
+        $password = $faker->password;
+
+        // mixed $value, mixed $expected, bool $required, bool $present
+        return [
+            [$password, $password, false, true],
+            [$password, $password, true, true],
+            [$password, $password, true, false],
+            [$password, $password, false, false],
+            [null, null, false, false],
+        ];
+    }
+
     /**
      * @dataProvider getParamDataProvider
      *
@@ -591,84 +670,5 @@ class ApiServiceTest extends UnitaryTestCase
             $this->apiService->getMasterPass(),
             $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY)
         );
-    }
-
-    private function getParamIntDataProvider(): array
-    {
-        $faker = Factory::create();
-        $number = $faker->randomNumber();
-
-        return [
-            [$number, $number, false, true],
-            [$number, $number, true, true],
-            [$number, $number, true, false],
-            [(string)$number, $number, false, true],
-            [$faker->colorName, null, false, true],
-            [null, $faker->randomNumber(), false, true],
-        ];
-    }
-
-    private function getParamStringDataProvider(): array
-    {
-        $faker = Factory::create();
-        $string = $faker->colorName;
-
-        // mixed $value, mixed $expected, bool $required, bool $present
-        return [
-            [$string, $string, false, true],
-            [$string, $string, true, true],
-            [$string, $string, true, false],
-            [null, null, false, true],
-            [null, $faker->colorName, false, true],
-        ];
-    }
-
-    private function getParamDataProvider(): array
-    {
-        $faker = Factory::create();
-        $string = $faker->colorName;
-
-        // mixed $value, mixed $expected, bool $required, bool $present
-        return [
-            [$string, $string, false, true],
-            [$string, $string, true, true],
-            [$string, $string, true, false],
-            [$string, $string, false, false],
-        ];
-    }
-
-    private function getParamArrayDataProvider(): array
-    {
-        $faker = Factory::create();
-        $numbers = array_map(fn() => $faker->randomNumber(), range(0, 4));
-        $strings = array_map(fn() => $faker->colorName, range(0, 4));
-
-        // mixed $value, mixed $expected, bool $required, bool $present
-        return [
-            [$numbers, $numbers, false, true],
-            [$strings, $strings, false, true],
-            [$numbers, $numbers, true, true],
-            [$strings, $strings, true, true],
-            [$numbers, $numbers, true, false],
-            [$strings, $strings, true, false],
-            [$numbers, $numbers, false, false],
-            [$strings, $strings, false, false],
-            [null, null, false, false],
-        ];
-    }
-
-    private function getParamRawDataProvider(): array
-    {
-        $faker = Factory::create();
-        $password = $faker->password;
-
-        // mixed $value, mixed $expected, bool $required, bool $present
-        return [
-            [$password, $password, false, true],
-            [$password, $password, true, true],
-            [$password, $password, true, false],
-            [$password, $password, false, false],
-            [null, null, false, false],
-        ];
     }
 }

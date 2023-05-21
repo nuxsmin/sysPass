@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -67,29 +67,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
         self::$service = $dic->get(ItemPresetService::class);
     }
 
-    /**
-     * @dataProvider userDataProvider
-     *
-     * @param int $userId
-     * @param int $userGroupId
-     * @param int $userProfileId
-     * @param int $expected
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function testGetForUser($userId, $userGroupId, $userProfileId, $expected)
-    {
-        $result = self::$service->getForUser('permission', $userId, $userGroupId, $userProfileId);
-
-        $this->assertInstanceOf(ItemPreset::class, $result);
-        $this->assertEquals($expected, $result->getId());
-    }
-
-    /**
-     * @return array
-     */
-    public function userDataProvider()
+    public static function userDataProvider(): array
     {
         return [
             [1, 1, 1, 3],
@@ -101,6 +79,25 @@ class ItemPresetServiceTest extends DatabaseTestCase
             [3, 1, 1, 3],
             [3, 1, 2, 2],
         ];
+    }
+
+    /**
+     * @dataProvider userDataProvider
+     *
+     * @param  int  $userId
+     * @param  int  $userGroupId
+     * @param  int  $userProfileId
+     * @param  int  $expected
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGetForUser($userId, $userGroupId, $userProfileId, $expected)
+    {
+        $result = self::$service->getForUser('permission', $userId, $userGroupId, $userProfileId);
+
+        $this->assertInstanceOf(ItemPreset::class, $result);
+        $this->assertEquals($expected, $result->getId());
     }
 
     /**

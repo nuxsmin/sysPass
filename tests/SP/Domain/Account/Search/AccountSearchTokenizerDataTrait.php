@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Account\Search\AccountSearchConstants;
  */
 trait AccountSearchTokenizerDataTrait
 {
-    public function searchByItemDataProvider(): array
+    public static function searchByItemDataProvider(): array
     {
         $faker = Factory::create();
         $id = $faker->randomNumber();
@@ -78,7 +78,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    public function searchByConditionDataProvider(): array
+    public static function searchByConditionDataProvider(): array
     {
         $conditions = [
             'is:expired',
@@ -93,7 +93,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    public function searchUsingOperatorDataProvider(): array
+    public static function searchUsingOperatorDataProvider(): array
     {
         $conditions = [
             'test string' => null,
@@ -107,7 +107,7 @@ trait AccountSearchTokenizerDataTrait
         ];
     }
 
-    public function searchUsingStringDataProvider(): array
+    public static function searchUsingStringDataProvider(): array
     {
         $faker = Factory::create();
 
