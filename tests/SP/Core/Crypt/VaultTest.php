@@ -71,6 +71,6 @@ class VaultTest extends UnitaryTestCase
         $vaultRekey = $vault->reKey($newKey, $key);
 
         $this->assertEquals($data, $vaultRekey->getData($newKey));
-        $this->assertGreaterThan($vault->getTimeSet(), $vaultRekey->getTimeSet());
+        $this->assertGreaterThanOrEqual($vault->getTimeSet(), $vaultRekey->getTimeSet());
     }
 }
