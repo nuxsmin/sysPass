@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Util;
@@ -91,10 +91,7 @@ class UtilTest extends TestCase
         $this->assertEquals($expected, Util::boolval($value, true));
     }
 
-    /**
-     * @return array
-     */
-    public function boolProvider()
+    public static function boolProvider(): array
     {
         return [
             ['false', false],
@@ -117,10 +114,7 @@ class UtilTest extends TestCase
         self::markTestIncomplete();
     }
 
-    /**
-     * @return array
-     */
-    public function unitsProvider()
+    public static function unitsProvider(): array
     {
         return [
             ['128K', 131072],

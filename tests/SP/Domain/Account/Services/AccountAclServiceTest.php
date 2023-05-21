@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -110,6 +110,57 @@ class AccountAclServiceTest extends UnitaryTestCase
                 'users'              => [],
                 'groups'             => [],
             ],
+        ];
+    }
+
+    public static function accountPropertiesProvider(): array
+    {
+        /**
+         * Account |View      |Edit
+         * 1       |u=3 g=1,2 |u=3 g=1,2
+         * 2       |g=1,2,3   |g=1,2,3
+         * 3       |u=3 g=3   |u=3 g=3
+         * 4       |u=3       |u=3
+         *
+         * User | Group
+         * 1    | 2
+         * 2    | 1
+         * 3    | 2
+         * 4    | None
+         * Matrix: Account | UserId | GroupId | ShouldView | ShouldEdit
+         */
+        return [
+            [1, 2, 2, true, true],
+            [1, 3, 0, true, true],
+            [1, 3, 1, true, true],
+            [1, 3, 2, true, true],
+            [1, 4, 0, false, false],
+            [1, 4, 3, false, false],
+            [1, 4, 4, false, false],
+            [2, 2, 1, true, true],
+            [2, 2, 2, true, true],
+            [2, 2, 3, true, true],
+            [2, 3, 0, false, false],
+            [2, 3, 3, true, true],
+            [2, 4, 0, false, false],
+            [2, 4, 1, true, true],
+            [2, 4, 2, true, true],
+            [2, 4, 3, true, true],
+            [2, 4, 4, false, false],
+            [3, 1, 1, false, false],
+            [3, 1, 2, false, false],
+            [3, 1, 3, true, true],
+            [3, 2, 1, false, false],
+            [3, 2, 2, false, false],
+            [3, 2, 3, true, true],
+            [3, 3, 0, true, true],
+            [3, 3, 1, true, true],
+            [3, 3, 2, true, true],
+            [3, 3, 3, true, true],
+            [4, 3, 0, true, true],
+            [4, 3, 1, true, true],
+            [4, 3, 2, true, true],
+            [4, 3, 3, true, true],
         ];
     }
 
@@ -606,6 +657,7 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -637,14 +689,15 @@ class AccountAclServiceTest extends UnitaryTestCase
         $acl->setTime($dto->getDateEdit() + 10);
 
         $fileCache->expects(self::once())
-            ->method('load')
-            ->with(self::callback((static fn($path) => is_string($path))))
-            ->willReturn($acl);
+                  ->method('load')
+                  ->with(self::callback((static fn($path) => is_string($path))))
+                  ->willReturn($acl);
 
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -673,21 +726,22 @@ class AccountAclServiceTest extends UnitaryTestCase
         $acl = new AccountAcl(self::$faker->randomNumber());
 
         $fileCache->expects(self::once())
-            ->method('load')
-            ->with(self::callback((static fn($path) => is_string($path))))
-            ->willReturn($acl);
+                  ->method('load')
+                  ->with(self::callback((static fn($path) => is_string($path))))
+                  ->willReturn($acl);
 
         $fileCache->expects(self::once())
-            ->method('save')
-            ->with(
-                self::callback((static fn($acl) => $acl instanceof AccountAcl)),
-                self::callback((static fn($path) => is_string($path)))
-            );
+                  ->method('save')
+                  ->with(
+                      self::callback((static fn($acl) => $acl instanceof AccountAcl)),
+                      self::callback((static fn($path) => is_string($path)))
+                  );
 
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -714,14 +768,15 @@ class AccountAclServiceTest extends UnitaryTestCase
         );
 
         $fileCache->expects(self::once())
-            ->method('load')
-            ->with(self::callback((static fn($path) => is_string($path))))
-            ->willThrowException(new FileException('test'));
+                  ->method('load')
+                  ->with(self::callback((static fn($path) => is_string($path))))
+                  ->willThrowException(new FileException('test'));
 
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
     }
 
     /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -748,65 +803,14 @@ class AccountAclServiceTest extends UnitaryTestCase
         );
 
         $fileCache->expects(self::once())
-            ->method('save')
-            ->with(
-                self::callback((static fn($acl) => $acl instanceof AccountAcl)),
-                self::callback((static fn($path) => is_string($path)))
-            )
-            ->willThrowException(new FileException('test'));
+                  ->method('save')
+                  ->with(
+                      self::callback((static fn($acl) => $acl instanceof AccountAcl)),
+                      self::callback((static fn($path) => is_string($path)))
+                  )
+                  ->willThrowException(new FileException('test'));
 
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
-    }
-
-    public function accountPropertiesProvider(): array
-    {
-        /**
-         * Account |View      |Edit
-         * 1       |u=3 g=1,2 |u=3 g=1,2
-         * 2       |g=1,2,3   |g=1,2,3
-         * 3       |u=3 g=3   |u=3 g=3
-         * 4       |u=3       |u=3
-         *
-         * User | Group
-         * 1    | 2
-         * 2    | 1
-         * 3    | 2
-         * 4    | None
-         * Matrix: Account | UserId | GroupId | ShouldView | ShouldEdit
-         */
-        return [
-            [1, 2, 2, true, true],
-             [1, 3, 0, true, true],
-            [1, 3, 1, true, true],
-             [1, 3, 2, true, true],
-            [1, 4, 0, false, false],
-            [1, 4, 3, false, false],
-            [1, 4, 4, false, false],
-            [2, 2, 1, true, true],
-            [2, 2, 2, true, true],
-            [2, 2, 3, true, true],
-            [2, 3, 0, false, false],
-             [2, 3, 3, true, true],
-            [2, 4, 0, false, false],
-            [2, 4, 1, true, true],
-             [2, 4, 2, true, true],
-             [2, 4, 3, true, true],
-            [2, 4, 4, false, false],
-            [3, 1, 1, false, false],
-            [3, 1, 2, false, false],
-            [3, 1, 3, true, true],
-            [3, 2, 1, false, false],
-            [3, 2, 2, false, false],
-            [3, 2, 3, true, true],
-            [3, 3, 0, true, true],
-            [3, 3, 1, true, true],
-            [3, 3, 2, true, true],
-            [3, 3, 3, true, true],
-            [4, 3, 0, true, true],
-            [4, 3, 1, true, true],
-            [4, 3, 2, true, true],
-            [4, 3, 3, true, true],
-        ];
     }
 
     protected function setUp(): void
@@ -816,12 +820,12 @@ class AccountAclServiceTest extends UnitaryTestCase
         $acl = new Acl($this->context, $this->application->getEventDispatcher());
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')
-            ->willReturnMap([
-                [1, [new Simple(['userGroupId' => 2])]],
-                [2, [new Simple(['userGroupId' => 1])]],
-                [3, [new Simple(['userGroupId' => 2])]],
-                [4, []],
-            ]);
+                               ->willReturnMap([
+                                   [1, [new Simple(['userGroupId' => 2])]],
+                                   [2, [new Simple(['userGroupId' => 1])]],
+                                   [3, [new Simple(['userGroupId' => 2])]],
+                                   [4, []],
+                               ]);
 
         $this->accountAclService = new AccountAclService(
             $this->application,

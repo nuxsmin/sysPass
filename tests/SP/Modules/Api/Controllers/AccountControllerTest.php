@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -660,7 +660,7 @@ class AccountControllerTest extends ApiTestCase
         $this->assertIsArray($response->error->data->help);
     }
 
-    public function searchProvider(): array
+    public static function searchProvider(): array
     {
         return [
             [
@@ -751,7 +751,7 @@ class AccountControllerTest extends ApiTestCase
         ];
     }
 
-    public function getUnsetParams(): array
+    public static function getUnsetParams(): array
     {
         return [
             ['name'],

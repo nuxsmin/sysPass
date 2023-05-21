@@ -180,7 +180,7 @@ class ApiRequestTest extends UnitaryTestCase
         $this->assertEquals($jsonRpcRequest['method'], $out->getMethod());
     }
 
-    private function getJsonRpcProperty(): array
+    public static function getJsonRpcProperty(): array
     {
         return [
             ['jsonrpc'],

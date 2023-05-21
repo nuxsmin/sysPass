@@ -66,7 +66,7 @@ class ApiServiceTest extends UnitaryTestCase
     private ApiService                             $apiService;
     private TrackRequest                           $trackRequest;
 
-    private static function getParamIntDataProvider(): array
+    public static function getParamIntDataProvider(): array
     {
         $faker = Factory::create();
         $number = $faker->randomNumber();
@@ -81,7 +81,7 @@ class ApiServiceTest extends UnitaryTestCase
         ];
     }
 
-    private static function getParamStringDataProvider(): array
+    public static function getParamStringDataProvider(): array
     {
         $faker = Factory::create();
         $string = $faker->colorName;
@@ -96,7 +96,7 @@ class ApiServiceTest extends UnitaryTestCase
         ];
     }
 
-    private static function getParamDataProvider(): array
+    public static function getParamDataProvider(): array
     {
         $faker = Factory::create();
         $string = $faker->colorName;
@@ -110,7 +110,7 @@ class ApiServiceTest extends UnitaryTestCase
         ];
     }
 
-    private static function getParamArrayDataProvider(): array
+    public static function getParamArrayDataProvider(): array
     {
         $faker = Factory::create();
         $numbers = array_map(fn() => $faker->randomNumber(), range(0, 4));
@@ -130,7 +130,7 @@ class ApiServiceTest extends UnitaryTestCase
         ];
     }
 
-    private static function getParamRawDataProvider(): array
+    public static function getParamRawDataProvider(): array
     {
         $faker = Factory::create();
         $password = $faker->password;

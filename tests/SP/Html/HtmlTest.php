@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -42,6 +42,17 @@ class HtmlTest extends TestCase
         self::$faker = Factory::create();
     }
 
+    public static function urlProvider(): array
+    {
+        return [
+            ['https://foo.com/<script>alert("TEST");</script>'],
+            ['https://foo.com/><script>alert("TEST");</script>'],
+            ['https://foo.com/"><script>alert("TEST");</script>'],
+            ['https://foo.com/"%20onClick="alert(\'TEST\'")'],
+            ['https://foo.com/" onClick="alert(\'TEST\')"'],
+            ['mongodb+srv://cluster.foo.mongodb.net/bar'],
+        ];
+    }
 
     public function testGetSafeUrlOk()
     {
@@ -57,17 +68,5 @@ class HtmlTest extends TestCase
     public function testGetSafeUrlEncoded(string $url)
     {
         $this->assertEquals(0, preg_match('/["<>\']+/', Html::getSafeUrl($url)));
-    }
-
-    private function urlProvider(): array
-    {
-        return [
-            ['https://foo.com/<script>alert("TEST");</script>'],
-            ['https://foo.com/><script>alert("TEST");</script>'],
-            ['https://foo.com/"><script>alert("TEST");</script>'],
-            ['https://foo.com/"%20onClick="alert(\'TEST\'")'],
-            ['https://foo.com/" onClick="alert(\'TEST\')"'],
-            ['mongodb+srv://cluster.foo.mongodb.net/bar'],
-        ];
     }
 }
