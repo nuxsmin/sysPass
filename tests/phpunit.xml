@@ -4,7 +4,7 @@
   ~
   ~ @author nuxsmin
   ~ @link https://syspass.org
-  ~ @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+  ~ @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
   ~
   ~ This file is part of sysPass.
   ~
@@ -23,27 +23,15 @@
   -->
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
          backupGlobals="false"
-         backupStaticAttributes="false"
          bootstrap="./SP/bootstrap.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="false"
-         convertWarningsToExceptions="false"
          processIsolation="false"
-         stopOnFailure="false">
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">../lib/SP</directory>
-        </include>
-        <exclude>
-            <directory suffix=".php">../lib/SP/DataModel</directory>
-            <directory suffix=".php">../lib/SP/Providers</directory>
-            <directory suffix=".php">../lib/SP/Html/Assets</directory>
-            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
-            <file>../lib/SP/Config/ConfigData.php</file>
-        </exclude>
+         stopOnFailure="false"
+         cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false">
+    <coverage>
         <report>
             <clover outputFile="./_output/coverage-clover.xml"/>
             <text outputFile="php://stdout" showUncoveredFiles="true"
@@ -65,4 +53,16 @@
         </testsuite>
     </testsuites>
     <logging/>
+    <source>
+        <include>
+            <directory suffix=".php">../lib/SP</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">../lib/SP/DataModel</directory>
+            <directory suffix=".php">../lib/SP/Providers</directory>
+            <directory suffix=".php">../lib/SP/Html/Assets</directory>
+            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+            <file>../lib/SP/Config/ConfigData.php</file>
+        </exclude>
+    </source>
 </phpunit>
