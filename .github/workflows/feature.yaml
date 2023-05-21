@@ -8,28 +8,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  unitary:
+    name: Build & Test (UT) ${{ matrix.php }}/${{ matrix.platform }}
     strategy:
       matrix:
-        platform: [ ubuntu-latest ]
-        php: [ '8' ]
-    name: Build & Test ${{ matrix.php }}/${{ matrix.platform }}
+        platform: [ 'ubuntu-latest' ]
+        php: [ '8.1', '8.2' ]
     runs-on: ${{ matrix.platform }}
-#    env:
-#      DB_SERVER: 127.0.0.1
-#      DB_NAME: syspass
-#      DB_USER: root
-#      DB_PASS: syspass
-#      DB_PORT: 3306
-#    services:
-#      mariadb:
-#        image: mariadb:10.3
-#        env:
-#          MYSQL_DATABASE: ${{ env.DB_NAME }}
-#          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASS }}
-#        ports:
-#          - 3306:3306
-#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
 
@@ -64,18 +49,8 @@ jobs:
             --no-scripts \
             --prefer-dist
 
-#      - name: Setup database
-#        run: |
-#          set -euo pipefail
-#
-#          MYSQL_OPTS="-h ${DB_SERVER} -P ${DB_PORT} -u ${DB_USER} -p${DB_PASS}"
-#
-#          mysql ${MYSQL_OPTS} -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
-#          mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
-#          mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
-
       - name: Unitary tests
-        uses: paambaati/codeclimate-action@v3.2.0
+        uses: paambaati/codeclimate-action@v4
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
@@ -83,12 +58,79 @@ jobs:
           coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
           coverageLocations: ./tests/_output/coverage-clover.xml:clover
 
-#      - name: Integration tests
-#        uses: paambaati/codeclimate-action@v3.0.0
-#        env:
-#          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-#          XDEBUG_MODE: coverage
-#        with:
-#          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
-#          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+  integration:
+    name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
+    if: ${{ vars.TESTS_INTEGRATION_ENABLED  == 'true' }}
+    needs: [ unitary ]
+    strategy:
+      matrix:
+        platform: [ 'ubuntu-latest' ]
+        php: [ '8.1', '8.2' ]
+    runs-on: ${{ matrix.platform }}
+    env:
+      DB_SERVER: 127.0.0.1
+      DB_NAME: syspass
+      DB_USER: root
+      DB_PASS: syspass
+      DB_PORT: 3306
+    services:
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MYSQL_DATABASE: ${{ env.DB_NAME }}
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASS }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Setup PHP with tools
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
+          # tools: phpunit
+          coverage: xdebug
+        env:
+          fail-fast: true
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: |
+          composer install \
+            --prefer-dist \
+            --ignore-platform-reqs \
+            --no-interaction \
+            --no-plugins \
+            --no-scripts \
+            --prefer-dist
+
+      - name: Setup database
+        run: |
+          set -euo pipefail
+
+          MYSQL_OPTS="-h ${DB_SERVER} -P ${DB_PORT} -u ${DB_USER} -p${DB_PASS}"
+
+          mysql ${MYSQL_OPTS} -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
+          mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+          mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
+
+      - name: Integration tests
+        uses: paambaati/codeclimate-action@v4
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          XDEBUG_MODE: coverage
+        with:
+          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
+          coverageLocations: ./tests/_output/coverage-clover.xml:clover
