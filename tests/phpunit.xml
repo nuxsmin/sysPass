@@ -52,6 +52,9 @@
             <exclude>./SP/PHPUnitHelper.php</exclude>
             <exclude>./SP/UnitaryTestCase.php</exclude>
             <exclude>./SP/bootstrap.php</exclude>
+            <exclude>./SP/Stubs/AccountRepositoryStub.php</exclude>
+            <exclude>./SP/Stubs/PublicLinkRepositoryStub.php</exclude>
+            <exclude>./SP/WebTestCase.php</exclude>
         </testsuite>
         <testsuite name="api">
             <directory suffix=".php">./SP/Modules/Api</directory>
