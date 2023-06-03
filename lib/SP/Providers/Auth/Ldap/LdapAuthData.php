@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,84 +33,37 @@ use SP\Providers\Auth\AuthDataBase;
  */
 final class LdapAuthData extends AuthDataBase
 {
-    /**
-     * @var string
-     */
-    protected string $dn;
-    /**
-     * @var string
-     */
-    protected string $groupDn;
-    /**
-     * @var int
-     */
-    protected int $expire = 0;
-    /**
-     * @var bool
-     */
-    protected bool $inGroup = false;
+    protected ?string $dn      = null;
+    protected int     $expire  = 0;
+    protected bool    $inGroup = false;
 
-    /**
-     * @return string
-     */
     public function getDn(): ?string
     {
         return $this->dn;
     }
 
-    /**
-     * @param string $dn
-     */
     public function setDn(string $dn): void
     {
         $this->dn = $dn;
     }
 
-    /**
-     * @return int
-     */
     public function getExpire(): int
     {
         return $this->expire;
     }
 
-    /**
-     * @param int $expire
-     */
     public function setExpire(int $expire): void
     {
         $this->expire = $expire;
     }
 
-    /**
-     * @return boolean
-     */
     public function isInGroup(): bool
     {
         return $this->inGroup;
     }
 
-    /**
-     * @param boolean $inGroup
-     */
     public function setInGroup(bool $inGroup): void
     {
         $this->inGroup = $inGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupDn(): ?string
-    {
-        return $this->groupDn;
-    }
-
-    /**
-     * @param string $groupDn
-     */
-    public function setGroupDn(string $groupDn): void
-    {
-        $this->groupDn = $groupDn;
     }
 }

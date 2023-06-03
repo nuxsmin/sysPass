@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,50 +24,45 @@
 
 namespace SP\Domain\Auth\Services;
 
+use SP\Core\Application;
+use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapInterface;
 use SP\Domain\Common\Services\Service;
-use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
  * Class LdapCheckService
- *
- * @package SP\Domain\Import\Services
  */
 final class LdapCheckService extends Service implements LdapCheckServiceInterface
 {
-    protected ?LdapInterface $ldap = null;
-
-    /**
-     * @param  LdapParams  $ldapParams
-     *
-     * @throws LdapException
-     */
-    public function checkConnection(LdapParams $ldapParams): void
-    {
-        $this->ldap = Ldap::factory(
-            $ldapParams,
-            $this->eventDispatcher,
-            true
-        );
+    public function __construct(
+        Application $application,
+        private readonly LdapConnectionInterface $ldapConnection,
+        private readonly LdapActionsInterface $ldapActions
+    ) {
+        parent::__construct($application);
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
-    public function getObjectsByFilter(string $filter): array
+    public function getObjectsByFilter(string $filter, ?LdapParams $ldapParams = null): array
     {
+        $ldap = $this->getLdap($ldapParams);
+
         $objects = $this->ldapResultsMapper(
-            $this->ldap->getLdapActions()->getObjects($filter, ['dn'])
+            $ldap->getLdapActions()->getObjects($filter, ['dn'])
         );
 
         return [
-            'count'   => count($objects),
+            'count' => count($objects),
             'results' => [
                 [
-                    'icon'  => '',
+                    'icon' => '',
                     'items' => $objects,
                 ],
             ],
@@ -75,14 +70,30 @@ final class LdapCheckService extends Service implements LdapCheckServiceInterfac
     }
 
     /**
+     * @param LdapParams $ldapParams
+     *
+     * @return LdapInterface
+     * @throws LdapException
+     */
+    private function getLdap(LdapParams $ldapParams): LdapInterface
+    {
+        return LdapBase::factory(
+            $this->eventDispatcher,
+            $this->ldapConnection,
+            $this->ldapActions,
+            $ldapParams
+        );
+    }
+
+    /**
      * Obtener los datos de una búsqueda de LDAP de un atributo
      *
-     * @param  array  $data
-     * @param  string[]  $attributes
+     * @param array $data
+     * @param string[] $attributes
      *
      * @return array
      */
-    public function ldapResultsMapper(
+    private function ldapResultsMapper(
         array $data,
         array $attributes = ['dn']
     ): array {
@@ -108,21 +119,23 @@ final class LdapCheckService extends Service implements LdapCheckServiceInterfac
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
-    public function getObjects(bool $includeGroups = true): array
+    public function getObjects(bool $includeGroups = true, ?LdapParams $ldapParams = null): array
     {
-        $ldapActions = $this->ldap->getLdapActions();
+        $ldap = $this->getLdap($ldapParams);
+
+        $ldapActions = $ldap->getLdapActions();
 
         $data = ['count' => 0, 'results' => []];
 
         $indirectFilterItems = $this->ldapResultsMapper(
-            $ldapActions->getObjects($this->ldap->getGroupMembershipIndirectFilter(), ['dn'])
+            $ldapActions->getObjects($ldap->getGroupMembershipIndirectFilter(), ['dn'])
         );
 
         $directFilterItems = $this->ldapResultsMapper(
             $ldapActions->getObjects(
-                $this->ldap->getGroupMembershipDirectFilter(),
+                $ldap->getGroupMembershipDirectFilter(),
                 ['member', 'memberUid', 'uniqueMember']
             ),
             ['member', 'memberUid', 'uniqueMember']
@@ -131,17 +144,17 @@ final class LdapCheckService extends Service implements LdapCheckServiceInterfac
         $userItems = array_unique(array_merge($indirectFilterItems, $directFilterItems));
 
         $data['results'][] = [
-            'icon'  => 'person',
+            'icon' => 'person',
             'items' => array_values($userItems),
         ];
 
         if ($includeGroups) {
             $groupItems = $this->ldapResultsMapper(
-                $ldapActions->getObjects($this->ldap->getGroupObjectFilter(), ['dn'])
+                $ldapActions->getObjects($ldap->getGroupObjectFilter(), ['dn'])
             );
 
             $data['results'][] = [
-                'icon'  => 'group',
+                'icon' => 'group',
                 'items' => $groupItems,
             ];
         }

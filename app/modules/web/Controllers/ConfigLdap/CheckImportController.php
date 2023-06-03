@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,51 +26,45 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 
 use Exception;
-use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class CheckImportController
  */
 final class CheckImportController extends SimpleControllerBase
 {
-    use JsonTrait, ConfigLdapTrait;
-
-    private LdapCheckServiceInterface $ldapCheckService;
-    private TemplateInterface         $template;
+    use JsonTrait;
+    use ConfigLdapTrait;
 
     public function __construct(
-        Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker,
-        LdapCheckServiceInterface $ldapCheckService,
-        TemplateInterface $template
+        Application                                $application,
+        SimpleControllerHelper                     $simpleControllerHelper,
+        private readonly LdapCheckServiceInterface $ldapCheckService,
+        private readonly TemplateInterface         $template
     ) {
-        parent::__construct($application, $theme);
-
-        $this->ldapCheckService = $ldapCheckService;
-        $this->template = $template;
+        parent::__construct($application, $simpleControllerHelper);
     }
 
     /**
      * @return bool
      * @throws \JsonException
+     * @throws SPException
      */
     public function checkImportAction(): bool
     {
@@ -85,14 +79,15 @@ final class CheckImportController extends SimpleControllerBase
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
             }
 
-            $this->ldapCheckService->checkConnection($ldapParams);
-
             $filter = $this->request->analyzeString('ldap_import_filter');
 
             if (empty($filter)) {
-                $data = $this->ldapCheckService->getObjects($this->request->analyzeBool('ldap_import_groups', false));
+                $data = $this->ldapCheckService->getObjects(
+                    $this->request->analyzeBool('ldap_import_groups', false),
+                    $ldapParams
+                );
             } else {
-                $data = $this->ldapCheckService->getObjectsByFilter($filter);
+                $data = $this->ldapCheckService->getObjectsByFilter($filter, $ldapParams);
             }
 
             $this->template->addTemplate('results', 'itemshow');
@@ -116,8 +111,8 @@ final class CheckImportController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SPException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

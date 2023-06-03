@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,13 +30,13 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Auth\Ports\LdapInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Import\Ports\LdapImportServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserGroupService;
-use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
@@ -155,7 +155,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
      */
     protected function getLdap(LdapParams $ldapParams): LdapInterface
     {
-        return Ldap::factory(
+        return LdapBase::factory(
             $ldapParams,
             $this->eventDispatcher,
             $this->config->getConfigData()->isDebug()

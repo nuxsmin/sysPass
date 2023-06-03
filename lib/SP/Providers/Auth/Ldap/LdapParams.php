@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,8 @@ namespace SP\Providers\Auth\Ldap;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
+use function SP\__u;
+
 /**
  * Class LdapParams
  *
@@ -36,74 +38,44 @@ final class LdapParams
 {
     private const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
 
-    /**
-     * @var string
-     */
-    protected string $server;
-    /**
-     * @var int
-     */
-    protected int $port = 389;
-    /**
-     * @var string
-     */
-    protected string $searchBase;
-    /**
-     * @var string
-     */
-    protected string $bindDn;
-    /**
-     * @var string
-     */
-    protected string $bindPass;
-    /**
-     * @var string
-     */
-    protected string $group;
-    /**
-     * @var int
-     */
-    protected int $type;
-    /**
-     * @var bool
-     */
-    protected bool $tlsEnabled = false;
-    /**
-     * @var string
-     */
-    protected string $filterUserObject;
-    /**
-     * @var string
-     */
-    protected string $filterGroupObject;
-    /**
-     * @var array
-     */
-    protected array $filterUserAttributes;
-    /**
-     * @var array
-     */
-    protected array $filterGroupAttributes;
+    private int     $port                  = 389;
+    private ?string $searchBase            = null;
+    private ?string $group                 = null;
+    private bool    $tlsEnabled            = false;
+    private ?string $filterUserObject      = null;
+    private ?string $filterGroupObject     = null;
+    private ?array  $filterUserAttributes  = null;
+    private ?array  $filterGroupAttributes = null;
+
+    public function __construct(
+        private readonly string       $server,
+        private readonly LdapTypeEnum $type,
+        private readonly string       $bindDn,
+        private readonly string       $bindPass
+    ) {
+    }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public static function getFrom(ConfigDataInterface $configData): LdapParams
     {
         $data = self::getServerAndPort($configData->getLdapServer());
 
         if (count($data) === 0) {
-            throw new ValidationException(__u('Wrong LDAP parameters'));
+            throw ValidationException::error(__u('Wrong LDAP parameters'));
         }
 
-        $ldapParams = new self();
-        $ldapParams->setServer($data['server']);
+        $ldapParams = new self(
+            $data['server'],
+            LdapTypeEnum::from($configData->getLdapType()),
+            $configData->getLdapBindUser(),
+            $configData->getLdapBindPass()
+        );
+
         $ldapParams->setPort($data['port'] ?? 389);
         $ldapParams->setSearchBase($configData->getLdapBase());
         $ldapParams->setGroup($configData->getLdapGroup());
-        $ldapParams->setBindDn($configData->getLdapBindUser());
-        $ldapParams->setBindPass($configData->getLdapBindPass());
-        $ldapParams->setType($configData->getLdapType());
         $ldapParams->setFilterUserObject($configData->getLdapFilterUserObject());
         $ldapParams->setFilterGroupObject($configData->getLdapFilterGroupObject());
         $ldapParams->setFilterUserAttributes($configData->getLdapFilterUserAttributes());
@@ -122,23 +94,17 @@ final class LdapParams
     public static function getServerAndPort($server): array
     {
         return preg_match(
-            '#'.self::REGEX_SERVER.'#i',
+            '#' . self::REGEX_SERVER . '#i',
             $server,
             $matches
         ) ? $matches : [];
     }
 
-    /**
-     * @return string
-     */
     public function getFilterUserObject(): ?string
     {
         return $this->filterUserObject;
     }
 
-    /**
-     * @param  string|null  $filterUserObject
-     */
     public function setFilterUserObject(?string $filterUserObject = null): void
     {
         if (!empty($filterUserObject)) {
@@ -146,17 +112,11 @@ final class LdapParams
         }
     }
 
-    /**
-     * @return string
-     */
     public function getFilterGroupObject(): ?string
     {
         return $this->filterGroupObject;
     }
 
-    /**
-     * @param  string|null  $filterGroupObject
-     */
     public function setFilterGroupObject(?string $filterGroupObject = null): void
     {
         if (!empty($filterGroupObject)) {
@@ -164,51 +124,31 @@ final class LdapParams
         }
     }
 
-    /**
-     * @return array
-     */
     public function getFilterUserAttributes(): ?array
     {
         return $this->filterUserAttributes;
     }
 
-    /**
-     * @param  array|null  $filterUserAttributes
-     */
     public function setFilterUserAttributes(?array $filterUserAttributes = null): void
     {
         $this->filterUserAttributes = $filterUserAttributes;
     }
 
-    /**
-     * @return array
-     */
     public function getFilterGroupAttributes(): ?array
     {
         return $this->filterGroupAttributes;
     }
 
-    /**
-     * @param  array|null  $filterGroupAttributes
-     */
     public function setFilterGroupAttributes(?array $filterGroupAttributes = null): void
     {
         $this->filterGroupAttributes = $filterGroupAttributes;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;
     }
 
-    /**
-     * @param  int  $port
-     *
-     * @return LdapParams
-     */
     public function setPort(int $port): LdapParams
     {
         $this->port = $port;
@@ -216,19 +156,11 @@ final class LdapParams
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSearchBase(): ?string
     {
         return $this->searchBase;
     }
 
-    /**
-     * @param  string  $searchBase
-     *
-     * @return LdapParams
-     */
     public function setSearchBase(string $searchBase): LdapParams
     {
         $this->searchBase = $searchBase;
@@ -236,59 +168,21 @@ final class LdapParams
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getBindDn(): ?string
     {
         return $this->bindDn;
     }
 
-    /**
-     * @param  string  $bindDn
-     *
-     * @return LdapParams
-     */
-    public function setBindDn(string $bindDn): LdapParams
-    {
-        $this->bindDn = $bindDn;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getBindPass(): ?string
     {
         return $this->bindPass;
     }
 
-    /**
-     * @param  string  $bindPass
-     *
-     * @return LdapParams
-     */
-    public function setBindPass(string $bindPass): LdapParams
-    {
-        $this->bindPass = $bindPass;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getGroup(): ?string
     {
         return $this->group;
     }
 
-    /**
-     * @param  string  $group
-     *
-     * @return LdapParams
-     */
     public function setGroup(string $group): LdapParams
     {
         $this->group = $group;
@@ -296,59 +190,21 @@ final class LdapParams
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getServer(): ?string
     {
         return $this->server;
     }
 
-    /**
-     * @param  string  $server
-     *
-     * @return LdapParams
-     */
-    public function setServer(string $server): LdapParams
-    {
-        $this->server = $server;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getType(): ?int
+    public function getType(): LdapTypeEnum
     {
         return $this->type;
     }
 
-    /**
-     * @param  int  $type
-     *
-     * @return LdapParams
-     */
-    public function setType(int $type): LdapParams
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isTlsEnabled(): bool
     {
         return $this->tlsEnabled;
     }
 
-    /**
-     * @param  bool  $tlsEnabled
-     *
-     * @return LdapParams
-     */
     public function setTlsEnabled(bool $tlsEnabled): LdapParams
     {
         $this->tlsEnabled = $tlsEnabled;

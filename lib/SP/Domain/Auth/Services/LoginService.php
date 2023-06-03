@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,6 +39,7 @@ use SP\Core\LanguageInterface;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Ports\LoginServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -58,9 +59,10 @@ use SP\Providers\Auth\AuthProviderInterface;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthInterface;
-use SP\Providers\Auth\Ldap\LdapCode;
+use SP\Providers\Auth\Ldap\LdapCodeEnum;
 use SP\Util\PasswordUtil;
+
+use function SP\__u;
 
 /**
  * Class LoginService
@@ -98,17 +100,17 @@ final class LoginService extends Service implements LoginServiceInterface
      * @throws \SP\Domain\Auth\Services\AuthException
      */
     public function __construct(
-        Application $application,
-        AuthProviderInterface $authProvider,
-        ThemeInterface $theme,
-        LanguageInterface $language,
-        TrackServiceInterface $trackService,
-        RequestInterface $request,
-        UserServiceInterface $userService,
-        UserPassRecoverServiceInterface $userPassRecoverService,
+        Application                         $application,
+        AuthProviderInterface               $authProvider,
+        ThemeInterface                      $theme,
+        LanguageInterface                   $language,
+        TrackServiceInterface               $trackService,
+        RequestInterface                    $request,
+        UserServiceInterface                $userService,
+        UserPassRecoverServiceInterface     $userPassRecoverService,
         TemporaryMasterPassServiceInterface $temporaryMasterPassService,
-        UserPassServiceInterface $userPassService,
-        UserProfileServiceInterface $userProfileService
+        UserPassServiceInterface            $userPassService,
+        UserProfileServiceInterface         $userProfileService
     ) {
         parent::__construct($application);
 
@@ -257,8 +259,8 @@ final class LoginService extends Service implements LoginServiceInterface
                     new Event(
                         $this,
                         EventMessage::factory()
-                            ->addDescription(__u('User disabled'))
-                            ->addDetail(__u('User'), $userLoginResponse->getLogin())
+                                    ->addDescription(__u('User disabled'))
+                                    ->addDetail(__u('User'), $userLoginResponse->getLogin())
                     )
                 );
 
@@ -284,7 +286,7 @@ final class LoginService extends Service implements LoginServiceInterface
                 $this->userPassRecoverService->add($userLoginResponse->getId(), $hash);
 
                 $uri = new Uri('index.php');
-                $uri->addParam('r', 'userPassReset/reset/'.$hash);
+                $uri->addParam('r', 'userPassReset/reset/' . $hash);
 
                 return new LoginResponse(self::STATUS_PASS_RESET, $uri->getUri());
             }
@@ -457,7 +459,7 @@ final class LoginService extends Service implements LoginServiceInterface
     }
 
     /**
-     * @param  string|null  $from
+     * @param string|null $from
      */
     public function setFrom(?string $from): void
     {
@@ -467,7 +469,7 @@ final class LoginService extends Service implements LoginServiceInterface
     /**
      * Autentificación LDAP
      *
-     * @param  LdapAuthData  $authData
+     * @param LdapAuthData $authData
      *
      * @return bool
      * @throws SPException
@@ -475,13 +477,13 @@ final class LoginService extends Service implements LoginServiceInterface
      */
     private function authLdap(LdapAuthData $authData): bool
     {
-        if ($authData->getStatusCode() > LdapCode::SUCCESS) {
+        if ($authData->getStatusCode() > LdapCodeEnum::SUCCESS->value) {
             $eventMessage = EventMessage::factory()
-                ->addDetail(__u('Type'), __FUNCTION__)
-                ->addDetail(__u('LDAP Server'), $authData->getServer())
-                ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
+                                        ->addDetail(__u('Type'), __FUNCTION__)
+                                        ->addDetail(__u('LDAP Server'), $authData->getServer())
+                                        ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
 
-            if ($authData->getStatusCode() === LdapCode::INVALID_CREDENTIALS) {
+            if ($authData->getStatusCode() === LdapCodeEnum::INVALID_CREDENTIALS->value) {
                 $eventMessage->addDescription(__u('Wrong login'));
 
                 $this->addTracking();
@@ -522,7 +524,7 @@ final class LoginService extends Service implements LoginServiceInterface
                 );
             }
 
-            if ($authData->getStatusCode() === LdapCode::NO_SUCH_OBJECT
+            if ($authData->getStatusCode() === LdapCodeEnum::NO_SUCH_OBJECT->value
                 || $authData->isAuthoritative() === false
             ) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
@@ -552,8 +554,8 @@ final class LoginService extends Service implements LoginServiceInterface
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDetail(__u('Type'), __FUNCTION__)
-                    ->addDetail(__u('LDAP Server'), $authData->getServer())
+                            ->addDetail(__u('Type'), __FUNCTION__)
+                            ->addDetail(__u('LDAP Server'), $authData->getServer())
             )
         );
 
@@ -596,7 +598,7 @@ final class LoginService extends Service implements LoginServiceInterface
     /**
      * Autentificación en BD
      *
-     * @param  DatabaseAuthData  $authData
+     * @param DatabaseAuthData $authData
      *
      * @return bool
      * @throws SPException
@@ -605,8 +607,8 @@ final class LoginService extends Service implements LoginServiceInterface
     private function authDatabase(DatabaseAuthData $authData): bool
     {
         $eventMessage = EventMessage::factory()
-            ->addDetail(__u('Type'), __FUNCTION__)
-            ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
+                                    ->addDetail(__u('Type'), __FUNCTION__)
+                                    ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
 
         // Autentificamos con la BBDD
         if ($authData->getAuthenticated() === false) {
@@ -643,7 +645,7 @@ final class LoginService extends Service implements LoginServiceInterface
     /**
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
-     * @param  BrowserAuthData  $authData
+     * @param BrowserAuthData $authData
      *
      * @return bool
      * @throws AuthException
@@ -653,9 +655,12 @@ final class LoginService extends Service implements LoginServiceInterface
         $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/A');
 
         $eventMessage = EventMessage::factory()
-            ->addDetail(__u('Type'), __FUNCTION__)
-            ->addDetail(__u('User'), $this->userLoginData->getLoginUser())
-            ->addDetail(__u('Authentication'), sprintf('%s (%s)', $authType, $authData->getName()));
+                                    ->addDetail(__u('Type'), __FUNCTION__)
+                                    ->addDetail(__u('User'), $this->userLoginData->getLoginUser())
+                                    ->addDetail(
+                                        __u('Authentication'),
+                                        sprintf('%s (%s)', $authType, $authData->getName())
+                                    );
 
         // Comprobar si concide el login con la autentificación del servidor web
         if ($authData->getAuthenticated() === false) {

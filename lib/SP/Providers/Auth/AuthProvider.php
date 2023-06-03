@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,10 +27,10 @@ namespace SP\Providers\Auth;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Providers\Auth\Database\DatabaseAuthInterface;
-use SP\Providers\Auth\Ldap\LdapAuthInterface;
 use SP\Providers\Provider;
 
 defined('APP_ROOT') || die();

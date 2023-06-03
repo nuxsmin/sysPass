@@ -1,9 +1,10 @@
-<?php /*
+<?php
+/*
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -44,9 +45,9 @@ final class LdapUtil
         $chars = [
             '/(,)(?!uid|cn|ou|dc)/i',
             '/(?<!uid|cn|ou|dc)(=)/i',
-            '/([";<>\+#\/]+)/',
+            '/([";<>+#\/]+)/',
             '/\G(\s)/',
-            '/(\s)(?=\s*$)/'
+            '/(\s)(?=\s*$)/',
         ];
 
         return preg_replace($chars, '\\\1', $dn);
@@ -57,23 +58,19 @@ final class LdapUtil
      *
      * @param string $group
      *
-     * @return bool|string
+     * @return string|null
      */
-    public static function getGroupName(string $group)
+    public static function getGroupName(string $group): ?string
     {
-        if (preg_match(
-            '/^cn=(?<groupname>[^,]+),.*/i',
-            $group,
-            $matches)
-        ) {
+        if (preg_match('/^cn=(?<groupname>[^,]+),.*/i', $group, $matches)) {
             return $matches['groupname'];
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * @param array  $attributes
+     * @param array $attributes
      * @param string $value
      *
      * @return string

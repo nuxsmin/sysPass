@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,132 +19,186 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Providers\Auth\Ldap;
 
-use PHPUnit\Framework\TestCase;
-use SP\Core\Events\EventDispatcher;
+use Laminas\Ldap\Ldap;
+use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapTypeInterface;
+use SP\Providers\Auth\Ldap\LdapTypeEnum;
+use SP\Tests\UnitaryTestCase;
+use function PHPUnit\Framework\once;
 
 /**
  * Class LdapConnectionTest
  *
- * @package SP\Tests\Providers\Auth\Ldap
+ * @group unitary
  */
-class LdapConnectionTest extends TestCase
+class LdapConnectionTest extends UnitaryTestCase
 {
+    private LdapConnection                      $ldapConnection;
+    private EventDispatcherInterface|MockObject $eventDispatcher;
+    private Ldap|MockObject                     $ldap;
+    private LdapParams                          $ldapParams;
+
     /**
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function testCheckParams()
+    public function testCheckConnection(): void
     {
-        $ldapConnection = $this->getLdapConnection();
+        $this->ldap
+            ->expects(self::once())
+            ->method('bind')
+            ->with($this->ldapParams->getBindDn(), $this->ldapParams->getBindPass());
 
-        $ldapConnection->checkParams();
+        $this->eventDispatcher
+            ->expects(once())
+            ->method('notifyEvent')
+            ->with('ldap.check.connection');
 
-        $this->assertTrue(true);
+        $this->ldapConnection->checkConnection();
     }
 
     /**
-     * @param LdapParams|null $params
-     *
-     * @return LdapConnection
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function getLdapConnection(LdapParams $params = null)
+    public function testCheckConnectionError(): void
     {
-        $ev = new EventDispatcher();
+        $this->expectConnectError();
 
-        if ($params === null) {
-            $params = new LdapParams();
-            $params->setServer('test.example.com');
-            $params->setPort(10389);
-            $params->setBindDn('cn=test,dc=example,dc=com');
-            $params->setBindPass('testpass');
-            $params->setGroup('cn=Test Group,ou=Groups,dc=example,dc=con');
-            $params->setSearchBase('dc=example,dc=com');
-            $params->setTlsEnabled(true);
-            $params->setType(LdapTypeInterface::LDAP_STD);
-        }
-
-        return new LdapConnection($params, $ev);
+        $this->ldapConnection->checkConnection();
     }
 
     /**
-     * @throws LdapException
+     * @return void
      */
-    public function testCheckParamsNoSearchBase()
+    private function expectConnectError(): void
     {
-        $ldapConnection = $this->getLdapConnection();
+        $this->ldap
+            ->expects(self::once())
+            ->method('bind')
+            ->with($this->ldapParams->getBindDn(), $this->ldapParams->getBindPass())
+            ->willThrowException(new \Laminas\Ldap\Exception\LdapException());
 
-        $params = $ldapConnection->getLdapParams();
-        $params->setSearchBase('');
+        $this->eventDispatcher
+            ->expects(self::exactly(2))
+            ->method('notifyEvent')
+            ->with(...self::withConsecutive(['exception'], ['ldap.bind']));
+
+        $this->ldap
+            ->expects(self::exactly(2))
+            ->method('getLastError')
+            ->willReturn('error');
+
+        $errorCode = self::$faker->randomNumber();
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('getLastErrorCode')
+            ->willReturn($errorCode);
 
         $this->expectException(LdapException::class);
-        $ldapConnection->checkParams();
+        $this->expectExceptionMessage('LDAP connection error');
+        $this->expectExceptionCode($errorCode);
     }
 
     /**
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function testCheckParamsNoServer()
+    public function testConnect(): void
     {
-        $ldapConnection = $this->getLdapConnection();
+        $this->ldap
+            ->expects(self::once())
+            ->method('bind')
+            ->with($this->ldapParams->getBindDn(), $this->ldapParams->getBindPass());
 
-        $params = $ldapConnection->getLdapParams();
-        $params->setServer('');
-
-        $this->expectException(LdapException::class);
-        $ldapConnection->checkParams();
+        $this->ldapConnection->connect();
     }
 
     /**
-     * @throws LdapException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function testCheckParamsNoBindDn()
+    public function testConnectError(): void
     {
-        $ldapConnection = $this->getLdapConnection();
+        $this->expectConnectError();
 
-        $params = $ldapConnection->getLdapParams();
-        $params->setBindDn('');
+        $this->ldapConnection->connect();
+    }
+
+    /**
+     * @throws \SP\Providers\Auth\Ldap\LdapException
+     */
+    public function testMutate(): void
+    {
+        $ldapParams = new LdapParams(
+            self::$faker->domainName,
+            LdapTypeEnum::STD,
+            'cn=test1,dc=example,dc=com',
+            self::$faker->password
+        );
+
+        $ldapConnection = $this->ldapConnection->mutate($ldapParams);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('bind')
+            ->with($ldapParams->getBindDn(), $ldapParams->getBindPass());
+
+        $ldapConnection->connect();
+    }
+
+    /**
+     * @throws \SP\Providers\Auth\Ldap\LdapException
+     */
+    public function testCreateInstanceError(): void
+    {
+        $message = self::$faker->colorName;
+        $errorCode = self::$faker->randomNumber();
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('setOptions')
+            ->willThrowException(
+                new \Laminas\Ldap\Exception\LdapException(null, $message, $errorCode)
+            );
 
         $this->expectException(LdapException::class);
-        $ldapConnection->checkParams();
+        $this->expectExceptionMessage($message);
+        $this->expectExceptionCode($errorCode);
+
+        new LdapConnection($this->ldap, $this->ldapParams, $this->eventDispatcher, true);
     }
 
-    public function testGetServerUri()
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws \SP\Core\Context\ContextException
+     * @throws \SP\Providers\Auth\Ldap\LdapException
+     */
+    protected function setUp(): void
     {
-        $ldapConnection = $this->getLdapConnection();
+        parent::setUp();
 
-        $this->assertEquals('ldap://test.example.com:10389', $ldapConnection->getServerUri());
+        $this->ldapParams = new LdapParams(
+            self::$faker->domainName,
+            LdapTypeEnum::STD,
+            'cn=test,dc=example,dc=com',
+            self::$faker->password
+        );
+        $this->ldapParams->setPort(10389);
+        $this->ldapParams->setGroup('cn=Test Group,ou=Groups,dc=example,dc=con');
+        $this->ldapParams->setSearchBase('dc=example,dc=com');
+        $this->ldapParams->setTlsEnabled(true);
+
+        $this->ldap = $this->createMock(Ldap::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        $this->ldapConnection =
+            new LdapConnection($this->ldap, $this->ldapParams, $this->eventDispatcher, true);
     }
 
-    public function testGetServerUriNoSchema()
-    {
-        $ldapConnection = $this->getLdapConnection();
-
-        $params = $ldapConnection->getLdapParams();
-        $params->setServer('test.example.com');
-        $params->setPort(389);
-
-        $this->assertEquals('ldap://test.example.com', $ldapConnection->getServerUri());
-
-        $params->setPort(10389);
-        $this->assertEquals('ldap://test.example.com:10389', $ldapConnection->getServerUri());
-    }
-
-    public function testGetServerUriLdaps()
-    {
-        $ldapConnection = $this->getLdapConnection();
-
-        $params = $ldapConnection->getLdapParams();
-        $params->setServer('ldaps://test.example.com');
-        $params->setPort(10636);
-
-        $this->assertEquals('ldaps://test.example.com:10636', $ldapConnection->getServerUri());
-    }
 }

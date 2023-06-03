@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,9 +34,11 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\UpgradeConfigServiceInterface;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
-use SP\Providers\Auth\Ldap\LdapTypeInterface;
+use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SP\Providers\Log\FileLogHandler;
 use SP\Util\VersionUtil;
+
+use function SP\__u;
 
 /**
  * Class UpgradeService
@@ -75,7 +77,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
     /**
      * Actualizar el archivo de configuración a formato XML
      *
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
+     * @throws UpgradeException
      */
     public function upgradeOldConfigFile(string $version): void
     {
@@ -111,7 +113,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             }
         }
 
-        $oldFile = OLD_CONFIG_FILE.'.old.'.time();
+        $oldFile = OLD_CONFIG_FILE . '.old.' . time();
 
         try {
             $configData->setSiteTheme('material-blue');
@@ -132,8 +134,8 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Error while updating the configuration'))
-                        ->addDetail(__u('File'), $oldFile)
+                                ->addDescription(__u('Error while updating the configuration'))
+                                ->addDetail(__u('File'), $oldFile)
                 )
             );
 
@@ -147,58 +149,58 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
     private static function getConfigParams(): array
     {
         return [
-            'setAccountCount'        => 'account_count',
-            'setAccountLink'         => 'account_link',
-            'setCheckUpdates'        => 'checkupdates',
-            'setCheckNotices'        => 'checknotices',
-            'setDbHost'              => 'dbhost',
-            'setDbName'              => 'dbname',
-            'setDbPass'              => 'dbpass',
-            'setDbUser'              => 'dbuser',
-            'setDebug'               => 'debug',
-            'setDemoEnabled'         => 'demo_enabled',
-            'setGlobalSearch'        => 'globalsearch',
-            'setInstalled'           => 'installed',
-            'setMaintenance'         => 'maintenance',
-            'setPasswordSalt'        => 'passwordsalt',
-            'setSessionTimeout'      => 'session_timeout',
-            'setSiteLang'            => 'sitelang',
-            'setConfigVersion'       => 'version',
-            'setConfigHash'          => 'config_hash',
-            'setProxyEnabled'        => 'proxy_enabled',
-            'setProxyPass'           => 'proxy_pass',
-            'setProxyPort'           => 'proxy_port',
-            'setProxyServer'         => 'proxy_server',
-            'setProxyUser'           => 'proxy_user',
-            'setResultsAsCards'      => 'resultsascards',
-            'setSiteTheme'           => 'sitetheme',
-            'setAccountPassToImage'  => 'account_passtoimage',
-            'setFilesAllowedExts'    => ['allowed_exts', 'files_allowed_exts'],
-            'setFilesAllowedSize'    => ['allowed_size', 'files_allowed_size'],
-            'setFilesEnabled'        => ['filesenabled', 'files_enabled'],
-            'setLdapBase'            => ['ldapbase', 'ldap_base'],
-            'setLdapBindPass'        => ['ldapbindpass', 'ldap_bindpass'],
-            'setLdapBindUser'        => ['ldapbinduser', 'ldap_binduser'],
-            'setLdapEnabled'         => ['ldapenabled', 'ldap_enabled'],
-            'setLdapGroup'           => ['ldapgroup', 'ldap_group'],
-            'setLdapServer'          => ['ldapserver', 'ldap_server'],
-            'setLdapAds'             => 'ldap_ads',
-            'setLdapDefaultGroup'    => 'ldap_defaultgroup',
-            'setLdapDefaultProfile'  => 'ldap_defaultprofile',
-            'setLogEnabled'          => ['logenabled', 'log_enabled'],
-            'setMailEnabled'         => ['mailenabled', 'mail_enabled'],
-            'setMailFrom'            => ['mailfrom', 'mail_from'],
-            'setMailPass'            => ['mailpass', 'mail_pass'],
-            'setMailPort'            => ['mailport', 'mail_port'],
+            'setAccountCount' => 'account_count',
+            'setAccountLink' => 'account_link',
+            'setCheckUpdates' => 'checkupdates',
+            'setCheckNotices' => 'checknotices',
+            'setDbHost' => 'dbhost',
+            'setDbName' => 'dbname',
+            'setDbPass' => 'dbpass',
+            'setDbUser' => 'dbuser',
+            'setDebug' => 'debug',
+            'setDemoEnabled' => 'demo_enabled',
+            'setGlobalSearch' => 'globalsearch',
+            'setInstalled' => 'installed',
+            'setMaintenance' => 'maintenance',
+            'setPasswordSalt' => 'passwordsalt',
+            'setSessionTimeout' => 'session_timeout',
+            'setSiteLang' => 'sitelang',
+            'setConfigVersion' => 'version',
+            'setConfigHash' => 'config_hash',
+            'setProxyEnabled' => 'proxy_enabled',
+            'setProxyPass' => 'proxy_pass',
+            'setProxyPort' => 'proxy_port',
+            'setProxyServer' => 'proxy_server',
+            'setProxyUser' => 'proxy_user',
+            'setResultsAsCards' => 'resultsascards',
+            'setSiteTheme' => 'sitetheme',
+            'setAccountPassToImage' => 'account_passtoimage',
+            'setFilesAllowedExts' => ['allowed_exts', 'files_allowed_exts'],
+            'setFilesAllowedSize' => ['allowed_size', 'files_allowed_size'],
+            'setFilesEnabled' => ['filesenabled', 'files_enabled'],
+            'setLdapBase' => ['ldapbase', 'ldap_base'],
+            'setLdapBindPass' => ['ldapbindpass', 'ldap_bindpass'],
+            'setLdapBindUser' => ['ldapbinduser', 'ldap_binduser'],
+            'setLdapEnabled' => ['ldapenabled', 'ldap_enabled'],
+            'setLdapGroup' => ['ldapgroup', 'ldap_group'],
+            'setLdapServer' => ['ldapserver', 'ldap_server'],
+            'setLdapAds' => 'ldap_ads',
+            'setLdapDefaultGroup' => 'ldap_defaultgroup',
+            'setLdapDefaultProfile' => 'ldap_defaultprofile',
+            'setLogEnabled' => ['logenabled', 'log_enabled'],
+            'setMailEnabled' => ['mailenabled', 'mail_enabled'],
+            'setMailFrom' => ['mailfrom', 'mail_from'],
+            'setMailPass' => ['mailpass', 'mail_pass'],
+            'setMailPort' => ['mailport', 'mail_port'],
             'setMailRequestsEnabled' => ['mailrequestsenabled', 'mail_requestsenabled'],
-            'setMailAuthenabled'     => 'mail_authenabled',
-            'setMailSecurity'        => ['mailsecurity', 'mail_security'],
-            'setMailServer'          => ['mailserver', 'mail_server'],
-            'setMailUser'            => ['mailuser', 'mail_user'],
-            'setWikiEnabled'         => ['wikienabled', 'wiki_enabled'],
-            'setWikiFilter'          => ['wikifilter', 'wiki_filter'],
-            'setWikiPageUrl'         => ['wikipageurl'.'wiki_pageurl'],
-            'setWikiSearchUrl'       => ['wikisearchurl', 'wiki_searchurl'],
+            'setMailAuthenabled' => 'mail_authenabled',
+            'setMailSecurity' => ['mailsecurity', 'mail_security'],
+            'setMailServer' => ['mailserver', 'mail_server'],
+            'setMailUser' => ['mailuser', 'mail_user'],
+            'setWikiEnabled' => ['wikienabled', 'wiki_enabled'],
+            'setWikiFilter' => ['wikifilter', 'wiki_filter'],
+            'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
+            'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl'],
         ];
     }
 
@@ -240,7 +242,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     private function upgrade_200_17011202(string $version): void
     {
@@ -254,8 +256,8 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDescription(__u('Update Configuration'))
-                    ->addDetail(__u('Version'), $version)
+                            ->addDescription(__u('Update Configuration'))
+                            ->addDetail(__u('Version'), $version)
             )
         );
     }
@@ -281,9 +283,9 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                         new Event(
                             $this,
                             EventMessage::factory()
-                                ->addDescription(__u('MIME type set for this extension'))
-                                ->addDetail(__u('MIME type'), $mimeType['type'])
-                                ->addDetail(__u('Extension'), $extension)
+                                        ->addDescription(__u('MIME type set for this extension'))
+                                        ->addDetail(__u('MIME type'), $mimeType['type'])
+                                        ->addDetail(__u('Extension'), $extension)
                         )
                     );
                 }
@@ -295,8 +297,8 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                     new Event(
                         $this,
                         EventMessage::factory()
-                            ->addDescription(__u('MIME type not found for this extension'))
-                            ->addDetail(__u('Extension'), $extension)
+                                    ->addDescription(__u('MIME type not found for this extension'))
+                                    ->addDetail(__u('Extension'), $extension)
                     )
                 );
             }
@@ -312,22 +314,22 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDescription(__u('Update Configuration'))
-                    ->addDetail(__u('Version'), $version)
+                            ->addDescription(__u('Update Configuration'))
+                            ->addDetail(__u('Version'), $version)
             )
         );
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     private function upgrade_300_18112501(string $version): void
     {
         if ($this->configData->isLdapEnabled()) {
             if ($this->configData->get('ldapAds')) {
-                $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
+                $this->configData->setLdapType(LdapTypeEnum::ADS->value);
             } else {
-                $this->configData->setLdapType(LdapTypeInterface::LDAP_STD);
+                $this->configData->setLdapType(LdapTypeEnum::STD->value);
             }
 
             $this->configData->setConfigVersion($version);
@@ -339,21 +341,21 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Update Configuration'))
-                        ->addDetail(__u('Version'), $version)
+                                ->addDescription(__u('Update Configuration'))
+                                ->addDetail(__u('Version'), $version)
                 )
             );
         }
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     private function upgrade_320_20062801(string $version): void
     {
         if ($this->configData->isLdapEnabled()) {
-            if ($this->configData->get('ldapType') === LdapTypeInterface::LDAP_AZURE) {
-                $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
+            if ($this->configData->get('ldapType') === LdapTypeEnum::AZURE->value) {
+                $this->configData->setLdapType(LdapTypeEnum::ADS->value);
             }
 
             $this->configData->setConfigVersion($version);
@@ -365,8 +367,8 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('Update Configuration'))
-                        ->addDetail(__u('Version'), $version)
+                                ->addDescription(__u('Update Configuration'))
+                                ->addDetail(__u('Version'), $version)
                 )
             );
         }

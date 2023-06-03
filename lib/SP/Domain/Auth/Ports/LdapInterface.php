@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,8 +22,10 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
+namespace SP\Domain\Auth\Ports;
 
+
+use SP\Providers\Auth\Ldap\LdapException;
 
 /**
  * Interface LdapInterface
@@ -32,8 +34,6 @@ namespace SP\Providers\Auth\Ldap;
  */
 interface LdapInterface
 {
-    public const PAGE_SIZE = 500;
-
     /**
      * Obtener el filtro para buscar el usuario
      *
@@ -64,7 +64,7 @@ interface LdapInterface
      *
      * @param string $userDn
      * @param string $userLogin
-     * @param array  $groupsDn
+     * @param array $groupsDn
      *
      * @return bool
      */
@@ -78,24 +78,17 @@ interface LdapInterface
     public function getGroupObjectFilter(): string;
 
     /**
-     * Connects and binds to an LDAP server
-     *
-     * @throws LdapException
-     */
-    public function connect();
-
-    /**
      * @param string|null $bindDn
      * @param string|null $bindPass
      *
-     * @return bool
-     */
-    public function bind(?string $bindDn = null, ?string $bindPass = null): bool;
+     * @throws LdapException
+     **/
+    public function connect(?string $bindDn = null, ?string $bindPass = null): void;
 
     /**
-     * @return LdapActions
+     * @return LdapActionsInterface
      */
-    public function getLdapActions(): LdapActions;
+    public function getLdapActions(): LdapActionsInterface;
 
     /**
      * @return string

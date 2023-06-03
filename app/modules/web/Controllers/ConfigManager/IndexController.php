@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapStd;
-use SP\Providers\Auth\Ldap\LdapTypeInterface;
+use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
 use SP\Util\Util;
@@ -82,17 +82,17 @@ final class IndexController extends ControllerBase
     private PluginManager               $pluginManager;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        TabsHelper $tabsHelper,
-        UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
+        Application                 $application,
+        WebControllerHelper         $webControllerHelper,
+        TabsHelper                  $tabsHelper,
+        UserServiceInterface        $userService,
+        UserGroupServiceInterface   $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        MimeTypesInterface $mimeTypes,
-        DatabaseUtil $databaseUtil,
-        ConfigServiceInterface $configService,
-        AccountServiceInterface $accountService,
-        PluginManager $pluginManager
+        MimeTypesInterface          $mimeTypes,
+        DatabaseUtil                $databaseUtil,
+        ConfigServiceInterface      $configService,
+        AccountServiceInterface     $accountService,
+        PluginManager               $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -235,10 +235,10 @@ final class IndexController extends ControllerBase
         $template->assign(
             'logEvents',
             SelectItemAdapter::factory($events)
-                ->getItemsFromArraySelected(
-                    $this->configData->getLogEvents(),
-                    true
-                )
+                             ->getItemsFromArraySelected(
+                                 $this->configData->getLogEvents(),
+                                 true
+                             )
         );
 
         return new DataTab(__('General'), $template);
@@ -319,14 +319,14 @@ final class IndexController extends ControllerBase
         );
 
         $serverTypes = [
-            LdapTypeInterface::LDAP_STD => 'Standard',
-            LdapTypeInterface::LDAP_ADS => 'Active Directory',
+            LdapTypeEnum::STD->value => 'Standard',
+            LdapTypeEnum::ADS->value => 'Active Directory',
         ];
 
         $template->assign(
             'serverTypes',
             SelectItemAdapter::factory($serverTypes)
-                ->getItemsFromArraySelected([$this->configData->getLdapType()])
+                             ->getItemsFromArraySelected([$this->configData->getLdapType()])
         );
 
         $userAttributes = array_merge(
@@ -338,7 +338,7 @@ final class IndexController extends ControllerBase
         $template->assign(
             'userAttributes',
             SelectItemAdapter::factory($userAttributes)
-                ->getItemsFromArraySelected($this->configData->getLdapFilterUserAttributes())
+                             ->getItemsFromArraySelected($this->configData->getLdapFilterUserAttributes())
         );
 
         $groupAttributes = array_merge(
@@ -350,7 +350,7 @@ final class IndexController extends ControllerBase
         $template->assign(
             'groupAttributes',
             SelectItemAdapter::factory($groupAttributes)
-                ->getItemsFromArraySelected($this->configData->getLdapFilterGroupAttributes())
+                             ->getItemsFromArraySelected($this->configData->getLdapFilterGroupAttributes())
         );
 
         return new DataTab(__('LDAP'), $template);
@@ -386,10 +386,10 @@ final class IndexController extends ControllerBase
         $template->assign(
             'mailEvents',
             SelectItemAdapter::factory($events)
-                ->getItemsFromArraySelected(
-                    $mailEvents,
-                    true
-                )
+                             ->getItemsFromArraySelected(
+                                 $mailEvents,
+                                 true
+                             )
         );
 
         return new DataTab(__('Mail'), $template);
@@ -534,12 +534,12 @@ final class IndexController extends ControllerBase
         $template->assign(
             'userGroups',
             SelectItemAdapter::factory($this->userGroupService->getAllBasic())
-                ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
+                             ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
         );
         $template->assign(
             'users',
             SelectItemAdapter::factory($this->userService->getAllBasic())
-                ->getItemsFromModelSelected([$this->userData->getId()])
+                             ->getItemsFromModelSelected([$this->userData->getId()])
         );
 
         return new DataTab(__('Import Accounts'), $template);
@@ -557,7 +557,7 @@ final class IndexController extends ControllerBase
         $template->addTemplate('info');
 
         $template->assign('dbInfo', $this->databaseUtil->getDBinfo());
-        $template->assign('dbName', $this->configData->getDbName().'@'.$this->configData->getDbHost());
+        $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign(
             'configBackupDate',
             date('r', $this->configService->getByParam('config_backup_date', 0))

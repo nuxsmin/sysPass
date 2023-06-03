@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,14 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -38,31 +41,31 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class CheckController
  */
 final class CheckController extends SimpleControllerBase
 {
-    use JsonTrait, ConfigLdapTrait;
-
-    private LdapCheckServiceInterface $ldapCheckService;
-    private TemplateInterface         $template;
+    use ConfigLdapTrait;
+    use JsonTrait;
 
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        LdapCheckServiceInterface $ldapCheckService,
-        TemplateInterface $template
+        Application                                $application,
+        SimpleControllerHelper                     $simpleControllerHelper,
+        private readonly LdapCheckServiceInterface $ldapCheckService,
+        private readonly TemplateInterface         $template
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->ldapCheckService = $ldapCheckService;
-        $this->template = $template;
     }
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws SPException
      */
     public function checkAction(): bool
     {
@@ -80,9 +83,7 @@ final class CheckController extends SimpleControllerBase
                 );
             }
 
-            $this->ldapCheckService->checkConnection($ldapParams);
-
-            $data = $this->ldapCheckService->getObjects(false);
+            $data = $this->ldapCheckService->getObjects(false, $ldapParams);
 
             $this->template->addTemplate('results', 'itemshow');
             $this->template->assign('header', __('Results'));
@@ -104,8 +105,8 @@ final class CheckController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SessionTimeout
+     * @throws SPException
      */
     protected function initialize(): void
     {

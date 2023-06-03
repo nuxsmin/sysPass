@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\RequestInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapTypeInterface;
+use SP\Providers\Auth\Ldap\LdapTypeEnum;
+
+use function SP\__u;
 
 /**
  * Trait ConfigLdapTrait
@@ -36,10 +37,10 @@ use SP\Providers\Auth\Ldap\LdapTypeInterface;
 trait ConfigLdapTrait
 {
     /**
-     * @param  \SP\Http\RequestInterface  $request
+     * @param RequestInterface $request
      *
      * @return LdapParams
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     protected function getLdapParamsFromRequest(RequestInterface $request): LdapParams
     {
@@ -49,17 +50,21 @@ trait ConfigLdapTrait
             throw new ValidationException(__u('Wrong LDAP parameters'));
         }
 
-        $params = new LdapParams();
-        $params->setServer($data['server']);
+        $type = LdapTypeEnum::tryFrom($request->analyzeInt('ldap_server_type')) ?: LdapTypeEnum::STD;
+
+        $params = new LdapParams(
+            $data['server'],
+            $type,
+            $request->analyzeString('ldap_binduser'),
+            $request->analyzeEncrypted('ldap_bindpass')
+        );
+
         $params->setPort($data['port'] ?? 389);
         $params->setSearchBase($request->analyzeString('ldap_base'));
         $params->setGroup($request->analyzeString('ldap_group'));
-        $params->setBindDn($request->analyzeString('ldap_binduser'));
-        $params->setBindPass($request->analyzeEncrypted('ldap_bindpass'));
-        $params->setType($request->analyzeInt('ldap_server_type', LdapTypeInterface::LDAP_STD));
         $params->setTlsEnabled($request->analyzeBool('ldap_tls_enabled', false));
-        $params->setFilterUserObject($request->analyzeString('ldap_filter_user_object', null));
-        $params->setFilterGroupObject($request->analyzeString('ldap_filter_group_object', null));
+        $params->setFilterUserObject($request->analyzeString('ldap_filter_user_object'));
+        $params->setFilterGroupObject($request->analyzeString('ldap_filter_group_object'));
         $params->setFilterUserAttributes($request->analyzeArray('ldap_filter_user_attributes'));
         $params->setFilterGroupAttributes($request->analyzeArray('ldap_filter_group_attributes'));
 

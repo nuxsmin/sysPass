@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,127 +25,78 @@
 namespace SP\Providers\Auth;
 
 /**
- * Class AuthData
- *
- * @package Auth
+ * Class AuthDataBase
  */
 abstract class AuthDataBase
 {
-    /**
-     * @var string
-     */
-    protected string $name;
-    /**
-     * @var string
-     */
-    protected string $email;
-    /**
-     * @var bool
-     */
-    protected ?bool $authenticated;
-    /**
-     * @var int
-     */
-    protected int $statusCode = 0;
-    /**
-     * @var string
-     */
-    protected string $server;
-    /**
-     * @var bool
-     */
-    protected bool $authoritative = false;
-    /**
-     * @var bool
-     */
-    protected bool $failed = false;
+    protected ?string $name          = null;
+    protected ?string $email         = null;
+    protected ?bool   $authenticated = null;
+    protected int     $statusCode    = 0;
+    protected ?string $server        = null;
+    protected bool    $failed        = false;
 
     /**
-     * @return string|null
+     * @param bool $authoritative Whether this authentication is required to access to the application
      */
+    public function __construct(private readonly bool $authoritative = false)
+    {
+    }
+
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param  string  $name
-     */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param  string  $email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAuthenticated(): ?int
     {
         return $this->authenticated;
     }
 
-    /**
-     * @param  bool  $authenticated
-     *
-     * @return $this
-     */
-    public function setAuthenticated(?bool $authenticated = null): AuthDataBase
+    public function setAuthenticated(?bool $authenticated = null): static
     {
         $this->authenticated = $authenticated;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getServer(): ?string
     {
         return $this->server;
     }
 
-    /**
-     * @param  string  $server
-     */
-    public function setServer(string $server)
+    public function setServer(string $server): void
     {
         $this->server = $server;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
-        return (int)$this->statusCode;
+        return $this->statusCode;
     }
 
-    /**
-     * @param  int  $statusCode
-     */
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
     }
 
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Whether this authentication is required to access to the application
      *
      * @return bool
      */
@@ -154,28 +105,12 @@ abstract class AuthDataBase
         return $this->authoritative;
     }
 
-    /**
-     * Indica si es requerida para acceder a la aplicación
-     *
-     * @param  bool  $authoritative
-     */
-    public function setAuthoritative(bool $authoritative): void
-    {
-        $this->authoritative = $authoritative;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function isFailed(): ?bool
+    public function isFailed(): bool
     {
         return $this->failed;
     }
 
-    /**
-     * @param  bool  $failed
-     */
-    public function setFailed(bool $failed)
+    public function setFailed(bool $failed): void
     {
         $this->failed = $failed;
     }

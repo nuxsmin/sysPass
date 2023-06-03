@@ -54,7 +54,8 @@
     "league/fractal": "^0.20",
     "symfony/console": "^v5.1",
     "symfony/lock": "^v5.0",
-    "aura/sqlquery": "~3.0"
+    "aura/sqlquery": "~3.0",
+    "laminas/laminas-ldap": "^2.17"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

@@ -24,31 +24,21 @@
 
 namespace SP\Tests\Http;
 
-use Faker\Factory;
-use PHPUnit\Framework\TestCase;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class AddressTest
  *
- * @package SP\Tests\Http
+ * @group unitary
  */
-class AddressTest extends TestCase
+class AddressTest extends UnitaryTestCase
 {
 
     public static function binaryCheckProvider(): array
     {
-        $faker = Factory::create();
-
-        $out = [];
-
-        for ($i = 0; $i <= 100; $i++) {
-            $out[] = [$faker->ipv4];
-            $out[] = [$faker->ipv6];
-        }
-
-        return $out;
+        return array_map(fn() => [[self::$faker->ipv4], [self::$faker->ipv6]], range(0, 99));
     }
 
     public static function checkAddressProvider(): array
@@ -121,7 +111,7 @@ class AddressTest extends TestCase
      *
      * @throws InvalidArgumentException
      */
-    public function testBinary($address)
+    public function testBinary(string $address)
     {
         $binary = Address::toBinary($address);
 
@@ -159,7 +149,7 @@ class AddressTest extends TestCase
      *
      * @throws InvalidArgumentException
      */
-    public function testCheck($address, $inAddress, $inMask, $expected)
+    public function testCheck(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, $inMask));
     }
@@ -174,7 +164,7 @@ class AddressTest extends TestCase
      *
      * @throws InvalidArgumentException
      */
-    public function testCheckWithCidr($address, $inAddress, $inMask, $expected)
+    public function testCheckWithCidr(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, Address::cidrToDec($inMask)));
     }
@@ -182,7 +172,7 @@ class AddressTest extends TestCase
     /**
      * @throws InvalidArgumentException
      */
-    public function testParse()
+    public function testParseWithFullMask()
     {
         $address = '192.168.0.1/255.255.255.0';
         $parse = Address::parse4($address);
@@ -192,7 +182,13 @@ class AddressTest extends TestCase
         $this->assertEquals('192.168.0.1', $parse['address']);
         $this->assertArrayHasKey('mask', $parse);
         $this->assertEquals('255.255.255.0', $parse['mask']);
+    }
 
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testParseWithoutMask()
+    {
         $address = '192.168.0.2';
         $parse = Address::parse4($address);
 
@@ -200,6 +196,21 @@ class AddressTest extends TestCase
         $this->assertArrayHasKey('address', $parse);
         $this->assertEquals('192.168.0.2', $parse['address']);
 
+        $address = '192.168.0.1/24';
+        $parse = Address::parse4($address);
+
+        $this->assertCount(7, $parse);
+        $this->assertArrayHasKey('address', $parse);
+        $this->assertEquals('192.168.0.1', $parse['address']);
+        $this->assertArrayHasKey('cidr', $parse);
+        $this->assertEquals('24', $parse['cidr']);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testParseWithCIDR()
+    {
         $address = '192.168.0.1/24';
         $parse = Address::parse4($address);
 

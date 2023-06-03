@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,6 +29,9 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Address;
 
+use function SP\__u;
+use function SP\logger;
+
 /**
  * Class LdapAds
  *
@@ -36,11 +39,11 @@ use SP\Http\Address;
  *
  * @package SP\Auth\Ldap
  */
-final class LdapMsAds extends Ldap
+final class LdapMsAds extends LdapBase
 {
-    public const DEFAULT_FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=32))(|(objectCategory=person)(objectClass=user)))';
-    public const DEFAULT_FILTER_GROUP_OBJECT = '(objectCategory=group)';
-    public const DEFAULT_FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
+    public const DEFAULT_FILTER_USER_OBJECT      = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=32))(|(objectCategory=person)(objectClass=user)))';
+    public const DEFAULT_FILTER_GROUP_OBJECT     = '(objectCategory=group)';
+    public const DEFAULT_FILTER_USER_ATTRIBUTES  = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
     public const DEFAULT_FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
 
     /**
@@ -61,13 +64,7 @@ final class LdapMsAds extends Ldap
             $attributes = $this->ldapParams->getFilterGroupAttributes();
         }
 
-        return '(&(|'
-            . LdapUtil::getAttributesForFilter(
-                $attributes,
-                $this->getGroupDn())
-            . ')'
-            . $filter
-            . ')';
+        return '(&(|' . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()) . ')' . $filter . ')';
     }
 
     /**
@@ -94,10 +91,10 @@ final class LdapMsAds extends Ldap
         }
 
         return '(&(|'
-            . LdapUtil::getAttributesForFilter($attributes, $userLogin)
-            . ')'
-            . $this->getUserObjectFilter()
-            . ')';
+               . LdapUtil::getAttributesForFilter($attributes, $userLogin)
+               . ')'
+               . $this->getUserObjectFilter()
+               . ')';
     }
 
     /**
@@ -124,11 +121,16 @@ final class LdapMsAds extends Ldap
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
-            $this->eventDispatcher->notifyEvent('ldap.check.group',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('User in group verified'))
-                    ->addDetail(__u('User'), $userLogin)
-                    ->addDetail(__u('Group'), $this->ldapParams->getGroup())));
+            $this->eventDispatcher->notifyEvent(
+                'ldap.check.group',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('User in group verified'))
+                                ->addDetail(__u('User'), $userLogin)
+                                ->addDetail(__u('Group'), $this->ldapParams->getGroup())
+                )
+            );
 
             return true;
         }
@@ -153,21 +155,31 @@ final class LdapMsAds extends Ldap
         if (isset($searchResults['count'])
             && (int)$searchResults['count'] === 0
         ) {
-            $this->eventDispatcher->notifyEvent('ldap.check.group',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('User does not belong to the group'))
-                    ->addDetail(__u('User'), $userLogin)
-                    ->addDetail(__u('Group'), $groupDn)
-                    ->addDetail('LDAP FILTER', $filter)));
+            $this->eventDispatcher->notifyEvent(
+                'ldap.check.group',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('User does not belong to the group'))
+                                ->addDetail(__u('User'), $userLogin)
+                                ->addDetail(__u('Group'), $groupDn)
+                                ->addDetail('LDAP FILTER', $filter)
+                )
+            );
 
             return false;
         }
 
-        $this->eventDispatcher->notifyEvent('ldap.check.group',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('User in group verified'))
-                ->addDetail(__u('User'), $userLogin)
-                ->addDetail(__u('Group'), $groupDn)));
+        $this->eventDispatcher->notifyEvent(
+            'ldap.check.group',
+            new Event(
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('User in group verified'))
+                            ->addDetail(__u('User'), $userLogin)
+                            ->addDetail(__u('Group'), $groupDn)
+            )
+        );
 
         return true;
     }
@@ -185,13 +197,10 @@ final class LdapMsAds extends Ldap
         }
 
         return '(|'
-            . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn())
-            . ')';
+               . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn())
+               . ')';
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function pickServer(): string
     {
         $server = $this->ldapParams->getServer();

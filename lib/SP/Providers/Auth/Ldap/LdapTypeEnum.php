@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +24,12 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-
 /**
- * Interface LdapCode
- *
- * @package SP\Providers\Auth\Ldap
+ * Class LdapTypeEnum
  */
-interface LdapCode
+enum LdapTypeEnum: int
 {
-    public const SUCCESS = 0;
-    public const OPERATIONS_ERROR = 1;
-    public const AUTH_METHOD_NOT_SUPPORTED = 7;
-    public const STRONGER_AUTH_REQUIRED = 8;
-    public const CONFIDENTIALITY_REQUIRED = 13;
-    public const NO_SUCH_OBJECT = 32;
-    public const INVALID_CREDENTIALS = 49;
-    public const FILTER_ERROR = 87;
+    case  STD   = 1;
+    case  ADS   = 2;
+    case  AZURE = 3;
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,10 +33,6 @@ defined('APP_ROOT') || die();
  */
 class SPException extends Exception
 {
-    /**
-     * Constantes para tipos de excepción
-     */
-    public const OK       = 0;
     public const CRITICAL = 1;
     public const WARNING  = 2;
     public const ERROR    = 3;
@@ -48,17 +44,17 @@ class SPException extends Exception
     /**
      * SPException constructor.
      *
-     * @param  string  $message
-     * @param  int  $type
-     * @param  string|null  $hint
-     * @param  int  $code
-     * @param  Exception|null  $previous
+     * @param string $message
+     * @param int $type
+     * @param string|null $hint
+     * @param int $code
+     * @param Exception|null $previous
      */
     public function __construct(
-        string $message,
-        int $type = self::ERROR,
-        ?string $hint = null,
-        int $code = 0,
+        string    $message,
+        int       $type = self::ERROR,
+        ?string   $hint = null,
+        int       $code = 0,
         Exception $previous = null
     ) {
         $this->type = $type;
@@ -67,12 +63,48 @@ class SPException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
+    public static function error(
+        string    $message,
+        ?string   $hint = null,
+        int       $code = 0,
+        Exception $previous = null
+    ): static {
+        return new static($message, SPException::ERROR, $hint, $code, $previous);
+    }
+
+    public static function critical(
+        string    $message,
+        ?string   $hint = null,
+        int       $code = 0,
+        Exception $previous = null
+    ): static {
+        return new static($message, SPException::CRITICAL, $hint, $code, $previous);
+    }
+
+    public static function warning(
+        string    $message,
+        ?string   $hint = null,
+        int       $code = 0,
+        Exception $previous = null
+    ): static {
+        return new static($message, SPException::WARNING, $hint, $code, $previous);
+    }
+
+    public static function info(
+        string    $message,
+        ?string   $hint = null,
+        int       $code = 0,
+        Exception $previous = null
+    ): static {
+        return new static($message, SPException::INFO, $hint, $code, $previous);
+    }
+
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return __CLASS__.": [{$this->code}]: {$this->message} ({$this->hint})\n";
+        return sprintf('%s: [%s]: %s (%s)', __CLASS__, $this->code, $this->message, $this->hint);
     }
 
     public function getHint(): ?string

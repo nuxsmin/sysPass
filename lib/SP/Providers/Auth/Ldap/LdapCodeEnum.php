@@ -22,25 +22,19 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Ports;
-
-
-use SP\Providers\Auth\Ldap\LdapException;
+namespace SP\Providers\Auth\Ldap;
 
 /**
- * Class LdapCheckService
- *
- * @package SP\Domain\Import\Services
+ * Class LdapCodeEnum
  */
-interface LdapCheckServiceInterface
+enum LdapCodeEnum: int
 {
-    /**
-     * @throws LdapException
-     */
-    public function getObjects(bool $includeGroups = true): array;
-
-    /**
-     * @throws LdapException
-     */
-    public function getObjectsByFilter(string $filter): array;
+    case  SUCCESS                   = 0;
+    case  OPERATIONS_ERROR          = 1;
+    case  AUTH_METHOD_NOT_SUPPORTED = 7;
+    case  STRONGER_AUTH_REQUIRED    = 8;
+    case  CONFIDENTIALITY_REQUIRED  = 13;
+    case  NO_SUCH_OBJECT            = 32;
+    case  INVALID_CREDENTIALS       = 49;
+    case  FILTER_ERROR              = 87;
 }

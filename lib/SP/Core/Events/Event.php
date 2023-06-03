@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,21 +34,20 @@ use SP\Core\Exceptions\SPException;
  */
 class Event
 {
-    private object $source;
+    private object        $source;
     private ?EventMessage $eventMessage;
 
     /**
      * Event constructor.
      *
-     * @param object            $source
+     * @param object $source
      * @param EventMessage|null $eventMessage
      *
      */
     public function __construct(
-        object       $source,
-        EventMessage $eventMessage = null
-    )
-    {
+        object        $source,
+        ?EventMessage $eventMessage = null
+    ) {
         $this->source = $source;
         $this->eventMessage = $eventMessage;
     }
@@ -76,5 +75,4 @@ class Event
     {
         return $this->eventMessage;
     }
-
 }

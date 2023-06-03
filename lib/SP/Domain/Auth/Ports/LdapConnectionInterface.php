@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,43 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
+namespace SP\Domain\Auth\Ports;
 
-
-use SP\Providers\Auth\AuthInterface;
+use SP\Providers\Auth\Ldap\LdapException;
+use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
- * Class LdapBase
+ * Interface LdapInterface
  *
  * @package Auth\Ldap
  */
-interface LdapAuthInterface extends AuthInterface
+interface LdapConnectionInterface
 {
-    public const ACCOUNT_NO_GROUPS = 702;
-    public const ACCOUNT_EXPIRED   = 701;
-
     /**
-     * @return LdapAuthData
-     */
-    public function getLdapAuthData(): LdapAuthData;
-
-    /**
-     * @return string
-     */
-    public function getUserLogin(): ?string;
-
-    /**
-     * @param  string  $userLogin
-     */
-    public function setUserLogin(string $userLogin): void;
-
-    /**
-     * Obtener los atributos del usuario.
-     *
-     * @param  string  $userLogin
-     *
-     * @return LdapAuthData con los atributos disponibles y sus valores
      * @throws LdapException
      */
-    public function getAttributes(string $userLogin): LdapAuthData;
+    public function checkConnection(): void;
+
+    /**
+     * @throws LdapException
+     */
+    public function connect(?string $bindDn = null, ?string $bindPass = null): void;
+
+    /**
+     * @throws LdapException
+     */
+    public function mutate(LdapParams $ldapParams): LdapConnectionInterface;
 }

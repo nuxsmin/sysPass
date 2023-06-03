@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,17 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
+namespace SP\Domain\Auth\Ports;
 
+use SP\Providers\Auth\AuthInterface;
+use SP\Providers\Auth\Ldap\LdapAuthData;
 
 /**
- * Interface LdapTypeInterface
+ * Class LdapBase
  *
- * @package SP\Providers\Auth\Ldap
+ * @package Auth\Ldap
  */
-interface LdapTypeInterface
+interface LdapAuthInterface extends AuthInterface
 {
-    public const LDAP_STD = 1;
-    public const LDAP_ADS = 2;
-    public const LDAP_AZURE = 3;
+    public const ACCOUNT_NO_GROUPS = 702;
+    public const ACCOUNT_EXPIRED   = 701;
+
+    /**
+     * @return LdapAuthData
+     */
+    public function getLdapAuthData(): LdapAuthData;
 }

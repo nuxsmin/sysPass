@@ -70,7 +70,6 @@
         </include>
         <exclude>
             <directory suffix=".php">../lib/SP/DataModel</directory>
-            <directory suffix=".php">../lib/SP/Providers</directory>
             <directory suffix=".php">../lib/SP/Html/Assets</directory>
             <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
             <file>../lib/SP/Config/ConfigData.php</file>

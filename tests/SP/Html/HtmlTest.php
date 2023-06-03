@@ -24,23 +24,16 @@
 
 namespace SP\Tests\Html;
 
-use Faker\Factory;
-use PHPUnit\Framework\TestCase;
 use SP\Html\Html;
+use SP\Tests\UnitaryTestCase;
 
 /**
  * Class HtmlTest
+ *
+ * @group unitary
  */
-class HtmlTest extends TestCase
+class HtmlTest extends UnitaryTestCase
 {
-    private static $faker;
-
-    public static function setUpBeforeClass(): void
-    {
-        parent::setUpBeforeClass();
-
-        self::$faker = Factory::create();
-    }
 
     public static function urlProvider(): array
     {

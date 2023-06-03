@@ -49,6 +49,9 @@ use SP\Core\MimeTypesInterface;
 use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
+use SP\Domain\Auth\Ports\LdapActionsInterface;
+use SP\Domain\Auth\Ports\LdapAuthInterface;
+use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
@@ -79,9 +82,10 @@ use SP\Providers\Auth\Browser\BrowserAuth;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Providers\Auth\Database\DatabaseAuth;
 use SP\Providers\Auth\Database\DatabaseAuthInterface;
-use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapActions;
 use SP\Providers\Auth\Ldap\LdapAuth;
-use SP\Providers\Auth\Ldap\LdapAuthInterface;
+use SP\Providers\Auth\Ldap\LdapBase;
+use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Log\FileLogHandler;
@@ -91,6 +95,7 @@ use SP\Providers\Mail\MailHandler;
 use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\PhpMailerWrapper;
 use SP\Providers\Notification\NotificationHandler;
+
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
@@ -105,11 +110,11 @@ final class CoreDefinitions
     public static function getDefinitions(): array
     {
         return [
-            RequestInterface::class              => create(Request::class)
+            RequestInterface::class => create(Request::class)
                 ->constructor(\Klein\Request::createFromGlobals(), autowire(CryptPKI::class)),
-            ContextInterface::class              =>
+            ContextInterface::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
-            ConfigInterface::class               => create(ConfigFileService::class)
+            ConfigInterface::class => create(ConfigFileService::class)
                 ->constructor(
                     create(XmlHandler::class)
                         ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
@@ -117,37 +122,40 @@ final class CoreDefinitions
                     get(ContextInterface::class),
                     autowire(ConfigBackupService::class)
                 ),
-            ConfigDataInterface::class           =>
+            ConfigDataInterface::class =>
                 static fn(ConfigInterface $config) => $config->getConfigData(),
-            DatabaseConnectionData::class        => factory([DatabaseConnectionData::class, 'getFromConfig']),
-            DbStorageInterface::class            => autowire(MysqlHandler::class),
-            Actions::class                       =>
+            DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
+            DbStorageInterface::class => autowire(MysqlHandler::class),
+            Actions::class =>
                 static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
                     new XmlHandler(new FileHandler(ACTIONS_FILE))
                 ),
-            MimeTypesInterface::class            =>
+            MimeTypesInterface::class =>
                 static fn() => new MimeTypes(
                     new FileCache(MimeTypes::MIME_CACHE_FILE),
                     new XmlHandler(new FileHandler(MIMETYPES_FILE))
                 ),
-            Acl::class                           => autowire(Acl::class)
+            Acl::class => autowire(Acl::class)
                 ->constructorParameter('actions', get(Actions::class)),
-            ThemeInterface::class                => autowire(Theme::class)
+            ThemeInterface::class => autowire(Theme::class)
                 ->constructorParameter('module', APP_MODULE)
                 ->constructorParameter(
                     'fileCache',
                     create(FileCache::class)->constructor(Theme::ICONS_CACHE_FILE)
                 ),
-            TemplateInterface::class             => autowire(Template::class),
-            DatabaseAuthInterface::class         => autowire(DatabaseAuth::class),
-            BrowserAuthInterface::class          => autowire(BrowserAuth::class),
-            LdapAuthInterface::class             => autowire(LdapAuth::class)
+            TemplateInterface::class => autowire(Template::class),
+            DatabaseAuthInterface::class => autowire(DatabaseAuth::class),
+            BrowserAuthInterface::class => autowire(BrowserAuth::class),
+            LdapParams::class => factory([LdapParams::class, 'getFrom']),
+            LdapConnectionInterface::class => autowire(LdapConnection::class),
+            LdapActionsInterface::class => autowire(LdapActions::class),
+            LdapAuthInterface::class => autowire(LdapAuth::class)
                 ->constructorParameter(
                     'ldap',
-                    factory([Ldap::class, 'factory'])->parameter('ldapParams', factory([LdapParams::class, 'getFrom']))
+                    factory([LdapBase::class, 'factory'])
                 ),
-            AuthProviderInterface::class         =>
+            AuthProviderInterface::class =>
                 static function (ContainerInterface $c, ConfigDataInterface $configData) {
                     $provider = $c->get(AuthProvider::class);
 
@@ -161,18 +169,18 @@ final class CoreDefinitions
 
                     return $provider;
                 },
-            Logger::class                        => create(Logger::class)
+            Logger::class => create(Logger::class)
                 ->constructor('syspass'),
-            \GuzzleHttp\Client::class            => create(\GuzzleHttp\Client::class)
+            \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            CSRF::class                          => autowire(CSRF::class),
-            LanguageInterface::class             => autowire(Language::class),
-            DatabaseInterface::class             => autowire(Database::class),
-            MailProviderInterface::class         => autowire(MailProvider::class),
-            MailerInterface::class               => autowire(PhpMailerWrapper::class)->constructor(
+            CSRF::class => autowire(CSRF::class),
+            LanguageInterface::class => autowire(Language::class),
+            DatabaseInterface::class => autowire(Database::class),
+            MailProviderInterface::class => autowire(MailProvider::class),
+            MailerInterface::class => autowire(PhpMailerWrapper::class)->constructor(
                 create(PHPMailer::class)->constructor(true)
             ),
-            DatabaseSetupInterface::class        => static function (RequestInterface $request) {
+            DatabaseSetupInterface::class => static function (RequestInterface $request) {
                 $installData = InstallDataFactory::buildFromRequest($request);
 
                 if ($installData->getBackendType() === 'mysql') {
@@ -181,7 +189,7 @@ final class CoreDefinitions
 
                 throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
             },
-            ProvidersHelper::class               => factory(static function (ContainerInterface $c) {
+            ProvidersHelper::class => factory(static function (ContainerInterface $c) {
                 $configData = $c->get(ConfigDataInterface::class);
 
                 if (!$configData->isInstalled()) {
@@ -198,15 +206,15 @@ final class CoreDefinitions
                     $c->get(NotificationHandler::class)
                 );
             }),
-            QueryFactory::class                  => create(QueryFactory::class)
+            QueryFactory::class => create(QueryFactory::class)
                 ->constructor('mysql', QueryFactory::COMMON),
-            CryptInterface::class                => create(Crypt::class),
-            CryptPKIInterface::class             => autowire(CryptPKI::class)
+            CryptInterface::class => create(Crypt::class),
+            CryptPKIInterface::class => autowire(CryptPKI::class)
                 ->constructorParameter('publicKeyFile', new FileHandler(CryptPKI::PUBLIC_KEY_FILE))
                 ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
-            FileCacheInterface::class            => create(FileCache::class),
-            Application::class                   => autowire(Application::class),
-            UUIDCookie::class                    => factory([UUIDCookie::class, 'factory'])
+            FileCacheInterface::class => create(FileCache::class),
+            Application::class => autowire(Application::class),
+            UUIDCookie::class => factory([UUIDCookie::class, 'factory'])
                 ->parameter(
                     'request',
                     get(RequestInterface::class)

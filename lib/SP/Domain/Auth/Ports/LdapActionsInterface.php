@@ -25,22 +25,50 @@
 namespace SP\Domain\Auth\Ports;
 
 
+use SP\Providers\Auth\Ldap\AttributeCollection;
 use SP\Providers\Auth\Ldap\LdapException;
+use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
- * Class LdapCheckService
+ * Class LdapActions
  *
- * @package SP\Domain\Import\Services
+ * @package SP\Providers\Auth\Ldap
  */
-interface LdapCheckServiceInterface
+interface LdapActionsInterface
 {
     /**
+     * Obtener el RDN del grupo.
+     *
+     * @param string $groupFilter
+     *
+     * @return array Groups' DN
      * @throws LdapException
      */
-    public function getObjects(bool $includeGroups = true): array;
+    public function searchGroupsDn(string $groupFilter): array;
 
     /**
+     * @param string $filter
+     *
+     * @return AttributeCollection
      * @throws LdapException
      */
-    public function getObjectsByFilter(string $filter): array;
+    public function getAttributes(string $filter): AttributeCollection;
+
+    /**
+     * Obtener los objetos según el filtro indicado
+     *
+     * @param string $filter
+     * @param array $attributes
+     * @param string|null $searchBase
+     *
+     * @return array
+     * @throws LdapException
+     */
+    public function getObjects(
+        string  $filter,
+        array   $attributes,
+        ?string $searchBase = null
+    ): array;
+
+    public function mutate(LdapParams $ldapParams): LdapActionsInterface;
 }
