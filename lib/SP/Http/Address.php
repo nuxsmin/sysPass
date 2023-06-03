@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,9 @@ namespace SP\Http;
 
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
+use function SP\__;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class Address
@@ -91,8 +94,7 @@ final class Address
         string $address,
         string $inAddress,
         string $inMask
-    ): bool
-    {
+    ): bool {
         if (!filter_var($address, FILTER_VALIDATE_IP)
             || !filter_var($inAddress, FILTER_VALIDATE_IP)
             || !filter_var($inMask, FILTER_VALIDATE_IP)

@@ -35,7 +35,7 @@ trait AccountSearchTokenizerDataTrait
     public static function searchByItemDataProvider(): array
     {
         $faker = Factory::create();
-        $id = $faker->randomNumber();
+        $id = $faker->numberBetween(1);
         $name = $faker->userName;
         $file = sprintf('%s.%s', $faker->name(), $faker->fileExtension);
 
