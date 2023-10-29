@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,6 @@
 namespace SP\Providers\Auth\Database;
 
 
-use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
 
 /**
@@ -33,23 +32,14 @@ use SP\Providers\Auth\AuthInterface;
  *
  * Autentificación basada en base de datos
  *
- * @package SP\Providers\Auth\Database
+ * @extends AuthInterface<DatabaseAuthData>
  */
 interface DatabaseAuthInterface extends AuthInterface
 {
     /**
-     * Autentificar al usuario
-     *
-     * @param  UserLoginData  $userLoginData  Datos del usuario
-     *
-     * @return DatabaseAuthData
-     */
-    public function authenticate(UserLoginData $userLoginData): DatabaseAuthData;
-
-    /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthGranted(): bool;
 }

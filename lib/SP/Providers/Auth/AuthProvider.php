@@ -33,6 +33,8 @@ use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Providers\Auth\Database\DatabaseAuthInterface;
 use SP\Providers\Provider;
 
+use function SP\__u;
+
 defined('APP_ROOT') || die();
 
 /**
@@ -48,27 +50,24 @@ class AuthProvider extends Provider implements AuthProviderInterface
      * @var callable[]
      */
     protected array                 $auths       = [];
-    protected DatabaseAuthInterface $databaseAuth;
     protected ?BrowserAuthInterface $browserAuth = null;
     protected ?LdapAuthInterface    $ldapAuth    = null;
 
     public function __construct(
-        Application $application,
-        DatabaseAuthInterface $databaseAuth
+        Application                              $application,
+        protected readonly DatabaseAuthInterface $databaseAuth
     ) {
         parent::__construct($application);
-
-        $this->databaseAuth = $databaseAuth;
     }
 
     /**
      * Probar los métodos de autentificación
      *
-     * @param  UserLoginData  $userLoginData
+     * @param UserLoginData $userLoginData
      *
      * @return false|AuthResult[]
      */
-    public function doAuth(UserLoginData $userLoginData)
+    public function doAuth(UserLoginData $userLoginData): array|bool
     {
         $authsResult = [];
 
@@ -95,7 +94,7 @@ class AuthProvider extends Provider implements AuthProviderInterface
         if ($this->browserAuth && $configData->isAuthBasicEnabled()) {
             $this->registerAuth(
                 function (UserLoginData $userLoginData) {
-                    $this->browserAuth->authenticate($userLoginData);
+                    return $this->browserAuth->authenticate($userLoginData);
                 },
                 'authBrowser'
             );
@@ -104,9 +103,7 @@ class AuthProvider extends Provider implements AuthProviderInterface
         if ($this->ldapAuth && $configData->isLdapEnabled()) {
             $this->registerAuth(
                 function (UserLoginData $userLoginData) {
-                    $ldapAuthData = $this->ldapAuth->getLdapAuthData();
-
-                    $ldapAuthData->setAuthenticated($this->ldapAuth->authenticate($userLoginData));
+                    $ldapAuthData = $this->ldapAuth->authenticate($userLoginData);
 
                     if ($ldapAuthData->getAuthenticated()) {
                         // Comprobamos si la cuenta está bloqueada o expirada
@@ -134,8 +131,8 @@ class AuthProvider extends Provider implements AuthProviderInterface
     /**
      * Registrar un método de autentificación primarios
      *
-     * @param  callable  $auth  Función de autentificación
-     * @param  string  $name
+     * @param callable $auth Función de autentificación
+     * @param string $name
      *
      * @throws AuthException
      */

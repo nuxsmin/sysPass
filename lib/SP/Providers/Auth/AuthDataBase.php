@@ -35,6 +35,7 @@ abstract class AuthDataBase
     protected int     $statusCode    = 0;
     protected ?string $server        = null;
     protected bool    $failed        = false;
+    protected bool    $success       = false;
 
     /**
      * @param bool $authoritative Whether this authentication is required to access to the application
@@ -68,13 +69,6 @@ abstract class AuthDataBase
         return $this->authenticated;
     }
 
-    public function setAuthenticated(?bool $authenticated = null): static
-    {
-        $this->authenticated = $authenticated;
-
-        return $this;
-    }
-
     public function getServer(): ?string
     {
         return $this->server;
@@ -105,13 +99,26 @@ abstract class AuthDataBase
         return $this->authoritative;
     }
 
-    public function isFailed(): bool
+    public function fail(): static
     {
-        return $this->failed;
+        $this->authenticated = true;
+        $this->failed = true;
+        $this->success = false;
+
+        return $this;
     }
 
-    public function setFailed(bool $failed): void
+    public function success(): static
     {
-        $this->failed = $failed;
+        $this->authenticated = true;
+        $this->success = true;
+        $this->failed = false;
+
+        return $this;
+    }
+
+    public function isOk(): bool
+    {
+        return $this->authenticated && $this->success && !$this->failed;
     }
 }

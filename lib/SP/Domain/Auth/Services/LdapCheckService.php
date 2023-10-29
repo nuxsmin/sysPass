@@ -55,7 +55,7 @@ final class LdapCheckService extends Service implements LdapCheckServiceInterfac
         $ldap = $this->getLdap($ldapParams);
 
         $objects = $this->ldapResultsMapper(
-            $ldap->getLdapActions()->getObjects($filter, ['dn'])
+            $ldap->actions()->getObjects($filter, ['dn'])
         );
 
         return [
@@ -125,7 +125,7 @@ final class LdapCheckService extends Service implements LdapCheckServiceInterfac
     {
         $ldap = $this->getLdap($ldapParams);
 
-        $ldapActions = $ldap->getLdapActions();
+        $ldapActions = $ldap->actions();
 
         $data = ['count' => 0, 'results' => []];
 

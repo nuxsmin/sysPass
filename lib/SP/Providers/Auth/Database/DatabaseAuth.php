@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,9 @@ use SP\DataModel\UserLoginData;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Domain\User\Services\UserPassService;
 use SP\Domain\User\Services\UserService;
+
+use function SP\processException;
 
 /**
  * Class Database
@@ -42,79 +43,57 @@ use SP\Domain\User\Services\UserService;
  */
 final class DatabaseAuth implements DatabaseAuthInterface
 {
-    private UserLoginData        $userLoginData;
-    private UserServiceInterface $userService;
-    private UserPassService      $userPassService;
-
-    /**
-     * Database constructor.
-     *
-     * @param  \SP\Domain\User\Ports\UserServiceInterface  $userService
-     * @param  \SP\Domain\User\Ports\UserPassServiceInterface  $userPassService
-     */
-    public function __construct(UserServiceInterface $userService, UserPassServiceInterface $userPassService)
-    {
-        $this->userService = $userService;
-        $this->userPassService = $userPassService;
+    public function __construct(
+        private readonly UserServiceInterface     $userService,
+        private readonly UserPassServiceInterface $userPassService
+    ) {
     }
 
 
     /**
      * Autentificar al usuario
      *
-     * @param  UserLoginData  $userLoginData  Datos del usuario
+     * @param UserLoginData $userLoginData Datos del usuario
      *
      * @return DatabaseAuthData
      */
     public function authenticate(UserLoginData $userLoginData): DatabaseAuthData
     {
-        $this->userLoginData = $userLoginData;
+        $authData = new DatabaseAuthData($this->isAuthGranted());
 
-        $authData = new DatabaseAuthData();
-        $authData->setAuthoritative($this->isAuthGranted());
-        $authData->setAuthenticated($this->authUser());
-
-        return $authData;
+        return $this->authUser($userLoginData) ? $authData->success() : $authData->fail();
     }
 
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthGranted(): bool
     {
         return true;
     }
 
-    /**
-     * Autentificación de usuarios con BD.
-     *
-     * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
-     * se ejecuta el proceso para actualizar la clave.
-     *
-     * @return bool
-     */
-    protected function authUser(): bool
+    protected function authUser(UserLoginData $userLoginData): bool
     {
         try {
             $userLoginResponse =
-                UserService::mapUserLoginResponse($this->userService->getByLogin($this->userLoginData->getLoginUser()));
+                UserService::mapUserLoginResponse($this->userService->getByLogin($userLoginData->getLoginUser()));
 
-            $this->userLoginData->setUserLoginResponse($userLoginResponse);
+            $userLoginData->setUserLoginResponse($userLoginResponse);
 
             if ($userLoginResponse->getIsMigrate()
-                && $this->checkMigrateUser($userLoginResponse)
+                && $this->checkMigrateUser($userLoginResponse, $userLoginData)
             ) {
                 $this->userPassService->migrateUserPassById(
                     $userLoginResponse->getId(),
-                    $this->userLoginData->getLoginPass()
+                    $userLoginData->getLoginPass()
                 );
 
                 return true;
             }
 
-            return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
+            return Hash::checkHashKey($userLoginData->getLoginPass(), $userLoginResponse->getPass());
         } catch (Exception $e) {
             processException($e);
         }
@@ -122,21 +101,16 @@ final class DatabaseAuth implements DatabaseAuthInterface
         return false;
     }
 
-    /**
-     * @param  UserLoginResponse  $userLoginResponse
-     *
-     * @return bool
-     */
-    protected function checkMigrateUser(UserLoginResponse $userLoginResponse): bool
+    protected function checkMigrateUser(UserLoginResponse $userLoginResponse, UserLoginData $userLoginData): bool
     {
-        return ($userLoginResponse->getPass() === sha1(
-                $userLoginResponse->getHashSalt().$this->userLoginData->getLoginPass()
-            )
-                || $userLoginResponse->getPass() === md5($this->userLoginData->getLoginPass())
+        $passHashSha = sha1($userLoginResponse->getHashSalt() . $userLoginData->getLoginPass());
+
+        return ($userLoginResponse->getPass() === $passHashSha
+                || $userLoginResponse->getPass() === md5($userLoginData->getLoginPass())
                 || hash_equals(
                     $userLoginResponse->getPass(),
-                    crypt($this->userLoginData->getLoginPass(), $userLoginResponse->getHashSalt())
+                    crypt($userLoginData->getLoginPass(), $userLoginResponse->getHashSalt())
                 )
-                || Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass()));
+                || Hash::checkHashKey($userLoginData->getLoginPass(), $userLoginResponse->getPass()));
     }
 }

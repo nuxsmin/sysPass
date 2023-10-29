@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,6 +29,7 @@ use SP\DataModel\UserLoginData;
 /**
  * Interface AuthInterface
  *
+ * @template T of AuthDataBase
  * @package Auth
  */
 interface AuthInterface
@@ -36,16 +37,16 @@ interface AuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param \SP\DataModel\UserLoginData $userLoginData
+     * @param UserLoginData $userLoginData
      *
-     * @return mixed|AuthDataBase
+     * @return T
      */
-    public function authenticate(UserLoginData $userLoginData);
+    public function authenticate(UserLoginData $userLoginData): object;
 
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthGranted(): bool;
 }

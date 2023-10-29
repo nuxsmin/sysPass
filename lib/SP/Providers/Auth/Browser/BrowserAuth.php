@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,13 +27,14 @@ namespace SP\Providers\Auth\Browser;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\RequestInterface;
+use SP\Providers\Auth\AuthInterface;
 
 /**
  * Class Browser
  *
  * Autentificación basada en credenciales del navegador
  *
- * @package SP\Providers\Auth\Browser
+ * @implements AuthInterface<BrowserAuthData>
  */
 final class BrowserAuth implements BrowserAuthInterface
 {
@@ -49,17 +50,17 @@ final class BrowserAuth implements BrowserAuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param  UserLoginData  $userLoginData  Datos del usuario
-     *
-     * @return BrowserAuthData
+     * @param UserLoginData $userLoginData Datos del usuario
      */
-    public function authenticate(UserLoginData $userLoginData): BrowserAuthData
+    public function authenticate(UserLoginData $userLoginData): object
     {
-        $browserAuthData = new BrowserAuthData();
-        $browserAuthData->setAuthoritative($this->isAuthGranted());
+        $browserAuthData = new BrowserAuthData($this->isAuthGranted());
 
-        if (!empty($userLoginData->getLoginUser()) && !empty($userLoginData->getLoginPass())) {
-            return $browserAuthData->setAuthenticated($this->checkServerAuthUser($userLoginData->getLoginUser()));
+        if (!empty($userLoginData->getLoginUser())
+            && !empty($userLoginData->getLoginPass())
+            && $this->checkServerAuthUser($userLoginData->getLoginUser())
+        ) {
+            return $browserAuthData->success();
         }
 
         if ($this->configData->isAuthBasicAutoLoginEnabled()) {
@@ -72,13 +73,15 @@ final class BrowserAuth implements BrowserAuthInterface
 
                 $browserAuthData->setName($authUser);
 
-                return $browserAuthData->setAuthenticated(true);
+                return $browserAuthData->success();
             }
 
-            return $browserAuthData->setAuthenticated(false);
+            return $browserAuthData->fail();
         }
 
-        return $browserAuthData->setAuthenticated($this->checkServerAuthUser($userLoginData->getLoginUser()));
+        return $this->checkServerAuthUser($userLoginData->getLoginUser())
+            ? $browserAuthData->success()
+            : $browserAuthData->fail();
     }
 
     /**
@@ -104,7 +107,7 @@ final class BrowserAuth implements BrowserAuthInterface
         $authUser = $this->getServerAuthUser();
 
         if (!empty($domain) && !empty($authUser)) {
-            $login = $authUser.'@'.$domain;
+            $login = $authUser . '@' . $domain;
         }
 
         return $authUser === $login ?: null;
@@ -113,7 +116,7 @@ final class BrowserAuth implements BrowserAuthInterface
     /**
      * Devolver el nombre del usuario autentificado por el servidor web
      *
-     * @return string
+     * @return string|null
      */
     public function getServerAuthUser(): ?string
     {

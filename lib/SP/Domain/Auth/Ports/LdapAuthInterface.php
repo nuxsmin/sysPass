@@ -30,15 +30,10 @@ use SP\Providers\Auth\Ldap\LdapAuthData;
 /**
  * Class LdapBase
  *
- * @package Auth\Ldap
+ * @extends AuthInterface<LdapAuthData>
  */
 interface LdapAuthInterface extends AuthInterface
 {
     public const ACCOUNT_NO_GROUPS = 702;
     public const ACCOUNT_EXPIRED   = 701;
-
-    /**
-     * @return LdapAuthData
-     */
-    public function getLdapAuthData(): LdapAuthData;
 }

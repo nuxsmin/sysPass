@@ -95,7 +95,7 @@ abstract class LdapBase implements LdapInterface
         throw LdapException::error(__u('LDAP type not set'));
     }
 
-    public function getLdapActions(): LdapActionsInterface
+    public function actions(): LdapActionsInterface
     {
         return $this->ldapActions;
     }

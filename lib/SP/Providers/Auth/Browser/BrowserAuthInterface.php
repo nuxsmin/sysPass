@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Auth\Browser;
 
-
 use SP\Providers\Auth\AuthInterface;
 
 /**
@@ -32,7 +31,7 @@ use SP\Providers\Auth\AuthInterface;
  *
  * Autentificación basada en credenciales del navegador
  *
- * @package SP\Providers\Auth\Browser
+ * @extends AuthInterface<BrowserAuthData>
  */
 interface BrowserAuthInterface extends AuthInterface
 {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,67 +33,36 @@ use SP\Domain\User\Services\UserLoginResponse;
  */
 class UserLoginData
 {
-    /**
-     * @var string
-     */
-    protected $loginUser;
-    /**
-     * @var string
-     */
-    protected $loginPass;
-    /**
-     * @var UserLoginResponse
-     */
-    protected $userLoginResponse;
+    protected string            $loginUser;
+    protected string            $loginPass;
+    protected UserLoginResponse $userLoginResponse;
 
-    /**
-     * Login del usuario introducido en el formulario
-     *
-     * @return string
-     */
-    public function getLoginUser()
+    public function getLoginUser(): string
     {
         return $this->loginUser;
     }
 
-    /**
-     * @param string $login
-     */
-    public function setLoginUser($login)
+    public function setLoginUser(string $login): void
     {
         $this->loginUser = $login;
     }
 
-    /**
-     * Clave del usuario introducida en el formulario
-     *
-     * @return string
-     */
-    public function getLoginPass()
+    public function getLoginPass(): string
     {
         return $this->loginPass;
     }
 
-    /**
-     * @param string $loginPass
-     */
-    public function setLoginPass($loginPass)
+    public function setLoginPass(string $loginPass): void
     {
         $this->loginPass = $loginPass;
     }
 
-    /**
-     * @return UserLoginResponse
-     */
-    public function getUserLoginResponse()
+    public function getUserLoginResponse(): UserLoginResponse
     {
         return $this->userLoginResponse;
     }
 
-    /**
-     * @param UserLoginResponse $userLoginResponse
-     */
-    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null)
+    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null): void
     {
         $this->userLoginResponse = $userLoginResponse;
     }

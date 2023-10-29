@@ -39,12 +39,10 @@ use function SP\processException;
 /**
  * Class LdapBase
  *
- * @package Auth\Ldap
+ * @implements LdapInterface<LdapAuthData>
  */
 final class LdapAuth implements LdapAuthInterface
 {
-    private readonly LdapAuthData $ldapAuthData;
-
     /**
      * LdapBase constructor.
      *
@@ -53,11 +51,38 @@ final class LdapAuth implements LdapAuthInterface
      * @param ConfigDataInterface $configData
      */
     public function __construct(
-        private readonly LdapInterface $ldap,
+        private readonly LdapInterface            $ldap,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly ConfigDataInterface $configData
+        private readonly ConfigDataInterface      $configData
     ) {
-        $this->ldapAuthData = new LdapAuthData($this->isAuthGranted());
+    }
+
+    /**
+     * Autentificar al usuario
+     *
+     * @param UserLoginData $userLoginData Datos del usuario
+     */
+    public function authenticate(UserLoginData $userLoginData): object
+    {
+        $ldapAuthData = new LdapAuthData($this->isAuthGranted());
+
+        try {
+            $ldapAuthData->setServer($this->ldap->getServer());
+
+            $this->ldap->connect();
+
+            $this->getAttributes($userLoginData->getLoginUser(), $ldapAuthData);
+
+            $this->ldap->connect($ldapAuthData->getDn(), $userLoginData->getLoginPass());
+
+            return $ldapAuthData->success();
+        } catch (LdapException $e) {
+            processException($e);
+
+            $ldapAuthData->setStatusCode($e->getCode());
+        }
+
+        return $ldapAuthData->fail();
     }
 
     /**
@@ -71,69 +96,29 @@ final class LdapAuth implements LdapAuthInterface
     }
 
     /**
-     * @return LdapAuthData
-     */
-    public function getLdapAuthData(): LdapAuthData
-    {
-        return $this->ldapAuthData;
-    }
-
-
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserLoginData $userLoginData Datos del usuario
-     *
-     * @return bool
-     */
-    public function authenticate(UserLoginData $userLoginData): bool
-    {
-        try {
-            $this->ldapAuthData->setServer($this->ldap->getServer());
-
-            $this->ldap->connect();
-
-            $this->getAttributes($userLoginData->getLoginUser());
-
-            $this->ldap->connect($this->ldapAuthData->getDn(), $userLoginData->getLoginPass());
-
-            $this->ldapAuthData->setFailed(false);
-            $this->ldapAuthData->setAuthenticated(true);
-        } catch (LdapException $e) {
-            processException($e);
-
-            $this->ldapAuthData->setStatusCode($e->getCode());
-            $this->ldapAuthData->setAuthenticated(false);
-            $this->ldapAuthData->setFailed(true);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Obtener los atributos del usuario.
      *
      * @param string $userLogin
-     *
+     * @param LdapAuthData $ldapAuthData
      * @return void con los atributos disponibles y sus valores
      * @throws LdapException
      */
-    private function getAttributes(string $userLogin): void
+    private function getAttributes(string $userLogin, LdapAuthData $ldapAuthData): void
     {
         $filter = $this->ldap->getUserDnFilter($userLogin);
-        $attributes = $this->ldap->getLdapActions()->getAttributes($filter);
+        $attributes = $this->ldap->actions()->getAttributes($filter);
 
         if ($attributes->count() === 0) {
             $this->eventDispatcher->notifyEvent(
                 'ldap.getAttributes',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(__u('Error while searching the user on LDAP'))->addDetail(
-                        'LDAP FILTER',
-                        $filter
-                    )
+                    EventMessage::factory()
+                                ->addDescription(__u('Error while searching the user on LDAP'))
+                                ->addDetail(
+                                    'LDAP FILTER',
+                                    $filter
+                                )
                 )
             );
 
@@ -145,25 +130,24 @@ final class LdapAuth implements LdapAuthInterface
         }
 
         if (!empty($attributes->get('fullname'))) {
-            $this->ldapAuthData->setName($attributes->get('fullname'));
+            $ldapAuthData->setName($attributes->get('fullname'));
         } else {
             $name = trim(
-                $attributes->get('name', '') . ' ' . $attributes->get('sn', '')
+                sprintf('%s %s', $attributes->get('name', ''), $attributes->get('sn', ''))
             );
 
-            $this->ldapAuthData->setName($name);
+            $ldapAuthData->setName($name);
         }
 
         $mail = $attributes->get('mail');
 
         if ($mail !== null) {
-            $this->ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
+            $ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
         }
 
-        $this->ldapAuthData->setDn($attributes->get('dn'));
-        $this->ldapAuthData->setExpire($attributes->get('expire'));
-
-        $this->ldapAuthData->setInGroup(
+        $ldapAuthData->setDn($attributes->get('dn'));
+        $ldapAuthData->setExpire($attributes->get('expire'));
+        $ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
                 $attributes['dn'],
                 $userLogin,

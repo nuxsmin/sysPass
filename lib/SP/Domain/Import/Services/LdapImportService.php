@@ -91,9 +91,9 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->getLdapActions()->getObjects($ldap->getGroupObjectFilter());
+            $objects = $ldap->actions()->getObjects($ldap->getGroupObjectFilter());
         } else {
-            $objects = $ldap->getLdapActions()->getObjects($ldapImportParams->filter);
+            $objects = $ldap->actions()->getObjects($ldapImportParams->filter);
         }
 
         $numObjects = (int)$objects['count'];
@@ -172,9 +172,9 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->getLdapActions()->getObjects($ldap->getGroupMembershipIndirectFilter());
+            $objects = $ldap->actions()->getObjects($ldap->getGroupMembershipIndirectFilter());
         } else {
-            $objects = $ldap->getLdapActions()->getObjects($ldapImportParams->filter);
+            $objects = $ldap->actions()->getObjects($ldapImportParams->filter);
         }
 
         $numObjects = (int)$objects['count'];
