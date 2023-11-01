@@ -32,6 +32,7 @@ use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SP\Tests\UnitaryTestCase;
+
 use function PHPUnit\Framework\once;
 
 /**
@@ -47,7 +48,7 @@ class LdapConnectionTest extends UnitaryTestCase
     private LdapParams                          $ldapParams;
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testCheckConnection(): void
     {
@@ -65,7 +66,7 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testCheckConnectionError(): void
     {
@@ -108,7 +109,7 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testConnect(): void
     {
@@ -121,7 +122,7 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testConnectError(): void
     {
@@ -131,7 +132,7 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testMutate(): void
     {
@@ -153,7 +154,7 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testCreateInstanceError(): void
     {
@@ -177,7 +178,7 @@ class LdapConnectionTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     protected function setUp(): void
     {

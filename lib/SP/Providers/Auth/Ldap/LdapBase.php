@@ -135,6 +135,6 @@ abstract class LdapBase implements LdapInterface
             return $this->ldapParams->getGroup();
         }
 
-        return $this->ldapActions->searchGroupsDn($this->getGroupObjectFilter())[0];
+        return $this->ldapActions->searchGroupsDn($this->getGroupObjectFilter())[0] ?? '';
     }
 }
