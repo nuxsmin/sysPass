@@ -64,7 +64,7 @@ final class LdapMsAds extends LdapBase
             $attributes = $this->ldapParams->getFilterGroupAttributes();
         }
 
-        return '(&(|' . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()) . ')' . $filter . ')';
+        return sprintf("(&(|%s)%s)", LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()), $filter);
     }
 
     /**
@@ -90,11 +90,11 @@ final class LdapMsAds extends LdapBase
             $attributes = $this->ldapParams->getFilterUserAttributes();
         }
 
-        return '(&(|'
-               . LdapUtil::getAttributesForFilter($attributes, $userLogin)
-               . ')'
-               . $this->getUserObjectFilter()
-               . ')';
+        return sprintf(
+            "(&(|%s)%s)",
+            LdapUtil::getAttributesForFilter($attributes, $userLogin),
+            $this->getUserObjectFilter()
+        );
     }
 
     /**
@@ -196,9 +196,7 @@ final class LdapMsAds extends LdapBase
             $attributes = $this->ldapParams->getFilterGroupAttributes();
         }
 
-        return '(|'
-               . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn())
-               . ')';
+        return sprintf("(|%s)", LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()));
     }
 
     protected function pickServer(): string

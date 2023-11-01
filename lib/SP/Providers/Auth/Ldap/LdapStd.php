@@ -63,7 +63,7 @@ final class LdapStd extends LdapBase
             $attributes = $this->ldapParams->getFilterGroupAttributes();
         }
 
-        return '(&(|' . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()) . ')' . $filter . ')';
+        return sprintf("(&(|%s)%s)", LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn()), $filter);
     }
 
     /**
@@ -91,7 +91,7 @@ final class LdapStd extends LdapBase
 
         $filter = $this->getUserObjectFilter();
 
-        return '(&(|' . LdapUtil::getAttributesForFilter($attributes, $userLogin) . ')' . $filter . ')';
+        return sprintf("(&(|%s)%s)", LdapUtil::getAttributesForFilter($attributes, $userLogin), $filter);
     }
 
     /**
@@ -104,17 +104,15 @@ final class LdapStd extends LdapBase
         // los grupos del usuario
         if (empty($this->ldapParams->getGroup())
             || $this->ldapParams->getGroup() === '*'
-            || in_array($this->getGroupDn(), $groupsDn, true)) {
+            || in_array($this->getGroupDn(), $groupsDn, true)
+        ) {
             $this->eventDispatcher->notifyEvent(
                 'ldap.check.group',
                 new Event(
                     $this,
                     EventMessage::factory()
                                 ->addDescription(__u('User in group verified'))
-                                ->addDetail(
-                                    __u('User'),
-                                    $userDn
-                                )
+                                ->addDetail(__u('User'), $userDn)
                                 ->addDetail(__u('Group'), $this->ldapParams->getGroup())
                 )
             );
@@ -144,20 +142,25 @@ final class LdapStd extends LdapBase
                     $this,
                     EventMessage::factory()
                                 ->addDescription(__u('User does not belong to the group'))
-                                ->addDetail(
-                                    __u('User'),
-                                    $userDn
-                                )
+                                ->addDetail(__u('User'), $userDn)
                                 ->addDetail(__u('Group'), $this->getGroupFromParams())
-                                ->addDetail(
-                                    'LDAP FILTER',
-                                    $filter
-                                )
+                                ->addDetail('LDAP FILTER', $filter)
                 )
             );
 
             return false;
         }
+
+        $this->eventDispatcher->notifyEvent(
+            'ldap.check.group',
+            new Event(
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('User in group verified'))
+                            ->addDetail(__u('User'), $userDn)
+                            ->addDetail(__u('Group'), $this->getGroupFromParams())
+            )
+        );
 
         return true;
     }
@@ -174,8 +177,14 @@ final class LdapStd extends LdapBase
             return $this->getUserObjectFilter();
         }
 
-        return '(&(cn=' . $groupName . ')' . '(|(memberUid=' . $member . ')(member=' . $member . ')(uniqueMember=' . $member . '))' .
-               $this->getGroupObjectFilter() . ')';
+        return sprintf(
+            '(&(cn=%s)(|(memberUid=%s)(member=%s)(uniqueMember=%s))%s)',
+            $groupName,
+            $member,
+            $member,
+            $member,
+            $this->getGroupObjectFilter()
+        );
     }
 
     /**

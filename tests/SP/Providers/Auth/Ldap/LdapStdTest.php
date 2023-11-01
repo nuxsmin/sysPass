@@ -22,32 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Providers\Auth\Ldap;
+namespace SP\Providers\Auth\Ldap;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapMsAds;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
-use SP\Providers\Auth\Ldap\LdapUtil;
 use SP\Tests\UnitaryTestCase;
 
 /**
- * Class LdapMsAdsTest
+ * Class LdapStdTest
  *
  * @group unitary
  */
-class LdapMsAdsTest extends UnitaryTestCase
+class LdapStdTest extends UnitaryTestCase
 {
 
     private LdapConnectionInterface|MockObject  $ldapConnection;
     private LdapActionsInterface|MockObject     $ldapActions;
     private EventDispatcherInterface|MockObject $eventDispatcher;
-    private LdapMsAds                           $ldap;
+    private LdapStd                             $ldap;
     private LdapParams                          $ldapParams;
 
     public static function groupDataProvider(): array
@@ -145,24 +140,24 @@ class LdapMsAdsTest extends UnitaryTestCase
         $userLogin = self::$faker->userName;
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
 
-        $this->ldapActions->expects(self::exactly(3))
+        $this->ldapActions->expects(self::exactly(1))
                           ->method('searchGroupsDn')
                           ->with($this->ldap->getGroupObjectFilter())
                           ->willReturnOnConsecutiveCalls([], [], [$groupDn]);
 
-        $groupsFilter = '(|(memberOf=cn=TestGroup,dc=groups,dc=syspass,dc=org)(groupMembership=cn=TestGroup,dc=groups,dc=syspass,dc=org)(memberof:1.2.840.113556.1.4.1941:=cn=TestGroup,dc=groups,dc=syspass,dc=org))';
+        $groupsFilter = '(&(cn=TestGroup)(|(memberUid=cn=TestUser,dc=syspass,dc=org)(member=cn=TestUser,dc=syspass,dc=org)(uniqueMember=cn=TestUser,dc=syspass,dc=org))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
 
         $this->ldapActions
             ->expects(self::once())
             ->method('getObjects')
-            ->with($groupsFilter, ['dn'], $userDn);
+            ->with($groupsFilter, ['dn']);
 
         $this->eventDispatcher
             ->expects(self::once())
             ->method('notifyEvent')
             ->with('ldap.check.group', self::anything());
 
-        $out = $this->ldap->isUserInGroup($userDn, $userLogin, [$groupDn]);
+        $out = $this->ldap->isUserInGroup($userDn, $userLogin, []);
 
         self::assertTrue($out);
     }
@@ -178,17 +173,17 @@ class LdapMsAdsTest extends UnitaryTestCase
         $userLogin = self::$faker->userName;
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
 
-        $this->ldapActions->expects(self::exactly(3))
+        $this->ldapActions->expects(self::exactly(1))
                           ->method('searchGroupsDn')
                           ->with($this->ldap->getGroupObjectFilter())
                           ->willReturnOnConsecutiveCalls([], [], [$groupDn]);
 
-        $groupsFilter = '(|(memberOf=cn=TestGroup,dc=groups,dc=syspass,dc=org)(groupMembership=cn=TestGroup,dc=groups,dc=syspass,dc=org)(memberof:1.2.840.113556.1.4.1941:=cn=TestGroup,dc=groups,dc=syspass,dc=org))';
+        $groupsFilter = '(&(cn=TestGroup)(|(memberUid=cn=TestUser,dc=syspass,dc=org)(member=cn=TestUser,dc=syspass,dc=org)(uniqueMember=cn=TestUser,dc=syspass,dc=org))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
 
         $this->ldapActions
             ->expects(self::once())
             ->method('getObjects')
-            ->with($groupsFilter, ['dn'], $userDn)
+            ->with($groupsFilter, ['dn'])
             ->willReturn(['count' => 0]);
 
         $this->eventDispatcher
@@ -216,11 +211,11 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $out = $this->ldap->getGroupMembershipIndirectFilter();
 
-        $expected = '(&(|'
-                    . LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_GROUP_ATTRIBUTES, $groupDn)
-                    . ')'
-                    . LdapMsAds::DEFAULT_FILTER_USER_OBJECT
-                    . ')';
+        $expected = sprintf(
+            "(&(|%s)%s)",
+            LdapUtil::getAttributesForFilter(LdapStd::DEFAULT_FILTER_GROUP_ATTRIBUTES, $groupDn),
+            '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))'
+        );
 
         self::assertEquals($expected, $out);
     }
@@ -234,8 +229,9 @@ class LdapMsAdsTest extends UnitaryTestCase
                           ->method('searchGroupsDn');
 
         $out = $this->ldap->getGroupMembershipIndirectFilter();
+        $expected = '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
 
-        self::assertEquals(LdapMsAds::DEFAULT_FILTER_USER_OBJECT, $out);
+        self::assertEquals($expected, $out);
     }
 
     /**
@@ -254,11 +250,11 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $out = $this->ldap->getGroupMembershipIndirectFilter();
 
-        $expected = '(&(|'
-                    . LdapUtil::getAttributesForFilter(['testAttribute'], $groupDn)
-                    . ')'
-                    . LdapMsAds::DEFAULT_FILTER_USER_OBJECT
-                    . ')';
+        $expected = sprintf(
+            "(&(|%s)%s)",
+            LdapUtil::getAttributesForFilter(['testAttribute'], $groupDn),
+            '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))'
+        );
 
         self::assertEquals($expected, $out);
     }
@@ -269,11 +265,11 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $out = $this->ldap->getUserDnFilter($user);
 
-        $expected = '(&(|'
-                    . LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_USER_ATTRIBUTES, $user)
-                    . ')'
-                    . LdapMsAds::DEFAULT_FILTER_USER_OBJECT
-                    . ')';
+        $expected = sprintf(
+            "(&(|%s)%s)",
+            LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_USER_ATTRIBUTES, $user),
+            '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))'
+        );
 
         self::assertEquals($expected, $out);
     }
@@ -285,11 +281,11 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $out = $this->ldap->getUserDnFilter($user);
 
-        $expected = '(&(|'
-                    . LdapUtil::getAttributesForFilter(['memberOf'], $user)
-                    . ')'
-                    . LdapMsAds::DEFAULT_FILTER_USER_OBJECT
-                    . ')';
+        $expected = sprintf(
+            "(&(|%s)%s)",
+            LdapUtil::getAttributesForFilter(['memberOf'], $user),
+            '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))'
+        );
 
         self::assertEquals($expected, $out);
     }
@@ -297,8 +293,9 @@ class LdapMsAdsTest extends UnitaryTestCase
     public function testGetGroupObjectFilter()
     {
         $out = $this->ldap->getGroupObjectFilter();
+        $expected = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))';
 
-        self::assertEquals(LdapMsAds::DEFAULT_FILTER_GROUP_OBJECT, $out);
+        self::assertEquals($expected, $out);
     }
 
     public function testGetGroupObjectFilterWithFilter()
@@ -315,47 +312,47 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($this->ldapParams->getServer(), $this->ldap->getServer());
     }
 
-    /**
-     * @throws LdapException
-     */
     public function testGetGroupMembershipDirectFilter()
     {
-        $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
         $this->ldapParams->setGroup('TestGroup');
-
-        $this->ldapActions->expects(self::once())
-                          ->method('searchGroupsDn')
-                          ->with($this->ldap->getGroupObjectFilter())
-                          ->willReturn([$groupDn]);
-
         $out = $this->ldap->getGroupMembershipDirectFilter();
 
-        $expected = '(|'
-                    . LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_GROUP_ATTRIBUTES, $groupDn)
-                    . ')';
+        $expected = sprintf(
+            '(&(cn=%s)(|(memberUid=%s)(member=%s)(uniqueMember=%s))%s)',
+            'TestGroup',
+            '*',
+            '*',
+            '*',
+            '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))'
+        );
 
         self::assertEquals($expected, $out);
     }
 
-    /**
-     * @throws LdapException
-     */
-    public function testGetGroupMembershipDirectFilterWithAttributes()
+    public function testGetGroupMembershipDirectFilterWithUser()
     {
-        $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
+        $user = 'TestUser';
         $this->ldapParams->setGroup('TestGroup');
-        $this->ldapParams->setFilterGroupAttributes(['testAttribute']);
+        $out = $this->ldap->getGroupMembershipDirectFilter($user);
 
-        $this->ldapActions->expects(self::once())
-                          ->method('searchGroupsDn')
-                          ->with($this->ldap->getGroupObjectFilter())
-                          ->willReturn([$groupDn]);
+        $expected = sprintf(
+            '(&(cn=%s)(|(memberUid=%s)(member=%s)(uniqueMember=%s))%s)',
+            'TestGroup',
+            $user,
+            $user,
+            $user,
+            '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))'
+        );
 
-        $out = $this->ldap->getGroupMembershipDirectFilter();
+        self::assertEquals($expected, $out);
+    }
 
-        $expected = '(|'
-                    . LdapUtil::getAttributesForFilter(['testAttribute'], $groupDn)
-                    . ')';
+    public function testGetGroupMembershipDirectFilterWithoutGroup()
+    {
+        $user = 'TestUser';
+        $out = $this->ldap->getGroupMembershipDirectFilter($user);
+
+        $expected = '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
 
         self::assertEquals($expected, $out);
     }
@@ -375,7 +372,7 @@ class LdapMsAdsTest extends UnitaryTestCase
             self::$faker->password
         );
 
-        $this->ldap = new LdapMsAds(
+        $this->ldap = new LdapStd(
             $this->ldapConnection,
             $this->ldapActions,
             $this->ldapParams,

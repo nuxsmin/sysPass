@@ -122,7 +122,7 @@ abstract class LdapBase implements LdapInterface
             return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
         }
 
-        return $this->ldapParams->getGroup();
+        return $this->ldapParams->getGroup() ?? '';
     }
 
     /**
