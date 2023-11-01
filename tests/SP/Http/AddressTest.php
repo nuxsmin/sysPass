@@ -41,7 +41,7 @@ class AddressTest extends UnitaryTestCase
     {
         $faker = Factory::create();
 
-        return array_map(fn() => [[$faker->ipv4], [$faker->ipv6]], range(0, 99));
+        return array_map(fn() => [$faker->ipv4], [$faker->ipv6], range(0, 99));
     }
 
     public static function checkAddressProvider(): array

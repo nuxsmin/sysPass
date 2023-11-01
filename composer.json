@@ -61,7 +61,7 @@
     "roave/security-advisories": "dev-latest",
     "symfony/debug": "^v3.4",
     "phpunit/phpunit": "^10",
-    "fzaninotto/faker": "1.9.x-dev",
+    "fakerphp/faker": "^v1.23",
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v4.1",
     "squizlabs/php_codesniffer": "^3",
