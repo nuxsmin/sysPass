@@ -24,6 +24,7 @@
 
 namespace SP\Tests\Http;
 
+use Faker\Factory;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 use SP\Tests\UnitaryTestCase;
@@ -38,7 +39,9 @@ class AddressTest extends UnitaryTestCase
 
     public static function binaryCheckProvider(): array
     {
-        return array_map(fn() => [[self::$faker->ipv4], [self::$faker->ipv6]], range(0, 99));
+        $faker = Factory::create();
+
+        return array_map(fn() => [[$faker->ipv4], [$faker->ipv6]], range(0, 99));
     }
 
     public static function checkAddressProvider(): array
@@ -107,7 +110,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @dataProvider binaryCheckProvider
      *
-     * @param  string  $address
+     * @param string $address
      *
      * @throws InvalidArgumentException
      */
@@ -142,10 +145,10 @@ class AddressTest extends UnitaryTestCase
     /**
      * @dataProvider checkAddressProvider
      *
-     * @param  string  $address
-     * @param  string  $inAddress
-     * @param  string  $inMask
-     * @param  bool  $expected
+     * @param string $address
+     * @param string $inAddress
+     * @param string $inMask
+     * @param bool $expected
      *
      * @throws InvalidArgumentException
      */
@@ -157,10 +160,10 @@ class AddressTest extends UnitaryTestCase
     /**
      * @dataProvider checkAddressCidrProvider
      *
-     * @param  string  $address
-     * @param  string  $inAddress
-     * @param  string  $inMask
-     * @param  bool  $expected
+     * @param string $address
+     * @param string $inAddress
+     * @param string $inMask
+     * @param bool $expected
      *
      * @throws InvalidArgumentException
      */
