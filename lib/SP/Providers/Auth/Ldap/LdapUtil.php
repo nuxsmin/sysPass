@@ -34,26 +34,6 @@ namespace SP\Providers\Auth\Ldap;
 final class LdapUtil
 {
     /**
-     * Escapar carácteres especiales en el RDN de LDAP.
-     *
-     * @param string $dn con el RDN del usuario
-     *
-     * @return string
-     */
-    public static function escapeLdapDN(string $dn): string
-    {
-        $chars = [
-            '/(,)(?!uid|cn|ou|dc)/i',
-            '/(?<!uid|cn|ou|dc)(=)/i',
-            '/([";<>+#\/]+)/',
-            '/\G(\s)/',
-            '/(\s)(?=\s*$)/',
-        ];
-
-        return preg_replace($chars, '\\\1', $dn);
-    }
-
-    /**
      * Obtener el nombre del grupo a partir del CN
      *
      * @param string $group
@@ -82,9 +62,7 @@ final class LdapUtil
         return implode(
             '',
             array_map(
-                static function ($attribute) use ($value) {
-                    return sprintf('(%s=%s)', $attribute, $value);
-                },
+                static fn($attribute) => sprintf('(%s=%s)', $attribute, $value),
                 $attributes
             )
         );

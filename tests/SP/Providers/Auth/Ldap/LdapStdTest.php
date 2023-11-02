@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
+namespace SP\Tests\Providers\Auth\Ldap;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\EventDispatcherInterface;
