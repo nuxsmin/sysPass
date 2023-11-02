@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,9 @@
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidImageException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
@@ -50,13 +53,20 @@ class AccountFileServiceTest extends UnitaryTestCase
     private AccountFileService                        $accountFileService;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidImageException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws InvalidImageException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testCreate(): void
     {
-        $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
+                            ->mutate(
+                                ['type' => self::$faker->mimeType()]
+                            );
+
+        $this->imageUtil
+            ->expects(self::never())
+            ->method('createThumbnail');
 
         $this->accountFileRepository
             ->expects(self::once())
@@ -67,9 +77,9 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidImageException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws InvalidImageException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testCreateWithThumbnail(): void
     {
@@ -79,9 +89,12 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('create')
             ->with($fileData);
+
         $this->imageUtil
             ->expects(self::once())
-            ->method('createThumbnail');
+            ->method('createThumbnail')
+            ->with($fileData->getContent())
+            ->willReturn(self::$faker->paragraph());
 
         $this->accountFileService->create($fileData);
     }
@@ -104,9 +117,9 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatch(): void
     {
@@ -124,9 +137,9 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatchWithMissingUpdates(): void
     {
@@ -145,9 +158,9 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function testDelete(): void
     {
@@ -163,9 +176,9 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function testDeleteWithMissingFile(): void
     {
@@ -203,8 +216,8 @@ class AccountFileServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByAccountId(): void
     {

@@ -272,7 +272,7 @@ class LdapStdTest extends UnitaryTestCase
 
         $expected = sprintf(
             "(&(|%s)%s)",
-            LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_USER_ATTRIBUTES, $user),
+            LdapUtil::getAttributesForFilter(LdapStd::DEFAULT_FILTER_USER_ATTRIBUTES, $user),
             '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))'
         );
 

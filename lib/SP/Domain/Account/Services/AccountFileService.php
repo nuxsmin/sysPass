@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidImageException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
@@ -39,6 +40,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\FileUtil;
 use SP\Util\ImageUtilInterface;
+
 use function SP\__u;
 
 /**
@@ -50,9 +52,9 @@ final class AccountFileService extends Service implements AccountFileServiceInte
 {
 
     public function __construct(
-        Application $application,
+        Application                            $application,
         private AccountFileRepositoryInterface $accountFileRepository,
-        private ImageUtilInterface $imageUtil
+        private ImageUtilInterface             $imageUtil
     ) {
         parent::__construct($application);
     }
@@ -60,12 +62,12 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Creates an item
      *
-     * @param  \SP\DataModel\FileData  $itemData
+     * @param FileData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidImageException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidImageException
+     * @throws QueryException
      */
     public function create(FileData $itemData): int
     {
@@ -81,10 +83,10 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Returns the file with its content
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return \SP\DataModel\FileExtData|null
-     * @throws \SP\Core\Exceptions\SPException
+     * @return FileExtData|null
+     * @throws SPException
      */
     public function getById(int $id): ?FileExtData
     {
@@ -94,12 +96,12 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Deletes all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int
     {
@@ -118,12 +120,12 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Deletes an item
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return \SP\Domain\Account\Ports\AccountFileServiceInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return AccountFileServiceInterface
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): AccountFileServiceInterface
     {
@@ -137,9 +139,9 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Searches for items by a given filter
      *
-     * @param  \SP\DataModel\ItemSearchData  $searchData
+     * @param ItemSearchData $searchData
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function search(ItemSearchData $searchData): QueryResult
     {
@@ -149,9 +151,11 @@ final class AccountFileService extends Service implements AccountFileServiceInte
     /**
      * Returns the item for given id
      *
+     * @param int $id
      * @return FileData[]
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getByAccountId(int $id): array
     {
