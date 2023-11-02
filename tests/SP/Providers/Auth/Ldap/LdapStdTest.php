@@ -29,6 +29,11 @@ use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Providers\Auth\Ldap\LdapException;
+use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapStd;
+use SP\Providers\Auth\Ldap\LdapTypeEnum;
+use SP\Providers\Auth\Ldap\LdapUtil;
 use SP\Tests\UnitaryTestCase;
 
 /**
