@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -175,7 +175,7 @@ final class IndexController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getItemPresetList());
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'show.itemlist.items',
             new Event($this)
         );

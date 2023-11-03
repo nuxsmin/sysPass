@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,13 +58,13 @@ final class CreateController extends PublicLinkViewBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
+            $this->eventDispatcher->notify('show.publicLink.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

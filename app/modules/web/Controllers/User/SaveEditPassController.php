@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -64,7 +64,7 @@ final class SaveEditPassController extends UserSaveBase
 
             $this->userService->updatePass($id, $itemData->getPass());
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'edit.user.pass',
                 new Event(
                     $this,
@@ -80,7 +80,7 @@ final class SaveEditPassController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

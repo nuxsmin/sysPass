@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -140,7 +140,7 @@ final class ViewLinkController extends AccountControllerBase
                 $deepLink = new Uri($baseUrl);
                 $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW).'/'.$accountData->getId());
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'show.account.link',
                     new Event(
                         $this, EventMessage::factory()
@@ -168,7 +168,7 @@ final class ViewLinkController extends AccountControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account-link');
         }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -57,7 +57,7 @@ final class SaveCreateController extends TagSaveBase
 
             $this->tagService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.tag', new Event($this));
+            $this->eventDispatcher->notify('create.tag', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tag added'));
         } catch (ValidationException $e) {
@@ -65,7 +65,7 @@ final class SaveCreateController extends TagSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

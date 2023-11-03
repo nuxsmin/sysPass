@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -103,13 +103,13 @@ final class SaveController extends SimpleControllerBase
                 $configData,
                 $this->config,
                 function () use ($eventMessage) {
-                    $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
+                    $this->eventDispatcher->notify('save.config.ldap', new Event($this, $eventMessage));
                 }
             );
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -128,7 +128,7 @@ final class SaveController extends SimpleControllerBase
 
             $this->extensionChecker->checkLdapAvailable(true);
         } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

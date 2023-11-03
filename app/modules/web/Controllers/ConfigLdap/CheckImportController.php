@@ -103,7 +103,7 @@ final class CheckImportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -122,7 +122,7 @@ final class CheckImportController extends SimpleControllerBase
 
             $this->extensionChecker->checkLdapAvailable(true);
         } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

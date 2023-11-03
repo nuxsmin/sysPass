@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -123,7 +123,7 @@ abstract class CsvImportBase
 
                 $this->addAccount($accountRequest);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'run.import.csv.process.account',
                     new Event(
                         $this,
@@ -135,7 +135,7 @@ abstract class CsvImportBase
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'exception',
                     new Event(
                         $e,

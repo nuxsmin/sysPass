@@ -56,7 +56,7 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
      */
     public function upgrade_300_18010101(): void
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.publicLink.start',
             new Event(
                 $this,
@@ -95,7 +95,7 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
 
                         $this->publicLinkRepository->update($itemData);
 
-                        $this->eventDispatcher->notifyEvent(
+                        $this->eventDispatcher->notify(
                             'upgrade.publicLink.process',
                             new Event(
                                 $this,
@@ -111,10 +111,10 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.publicLink.end',
             new Event(
                 $this,

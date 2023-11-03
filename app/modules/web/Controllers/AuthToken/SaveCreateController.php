@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -62,7 +62,7 @@ final class SaveCreateController extends AuthTokenSaveBase
                 $this->customFieldService
             );
 
-            $this->eventDispatcher->notifyEvent('create.authToken', new Event($this));
+            $this->eventDispatcher->notify('create.authToken', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization added'));
         } catch (ValidationException $e) {
@@ -70,7 +70,7 @@ final class SaveCreateController extends AuthTokenSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

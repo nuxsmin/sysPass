@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -65,7 +65,7 @@ final class UpgradeAuthTokenService extends Service
      */
     public function upgrade_300_18072901(): void
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.authToken.start',
             new Event(
                 $this,
@@ -85,7 +85,7 @@ final class UpgradeAuthTokenService extends Service
 
                         $this->authTokenService->updateRaw($itemData);
 
-                        $this->eventDispatcher->notifyEvent(
+                        $this->eventDispatcher->notify(
                             'upgrade.authToken.process',
                             new Event(
                                 $this,
@@ -101,12 +101,12 @@ final class UpgradeAuthTokenService extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.authToken.end',
             new Event(
                 $this,

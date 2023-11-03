@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -117,7 +117,7 @@ final class TemporaryMasterPassService extends Service
             // Guardar la clave temporal hasta que finalice la sesión
             $this->context->setTemporaryMasterPass($randomKey);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'create.tempMasterPassword',
                 new Event(
                     $this, EventMessage::factory()
@@ -148,7 +148,7 @@ final class TemporaryMasterPassService extends Service
 
             // Comprobar si el tiempo de validez o los intentos se han superado
             if ($passMaxTime === 0) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'check.tempMasterPassword',
                     new Event(
                         $this,
@@ -208,7 +208,7 @@ final class TemporaryMasterPassService extends Service
 
         $this->configService->saveBatch($configRequest);
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'expire.tempMasterPassword',
             new Event(
                 $this, EventMessage::factory()

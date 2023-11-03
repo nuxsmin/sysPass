@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -167,7 +167,7 @@ class PluginManager
             // Do not load plugin's data if not compatible.
             // Just return the plugin instance before disabling it
             if ($this->checkCompatibility($plugin) === false) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'plugin.load.error',
                     new Event(
                         $this, EventMessage::factory()
@@ -184,7 +184,7 @@ class PluginManager
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event(
                     $e, EventMessage::factory()
@@ -217,7 +217,7 @@ class PluginManager
                 false
             );
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'edit.plugin.disable',
                 new Event(
                     $this,
@@ -250,7 +250,7 @@ class PluginManager
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event(
                     $e, EventMessage::factory()
@@ -288,7 +288,7 @@ class PluginManager
                 if ($plugin->getAvailable() === 0) {
                     $this->pluginService->toggleAvailable($plugin->getId(), true);
 
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'edit.plugin.available',
                         new Event(
                             $this, EventMessage::factory()
@@ -302,7 +302,7 @@ class PluginManager
                 if ($plugin->getAvailable() === 1) {
                     $this->pluginService->toggleAvailable($plugin->getId(), false);
 
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'edit.plugin.unavailable',
                         new Event(
                             $this, EventMessage::factory()
@@ -338,7 +338,7 @@ class PluginManager
         ) {
             logger(sprintf('Plugin loaded: %s', $pluginName));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'plugin.load',
                 new Event(
                     $this, EventMessage::factory()
@@ -366,7 +366,7 @@ class PluginManager
 
         $this->pluginService->create($pluginData);
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'create.plugin',
             new Event(
                 $this, EventMessage::factory()
@@ -392,7 +392,7 @@ class PluginManager
             );
 
             if (null === $plugin) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'upgrade.plugin.process',
                     new Event(
                         $this, EventMessage::factory()
@@ -410,7 +410,7 @@ class PluginManager
                 if ($pluginModel->getVersionLevel() === null
                     || VersionUtil::checkVersion($pluginModel->getVersionLevel(), $version)
                 ) {
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'upgrade.plugin.process',
                         new Event(
                             $this, EventMessage::factory()
@@ -430,7 +430,7 @@ class PluginManager
 
                     $this->pluginService->update($pluginModel);
 
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'upgrade.plugin.process',
                         new Event(
                             $this, EventMessage::factory()
@@ -442,7 +442,7 @@ class PluginManager
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'exception',
                     new Event(
                         $e, EventMessage::factory()
@@ -466,7 +466,7 @@ class PluginManager
             if (!in_array($plugin, $this->loadedPlugins, true)) {
                 $this->pluginService->toggleAvailableByName($plugin, false);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'edit.plugin.unavailable',
                     new Event(
                         $this, EventMessage::factory()

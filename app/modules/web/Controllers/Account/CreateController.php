@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,7 +53,7 @@ final class CreateController extends AccountViewBase
             );
             $this->view->assign('formRoute', 'account/saveCreate');
 
-            $this->eventDispatcher->notifyEvent('show.account.create', new Event($this));
+            $this->eventDispatcher->notify('show.account.create', new Event($this));
 
             if ($this->isAjax === false) {
                 $this->upgradeView();

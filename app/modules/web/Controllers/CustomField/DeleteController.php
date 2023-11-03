@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class DeleteController extends CustomFieldSaveBase
             if ($id === null) {
                 $this->customFieldDefService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'delete.customField.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Fields deleted')))
                 );
@@ -71,13 +71,13 @@ final class DeleteController extends CustomFieldSaveBase
 
             $this->customFieldDefService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
+            $this->eventDispatcher->notify('delete.customField', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field deleted'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

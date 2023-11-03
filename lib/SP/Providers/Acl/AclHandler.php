@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -96,32 +96,14 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * Receive update from subject
-     *
-     * @link  https://php.net/manual/en/splobserver.update.php
-     *
-     * @param  SplSubject  $subject  <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @since 5.1.0
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function update(SplSubject $subject): void
-    {
-        $this->updateEvent('update', new Event($subject));
-    }
-
-    /**
      * Evento de actualización
      *
      * @param  string  $eventType  Nombre del evento
      * @param  Event  $event  Objeto del evento
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function updateEvent(string $eventType, Event $event): void
+    public function update(string $eventType, Event $event): void
     {
         switch ($eventType) {
             case 'edit.userProfile':
@@ -184,7 +166,7 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function processUser(Event $event): void
     {

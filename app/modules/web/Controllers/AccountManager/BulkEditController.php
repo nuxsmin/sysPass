@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -109,7 +109,7 @@ final class BulkEditController extends ControllerBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'show.account.bulkEdit',
                 new Event($this)
             );

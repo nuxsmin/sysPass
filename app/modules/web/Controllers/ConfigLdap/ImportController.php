@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -85,7 +85,7 @@ final class ImportController extends SimpleControllerBase
 
             $ldapParams = $this->getLdapParamsFromRequest($this->request);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'import.ldap.start',
                 new Event($this, EventMessage::factory()->addDescription(__u('LDAP Import')))
             );
@@ -96,7 +96,7 @@ final class ImportController extends SimpleControllerBase
                 $this->ldapImportService->importGroups($ldapParams, $ldapImportParams);
             }
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'import.ldap.end',
                 new Event($this, EventMessage::factory()->addDescription(__u('Import finished')))
             );
@@ -121,7 +121,7 @@ final class ImportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -169,7 +169,7 @@ final class ImportController extends SimpleControllerBase
 
             $this->extensionChecker->checkLdapAvailable(true);
         } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

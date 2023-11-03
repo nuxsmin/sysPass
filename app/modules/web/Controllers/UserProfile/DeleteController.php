@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class DeleteController extends UserProfileSaveBase
             if ($id === null) {
                 $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'delete.userProfile.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Profiles deleted')))
                 );
@@ -73,7 +73,7 @@ final class DeleteController extends UserProfileSaveBase
 
             $this->userProfileService->delete($id);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'delete.userProfile',
                 new Event(
                     $this,
@@ -90,7 +90,7 @@ final class DeleteController extends UserProfileSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

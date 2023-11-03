@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -71,7 +71,7 @@ final class ClearController extends ControllerBase
         try {
             $this->eventlogService->clear();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'clear.eventlog',
                 new Event($this, EventMessage::factory()->addDescription(__u('Event log cleared')))
             );

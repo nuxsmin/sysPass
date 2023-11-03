@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -105,7 +105,7 @@ final class MailService extends Service implements MailServiceInterface
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(
                 __u('Error while sending the email'),
@@ -173,7 +173,7 @@ final class MailService extends Service implements MailServiceInterface
         try {
             $this->mailer->send();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'send.mail',
                 new Event(
                     $this,
@@ -194,7 +194,7 @@ final class MailService extends Service implements MailServiceInterface
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(__u('Error while sending the email'));
         }

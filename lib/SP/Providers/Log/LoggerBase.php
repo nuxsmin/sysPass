@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -87,7 +87,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function updateEvent(string $eventType, Event $event): void
+    public function update(string $eventType, Event $event): void
     {
         $this->language->setAppLocales();
 

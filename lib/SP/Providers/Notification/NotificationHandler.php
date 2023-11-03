@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -95,7 +95,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      */
     public function update(SplSubject $subject): void
     {
-        $this->updateEvent('update', new Event($subject));
+        $this->update('update', new Event($subject));
     }
 
     /**
@@ -104,7 +104,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      * @param  string  $eventType  Nombre del evento
      * @param  Event  $event  Objeto del evento
      */
-    public function updateEvent(string $eventType, Event $event): void
+    public function update(string $eventType, Event $event): void
     {
         switch ($eventType) {
             case 'request.account':

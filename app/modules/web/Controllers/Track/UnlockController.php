@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,13 +58,13 @@ final class UnlockController extends TrackBase
 
             $this->trackService->unlock($id);
 
-            $this->eventDispatcher->notifyEvent('unlock.track', new Event($this));
+            $this->eventDispatcher->notify('unlock.track', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track unlocked'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

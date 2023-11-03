@@ -254,7 +254,7 @@ final class LoginService extends Service implements LoginServiceInterface
         if ($userLoginResponse !== null) {
             // Comprobar si el usuario está deshabilitado
             if ($userLoginResponse->getIsDisabled()) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'login.checkUser.disabled',
                     new Event(
                         $this,
@@ -276,7 +276,7 @@ final class LoginService extends Service implements LoginServiceInterface
 
             // Check whether a user's password change has been requested
             if ($userLoginResponse->getIsChangePass()) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'login.checkUser.changePass',
                     new Event($this, EventMessage::factory()->addDetail(__u('User'), $userLoginResponse->getLogin()))
                 );
@@ -309,7 +309,7 @@ final class LoginService extends Service implements LoginServiceInterface
         try {
             if ($masterPass) {
                 if ($this->temporaryMasterPassService->checkTempMasterPass($masterPass)) {
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'login.masterPass.temporary',
                         new Event($this, EventMessage::factory()->addDescription(__u('Using temporary password')))
                     );
@@ -322,7 +322,7 @@ final class LoginService extends Service implements LoginServiceInterface
                         $this->userLoginData
                     )->getStatus() !== UserPassService::MPASS_OK
                 ) {
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'login.masterPass',
                         new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
                     );
@@ -337,7 +337,7 @@ final class LoginService extends Service implements LoginServiceInterface
                     );
                 }
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'login.masterPass',
                     new Event($this, EventMessage::factory()->addDescription(__u('Master password updated')))
                 );
@@ -347,7 +347,7 @@ final class LoginService extends Service implements LoginServiceInterface
                         $this->userLoginData
                     )->getStatus() !== UserPassService::MPASS_OK
                 ) {
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'login.masterPass',
                         new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
                     );
@@ -362,7 +362,7 @@ final class LoginService extends Service implements LoginServiceInterface
                     );
                 }
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'login.masterPass',
                     new Event($this, EventMessage::factory()->addDescription(__u('Master password updated')))
                 );
@@ -389,7 +389,7 @@ final class LoginService extends Service implements LoginServiceInterface
                 }
             }
         } catch (CryptoException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new AuthException(
                 __u('Internal error'),
@@ -430,7 +430,7 @@ final class LoginService extends Service implements LoginServiceInterface
             $userLoginResponse->setPreferences(new UserPreferencesData());
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'login.session.load',
             new Event($this, EventMessage::factory()->addDetail(__u('User'), $userLoginResponse->getLogin()))
         );
@@ -447,7 +447,7 @@ final class LoginService extends Service implements LoginServiceInterface
 
         $this->context->setAuthCompleted(true);
 
-        $this->eventDispatcher->notifyEvent('login.preferences.load', new Event($this));
+        $this->eventDispatcher->notify('login.preferences.load', new Event($this));
     }
 
     /**
@@ -488,7 +488,7 @@ final class LoginService extends Service implements LoginServiceInterface
 
                 $this->addTracking();
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
                     __u('Wrong login'),
@@ -501,7 +501,7 @@ final class LoginService extends Service implements LoginServiceInterface
             if ($authData->getStatusCode() === LdapAuthInterface::ACCOUNT_EXPIRED) {
                 $eventMessage->addDescription(__u('Account expired'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
                     __u('Account expired'),
@@ -514,7 +514,7 @@ final class LoginService extends Service implements LoginServiceInterface
             if ($authData->getStatusCode() === LdapAuthInterface::ACCOUNT_NO_GROUPS) {
                 $eventMessage->addDescription(__u('User has no associated groups'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
                     __u('User has no associated groups'),
@@ -529,14 +529,14 @@ final class LoginService extends Service implements LoginServiceInterface
             ) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
 
                 return false;
             }
 
             $eventMessage->addDescription(__u('Internal error'));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'login.auth.ldap',
                 new Event($this, $eventMessage)
             );
@@ -549,7 +549,7 @@ final class LoginService extends Service implements LoginServiceInterface
             );
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'login.auth.ldap',
             new Event(
                 $this,
@@ -615,7 +615,7 @@ final class LoginService extends Service implements LoginServiceInterface
             if ($authData->isAuthoritative() === false) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.database', new Event($this, $eventMessage));
 
                 return false;
             }
@@ -624,7 +624,7 @@ final class LoginService extends Service implements LoginServiceInterface
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
+            $this->eventDispatcher->notify('login.auth.database', new Event($this, $eventMessage));
 
             throw new AuthException(
                 __u('Wrong login'),
@@ -634,7 +634,7 @@ final class LoginService extends Service implements LoginServiceInterface
             );
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'login.auth.database',
             new Event($this, $eventMessage)
         );
@@ -667,7 +667,7 @@ final class LoginService extends Service implements LoginServiceInterface
             if ($authData->isAuthoritative() === false) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
 
                 return false;
             }
@@ -676,7 +676,7 @@ final class LoginService extends Service implements LoginServiceInterface
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
+            $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
 
             throw new AuthException(
                 __u('Wrong login'),
@@ -698,7 +698,7 @@ final class LoginService extends Service implements LoginServiceInterface
                     $this->userService->createOnLogin($userLoginRequest);
                 }
 
-                $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
             } catch (Exception $e) {
                 throw new AuthException(
                     __u('Internal error'),

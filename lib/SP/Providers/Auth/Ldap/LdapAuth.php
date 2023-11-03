@@ -109,7 +109,7 @@ final class LdapAuth implements LdapAuthInterface
         $attributes = $this->ldap->actions()->getAttributes($filter);
 
         if ($attributes->count() === 0) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'ldap.getAttributes',
                 new Event(
                     $this,

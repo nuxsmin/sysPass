@@ -102,7 +102,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
                               || $this->userData->getLastUpdate() > $accountAcl->getTime();
 
                 if (!$isModified) {
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'get.acl',
                         new Event($this, EventMessage::factory()->addDescription('Account ACL HIT'))
                     );
@@ -114,7 +114,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
             }
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'get.acl',
             new Event($this, EventMessage::factory()->addDescription('Account ACL MISS'))
         );

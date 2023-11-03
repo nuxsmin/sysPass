@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -73,7 +73,7 @@ final class ExportController extends ControllerBase
             $password = $this->apiService->getParamString('password');
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.start',
                 new Event(
                     $this,
@@ -86,7 +86,7 @@ final class ExportController extends ControllerBase
             $this->xmlExportService->doExport($path, $password);
 
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.end',
                 new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
             );

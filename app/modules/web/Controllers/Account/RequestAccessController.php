@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -72,7 +72,7 @@ final class RequestAccessController extends ControllerBase
             $this->view->addTemplate('account-request');
             $this->view->assign('formRoute', 'account/saveRequest');
 
-            $this->eventDispatcher->notifyEvent('show.account.request', new Event($this));
+            $this->eventDispatcher->notify('show.account.request', new Event($this));
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -82,7 +82,7 @@ final class RequestAccessController extends ControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             if ($this->isAjax === false && !$this->view->isUpgraded()) {
                 $this->upgradeView();

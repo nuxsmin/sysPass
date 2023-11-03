@@ -103,7 +103,7 @@ class LdapActionsTest extends UnitaryTestCase
                    ->willThrowException($exception);
 
         $this->eventDispatcher->expects(self::once())
-                              ->method('notifyEvent')
+                              ->method('notify')
                               ->with('exception', new Event($exception));
 
         $this->expectException(LdapException::class);
@@ -247,7 +247,7 @@ class LdapActionsTest extends UnitaryTestCase
                    ->willReturn($collection);
 
         $this->eventDispatcher->expects(self::once())
-                              ->method('notifyEvent')
+                              ->method('notify')
                               ->with('ldap.search.group');
 
         $collection->expects(self::once())->method('count')->willReturn(0);

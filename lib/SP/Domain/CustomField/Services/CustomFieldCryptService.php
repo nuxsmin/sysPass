@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -81,7 +81,7 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
                 }
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(
                 __u('Error while updating the custom fields data'),
@@ -102,7 +102,7 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
         $customFields = $this->customFieldService->getAllEncrypted();
 
         if (count($customFields) === 0) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'update.masterPassword.customFields',
                 new Event(
                     $this, EventMessage::factory()
@@ -114,7 +114,7 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
             return;
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'update.masterPassword.customFields.start',
             new Event(
                 $this, EventMessage::factory()
@@ -151,13 +151,13 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notify('exception', new Event($e));
 
                 $errors[] = $customField->getId();
             }
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'update.masterPassword.customFields.end',
             new Event(
                 $this, EventMessage::factory()

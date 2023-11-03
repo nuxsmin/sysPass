@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -93,7 +93,7 @@ final class FileBackupService implements FileBackupServiceInterface
         try {
             $this->deleteOldBackups();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.backup.start',
                 new Event(
                     $this,
@@ -116,7 +116,7 @@ final class FileBackupService implements FileBackupServiceInterface
         } catch (ServiceException $e) {
             throw $e;
         } catch (Exception $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(
                 __u('Error while doing the backup'),
@@ -159,7 +159,7 @@ final class FileBackupService implements FileBackupServiceInterface
      */
     private function backupTables(FileHandlerInterface $fileHandler): void
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'run.backup.process',
             new Event(
                 $this,
@@ -287,7 +287,7 @@ final class FileBackupService implements FileBackupServiceInterface
      */
     private function backupApp(string $directory): bool
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'run.backup.process',
             new Event(
                 $this, EventMessage::factory()
@@ -314,7 +314,7 @@ final class FileBackupService implements FileBackupServiceInterface
             );
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'run.backup.process',
             new Event(
                 $this, EventMessage::factory()

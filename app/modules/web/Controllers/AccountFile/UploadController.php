@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -130,7 +130,7 @@ final class UploadController extends ControllerBase
 
             $account = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'upload.accountFile',
                 new Event(
                     $this,
@@ -148,13 +148,13 @@ final class UploadController extends ControllerBase
         } catch (SPException $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

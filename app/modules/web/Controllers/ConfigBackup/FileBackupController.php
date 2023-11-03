@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -72,7 +72,7 @@ final class FileBackupController extends SimpleControllerBase
 
             $this->fileBackupService->doBackup(BACKUP_PATH);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.backup.end',
                 new Event(
                     $this,
@@ -86,7 +86,7 @@ final class FileBackupController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -104,7 +104,7 @@ final class FileBackupController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

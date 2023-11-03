@@ -98,7 +98,7 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(self::once())
-            ->method('notifyEvent')
+            ->method('notify')
             ->with('ldap.check.group', self::anything());
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, $groupsDn);
@@ -126,7 +126,7 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(self::once())
-            ->method('notifyEvent')
+            ->method('notify')
             ->with('ldap.check.group', self::anything());
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, $groupsDn);
@@ -159,7 +159,7 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(self::once())
-            ->method('notifyEvent')
+            ->method('notify')
             ->with('ldap.check.group', self::anything());
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, [$groupDn]);
@@ -193,7 +193,7 @@ class LdapMsAdsTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(self::once())
-            ->method('notifyEvent')
+            ->method('notify')
             ->with('ldap.check.group', self::anything());
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, [$groupDn]);

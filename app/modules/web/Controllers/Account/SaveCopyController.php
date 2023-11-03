@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -50,7 +50,7 @@ final class SaveCopyController extends AccountSaveBase
 
             $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'create.account',
                 new Event(
                     $this, EventMessage::factory()
@@ -80,7 +80,7 @@ final class SaveCopyController extends AccountSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

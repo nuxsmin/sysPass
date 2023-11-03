@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -48,7 +48,7 @@ final class ViewController extends UserGroupBase
             $id = $this->apiService->getParamInt('id', true);
             $userGroupData = $this->userGroupService->getById($id);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'show.userGroup',
                 new Event(
                     $this,

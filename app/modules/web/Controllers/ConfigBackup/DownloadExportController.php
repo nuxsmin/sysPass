@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class DownloadExportController extends SimpleControllerBase
             $file = new FileHandler($filePath);
             $file->checkFileExists();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'download.exportFile',
                 new Event(
                     $this,
@@ -86,7 +86,7 @@ final class DownloadExportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event($e)
             );
@@ -107,7 +107,7 @@ final class DownloadExportController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

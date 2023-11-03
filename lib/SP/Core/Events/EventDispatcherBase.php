@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,9 @@
 
 namespace SP\Core\Events;
 
-use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Exceptions\SPException;
-use SplObserver;
+use SplObjectStorage;
+
+use function SP\logger;
 
 /**
  * Class EventDispatcherBase
@@ -35,91 +35,66 @@ use SplObserver;
  */
 abstract class EventDispatcherBase implements EventDispatcherInterface
 {
-    /**
-     * @var EventReceiver[]
-     */
-    protected array $observers = [];
+    protected SplObjectStorage $receivers;
 
-    /**
-     * Attach an SplObserver
-     *
-     * @link  http://php.net/manual/en/splsubject.attach.php
-     *
-     * @param SplObserver $observer <p>
-     *                              The <b>SplObserver</b> to attach.
-     *                              </p>
-     *
-     * @since 5.1.0
-     */
-    public function attach(SplObserver $observer): void
+    final public function __construct()
     {
-        $observerClass = get_class($observer);
-
-        if (array_key_exists($observerClass, $this->observers)) {
-            return;
-//            throw new InvalidClassException(sprintf(__('Observador ya inicializado "%s"'), $observerClass));
-        }
-
-        logger('Attach: ' . $observerClass);
-
-        $this->observers[$observerClass] = $observer;
+        $this->receivers = new SplObjectStorage();
     }
 
     /**
-     * Detach an observer
+     * Check whether an EventReceiver is attached
      *
-     * @link  http://php.net/manual/en/splsubject.detach.php
-     *
-     * @param SplObserver $observer <p>
-     *                              The <b>SplObserver</b> to detach.
-     *                              </p>
-     *
-     * @throws InvalidClassException
-     * @since 5.1.0
+     * @param EventReceiver $receiver
+     * @return bool
      */
-    public function detach(SplObserver $observer): void
+    final public function has(EventReceiver $receiver): bool
     {
-        $observerClass = get_class($observer);
-
-        if (!array_key_exists($observerClass, $this->observers)) {
-            throw new InvalidClassException(__u('Observer not initialized'), SPException::ERROR);
-        }
-
-        unset($this->observers[$observerClass]);
+        return $this->receivers->contains($receiver);
     }
 
     /**
-     * Notify an observer
+     * Attach an EventReceiver
      *
-     * @link  http://php.net/manual/en/splsubject.notify.php
+     * @param EventReceiver $receiver
      * @return void
-     * @since 5.1.0
      */
-    public function notify(): void
+    final public function attach(EventReceiver $receiver): void
     {
-        foreach ($this->observers as $observer) {
-            $observer->update($this);
-        }
+        logger('Attach: ' . $receiver::class);
+
+        $this->receivers->attach($receiver);
     }
 
     /**
-     * Notificar un evento
+     * Detach an EventReceiver
+     *
+     * @param EventReceiver $receiver
+     * @return void
      */
-    public function notifyEvent(string $eventName, Event $event): void
+    final public function detach(EventReceiver $receiver): void
     {
-        foreach ($this->observers as $observer) {
-            if (method_exists($observer, 'getEventsString')) {
-                $events = $observer->getEventsString();
+        logger('Detach: ' . $receiver::class);
 
-                if (!empty($events)
-                    && ($events === '*'
-                        || preg_match('/' . $events . '/i', $eventName))
-                ) {
-                    // FIXME: update receivers Event
-                    $observer->updateEvent($eventName, $event);
-                }
-            } else {
-                $observer->updateEvent($eventName, $event);
+        $this->receivers->detach($receiver);
+    }
+
+    /**
+     * Notify to receivers
+     *
+     * @param string $eventName event's name
+     * @param Event $event event's object
+     *
+     * TODO: Include event's name in Event object and simplify the method's signature
+     */
+    final public function notify(string $eventName, Event $event): void
+    {
+        /** @var EventReceiver $receiver */
+        foreach ($this->receivers as $receiver) {
+            $events = $receiver->getEventsString();
+
+            if ($events === '*' || preg_match(sprintf('/%s/i', $events), $eventName)) {
+                $receiver->update($eventName, $event);
             }
         }
     }

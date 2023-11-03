@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -71,7 +71,7 @@ final class SyslogHandler extends LoggerBase
      */
     public function update(SplSubject $subject): void
     {
-        $this->updateEvent('update', new Event($subject));
+        $this->update('update', new Event($subject));
     }
 
     /**

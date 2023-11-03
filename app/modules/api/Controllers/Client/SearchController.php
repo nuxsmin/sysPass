@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,7 +46,7 @@ final class SearchController extends ClientBase
 
             $itemSearchData = $this->buildSearchData();
 
-            $this->eventDispatcher->notifyEvent('search.client', new Event($this));
+            $this->eventDispatcher->notify('search.client', new Event($this));
 
             $this->returnResponse(
                 ApiResponse::makeSuccess(

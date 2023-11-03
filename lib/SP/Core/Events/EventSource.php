@@ -25,29 +25,16 @@
 namespace SP\Core\Events;
 
 /**
- * Interface EventReceiver
+ * Interface EventSource
  */
-interface EventReceiver
+interface EventSource
 {
     /**
-     * Update from sources
+     * Notify an event
      *
-     * @param string $eventType event's type
-     * @param Event $event event's source object
+     * @param string $eventType
+     * @param Event $event
+     * @return void
      */
-    public function update(string $eventType, Event $event): void;
-
-    /**
-     * Return the events handled by this receiver
-     *
-     * @return array
-     */
-    public function getEvents(): array;
-
-    /**
-     * Return the events handled by this receiver in string format
-     *
-     * @return string|null
-     */
-    public function getEventsString(): ?string;
+    public function notify(string $eventType, Event $event): void;
 }

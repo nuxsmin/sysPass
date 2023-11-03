@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -51,7 +51,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
      */
     public function doImport(): ImportInterface
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'run.import.keepass',
             new Event($this, EventMessage::factory()->addDescription(__u('KeePass XML Import')))
         );
@@ -70,7 +70,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     {
         $clientId = $this->addClient(new ClientData(null, 'KeePass'));
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'run.import.keepass.process.client',
             new Event($this, EventMessage::factory()->addDetail(__u('Client added'), 'KeePass'))
         );
@@ -84,7 +84,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'run.import.keepass.process.category',
                     new Event($this, EventMessage::factory()->addDetail(__u('Category imported'), $group))
                 );
@@ -96,7 +96,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
                         $this->addAccount($account);
 
-                        $this->eventDispatcher->notifyEvent(
+                        $this->eventDispatcher->notify(
                             'run.import.keepass.process.account',
                             new Event(
                                 $this,
@@ -110,7 +110,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'exception',
                     new Event($e)
                 );

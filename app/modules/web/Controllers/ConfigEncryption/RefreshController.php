@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -73,7 +73,7 @@ final class RefreshController extends SimpleControllerBase
 
             $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'refresh.masterPassword.hash',
                 new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated')))
             );
@@ -82,7 +82,7 @@ final class RefreshController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
@@ -102,7 +102,7 @@ final class RefreshController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

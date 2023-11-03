@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -68,7 +68,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $hash = $this->userPassRecoverService->requestForUserId($userData->getId());
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'request.user.passReset',
                 new Event(
                     $this,
@@ -94,7 +94,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $this->addTracking();
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

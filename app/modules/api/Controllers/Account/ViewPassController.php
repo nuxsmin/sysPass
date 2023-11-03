@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -57,7 +57,7 @@ final class ViewPassController extends AccountBase
 
             $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'show.account.pass',
                 new Event(
                     $this,

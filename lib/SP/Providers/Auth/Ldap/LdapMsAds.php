@@ -121,7 +121,7 @@ final class LdapMsAds extends LdapBase
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'ldap.check.group',
                 new Event(
                     $this,
@@ -155,7 +155,7 @@ final class LdapMsAds extends LdapBase
         if (isset($searchResults['count'])
             && (int)$searchResults['count'] === 0
         ) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'ldap.check.group',
                 new Event(
                     $this,
@@ -170,7 +170,7 @@ final class LdapMsAds extends LdapBase
             return false;
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'ldap.check.group',
             new Event(
                 $this,

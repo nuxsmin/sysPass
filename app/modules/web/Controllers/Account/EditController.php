@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -63,7 +63,7 @@ final class EditController extends AccountViewBase
 
             $this->accountService->incrementViewCounter($id);
 
-            $this->eventDispatcher->notifyEvent('show.account.edit', new Event($this));
+            $this->eventDispatcher->notify('show.account.edit', new Event($this));
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -73,7 +73,7 @@ final class EditController extends AccountViewBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             if ($this->isAjax === false && !$this->view->isUpgraded()) {
                 $this->upgradeView();

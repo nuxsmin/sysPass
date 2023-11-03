@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -84,7 +84,7 @@ final class LoginController extends ControllerBase
                 return $uri->getUri();
             };
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'login.finish',
                 new Event($this, EventMessage::factory()->addExtra('redirect', $redirector))
             );
@@ -95,7 +95,7 @@ final class LoginController extends ControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponse($e->getCode(), $e->getMessage());
         }
@@ -109,7 +109,7 @@ final class LoginController extends ControllerBase
         $forward = $this->request->getForwardedFor();
 
         if ($forward !== null) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'login.info',
                 new Event(
                     $this,

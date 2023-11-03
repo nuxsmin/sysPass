@@ -81,11 +81,11 @@ abstract class Repository implements RepositoryInterface
 
                 logger('Transaction:Rollback');
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'database.rollback',
                     new Event($this, EventMessage::factory()->addDescription(__u('Rollback')))
                 );
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notify('exception', new Event($e));
 
                 throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
             }

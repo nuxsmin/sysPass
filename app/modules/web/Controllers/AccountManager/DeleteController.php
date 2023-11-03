@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -79,7 +79,7 @@ final class DeleteController extends ControllerBase
 
                 $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'delete.account.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
                 );
@@ -93,7 +93,7 @@ final class DeleteController extends ControllerBase
 
             $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'delete.account',
                 new Event(
                     $this,

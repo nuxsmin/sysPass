@@ -85,7 +85,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
         $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.old.start', new Event($this, $message));
+        $this->eventDispatcher->notify('upgrade.config.old.start', new Event($this, $message));
 
         // Include the file, save the data from $CONFIG
         include OLD_CONFIG_FILE;
@@ -125,11 +125,11 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $message->addDetail(__u('Version'), $version);
 
-            $this->eventDispatcher->notifyEvent('upgrade.config.old.end', new Event($this, $message));
+            $this->eventDispatcher->notify('upgrade.config.old.end', new Event($this, $message));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event(
                     $this,
@@ -212,7 +212,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
         $this->configData = $configData;
 
         $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
-        $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
+        $this->eventDispatcher->notify('upgrade.config.start', new Event($this, $message));
 
         foreach (self::UPGRADES as $upgradeVersion) {
             if (VersionUtil::checkVersion($version, $upgradeVersion)) {
@@ -220,7 +220,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             }
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.config.end', new Event($this, $message));
+        $this->eventDispatcher->notify('upgrade.config.end', new Event($this, $message));
     }
 
     private function applyUpgrade(string $version): void
@@ -251,7 +251,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
         $this->config->saveConfig($this->configData, false);
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.config.process',
             new Event(
                 $this,
@@ -278,7 +278,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                     $configMimeTypes[] = $mimeType['type'];
                     $exists = true;
 
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'upgrade.config.process',
                         new Event(
                             $this,
@@ -292,7 +292,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             }
 
             if (!$exists) {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'upgrade.config.process',
                     new Event(
                         $this,
@@ -309,7 +309,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
         $this->config->saveConfig($this->configData, false);
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.config.process',
             new Event(
                 $this,
@@ -336,7 +336,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $this->config->saveConfig($this->configData, false);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'upgrade.config.process',
                 new Event(
                     $this,
@@ -362,7 +362,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $this->config->saveConfig($this->configData, false);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'upgrade.config.process',
                 new Event(
                     $this,

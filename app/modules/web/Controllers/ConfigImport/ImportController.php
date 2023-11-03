@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -70,7 +70,7 @@ final class ImportController extends SimpleControllerBase
         }
 
         try {
-            $this->eventDispatcher->notifyEvent('run.import.start', new Event($this));
+            $this->eventDispatcher->notify('run.import.start', new Event($this));
 
             SessionContext::close();
 
@@ -79,7 +79,7 @@ final class ImportController extends SimpleControllerBase
                 FileImport::fromRequest('inFile', $this->request)
             );
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.import.end',
                 new Event(
                     $this,
@@ -103,7 +103,7 @@ final class ImportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -139,7 +139,7 @@ final class ImportController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_IMPORT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

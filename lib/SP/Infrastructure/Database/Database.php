@@ -139,7 +139,7 @@ final class Database implements DatabaseInterface
     {
         $stmt = $this->prepareQueryData($queryData->getQuery());
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'database.query',
             new Event($this, EventMessage::factory()->addDescription($queryData->getQuery()->getStatement()))
         );
@@ -280,7 +280,7 @@ final class Database implements DatabaseInterface
         if (!$conn->inTransaction()) {
             $result = $conn->beginTransaction();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'database.transaction.begin',
                 new Event(
                     $this,
@@ -305,7 +305,7 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->commit();
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'database.transaction.end',
             new Event(
                 $this,
@@ -325,7 +325,7 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->rollBack();
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'database.transaction.rollback',
             new Event(
                 $this,

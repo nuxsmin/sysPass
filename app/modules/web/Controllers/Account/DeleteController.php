@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -85,7 +85,7 @@ final class DeleteController extends AccountControllerBase
             );
             $this->view->assign('formRoute', 'account/saveDelete');
 
-            $this->eventDispatcher->notifyEvent('show.account.delete', new Event($this));
+            $this->eventDispatcher->notify('show.account.delete', new Event($this));
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -95,7 +95,7 @@ final class DeleteController extends AccountControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event($e)
             );

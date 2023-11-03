@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -64,7 +64,7 @@ final class EditPassController extends AccountViewBase
             );
             $this->view->assign('formRoute', 'account/saveEditPass');
 
-            $this->eventDispatcher->notifyEvent('show.account.editpass', new Event($this));
+            $this->eventDispatcher->notify('show.account.editpass', new Event($this));
 
             if ($this->isAjax === false) {
                 $this->upgradeView();
@@ -74,7 +74,7 @@ final class EditPassController extends AccountViewBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             if ($this->isAjax === false && !$this->view->isUpgraded()) {
                 $this->upgradeView();

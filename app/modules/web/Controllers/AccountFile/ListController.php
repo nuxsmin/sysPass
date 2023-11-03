@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -70,7 +70,7 @@ final class ListController extends AccountFileBase
                 return;
             }
 
-            $this->eventDispatcher->notifyEvent('list.accountFile', new Event($this));
+            $this->eventDispatcher->notify('list.accountFile', new Event($this));
         } catch (Exception $e) {
             processException($e);
 

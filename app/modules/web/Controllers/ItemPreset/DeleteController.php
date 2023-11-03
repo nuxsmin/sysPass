@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class DeleteController extends ItemPresetSaveBase
             if ($id === null) {
                 $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'delete.itemPreset',
                     new Event($this, EventMessage::factory()->addDescription(__u('Values deleted')))
                 );
@@ -71,7 +71,7 @@ final class DeleteController extends ItemPresetSaveBase
 
             $this->itemPresetService->delete($id);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'delete.itemPreset',
                 new Event(
                     $this,
@@ -85,7 +85,7 @@ final class DeleteController extends ItemPresetSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

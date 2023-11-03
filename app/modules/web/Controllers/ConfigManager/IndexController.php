@@ -166,7 +166,7 @@ final class IndexController extends ControllerBase
         }
 
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'show.config',
             new Event($this)
         );

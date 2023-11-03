@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,7 +46,7 @@ final class LogoutController extends ControllerBase
             $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
             $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'logout',
                 new Event(
                     $this,

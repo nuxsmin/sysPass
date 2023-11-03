@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -79,7 +79,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      */
     public function update(SplSubject $subject): void
     {
-        $this->updateEvent('update', new Event($subject));
+        $this->update('update', new Event($subject));
     }
 
     /**
@@ -90,7 +90,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function updateEvent(string $eventType, Event $event): void
+    public function update(string $eventType, Event $event): void
     {
         if (strpos($eventType, 'database.') !== false) {
             return;

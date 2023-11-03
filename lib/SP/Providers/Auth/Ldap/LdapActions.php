@@ -105,7 +105,7 @@ final class LdapActions implements LdapActionsInterface
         $searchResults = $this->getResults($filter, ['dn']);
 
         if ($searchResults->count() === 0) {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'ldap.search.group',
                 new Event(
                     $this,
@@ -171,7 +171,7 @@ final class LdapActions implements LdapActionsInterface
         try {
             return $this->ldap->search($filter, $searchBase, LaminasLdap::SEARCH_SCOPE_SUB, $attributes);
         } catch (LaminasLdapException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw LdapException::error($e->getMessage(), null, $e->getCode(), $e);
         }

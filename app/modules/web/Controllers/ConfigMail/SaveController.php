@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -106,7 +106,7 @@ final class SaveController extends SimpleControllerBase
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('save.config.mail', new Event($this, $eventMessage));
             }
         );
     }
@@ -122,7 +122,7 @@ final class SaveController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_MAIL);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

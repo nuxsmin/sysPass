@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +24,40 @@
 
 namespace SP\Core\Events;
 
-use SplSubject;
-
 /**
  * Interface EventDispatcherInterface
- *
- * @package SP\Core\EventDispatcher
  */
-interface EventDispatcherInterface extends SplSubject
+interface EventDispatcherInterface
 {
     /**
-     * Notificar a los observadores y establecer el estado
+     * Check whether an EventReceiver is attached
+     *
+     * @param EventReceiver $receiver
+     * @return bool
+     */
+    public function has(EventReceiver $receiver): bool;
+
+    /**
+     * Attach an EventReceiver
+     *
+     * @param EventReceiver $receiver
+     * @return void
+     */
+    public function attach(EventReceiver $receiver): void;
+
+    /**
+     * Detach an EventReceiver
+     *
+     * @param EventReceiver $receiver
+     * @return void
+     */
+    public function detach(EventReceiver $receiver): void;
+
+    /**
+     * Notify to receivers
      *
      * @param string $eventName Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      */
-    public function notifyEvent(string $eventName, Event $event): void;
+    public function notify(string $eventName, Event $event): void;
 }

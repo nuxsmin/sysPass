@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class SaveEditController extends NotificationSaveBase
 
             $this->notificationService->update($this->form->getItemData());
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'edit.notification',
                 new Event($this, EventMessage::factory()->addDescription(__u('Notification updated')))
             );
@@ -70,7 +70,7 @@ final class SaveEditController extends NotificationSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

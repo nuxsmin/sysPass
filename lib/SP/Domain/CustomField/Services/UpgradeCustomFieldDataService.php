@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -65,7 +65,7 @@ final class UpgradeCustomFieldDataService extends Service
      */
     public function upgrade_300_18072902(): void
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.customField.start',
             new Event(
                 $this,
@@ -84,7 +84,7 @@ final class UpgradeCustomFieldDataService extends Service
 
                     $this->database->doQuery($queryData);
 
-                    $this->eventDispatcher->notifyEvent(
+                    $this->eventDispatcher->notify(
                         'upgrade.customField.process',
                         new Event(
                             $this,
@@ -96,12 +96,12 @@ final class UpgradeCustomFieldDataService extends Service
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw $e;
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.customField.end',
             new Event(
                 $this,

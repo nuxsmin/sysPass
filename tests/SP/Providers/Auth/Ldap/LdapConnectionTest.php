@@ -59,7 +59,7 @@ class LdapConnectionTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(once())
-            ->method('notifyEvent')
+            ->method('notify')
             ->with('ldap.check.connection');
 
         $this->ldapConnection->checkConnection();
@@ -88,7 +88,7 @@ class LdapConnectionTest extends UnitaryTestCase
 
         $this->eventDispatcher
             ->expects(self::exactly(2))
-            ->method('notifyEvent')
+            ->method('notify')
             ->with(...self::withConsecutive(['exception'], ['ldap.bind']));
 
         $this->ldap

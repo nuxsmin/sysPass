@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -149,15 +149,15 @@ final class SaveController extends SimpleControllerBase
                     $task
                 );
 
-                $this->eventDispatcher->notifyEvent('update.masterPassword.start', new Event($this));
+                $this->eventDispatcher->notify('update.masterPassword.start', new Event($this));
 
                 $this->masterPassService->changeMasterPassword($request);
 
-                $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
+                $this->eventDispatcher->notify('update.masterPassword.end', new Event($this));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notify('exception', new Event($e));
 
                 return $this->returnJsonResponseException($e);
             } finally {
@@ -167,13 +167,13 @@ final class SaveController extends SimpleControllerBase
             }
         } else {
             try {
-                $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
+                $this->eventDispatcher->notify('update.masterPassword.hash', new Event($this));
 
                 $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notify('exception', new Event($e));
 
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
@@ -212,7 +212,7 @@ final class SaveController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

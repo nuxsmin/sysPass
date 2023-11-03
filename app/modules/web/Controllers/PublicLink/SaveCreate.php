@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -57,7 +57,7 @@ final class SaveCreate extends PublicLinkSaveBase
 
             $this->publicLinkService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.publicLink', new Event($this));
+            $this->eventDispatcher->notify('create.publicLink', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
         } catch (ValidationException $e) {
@@ -65,7 +65,7 @@ final class SaveCreate extends PublicLinkSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'exception',
                 new Event($e)
             );

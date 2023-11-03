@@ -102,7 +102,7 @@ final class LdapConnection implements LdapConnectionInterface
     {
         $this->connect();
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'ldap.check.connection',
             new Event(
                 $this,
@@ -133,9 +133,9 @@ final class LdapConnection implements LdapConnectionInterface
                 $password
             );
         } catch (LaminasLdapException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'ldap.bind',
                 new Event(
                     $this,

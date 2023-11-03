@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -51,9 +51,9 @@ final class ViewController extends ClientBase
 
             $clientData = $this->clientService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.client', new Event($this));
+            $this->eventDispatcher->notify('show.client', new Event($this));
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'show.client',
                 new Event(
                     $this,

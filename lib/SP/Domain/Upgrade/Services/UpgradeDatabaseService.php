@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -91,7 +91,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
      */
     public function upgrade(string $version, ConfigDataInterface $configData): bool
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.db.start',
             new Event($this, EventMessage::factory()->addDescription(__u('Update DB')))
         );
@@ -122,7 +122,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
             }
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.db.end',
             new Event($this, EventMessage::factory()->addDescription(__u('Update DB')))
         );
@@ -155,7 +155,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
 
         foreach ($queries as $query) {
             try {
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'upgrade.db.process',
                     new Event($this, EventMessage::factory()->addDetail(__u('Version'), $version))
                 );
@@ -167,7 +167,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
 
                 logger('SQL: '.$query);
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'exception',
                     new Event(
                         $this,
@@ -181,7 +181,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
             }
         }
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.db.process',
             new Event(
                 $this,

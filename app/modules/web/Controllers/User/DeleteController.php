@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -61,7 +61,7 @@ final class DeleteController extends UserSaveBase
             if ($id === null) {
                 $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'delete.user.selection',
                     new Event(
                         $this,
@@ -80,7 +80,7 @@ final class DeleteController extends UserSaveBase
 
             $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id, $this->customFieldService);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'delete.user',
                 new Event(
                     $this,
@@ -95,7 +95,7 @@ final class DeleteController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

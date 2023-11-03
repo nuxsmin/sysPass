@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -55,7 +55,7 @@ final class UpgradePluginService extends Service implements UpgradePluginService
      */
     public function upgrade_310_19012201(): void
     {
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.plugin.start',
             new Event(
                 $this,
@@ -67,7 +67,7 @@ final class UpgradePluginService extends Service implements UpgradePluginService
 
         $this->pluginManager->upgradePlugins('310.19012201');
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'upgrade.plugin.end',
             new Event(
                 $this,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -69,7 +69,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'update.masterPassword.accounts.start',
                 new Event(
                     $this,
@@ -98,12 +98,12 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 $updateMasterPassRequest
             );
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'update.masterPassword.accounts.end',
                 new Event($this, $eventMessage)
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(
                 __u('Error while updating the accounts\' passwords'),
@@ -207,7 +207,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 $accountsOk[] = $account->getId();
                 $counter++;
             } catch (SPException $e) {
-                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                $this->eventDispatcher->notify('exception', new Event($e));
 
                 $errorCount++;
 
@@ -264,7 +264,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
         UpdateMasterPassRequest $updateMasterPassRequest
     ): void {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'update.masterPassword.accountsHistory.start',
                 new Event(
                     $this,
@@ -293,12 +293,12 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
                 $updateMasterPassRequest
             );
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'update.masterPassword.accountsHistory.end',
                 new Event($this, $eventMessage)
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             throw new ServiceException(
                 __u('Error while updating the accounts\' passwords in history'),

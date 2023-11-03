@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -74,7 +74,7 @@ final class XmlExportController extends SimpleControllerBase
         }
 
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.start',
                 new Event($this, EventMessage::factory()->addDescription(__u('sysPass XML export')))
             );
@@ -83,7 +83,7 @@ final class XmlExportController extends SimpleControllerBase
 
             $this->xmlExportService->doExport(BACKUP_PATH, $exportPassword);
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.end',
                 new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
             );
@@ -100,7 +100,7 @@ final class XmlExportController extends SimpleControllerBase
 
             $nodes = $verifyResult->getNodes();
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.verify',
                 new Event(
                     $this,
@@ -122,7 +122,7 @@ final class XmlExportController extends SimpleControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -140,7 +140,7 @@ final class XmlExportController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

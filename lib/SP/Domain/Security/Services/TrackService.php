@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -156,7 +156,7 @@ final class TrackService extends Service implements TrackServiceInterface
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
                 $delaySeconds = self::TIME_SLEEP * $attempts;
 
-                $this->eventDispatcher->notifyEvent(
+                $this->eventDispatcher->notify(
                     'track.delay',
                     new Event(
                         $this,
@@ -207,7 +207,7 @@ final class TrackService extends Service implements TrackServiceInterface
 
         $result = $this->trackRepository->add($trackRequest);
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'track.add',
             new Event(
                 $this,

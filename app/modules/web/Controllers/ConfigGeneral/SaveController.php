@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -70,7 +70,7 @@ final class SaveController extends SimpleControllerBase
                     Util::lockApp($this->session->getUserData()->getId(), 'config');
                 }
 
-                $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify('save.config.general', new Event($this, $eventMessage));
             }
         );
     }
@@ -231,7 +231,7 @@ final class SaveController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -72,7 +72,7 @@ final class ResetController extends ControllerBase
         try {
             $this->pluginDataService->delete($this->pluginService->getById($id)->getName());
 
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'edit.plugin.reset',
                 new Event($this, EventMessage::factory()->addDescription(__u('Plugin reset')))
             );
@@ -81,7 +81,7 @@ final class ResetController extends ControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

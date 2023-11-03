@@ -98,7 +98,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
 
         $numObjects = (int)$objects['count'];
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'import.ldap.groups',
             new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $numObjects))
         );
@@ -125,7 +125,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
 
                             $this->userGroupService->create($userGroupData);
 
-                            $this->eventDispatcher->notifyEvent(
+                            $this->eventDispatcher->notify(
                                 'import.ldap.progress.groups',
                                 new Event(
                                     $this,
@@ -140,7 +140,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
                         } catch (Exception $e) {
                             processException($e);
 
-                            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                            $this->eventDispatcher->notify('exception', new Event($e));
 
                             $this->errorObjects++;
                         }
@@ -179,7 +179,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
 
         $numObjects = (int)$objects['count'];
 
-        $this->eventDispatcher->notifyEvent(
+        $this->eventDispatcher->notify(
             'import.ldap.users',
             new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $numObjects))
         );
@@ -219,7 +219,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
 
                             $this->userService->create($userData);
 
-                            $this->eventDispatcher->notifyEvent(
+                            $this->eventDispatcher->notify(
                                 'import.ldap.progress.users',
                                 new Event(
                                     $this,
@@ -235,7 +235,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
                         } catch (Exception $e) {
                             processException($e);
 
-                            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+                            $this->eventDispatcher->notify('exception', new Event($e));
 
                             $this->errorObjects++;
                         }

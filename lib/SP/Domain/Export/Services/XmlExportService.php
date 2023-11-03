@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -258,7 +258,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private function createCategories(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.process.category',
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting categories')))
             );
@@ -373,7 +373,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private function createClients(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.process.client',
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting clients')))
             );
@@ -418,7 +418,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private function createTags(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.process.tag',
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting tags')))
             );
@@ -460,7 +460,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private function createAccounts(): void
     {
         try {
-            $this->eventDispatcher->notifyEvent(
+            $this->eventDispatcher->notify(
                 'run.export.process.account',
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting accounts')))
             );
