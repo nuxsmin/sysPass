@@ -38,13 +38,6 @@ interface EventReceiver
     public function update(string $eventType, Event $event): void;
 
     /**
-     * Return the events handled by this receiver
-     *
-     * @return array
-     */
-    public function getEvents(): array;
-
-    /**
      * Return the events handled by this receiver in string format
      *
      * @return string|null

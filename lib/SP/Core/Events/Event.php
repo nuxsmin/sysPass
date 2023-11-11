@@ -29,14 +29,9 @@ use SP\Core\Exceptions\SPException;
 
 /**
  * Class Event
- *
- * @package SP\Core\Events
  */
 class Event
 {
-    private object        $source;
-    private ?EventMessage $eventMessage;
-
     /**
      * Event constructor.
      *
@@ -45,11 +40,9 @@ class Event
      *
      */
     public function __construct(
-        object        $source,
-        ?EventMessage $eventMessage = null
+        readonly object        $source,
+        readonly ?EventMessage $eventMessage = null
     ) {
-        $this->source = $source;
-        $this->eventMessage = $eventMessage;
     }
 
     /**

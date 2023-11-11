@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,27 +32,25 @@ use SP\Core\Messages\TextFormatter;
 /**
  * Class EventMessage
  *
- * @package SP\Core\Events
+ * @template T
  */
-final class EventMessage implements MessageInterface
+class EventMessage implements MessageInterface
 {
     /**
      * @var array Detalles de la acción en formato "detalle : descripción"
      */
-    protected array $details = [];
-    protected int $descriptionCounter = 0;
-    protected int $detailsCounter = 0;
-    protected array $description = [];
-    protected array $extra = [];
+    private array $details            = [];
+    private int   $descriptionCounter = 0;
+    private int   $detailsCounter     = 0;
+    private array $description        = [];
+    private array $extra              = [];
 
+    /**
+     * @return EventMessage
+     */
     public static function factory(): EventMessage
     {
         return new self();
-    }
-
-    public function getDescriptionRaw(): array
-    {
-        return $this->description;
     }
 
     /**
@@ -102,10 +100,13 @@ final class EventMessage implements MessageInterface
 
         $formatter = new TextFormatter($delimiter);
 
-        return implode($delimiter, array_filter([
-            $this->getDescription($formatter, true),
-            $this->getDetails($formatter, true)
-        ]));
+        return implode(
+            $delimiter,
+            array_filter([
+                             $this->getDescription($formatter, true),
+                             $this->getDetails($formatter, true)
+                         ])
+        );
     }
 
     /**
@@ -114,8 +115,7 @@ final class EventMessage implements MessageInterface
     public function getDescription(
         FormatterInterface $formatter,
         bool               $translate
-    ): string
-    {
+    ): string {
         if ($this->descriptionCounter === 0) {
             return '';
         }
@@ -129,21 +129,12 @@ final class EventMessage implements MessageInterface
     public function getDetails(
         FormatterInterface $formatter,
         bool               $translate = false
-    ): string
-    {
+    ): string {
         if ($this->detailsCounter === 0) {
             return '';
         }
 
         return $formatter->formatDetail($this->details, $translate);
-    }
-
-    /**
-     * Devuelve los detalles
-     */
-    public function getDetailsRaw(): array
-    {
-        return $this->details;
     }
 
     /**
@@ -171,11 +162,19 @@ final class EventMessage implements MessageInterface
         return $this->detailsCounter;
     }
 
-    public function getExtra(): array
+    /**
+     * @param string|class-string<T> $type
+     * @return array<T>|null
+     */
+    public function getExtra(string $type): ?array
     {
-        return $this->extra;
+        return $this->extra[$type] ?? null;
     }
 
+    /**
+     * @param class-string<T> $type
+     * @param array<T> $data
+     */
     public function setExtra(string $type, array $data): EventMessage
     {
         if (isset($this->extra[$type])) {
@@ -189,16 +188,15 @@ final class EventMessage implements MessageInterface
 
     /**
      * Extra data are stored as an array of values per key, thus each key is unique
+     *
+     * @param class-string<T> $type
+     * @param array<T> $data
      */
-    public function addExtra(string $type, $data): EventMessage
+    public function addExtra(string $type, array $data): EventMessage
     {
-        if (isset($this->extra[$type])
-            && in_array($data, $this->extra[$type], false)
-        ) {
-            return $this;
+        if (!isset($this->extra[$type]) || !in_array($data, $this->extra[$type])) {
+            $this->extra[$type][] = $data;
         }
-
-        $this->extra[$type][] = $data;
 
         return $this;
     }

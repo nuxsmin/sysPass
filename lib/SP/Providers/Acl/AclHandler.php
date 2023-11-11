@@ -33,12 +33,10 @@ use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
-use SP\Domain\User\Services\UserGroupService;
-use SP\Domain\User\Services\UserProfileService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Util\FileUtil;
-use SplSubject;
+
 use function SP\__u;
 use function SP\logger;
 use function SP\processException;
@@ -60,33 +58,18 @@ final class AclHandler extends Provider implements EventReceiver
         'delete.user.selection',
     ];
 
-    private string             $events;
-    private UserProfileService $userProfileService;
-    private UserGroupService   $userGroupService;
+    private string $events;
 
     public function __construct(
-        Application $application,
-        UserProfileServiceInterface $userProfileService,
-        UserGroupServiceInterface $userGroupService
+        Application                                  $application,
+        private readonly UserProfileServiceInterface $userProfileService,
+        private readonly UserGroupServiceInterface   $userGroupService
     ) {
-        $this->userProfileService = $userProfileService;
-        $this->userGroupService = $userGroupService;
-
         parent::__construct($application);
     }
 
     /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents(): array
-    {
-        return self::EVENTS;
-    }
-
-    /**
-     * Devuelve los eventos que implementa el observador en formato cadena
+     * Return the events handled by this receiver in string format
      *
      * @return string
      */
@@ -96,10 +79,10 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * Evento de actualización
+     * Update from sources
      *
-     * @param  string  $eventType  Nombre del evento
-     * @param  Event  $event  Objeto del evento
+     * @param string $eventType event's type
+     * @param Event $event event's source object
      *
      * @throws SPException
      */
@@ -129,10 +112,10 @@ final class AclHandler extends Provider implements EventReceiver
                 throw new SPException(__u('Unable to process event for user profile'));
             }
 
-            $extra = $eventMessage->getExtra();
+            $extra = $eventMessage->getExtra('userProfileId');
 
-            if (isset($extra['userProfileId'])) {
-                foreach ($this->userProfileService->getUsersForProfile($extra['userProfileId'][0]) as $user) {
+            if ($extra) {
+                foreach ($this->userProfileService->getUsersForProfile($extra[0]) as $user) {
                     $this->clearAcl($user->id);
                 }
             }
@@ -151,8 +134,8 @@ final class AclHandler extends Provider implements EventReceiver
         logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
-            if (FileUtil::rmdirRecursive(AccountAclService::ACL_PATH.$userId) === false) {
-                logger(sprintf('Unable to delete %s directory', AccountAclService::ACL_PATH.$userId));
+            if (FileUtil::rmdirRecursive(AccountAclService::ACL_PATH . $userId) === false) {
+                logger(sprintf('Unable to delete %s directory', AccountAclService::ACL_PATH . $userId));
 
                 return false;
             }
@@ -166,22 +149,26 @@ final class AclHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @throws SPException
+     * @param Event $event
      */
     private function processUser(Event $event): void
     {
-        $eventMessage = $event->getEventMessage();
+        try {
+            $eventMessage = $event->getEventMessage();
 
-        if (null === $eventMessage) {
-            throw new SPException(__u('Unable to process event for user'));
-        }
-
-        $extra = $eventMessage->getExtra();
-
-        if (isset($extra['userId'])) {
-            foreach ($extra['userId'] as $id) {
-                $this->clearAcl($id);
+            if (null === $eventMessage) {
+                throw new SPException(__u('Unable to process event for user'));
             }
+
+            $extra = $eventMessage->getExtra('userId');
+
+            if ($extra) {
+                foreach ($extra as $id) {
+                    $this->clearAcl($id);
+                }
+            }
+        } catch (Exception $e) {
+            processException($e);
         }
     }
 
@@ -194,10 +181,10 @@ final class AclHandler extends Provider implements EventReceiver
                 throw new SPException(__u('Unable to process event for user group'));
             }
 
-            $extra = $eventMessage->getExtra();
+            $extra = $eventMessage->getExtra('userGroupId');
 
-            if (isset($extra['userGroupId'])) {
-                foreach ($this->userGroupService->getUsageByUsers($extra['userGroupId'][0]) as $user) {
+            if ($extra) {
+                foreach ($this->userGroupService->getUsageByUsers($extra[0]) as $user) {
                     $this->clearAcl($user->id);
                 }
             }

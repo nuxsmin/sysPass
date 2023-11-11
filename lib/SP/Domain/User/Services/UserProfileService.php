@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,10 +36,13 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\User\Ports\UserProfileRepositoryInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\User\Repositories\UserProfileRepository;
 use SP\Util\Util;
+
+use function SP\__u;
 
 /**
  * Class UserProfileService
@@ -60,9 +63,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): UserProfileData
     {
@@ -88,9 +91,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserProfileServiceInterface
     {
@@ -102,9 +105,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -123,9 +126,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function create(UserProfileData $itemData): int
     {
@@ -133,10 +136,10 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function update(UserProfileData $itemData): void
     {
@@ -148,8 +151,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getUsersForProfile(int $id): array
     {

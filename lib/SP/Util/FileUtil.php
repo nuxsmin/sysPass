@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -47,7 +47,7 @@ class FileUtil
     /**
      * Removes a directory in a recursive way
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileNotFoundException
      * @see https://stackoverflow.com/a/7288067
      */
     public static function rmdirRecursive(string $dir): bool

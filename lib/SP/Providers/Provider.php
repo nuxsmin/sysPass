@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,8 @@ namespace SP\Providers;
 
 use SP\Core\Application;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Core\Events\EventDispatcherInterface;
+use SP\Domain\Config\Ports\ConfigInterface;
 
 /**
  * Class Service
@@ -36,15 +36,15 @@ use SP\Domain\Config\Services\ConfigFileService;
  */
 abstract class Provider implements ProviderInterface
 {
-    protected ConfigFileService $config;
-    protected ContextInterface  $context;
-    protected EventDispatcher  $eventDispatcher;
-    protected bool             $initialized = false;
+    protected ConfigInterface          $config;
+    protected ContextInterface         $context;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected bool                     $initialized = false;
 
     /**
      * Provider constructor.
      *
-     * @param  \SP\Core\Application  $application
+     * @param Application $application
      */
     public function __construct(Application $application)
     {

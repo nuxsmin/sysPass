@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,9 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserProfileData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -38,9 +41,9 @@ use SP\Infrastructure\Database\QueryResult;
 interface UserProfileServiceInterface
 {
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): UserProfileData;
 
@@ -51,39 +54,39 @@ interface UserProfileServiceInterface
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserProfileServiceInterface;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
     public function deleteByIdBatch(array $ids): int;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function create(UserProfileData $itemData): int;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function update(UserProfileData $itemData): void;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsersForProfile(int $id): array;
 
