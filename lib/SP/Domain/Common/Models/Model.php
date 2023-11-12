@@ -24,12 +24,14 @@
 
 namespace SP\Domain\Common\Models;
 
+use ArrayAccess;
+use JsonException;
 use JsonSerializable;
 
 /**
  * Class DataModel
  */
-abstract class Model implements JsonSerializable, \ArrayAccess
+abstract class Model implements JsonSerializable, ArrayAccess
 {
     /**
      * Dynamically declared properties. Must not be class' properties
@@ -67,7 +69,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Build a new concrete object from a simple model
      *
-     * @param  \SP\Domain\Common\Models\Simple  $model
+     * @param Simple $model
      *
      * @return static
      */
@@ -77,9 +79,9 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     }
 
     /**
-     * @param  array|null  $only  Include only these properties
-     * @param  array|null  $filter  Filter out these properties
-     * @param  bool  $includeOuter  Whether to include non-class properties
+     * @param array|null $only Include only these properties
+     * @param array|null $filter Filter out these properties
+     * @param bool $includeOuter Whether to include non-class properties
      *
      * @return array
      */
@@ -105,7 +107,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Get columns name for this model
      *
-     * @param  array|null  $filter
+     * @param array|null $filter
      *
      * @return array
      */
@@ -119,7 +121,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Create a new object with properties changed
      *
-     * @param  array  $properties
+     * @param array $properties
      *
      * @return $this
      */
@@ -132,7 +134,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
      * Convert the model to its string representation.
      *
      * @return string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function __toString()
     {
@@ -142,10 +144,10 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int  $options
+     * @param int $options
      *
      * @return string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function toJson(int $options = 0): string
     {
@@ -168,7 +170,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Get non-class properties
      *
-     * @param  string  $name
+     * @param string $name
      *
      * @return void
      */
@@ -180,7 +182,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Set non-class properties
      *
-     * @param  string  $name
+     * @param string $name
      * @param $value
      *
      * @return void
@@ -193,7 +195,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Get non-class properties
      *
-     * @param  mixed  $offset
+     * @param mixed $offset
      *
      * @return mixed
      */
@@ -205,8 +207,8 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Set non-class properties
      *
-     * @param  mixed  $offset
-     * @param  mixed  $value
+     * @param mixed $offset
+     * @param mixed $value
      *
      * @return void
      */
@@ -220,14 +222,14 @@ abstract class Model implements JsonSerializable, \ArrayAccess
      *
      * @link https://php.net/manual/en/arrayaccess.offsetexists.php
      *
-     * @param  mixed  $offset  <p>
+     * @param mixed $offset <p>
      * An offset to check for.
      * </p>
      *
      * @return bool true on success or false on failure.
      * </p>
      * <p>
-     * The return value will be casted to boolean if non-boolean was returned.
+     * The return value will be cast to boolean if non-boolean was returned.
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -237,7 +239,7 @@ abstract class Model implements JsonSerializable, \ArrayAccess
     /**
      * Unset a non-class property
      *
-     * @param  mixed  $offset
+     * @param mixed $offset
      *
      * @return void
      */

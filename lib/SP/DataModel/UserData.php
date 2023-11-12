@@ -35,25 +35,25 @@ defined('APP_ROOT') || die();
  */
 class UserData extends UserPassData implements DataModelInterface
 {
-    public ?string $login         = null;
-    public ?string $ssoLogin      = null;
-    public ?string $name          = null;
-    public ?string $email         = null;
-    public ?string $notes         = null;
-    public ?int    $userGroupId   = null;
-    public ?int    $userProfileId = null;
-    public ?int    $isAdminApp    = null;
-    public bool    $isAdminAcc    = false;
-    public bool    $isDisabled    = false;
-    public bool    $isChangePass  = false;
-    public bool    $isChangedPass = false;
-    public bool    $isLdap        = false;
-    public ?int    $loginCount    = null;
-    public ?string $lastLogin     = null;
-    public ?string $lastUpdate    = null;
-    public ?bool   $isMigrate     = false;
-    public ?string $preferences   = null;
-    public ?string $userGroupName = null;
+    protected ?string $login         = null;
+    protected ?string $ssoLogin      = null;
+    protected ?string $name          = null;
+    protected ?string $email         = null;
+    protected ?string $notes         = null;
+    protected ?int    $userGroupId   = null;
+    protected ?int    $userProfileId = null;
+    protected ?int    $isAdminApp    = null;
+    protected bool    $isAdminAcc    = false;
+    protected bool    $isDisabled    = false;
+    protected bool    $isChangePass  = false;
+    protected bool    $isChangedPass = false;
+    protected bool    $isLdap        = false;
+    protected ?int    $loginCount    = null;
+    protected ?string $lastLogin     = null;
+    protected ?string $lastUpdate    = null;
+    protected ?bool   $isMigrate     = false;
+    protected ?string $preferences   = null;
+    protected ?string $userGroupName = null;
 
     public function getLoginCount(): int
     {
