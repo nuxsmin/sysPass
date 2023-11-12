@@ -103,14 +103,18 @@ final class BrowserAuth implements BrowserAuthInterface
      */
     public function checkServerAuthUser(string $login): ?bool
     {
-        $domain = $this->configData->getAuthBasicDomain();
+        $domain = $this->configData->getAuthBasicDomain() ?? '';
         $authUser = $this->getServerAuthUser();
 
-        if (!empty($domain) && !empty($authUser)) {
-            $login = $authUser . '@' . $domain;
+        if (empty($authUser)) {
+            return null;
         }
 
-        return $authUser === $login ?: null;
+        if (preg_match('/\w+@\w+/', $authUser)) {
+            return sprintf('%s@%s', $login, $domain) === $authUser;
+        }
+
+        return $authUser === $login;
     }
 
     /**

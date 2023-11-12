@@ -33,11 +33,11 @@ use SP\Domain\User\Services\UserLoginResponse;
  */
 class UserLoginData
 {
-    protected string            $loginUser;
-    protected string            $loginPass;
-    protected UserLoginResponse $userLoginResponse;
+    protected ?string            $loginUser         = null;
+    protected ?string            $loginPass         = null;
+    protected ?UserLoginResponse $userLoginResponse = null;
 
-    public function getLoginUser(): string
+    public function getLoginUser(): ?string
     {
         return $this->loginUser;
     }
@@ -47,7 +47,7 @@ class UserLoginData
         $this->loginUser = $login;
     }
 
-    public function getLoginPass(): string
+    public function getLoginPass(): ?string
     {
         return $this->loginPass;
     }
@@ -57,7 +57,7 @@ class UserLoginData
         $this->loginPass = $loginPass;
     }
 
-    public function getUserLoginResponse(): UserLoginResponse
+    public function getUserLoginResponse(): ?UserLoginResponse
     {
         return $this->userLoginResponse;
     }
