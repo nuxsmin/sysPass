@@ -27,11 +27,9 @@ namespace SP\Providers\Auth;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
-use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
-use SP\Providers\Auth\Database\DatabaseAuthInterface;
 use SP\Providers\Provider;
+use SplObjectStorage;
 
 use function SP\__u;
 
@@ -46,18 +44,41 @@ defined('APP_ROOT') || die();
  */
 class AuthProvider extends Provider implements AuthProviderInterface
 {
-    /**
-     * @var callable[]
-     */
-    protected array                 $auths       = [];
-    protected ?BrowserAuthInterface $browserAuth = null;
-    protected ?LdapAuthInterface    $ldapAuth    = null;
+    protected readonly SplObjectStorage $auths;
 
-    public function __construct(
-        Application                              $application,
-        protected readonly DatabaseAuthInterface $databaseAuth
-    ) {
+    public function __construct(Application $application)
+    {
         parent::__construct($application);
+
+        $this->auths = new SplObjectStorage();
+    }
+
+    /**
+     * Auth initializer
+     *
+     */
+    public function initialize(): void
+    {
+    }
+
+    /**
+     * Register authentication methods
+     *
+     * @param AuthInterface $auth
+     * @param AuthTypeEnum $authTypeEnum
+     * @throws AuthException
+     */
+    public function registerAuth(AuthInterface $auth, AuthTypeEnum $authTypeEnum): void
+    {
+        if ($this->auths->contains($auth)) {
+            throw new AuthException(
+                __u('Authentication already initialized'),
+                SPException::ERROR,
+                $auth::class
+            );
+        }
+
+        $this->auths->attach($auth, $authTypeEnum->value);
     }
 
     /**
@@ -71,91 +92,18 @@ class AuthProvider extends Provider implements AuthProviderInterface
     {
         $authsResult = [];
 
-        foreach ($this->auths as $authName => $auth) {
-            $data = $auth($userLoginData);
+        $this->auths->rewind();
 
-            if ($data instanceof AuthDataBase) {
-                $authsResult[] = new AuthResult($authName, $data);
-            }
+        while ($this->auths->valid()) {
+            /** @var AuthInterface $auth */
+            $auth = $this->auths->current();
+            $authName = $this->auths->getInfo();
+
+            $authsResult[] = new AuthResult($authName, $auth->authenticate($userLoginData));
+
+            $this->auths->next();
         }
 
         return count($authsResult) > 0 ? $authsResult : false;
-    }
-
-    /**
-     * Auth initializer
-     *
-     * @throws AuthException
-     */
-    public function initialize(): void
-    {
-        $configData = $this->config->getConfigData();
-
-        if ($this->browserAuth && $configData->isAuthBasicEnabled()) {
-            $this->registerAuth(
-                function (UserLoginData $userLoginData) {
-                    return $this->browserAuth->authenticate($userLoginData);
-                },
-                'authBrowser'
-            );
-        }
-
-        if ($this->ldapAuth && $configData->isLdapEnabled()) {
-            $this->registerAuth(
-                function (UserLoginData $userLoginData) {
-                    $ldapAuthData = $this->ldapAuth->authenticate($userLoginData);
-
-                    if ($ldapAuthData->getAuthenticated()) {
-                        // Comprobamos si la cuenta está bloqueada o expirada
-                        if ($ldapAuthData->getExpire() > 0) {
-                            $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_EXPIRED);
-                        } elseif (!$ldapAuthData->isInGroup()) {
-                            $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_NO_GROUPS);
-                        }
-                    }
-
-                    return $ldapAuthData;
-                },
-                'authLdap'
-            );
-        }
-
-        $this->registerAuth(
-            function (UserLoginData $userLoginData) {
-                return $this->databaseAuth->authenticate($userLoginData);
-            },
-            'authDatabase'
-        );
-    }
-
-    /**
-     * Registrar un método de autentificación primarios
-     *
-     * @param callable $auth Función de autentificación
-     * @param string $name
-     *
-     * @throws AuthException
-     */
-    private function registerAuth(callable $auth, string $name): void
-    {
-        if (array_key_exists($name, $this->auths)) {
-            throw new AuthException(
-                __u('Authentication already initialized'),
-                SPException::ERROR,
-                __FUNCTION__
-            );
-        }
-
-        $this->auths[$name] = $auth;
-    }
-
-    public function withLdapAuth(LdapAuthInterface $ldapAuth): void
-    {
-        $this->ldapAuth = $ldapAuth;
-    }
-
-    public function withBrowserAuth(BrowserAuthInterface $browserAuth): void
-    {
-        $this->browserAuth = $browserAuth;
     }
 }

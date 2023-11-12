@@ -58,11 +58,12 @@ final class LdapAuth implements LdapAuthInterface
     }
 
     /**
-     * Autentificar al usuario
+     * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData Datos del usuario
+     * @param UserLoginData $userLoginData
+     * @return LdapAuthData
      */
-    public function authenticate(UserLoginData $userLoginData): object
+    public function authenticate(UserLoginData $userLoginData): LdapAuthData
     {
         $ldapAuthData = new LdapAuthData($this->isAuthGranted());
 
@@ -72,6 +73,17 @@ final class LdapAuth implements LdapAuthInterface
             $this->ldap->connect();
 
             $this->getAttributes($userLoginData->getLoginUser(), $ldapAuthData);
+
+            // Comprobamos si la cuenta está bloqueada o expirada
+            if ($ldapAuthData->getExpire() > 0) {
+                $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_EXPIRED);
+
+                return $ldapAuthData->fail();
+            } elseif (!$ldapAuthData->isInGroup()) {
+                $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_NO_GROUPS);
+
+                return $ldapAuthData->fail();
+            }
 
             $this->ldap->connect($ldapAuthData->getDn(), $userLoginData->getLoginPass());
 

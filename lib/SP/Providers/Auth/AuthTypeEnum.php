@@ -25,36 +25,12 @@
 namespace SP\Providers\Auth;
 
 /**
- * Class AuthData
- *
- * @package SP\Providers\Auth
+ * Class AuthTypeEnum
  */
-final class AuthResult
+enum AuthTypeEnum: string
 {
+    case Ldap     = 'authLdap';
+    case Browser  = 'authDatabase';
+    case Database = 'authBrowser';
 
-    /**
-     * AuthResult constructor.
-     *
-     * @param string $authName
-     * @param AuthDataBase $data
-     */
-    public function __construct(private readonly string $authName, private readonly AuthDataBase $data)
-    {
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthName(): string
-    {
-        return $this->authName;
-    }
-
-    /**
-     * @return AuthDataBase
-     */
-    public function getData(): AuthDataBase
-    {
-        return $this->data;
-    }
 }

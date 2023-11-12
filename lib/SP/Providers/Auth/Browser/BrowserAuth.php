@@ -48,11 +48,12 @@ final class BrowserAuth implements BrowserAuthInterface
     }
 
     /**
-     * Autentificar al usuario
+     * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData Datos del usuario
+     * @param UserLoginData $userLoginData
+     * @return BrowserAuthData
      */
-    public function authenticate(UserLoginData $userLoginData): object
+    public function authenticate(UserLoginData $userLoginData): BrowserAuthData
     {
         $browserAuthData = new BrowserAuthData($this->isAuthGranted());
 

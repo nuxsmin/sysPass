@@ -24,11 +24,8 @@
 
 namespace SP\Providers\Auth;
 
-
 use SP\DataModel\UserLoginData;
-use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
 /**
  * Class Auth
@@ -42,20 +39,9 @@ interface AuthProviderInterface
     /**
      * Probar los métodos de autentificación
      *
-     * @param  UserLoginData  $userLoginData
+     * @param UserLoginData $userLoginData
      *
      * @return false|AuthResult[]
      */
-    public function doAuth(UserLoginData $userLoginData);
-
-    /**
-     * Auth initializer
-     *
-     * @throws AuthException
-     */
-    public function initialize(): void;
-
-    public function withLdapAuth(LdapAuthInterface $ldapAuth): void;
-
-    public function withBrowserAuth(BrowserAuthInterface $browserAuth): void;
+    public function doAuth(UserLoginData $userLoginData): array|bool;
 }

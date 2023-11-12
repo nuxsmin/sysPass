@@ -29,19 +29,18 @@ use SP\DataModel\UserLoginData;
 /**
  * Interface AuthInterface
  *
- * @template T of AuthDataBase
+ * @template T
  * @package Auth
  */
 interface AuthInterface
 {
     /**
-     * Autentificar al usuario
+     * Authenticate using user's data
      *
      * @param UserLoginData $userLoginData
-     *
      * @return T
      */
-    public function authenticate(UserLoginData $userLoginData): object;
+    public function authenticate(UserLoginData $userLoginData): AuthDataBase;
 
     /**
      * Indica si es requerida para acceder a la aplicación

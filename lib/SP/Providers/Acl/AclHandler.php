@@ -83,8 +83,6 @@ final class AclHandler extends Provider implements EventReceiver
      *
      * @param string $eventType event's type
      * @param Event $event event's source object
-     *
-     * @throws SPException
      */
     public function update(string $eventType, Event $event): void
     {

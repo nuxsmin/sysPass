@@ -78,6 +78,7 @@ use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Acl\AclHandler;
 use SP\Providers\Auth\AuthProvider;
 use SP\Providers\Auth\AuthProviderInterface;
+use SP\Providers\Auth\AuthTypeEnum;
 use SP\Providers\Auth\Browser\BrowserAuth;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Providers\Auth\Database\DatabaseAuth;
@@ -155,20 +156,27 @@ final class CoreDefinitions
                     'ldap',
                     factory([LdapBase::class, 'factory'])
                 ),
-            AuthProviderInterface::class =>
-                static function (ContainerInterface $c, ConfigDataInterface $configData) {
-                    $provider = $c->get(AuthProvider::class);
-
+            AuthProviderInterface::class => factory(
+                static function (
+                    AuthProvider          $authProvider,
+                    ConfigDataInterface   $configData,
+                    LdapAuthInterface     $ldapAuth,
+                    BrowserAuthInterface  $browserAuth,
+                    DatabaseAuthInterface $databaseAuth,
+                ) {
                     if ($configData->isLdapEnabled()) {
-                        $provider->withLdapAuth($c->get(LdapAuthInterface::class));
+                        $authProvider->registerAuth($ldapAuth, AuthTypeEnum::Ldap);
                     }
 
                     if ($configData->isAuthBasicEnabled()) {
-                        $provider->withBrowserAuth($c->get(BrowserAuthInterface::class));
+                        $authProvider->registerAuth($browserAuth, AuthTypeEnum::Browser);
                     }
 
-                    return $provider;
-                },
+                    $authProvider->registerAuth($databaseAuth, AuthTypeEnum::Database);
+
+                    return $authProvider;
+                }
+            )->parameter('authProvider', autowire(AuthProvider::class)),
             Logger::class => create(Logger::class)
                 ->constructor('syspass'),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)

@@ -49,12 +49,10 @@ final class DatabaseAuth implements DatabaseAuthInterface
     ) {
     }
 
-
     /**
-     * Autentificar al usuario
+     * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData Datos del usuario
-     *
+     * @param UserLoginData $userLoginData
      * @return DatabaseAuthData
      */
     public function authenticate(UserLoginData $userLoginData): DatabaseAuthData

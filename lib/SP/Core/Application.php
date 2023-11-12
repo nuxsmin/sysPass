@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,15 +36,16 @@ final class Application
     /**
      * Module constructor.
      *
-     * @param  ConfigInterface  $config
-     * @param  EventDispatcherInterface  $eventDispatcher
-     * @param  ContextInterface  $context
+     * @param ConfigInterface $config
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param ContextInterface $context
      */
     public function __construct(
-        private ConfigInterface $config,
-        private EventDispatcherInterface $eventDispatcher,
-        private ContextInterface $context
-    ) {}
+        private readonly ConfigInterface          $config,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ContextInterface         $context
+    ) {
+    }
 
     public function getConfig(): ConfigInterface
     {

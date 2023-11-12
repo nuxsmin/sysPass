@@ -94,11 +94,20 @@ class LdapAuthTest extends UnitaryTestCase
             ->method('actions')
             ->willReturn($ldapActions);
 
+        $attributes = $this->buildAttributes();
+        $attributes->set('expire', 0);
+
         $ldapActions
             ->expects(self::once())
             ->method('getAttributes')
             ->with($filter)
-            ->willReturn($this->buildAttributes());
+            ->willReturn($attributes);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('isUserInGroup')
+            ->with($attributes->get('dn'), $userLoginData->getLoginUser(), $attributes->get('group'))
+            ->willReturn(true);
 
         $out = $this->ldapAuth->authenticate($userLoginData);
 
@@ -123,6 +132,102 @@ class LdapAuthTest extends UnitaryTestCase
                                            'mail' => self::$faker->email,
                                            'expire' => self::$faker->unixTime,
                                        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAuthenticateWithExpireFail()
+    {
+        $userLoginData = new UserLoginData();
+        $userLoginData->setLoginUser(self::$faker->userName);
+        $userLoginData->setLoginPass(self::$faker->password);
+
+        $ldapActions = $this->createMock(LdapActionsInterface::class);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('connect')
+            ->with(null, null);
+
+        $filter = 'test';
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('getUserDnFilter')
+            ->with($userLoginData->getLoginUser())
+            ->willReturn($filter);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('actions')
+            ->willReturn($ldapActions);
+
+        $attributes = $this->buildAttributes();
+
+        $ldapActions
+            ->expects(self::once())
+            ->method('getAttributes')
+            ->with($filter)
+            ->willReturn($attributes);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('isUserInGroup')
+            ->with($attributes->get('dn'), $userLoginData->getLoginUser(), $attributes->get('group'))
+            ->willReturn(true);
+
+        $out = $this->ldapAuth->authenticate($userLoginData);
+
+        self::assertFalse($out->isOk());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAuthenticateWithGroupFail()
+    {
+        $userLoginData = new UserLoginData();
+        $userLoginData->setLoginUser(self::$faker->userName);
+        $userLoginData->setLoginPass(self::$faker->password);
+
+        $ldapActions = $this->createMock(LdapActionsInterface::class);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('connect')
+            ->with(null, null);
+
+        $filter = 'test';
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('getUserDnFilter')
+            ->with($userLoginData->getLoginUser())
+            ->willReturn($filter);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('actions')
+            ->willReturn($ldapActions);
+
+        $attributes = $this->buildAttributes();
+
+        $ldapActions
+            ->expects(self::once())
+            ->method('getAttributes')
+            ->with($filter)
+            ->willReturn($attributes);
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('isUserInGroup')
+            ->with($attributes->get('dn'), $userLoginData->getLoginUser(), $attributes->get('group'))
+            ->willReturn(false);
+
+        $out = $this->ldapAuth->authenticate($userLoginData);
+
+        self::assertFalse($out->isOk());
     }
 
     /**

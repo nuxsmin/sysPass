@@ -36,10 +36,10 @@ use SP\Domain\Config\Ports\ConfigInterface;
  */
 abstract class Provider implements ProviderInterface
 {
-    protected ConfigInterface          $config;
-    protected ContextInterface         $context;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected bool                     $initialized = false;
+    protected readonly ConfigInterface          $config;
+    protected readonly ContextInterface         $context;
+    protected readonly EventDispatcherInterface $eventDispatcher;
+    protected bool                              $initialized = false;
 
     /**
      * Provider constructor.
