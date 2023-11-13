@@ -35,6 +35,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+
 use function SP\__u;
 use function SP\logger;
 use function SP\processException;
@@ -56,12 +57,12 @@ final class Database implements DatabaseInterface
     /**
      * DB constructor.
      *
-     * @param  DbStorageInterface  $dbHandler
-     * @param  EventDispatcher  $eventDispatcher
+     * @param DbStorageInterface $dbHandler
+     * @param EventDispatcher $eventDispatcher
      */
     public function __construct(
         DbStorageInterface $dbHandler,
-        EventDispatcher $eventDispatcher
+        EventDispatcher    $eventDispatcher
     ) {
         $this->dbHandler = $dbHandler;
         $this->eventDispatcher = $eventDispatcher;
@@ -156,8 +157,8 @@ final class Database implements DatabaseInterface
     /**
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
-     * @param  QueryInterface  $query  Los datos de la consulta
-     * @param  array  $options
+     * @param QueryInterface $query Los datos de la consulta
+     * @param array $options
      *
      * @return \PDOStatement
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -165,7 +166,7 @@ final class Database implements DatabaseInterface
      */
     private function prepareQueryData(
         QueryInterface $query,
-        array $options = []
+        array          $options = []
     ): PDOStatement {
         try {
             $connection = $this->dbHandler->getConnection();
@@ -176,7 +177,7 @@ final class Database implements DatabaseInterface
                 foreach ($query->getBindValues() as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
-                    $param = is_int($param) ? $param + 1 : ':'.$param;
+                    $param = is_int($param) ? $param + 1 : ':' . $param;
 
                     if ($param === 'blobcontent') {
                         $stmt->bindValue($param, $value, PDO::PARAM_LOB);
@@ -245,9 +246,9 @@ final class Database implements DatabaseInterface
     /**
      * Don't fetch records and return prepared statement
      *
-     * @param  QueryData  $queryData
-     * @param  array  $options
-     * @param  bool|null  $buffered  Set buffered behavior (useful for big datasets)
+     * @param QueryData $queryData
+     * @param array $options
+     * @param bool|null $buffered Set buffered behavior (useful for big datasets)
      *
      * @return PDOStatement
      * @throws ConstraintException
@@ -255,10 +256,10 @@ final class Database implements DatabaseInterface
      */
     public function doQueryRaw(
         QueryData $queryData,
-        array $options = [],
-        ?bool $buffered = null
+        array     $options = [],
+        ?bool     $buffered = null
     ): PDOStatement {
-        if ($buffered === false && $this->dbHandler instanceof MysqlHandler) {
+        if ($buffered === false && ($this->dbHandler instanceof MysqlHandler)) {
             $this->dbHandler
                 ->getConnection()
                 ->setAttribute(
@@ -339,7 +340,7 @@ final class Database implements DatabaseInterface
     /**
      * Get the columns of a table
      *
-     * @param  string  $table
+     * @param string $table
      *
      * @return array
      */

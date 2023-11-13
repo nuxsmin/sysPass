@@ -26,8 +26,10 @@ namespace SP\Tests;
 
 use Faker\Factory;
 use Faker\Generator;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcherInterface;
@@ -42,7 +44,7 @@ use SP\Tests\Generators\ConfigDataGenerator;
 abstract class UnitaryTestCase extends TestCase
 {
     use PHPUnitHelper;
-    
+
     protected static Generator $faker;
     protected ConfigInterface  $config;
     protected Application      $application;
@@ -61,8 +63,8 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws ContextException
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -73,8 +75,8 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @return \SP\Core\Application
-     * @throws \SP\Core\Context\ContextException|\PHPUnit\Framework\MockObject\Exception
+     * @return Application
+     * @throws ContextException|Exception
      */
     private function mockApplication(): Application
     {

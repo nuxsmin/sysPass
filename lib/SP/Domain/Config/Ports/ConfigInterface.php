@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -42,15 +42,15 @@ interface ConfigInterface
     /**
      * Guardar la configuración
      *
-     * @param  ConfigDataInterface  $configData
-     * @param  bool|null  $backup
+     * @param ConfigDataInterface $configData
+     * @param bool|null $backup
      *
      * @return ConfigInterface
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     public function saveConfig(
         ConfigDataInterface $configData,
-        ?bool $backup = true
+        ?bool               $backup = true
     ): ConfigInterface;
 
     /**
@@ -66,7 +66,7 @@ interface ConfigInterface
     /**
      * Returns a clone of the configuration data
      *
-     * @return \SP\Domain\Config\Ports\ConfigDataInterface
+     * @return ConfigDataInterface
      */
     public function getConfigData(): ConfigDataInterface;
 

@@ -28,6 +28,7 @@ use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryInterface;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Models\Simple;
+
 use function SP\__u;
 
 /**
@@ -41,7 +42,9 @@ final class QueryData
     protected string  $mapClassName   = self::DEFAULT_MAP_CLASS;
     protected ?string $onErrorMessage = null;
 
-    public function __construct(private QueryInterface $query) {}
+    public function __construct(private readonly QueryInterface $query)
+    {
+    }
 
     public static function build(QueryInterface $query): QueryData
     {
@@ -79,7 +82,7 @@ final class QueryData
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function getQueryCount(): QueryInterface
     {

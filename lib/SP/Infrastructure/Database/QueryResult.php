@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\Database;
 
 use SP\Core\Exceptions\SPException;
+
 use function SP\__u;
 
 /**
@@ -45,7 +46,7 @@ class QueryResult
     /**
      * QueryResult constructor.
      *
-     * @param  array|null  $data
+     * @param array|null $data
      */
     public function __construct(?array $data = null)
     {
@@ -61,7 +62,7 @@ class QueryResult
 
     public static function withTotalNumRows(
         array $data,
-        ?int $totalNumRows = null
+        ?int  $totalNumRows = null
     ): QueryResult {
         $result = new self($data);
         $result->totalNumRows = (int)$totalNumRows;
@@ -72,11 +73,11 @@ class QueryResult
     /**
      * @template T
      *
-     * @param  class-string<T>|null  $dataType
+     * @param class-string<T>|null $dataType
      *
      * @return T|mixed|null
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getData(?string $dataType = null): mixed
     {
@@ -86,10 +87,10 @@ class QueryResult
     }
 
     /**
-     * @param  string|null  $dataType
+     * @param string|null $dataType
      *
      * @return void
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function checkDataType(?string $dataType = null): void
     {
@@ -101,10 +102,10 @@ class QueryResult
     /**
      * @template T
      *
-     * @param  class-string<T>|null  $dataType
+     * @param class-string<T>|null $dataType
      *
      * @return T[]
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getDataAsArray(?string $dataType = null): array
     {

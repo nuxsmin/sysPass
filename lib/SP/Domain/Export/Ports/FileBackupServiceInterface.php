@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Domain\Export\Ports;
 
+use SP\Domain\Common\Services\ServiceException;
+
 /**
  * Esta clase es la encargada de realizar la copia de sysPass.
  */
@@ -32,7 +34,7 @@ interface FileBackupServiceInterface
     /**
      * Realizar backup de la BBDD y aplicación.
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function doBackup(string $backupPath = BACKUP_PATH, string $applicationPath = APP_ROOT): void;
 

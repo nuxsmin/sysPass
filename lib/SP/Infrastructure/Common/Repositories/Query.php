@@ -32,28 +32,24 @@ use Aura\SqlQuery\QueryInterface;
  */
 final class Query implements QueryInterface
 {
-    private string $query;
-    private array  $values;
     private Quoter $quoter;
 
-    private function __construct(string $query, array $values, string $db)
+    private function __construct(private readonly string $query, private array $values)
     {
-        $this->query = $query;
-        $this->values = $values;
         $this->quoter = new Quoter();
     }
 
     /**
      * Build an instance of this class for the given database
      *
-     * @param  string  $query
-     * @param  array  $values
+     * @param string $query
+     * @param array $values
      *
-     * @return \SP\Infrastructure\Common\Repositories\Query
+     * @return Query
      */
     public static function buildForMySQL(string $query, array $values): Query
     {
-        return new Query($query, $values, 'Mysql');
+        return new Query($query, $values);
     }
 
     /**
@@ -96,7 +92,7 @@ final class Query implements QueryInterface
      *
      * Adds values to bind into the query; merges with existing values.
      *
-     * @param  array  $bind_values  Values to bind to the query.
+     * @param array $bind_values Values to bind to the query.
      *
      * @return $this
      *
@@ -116,8 +112,8 @@ final class Query implements QueryInterface
      *
      * Binds a single value to the query.
      *
-     * @param  string  $name  The placeholder name or number.
-     * @param  mixed  $value  The value to bind to the placeholder.
+     * @param string $name The placeholder name or number.
+     * @param mixed $value The value to bind to the placeholder.
      *
      * @return $this
      *

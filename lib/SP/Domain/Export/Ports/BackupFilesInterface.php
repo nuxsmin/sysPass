@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,7 @@
 
 namespace SP\Domain\Export\Ports;
 
+use SP\Core\Exceptions\CheckException;
 use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileHandlerInterface;
 
@@ -44,13 +45,13 @@ interface BackupFilesInterface
 
     /**
      * @return ArchiveHandlerInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function getDbBackupArchiveHandler(): ArchiveHandlerInterface;
 
     /**
      * @return ArchiveHandlerInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function getAppBackupArchiveHandler(): ArchiveHandlerInterface;
 

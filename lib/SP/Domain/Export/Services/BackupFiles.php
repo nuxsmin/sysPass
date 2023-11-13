@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,7 @@ use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
+
 use function SP\__;
 use function SP\__u;
 
@@ -46,14 +47,14 @@ final class BackupFiles implements BackupFilesInterface
     private string $appBackupFilename;
     private string $dbBackupFilename;
     /**
-     * @var \SP\Core\PhpExtensionChecker
+     * @var PhpExtensionChecker
      */
     private PhpExtensionChecker $extensionChecker;
 
     /**
-     * @param  string  $path  The path where to store the backup files
+     * @param string $path The path where to store the backup files
      *
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function __construct(PhpExtensionChecker $extensionChecker, string $path = BACKUP_PATH)
     {
@@ -103,12 +104,12 @@ final class BackupFiles implements BackupFilesInterface
     public static function getAppBackupFilename(
         string $path,
         string $hash,
-        bool $compressed = false
+        bool   $compressed = false
     ): string {
-        $file = $path.DIRECTORY_SEPARATOR.AppInfoInterface::APP_NAME.'_app-'.$hash;
+        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_app-' . $hash;
 
         if ($compressed) {
-            return $file.ArchiveHandler::COMPRESS_EXTENSION;
+            return $file . ArchiveHandler::COMPRESS_EXTENSION;
         }
 
         return $file;
@@ -117,15 +118,15 @@ final class BackupFiles implements BackupFilesInterface
     public static function getDbBackupFilename(
         string $path,
         string $hash,
-        bool $compressed = false
+        bool   $compressed = false
     ): string {
-        $file = $path.DIRECTORY_SEPARATOR.AppInfoInterface::APP_NAME.'_db-'.$hash;
+        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $hash;
 
         if ($compressed) {
-            return $file.ArchiveHandler::COMPRESS_EXTENSION;
+            return $file . ArchiveHandler::COMPRESS_EXTENSION;
         }
 
-        return $file.'.sql';
+        return $file . '.sql';
     }
 
     /**
@@ -146,7 +147,7 @@ final class BackupFiles implements BackupFilesInterface
 
     /**
      * @return ArchiveHandlerInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function getDbBackupArchiveHandler(): ArchiveHandlerInterface
     {
@@ -155,7 +156,7 @@ final class BackupFiles implements BackupFilesInterface
 
     /**
      * @return ArchiveHandlerInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function getAppBackupArchiveHandler(): ArchiveHandlerInterface
     {
