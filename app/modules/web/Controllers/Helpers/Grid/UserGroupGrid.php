@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -130,14 +130,14 @@ final class UserGroupGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::GROUP_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::GROUP_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchGroup');
         $gridActionSearch->setTitle(__('Search for Group'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::GROUP_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::GROUP_SEARCH)
         );
 
         return $gridActionSearch;
@@ -149,7 +149,7 @@ final class UserGroupGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::GROUP_CREATE);
+        $gridAction->setId(AclActionsInterface::GROUP_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Group'));
         $gridAction->setTitle(__('New Group'));
@@ -158,7 +158,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::GROUP_CREATE)
+            Acl::getActionRoute(AclActionsInterface::GROUP_CREATE)
         );
 
         return $gridAction;
@@ -170,7 +170,7 @@ final class UserGroupGrid extends GridBase
     private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::GROUP_VIEW);
+        $gridAction->setId(AclActionsInterface::GROUP_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Group'));
         $gridAction->setTitle(__('View Group'));
@@ -178,7 +178,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::GROUP_VIEW)
+            Acl::getActionRoute(AclActionsInterface::GROUP_VIEW)
         );
 
         return $gridAction;
@@ -190,7 +190,7 @@ final class UserGroupGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::GROUP_EDIT);
+        $gridAction->setId(AclActionsInterface::GROUP_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Group'));
         $gridAction->setTitle(__('Edit Group'));
@@ -198,7 +198,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::GROUP_EDIT)
+            Acl::getActionRoute(AclActionsInterface::GROUP_EDIT)
         );
 
         return $gridAction;
@@ -210,7 +210,7 @@ final class UserGroupGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::GROUP_DELETE);
+        $gridAction->setId(AclActionsInterface::GROUP_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Group'));
         $gridAction->setTitle(__('Delete Group'));
@@ -218,7 +218,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::GROUP_DELETE)
+            Acl::getActionRoute(AclActionsInterface::GROUP_DELETE)
         );
 
         return $gridAction;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
@@ -56,15 +56,15 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     use ServiceItemTrait;
 
     private const SECURED_ACTIONS = [
-        ActionsInterface::ACCOUNT_VIEW_PASS,
-        ActionsInterface::ACCOUNT_EDIT_PASS,
-        ActionsInterface::ACCOUNT_CREATE,
+        AclActionsInterface::ACCOUNT_VIEW_PASS,
+        AclActionsInterface::ACCOUNT_EDIT_PASS,
+        AclActionsInterface::ACCOUNT_CREATE,
     ];
 
     private const CAN_USE_SECURE_TOKEN_ACTIONS = [
-        ActionsInterface::ACCOUNT_VIEW,
-        ActionsInterface::CATEGORY_VIEW,
-        ActionsInterface::CLIENT_VIEW,
+        AclActionsInterface::ACCOUNT_VIEW,
+        AclActionsInterface::CATEGORY_VIEW,
+        AclActionsInterface::CLIENT_VIEW,
     ];
 
     private AuthTokenRepository $authTokenRepository;
@@ -85,35 +85,35 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     public static function getTokenActions(): array
     {
         return [
-            ActionsInterface::ACCOUNT_SEARCH    => Acl::getActionInfo(ActionsInterface::ACCOUNT_SEARCH),
-            ActionsInterface::ACCOUNT_VIEW      => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW),
-            ActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW_PASS),
-            ActionsInterface::ACCOUNT_EDIT_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_EDIT_PASS),
-            ActionsInterface::ACCOUNT_DELETE    => Acl::getActionInfo(ActionsInterface::ACCOUNT_DELETE),
-            ActionsInterface::ACCOUNT_CREATE    => Acl::getActionInfo(ActionsInterface::ACCOUNT_CREATE),
-            ActionsInterface::ACCOUNT_EDIT      => Acl::getActionInfo(ActionsInterface::ACCOUNT_EDIT),
-            ActionsInterface::CATEGORY_SEARCH   => Acl::getActionInfo(ActionsInterface::CATEGORY_SEARCH),
-            ActionsInterface::CATEGORY_VIEW     => Acl::getActionInfo(ActionsInterface::CATEGORY_VIEW),
-            ActionsInterface::CATEGORY_CREATE   => Acl::getActionInfo(ActionsInterface::CATEGORY_CREATE),
-            ActionsInterface::CATEGORY_EDIT     => Acl::getActionInfo(ActionsInterface::CATEGORY_EDIT),
-            ActionsInterface::CATEGORY_DELETE   => Acl::getActionInfo(ActionsInterface::CATEGORY_DELETE),
-            ActionsInterface::CLIENT_SEARCH     => Acl::getActionInfo(ActionsInterface::CLIENT_SEARCH),
-            ActionsInterface::CLIENT_VIEW       => Acl::getActionInfo(ActionsInterface::CLIENT_VIEW),
-            ActionsInterface::CLIENT_CREATE     => Acl::getActionInfo(ActionsInterface::CLIENT_CREATE),
-            ActionsInterface::CLIENT_EDIT       => Acl::getActionInfo(ActionsInterface::CLIENT_EDIT),
-            ActionsInterface::CLIENT_DELETE     => Acl::getActionInfo(ActionsInterface::CLIENT_DELETE),
-            ActionsInterface::TAG_SEARCH        => Acl::getActionInfo(ActionsInterface::TAG_SEARCH),
-            ActionsInterface::TAG_VIEW          => Acl::getActionInfo(ActionsInterface::TAG_VIEW),
-            ActionsInterface::TAG_CREATE        => Acl::getActionInfo(ActionsInterface::TAG_CREATE),
-            ActionsInterface::TAG_EDIT          => Acl::getActionInfo(ActionsInterface::TAG_EDIT),
-            ActionsInterface::TAG_DELETE        => Acl::getActionInfo(ActionsInterface::TAG_DELETE),
-            ActionsInterface::GROUP_VIEW        => Acl::getActionInfo(ActionsInterface::GROUP_VIEW),
-            ActionsInterface::GROUP_CREATE      => Acl::getActionInfo(ActionsInterface::GROUP_CREATE),
-            ActionsInterface::GROUP_EDIT        => Acl::getActionInfo(ActionsInterface::GROUP_EDIT),
-            ActionsInterface::GROUP_DELETE      => Acl::getActionInfo(ActionsInterface::GROUP_DELETE),
-            ActionsInterface::GROUP_SEARCH      => Acl::getActionInfo(ActionsInterface::GROUP_SEARCH),
-            ActionsInterface::CONFIG_BACKUP_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_BACKUP_RUN),
-            ActionsInterface::CONFIG_EXPORT_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_EXPORT_RUN),
+            AclActionsInterface::ACCOUNT_SEARCH    => Acl::getActionInfo(AclActionsInterface::ACCOUNT_SEARCH),
+            AclActionsInterface::ACCOUNT_VIEW      => Acl::getActionInfo(AclActionsInterface::ACCOUNT_VIEW),
+            AclActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(AclActionsInterface::ACCOUNT_VIEW_PASS),
+            AclActionsInterface::ACCOUNT_EDIT_PASS => Acl::getActionInfo(AclActionsInterface::ACCOUNT_EDIT_PASS),
+            AclActionsInterface::ACCOUNT_DELETE    => Acl::getActionInfo(AclActionsInterface::ACCOUNT_DELETE),
+            AclActionsInterface::ACCOUNT_CREATE    => Acl::getActionInfo(AclActionsInterface::ACCOUNT_CREATE),
+            AclActionsInterface::ACCOUNT_EDIT      => Acl::getActionInfo(AclActionsInterface::ACCOUNT_EDIT),
+            AclActionsInterface::CATEGORY_SEARCH   => Acl::getActionInfo(AclActionsInterface::CATEGORY_SEARCH),
+            AclActionsInterface::CATEGORY_VIEW     => Acl::getActionInfo(AclActionsInterface::CATEGORY_VIEW),
+            AclActionsInterface::CATEGORY_CREATE   => Acl::getActionInfo(AclActionsInterface::CATEGORY_CREATE),
+            AclActionsInterface::CATEGORY_EDIT     => Acl::getActionInfo(AclActionsInterface::CATEGORY_EDIT),
+            AclActionsInterface::CATEGORY_DELETE   => Acl::getActionInfo(AclActionsInterface::CATEGORY_DELETE),
+            AclActionsInterface::CLIENT_SEARCH     => Acl::getActionInfo(AclActionsInterface::CLIENT_SEARCH),
+            AclActionsInterface::CLIENT_VIEW       => Acl::getActionInfo(AclActionsInterface::CLIENT_VIEW),
+            AclActionsInterface::CLIENT_CREATE     => Acl::getActionInfo(AclActionsInterface::CLIENT_CREATE),
+            AclActionsInterface::CLIENT_EDIT       => Acl::getActionInfo(AclActionsInterface::CLIENT_EDIT),
+            AclActionsInterface::CLIENT_DELETE     => Acl::getActionInfo(AclActionsInterface::CLIENT_DELETE),
+            AclActionsInterface::TAG_SEARCH        => Acl::getActionInfo(AclActionsInterface::TAG_SEARCH),
+            AclActionsInterface::TAG_VIEW          => Acl::getActionInfo(AclActionsInterface::TAG_VIEW),
+            AclActionsInterface::TAG_CREATE        => Acl::getActionInfo(AclActionsInterface::TAG_CREATE),
+            AclActionsInterface::TAG_EDIT          => Acl::getActionInfo(AclActionsInterface::TAG_EDIT),
+            AclActionsInterface::TAG_DELETE        => Acl::getActionInfo(AclActionsInterface::TAG_DELETE),
+            AclActionsInterface::GROUP_VIEW        => Acl::getActionInfo(AclActionsInterface::GROUP_VIEW),
+            AclActionsInterface::GROUP_CREATE      => Acl::getActionInfo(AclActionsInterface::GROUP_CREATE),
+            AclActionsInterface::GROUP_EDIT        => Acl::getActionInfo(AclActionsInterface::GROUP_EDIT),
+            AclActionsInterface::GROUP_DELETE      => Acl::getActionInfo(AclActionsInterface::GROUP_DELETE),
+            AclActionsInterface::GROUP_SEARCH      => Acl::getActionInfo(AclActionsInterface::GROUP_SEARCH),
+            AclActionsInterface::CONFIG_BACKUP_RUN => Acl::getActionInfo(AclActionsInterface::CONFIG_BACKUP_RUN),
+            AclActionsInterface::CONFIG_EXPORT_RUN => Acl::getActionInfo(AclActionsInterface::CONFIG_EXPORT_RUN),
         ];
     }
 

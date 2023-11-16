@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Client;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -48,14 +48,14 @@ final class SaveCreateController extends ClientSaveBase
     public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::CLIENT_CREATE);
+            $this->form->validateFor(AclActionsInterface::CLIENT_CREATE);
 
             $itemData = $this->form->getItemData();
 
@@ -72,7 +72,7 @@ final class SaveCreateController extends ClientSaveBase
             );
 
             $this->addCustomFieldsForItem(
-                ActionsInterface::CLIENT,
+                AclActionsInterface::CLIENT,
                 $id,
                 $this->request,
                 $this->customFieldService

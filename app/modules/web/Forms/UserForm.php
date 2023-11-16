@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
@@ -55,20 +55,20 @@ final class UserForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::USER_CREATE:
+            case AclActionsInterface::USER_CREATE:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
                 break;
-            case ActionsInterface::USER_EDIT:
+            case AclActionsInterface::USER_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
-            case ActionsInterface::USER_EDIT_PASS:
+            case AclActionsInterface::USER_EDIT_PASS:
                 $this->analyzeRequestData();
                 $this->checkPass();
                 break;
-            case ActionsInterface::USER_DELETE:
+            case AclActionsInterface::USER_DELETE:
                 $this->checkDelete();
                 break;
         }

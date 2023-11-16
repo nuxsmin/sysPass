@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
@@ -92,7 +92,7 @@ final class DownloadLogController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
+            $this->checkAccess(AclActionsInterface::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Util\ErrorUtil;
 
@@ -51,7 +51,7 @@ final class EditPassController extends AccountViewBase
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, ActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_EDIT_PASS);
 
             $this->view->addTemplate('account-editpass');
             $this->view->assign(

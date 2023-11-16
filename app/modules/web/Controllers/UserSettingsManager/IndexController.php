@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\UserSettingsManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
@@ -75,7 +75,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $this->eventDispatcher->notify('show.userSettings', new Event($this));
 
         $this->tabsHelper->renderTabs(
-            Acl::getActionRoute(ActionsInterface::USERSETTINGS),
+            Acl::getActionRoute(AclActionsInterface::USERSETTINGS),
             $this->request->analyzeInt('tabIndex', 0)
         );
 

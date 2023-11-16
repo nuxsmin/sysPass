@@ -36,21 +36,21 @@ use function SP\processException;
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class Acl implements ActionsInterface
+class Acl implements AclActionsInterface
 {
     protected static ?Actions $actions = null;
 
     /**
      * Acl constructor.
      *
-     * @param  ContextInterface  $context
-     * @param  EventDispatcher  $eventDispatcher
-     * @param  Actions|null  $actions
+     * @param ContextInterface $context
+     * @param EventDispatcher $eventDispatcher
+     * @param ActionsInterface|null $actions
      */
     public function __construct(
         private ContextInterface $context,
         private EventDispatcherInterface $eventDispatcher,
-        Actions $actions = null
+        ActionsInterface $actions = null
     ) {
         self::$actions = $actions;
     }

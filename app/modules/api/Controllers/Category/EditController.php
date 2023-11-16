@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
@@ -40,7 +40,7 @@ final class EditController extends CategoryBase
     public function editAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CATEGORY_EDIT);
+            $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
 
             $categoryData = $this->buildCategoryData();
 

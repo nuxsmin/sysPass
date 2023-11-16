@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -50,14 +50,14 @@ final class SaveEditController extends TagSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::TAG_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::TAG_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::TAG_EDIT, $id);
 
             $this->tagService->update($this->form->getItemData());
 

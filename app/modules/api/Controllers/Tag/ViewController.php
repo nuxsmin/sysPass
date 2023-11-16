@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Tag;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
@@ -43,7 +43,7 @@ final class ViewController extends TagBase
     public function viewAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_VIEW);
+            $this->setupApi(AclActionsInterface::TAG_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
             $tagData = $this->tagService->getById($id);

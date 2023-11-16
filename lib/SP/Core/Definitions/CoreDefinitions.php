@@ -30,6 +30,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\ContextInterface;
@@ -128,7 +129,7 @@ final class CoreDefinitions
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
             DbStorageInterface::class => autowire(MysqlHandler::class),
             Actions::class =>
-                static fn() => new Actions(
+                static fn() => new ActionsInterface(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
                     new XmlHandler(new FileHandler(ACTIONS_FILE))
                 ),

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\NotificationData;
@@ -54,8 +54,8 @@ final class NotificationForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::NOTIFICATION_CREATE:
-            case ActionsInterface::NOTIFICATION_EDIT:
+            case AclActionsInterface::NOTIFICATION_CREATE:
+            case AclActionsInterface::NOTIFICATION_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

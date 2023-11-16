@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Repositories;
@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
@@ -88,7 +88,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertInstanceOf(AuthTokenData::class, $data);
         $this->assertEquals(1, $data->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $data->getActionId());
+        $this->assertEquals(AclActionsInterface::ACCOUNT_SEARCH, $data->getActionId());
         $this->assertEquals('12b9027d24efff7bfbaca8bd774a4c34b45de35e033d2b192a88f4dfaee5c233', $data->getToken());
         $this->assertNull($data->getHash());
 
@@ -99,7 +99,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertInstanceOf(AuthTokenData::class, $data);
         $this->assertEquals(2, $data->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
+        $this->assertEquals(AclActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
         $this->assertEquals(self::AUTH_TOKEN, $data->getToken());
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
     }
@@ -122,13 +122,13 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testGetTokenByToken()
     {
-        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        $result = self::$repository->getTokenByToken(AclActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
         /** @var AuthTokenData $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertEquals(2, $data->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
+        $this->assertEquals(AclActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertNotEmpty($data->getVault());
 
@@ -155,7 +155,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->refreshVaultByUserId(1, $vault, $hash));
 
-        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        $result = self::$repository->getTokenByToken(AclActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
         /** @var AuthTokenData $data */
         $data = $result->getData();
 
@@ -203,7 +203,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $authTokenData = new AuthTokenData();
         $authTokenData->setId(1);
-        $authTokenData->setActionId(ActionsInterface::ACCOUNT_CREATE);
+        $authTokenData->setActionId(AclActionsInterface::ACCOUNT_CREATE);
         $authTokenData->setCreatedBy(1);
         $authTokenData->setHash($hash);
         $authTokenData->setToken($token);
@@ -212,13 +212,13 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->update($authTokenData));
 
-        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_CREATE, $token);
+        $result = self::$repository->getTokenByToken(AclActionsInterface::ACCOUNT_CREATE, $token);
         /** @var AuthTokenData $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertInstanceOf(AuthTokenData::class, $data);
-        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
+        $this->assertEquals(AclActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertEquals($hash, $data->getHash());
         $this->assertEquals(2, $data->getUserId());
         $this->assertEquals($vault->getSerialized(), $data->getVault());
@@ -248,11 +248,11 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertCount(4, $data);
 
         $this->assertInstanceOf(stdClass::class, $data[0]);
-        $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $data[0]->actionId);
+        $this->assertEquals(AclActionsInterface::ACCOUNT_SEARCH, $data[0]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[0]->token);
 
         $this->assertInstanceOf(stdClass::class, $data[1]);
-        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW, $data[1]->actionId);
+        $this->assertEquals(AclActionsInterface::ACCOUNT_VIEW, $data[1]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[1]->token);
 
         $itemSearchData = new ItemSearchData();
@@ -315,7 +315,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $vault = Vault::getInstance()->saveData('prueba', 'prueba123');
 
         $authTokenData = new AuthTokenData();
-        $authTokenData->setActionId(ActionsInterface::ACCOUNT_CREATE);
+        $authTokenData->setActionId(AclActionsInterface::ACCOUNT_CREATE);
         $authTokenData->setCreatedBy(1);
         $authTokenData->setHash($hash);
         $authTokenData->setToken($token);
@@ -325,13 +325,13 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertEquals(6, self::$repository->create($authTokenData));
         $this->assertEquals(6, self::getRowCount('AuthToken'));
 
-        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_CREATE, $token);
+        $result = self::$repository->getTokenByToken(AclActionsInterface::ACCOUNT_CREATE, $token);
         /** @var AuthTokenData $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertInstanceOf(AuthTokenData::class, $data);
-        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
+        $this->assertEquals(AclActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertEquals($hash, $data->getHash());
         $this->assertEquals(6, $data->getId());
         $this->assertEquals(2, $data->getUserId());

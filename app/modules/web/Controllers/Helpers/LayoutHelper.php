@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -123,7 +123,7 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('logo_no_bg_color', $baseUrl.'/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl.'/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
-        $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
+        $this->view->assign('homeRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT));
 
         $this->loggedIn = $this->context->isLoggedIn();
 
@@ -277,88 +277,88 @@ final class LayoutHelper extends HelperBase
         $actions = [];
 
         $actionSearch = new DataGridAction();
-        $actionSearch->setId(ActionsInterface::ACCOUNT);
+        $actionSearch->setId(AclActionsInterface::ACCOUNT);
         $actionSearch->setTitle(__('Search'));
         $actionSearch->setIcon($icons->getIconSearch());
         $actionSearch->setData([
             'historyReset' => 1,
             'view'         => 'search',
-            'route'        => Acl::getActionRoute(ActionsInterface::ACCOUNT),
+            'route'        => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
         ]);
 
         $actions[] = $actionSearch;
 
-        if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ACCOUNT_CREATE)) {
             $actionNewAccount = new DataGridAction();
-            $actionNewAccount->setId(ActionsInterface::ACCOUNT_CREATE);
+            $actionNewAccount->setId(AclActionsInterface::ACCOUNT_CREATE);
             $actionNewAccount->setTitle(__('New Account'));
             $actionNewAccount->setIcon($icons->getIconAdd());
             $actionNewAccount->setData([
                 'historyReset' => 0,
                 'view'         => 'account',
-                'route'        => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE),
+                'route'        => Acl::getActionRoute(AclActionsInterface::ACCOUNT_CREATE),
             ]);
 
             $actions[] = $actionNewAccount;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ACCESS_MANAGE)) {
             $actionAccessManager = new DataGridAction();
-            $actionAccessManager->setId(ActionsInterface::ACCESS_MANAGE);
-            $actionAccessManager->setTitle(Acl::getActionInfo(ActionsInterface::ACCESS_MANAGE));
+            $actionAccessManager->setId(AclActionsInterface::ACCESS_MANAGE);
+            $actionAccessManager->setTitle(Acl::getActionInfo(AclActionsInterface::ACCESS_MANAGE));
             $actionAccessManager->setIcon($icons->getIconAccount());
             $actionAccessManager->setData([
                 'historyReset' => 0,
                 'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE),
+                'route'        => Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE),
             ]);
 
             $actions[] = $actionAccessManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ITEMS_MANAGE)) {
             $actionItemManager = new DataGridAction();
-            $actionItemManager->setId(ActionsInterface::ITEMS_MANAGE);
-            $actionItemManager->setTitle(Acl::getActionInfo(ActionsInterface::ITEMS_MANAGE));
+            $actionItemManager->setId(AclActionsInterface::ITEMS_MANAGE);
+            $actionItemManager->setTitle(Acl::getActionInfo(AclActionsInterface::ITEMS_MANAGE));
             $actionItemManager->setIcon($icons->getIconGroup());
             $actionItemManager->setData([
                 'historyReset' => 0,
                 'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE),
+                'route'        => Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
             ]);
 
             $actions[] = $actionItemManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::SECURITY_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::SECURITY_MANAGE)) {
             $actionSecurityManager = new DataGridAction();
-            $actionSecurityManager->setId(ActionsInterface::SECURITY_MANAGE);
-            $actionSecurityManager->setTitle(Acl::getActionInfo(ActionsInterface::SECURITY_MANAGE));
+            $actionSecurityManager->setId(AclActionsInterface::SECURITY_MANAGE);
+            $actionSecurityManager->setTitle(Acl::getActionInfo(AclActionsInterface::SECURITY_MANAGE));
             $actionSecurityManager->setIcon($icons->getIconByName('security'));
             $actionSecurityManager->setData([
                 'historyReset' => 0,
                 'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE),
+                'route'        => Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
             ]);
 
             $actions[] = $actionSecurityManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::PLUGIN)) {
+        if ($acl->checkUserAccess(AclActionsInterface::PLUGIN)) {
             $actionPlugins = new DataGridAction();
-            $actionPlugins->setId(ActionsInterface::PLUGIN);
+            $actionPlugins->setId(AclActionsInterface::PLUGIN);
             $actionPlugins->setTitle(__('Plugins'));
             $actionPlugins->setIcon($icons->getIconByName('extension'));
             $actionPlugins->setData([
                 'historyReset' => 1,
                 'view'         => 'plugin',
-                'route'        => Acl::getActionRoute(ActionsInterface::PLUGIN),
+                'route'        => Acl::getActionRoute(AclActionsInterface::PLUGIN),
             ]);
 
             $actions[] = $actionPlugins;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
+        if ($acl->checkUserAccess(AclActionsInterface::CONFIG)) {
             $actionConfigManager = new DataGridAction();
             $actionConfigManager->setId('config');
             $actionConfigManager->setTitle(__('Configuration'));
@@ -366,7 +366,7 @@ final class LayoutHelper extends HelperBase
             $actionConfigManager->setData([
                 'historyReset' => 1,
                 'view'         => 'config',
-                'route'        => Acl::getActionRoute(ActionsInterface::CONFIG),
+                'route'        => Acl::getActionRoute(AclActionsInterface::CONFIG),
             ]);
 
             $actions[] = $actionConfigManager;

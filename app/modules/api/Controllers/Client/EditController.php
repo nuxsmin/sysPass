@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Client;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ClientData;
@@ -43,7 +43,7 @@ final class EditController extends ClientBase
     public function editAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CLIENT_EDIT);
+            $this->setupApi(AclActionsInterface::CLIENT_EDIT);
 
             $clientData = $this->buildClientData();
 

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -43,7 +43,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testExportAction(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_EXPORT_RUN,
+            AclActionsInterface::CONFIG_EXPORT_RUN,
             []
         );
 
@@ -65,7 +65,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testExportActionCustomPath(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_EXPORT_RUN,
+            AclActionsInterface::CONFIG_EXPORT_RUN,
             [
                 'path' => TMP_PATH . '/export/custom/path'
             ]
@@ -89,7 +89,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testExportActionInvalidPath(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_EXPORT_RUN,
+            AclActionsInterface::CONFIG_EXPORT_RUN,
             [
                 'path' => '/export/custom/path'
             ]
@@ -109,7 +109,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testBackupAction(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_BACKUP_RUN,
+            AclActionsInterface::CONFIG_BACKUP_RUN,
             []
         );
 
@@ -133,7 +133,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testBackupActionInvalidPath(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_BACKUP_RUN,
+            AclActionsInterface::CONFIG_BACKUP_RUN,
             [
                 'path' => '/backup/custom/path'
             ]
@@ -153,7 +153,7 @@ class ConfigControllerTest extends ApiTestCase
     public function testBackupActionCustomPath(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CONFIG_BACKUP_RUN,
+            AclActionsInterface::CONFIG_BACKUP_RUN,
             [
                 'path' => TMP_PATH . '/backup/custom/path'
             ]

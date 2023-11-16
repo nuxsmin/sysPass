@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -49,7 +49,7 @@ final class SaveEditController extends AccountSaveBase
     public function saveEditAction(int $id): ?bool
     {
         try {
-            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_EDIT, $id);
+            $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT, $id);
 
             $itemData = $this->accountForm->getItemData();
 
@@ -68,7 +68,7 @@ final class SaveEditController extends AccountSaveBase
             );
 
             $this->updateCustomFieldsForItem(
-                ActionsInterface::ACCOUNT,
+                AclActionsInterface::ACCOUNT,
                 $id,
                 $this->request,
                 $this->customFieldService
@@ -77,7 +77,7 @@ final class SaveEditController extends AccountSaveBase
             return $this->returnJsonResponseData(
                 [
                     'itemId'     => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW),
+                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account updated')

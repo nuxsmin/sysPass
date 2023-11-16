@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -127,14 +127,14 @@ final class TagGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::TAG_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::TAG_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchTag');
         $gridActionSearch->setTitle(__('Search for Tag'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TAG_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::TAG_SEARCH)
         );
 
         return $gridActionSearch;
@@ -146,7 +146,7 @@ final class TagGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TAG_CREATE);
+        $gridAction->setId(AclActionsInterface::TAG_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Tag'));
         $gridAction->setTitle(__('New Tag'));
@@ -155,7 +155,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TAG_CREATE)
+            Acl::getActionRoute(AclActionsInterface::TAG_CREATE)
         );
 
         return $gridAction;
@@ -167,7 +167,7 @@ final class TagGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TAG_EDIT);
+        $gridAction->setId(AclActionsInterface::TAG_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Tag'));
         $gridAction->setTitle(__('Edit Tag'));
@@ -175,7 +175,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TAG_EDIT)
+            Acl::getActionRoute(AclActionsInterface::TAG_EDIT)
         );
 
         return $gridAction;
@@ -187,7 +187,7 @@ final class TagGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TAG_DELETE);
+        $gridAction->setId(AclActionsInterface::TAG_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Tag'));
         $gridAction->setTitle(__('Delete Tag'));
@@ -195,7 +195,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TAG_DELETE)
+            Acl::getActionRoute(AclActionsInterface::TAG_DELETE)
         );
 
         return $gridAction;

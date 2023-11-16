@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountRequest;
@@ -42,7 +42,7 @@ final class EditPassController extends AccountBase
     public function editPassAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->setupApi(AclActionsInterface::ACCOUNT_EDIT_PASS);
 
             $accountRequest = $this->buildAccountRequest();
 

@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -46,14 +46,14 @@ final class SaveCreateController extends TagSaveBase
     public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::TAG_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::TAG_CREATE);
+            $this->form->validateFor(AclActionsInterface::TAG_CREATE);
 
             $this->tagService->create($this->form->getItemData());
 

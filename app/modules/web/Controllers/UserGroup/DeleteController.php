@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -51,7 +51,7 @@ final class DeleteController extends UserGroupSaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -66,7 +66,7 @@ final class DeleteController extends UserGroupSaveBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Groups deleted')))
                 );
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Groups deleted'));
             }
@@ -84,7 +84,7 @@ final class DeleteController extends UserGroupSaveBase
                 )
             );
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group deleted'));
         } catch (Exception $e) {

@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -49,14 +49,14 @@ final class SaveEditController extends AuthTokenSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::AUTHTOKEN_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::AUTHTOKEN_EDIT, $id);
 
             if ($this->form->isRefresh()) {
                 $this->authTokenService->refreshAndUpdate($this->form->getItemData());
@@ -85,7 +85,7 @@ final class SaveEditController extends AuthTokenSaveBase
             }
 
             $this->updateCustomFieldsForItem(
-                ActionsInterface::AUTHTOKEN,
+                AclActionsInterface::AUTHTOKEN,
                 $id,
                 $this->request,
                 $this->customFieldService

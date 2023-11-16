@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Util\ErrorUtil;
 
@@ -48,7 +48,7 @@ final class EditController extends AccountViewBase
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, ActionsInterface::ACCOUNT_EDIT);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_EDIT);
 
             $this->view->addTemplate('account');
             $this->view->assign(

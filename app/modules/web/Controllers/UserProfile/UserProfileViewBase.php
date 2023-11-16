@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
@@ -82,7 +82,7 @@ abstract class UserProfileViewBase extends ControllerBase
         $this->view->assign('profile', $profile);
         $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
 
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign(
@@ -99,10 +99,10 @@ abstract class UserProfileViewBase extends ControllerBase
             $this->view->assign('readonly', false);
         }
 
-        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_VIEW_PASS));
         $this->view->assign(
             'customFields',
-            $this->getCustomFieldsForItem(ActionsInterface::PROFILE, $profileId, $this->customFieldService)
+            $this->getCustomFieldsForItem(AclActionsInterface::PROFILE, $profileId, $this->customFieldService)
         );
     }
 }

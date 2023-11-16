@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Tests\Services\CustomField;
 use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
@@ -124,15 +124,15 @@ class CustomFieldServiceTest extends DatabaseTestCase
      */
     public function testDeleteCustomFieldDataBatch()
     {
-        $this->assertEquals(2, self::$service->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::ACCOUNT));
+        $this->assertEquals(2, self::$service->deleteCustomFieldDataBatch([1, 2, 3], AclActionsInterface::ACCOUNT));
 
-        $this->assertEquals(1, self::$service->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::CATEGORY));
+        $this->assertEquals(1, self::$service->deleteCustomFieldDataBatch([1, 2, 3], AclActionsInterface::CATEGORY));
 
         $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
-        $this->assertEquals(0, self::$service->deleteCustomFieldDataBatch([], ActionsInterface::CATEGORY));
+        $this->assertEquals(0, self::$service->deleteCustomFieldDataBatch([], AclActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, self::$service->deleteCustomFieldDataBatch([], ActionsInterface::USER));
+        $this->assertEquals(0, self::$service->deleteCustomFieldDataBatch([], AclActionsInterface::USER));
     }
 
     /**
@@ -145,7 +145,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
     {
         $data = new CustomFieldData();
         $data->setItemId(1);
-        $data->setModuleId(ActionsInterface::ACCOUNT);
+        $data->setModuleId(AclActionsInterface::ACCOUNT);
         $data->setDefinitionId(1);
         $data->setData('cuenta');
 
@@ -153,7 +153,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setItemId(1);
-        $data->setModuleId(ActionsInterface::CATEGORY);
+        $data->setModuleId(AclActionsInterface::CATEGORY);
         $data->setDefinitionId(2);
         $data->setData('categoria');
 
@@ -161,7 +161,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setItemId(2);
-        $data->setModuleId(ActionsInterface::ACCOUNT);
+        $data->setModuleId(AclActionsInterface::ACCOUNT);
         $data->setDefinitionId(1);
         $data->setData('cuenta');
 
@@ -169,7 +169,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setItemId(2);
-        $data->setModuleId(ActionsInterface::CATEGORY);
+        $data->setModuleId(AclActionsInterface::CATEGORY);
         $data->setDefinitionId(2);
         $data->setData('categoria');
 
@@ -179,7 +179,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setItemId(2);
-        $data->setModuleId(ActionsInterface::USER);
+        $data->setModuleId(AclActionsInterface::USER);
         $data->setDefinitionId(3);
         $data->setData('nan');
 
@@ -194,12 +194,12 @@ class CustomFieldServiceTest extends DatabaseTestCase
      */
     public function testGetForModuleAndItemId()
     {
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::ACCOUNT, 1);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::ACCOUNT, 1);
 
         $this->assertCount(1, $result);
         $this->assertEquals('Prueba', $result[0]->definitionName);
         $this->assertEquals(1, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::ACCOUNT, $result[0]->moduleId);
+        $this->assertEquals(AclActionsInterface::ACCOUNT, $result[0]->moduleId);
         $this->assertEquals(1, $result[0]->required);
         $this->assertEquals(0, $result[0]->showInList);
         $this->assertEquals('Ayuda', $result[0]->help);
@@ -210,12 +210,12 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertNotEmpty($result[0]->data);
         $this->assertNotEmpty($result[0]->key);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::ACCOUNT, 2);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::ACCOUNT, 2);
 
         $this->assertCount(1, $result);
         $this->assertEquals('Prueba', $result[0]->definitionName);
         $this->assertEquals(1, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::ACCOUNT, $result[0]->moduleId);
+        $this->assertEquals(AclActionsInterface::ACCOUNT, $result[0]->moduleId);
         $this->assertEquals(1, $result[0]->required);
         $this->assertEquals(0, $result[0]->showInList);
         $this->assertEquals('Ayuda', $result[0]->help);
@@ -226,16 +226,16 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertNotEmpty($result[0]->data);
         $this->assertNotEmpty($result[0]->key);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::ACCOUNT, 3);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::ACCOUNT, 3);
 
         $this->assertCount(1, $result);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::CATEGORY, 1);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::CATEGORY, 1);
 
         $this->assertCount(2, $result);
         $this->assertEquals('SSL', $result[0]->definitionName);
         $this->assertEquals(3, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[0]->moduleId);
+        $this->assertEquals(AclActionsInterface::CATEGORY, $result[0]->moduleId);
         $this->assertEquals(0, $result[0]->required);
         $this->assertEquals(0, $result[0]->showInList);
         $this->assertEquals(null, $result[0]->help);
@@ -248,7 +248,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $this->assertEquals('RSA', $result[1]->definitionName);
         $this->assertEquals(2, $result[1]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[1]->moduleId);
+        $this->assertEquals(AclActionsInterface::CATEGORY, $result[1]->moduleId);
         $this->assertEquals(0, $result[1]->required);
         $this->assertEquals(0, $result[1]->showInList);
         $this->assertEquals(null, $result[1]->help);
@@ -259,11 +259,11 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertNotEmpty($result[1]->data);
         $this->assertNull($result[1]->key);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::CATEGORY, 2);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::CATEGORY, 2);
 
         $this->assertEquals('SSL', $result[0]->definitionName);
         $this->assertEquals(3, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[0]->moduleId);
+        $this->assertEquals(AclActionsInterface::CATEGORY, $result[0]->moduleId);
         $this->assertEquals(0, $result[0]->required);
         $this->assertEquals(0, $result[0]->showInList);
         $this->assertEquals(null, $result[0]->help);
@@ -277,7 +277,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertCount(2, $result);
         $this->assertEquals('RSA', $result[1]->definitionName);
         $this->assertEquals(2, $result[1]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[1]->moduleId);
+        $this->assertEquals(AclActionsInterface::CATEGORY, $result[1]->moduleId);
         $this->assertEquals(0, $result[1]->required);
         $this->assertEquals(0, $result[1]->showInList);
         $this->assertEquals(null, $result[1]->help);
@@ -288,11 +288,11 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertNull($result[1]->data);
         $this->assertNull($result[1]->key);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::CATEGORY, 3);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::CATEGORY, 3);
 
         $this->assertCount(2, $result);
 
-        $result = self::$service->getForModuleAndItemId(ActionsInterface::USER, 1);
+        $result = self::$service->getForModuleAndItemId(AclActionsInterface::USER, 1);
 
         $this->assertCount(0, $result);
     }
@@ -302,17 +302,17 @@ class CustomFieldServiceTest extends DatabaseTestCase
      */
     public function testDeleteCustomFieldData()
     {
-        $this->assertEquals(1, self::$service->deleteCustomFieldData(1, ActionsInterface::ACCOUNT));
-        $this->assertEquals(1, self::$service->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
-        $this->assertEquals(1, self::$service->deleteCustomFieldData(1, ActionsInterface::CATEGORY));
+        $this->assertEquals(1, self::$service->deleteCustomFieldData(1, AclActionsInterface::ACCOUNT));
+        $this->assertEquals(1, self::$service->deleteCustomFieldData(2, AclActionsInterface::ACCOUNT));
+        $this->assertEquals(1, self::$service->deleteCustomFieldData(1, AclActionsInterface::CATEGORY));
 
         $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
-        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
+        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, AclActionsInterface::ACCOUNT));
 
-        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, ActionsInterface::CATEGORY));
+        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, AclActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, ActionsInterface::USER));
+        $this->assertEquals(0, self::$service->deleteCustomFieldData(2, AclActionsInterface::USER));
     }
 
     /**
@@ -352,7 +352,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
     {
         $data = new CustomFieldData();
         $data->setId(2);
-        $data->setModuleId(ActionsInterface::ACCOUNT);
+        $data->setModuleId(AclActionsInterface::ACCOUNT);
         $data->setDefinitionId(1);
         $data->setData('cuenta');
         $data->setKey('nan');
@@ -361,7 +361,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setId(2);
-        $data->setModuleId(ActionsInterface::CATEGORY);
+        $data->setModuleId(AclActionsInterface::CATEGORY);
         $data->setDefinitionId(2);
         $data->setData('categoria');
         $data->setKey('nan');
@@ -372,7 +372,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setId(2);
-        $data->setModuleId(ActionsInterface::ACCOUNT);
+        $data->setModuleId(AclActionsInterface::ACCOUNT);
         $data->setDefinitionId(1);
         $data->setData('cuenta');
         $data->setKey('nan');
@@ -385,7 +385,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $data = new CustomFieldData();
         $data->setId(2);
-        $data->setModuleId(ActionsInterface::CATEGORY);
+        $data->setModuleId(AclActionsInterface::CATEGORY);
         $data->setDefinitionId(2);
         $data->setData('categoria');
         $data->setKey('nan');

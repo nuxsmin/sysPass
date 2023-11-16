@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Category\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\DataModel\CategoryData;
 use SP\Domain\Category\Ports\CategoryAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
@@ -54,7 +54,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
     public function includeCustomFields(CategoryData $data, CustomFieldServiceInterface $customFieldService): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $data->id, $customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
@@ -71,7 +71,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $data->getId(),
-                        ActionsInterface::CATEGORY_VIEW,
+                        AclActionsInterface::CATEGORY_VIEW,
                         $this->configData,
                         true
                     ),

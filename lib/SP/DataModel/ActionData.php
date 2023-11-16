@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,22 +33,14 @@ use SP\Domain\Common\Adapters\DataModelInterface;
  */
 class ActionData implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var string
-     */
-    public $text;
-    /**
-     * @var string
-     */
-    public $route;
+    public function __construct(
+        private readonly int    $id,
+        private readonly string $name,
+        private readonly string $text,
+        private readonly string $route
+    ) {
+    }
+
 
     public function getId(): ?int
     {
@@ -60,18 +52,12 @@ class ActionData implements DataModelInterface
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @return string
-     */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }

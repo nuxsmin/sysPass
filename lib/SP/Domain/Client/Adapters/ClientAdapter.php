@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Client\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\DataModel\ClientData;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
@@ -54,7 +54,7 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
     public function includeCustomFields(ClientData $data, CustomFieldServiceInterface $customFieldService): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $data->id, $customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $data->id, $customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
@@ -72,7 +72,7 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $data->getId(),
-                        ActionsInterface::CLIENT_VIEW,
+                        AclActionsInterface::CLIENT_VIEW,
                         $this->configData,
                         true
                     ),

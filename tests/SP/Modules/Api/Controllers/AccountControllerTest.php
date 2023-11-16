@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -107,7 +107,7 @@ class AccountControllerTest extends ApiTestCase
     private function createAccount(?array $params = null): stdClass
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_CREATE,
+            AclActionsInterface::ACCOUNT_CREATE,
             $params ?? self::PARAMS
         );
 
@@ -183,7 +183,7 @@ class AccountControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW_PASS,
+            AclActionsInterface::ACCOUNT_VIEW_PASS,
             ['id' => $id]
         );
 
@@ -207,7 +207,7 @@ class AccountControllerTest extends ApiTestCase
     public function testViewPassActionRequiredParamater(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW_PASS,
+            AclActionsInterface::ACCOUNT_VIEW_PASS,
             []
         );
 
@@ -231,7 +231,7 @@ class AccountControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_EDIT_PASS,
+            AclActionsInterface::ACCOUNT_EDIT_PASS,
             [
                 'id' => $id,
                 'pass' => 'test_123',
@@ -247,7 +247,7 @@ class AccountControllerTest extends ApiTestCase
         $this->assertEquals($id, $response->result->itemId);
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW_PASS,
+            AclActionsInterface::ACCOUNT_VIEW_PASS,
             ['id' => $id]
         );
 
@@ -275,7 +275,7 @@ class AccountControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_EDIT_PASS,
+            AclActionsInterface::ACCOUNT_EDIT_PASS,
             [
                 'id' => $id
             ]
@@ -297,7 +297,7 @@ class AccountControllerTest extends ApiTestCase
     public function testViewPassActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW_PASS,
+            AclActionsInterface::ACCOUNT_VIEW_PASS,
             ['id' => 10]
         );
 
@@ -319,7 +319,7 @@ class AccountControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW,
+            AclActionsInterface::ACCOUNT_VIEW,
             ['id' => $id]
         );
 
@@ -376,7 +376,7 @@ class AccountControllerTest extends ApiTestCase
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW,
+            AclActionsInterface::ACCOUNT_VIEW,
             ['id' => 10]
         );
 
@@ -394,7 +394,7 @@ class AccountControllerTest extends ApiTestCase
     public function testViewActionRequiredParameter(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW,
+            AclActionsInterface::ACCOUNT_VIEW,
             []
         );
 
@@ -416,7 +416,7 @@ class AccountControllerTest extends ApiTestCase
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_SEARCH,
+            AclActionsInterface::ACCOUNT_SEARCH,
             $filter
         );
 
@@ -456,7 +456,7 @@ class AccountControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_EDIT,
+            AclActionsInterface::ACCOUNT_EDIT,
             $params
         );
 
@@ -468,7 +468,7 @@ class AccountControllerTest extends ApiTestCase
         $this->assertEquals('Account updated', $response->result->resultMessage);
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_VIEW,
+            AclActionsInterface::ACCOUNT_VIEW,
             ['id' => $id]
         );
 
@@ -551,7 +551,7 @@ class AccountControllerTest extends ApiTestCase
         unset($params[$unsetParam]);
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_EDIT,
+            AclActionsInterface::ACCOUNT_EDIT,
             $params
         );
 
@@ -588,7 +588,7 @@ class AccountControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_EDIT,
+            AclActionsInterface::ACCOUNT_EDIT,
             $params
         );
 
@@ -610,7 +610,7 @@ class AccountControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_DELETE,
+            AclActionsInterface::ACCOUNT_DELETE,
             ['id' => $id]
         );
 
@@ -630,7 +630,7 @@ class AccountControllerTest extends ApiTestCase
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_DELETE,
+            AclActionsInterface::ACCOUNT_DELETE,
             ['id' => 10]
         );
 
@@ -648,7 +648,7 @@ class AccountControllerTest extends ApiTestCase
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(
-            ActionsInterface::ACCOUNT_DELETE,
+            AclActionsInterface::ACCOUNT_DELETE,
             []
         );
 

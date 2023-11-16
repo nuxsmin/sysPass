@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
@@ -65,7 +65,7 @@ final class ViewHistoryController extends AccountControllerBase
         try {
             $accountHistoryData = $this->accountHistoryService->getById($id);
 
-            $this->accountHistoryHelper->setView($accountHistoryData, ActionsInterface::ACCOUNT_HISTORY_VIEW);
+            $this->accountHistoryHelper->setView($accountHistoryData, AclActionsInterface::ACCOUNT_HISTORY_VIEW);
 
             $this->view->addTemplate('account-history');
 

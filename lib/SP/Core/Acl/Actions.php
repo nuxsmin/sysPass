@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,12 +30,14 @@ use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;
 
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
+
 /**
  * Class Actions
- *
- * @package SP\Core\Acl
  */
-class Actions
+class Actions implements ActionsInterface
 {
     /**
      * Cache file name
@@ -46,28 +48,22 @@ class Actions
      */
     public const CACHE_EXPIRE = 86400;
     /**
-     * @var  ActionData[]
+     * @var  ActionData[]|null
      */
     protected ?array $actions = null;
-    protected XmlFileStorageInterface $xmlFileStorage;
-    private FileCacheInterface $fileCache;
 
     /**
      * Action constructor.
      *
-     * @param FileCacheInterface      $fileCache
+     * @param FileCacheInterface $fileCache
      * @param XmlFileStorageInterface $xmlFileStorage
      *
      * @throws FileException
      */
     public function __construct(
-        FileCacheInterface      $fileCache,
-        XmlFileStorageInterface $xmlFileStorage
-    )
-    {
-        $this->xmlFileStorage = $xmlFileStorage;
-        $this->fileCache = $fileCache;
-
+        private readonly FileCacheInterface      $fileCache,
+        private readonly XmlFileStorageInterface $xmlFileStorage
+    ) {
         $this->loadCache();
     }
 
@@ -116,17 +112,7 @@ class Actions
         $this->actions = [];
 
         foreach ($this->load() as $a) {
-            if (isset($this->actions[$a['id']])) {
-                throw new RuntimeException('Duplicated action id: ' . $a['id']);
-            }
-
-            $action = new ActionData();
-            $action->id = $a['id'];
-            $action->name = $a['name'];
-            $action->text = $a['text'];
-            $action->route = $a['route'];
-
-            $this->actions[$action->id] = $action;
+            $this->actions[$a['id']] = new ActionData($a['id'], $a['name'], $a['text'], $a['route']);
         }
     }
 

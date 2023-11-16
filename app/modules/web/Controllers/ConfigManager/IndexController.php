@@ -29,7 +29,7 @@ use DI\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -129,39 +129,39 @@ final class IndexController extends ControllerBase
      */
     protected function getTabs(): void
     {
-        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_ACCOUNT)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_ACCOUNT)) {
             $this->tabsHelper->addTab($this->getAccountConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_WIKI)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_WIKI)) {
             $this->tabsHelper->addTab($this->getWikiConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_LDAP)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_LDAP)) {
             $this->tabsHelper->addTab($this->getLdapConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_MAIL)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_MAIL)) {
             $this->tabsHelper->addTab($this->getMailConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_CRYPT)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_CRYPT)) {
             $this->tabsHelper->addTab($this->getEncryptionConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_BACKUP)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_BACKUP)) {
             $this->tabsHelper->addTab($this->getBackupConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_IMPORT)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_IMPORT)) {
             $this->tabsHelper->addTab($this->getImportConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
+        if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getInfo());
         }
 
@@ -172,7 +172,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsHelper->renderTabs(
-            Acl::getActionRoute(ActionsInterface::CONFIG),
+            Acl::getActionRoute(AclActionsInterface::CONFIG),
             $this->request->analyzeInt('tabIndex', 0)
         );
 

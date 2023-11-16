@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,7 +45,7 @@ final class CreateController extends UserGroupViewBase
     public function createAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')

@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Category;
 
 use Exception;
 use League\Fractal\Resource\Item;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
@@ -46,7 +46,7 @@ final class ViewController extends CategoryBase
     public function viewAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CATEGORY_VIEW);
+            $this->setupApi(AclActionsInterface::CATEGORY_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
             $customFields = Util::boolval($this->apiService->getParamString('customFields'));

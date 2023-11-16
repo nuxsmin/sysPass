@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Util\ErrorUtil;
 
@@ -40,7 +40,7 @@ final class CreateController extends AccountViewBase
     public function createAction(): void
     {
         try {
-            $this->accountHelper->setViewForBlank(ActionsInterface::ACCOUNT_CREATE);
+            $this->accountHelper->setViewForBlank(AclActionsInterface::ACCOUNT_CREATE);
 
             $this->view->addTemplate('account');
             $this->view->assign(

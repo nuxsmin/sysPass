@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@
  * @var AccountSearchItem              $accountSearchItem
  */
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Html\DataGrid\Action\DataGridActionBase;
@@ -291,7 +291,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 </a>
                                 <i class="btn-action material-icons fg-green100"
                                    title="<?php echo __('View at Wiki'); ?>"
-                                   data-action-route="<?php echo ActionsInterface::WIKI_VIEW; ?>"
+                                   data-action-route="<?php echo AclActionsInterface::WIKI_VIEW; ?>"
                                    data-pagename="<?php echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>"
                                    data-pagename="<?php echo htmlspecialchars(
                                        $accountSearchData->getName(),

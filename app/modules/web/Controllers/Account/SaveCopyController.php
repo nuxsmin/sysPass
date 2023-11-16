@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -44,7 +44,7 @@ final class SaveCopyController extends AccountSaveBase
     public function saveCopyAction(): ?bool
     {
         try {
-            $this->accountForm->validateFor(ActionsInterface::ACCOUNT_CREATE);
+            $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_CREATE);
 
             $accountId = $this->accountService->create($this->accountForm->getItemData());
 
@@ -61,7 +61,7 @@ final class SaveCopyController extends AccountSaveBase
             );
 
             $this->addCustomFieldsForItem(
-                ActionsInterface::ACCOUNT,
+                AclActionsInterface::ACCOUNT,
                 $accountId,
                 $this->request,
                 $this->customFieldService
@@ -70,7 +70,7 @@ final class SaveCopyController extends AccountSaveBase
             return $this->returnJsonResponseData(
                 [
                     'itemId'     => $accountId,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT),
+                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account created')

@@ -25,7 +25,7 @@
 namespace SP\Domain\Auth\Services;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -121,49 +121,49 @@ final class UpgradeAuthTokenService extends Service
     {
         switch ($moduleId) {
             case 1:
-                return ActionsInterface::ACCOUNT_SEARCH;
+                return AclActionsInterface::ACCOUNT_SEARCH;
             case 100:
-                return ActionsInterface::ACCOUNT_VIEW;
+                return AclActionsInterface::ACCOUNT_VIEW;
             case 104:
-                return ActionsInterface::ACCOUNT_VIEW_PASS;
+                return AclActionsInterface::ACCOUNT_VIEW_PASS;
             case 103:
-                return ActionsInterface::ACCOUNT_DELETE;
+                return AclActionsInterface::ACCOUNT_DELETE;
             case 101:
-                return ActionsInterface::ACCOUNT_CREATE;
+                return AclActionsInterface::ACCOUNT_CREATE;
             case 615:
-                return ActionsInterface::CATEGORY_SEARCH;
+                return AclActionsInterface::CATEGORY_SEARCH;
             case 610:
-                return ActionsInterface::CATEGORY_VIEW;
+                return AclActionsInterface::CATEGORY_VIEW;
             case 611:
-                return ActionsInterface::CATEGORY_CREATE;
+                return AclActionsInterface::CATEGORY_CREATE;
             case 612:
-                return ActionsInterface::CATEGORY_EDIT;
+                return AclActionsInterface::CATEGORY_EDIT;
             case 613:
-                return ActionsInterface::CATEGORY_DELETE;
+                return AclActionsInterface::CATEGORY_DELETE;
             case 625:
-                return ActionsInterface::CLIENT_SEARCH;
+                return AclActionsInterface::CLIENT_SEARCH;
             case 620:
-                return ActionsInterface::CLIENT_VIEW;
+                return AclActionsInterface::CLIENT_VIEW;
             case 621:
-                return ActionsInterface::CLIENT_CREATE;
+                return AclActionsInterface::CLIENT_CREATE;
             case 622:
-                return ActionsInterface::CLIENT_EDIT;
+                return AclActionsInterface::CLIENT_EDIT;
             case 623:
-                return ActionsInterface::CLIENT_DELETE;
+                return AclActionsInterface::CLIENT_DELETE;
             case 685:
-                return ActionsInterface::TAG_SEARCH;
+                return AclActionsInterface::TAG_SEARCH;
             case 681:
-                return ActionsInterface::TAG_VIEW;
+                return AclActionsInterface::TAG_VIEW;
             case 680:
-                return ActionsInterface::TAG_CREATE;
+                return AclActionsInterface::TAG_CREATE;
             case 682:
-                return ActionsInterface::TAG_EDIT;
+                return AclActionsInterface::TAG_EDIT;
             case 683:
-                return ActionsInterface::TAG_DELETE;
+                return AclActionsInterface::TAG_DELETE;
             case 1041:
-                return ActionsInterface::CONFIG_BACKUP_RUN;
+                return AclActionsInterface::CONFIG_BACKUP_RUN;
             case 1061:
-                return ActionsInterface::CONFIG_EXPORT_RUN;
+                return AclActionsInterface::CONFIG_EXPORT_RUN;
         }
 
         return $moduleId;

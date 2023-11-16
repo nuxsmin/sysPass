@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Services\ApiResponse;
@@ -42,7 +42,7 @@ final class SearchController extends CategoryBase
     public function searchAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CATEGORY_SEARCH);
+            $this->setupApi(AclActionsInterface::CATEGORY_SEARCH);
 
             $itemSearchData = $this->buildSearchData();
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Search;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Dtos\AccountAclDto;
@@ -135,7 +135,7 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
 
                 // Obtener la ACL de la cuenta
                 $accountAcl = $this->accountAclService->getAcl(
-                    ActionsInterface::ACCOUNT_SEARCH,
+                    AclActionsInterface::ACCOUNT_SEARCH,
                     AccountAclDto::makeFromAccountSearch(
                         $accountSearchView,
                         $cache->getUsers(),

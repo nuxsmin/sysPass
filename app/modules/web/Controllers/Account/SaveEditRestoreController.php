@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -87,7 +87,7 @@ final class SaveEditRestoreController extends AccountControllerBase
             return $this->returnJsonResponseData(
                 [
                     'itemId'     => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW),
+                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Account restored')

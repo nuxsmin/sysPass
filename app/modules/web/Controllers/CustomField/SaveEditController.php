@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\CustomField;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -51,14 +51,14 @@ final class SaveEditController extends CustomFieldSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::CUSTOMFIELD_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::CUSTOMFIELD_EDIT, $id);
 
             $itemData = $this->form->getItemData();
 

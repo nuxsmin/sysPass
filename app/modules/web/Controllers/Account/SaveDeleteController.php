@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -86,7 +86,7 @@ final class SaveDeleteController extends AccountControllerBase
                 )
             );
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
         } catch (Exception $e) {

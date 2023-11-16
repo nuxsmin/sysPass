@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Client;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
@@ -42,7 +42,7 @@ final class DeleteController extends ClientBase
     public function deleteAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CLIENT_DELETE);
+            $this->setupApi(AclActionsInterface::CLIENT_DELETE);
 
             $id = $this->apiService->getParamInt('id', true);
 

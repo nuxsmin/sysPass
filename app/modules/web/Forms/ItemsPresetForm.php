@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\AccountPermission;
@@ -61,8 +61,8 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::ITEMPRESET_CREATE:
-            case ActionsInterface::ITEMPRESET_EDIT:
+            case AclActionsInterface::ITEMPRESET_CREATE:
+            case AclActionsInterface::ITEMPRESET_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

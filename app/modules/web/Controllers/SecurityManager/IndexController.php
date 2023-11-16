@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\SecurityManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -95,13 +95,13 @@ final class IndexController extends ControllerBase
     {
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        if ($this->checkAccess(ActionsInterface::EVENTLOG)
+        if ($this->checkAccess(AclActionsInterface::EVENTLOG)
             && $this->configData->isLogEnabled()
         ) {
             $this->tabsGridHelper->addTab($this->getEventlogList());
         }
 
-        if ($this->checkAccess(ActionsInterface::TRACK)) {
+        if ($this->checkAccess(AclActionsInterface::TRACK)) {
             $this->tabsGridHelper->addTab($this->getTracksList());
         }
 
@@ -111,7 +111,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE),
+            Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 

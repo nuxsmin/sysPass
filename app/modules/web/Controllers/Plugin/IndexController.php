@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 
 /**
  * Class IndexController
@@ -41,7 +41,7 @@ final class IndexController extends PluginSearchBase
      */
     public function indexAction(): void
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN)) {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN)) {
             return;
         }
 

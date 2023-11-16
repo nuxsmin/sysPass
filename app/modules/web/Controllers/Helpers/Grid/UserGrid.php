@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -152,14 +152,14 @@ final class UserGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::USER_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::USER_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchUser');
         $gridActionSearch->setTitle(__('Search for User'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::USER_SEARCH)
         );
 
         return $gridActionSearch;
@@ -171,7 +171,7 @@ final class UserGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::USER_CREATE);
+        $gridAction->setId(AclActionsInterface::USER_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New User'));
         $gridAction->setTitle(__('New User'));
@@ -180,7 +180,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_CREATE)
+            Acl::getActionRoute(AclActionsInterface::USER_CREATE)
         );
 
         return $gridAction;
@@ -192,7 +192,7 @@ final class UserGrid extends GridBase
     private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::USER_VIEW);
+        $gridAction->setId(AclActionsInterface::USER_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View User Details'));
         $gridAction->setTitle(__('View User Details'));
@@ -200,7 +200,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_VIEW)
+            Acl::getActionRoute(AclActionsInterface::USER_VIEW)
         );
 
         return $gridAction;
@@ -212,7 +212,7 @@ final class UserGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::USER_EDIT);
+        $gridAction->setId(AclActionsInterface::USER_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit User'));
         $gridAction->setTitle(__('Edit User'));
@@ -220,7 +220,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_EDIT)
+            Acl::getActionRoute(AclActionsInterface::USER_EDIT)
         );
 
         return $gridAction;
@@ -232,7 +232,7 @@ final class UserGrid extends GridBase
     private function getEditPassAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::USER_EDIT_PASS);
+        $gridAction->setId(AclActionsInterface::USER_EDIT_PASS);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Change User\'s Password'));
         $gridAction->setTitle(__('Change User\'s Password'));
@@ -241,7 +241,7 @@ final class UserGrid extends GridBase
         $gridAction->setFilterRowSource('isLdap');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_EDIT_PASS)
+            Acl::getActionRoute(AclActionsInterface::USER_EDIT_PASS)
         );
 
         return $gridAction;
@@ -253,7 +253,7 @@ final class UserGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::USER_DELETE);
+        $gridAction->setId(AclActionsInterface::USER_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete User'));
         $gridAction->setTitle(__('Delete User'));
@@ -261,7 +261,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::USER_DELETE)
+            Acl::getActionRoute(AclActionsInterface::USER_DELETE)
         );
 
         return $gridAction;

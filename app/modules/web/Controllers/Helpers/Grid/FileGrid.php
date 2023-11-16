@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -140,14 +140,14 @@ final class FileGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::ACCOUNT_FILE_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::ACCOUNT_FILE_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchFile');
         $gridActionSearch->setTitle(__('Search for File'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_SEARCH)
         );
 
         return $gridActionSearch;
@@ -159,7 +159,7 @@ final class FileGrid extends GridBase
     private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_FILE_VIEW);
+        $gridAction->setId(AclActionsInterface::ACCOUNT_FILE_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View File'));
         $gridAction->setTitle(__('View File'));
@@ -168,7 +168,7 @@ final class FileGrid extends GridBase
         $gridAction->setFilterRowSource('type', 'application/pdf');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_VIEW)
         );
 
         return $gridAction;
@@ -180,7 +180,7 @@ final class FileGrid extends GridBase
     private function getDownloadAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DOWNLOAD);
+        $gridAction->setId(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('Download File'));
         $gridAction->setTitle(__('Download File'));
@@ -188,7 +188,7 @@ final class FileGrid extends GridBase
         $gridAction->setOnClickFunction('file/download');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
         );
         $gridAction->setRuntimeData(
             function ($dataItem) {
@@ -205,7 +205,7 @@ final class FileGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DELETE);
+        $gridAction->setId(AclActionsInterface::ACCOUNT_FILE_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete File'));
         $gridAction->setTitle(__('Delete File'));
@@ -213,7 +213,7 @@ final class FileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DELETE)
         );
 
         return $gridAction;

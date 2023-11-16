@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -95,7 +95,7 @@ final class BulkEditController extends ControllerBase
     public function bulkEditAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -129,7 +129,7 @@ final class BulkEditController extends ControllerBase
     {
         $this->view->addTemplate('account_bulkedit', 'itemshow');
 
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
 
         $clients = SelectItemAdapter::factory($this->clientService->getAllBasic())->getItemsFromModel();
         $categories = SelectItemAdapter::factory($this->categoryService->getAllBasic())->getItemsFromModel();

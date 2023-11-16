@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -50,7 +50,7 @@ final class DeleteController extends TagSaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::TAG_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -60,7 +60,7 @@ final class DeleteController extends TagSaveBase
             if ($id === null) {
                 $this->tagService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::TAG, $id, $this->customFieldService);
 
                 $this->eventDispatcher->notify('delete.tag.selection', new Event($this));
 
@@ -69,7 +69,7 @@ final class DeleteController extends TagSaveBase
 
             $this->tagService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::TAG, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify('delete.tag', new Event($this));
 

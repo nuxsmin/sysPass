@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -84,7 +84,7 @@ abstract class CategoryViewBase extends ControllerBase
 
         $this->view->assign('category', $category);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -96,11 +96,11 @@ abstract class CategoryViewBase extends ControllerBase
 
         $this->view->assign(
             'showViewCustomPass',
-            $this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW_PASS)
+            $this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_VIEW_PASS)
         );
         $this->view->assign(
             'customFields',
-            $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId, $this->customFieldService)
+            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $categoryId, $this->customFieldService)
         );
     }
 }

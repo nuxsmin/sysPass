@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Context\SessionContext;
@@ -138,7 +138,7 @@ final class XmlExportController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_BACKUP);
+            $this->checkAccess(AclActionsInterface::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

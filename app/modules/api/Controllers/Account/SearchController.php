@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
@@ -61,7 +61,7 @@ final class SearchController extends ControllerBase
     public function searchAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::ACCOUNT_SEARCH);
+            $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
 
             $accountSearchFilter = $this->buildAccountSearchFilter();
 

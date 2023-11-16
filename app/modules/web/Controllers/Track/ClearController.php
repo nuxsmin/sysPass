@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Track;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
@@ -49,7 +49,7 @@ final class ClearController extends TrackBase
     public function clearAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::TRACK_CLEAR)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_CLEAR)) {
                 throw new UnauthorizedActionException(SPException::ERROR);
             }
 

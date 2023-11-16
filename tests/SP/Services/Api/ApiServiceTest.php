@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Tests\Services\Api;
 use Closure;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Api\Ports\ApiServiceInterface;
@@ -85,27 +85,27 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertTrue(self::$service->isInitialized());
 
-        self::$service->setup(ActionsInterface::ACCOUNT_VIEW);
+        self::$service->setup(AclActionsInterface::ACCOUNT_VIEW);
 
         $this->assertTrue(self::$service->isInitialized());
 
-        self::$service->setup(ActionsInterface::ACCOUNT_DELETE);
+        self::$service->setup(AclActionsInterface::ACCOUNT_DELETE);
 
         $this->assertTrue(self::$service->isInitialized());
 
         self::$changeRequest->call($this, getResource('json', 'account_viewPass.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_VIEW_PASS);
+        self::$service->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
 
         $this->assertTrue(self::$service->isInitialized());
 
         $this->expectException(ServiceException::class);
 
-        self::$service->setup(ActionsInterface::ACCOUNT_CREATE);
+        self::$service->setup(AclActionsInterface::ACCOUNT_CREATE);
     }
 
     /**
@@ -116,7 +116,7 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertEquals('2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146', self::$service->getParam('authToken'));
         $this->assertEquals('API', self::$service->getParam('text'));
@@ -140,7 +140,7 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertEquals(1, self::$service->getParamInt('categoryId'));
         $this->assertEquals(0, self::$service->getParamInt('text'));
@@ -161,7 +161,7 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_add.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamString('notes'));
 
@@ -176,7 +176,7 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_add.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamRaw('notes'));
     }
@@ -189,7 +189,7 @@ class ApiServiceTest extends DatabaseTestCase
     {
         self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
-        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
 
         $this->assertEquals(10, self::$service->getRequestId());
     }

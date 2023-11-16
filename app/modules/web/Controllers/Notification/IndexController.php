@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -52,7 +52,7 @@ final class IndexController extends ControllerBase
      */
     public function indexAction(): void
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION)) {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION)) {
             return;
         }
 

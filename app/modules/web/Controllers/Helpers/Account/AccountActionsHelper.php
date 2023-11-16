@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Services\AccountAcl;
@@ -58,15 +58,15 @@ final class AccountActionsHelper extends HelperBase
     public function getViewAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_VIEW);
+        $action->setId(AclActionsInterface::ACCOUNT_VIEW);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Account Details'));
         $action->setTitle(__('Account Details'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconView());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowView');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -107,7 +107,7 @@ final class AccountActionsHelper extends HelperBase
             $actions[] = $this->getEditAction()->addData('item-id', $accountActionsDto->getAccountId());
         }
 
-        if ($accountAcl->getActionId() === ActionsInterface::ACCOUNT_VIEW
+        if ($accountAcl->getActionId() === AclActionsInterface::ACCOUNT_VIEW
             && !$accountAcl->isShowEdit()
             && $this->configData->isMailRequestsEnabled()
         ) {
@@ -140,8 +140,8 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Back'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconBack());
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -153,15 +153,15 @@ final class AccountActionsHelper extends HelperBase
     public function getEditPassAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_EDIT_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Edit Account Password'));
         $action->setTitle(__('Edit Account Password'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEditPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -173,15 +173,15 @@ final class AccountActionsHelper extends HelperBase
     public function getEditAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT);
+        $action->setId(AclActionsInterface::ACCOUNT_EDIT);
         $action->setType(DataGridActionType::EDIT_ITEM);
         $action->setName(__('Edit Account'));
         $action->setTitle(__('Edit Account'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEdit());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -193,14 +193,14 @@ final class AccountActionsHelper extends HelperBase
     public function getRequestAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_REQUEST);
+        $action->setId(AclActionsInterface::ACCOUNT_REQUEST);
         $action->setName(__('Request Modification'));
         $action->setTitle(__('Request Modification'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEmail());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_REQUEST));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'submit');
 
         return $action;
@@ -212,7 +212,7 @@ final class AccountActionsHelper extends HelperBase
     public function getRestoreAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT_RESTORE);
+        $action->setId(AclActionsInterface::ACCOUNT_EDIT_RESTORE);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Restore account from this point'));
         $action->setTitle(__('Restore account from this point'));
@@ -231,7 +231,7 @@ final class AccountActionsHelper extends HelperBase
     public function getSaveAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT);
+        $action->setId(AclActionsInterface::ACCOUNT);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Save'));
         $action->setTitle(__('Save'));
@@ -331,15 +331,15 @@ final class AccountActionsHelper extends HelperBase
     public function getDeleteAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_DELETE);
+        $action->setId(AclActionsInterface::ACCOUNT_DELETE);
         $action->setType(DataGridActionType::DELETE_ITEM);
         $action->setName(__('Remove Account'));
         $action->setTitle(__('Remove Account'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconDelete());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowDelete');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -351,14 +351,14 @@ final class AccountActionsHelper extends HelperBase
     public function getPublicLinkRefreshAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::PUBLICLINK_REFRESH);
+        $action->setId(AclActionsInterface::PUBLICLINK_REFRESH);
         $action->setName(__('Update Public Link'));
         $action->setTitle(__('Update Public Link'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('onclick', 'link/refresh');
-        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -373,14 +373,14 @@ final class AccountActionsHelper extends HelperBase
         $icon->setIcon('link_off');
 
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::PUBLICLINK_DELETE);
+        $action->setId(AclActionsInterface::PUBLICLINK_DELETE);
         $action->setName(__('Delete Public Link'));
         $action->setTitle(__('Delete Public Link'));
         $action->addClass('btn-action');
         $action->setIcon($icon);
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_DELETE));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::PUBLICLINK_DELETE));
         $action->addData('onclick', 'link/delete');
-        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -392,14 +392,14 @@ final class AccountActionsHelper extends HelperBase
     public function getPublicLinkAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::PUBLICLINK_CREATE);
+        $action->setId(AclActionsInterface::PUBLICLINK_CREATE);
         $action->setName(__('Create Public Link'));
         $action->setTitle(__('Create Public Link'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
         $action->addData('action-route', 'publicLink/saveCreateFromAccount');
         $action->addData('onclick', 'link/save');
-        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -411,16 +411,16 @@ final class AccountActionsHelper extends HelperBase
     public function getViewPassHistoryAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_VIEW_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('View password'));
         $action->setTitle(__('View password'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
         $action->addData('action-full', 1);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -432,7 +432,7 @@ final class AccountActionsHelper extends HelperBase
     public function getCopyPassHistoryAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_VIEW_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Copy Password to Clipboard'));
         $action->setTitle(__('Copy Password to Clipboard'));
@@ -440,7 +440,7 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('clip-pass-button');
         $action->setIcon($this->icons->getIconClipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('useclipboard', '1');
         $action->addAttribute('type', 'button');
@@ -454,16 +454,16 @@ final class AccountActionsHelper extends HelperBase
     public function getViewPassAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_VIEW_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('View password'));
         $action->setTitle(__('View password'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -475,7 +475,7 @@ final class AccountActionsHelper extends HelperBase
     public function getCopyPassAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_VIEW_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Copy Password to Clipboard'));
         $action->setTitle(__('Copy Password to Clipboard'));
@@ -483,7 +483,7 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('clip-pass-button');
         $action->setIcon($this->icons->getIconClipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY_PASS));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('useclipboard', '1');
         $action->addAttribute('type', 'button');
@@ -497,15 +497,15 @@ final class AccountActionsHelper extends HelperBase
     public function getCopyAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_COPY);
+        $action->setId(AclActionsInterface::ACCOUNT_COPY);
         $action->setType(DataGridActionType::MENUBAR_ITEM);
         $action->setName(__('Copy Account'));
         $action->setTitle(__('Copy Account'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconCopy());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopy');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
+        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));
+        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));
         $action->addAttribute('type', 'button');
 
         return $action;

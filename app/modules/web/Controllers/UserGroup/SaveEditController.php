@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -52,14 +52,14 @@ final class SaveEditController extends UserGroupSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::GROUP_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::GROUP_EDIT, $id);
 
             $groupData = $this->form->getItemData();
 
@@ -76,7 +76,7 @@ final class SaveEditController extends UserGroupSaveBase
                 )
             );
 
-            $this->updateCustomFieldsForItem(ActionsInterface::GROUP, $id, $this->request, $this->customFieldService);
+            $this->updateCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->request, $this->customFieldService);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group updated'));
         } catch (ValidationException $e) {

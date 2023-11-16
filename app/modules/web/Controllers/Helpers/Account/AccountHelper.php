@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
@@ -325,7 +325,7 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign(
             'customFields',
             $this->getCustomFieldsForItem(
-                ActionsInterface::ACCOUNT,
+                AclActionsInterface::ACCOUNT,
                 $this->accountId,
                 $this->customFieldService
             )
@@ -344,22 +344,22 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
         $this->view->assign(
             'addClientEnabled',
-            !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT)
+            !$this->isView && $this->acl->checkUserAccess(AclActionsInterface::CLIENT)
         );
-        $this->view->assign('addClientRoute', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
+        $this->view->assign('addClientRoute', Acl::getActionRoute(AclActionsInterface::CLIENT_CREATE));
         $this->view->assign(
             'addCategoryEnabled',
-            !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY)
+            !$this->isView && $this->acl->checkUserAccess(AclActionsInterface::CATEGORY)
         );
-        $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
+        $this->view->assign('addCategoryRoute', Acl::getActionRoute(AclActionsInterface::CATEGORY_CREATE));
         $this->view->assign(
             'addTagEnabled',
             !$this->isView
-            && $this->acl->checkUserAccess(ActionsInterface::TAG)
+            && $this->acl->checkUserAccess(AclActionsInterface::TAG)
         );
-        $this->view->assign('addTagRoute', Acl::getActionRoute(ActionsInterface::TAG_CREATE));
-        $this->view->assign('fileListRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_LIST));
-        $this->view->assign('fileUploadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_UPLOAD));
+        $this->view->assign('addTagRoute', Acl::getActionRoute(AclActionsInterface::TAG_CREATE));
+        $this->view->assign('fileListRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_LIST));
+        $this->view->assign('fileUploadRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
         $this->view->assign('disabled', $this->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->isView ? 'readonly' : '');
         $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());

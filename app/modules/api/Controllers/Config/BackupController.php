@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -70,7 +70,7 @@ final class BackupController extends ControllerBase
     public function backupAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CONFIG_BACKUP_RUN);
+            $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 

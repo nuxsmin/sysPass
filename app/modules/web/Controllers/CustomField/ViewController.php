@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\CustomField;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -50,7 +50,7 @@ final class ViewController extends CustomFieldViewBase
     public function viewAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_VIEW)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Notification;
 
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
@@ -68,7 +68,7 @@ final class SearchController extends ControllerBase
      */
     public function searchAction(): bool
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_SEARCH)) {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_SEARCH)) {
             return $this->returnJsonResponse(
                 JsonResponse::JSON_ERROR,
                 __u('You don\'t have permission to do this operation')

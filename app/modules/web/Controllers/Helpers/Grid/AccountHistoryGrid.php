@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -144,14 +144,14 @@ final class AccountHistoryGrid extends GridBase
     private function getSearchAction(): DataGridActionSearch
     {
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchAccountHistory');
         $gridActionSearch->setTitle(__('Search for Account'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)
         );
 
         return $gridActionSearch;
@@ -163,7 +163,7 @@ final class AccountHistoryGrid extends GridBase
     private function getRestoreAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
+        $gridAction->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Account Restore'));
         $gridAction->setTitle(__('Account Restore'));
@@ -171,7 +171,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setOnClickFunction('accountManager/restore');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE)
         );
 
         return $gridAction;
@@ -183,7 +183,7 @@ final class AccountHistoryGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
+        $gridAction->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Remove Account'));
         $gridAction->setTitle(__('Remove Account'));
@@ -191,7 +191,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE)
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE)
         );
 
         return $gridAction;

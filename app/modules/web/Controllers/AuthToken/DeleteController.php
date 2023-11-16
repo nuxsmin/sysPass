@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -48,7 +48,7 @@ final class DeleteController extends AuthTokenSaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -58,7 +58,7 @@ final class DeleteController extends AuthTokenSaveBase
             if ($id === null) {
                 $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
 
                 $this->eventDispatcher->notify(
                     'delete.authToken.selection',
@@ -70,7 +70,7 @@ final class DeleteController extends AuthTokenSaveBase
 
             $this->authTokenService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(
                 'delete.authToken',

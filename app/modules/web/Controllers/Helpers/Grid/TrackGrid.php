@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -166,14 +166,14 @@ final class TrackGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::TRACK_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::TRACK_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchTrack');
         $gridActionSearch->setTitle(__('Search for track'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TRACK_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
         );
 
         return $gridActionSearch;
@@ -185,7 +185,7 @@ final class TrackGrid extends GridBase
     private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_SEARCH);
+        $gridAction->setId(AclActionsInterface::TRACK_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
@@ -195,7 +195,7 @@ final class TrackGrid extends GridBase
         $gridAction->addData('action-form', 'frmSearchTrack');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TRACK_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
         );
 
         return $gridAction;
@@ -207,16 +207,16 @@ final class TrackGrid extends GridBase
     private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_CLEAR);
+        $gridAction->setId(AclActionsInterface::TRACK_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
-        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
+        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
+        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
         $gridAction->setIcon($this->icons->getIconClear());
         $gridAction->setOnClickFunction('track/clear');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TRACK_CLEAR)
+            Acl::getActionRoute(AclActionsInterface::TRACK_CLEAR)
         );
 
         return $gridAction;
@@ -228,16 +228,16 @@ final class TrackGrid extends GridBase
     private function getUnlockAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_UNLOCK);
+        $gridAction->setId(AclActionsInterface::TRACK_UNLOCK);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
-        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
+        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
+        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
         $gridAction->setIcon($this->icons->getIconCheck());
         $gridAction->setOnClickFunction('track/unlock');
         $gridAction->setFilterRowSource('tracked', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::TRACK_UNLOCK)
+            Acl::getActionRoute(AclActionsInterface::TRACK_UNLOCK)
         );
 
         return $gridAction;

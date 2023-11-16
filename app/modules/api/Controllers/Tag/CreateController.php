@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\TagData;
@@ -43,7 +43,7 @@ final class CreateController extends TagBase
     public function createAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_CREATE);
+            $this->setupApi(AclActionsInterface::TAG_CREATE);
 
             $tagData = $this->buildTagData();
 

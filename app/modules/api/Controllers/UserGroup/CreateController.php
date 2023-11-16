@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserGroupData;
@@ -43,7 +43,7 @@ final class CreateController extends UserGroupBase
     public function createAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::GROUP_CREATE);
+            $this->setupApi(AclActionsInterface::GROUP_CREATE);
 
             $userGroupData = $this->buildUserGroupData();
 

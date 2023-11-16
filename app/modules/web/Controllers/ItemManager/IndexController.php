@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\ItemManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -142,36 +142,36 @@ final class IndexController extends ControllerBase
     {
         $this->itemSearchData = new ItemSearchData(null, 0, $this->configData->getAccountCount());
 
-        if ($this->checkAccess(ActionsInterface::CATEGORY)) {
+        if ($this->checkAccess(AclActionsInterface::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
         }
 
-        if ($this->checkAccess(ActionsInterface::TAG)) {
+        if ($this->checkAccess(AclActionsInterface::TAG)) {
             $this->tabsGridHelper->addTab($this->getTagsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::CLIENT)) {
+        if ($this->checkAccess(AclActionsInterface::CLIENT)) {
             $this->tabsGridHelper->addTab($this->getClientsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::CUSTOMFIELD)) {
+        if ($this->checkAccess(AclActionsInterface::CUSTOMFIELD)) {
             $this->tabsGridHelper->addTab($this->getCustomFieldsList());
         }
 
         if ($this->configData->isFilesEnabled()
-            && $this->checkAccess(ActionsInterface::FILE)) {
+            && $this->checkAccess(AclActionsInterface::FILE)) {
             $this->tabsGridHelper->addTab($this->getAccountFilesList());
         }
 
-        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR)) {
+        if ($this->checkAccess(AclActionsInterface::ACCOUNTMGR)) {
             $this->tabsGridHelper->addTab($this->getAccountsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR_HISTORY)) {
+        if ($this->checkAccess(AclActionsInterface::ACCOUNTMGR_HISTORY)) {
             $this->tabsGridHelper->addTab($this->getAccountsHistoryList());
         }
 
-        if ($this->checkAccess(ActionsInterface::ITEMPRESET)) {
+        if ($this->checkAccess(AclActionsInterface::ITEMPRESET)) {
             $this->tabsGridHelper->addTab($this->getItemPresetList());
         }
 
@@ -181,7 +181,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE),
+            Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 

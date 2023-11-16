@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -47,7 +47,7 @@ final class DeleteController extends CategorySaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -57,7 +57,7 @@ final class DeleteController extends CategorySaveBase
             if ($id === null) {
                 $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
 
                 $this->eventDispatcher->notify(
                     'delete.category',
@@ -72,7 +72,7 @@ final class DeleteController extends CategorySaveBase
 
             $this->categoryService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(
                 'delete.category',

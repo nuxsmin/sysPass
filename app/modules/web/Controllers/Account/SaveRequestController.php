@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
@@ -88,7 +88,7 @@ final class SaveRequestController extends AccountControllerBase
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
             $deepLink = new Uri($baseUrl);
-            $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW).'/'.$id);
+            $deepLink->addParam('r', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $id);
 
             $usersId = [$accountDetails->userId, $accountDetails->userEditId];
 
@@ -121,7 +121,7 @@ final class SaveRequestController extends AccountControllerBase
             return $this->returnJsonResponseData(
                 [
                     'itemId'     => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT),
+                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Request done')

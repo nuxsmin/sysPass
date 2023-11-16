@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,14 @@ namespace SP\Infrastructure\File;
 
 use DOMDocument;
 use DOMElement;
+use DOMException;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 use ReflectionObject;
 use RuntimeException;
+
+use function SP\__u;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
@@ -39,10 +42,7 @@ use RuntimeException;
  */
 final class XmlHandler implements XmlFileStorageInterface
 {
-    /**
-     * @var mixed
-     */
-    protected            $items;
+    protected mixed      $items;
     private ?DOMDocument $document = null;
     private FileHandler  $fileHandler;
 
@@ -65,8 +65,11 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Guardar el archivo XML
      *
+     * @param $data
+     * @param string $node
+     * @return XmlFileStorageInterface
      * @throws FileException
-     * @throws RuntimeException
+     * @throws DOMException
      */
     public function save($data, string $node = 'root'): XmlFileStorageInterface
     {
@@ -98,6 +101,7 @@ final class XmlHandler implements XmlFileStorageInterface
 
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
+     * @throws DOMException
      */
     protected function writeChildNodes(
         $items,
@@ -129,9 +133,11 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Analizar el tipo de elementos
      *
+     * @param mixed $items
+     * @param bool $serialize
      * @return array|string
      */
-    protected function analyzeItems($items, bool $serialize = false)
+    protected function analyzeItems(mixed $items, bool $serialize = false): array|string
     {
         if (is_array($items)) {
             ksort($items);
@@ -144,7 +150,6 @@ final class XmlHandler implements XmlFileStorageInterface
         }
 
         return [];
-
     }
 
     /**
@@ -161,7 +166,7 @@ final class XmlHandler implements XmlFileStorageInterface
 
             if (is_bool($value)) {
                 $items[$property->getName()] = (int)$value;
-            } elseif (is_numeric($value) && strpos($value, '.') === false) {
+            } elseif (is_numeric($value) && !str_contains($value, '.')) {
                 $items[$property->getName()] = (int)$value;
             } else {
                 $items[$property->getName()] = $value;
@@ -178,7 +183,7 @@ final class XmlHandler implements XmlFileStorageInterface
     /**
      * Devolver los elementos cargados
      */
-    public function getItems()
+    public function getItems(): mixed
     {
         return $this->items;
     }
@@ -194,7 +199,7 @@ final class XmlHandler implements XmlFileStorageInterface
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     public function getPathValue(string $path): string
     {
@@ -256,7 +261,6 @@ final class XmlHandler implements XmlFileStorageInterface
                         && (int)$node->getAttribute('multiple') === 1
                     ) {
                         $nodes[] = $this->readChildNodes($node->childNodes);
-
                     } elseif ($node->hasAttribute('class')) {
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                         $nodes[$node->nodeName]['__class__'] = (string)$node->getAttribute('class');
@@ -267,7 +271,8 @@ final class XmlHandler implements XmlFileStorageInterface
                     $val = null;
 
                     if (is_numeric($node->nodeValue)
-                        && strpos($node->nodeValue, '.') === false) {
+                        && !str_contains($node->nodeValue, '.')
+                    ) {
                         $val = (int)$node->nodeValue;
                     } elseif (!empty($node->nodeValue)) {
                         $val = $node->nodeValue;

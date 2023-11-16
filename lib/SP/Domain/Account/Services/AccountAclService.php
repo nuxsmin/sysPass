@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -331,34 +331,34 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
     private function compileShowAccess(): void
     {
         // Mostrar historial
-        $this->accountAcl->setShowHistory($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_HISTORY_VIEW));
+        $this->accountAcl->setShowHistory($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW));
 
         // Mostrar lista archivos
-        $this->accountAcl->setShowFiles($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_FILE));
+        $this->accountAcl->setShowFiles($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE));
 
         // Mostrar acción de ver clave
-        $this->accountAcl->setShowViewPass($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS));
+        $this->accountAcl->setShowViewPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW_PASS));
 
         // Mostrar acción de editar
-        $this->accountAcl->setShowEdit($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT));
+        $this->accountAcl->setShowEdit($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
 
         // Mostrar acción de editar clave
-        $this->accountAcl->setShowEditPass($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT_PASS));
+        $this->accountAcl->setShowEditPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS));
 
         // Mostrar acción de eliminar
-        $this->accountAcl->setShowDelete($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_DELETE));
+        $this->accountAcl->setShowDelete($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE));
 
         // Mostrar acción de restaurar
-        $this->accountAcl->setShowRestore($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_EDIT));
+        $this->accountAcl->setShowRestore($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
 
         // Mostrar acción de enlace público
-        $this->accountAcl->setShowLink($this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE));
+        $this->accountAcl->setShowLink($this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE));
 
         // Mostrar acción de ver cuenta
-        $this->accountAcl->setShowView($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW));
+        $this->accountAcl->setShowView($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW));
 
         // Mostrar acción de copiar cuenta
-        $this->accountAcl->setShowCopy($this->acl->checkUserAccess(ActionsInterface::ACCOUNT_COPY));
+        $this->accountAcl->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
     }
 
     /**

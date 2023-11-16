@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Services\PublicLinkService;
@@ -54,8 +54,8 @@ final class PublicLinkForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::PUBLICLINK_CREATE:
-            case ActionsInterface::PUBLICLINK_EDIT:
+            case AclActionsInterface::PUBLICLINK_CREATE:
+            case AclActionsInterface::PUBLICLINK_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

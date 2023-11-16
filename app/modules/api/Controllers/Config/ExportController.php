@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -68,7 +68,7 @@ final class ExportController extends ControllerBase
     public function exportAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CONFIG_EXPORT_RUN);
+            $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
             $password = $this->apiService->getParamString('password');
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);

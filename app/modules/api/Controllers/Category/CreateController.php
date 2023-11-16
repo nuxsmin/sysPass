@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
@@ -43,7 +43,7 @@ final class CreateController extends CategoryBase
     public function createAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::CATEGORY_CREATE);
+            $this->setupApi(AclActionsInterface::CATEGORY_CREATE);
 
             $categoryData = $this->buildCategoryData();
 

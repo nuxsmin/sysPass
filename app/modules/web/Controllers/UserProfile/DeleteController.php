@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -51,7 +51,7 @@ final class DeleteController extends UserProfileSaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -66,7 +66,7 @@ final class DeleteController extends UserProfileSaveBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Profiles deleted')))
                 );
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profiles deleted'));
             }
@@ -84,7 +84,7 @@ final class DeleteController extends UserProfileSaveBase
                 )
             );
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile deleted'));
         } catch (Exception $e) {

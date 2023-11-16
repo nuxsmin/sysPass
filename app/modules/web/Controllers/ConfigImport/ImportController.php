@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\ConfigImport;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Context\SessionContext;
@@ -137,7 +137,7 @@ final class ImportController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_IMPORT);
+            $this->checkAccess(AclActionsInterface::CONFIG_IMPORT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

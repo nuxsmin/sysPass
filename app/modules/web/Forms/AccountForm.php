@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Account\Dtos\AccountCreateDto;
@@ -71,7 +71,7 @@ final class AccountForm extends FormBase implements FormInterface
         $chain = new Chainable(fn() => $this->analyzeRequestData(), $this);
 
         switch ($action) {
-            case ActionsInterface::ACCOUNT_EDIT_PASS:
+            case AclActionsInterface::ACCOUNT_EDIT_PASS:
                 $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->checkPassword($dto))
                                           ->next(
                                               fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
@@ -80,13 +80,13 @@ final class AccountForm extends FormBase implements FormInterface
                                           )
                                           ->resolve();
                 break;
-            case ActionsInterface::ACCOUNT_EDIT:
+            case AclActionsInterface::ACCOUNT_EDIT:
                 $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                                           ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
                                           ->resolve();
                 break;
-            case ActionsInterface::ACCOUNT_CREATE:
-            case ActionsInterface::ACCOUNT_COPY:
+            case AclActionsInterface::ACCOUNT_CREATE:
+            case AclActionsInterface::ACCOUNT_COPY:
                 $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                                           ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
                                           ->next(fn(AccountDto $dto) => $this->checkPassword($dto))
@@ -97,7 +97,7 @@ final class AccountForm extends FormBase implements FormInterface
                                           )
                                           ->resolve();
                 break;
-            case ActionsInterface::ACCOUNTMGR_BULK_EDIT:
+            case AclActionsInterface::ACCOUNTMGR_BULK_EDIT:
                 $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                                           ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
                                           ->resolve();

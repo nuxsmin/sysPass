@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Upgrade;
 
 
 use SP\Core\Acl\Actions;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -37,7 +38,7 @@ final class IndexController extends ControllerBase
 {
     private Actions $actions;
 
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper, Actions $actions)
+    public function __construct(Application $application, WebControllerHelper $webControllerHelper, ActionsInterface $actions)
     {
         parent::__construct($application, $webControllerHelper);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -128,14 +128,14 @@ final class UserProfileGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::PROFILE_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::PROFILE_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchProfile');
         $gridActionSearch->setTitle(__('Search for Profile'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::PROFILE_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::PROFILE_SEARCH)
         );
 
         return $gridActionSearch;
@@ -147,7 +147,7 @@ final class UserProfileGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PROFILE_CREATE);
+        $gridAction->setId(AclActionsInterface::PROFILE_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Profile'));
         $gridAction->setTitle(__('New Profile'));
@@ -156,7 +156,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::PROFILE_CREATE)
+            Acl::getActionRoute(AclActionsInterface::PROFILE_CREATE)
         );
 
         return $gridAction;
@@ -168,7 +168,7 @@ final class UserProfileGrid extends GridBase
     private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PROFILE_VIEW);
+        $gridAction->setId(AclActionsInterface::PROFILE_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Profile Details'));
         $gridAction->setTitle(__('View Profile Details'));
@@ -176,7 +176,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::PROFILE_VIEW)
+            Acl::getActionRoute(AclActionsInterface::PROFILE_VIEW)
         );
 
         return $gridAction;
@@ -188,7 +188,7 @@ final class UserProfileGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PROFILE_EDIT);
+        $gridAction->setId(AclActionsInterface::PROFILE_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Profile'));
         $gridAction->setTitle(__('Edit Profile'));
@@ -196,7 +196,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::PROFILE_EDIT)
+            Acl::getActionRoute(AclActionsInterface::PROFILE_EDIT)
         );
 
         return $gridAction;
@@ -208,7 +208,7 @@ final class UserProfileGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PROFILE_DELETE);
+        $gridAction->setId(AclActionsInterface::PROFILE_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Profile'));
         $gridAction->setTitle(__('Delete Profile'));
@@ -216,7 +216,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::PROFILE_DELETE)
+            Acl::getActionRoute(AclActionsInterface::PROFILE_DELETE)
         );
 
         return $gridAction;

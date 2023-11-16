@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AccessManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -118,24 +118,24 @@ final class IndexController extends ControllerBase
     {
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        if ($this->checkAccess(ActionsInterface::USER)) {
+        if ($this->checkAccess(AclActionsInterface::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
         }
 
-        if ($this->checkAccess(ActionsInterface::GROUP)) {
+        if ($this->checkAccess(AclActionsInterface::GROUP)) {
             $this->tabsGridHelper->addTab($this->getUsersGroupList());
         }
 
-        if ($this->checkAccess(ActionsInterface::PROFILE)) {
+        if ($this->checkAccess(AclActionsInterface::PROFILE)) {
             $this->tabsGridHelper->addTab($this->getUsersProfileList());
         }
 
-        if ($this->checkAccess(ActionsInterface::AUTHTOKEN)) {
+        if ($this->checkAccess(AclActionsInterface::AUTHTOKEN)) {
             $this->tabsGridHelper->addTab($this->getAuthTokensList());
         }
 
         if ($this->configData->isPublinksEnabled()
-            && $this->checkAccess(ActionsInterface::PUBLICLINK)) {
+            && $this->checkAccess(AclActionsInterface::PUBLICLINK)) {
             $this->tabsGridHelper->addTab($this->getPublicLinksList());
         }
 
@@ -145,7 +145,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE),
+            Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 

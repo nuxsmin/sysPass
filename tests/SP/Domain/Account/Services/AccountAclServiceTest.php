@@ -25,7 +25,7 @@
 namespace SP\Tests\Domain\Account\Services;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
@@ -46,17 +46,17 @@ use SP\Tests\UnitaryTestCase;
 class AccountAclServiceTest extends UnitaryTestCase
 {
     private const ACTIONS = [
-        ActionsInterface::ACCOUNT_SEARCH,
-        ActionsInterface::ACCOUNT_VIEW,
-        ActionsInterface::ACCOUNT_VIEW_PASS,
-        ActionsInterface::ACCOUNT_HISTORY_VIEW,
-        ActionsInterface::ACCOUNT_CREATE,
-        ActionsInterface::ACCOUNT_EDIT,
-        ActionsInterface::ACCOUNT_EDIT_PASS,
-        ActionsInterface::ACCOUNT_EDIT_RESTORE,
-        ActionsInterface::ACCOUNT_COPY,
-        ActionsInterface::ACCOUNT_COPY_PASS,
-        ActionsInterface::ACCOUNT_DELETE,
+        AclActionsInterface::ACCOUNT_SEARCH,
+        AclActionsInterface::ACCOUNT_VIEW,
+        AclActionsInterface::ACCOUNT_VIEW_PASS,
+        AclActionsInterface::ACCOUNT_HISTORY_VIEW,
+        AclActionsInterface::ACCOUNT_CREATE,
+        AclActionsInterface::ACCOUNT_EDIT,
+        AclActionsInterface::ACCOUNT_EDIT_PASS,
+        AclActionsInterface::ACCOUNT_EDIT_RESTORE,
+        AclActionsInterface::ACCOUNT_COPY,
+        AclActionsInterface::ACCOUNT_COPY_PASS,
+        AclActionsInterface::ACCOUNT_DELETE,
     ];
     private static array      $accounts;
     private AccountAclService $accountAclService;
@@ -217,82 +217,82 @@ class AccountAclServiceTest extends UnitaryTestCase
             $this->assertEquals($example->isResultEdit(), $aclUnderTest->isResultEdit());
             $this->assertEquals($example->isShowPermission(), $aclUnderTest->isShowPermission());
 
-            if ($action !== ActionsInterface::ACCOUNT_CREATE
-                && $action !== ActionsInterface::ACCOUNT_COPY_PASS
+            if ($action !== AclActionsInterface::ACCOUNT_CREATE
+                && $action !== AclActionsInterface::ACCOUNT_COPY_PASS
             ) {
                 $this->assertEquals($example->checkAccountAccess($action), $aclUnderTest->checkAccountAccess($action));
             }
 
-            if ($action === ActionsInterface::ACCOUNT_VIEW
-                || $action === ActionsInterface::ACCOUNT_HISTORY_VIEW
-                || $action === ActionsInterface::ACCOUNT_DELETE
+            if ($action === AclActionsInterface::ACCOUNT_VIEW
+                || $action === AclActionsInterface::ACCOUNT_HISTORY_VIEW
+                || $action === AclActionsInterface::ACCOUNT_DELETE
             ) {
                 $this->assertEquals($example->isShowDetails(), $aclUnderTest->isShowDetails());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_CREATE
-                || $action === ActionsInterface::ACCOUNT_COPY
+            if ($action === AclActionsInterface::ACCOUNT_CREATE
+                || $action === AclActionsInterface::ACCOUNT_COPY
             ) {
                 $this->assertEquals($example->isShowPass(), $aclUnderTest->isShowPass());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_EDIT
-                || $action === ActionsInterface::ACCOUNT_VIEW
-                || $action === ActionsInterface::ACCOUNT_HISTORY_VIEW
+            if ($action === AclActionsInterface::ACCOUNT_EDIT
+                || $action === AclActionsInterface::ACCOUNT_VIEW
+                || $action === AclActionsInterface::ACCOUNT_HISTORY_VIEW
             ) {
                 $this->assertEquals($example->isShowFiles(), $aclUnderTest->isShowFiles());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_SEARCH
-                || $action === ActionsInterface::ACCOUNT_VIEW
-                || $action === ActionsInterface::ACCOUNT_VIEW_PASS
-                || $action === ActionsInterface::ACCOUNT_HISTORY_VIEW
-                || $action === ActionsInterface::ACCOUNT_EDIT
+            if ($action === AclActionsInterface::ACCOUNT_SEARCH
+                || $action === AclActionsInterface::ACCOUNT_VIEW
+                || $action === AclActionsInterface::ACCOUNT_VIEW_PASS
+                || $action === AclActionsInterface::ACCOUNT_HISTORY_VIEW
+                || $action === AclActionsInterface::ACCOUNT_EDIT
             ) {
                 $this->assertEquals($example->isShowViewPass(), $aclUnderTest->isShowViewPass());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_EDIT
-                || $action === ActionsInterface::ACCOUNT_CREATE
-                || $action === ActionsInterface::ACCOUNT_COPY
+            if ($action === AclActionsInterface::ACCOUNT_EDIT
+                || $action === AclActionsInterface::ACCOUNT_CREATE
+                || $action === AclActionsInterface::ACCOUNT_COPY
             ) {
                 $this->assertEquals($example->isShowSave(), $aclUnderTest->isShowSave());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_SEARCH
-                || $action === ActionsInterface::ACCOUNT_VIEW
+            if ($action === AclActionsInterface::ACCOUNT_SEARCH
+                || $action === AclActionsInterface::ACCOUNT_VIEW
             ) {
                 $this->assertEquals($example->isShowEdit(), $aclUnderTest->isShowEdit());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_EDIT
-                || $action === ActionsInterface::ACCOUNT_VIEW
+            if ($action === AclActionsInterface::ACCOUNT_EDIT
+                || $action === AclActionsInterface::ACCOUNT_VIEW
             ) {
                 $this->assertEquals($example->isShowEditPass(), $aclUnderTest->isShowEditPass());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_SEARCH
-                || $action === ActionsInterface::ACCOUNT_DELETE
-                || $action === ActionsInterface::ACCOUNT_EDIT
+            if ($action === AclActionsInterface::ACCOUNT_SEARCH
+                || $action === AclActionsInterface::ACCOUNT_DELETE
+                || $action === AclActionsInterface::ACCOUNT_EDIT
             ) {
                 $this->assertEquals($example->isShowDelete(), $aclUnderTest->isShowDelete());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_HISTORY_VIEW) {
+            if ($action === AclActionsInterface::ACCOUNT_HISTORY_VIEW) {
                 $this->assertEquals($example->isShowRestore(), $aclUnderTest->isShowRestore());
             }
 
             $this->assertEquals($example->isShowLink(), $aclUnderTest->isShowLink());
 
-            if ($action === ActionsInterface::ACCOUNT_VIEW
-                || $action === ActionsInterface::ACCOUNT_HISTORY_VIEW
+            if ($action === AclActionsInterface::ACCOUNT_VIEW
+                || $action === AclActionsInterface::ACCOUNT_HISTORY_VIEW
             ) {
                 $this->assertEquals($example->isShowHistory(), $aclUnderTest->isShowHistory());
             }
 
-            if ($action === ActionsInterface::ACCOUNT_SEARCH
-                || $action === ActionsInterface::ACCOUNT_VIEW
-                || $action === ActionsInterface::ACCOUNT_EDIT
+            if ($action === AclActionsInterface::ACCOUNT_SEARCH
+                || $action === AclActionsInterface::ACCOUNT_VIEW
+                || $action === AclActionsInterface::ACCOUNT_EDIT
             ) {
                 $this->assertEquals($example->isShowCopy(), $aclUnderTest->isShowCopy());
             }

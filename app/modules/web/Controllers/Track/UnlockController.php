@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Track;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
@@ -52,7 +52,7 @@ final class UnlockController extends TrackBase
     public function unlockAction(int $id): ?bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::TRACK_UNLOCK)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_UNLOCK)) {
                 throw new UnauthorizedActionException(SPException::ERROR);
             }
 

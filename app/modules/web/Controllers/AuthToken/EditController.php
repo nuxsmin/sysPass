@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 
@@ -47,7 +47,7 @@ final class EditController extends AuthTokenViewBase
     public function editAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')

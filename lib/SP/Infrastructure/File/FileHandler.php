@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use SP\Util\Util;
+
 use function SP\__;
 use function SP\logger;
 
@@ -46,7 +47,9 @@ final class FileHandler implements FileHandlerInterface
     /**
      * FileHandler constructor.
      */
-    public function __construct(private string $file) {}
+    public function __construct(private string $file)
+    {
+    }
 
     /**
      * Writes data into file
@@ -198,14 +201,14 @@ final class FileHandler implements FileHandlerInterface
     }
 
     /**
-     * @param  callable|null  $chunker
-     * @param  float|null  $rate
+     * @param callable|null $chunker
+     * @param float|null $rate
      *
      * @throws FileException
      */
     public function readChunked(
         callable $chunker = null,
-        ?float $rate = null
+        ?float   $rate = null
     ): void {
         $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
 
@@ -271,7 +274,8 @@ final class FileHandler implements FileHandlerInterface
         $size = filesize($this->file);
 
         if ($size === false
-            || ($isExceptionOnZero === true && $size === 0)) {
+            || ($isExceptionOnZero === true && $size === 0)
+        ) {
             throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
         }
 
@@ -339,10 +343,10 @@ final class FileHandler implements FileHandlerInterface
     }
 
     /**
-     * @param  int  $permissions  Octal permissions
+     * @param int $permissions Octal permissions
      *
-     * @return \SP\Infrastructure\File\FileHandlerInterface
-     * @throws \SP\Infrastructure\File\FileException
+     * @return FileHandlerInterface
+     * @throws FileException
      */
     public function chmod(int $permissions): FileHandlerInterface
     {

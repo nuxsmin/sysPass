@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 
 /**
  * Class AccountAcl
@@ -34,18 +34,18 @@ use SP\Core\Acl\ActionsInterface;
 class AccountAcl
 {
     private const ACTIONS_VIEW = [
-        ActionsInterface::ACCOUNT_VIEW,
-        ActionsInterface::ACCOUNT_SEARCH,
-        ActionsInterface::ACCOUNT_VIEW_PASS,
-        ActionsInterface::ACCOUNT_HISTORY_VIEW,
-        ActionsInterface::ACCOUNT_COPY,
+        AclActionsInterface::ACCOUNT_VIEW,
+        AclActionsInterface::ACCOUNT_SEARCH,
+        AclActionsInterface::ACCOUNT_VIEW_PASS,
+        AclActionsInterface::ACCOUNT_HISTORY_VIEW,
+        AclActionsInterface::ACCOUNT_COPY,
     ];
 
     private const ACTIONS_EDIT = [
-        ActionsInterface::ACCOUNT_EDIT,
-        ActionsInterface::ACCOUNT_DELETE,
-        ActionsInterface::ACCOUNT_EDIT_PASS,
-        ActionsInterface::ACCOUNT_EDIT_RESTORE,
+        AclActionsInterface::ACCOUNT_EDIT,
+        AclActionsInterface::ACCOUNT_DELETE,
+        AclActionsInterface::ACCOUNT_EDIT_PASS,
+        AclActionsInterface::ACCOUNT_EDIT_RESTORE,
     ];
     private bool $userInGroups          = false;
     private bool $userInUsers           = false;
@@ -130,9 +130,9 @@ class AccountAcl
     public function isShowDetails(): bool
     {
         return $this->resultView
-               && ($this->actionId === ActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_DELETE);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_DELETE);
     }
 
     /**
@@ -149,8 +149,8 @@ class AccountAcl
 
     public function isShowPass(): bool
     {
-        return ($this->actionId === ActionsInterface::ACCOUNT_CREATE
-                || $this->actionId === ActionsInterface::ACCOUNT_COPY);
+        return ($this->actionId === AclActionsInterface::ACCOUNT_CREATE
+                || $this->actionId === AclActionsInterface::ACCOUNT_COPY);
     }
 
     /**
@@ -168,9 +168,9 @@ class AccountAcl
     public function isShowFiles(): bool
     {
         return $this->showFiles
-               && ($this->actionId === ActionsInterface::ACCOUNT_EDIT
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_EDIT
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW);
     }
 
     public function setShowFiles(bool $showFiles): AccountAcl
@@ -183,11 +183,11 @@ class AccountAcl
     public function isShowViewPass(): bool
     {
         return $this->showViewPass
-               && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW_PASS
-                   || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW_PASS
+                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
     }
 
     public function setShowViewPass(bool $showViewPass): AccountAcl
@@ -199,9 +199,9 @@ class AccountAcl
 
     public function isShowSave(): bool
     {
-        return $this->actionId === ActionsInterface::ACCOUNT_EDIT
-               || $this->actionId === ActionsInterface::ACCOUNT_CREATE
-               || $this->actionId === ActionsInterface::ACCOUNT_COPY;
+        return $this->actionId === AclActionsInterface::ACCOUNT_EDIT
+               || $this->actionId === AclActionsInterface::ACCOUNT_CREATE
+               || $this->actionId === AclActionsInterface::ACCOUNT_COPY;
     }
 
     /**
@@ -219,8 +219,8 @@ class AccountAcl
     public function isShowEdit(): bool
     {
         return $this->showEdit
-               && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW);
     }
 
     public function setShowEdit(bool $showEdit): AccountAcl
@@ -233,8 +233,8 @@ class AccountAcl
     public function isShowEditPass(): bool
     {
         return $this->showEditPass
-               && ($this->actionId === ActionsInterface::ACCOUNT_EDIT
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_EDIT
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW);
     }
 
     public function setShowEditPass(bool $showEditPass): AccountAcl
@@ -247,9 +247,9 @@ class AccountAcl
     public function isShowDelete(): bool
     {
         return $this->showDelete
-               && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === ActionsInterface::ACCOUNT_DELETE
-                   || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
+                   || $this->actionId === AclActionsInterface::ACCOUNT_DELETE
+                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
     }
 
     public function setShowDelete(bool $showDelete): AccountAcl
@@ -261,7 +261,7 @@ class AccountAcl
 
     public function isShowRestore(): bool
     {
-        return $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW && $this->showRestore;
+        return $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW && $this->showRestore;
     }
 
     public function setShowRestore(bool $showRestore): AccountAcl
@@ -286,8 +286,8 @@ class AccountAcl
     public function isShowHistory(): bool
     {
         return $this->showHistory
-               && ($this->actionId === ActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_HISTORY_VIEW);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW);
     }
 
     public function setShowHistory(bool $showHistory): AccountAcl
@@ -373,9 +373,9 @@ class AccountAcl
     public function isShowCopy(): bool
     {
         return $this->showCopy
-               && ($this->actionId === ActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === ActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === ActionsInterface::ACCOUNT_EDIT);
+               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
+                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
+                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
     }
 
     public function setShowCopy(bool $showCopy): AccountAcl

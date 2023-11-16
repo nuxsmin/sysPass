@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -52,14 +52,14 @@ final class SaveEditController extends UserSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::USER_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::USER_EDIT, $id);
 
             $itemData = $this->form->getItemData();
 
@@ -76,7 +76,7 @@ final class SaveEditController extends UserSaveBase
                 )
             );
 
-            $this->updateCustomFieldsForItem(ActionsInterface::USER, $id, $this->request, $this->customFieldService);
+            $this->updateCustomFieldsForItem(AclActionsInterface::USER, $id, $this->request, $this->customFieldService);
 
             $this->checkChangeUserPass($id, $itemData);
 

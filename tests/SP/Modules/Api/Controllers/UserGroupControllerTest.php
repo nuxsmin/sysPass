@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -73,7 +73,7 @@ class UserGroupControllerTest extends ApiTestCase
     private function createUserGroup(?array $params = null): stdClass
     {
         $api = $this->callApi(
-            ActionsInterface::GROUP_CREATE,
+            AclActionsInterface::GROUP_CREATE,
             $params ?? self::PARAMS
         );
 
@@ -142,7 +142,7 @@ class UserGroupControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_VIEW,
+            AclActionsInterface::GROUP_VIEW,
             ['id' => $id]
         );
 
@@ -168,7 +168,7 @@ class UserGroupControllerTest extends ApiTestCase
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::GROUP_VIEW,
+            AclActionsInterface::GROUP_VIEW,
             ['id' => 10]
         );
 
@@ -199,7 +199,7 @@ class UserGroupControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_EDIT,
+            AclActionsInterface::GROUP_EDIT,
             $params
         );
 
@@ -211,7 +211,7 @@ class UserGroupControllerTest extends ApiTestCase
         $this->assertEquals($id, $response->result->itemId);
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_VIEW,
+            AclActionsInterface::GROUP_VIEW,
             ['id' => $id]
         );
 
@@ -247,7 +247,7 @@ class UserGroupControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_EDIT,
+            AclActionsInterface::GROUP_EDIT,
             $params
         );
 
@@ -273,7 +273,7 @@ class UserGroupControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_EDIT,
+            AclActionsInterface::GROUP_EDIT,
             $params
         );
 
@@ -299,7 +299,7 @@ class UserGroupControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_EDIT,
+            AclActionsInterface::GROUP_EDIT,
             $params
         );
 
@@ -319,7 +319,7 @@ class UserGroupControllerTest extends ApiTestCase
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
-            ActionsInterface::GROUP_SEARCH,
+            AclActionsInterface::GROUP_SEARCH,
             $filter
         );
 
@@ -342,7 +342,7 @@ class UserGroupControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::GROUP_DELETE,
+            AclActionsInterface::GROUP_DELETE,
             ['id' => $id]
         );
 
@@ -362,7 +362,7 @@ class UserGroupControllerTest extends ApiTestCase
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::GROUP_DELETE,
+            AclActionsInterface::GROUP_DELETE,
             ['id' => 10]
         );
 
@@ -380,7 +380,7 @@ class UserGroupControllerTest extends ApiTestCase
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(
-            ActionsInterface::GROUP_DELETE,
+            AclActionsInterface::GROUP_DELETE,
             []
         );
 

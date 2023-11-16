@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use Klein\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Bootstrap\BootstrapApi;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\AuthTokenData;
@@ -59,35 +59,35 @@ abstract class ApiTestCase extends TestCase
     use DatabaseTrait;
 
     private const METHOD_ACTION_MAP = [
-        ActionsInterface::ACCOUNT_CREATE    => 'account/create',
-        ActionsInterface::ACCOUNT_VIEW      => 'account/view',
-        ActionsInterface::ACCOUNT_VIEW_PASS => 'account/viewPass',
-        ActionsInterface::ACCOUNT_EDIT_PASS => 'account/editPass',
-        ActionsInterface::ACCOUNT_EDIT      => 'account/edit',
-        ActionsInterface::ACCOUNT_SEARCH    => 'account/search',
-        ActionsInterface::ACCOUNT_DELETE    => 'account/delete',
-        ActionsInterface::CATEGORY_VIEW     => 'category/view',
-        ActionsInterface::CATEGORY_CREATE   => 'category/create',
-        ActionsInterface::CATEGORY_EDIT     => 'category/edit',
-        ActionsInterface::CATEGORY_DELETE   => 'category/delete',
-        ActionsInterface::CATEGORY_SEARCH   => 'category/search',
-        ActionsInterface::CLIENT_VIEW       => 'client/view',
-        ActionsInterface::CLIENT_CREATE     => 'client/create',
-        ActionsInterface::CLIENT_EDIT       => 'client/edit',
-        ActionsInterface::CLIENT_DELETE     => 'client/delete',
-        ActionsInterface::CLIENT_SEARCH     => 'client/search',
-        ActionsInterface::TAG_VIEW          => 'tag/view',
-        ActionsInterface::TAG_CREATE        => 'tag/create',
-        ActionsInterface::TAG_EDIT          => 'tag/edit',
-        ActionsInterface::TAG_DELETE        => 'tag/delete',
-        ActionsInterface::TAG_SEARCH        => 'tag/search',
-        ActionsInterface::GROUP_VIEW        => 'userGroup/view',
-        ActionsInterface::GROUP_CREATE      => 'userGroup/create',
-        ActionsInterface::GROUP_EDIT        => 'userGroup/edit',
-        ActionsInterface::GROUP_DELETE      => 'userGroup/delete',
-        ActionsInterface::GROUP_SEARCH      => 'userGroup/search',
-        ActionsInterface::CONFIG_BACKUP_RUN => 'config/backup',
-        ActionsInterface::CONFIG_EXPORT_RUN => 'config/export',
+        AclActionsInterface::ACCOUNT_CREATE    => 'account/create',
+        AclActionsInterface::ACCOUNT_VIEW      => 'account/view',
+        AclActionsInterface::ACCOUNT_VIEW_PASS => 'account/viewPass',
+        AclActionsInterface::ACCOUNT_EDIT_PASS => 'account/editPass',
+        AclActionsInterface::ACCOUNT_EDIT      => 'account/edit',
+        AclActionsInterface::ACCOUNT_SEARCH    => 'account/search',
+        AclActionsInterface::ACCOUNT_DELETE    => 'account/delete',
+        AclActionsInterface::CATEGORY_VIEW     => 'category/view',
+        AclActionsInterface::CATEGORY_CREATE   => 'category/create',
+        AclActionsInterface::CATEGORY_EDIT     => 'category/edit',
+        AclActionsInterface::CATEGORY_DELETE   => 'category/delete',
+        AclActionsInterface::CATEGORY_SEARCH   => 'category/search',
+        AclActionsInterface::CLIENT_VIEW       => 'client/view',
+        AclActionsInterface::CLIENT_CREATE     => 'client/create',
+        AclActionsInterface::CLIENT_EDIT       => 'client/edit',
+        AclActionsInterface::CLIENT_DELETE     => 'client/delete',
+        AclActionsInterface::CLIENT_SEARCH     => 'client/search',
+        AclActionsInterface::TAG_VIEW          => 'tag/view',
+        AclActionsInterface::TAG_CREATE        => 'tag/create',
+        AclActionsInterface::TAG_EDIT          => 'tag/edit',
+        AclActionsInterface::TAG_DELETE        => 'tag/delete',
+        AclActionsInterface::TAG_SEARCH        => 'tag/search',
+        AclActionsInterface::GROUP_VIEW        => 'userGroup/view',
+        AclActionsInterface::GROUP_CREATE      => 'userGroup/create',
+        AclActionsInterface::GROUP_EDIT        => 'userGroup/edit',
+        AclActionsInterface::GROUP_DELETE      => 'userGroup/delete',
+        AclActionsInterface::GROUP_SEARCH      => 'userGroup/search',
+        AclActionsInterface::CONFIG_BACKUP_RUN => 'config/backup',
+        AclActionsInterface::CONFIG_EXPORT_RUN => 'config/export',
     ];
     protected static ?ConfigDataInterface $configData = null;
 

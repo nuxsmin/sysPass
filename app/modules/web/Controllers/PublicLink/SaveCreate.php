@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -46,14 +46,14 @@ final class SaveCreate extends PublicLinkSaveBase
     public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::PUBLICLINK_CREATE);
+            $this->form->validateFor(AclActionsInterface::PUBLICLINK_CREATE);
 
             $this->publicLinkService->create($this->form->getItemData());
 

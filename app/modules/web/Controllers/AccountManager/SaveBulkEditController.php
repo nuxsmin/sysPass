@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -84,7 +84,7 @@ final class SaveBulkEditController extends ControllerBase
 
             $accountBulkDto = new AccountUpdateBulkDto(
                 array_map(function ($itemId) {
-                    $this->accountForm->validateFor(ActionsInterface::ACCOUNTMGR_BULK_EDIT, $itemId);
+                    $this->accountForm->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $itemId);
 
                     return $this->accountForm->getItemData();
                 }, $itemsId)

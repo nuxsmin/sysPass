@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -43,14 +43,14 @@ final class SaveCreateController extends NotificationSaveBase
     public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::NOTIFICATION_CREATE);
+            $this->form->validateFor(AclActionsInterface::NOTIFICATION_CREATE);
 
             $this->notificationService->create($this->form->getItemData());
 

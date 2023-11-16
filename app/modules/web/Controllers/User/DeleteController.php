@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -51,7 +51,7 @@ final class DeleteController extends UserSaveBase
     public function deleteAction(?int $id = null): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::USER_DELETE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_DELETE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
@@ -71,14 +71,14 @@ final class DeleteController extends UserSaveBase
                     )
                 );
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Users deleted'));
             }
 
             $this->userService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(
                 'delete.user',

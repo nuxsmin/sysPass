@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -70,7 +70,7 @@ class CategoryControllerTest extends ApiTestCase
     private function createCategory(?array $params = null): stdClass
     {
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_CREATE,
+            AclActionsInterface::CATEGORY_CREATE,
             $params ?? self::PARAMS
         );
 
@@ -121,7 +121,7 @@ class CategoryControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_VIEW,
+            AclActionsInterface::CATEGORY_VIEW,
             ['id' => $id]
         );
 
@@ -150,7 +150,7 @@ class CategoryControllerTest extends ApiTestCase
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_VIEW,
+            AclActionsInterface::CATEGORY_VIEW,
             ['id' => 10]
         );
 
@@ -178,7 +178,7 @@ class CategoryControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_EDIT,
+            AclActionsInterface::CATEGORY_EDIT,
             $params
         );
 
@@ -190,7 +190,7 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertEquals($id, $response->result->itemId);
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_VIEW,
+            AclActionsInterface::CATEGORY_VIEW,
             ['id' => $id]
         );
 
@@ -225,7 +225,7 @@ class CategoryControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_EDIT,
+            AclActionsInterface::CATEGORY_EDIT,
             $params
         );
 
@@ -251,7 +251,7 @@ class CategoryControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_EDIT,
+            AclActionsInterface::CATEGORY_EDIT,
             $params
         );
 
@@ -278,7 +278,7 @@ class CategoryControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_EDIT,
+            AclActionsInterface::CATEGORY_EDIT,
             $params
         );
 
@@ -298,7 +298,7 @@ class CategoryControllerTest extends ApiTestCase
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_SEARCH,
+            AclActionsInterface::CATEGORY_SEARCH,
             $filter
         );
 
@@ -321,7 +321,7 @@ class CategoryControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_DELETE,
+            AclActionsInterface::CATEGORY_DELETE,
             ['id' => $id]
         );
 
@@ -341,7 +341,7 @@ class CategoryControllerTest extends ApiTestCase
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_DELETE,
+            AclActionsInterface::CATEGORY_DELETE,
             ['id' => 10]
         );
 
@@ -359,7 +359,7 @@ class CategoryControllerTest extends ApiTestCase
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CATEGORY_DELETE,
+            AclActionsInterface::CATEGORY_DELETE,
             []
         );
 

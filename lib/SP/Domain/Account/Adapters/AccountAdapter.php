@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -62,7 +62,7 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
     public function includeCustomFields(AccountEnrichedDto $data,): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId(), $this->customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::ACCOUNT, $data->getId(), $this->customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
@@ -110,7 +110,7 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $account->getId(),
-                        ActionsInterface::ACCOUNT_VIEW,
+                        AclActionsInterface::ACCOUNT_VIEW,
                         $this->configData,
                         true
                     ),

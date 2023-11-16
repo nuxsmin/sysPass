@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,19 +37,19 @@ interface XmlFileStorageInterface
     public function load(string $node = ''): XmlFileStorageInterface;
 
     /**
-     * @param  mixed  $data  Data to be saved
-     * @param  string  $node
+     * @param mixed $data Data to be saved
+     * @param string $node
      *
      * @throws FileException
      */
     public function save($data, string $node = ''): XmlFileStorageInterface;
 
-    public function getItems();
+    public function getItems(): mixed;
 
     /**
      * Returns the given path node value
      *
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     public function getPathValue(string $path): string;
 

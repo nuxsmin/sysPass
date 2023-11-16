@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -43,7 +43,7 @@ final class ViewPassController extends AccountBase
     public function viewPassAction(): void
     {
         try {
-            $this->setupApi(ActionsInterface::ACCOUNT_VIEW_PASS);
+            $this->setupApi(AclActionsInterface::ACCOUNT_VIEW_PASS);
 
             $id = $this->apiService->getParamInt('id', true);
             $accountPassData = $this->accountService->getPasswordForId($id);

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\Vault;
@@ -125,7 +125,7 @@ final class ViewLinkController extends AccountControllerBase
                 } else {
                     $this->view->assign(
                         'copyPassRoute',
-                        Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS)
+                        Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS)
                     );
                 }
 
@@ -138,7 +138,7 @@ final class ViewLinkController extends AccountControllerBase
                 $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
 
                 $deepLink = new Uri($baseUrl);
-                $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW).'/'.$accountData->getId());
+                $deepLink->addParam('r', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId());
 
                 $this->eventDispatcher->notify(
                     'show.account.link',

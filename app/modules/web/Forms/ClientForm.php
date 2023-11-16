@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
 
@@ -53,8 +53,8 @@ final class ClientForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::CLIENT_CREATE:
-            case ActionsInterface::CLIENT_EDIT:
+            case AclActionsInterface::CLIENT_CREATE:
+            case AclActionsInterface::CLIENT_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

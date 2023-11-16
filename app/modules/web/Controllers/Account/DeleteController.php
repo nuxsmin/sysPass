@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\UI\ThemeIcons;
@@ -72,7 +72,7 @@ final class DeleteController extends AccountControllerBase
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, ActionsInterface::ACCOUNT_DELETE);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_DELETE);
 
             $this->view->addTemplate('account');
             $this->view->assign(

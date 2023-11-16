@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -78,7 +78,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $expected->setName('Prueba');
         $expected->setIsEncrypted(1);
         $expected->setHelp('Ayuda');
-        $expected->setModuleId(ActionsInterface::ACCOUNT);
+        $expected->setModuleId(AclActionsInterface::ACCOUNT);
         $expected->setRequired(true);
         $expected->setTypeId(1);
         $expected->setShowInList(0);
@@ -102,7 +102,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $data->setName('PIN');
         $data->setIsEncrypted(0);
         $data->setHelp('Pin code');
-        $data->setModuleId(ActionsInterface::CLIENT);
+        $data->setModuleId(AclActionsInterface::CLIENT);
         $data->setRequired(false);
         $data->setTypeId(2);
         $data->setShowInList(1);
@@ -157,7 +157,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $expected->setName('Prueba');
         $expected->setIsEncrypted(1);
         $expected->setHelp('Ayuda');
-        $expected->setModuleId(ActionsInterface::ACCOUNT);
+        $expected->setModuleId(AclActionsInterface::ACCOUNT);
         $expected->setRequired(true);
         $expected->setTypeId(1);
         $expected->setShowInList(0);
@@ -168,7 +168,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $expected->setId(2);
         $expected->setName('RSA');
         $expected->setIsEncrypted(0);
-        $expected->setModuleId(ActionsInterface::CATEGORY);
+        $expected->setModuleId(AclActionsInterface::CATEGORY);
         $expected->setRequired(false);
         $expected->setTypeId(2);
         $expected->setShowInList(0);
@@ -192,7 +192,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $data->setName('Phone');
         $data->setIsEncrypted(0);
         $data->setHelp('Telefono');
-        $data->setModuleId(ActionsInterface::ACCOUNT);
+        $data->setModuleId(AclActionsInterface::ACCOUNT);
         $data->setRequired(true);
         $data->setTypeId(6);
         $data->setShowInList(0);
@@ -222,7 +222,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $expected->setName('Prueba');
         $expected->setIsEncrypted(1);
         $expected->setHelp('Ayuda');
-        $expected->setModuleId(ActionsInterface::ACCOUNT);
+        $expected->setModuleId(AclActionsInterface::ACCOUNT);
         $expected->setRequired(true);
         $expected->setTypeId(1);
         $expected->setShowInList(0);
@@ -233,7 +233,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $expected->setId(2);
         $expected->setName('RSA');
         $expected->setIsEncrypted(0);
-        $expected->setModuleId(ActionsInterface::CATEGORY);
+        $expected->setModuleId(AclActionsInterface::CATEGORY);
         $expected->setRequired(false);
         $expected->setTypeId(2);
         $expected->setShowInList(0);

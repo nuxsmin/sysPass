@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -135,14 +135,14 @@ final class ClientGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::CLIENT_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::CLIENT_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchClient');
         $gridActionSearch->setTitle(__('Search for Client'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CLIENT_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::CLIENT_SEARCH)
         );
 
         return $gridActionSearch;
@@ -154,7 +154,7 @@ final class ClientGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_CREATE);
+        $gridAction->setId(AclActionsInterface::CLIENT_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Client'));
         $gridAction->setTitle(__('New Client'));
@@ -163,7 +163,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CLIENT_CREATE)
+            Acl::getActionRoute(AclActionsInterface::CLIENT_CREATE)
         );
 
         return $gridAction;
@@ -175,7 +175,7 @@ final class ClientGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_EDIT);
+        $gridAction->setId(AclActionsInterface::CLIENT_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Client'));
         $gridAction->setTitle(__('Edit Client'));
@@ -183,7 +183,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CLIENT_EDIT)
+            Acl::getActionRoute(AclActionsInterface::CLIENT_EDIT)
         );
 
         return $gridAction;
@@ -195,7 +195,7 @@ final class ClientGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_DELETE);
+        $gridAction->setId(AclActionsInterface::CLIENT_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Client'));
         $gridAction->setTitle(__('Delete Client'));
@@ -203,7 +203,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CLIENT_DELETE)
+            Acl::getActionRoute(AclActionsInterface::CLIENT_DELETE)
         );
 
         return $gridAction;

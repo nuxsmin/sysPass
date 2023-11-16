@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
 use SP\Domain\Auth\Services\AuthTokenService;
@@ -55,8 +55,8 @@ final class AuthTokenForm extends FormBase implements FormInterface
         }
 
         switch ($action) {
-            case ActionsInterface::AUTHTOKEN_CREATE:
-            case ActionsInterface::AUTHTOKEN_EDIT:
+            case AclActionsInterface::AUTHTOKEN_CREATE:
+            case AclActionsInterface::AUTHTOKEN_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

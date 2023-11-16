@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -82,8 +82,8 @@ interface FileHandlerInterface
     public function close(): FileHandlerInterface;
 
     /**
-     * @param  callable|null  $chunker
-     * @param  float|null  $rate
+     * @param callable|null $chunker
+     * @param float|null $rate
      *
      * @throws FileException
      */
@@ -144,10 +144,10 @@ interface FileHandlerInterface
     /**
      * Changes file permissions
      *
-     * @param  int  $permissions Octal permissions
+     * @param int $permissions Octal permissions
      *
-     * @return \SP\Infrastructure\File\FileHandlerInterface
-     * @throws \SP\Infrastructure\File\FileException
+     * @return FileHandlerInterface
+     * @throws FileException
      */
     public function chmod(int $permissions): FileHandlerInterface;
 }

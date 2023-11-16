@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\CustomField\Services;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -86,11 +86,11 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     public static function getFieldModules(): array
     {
         return [
-            ActionsInterface::ACCOUNT  => __('Accounts'),
-            ActionsInterface::CATEGORY => __('Categories'),
-            ActionsInterface::CLIENT   => __('Clients'),
-            ActionsInterface::USER     => __('Users'),
-            ActionsInterface::GROUP    => __('Groups'),
+            AclActionsInterface::ACCOUNT  => __('Accounts'),
+            AclActionsInterface::CATEGORY => __('Categories'),
+            AclActionsInterface::CLIENT   => __('Clients'),
+            AclActionsInterface::USER     => __('Users'),
+            AclActionsInterface::GROUP    => __('Groups'),
         ];
     }
 

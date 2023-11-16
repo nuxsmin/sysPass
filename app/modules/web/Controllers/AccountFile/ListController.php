@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Util\ErrorUtil;
 
@@ -55,9 +55,9 @@ final class ListController extends AccountFileBase
 
             $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
             $this->view->assign('files', $this->accountFileService->getByAccountId($accountId));
-            $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
-            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
-            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
+            $this->view->assign('fileViewRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_VIEW));
+            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD));
+            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DELETE));
 
             if (!is_array($this->view->files)
                 || count($this->view->files) === 0) {

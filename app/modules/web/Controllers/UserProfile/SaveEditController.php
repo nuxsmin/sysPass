@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -52,14 +52,14 @@ final class SaveEditController extends UserProfileSaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::PROFILE_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::PROFILE_EDIT, $id);
 
             $profileData = $this->form->getItemData();
 
@@ -76,7 +76,7 @@ final class SaveEditController extends UserProfileSaveBase
                 )
             );
 
-            $this->updateCustomFieldsForItem(ActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
+            $this->updateCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile updated'));
         } catch (ValidationException $e) {

@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -77,7 +77,7 @@ final class DeleteController extends ControllerBase
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
                 $this->eventDispatcher->notify(
                     'delete.account.selection',
@@ -91,7 +91,7 @@ final class DeleteController extends ControllerBase
 
             $this->accountService->delete($id);
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(
                 'delete.account',

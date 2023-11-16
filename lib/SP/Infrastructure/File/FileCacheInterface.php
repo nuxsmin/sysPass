@@ -38,7 +38,7 @@ interface FileCacheInterface
      * @param  string|null  $class  The class to unserialize the data
      *
      * @return mixed
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     public function load(?string $path = null, ?string $class = null): mixed;
 

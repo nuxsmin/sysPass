@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Services\PublicLinkService;
@@ -52,7 +52,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
     public function saveCreateFromAccountAction(int $accountId, int $notify): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')

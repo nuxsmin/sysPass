@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -47,14 +47,14 @@ final class SaveEditController extends CategorySaveBase
     public function saveEditAction(int $id): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_EDIT)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_EDIT)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::CATEGORY_EDIT, $id);
+            $this->form->validateFor(AclActionsInterface::CATEGORY_EDIT, $id);
 
             $itemData = $this->form->getItemData();
 
@@ -71,7 +71,7 @@ final class SaveEditController extends CategorySaveBase
             );
 
             $this->updateCustomFieldsForItem(
-                ActionsInterface::CATEGORY,
+                AclActionsInterface::CATEGORY,
                 $id,
                 $this->request,
                 $this->customFieldService

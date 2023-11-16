@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -100,7 +100,7 @@ abstract class AuthTokenViewBase extends ControllerBase
 
         $this->view->assign(
             'nextAction',
-            Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+            Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE)
         );
 
         if ($this->view->isView === true) {
@@ -113,7 +113,7 @@ abstract class AuthTokenViewBase extends ControllerBase
 
         $this->view->assign(
             'customFields',
-            $this->getCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $authTokenId, $this->customFieldService)
+            $this->getCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $authTokenId, $this->customFieldService)
         );
     }
 }

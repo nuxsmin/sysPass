@@ -28,7 +28,7 @@ use Exception;
 use Faker\Factory;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
@@ -424,7 +424,7 @@ class ApiServiceTest extends UnitaryTestCase
      */
     public function testSetupWithMasterPass()
     {
-        $actionId = ActionsInterface::ACCOUNT_VIEW_PASS;
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
 
         $this->trackService
             ->expects(self::once())
@@ -475,7 +475,7 @@ class ApiServiceTest extends UnitaryTestCase
      */
     public function testSetupWithMasterPassWrongTokenPass()
     {
-        $actionId = ActionsInterface::ACCOUNT_VIEW_PASS;
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
 
         $this->trackService
             ->expects(self::once())
@@ -627,7 +627,7 @@ class ApiServiceTest extends UnitaryTestCase
      */
     public function testGetMasterPass()
     {
-        $actionId = ActionsInterface::ACCOUNT_VIEW_PASS;
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
         $authToken = self::$faker->password;
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -92,7 +92,7 @@ final class AccountSearchHelper extends HelperBase
         $this->accountActionsHelper = $accountActionsHelper;
 
         $this->queryTimeStart = microtime(true);
-        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(ActionsInterface::ACCOUNT);
+        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(AclActionsInterface::ACCOUNT);
         $this->setVars();
     }
 
@@ -221,7 +221,7 @@ final class AccountSearchHelper extends HelperBase
         $gridPager->setLimitCount($this->accountSearchFilter->getLimitCount());
         $gridPager->setOnClickFunction('account/sort');
         $gridPager->setFilterOn($this->filterOn);
-        $gridPager->setSourceAction(new DataGridActionSearch(ActionsInterface::ACCOUNT_SEARCH));
+        $gridPager->setSourceAction(new DataGridActionSearch(AclActionsInterface::ACCOUNT_SEARCH));
 
         $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
         $showOptionalActions = $userPreferences->isOptionalActions()
@@ -341,10 +341,10 @@ final class AccountSearchHelper extends HelperBase
         $this->view->assign('searchTxt', $this->accountSearchFilter->getTxtSearch());
         $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
         $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
-        $this->view->assign('searchRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_SEARCH));
-        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_ADD));
-        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_DELETE));
-        $this->view->assign('viewAccountRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $this->view->assign('searchRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_SEARCH));
+        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_ADD));
+        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_DELETE));
+        $this->view->assign('viewAccountRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
     }
 
     /**

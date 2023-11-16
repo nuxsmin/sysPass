@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -165,14 +165,14 @@ final class EventlogGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::EVENTLOG_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchEvent');
         $gridActionSearch->setTitle(__('Search for Events'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
         );
 
         return $gridActionSearch;
@@ -184,7 +184,7 @@ final class EventlogGrid extends GridBase
     private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $gridAction->setId(AclActionsInterface::EVENTLOG_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
@@ -194,7 +194,7 @@ final class EventlogGrid extends GridBase
         $gridAction->addData('action-form', 'frmSearchEvent');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
         );
 
         return $gridAction;
@@ -206,7 +206,7 @@ final class EventlogGrid extends GridBase
     private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::EVENTLOG_CLEAR);
+        $gridAction->setId(AclActionsInterface::EVENTLOG_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Clear the event log out'));
@@ -215,7 +215,7 @@ final class EventlogGrid extends GridBase
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR)
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_CLEAR)
         );
 
         return $gridAction;

@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -72,7 +72,7 @@ class ClientControllerTest extends ApiTestCase
     private function createClient(?array $params = null): stdClass
     {
         $api = $this->callApi(
-            ActionsInterface::CLIENT_CREATE,
+            AclActionsInterface::CLIENT_CREATE,
             $params ?? self::PARAMS
         );
 
@@ -123,7 +123,7 @@ class ClientControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_VIEW,
+            AclActionsInterface::CLIENT_VIEW,
             ['id' => $id]
         );
 
@@ -153,7 +153,7 @@ class ClientControllerTest extends ApiTestCase
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CLIENT_VIEW,
+            AclActionsInterface::CLIENT_VIEW,
             ['id' => 10]
         );
 
@@ -182,7 +182,7 @@ class ClientControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_EDIT,
+            AclActionsInterface::CLIENT_EDIT,
             $params
         );
 
@@ -194,7 +194,7 @@ class ClientControllerTest extends ApiTestCase
         $this->assertEquals($id, $response->result->itemId);
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_VIEW,
+            AclActionsInterface::CLIENT_VIEW,
             ['id' => $id]
         );
 
@@ -230,7 +230,7 @@ class ClientControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_EDIT,
+            AclActionsInterface::CLIENT_EDIT,
             $params
         );
 
@@ -256,7 +256,7 @@ class ClientControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_EDIT,
+            AclActionsInterface::CLIENT_EDIT,
             $params
         );
 
@@ -284,7 +284,7 @@ class ClientControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_EDIT,
+            AclActionsInterface::CLIENT_EDIT,
             $params
         );
 
@@ -304,7 +304,7 @@ class ClientControllerTest extends ApiTestCase
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
-            ActionsInterface::CLIENT_SEARCH,
+            AclActionsInterface::CLIENT_SEARCH,
             $filter
         );
 
@@ -327,7 +327,7 @@ class ClientControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::CLIENT_DELETE,
+            AclActionsInterface::CLIENT_DELETE,
             ['id' => $id]
         );
 
@@ -347,7 +347,7 @@ class ClientControllerTest extends ApiTestCase
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CLIENT_DELETE,
+            AclActionsInterface::CLIENT_DELETE,
             ['id' => 10]
         );
 
@@ -365,7 +365,7 @@ class ClientControllerTest extends ApiTestCase
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(
-            ActionsInterface::CLIENT_DELETE,
+            AclActionsInterface::CLIENT_DELETE,
             []
         );
 

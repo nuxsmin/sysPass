@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -44,19 +44,19 @@ final class SaveCreateController extends AuthTokenSaveBase
     public function saveCreateAction(): bool
     {
         try {
-            if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_CREATE)) {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
                 return $this->returnJsonResponse(
                     JsonResponse::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
 
-            $this->form->validateFor(ActionsInterface::AUTHTOKEN_CREATE);
+            $this->form->validateFor(AclActionsInterface::AUTHTOKEN_CREATE);
 
             $id = $this->authTokenService->create($this->form->getItemData());
 
             $this->addCustomFieldsForItem(
-                ActionsInterface::AUTHTOKEN,
+                AclActionsInterface::AUTHTOKEN,
                 $id,
                 $this->request,
                 $this->customFieldService

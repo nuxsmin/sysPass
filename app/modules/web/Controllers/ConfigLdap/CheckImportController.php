@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -118,7 +118,7 @@ final class CheckImportController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_LDAP);
+            $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
             $this->extensionChecker->checkLdapAvailable(true);
         } catch (UnauthorizedPageException|CheckException $e) {

@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use SP\Core\Exceptions\InvalidClassException;
+
 use function SP\__u;
 
 /**
@@ -36,7 +37,7 @@ class FileCache extends FileCacheBase
 {
     /**
      * @throws FileException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function load(?string $path = null, ?string $class = null): mixed
     {

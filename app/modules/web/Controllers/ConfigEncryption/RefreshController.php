@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
@@ -100,7 +100,7 @@ final class RefreshController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
+            $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

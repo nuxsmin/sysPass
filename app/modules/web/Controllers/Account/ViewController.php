@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Util\ErrorUtil;
 
@@ -53,7 +53,7 @@ final class ViewController extends AccountViewBase
                 ->withTagsById($accountDetailsResponse);
 
             $this->accountHelper->setIsView(true);
-            $this->accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_VIEW);
+            $this->accountHelper->setViewForAccount($accountDetailsResponse, AclActionsInterface::ACCOUNT_VIEW);
 
             $this->view->assign(
                 'title',

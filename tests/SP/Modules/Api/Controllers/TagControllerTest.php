@@ -24,7 +24,7 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -68,7 +68,7 @@ class TagControllerTest extends ApiTestCase
     private function createTag(?array $params = null): stdClass
     {
         $api = $this->callApi(
-            ActionsInterface::TAG_CREATE,
+            AclActionsInterface::TAG_CREATE,
             $params ?? self::PARAMS
         );
 
@@ -116,7 +116,7 @@ class TagControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::TAG_VIEW,
+            AclActionsInterface::TAG_VIEW,
             ['id' => $id]
         );
 
@@ -139,7 +139,7 @@ class TagControllerTest extends ApiTestCase
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::TAG_VIEW,
+            AclActionsInterface::TAG_VIEW,
             ['id' => 10]
         );
 
@@ -166,7 +166,7 @@ class TagControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::TAG_EDIT,
+            AclActionsInterface::TAG_EDIT,
             $params
         );
 
@@ -178,7 +178,7 @@ class TagControllerTest extends ApiTestCase
         $this->assertEquals($id, $response->result->itemId);
 
         $api = $this->callApi(
-            ActionsInterface::TAG_VIEW,
+            AclActionsInterface::TAG_VIEW,
             ['id' => $id]
         );
 
@@ -210,7 +210,7 @@ class TagControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::TAG_EDIT,
+            AclActionsInterface::TAG_EDIT,
             $params
         );
 
@@ -236,7 +236,7 @@ class TagControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::TAG_EDIT,
+            AclActionsInterface::TAG_EDIT,
             $params
         );
 
@@ -262,7 +262,7 @@ class TagControllerTest extends ApiTestCase
         ];
 
         $api = $this->callApi(
-            ActionsInterface::TAG_EDIT,
+            AclActionsInterface::TAG_EDIT,
             $params
         );
 
@@ -282,7 +282,7 @@ class TagControllerTest extends ApiTestCase
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
-            ActionsInterface::TAG_SEARCH,
+            AclActionsInterface::TAG_SEARCH,
             $filter
         );
 
@@ -305,7 +305,7 @@ class TagControllerTest extends ApiTestCase
         $id = $response->result->itemId;
 
         $api = $this->callApi(
-            ActionsInterface::TAG_DELETE,
+            AclActionsInterface::TAG_DELETE,
             ['id' => $id]
         );
 
@@ -325,7 +325,7 @@ class TagControllerTest extends ApiTestCase
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
-            ActionsInterface::TAG_DELETE,
+            AclActionsInterface::TAG_DELETE,
             ['id' => 10]
         );
 
@@ -343,7 +343,7 @@ class TagControllerTest extends ApiTestCase
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(
-            ActionsInterface::TAG_DELETE,
+            AclActionsInterface::TAG_DELETE,
             []
         );
 

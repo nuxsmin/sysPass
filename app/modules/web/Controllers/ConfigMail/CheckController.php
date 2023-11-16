@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigMail;
 
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -132,7 +132,7 @@ final class CheckController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_MAIL);
+            $this->checkAccess(AclActionsInterface::CONFIG_MAIL);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

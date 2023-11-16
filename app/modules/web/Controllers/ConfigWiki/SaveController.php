@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\ConfigWiki;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -94,7 +94,7 @@ final class SaveController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_WIKI);
+            $this->checkAccess(AclActionsInterface::CONFIG_WIKI);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

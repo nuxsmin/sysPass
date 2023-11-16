@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -80,7 +80,8 @@ abstract class FileCacheBase implements FileCacheInterface
 
         if (!is_dir($path)
             && !mkdir($path, 0700, true)
-            && !is_dir($path)) {
+            && !is_dir($path)
+        ) {
             throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
         }
     }
@@ -101,7 +102,7 @@ abstract class FileCacheBase implements FileCacheInterface
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     protected function checkOrInitializePath(?string $path = null): void
     {

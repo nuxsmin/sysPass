@@ -25,7 +25,7 @@
 namespace SP\Domain\CustomField\Services;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -155,15 +155,15 @@ final class UpgradeCustomFieldDefinitionService extends Service
     {
         switch ($moduleId) {
             case 10:
-                return ActionsInterface::ACCOUNT;
+                return AclActionsInterface::ACCOUNT;
             case 61:
-                return ActionsInterface::CATEGORY;
+                return AclActionsInterface::CATEGORY;
             case 62:
-                return ActionsInterface::CLIENT;
+                return AclActionsInterface::CLIENT;
             case 71:
-                return ActionsInterface::USER;
+                return AclActionsInterface::USER;
             case 72:
-                return ActionsInterface::GROUP;
+                return AclActionsInterface::GROUP;
         }
 
         return $moduleId;

@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
 use League\Fractal\Resource\Item;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -46,7 +46,7 @@ final class ViewController extends AccountBase
     {
 
         try {
-            $this->setupApi(ActionsInterface::ACCOUNT_VIEW);
+            $this->setupApi(AclActionsInterface::ACCOUNT_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
             $customFields = Util::boolval($this->apiService->getParamString('customFields'));

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -142,14 +142,14 @@ final class CustomFieldGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::CUSTOMFIELD_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::CUSTOMFIELD_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchCustomField');
         $gridActionSearch->setTitle(__('Search for Field'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_SEARCH)
         );
 
         return $gridActionSearch;
@@ -161,7 +161,7 @@ final class CustomFieldGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CUSTOMFIELD_CREATE);
+        $gridAction->setId(AclActionsInterface::CUSTOMFIELD_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Field'));
         $gridAction->setTitle(__('New Field'));
@@ -170,7 +170,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_CREATE)
+            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_CREATE)
         );
 
         return $gridAction;
@@ -182,7 +182,7 @@ final class CustomFieldGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CUSTOMFIELD_EDIT);
+        $gridAction->setId(AclActionsInterface::CUSTOMFIELD_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Field'));
         $gridAction->setTitle(__('Edit Field'));
@@ -190,7 +190,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_EDIT)
+            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_EDIT)
         );
 
         return $gridAction;
@@ -202,7 +202,7 @@ final class CustomFieldGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CUSTOMFIELD_DELETE);
+        $gridAction->setId(AclActionsInterface::CUSTOMFIELD_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Field'));
         $gridAction->setTitle(__('Delete Field'));
@@ -210,7 +210,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_DELETE)
+            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_DELETE)
         );
 
         return $gridAction;

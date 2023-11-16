@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -66,7 +66,7 @@ final class RequestAccessController extends ControllerBase
             $this->accountRequestHelper->setIsView(true);
             $this->accountRequestHelper->setViewForRequest(
                 $this->accountService->getByIdEnriched($id),
-                ActionsInterface::ACCOUNT_REQUEST
+                AclActionsInterface::ACCOUNT_REQUEST
             );
 
             $this->view->addTemplate('account-request');

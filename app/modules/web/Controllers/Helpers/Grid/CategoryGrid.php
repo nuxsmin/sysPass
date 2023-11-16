@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -128,14 +128,14 @@ final class CategoryGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::CATEGORY_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::CATEGORY_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchCategory');
         $gridActionSearch->setTitle(__('Search for Category'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH)
+            Acl::getActionRoute(AclActionsInterface::CATEGORY_SEARCH)
         );
 
         return $gridActionSearch;
@@ -147,7 +147,7 @@ final class CategoryGrid extends GridBase
     private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_CREATE);
+        $gridAction->setId(AclActionsInterface::CATEGORY_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Category'));
         $gridAction->setTitle(__('New Category'));
@@ -156,7 +156,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE)
+            Acl::getActionRoute(AclActionsInterface::CATEGORY_CREATE)
         );
 
         return $gridAction;
@@ -168,7 +168,7 @@ final class CategoryGrid extends GridBase
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_EDIT);
+        $gridAction->setId(AclActionsInterface::CATEGORY_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Category'));
         $gridAction->setTitle(__('Edit Category'));
@@ -176,7 +176,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT)
+            Acl::getActionRoute(AclActionsInterface::CATEGORY_EDIT)
         );
 
         return $gridAction;
@@ -188,7 +188,7 @@ final class CategoryGrid extends GridBase
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_DELETE);
+        $gridAction->setId(AclActionsInterface::CATEGORY_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Category'));
         $gridAction->setTitle(__('Delete Category'));
@@ -196,7 +196,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE)
+            Acl::getActionRoute(AclActionsInterface::CATEGORY_DELETE)
         );
 
         return $gridAction;
