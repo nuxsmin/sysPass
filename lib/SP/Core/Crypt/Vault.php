@@ -25,6 +25,7 @@
 namespace SP\Core\Crypt;
 
 use RuntimeException;
+use SP\Core\Exceptions\CryptException;
 
 /**
  * Class Vault
@@ -37,7 +38,9 @@ final class Vault
     private ?string $key     = null;
     private int     $timeSet = 0;
 
-    private function __construct(private CryptInterface $crypt) {}
+    private function __construct(private readonly CryptInterface $crypt)
+    {
+    }
 
     public static function factory(CryptInterface $crypt): Vault
     {
@@ -47,7 +50,7 @@ final class Vault
     /**
      * Re-key this vault
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function reKey(string $newSeed, string $oldSeed): Vault
     {
@@ -57,7 +60,7 @@ final class Vault
     /**
      * Create a new vault with the saved data
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function saveData($data, string $key): Vault
     {
@@ -72,7 +75,7 @@ final class Vault
     /**
      * Get the data decrypted
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function getData(string $key): string
     {

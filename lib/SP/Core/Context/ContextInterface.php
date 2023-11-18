@@ -34,7 +34,7 @@ use SP\Domain\User\Services\UserLoginResponse;
  */
 interface ContextInterface
 {
-    const MASTER_PASSWORD_KEY = '_masterpass';
+    public const MASTER_PASSWORD_KEY = '_masterpass';
 
     /**
      * @throws ContextException

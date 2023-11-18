@@ -38,7 +38,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptPKIInterface;
-use SP\Core\Crypt\CSRF;
+use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Core\Crypt\UUIDCookie;
@@ -182,7 +182,7 @@ final class CoreDefinitions
                 ->constructor('syspass'),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            CSRF::class => autowire(CSRF::class),
+            Csrf::class => autowire(Csrf::class),
             LanguageInterface::class => autowire(Language::class),
             DatabaseInterface::class => autowire(Database::class),
             MailProviderInterface::class => autowire(MailProvider::class),

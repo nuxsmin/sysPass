@@ -36,7 +36,7 @@ use function SP\processException;
  *
  * @package SP\Core\Session
  */
-class SessionContext extends ContextBase
+class SessionContext extends ContextBase implements SessionContextInterface
 {
     public const MAX_SID_TIME = 120;
 

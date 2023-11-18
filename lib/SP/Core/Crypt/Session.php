@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,10 @@
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Context\SessionContext;
+use SP\Core\Exceptions\CryptException;
+
+use function SP\logger;
 
 /**
  * Class Session
@@ -37,7 +39,7 @@ class Session
     /**
      * Devolver la clave maestra de la sesión
      *
-     * @throws CryptoException
+     * @throws CryptException
      */
     public static function getSessionKey(SessionContext $sessionContext): string
     {
@@ -52,27 +54,27 @@ class Session
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public static function saveSessionKey($data, SessionContext $sessionContext): void
+    public static function saveSessionKey(mixed $data, SessionContext $sessionContext): void
     {
-        $sessionContext->setVault((new Vault())->saveData($data, self::getKey($sessionContext)));
+        $sessionContext->setVault(Vault::factory(new Crypt())->saveData($data, self::getKey($sessionContext)));
     }
 
     /**
      * Regenerar la clave de sesión
      *
-     * @throws CryptoException
+     * @throws CryptException
      */
     public static function reKey(SessionContext $sessionContext): void
     {
         logger(__METHOD__);
 
-        $oldSeed = session_id() . $sessionContext->getSidStartTime();
+        $oldSeed = sprintf("%s%s", session_id(), $sessionContext->getSidStartTime());
 
         session_regenerate_id(true);
 
-        $newSeed = session_id() . $sessionContext->setSidStartTime(time());
+        $newSeed = sprintf("%s%s", session_id(), $sessionContext->setSidStartTime(time()));
 
         $sessionContext->setVault($sessionContext->getVault()->reKey($newSeed, $oldSeed));
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,39 +24,25 @@
 
 namespace SP\Core\Crypt;
 
-
-use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Http\Request;
 use SP\Http\RequestInterface;
 
+use function SP\logger;
+
 /**
- * Class CSRF
+ * Class Csrf
  *
  * @package SP\Core\Crypt
  */
-class CSRF
+class Csrf implements CsrfInterface
 {
-    private ContextInterface $context;
-    private Request $request;
-    private ConfigDataInterface $configData;
 
-    /**
-     * CSRF constructor.
-     *
-     * @param  ContextInterface  $context
-     * @param  RequestInterface  $request
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
-     */
     public function __construct(
-        ContextInterface    $context,
-        RequestInterface $request,
-        ConfigDataInterface $configData
-    )
-    {
-        $this->context = $context;
-        $this->request = $request;
-        $this->configData = $configData;
+        private readonly SessionContextInterface $context,
+        private readonly RequestInterface        $request,
+        private readonly ConfigDataInterface     $configData
+    ) {
     }
 
     /**
@@ -93,7 +79,7 @@ class CSRF
      */
     private function getKey(): string
     {
-        return sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
+        return sha1(sprintf("%s%s", $this->request->getHeader('User-Agent'), $this->request->getClientAddress()));
     }
 
     /**

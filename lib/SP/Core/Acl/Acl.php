@@ -30,6 +30,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
+
+use function SP\__;
 use function SP\__u;
 use function SP\processException;
 
@@ -38,7 +40,7 @@ use function SP\processException;
  */
 class Acl implements AclActionsInterface
 {
-    protected static ?Actions $actions = null;
+    protected static ?ActionsInterface $actions = null;
 
     /**
      * Acl constructor.
@@ -48,9 +50,9 @@ class Acl implements AclActionsInterface
      * @param ActionsInterface|null $actions
      */
     public function __construct(
-        private ContextInterface $context,
-        private EventDispatcherInterface $eventDispatcher,
-        ActionsInterface $actions = null
+        private readonly ContextInterface         $context,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        ActionsInterface                          $actions = null
     ) {
         self::$actions = $actions;
     }
@@ -72,8 +74,8 @@ class Acl implements AclActionsInterface
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param  int  $actionId  El id de la acción
-     * @param  bool  $translate
+     * @param int $actionId El id de la acción
+     * @param bool $translate
      *
      * @return string
      * @internal param bool $shortName Si se devuelve el nombre corto de la acción
@@ -280,9 +282,9 @@ class Acl implements AclActionsInterface
             new Event(
                 $this,
                 EventMessage::factory()
-                    ->addDescription(__u('Access denied'))
-                    ->addDetail(__u('Action'), $actionName)
-                    ->addDetail(__u('User'), $userData->getLogin())
+                            ->addDescription(__u('Access denied'))
+                            ->addDetail(__u('Action'), $actionName)
+                            ->addDetail(__u('User'), $userData->getLogin())
             )
         );
 

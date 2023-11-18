@@ -41,11 +41,11 @@ class Crypt implements CryptInterface
     /**
      * Securiza una clave de seguridad
      *
-     * @param  string  $password
-     * @param  bool  $useAscii
+     * @param string $password
+     * @param bool $useAscii
      *
      * @return string|KeyProtectedByPassword
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      * @TODO: Update callers to use instance
      */
     public function makeSecuredKey(string $password, bool $useAscii = true): KeyProtectedByPassword|string
@@ -64,12 +64,12 @@ class Crypt implements CryptInterface
     /**
      * Encriptar datos con una clave segura
      *
-     * @param  string  $data
-     * @param  string|Key  $securedKey
-     * @param  string|null  $password
+     * @param string $data
+     * @param string|Key $securedKey
+     * @param string|null $password
      *
      * @return string
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      *
      * @TODO: Update callers to use instance
      */
@@ -91,12 +91,12 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * @param  string  $key
-     * @param  string  $password
-     * @param  bool  $useAscii
+     * @param string $key
+     * @param string $password
+     * @param bool $useAscii
      *
      * @return string|Key
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     private function unlockSecuredKey(string $key, string $password, bool $useAscii = true): Key|string
     {
@@ -116,18 +116,18 @@ class Crypt implements CryptInterface
     /**
      * Desencriptar datos con una clave segura
      *
-     * @param  string  $data
-     * @param  string|Key|KeyProtectedByPassword  $securedKey
-     * @param  string|null  $password
+     * @param string $data
+     * @param string|Key|KeyProtectedByPassword $securedKey
+     * @param string|null $password
      *
      * @return string
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      * @TODO: Update callers to use instance
      */
     public function decrypt(
-        string $data,
+        string                            $data,
         Key|KeyProtectedByPassword|string $securedKey,
-        ?string $password = null
+        ?string                           $password = null
     ): string {
         try {
             if ($securedKey instanceof Key) {

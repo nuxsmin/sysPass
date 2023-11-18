@@ -33,7 +33,8 @@ use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\Crypt\CSRF;
+use SP\Core\Crypt\Csrf;
+use SP\Core\Crypt\CsrfInterface;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Exceptions\ConstraintException;
@@ -130,8 +131,8 @@ final class Init extends HttpModuleBase
     public const  ROUTE_UPGRADE                   = 'upgrade';
 
 
-    private CSRF                 $csrf;
-    private ThemeInterface       $theme;
+    private Csrf           $csrf;
+    private ThemeInterface $theme;
     private Language             $language;
     private SecureSessionService $secureSessionService;
     private PluginManager        $pluginManager;
@@ -141,18 +142,18 @@ final class Init extends HttpModuleBase
     private bool                 $isIndex = false;
 
     public function __construct(
-        Application $application,
-        ProvidersHelper $providersHelper,
-        RequestInterface $request,
-        Klein $router,
-        CSRF $csrf,
-        ThemeInterface $theme,
-        LanguageInterface $language,
+        Application                   $application,
+        ProvidersHelper               $providersHelper,
+        RequestInterface              $request,
+        Klein                         $router,
+        CsrfInterface                 $csrf,
+        ThemeInterface                $theme,
+        LanguageInterface             $language,
         SecureSessionServiceInterface $secureSessionService,
-        PluginManager $pluginManager,
-        ItemPresetService $itemPresetService,
-        DatabaseUtil $databaseUtil,
-        UserProfileServiceInterface $userProfileService
+        PluginManager                 $pluginManager,
+        ItemPresetService             $itemPresetService,
+        DatabaseUtil                  $databaseUtil,
+        UserProfileServiceInterface   $userProfileService
     ) {
         parent::__construct(
             $application,
