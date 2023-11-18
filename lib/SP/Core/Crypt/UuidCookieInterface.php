@@ -22,32 +22,41 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Crypt\Ports;
-
-use Defuse\Crypto\Key;
-use SP\Core\Crypt\UuidCookie;
-use SP\Core\Crypt\UuidCookieInterface;
-use SP\Domain\Common\Services\ServiceException;
+namespace SP\Core\Crypt;
 
 /**
- * Class SecureSessionService
+ * Class UuidCookie
  *
- * @package SP\Domain\Crypt\Services
+ * @package SP\Core\Crypt
  */
-interface SecureSessionServiceInterface
+interface UuidCookieInterface
 {
     /**
-     * Returns an unique filename from a browser cookie
-     *
-     * @throws ServiceException
+     * Firmar la cookie para autentificación
      */
-    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed): string;
+    public function sign(string $data, string $cypher): string;
 
     /**
-     * Returns the encryption key
+     * Comprobar la firma de la cookie y devolver los datos
      *
+     * @param string $data
+     * @param string $cypher
      *
-     * @return Key|false
+     * @return bool|string
      */
-    public function getKey(): Key|bool;
+    public function getCookieData(string $data, string $cypher): bool|string;
+
+    /**
+     * Creates a cookie and sets its data
+     *
+     * @return string|false
+     */
+    public function create(string $signKey): bool|string;
+
+    /**
+     * Loads cookie data
+     *
+     * @return false|string
+     */
+    public function load(string $signKey): bool|string;
 }

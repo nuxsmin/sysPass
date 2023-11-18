@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Crypt\UuidCookie;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Crypt\Services\SecureSessionService;
@@ -140,7 +140,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFrom()
     {
-        $uuidCookie = $this->createMock(UUIDCookie::class);
+        $uuidCookie = $this->createMock(UuidCookie::class);
 
         $uuidCookie->method('load')
                    ->willReturn(uniqid('', true));
@@ -156,7 +156,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFromErrorLoadingCookie()
     {
-        $uuidCookie = $this->createMock(UUIDCookie::class);
+        $uuidCookie = $this->createMock(UuidCookie::class);
 
         $uuidCookie->method('load')->willReturn(false);
 
@@ -172,7 +172,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFromErrorCreatingCookie()
     {
-        $uuidCookie = $this->createMock(UUIDCookie::class);
+        $uuidCookie = $this->createMock(UuidCookie::class);
 
         $uuidCookie->method('create')->willReturn(false);
 

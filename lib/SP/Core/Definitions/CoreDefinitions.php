@@ -41,7 +41,7 @@ use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Crypt\UuidCookie;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\LanguageInterface;
@@ -223,7 +223,7 @@ final class CoreDefinitions
                 ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
             FileCacheInterface::class => create(FileCache::class),
             Application::class => autowire(Application::class),
-            UUIDCookie::class => factory([UUIDCookie::class, 'factory'])
+            UuidCookie::class => factory([UuidCookie::class, 'factory'])
                 ->parameter(
                     'request',
                     get(RequestInterface::class)

@@ -27,18 +27,18 @@ namespace SP\Core\Crypt;
 use SP\Http\RequestInterface;
 
 /**
- * Class SecureCookie
+ * Class UuidCookie
  *
  * @package SP\Core\Crypt
  */
-class UUIDCookie extends Cookie
+class UuidCookie extends Cookie implements UuidCookieInterface
 {
     /**
      * Nombre de la cookie
      */
     public const COOKIE_NAME = 'SYSPASS_UUID';
 
-    public static function factory(RequestInterface $request): UUIDCookie
+    public static function factory(RequestInterface $request): UuidCookie
     {
         return new self(self::COOKIE_NAME, $request);
     }

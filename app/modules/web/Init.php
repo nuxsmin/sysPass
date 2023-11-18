@@ -36,7 +36,7 @@ use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\CsrfInterface;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Crypt\UuidCookie;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\InvalidArgumentException;

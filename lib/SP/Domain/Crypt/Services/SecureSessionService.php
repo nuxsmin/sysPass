@@ -30,7 +30,8 @@ use SP\Core\Application;
 use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Crypt\UuidCookie;
+use SP\Core\Crypt\UuidCookieInterface;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -64,7 +65,7 @@ final class SecureSessionService extends Service implements SecureSessionService
      *
      * @throws ServiceException
      */
-    public static function getFileNameFrom(UUIDCookie $cookie, string $seed): string
+    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed): string
     {
         if (($uuid = $cookie->load($seed)) === false
             && ($uuid = $cookie->create($seed)) === false

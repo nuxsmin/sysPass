@@ -28,7 +28,7 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\RequestBasedPassword;
-use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
 use SP\Domain\Account\Search\AccountSearchDataBuilder;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -106,7 +106,7 @@ final class DomainDefinitions
                 static function (ContainerInterface $c) {
                     $fileCache = new FileCache(
                         SecureSessionService::getFileNameFrom(
-                            $c->get(UUIDCookie::class),
+                            $c->get(UuidCookie::class),
                             $c->get(ConfigDataInterface::class)->getPasswordSalt()
                         )
                     );
