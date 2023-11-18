@@ -32,6 +32,7 @@ use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -241,7 +242,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws ServiceException
      * @throws CryptoException
      */
-    private function getSecureData(string $token, string $key): Vault
+    private function getSecureData(string $token, string $key): VaultInterface
     {
         return (new Vault())->saveData(
             $this->getMasterKeyFromContext(),

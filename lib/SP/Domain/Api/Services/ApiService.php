@@ -30,6 +30,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
@@ -251,7 +252,7 @@ final class ApiService extends Service implements ApiServiceInterface
 
             Hash::checkHashKey($tokenPass, $this->authTokenData->getHash()) || $this->accessDenied();
 
-            /** @var Vault $vault */
+            /** @var VaultInterface $vault */
             $vault = unserialize($this->authTokenData->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
 
             $key = sha1($tokenPass.$this->getParam('authToken'));

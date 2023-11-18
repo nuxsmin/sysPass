@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,6 +30,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -261,7 +262,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     {
         $this->assertNotEmpty($data->getData());
 
-        /** @var Vault $vault */
+        /** @var VaultInterface $vault */
         $vault = Util::unserialize(Vault::class, $data->getData());
 
         $this->assertInstanceOf(Vault::class, $vault);

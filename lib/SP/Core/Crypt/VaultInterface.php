@@ -24,7 +24,6 @@
 
 namespace SP\Core\Crypt;
 
-use RuntimeException;
 use SP\Core\Exceptions\CryptException;
 
 /**
@@ -32,75 +31,38 @@ use SP\Core\Exceptions\CryptException;
  *
  * @package SP\Core\Crypt
  */
-final class Vault implements VaultInterface
+interface VaultInterface
 {
-    private ?string $data    = null;
-    private ?string $key     = null;
-    private int     $timeSet = 0;
-
-    private function __construct(private readonly CryptInterface $crypt)
-    {
-    }
-
-    public static function factory(CryptInterface $crypt): VaultInterface
-    {
-        return new self($crypt);
-    }
-
     /**
      * Re-key this vault
      *
      * @throws CryptException
      */
-    public function reKey(string $newSeed, string $oldSeed): VaultInterface
-    {
-        return $this->saveData($this->getData($oldSeed), $newSeed);
-    }
+    public function reKey(string $newSeed, string $oldSeed): VaultInterface;
 
     /**
      * Create a new vault with the saved data
      *
      * @throws CryptException
      */
-    public function saveData(string $data, string $key): VaultInterface
-    {
-        $vault = new Vault($this->crypt);
-        $vault->timeSet = time();
-        $vault->key = $this->crypt->makeSecuredKey($key);
-        $vault->data = $this->crypt->encrypt($data, $vault->key, $key);
-
-        return $vault;
-    }
+    public function saveData(string $data, string $key): VaultInterface;
 
     /**
      * Get the data decrypted
      *
      * @throws CryptException
      */
-    public function getData(string $key): string
-    {
-        if ($this->data === null || $this->key === null) {
-            throw new RuntimeException('Either data or key must be set');
-        }
-
-        return $this->crypt->decrypt($this->data, $this->key, $key);
-    }
+    public function getData(string $key): string;
 
     /**
      * Serialize the current vault
      */
-    public function getSerialized(): string
-    {
-        return serialize($this);
-    }
+    public function getSerialized(): string;
 
     /**
      * Get the last time the key and data were set
      *
      * @return int
      */
-    public function getTimeSet(): int
-    {
-        return $this->timeSet;
-    }
+    public function getTimeSet(): int;
 }

@@ -25,6 +25,7 @@
 namespace SP\Core\Context;
 
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
 
 /**
@@ -161,16 +162,16 @@ interface SessionContextInterface extends ContextInterface
     /**
      * Devuelve la clave maestra encriptada
      *
-     * @return Vault|null
+     * @return VaultInterface|null
      */
-    public function getVault(): ?Vault;
+    public function getVault(): ?VaultInterface;
 
     /**
      * Establecer la clave maestra encriptada
      *
-     * @param Vault $vault
+     * @param VaultInterface $vault
      */
-    public function setVault(Vault $vault): void;
+    public function setVault(VaultInterface $vault): void;
 
     /**
      * Devuelve la hora en la que el SID de sesión fue creado

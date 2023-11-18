@@ -25,6 +25,7 @@
 namespace SP\Core\Context;
 
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -426,9 +427,9 @@ class SessionContext extends ContextBase implements SessionContextInterface
     /**
      * Devuelve la clave maestra encriptada
      *
-     * @return Vault|null
+     * @return VaultInterface|null
      */
-    public function getVault(): ?Vault
+    public function getVault(): ?VaultInterface
     {
         return $this->getContextKey('vault');
     }
@@ -436,9 +437,9 @@ class SessionContext extends ContextBase implements SessionContextInterface
     /**
      * Establecer la clave maestra encriptada
      *
-     * @param  Vault  $vault
+     * @param VaultInterface $vault
      */
-    public function setVault(Vault $vault): void
+    public function setVault(VaultInterface $vault): void
     {
         $this->setContextKey('vault', $vault);
     }

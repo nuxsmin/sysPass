@@ -31,6 +31,7 @@ use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\UI\ThemeIcons;
@@ -92,7 +93,7 @@ final class ViewLinkController extends AccountControllerBase
                 $this->accountService->incrementViewCounter($publicLinkData->getItemId());
                 $this->accountService->incrementDecryptCounter($publicLinkData->getItemId());
 
-                /** @var Vault $vault */
+                /** @var VaultInterface $vault */
                 $vault = unserialize($publicLinkData->getData(), ['allowed_classes' => [Vault::class]]);
 
                 /** @var AccountExtData $accountData */

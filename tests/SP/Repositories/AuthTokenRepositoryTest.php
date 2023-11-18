@@ -32,6 +32,7 @@ use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -132,7 +133,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertNotEmpty($data->getVault());
 
-        /** @var Vault $vault */
+        /** @var VaultInterface $vault */
         $vault = Util::unserialize(Vault::class, $data->getVault());
         $this->assertEquals('12345678900', $vault->getData(self::AUTH_TOKEN_PASS . self::AUTH_TOKEN));
 
@@ -165,7 +166,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertEquals($vault, $data->getVault());
 
-        /** @var Vault $vault */
+        /** @var VaultInterface $vault */
         $vault = Util::unserialize(Vault::class, $data->getVault());
         $this->assertEquals('prueba', $vault->getData(self::AUTH_TOKEN_PASS));
     }

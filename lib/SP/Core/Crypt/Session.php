@@ -24,7 +24,7 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\SessionContextInterface;
 use SP\Core\Exceptions\CryptException;
 
 use function SP\logger;
@@ -41,12 +41,12 @@ class Session
      *
      * @throws CryptException
      */
-    public static function getSessionKey(SessionContext $sessionContext): string
+    public static function getSessionKey(SessionContextInterface $sessionContext): string
     {
         return $sessionContext->getVault()->getData(self::getKey($sessionContext));
     }
 
-    private static function getKey(SessionContext $sessionContext): string
+    private static function getKey(SessionContextInterface $sessionContext): string
     {
         return session_id() . $sessionContext->getSidStartTime();
     }
@@ -56,7 +56,7 @@ class Session
      *
      * @throws CryptException
      */
-    public static function saveSessionKey(mixed $data, SessionContext $sessionContext): void
+    public static function saveSessionKey(string $data, SessionContextInterface $sessionContext): void
     {
         $sessionContext->setVault(Vault::factory(new Crypt())->saveData($data, self::getKey($sessionContext)));
     }
@@ -66,7 +66,7 @@ class Session
      *
      * @throws CryptException
      */
-    public static function reKey(SessionContext $sessionContext): void
+    public static function reKey(SessionContextInterface $sessionContext): void
     {
         logger(__METHOD__);
 
