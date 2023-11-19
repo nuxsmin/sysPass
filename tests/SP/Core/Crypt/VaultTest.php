@@ -26,6 +26,7 @@ namespace SP\Tests\Core\Crypt;
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -36,7 +37,7 @@ use SP\Tests\UnitaryTestCase;
 class VaultTest extends UnitaryTestCase
 {
     /**
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testGetData()
     {
@@ -48,7 +49,22 @@ class VaultTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
+     */
+    public function testGetDataWithNoData()
+    {
+        $key = self::$faker->password;
+
+        $vault = Vault::factory(new Crypt());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Either data or key must be set');
+
+        $vault->getData($key);
+    }
+
+    /**
+     * @throws CryptException
      */
     public function testGetTimeSet()
     {
@@ -57,7 +73,7 @@ class VaultTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testReKey()
     {
