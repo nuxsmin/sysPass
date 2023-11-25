@@ -369,8 +369,7 @@ final class AccountActionsHelper extends HelperBase
      */
     public function getPublicLinkDeleteAction(): DataGridAction
     {
-        $icon = clone $this->icons->publicLink();
-        $icon->setIcon('link_off');
+        $icon = $this->icons->publicLink()->mutate('link_off');
 
         $action = new DataGridAction();
         $action->setId(AclActionsInterface::PUBLICLINK_DELETE);

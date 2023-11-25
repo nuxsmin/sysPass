@@ -29,7 +29,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\IconInterface;
-use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\FileUtil;
 
@@ -52,7 +52,7 @@ final class ThemeIcons implements ThemeIconsInterface
 
     /**
      * @param ContextInterface $context
-     * @param FileCache $cache
+     * @param FileCacheInterface $cache
      * @param ThemeContextInterface $themeContext
      * @return ThemeIconsInterface
      * @throws InvalidClassException
@@ -60,12 +60,12 @@ final class ThemeIcons implements ThemeIconsInterface
      */
     public static function loadIcons(
         ContextInterface      $context,
-        FileCache             $cache,
+        FileCacheInterface $cache,
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface {
         try {
             if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
-                && !$cache->isExpired(self::CACHE_EXPIRE)
+                && $cache->isExpired(self::CACHE_EXPIRE)
             ) {
                 return $cache->load();
                 // logger('Loaded icons cache', 'INFO');

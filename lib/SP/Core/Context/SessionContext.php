@@ -24,11 +24,12 @@
 
 namespace SP\Core\Context;
 
-use SP\Core\Crypt\Vault;
 use SP\Core\Crypt\VaultInterface;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\User\Services\UserLoginResponse;
+
 use function SP\logger;
 use function SP\processException;
 
@@ -191,7 +192,7 @@ class SessionContext extends ContextBase implements SessionContextInterface
     }
 
     /**
-     * @param  \SP\Domain\Account\Search\AccountSearchFilter  $searchFilters
+     * @param AccountSearchFilter $searchFilters
      */
     public function setSearchFilters(AccountSearchFilter $searchFilters): void
     {
@@ -376,10 +377,8 @@ class SessionContext extends ContextBase implements SessionContextInterface
 
     /**
      * Devuelve el estado de la aplicación
-     *
-     * @return bool|null
      */
-    public function getAppStatus(): ?bool
+    public function getAppStatus(): ?string
     {
         return $this->getContextKey('status');
     }
@@ -457,7 +456,7 @@ class SessionContext extends ContextBase implements SessionContextInterface
     /**
      * Devuelve la cache de cuentas
      *
-     * @return \SP\Domain\Account\Dtos\AccountCacheDto[]|null
+     * @return AccountCacheDto[]|null
      */
     public function getAccountsCache(): ?array
     {

@@ -110,7 +110,7 @@ class FileUtil
         if (file_exists($file)) {
             $out = require $file;
 
-            if ($class !== null && class_exists($class) && !$out instanceof $class) {
+            if ($class && class_exists($class) && !$out instanceof $class) {
                 throw new InvalidClassException(__u('Invalid class for loaded file data'));
             }
 

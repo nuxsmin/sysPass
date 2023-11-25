@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,8 @@ namespace SP\Core\Messages;
 
 use SP\Html\Html;
 
+use function SP\__;
+
 /**
  * Class HtmlFormatter
  *
@@ -43,16 +45,17 @@ final class HtmlFormatter implements FormatterInterface
                     $right = $this->buildLink($value[1]);
                     $left = $translate ? __($value[0]) : $value[0];
 
-                    if (strpos($right, '<a') === false) {
+                    if (!str_contains($right, '<a')) {
                         $right = $translate ? __($right) : $right;
                     }
 
                     return '<div class="detail">'
-                        . '<span class="detail-left">' . $left . '</span>'
-                        . '<span class="detail-right">' . $right . '</span>'
-                        . '</div>';
+                           . '<span class="detail-left">' . $left . '</span>'
+                           . '<span class="detail-right">' . $right . '</span>'
+                           . '</div>';
                 },
-                $text)
+                $text
+            )
         );
     }
 
@@ -75,15 +78,15 @@ final class HtmlFormatter implements FormatterInterface
     public function formatDescription(
         array $text,
         bool  $translate = false
-    ): string
-    {
+    ): string {
         return implode(
             '',
             array_map(
                 static function ($value) use ($translate) {
                     return '<div class="description-line">' . ($translate ? __($value) : $value) . '</div>';
                 },
-                $text)
+                $text
+            )
         );
     }
 }

@@ -36,6 +36,8 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__;
+
 /**
  * Class PluginGrid
  *
@@ -122,7 +124,7 @@ final class PluginGrid extends GridBase
         );
         $gridData->addDataRowSourceWithIcon(
             'available',
-            $this->icons->delete()->setTitle(__('Unavailable')),
+            $this->icons->delete()->mutate(title: __('Unavailable')),
             0
         );
         $gridData->setData($this->queryResult);

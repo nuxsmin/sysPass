@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,15 +33,11 @@ defined('APP_ROOT') || die();
  */
 interface IconInterface
 {
-    public function setTitle(?string $title);
-
     public function getTitle(): ?string;
-
-    public function setClass(?string $class);
 
     public function getClass(): ?string;
 
     public function getIcon(): ?string;
 
-    public function setIcon(string $icon);
+    public function mutate(?string $icon = null, ?string $class = null, ?string $title = null): IconInterface;
 }

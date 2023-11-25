@@ -39,6 +39,8 @@ use SP\Html\Html;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\DateUtil;
 
+use function SP\__;
+
 /**
  * Class NotificationGrid
  *
@@ -155,15 +157,17 @@ final class NotificationGrid extends GridBase
         );
         $gridData->addDataRowSourceWithIcon(
             'checked',
-            $this->icons->enabled()->setTitle(__('Read'))
+            $this->icons->enabled()->mutate(title: __('Read'))
         );
         $gridData->addDataRowSourceWithIcon(
             'onlyAdmin',
-            $this->icons->appAdmin()->setTitle(__('Only Admins'))
+            $this->icons->appAdmin()->mutate(
+                title: __('Only Admins')
+            )
         );
         $gridData->addDataRowSourceWithIcon(
             'sticky',
-            $this->icons->group()->setTitle(__('Global'))
+            $this->icons->group()->mutate(title: __('Global'))
         );
         $gridData->setData($this->queryResult);
 

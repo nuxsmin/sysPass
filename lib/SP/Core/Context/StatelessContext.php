@@ -26,6 +26,7 @@ namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
 use SP\Domain\User\Services\UserLoginResponse;
+
 use function SP\processException;
 
 /**
@@ -38,7 +39,7 @@ class StatelessContext extends ContextBase
     /**
      * Establece los datos del usuario en la sesión.
      *
-     * @param  UserLoginResponse|null  $userLoginResponse
+     * @param UserLoginResponse|null $userLoginResponse
      */
     public function setUserData(UserLoginResponse $userLoginResponse = null): void
     {
@@ -48,8 +49,8 @@ class StatelessContext extends ContextBase
     /**
      * Establecer una variable de sesión
      *
-     * @param  string  $key  El nombre de la variable
-     * @param  mixed  $value  El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      *
      * @return mixed
      */
@@ -67,7 +68,7 @@ class StatelessContext extends ContextBase
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
-     * @return \SP\DataModel\ProfileData|null
+     * @return ProfileData|null
      */
     public function getUserProfile(): ?ProfileData
     {
@@ -77,8 +78,8 @@ class StatelessContext extends ContextBase
     /**
      * Devolver una variable de sesión
      *
-     * @param  string  $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -96,7 +97,7 @@ class StatelessContext extends ContextBase
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param  ProfileData  $profileData
+     * @param ProfileData $profileData
      */
     public function setUserProfile(ProfileData $profileData): void
     {
@@ -133,8 +134,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Devuelve el lenguaje de la sesión
-     *
-     * @return string
      */
     public function getLocale(): ?string
     {
@@ -143,18 +142,14 @@ class StatelessContext extends ContextBase
 
     /**
      * Devuelve el estado de la aplicación
-     *
-     * @return bool
      */
-    public function getAppStatus(): ?bool
+    public function getAppStatus(): ?string
     {
         return $this->getContextKey('status');
     }
 
     /**
      * Establecer el estado de la aplicación
-     *
-     * @param  string  $status
      */
     public function setAppStatus(string $status): void
     {
@@ -183,7 +178,7 @@ class StatelessContext extends ContextBase
     /**
      * Establecer la hora de carga de la configuración
      *
-     * @param  int  $time
+     * @param int $time
      */
     public function setConfigTime(int $time): void
     {
@@ -211,7 +206,7 @@ class StatelessContext extends ContextBase
     /**
      * Sets a temporary master password
      *
-     * @param  string  $password
+     * @param string $password
      *
      * @throws ContextException
      */
@@ -221,9 +216,9 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @param  string  $pluginName
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $pluginName
+     * @param string $key
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -237,8 +232,8 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @param  string  $pluginName
-     * @param  string  $key
+     * @param string $pluginName
+     * @param string $key
      *
      * @return mixed
      */

@@ -36,6 +36,8 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__;
+
 /**
  * Class AccountDefaultPermissionGrid
  *
@@ -166,7 +168,7 @@ final class ItemPresetGrid extends GridBase
 
         $icon = clone $this->icons->add();
 
-        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setIcon($icon->mutate('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
@@ -191,7 +193,7 @@ final class ItemPresetGrid extends GridBase
 
         $icon = clone $this->icons->add();
 
-        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setIcon($icon->mutate('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
@@ -216,7 +218,7 @@ final class ItemPresetGrid extends GridBase
 
         $icon = clone $this->icons->add();
 
-        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setIcon($icon->mutate('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
@@ -241,7 +243,7 @@ final class ItemPresetGrid extends GridBase
 
         $icon = clone $this->icons->add();
 
-        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setIcon($icon->mutate('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 

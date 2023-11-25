@@ -35,6 +35,8 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__;
+
 /**
  * Class AccountHistoryGrid
  *
@@ -114,8 +116,8 @@ final class AccountHistoryGrid extends GridBase
     protected function getData(): DataGridData
     {
         // Grid Data
-        $iconEdit = clone $this->icons->edit();
-        $iconDelete = clone $this->icons->delete();
+        $iconEdit = $this->icons->edit()->mutate(class: 'opacity50', title: __('Modified'));
+        $iconDelete = $this->icons->delete()->mutate(class: 'opacity50', title: __('Removed'));
 
         // Grid Data
         $gridData = new DataGridData();
@@ -126,13 +128,11 @@ final class AccountHistoryGrid extends GridBase
         $gridData->addDataRowSource('date');
         $gridData->addDataRowSourceWithIcon(
             'isModify',
-            $iconEdit->setTitle(__('Modified'))
-                     ->setClass('opacity50')
+            $iconEdit
         );
         $gridData->addDataRowSourceWithIcon(
             'isDeleted',
-            $iconDelete->setTitle(__('Removed'))
-                       ->setClass('opacity50')
+            $iconDelete
         );
         $gridData->setData($this->queryResult);
 

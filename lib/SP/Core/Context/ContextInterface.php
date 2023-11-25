@@ -25,6 +25,7 @@
 namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\User\Services\UserLoginResponse;
 
 /**
@@ -91,7 +92,7 @@ interface ContextInterface
     /**
      * Devuelve el estado de la aplicación
      */
-    public function getAppStatus(): ?bool;
+    public function getAppStatus(): ?string;
 
     /**
      * Establecer el estado de la aplicación
@@ -104,7 +105,7 @@ interface ContextInterface
     public function resetAppStatus(): ?bool;
 
     /**
-     * @return \SP\Domain\Account\Dtos\AccountCacheDto[]|null
+     * @return AccountCacheDto[]|null
      */
     public function getAccountsCache(): ?array;
 

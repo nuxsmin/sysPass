@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Html\Assets;
 
+use function SP\__;
+
 defined('APP_ROOT') || die();
 
 /**
@@ -34,28 +36,27 @@ defined('APP_ROOT') || die();
 abstract class IconBase implements IconInterface
 {
     /**
-     * El nombre del icono o imagen a utilizar
-     */
-    protected string $icon;
-
-    /**
-     * Título del icono
-     */
-    protected ?string $title = null;
-    /**
      * Clases CSS del icono
      */
     protected ?array $class = null;
 
     public function __construct(
-        string  $icon,
-        ?string $class = null,
-        ?string $title = null
-    )
+        protected string  $icon,
+        string|array|null $class = null,
+        protected ?string $title = null
+    ) {
+        if ($class) {
+            $this->setClass($class);
+        }
+    }
+
+    private function setClass(string|array $class): void
     {
-        $this->setIcon($icon);
-        $this->setClass($class);
-        $this->setTitle($title);
+        if (is_array($class)) {
+            $this->class = $class;
+        } else {
+            $this->class[] = $class;
+        }
     }
 
     public function getTitle(): ?string
@@ -67,13 +68,6 @@ abstract class IconBase implements IconInterface
         return null;
     }
 
-    public function setTitle(?string $title): IconBase
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
     public function getClass(): ?string
     {
         if ($this->class) {
@@ -83,24 +77,27 @@ abstract class IconBase implements IconInterface
         return null;
     }
 
-    public function setClass(?string $class): IconBase
-    {
-        if ($class) {
-            $this->class[] = $class;
-        }
-
-        return $this;
-    }
-
     public function getIcon(): string
     {
         return $this->icon;
     }
 
-    public function setIcon(string $icon): IconBase
+    public function mutate(?string $icon = null, string|array|null $class = null, ?string $title = null): IconInterface
     {
-        $this->icon = $icon;
+        $clone = clone $this;
 
-        return $this;
+        if ($icon) {
+            $clone->icon = $icon;
+        }
+
+        if ($class) {
+            $clone->setClass($class);
+        }
+
+        if ($title) {
+            $clone->title = $title;
+        }
+
+        return $clone;
     }
 }

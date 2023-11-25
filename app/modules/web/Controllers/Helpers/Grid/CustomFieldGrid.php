@@ -36,6 +36,8 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__;
+
 /**
  * Class CustomFieldGrid
  *
@@ -129,7 +131,7 @@ final class CustomFieldGrid extends GridBase
         $gridData->addDataRowSource('typeName');
         $gridData->addDataRowSourceWithIcon(
             'isEncrypted',
-            $this->icons->editPass()->setTitle(__('Encrypted'))
+            $this->icons->editPass()->mutate(title: __('Encrypted'))
         );
         $gridData->setData($this->queryResult);
 
