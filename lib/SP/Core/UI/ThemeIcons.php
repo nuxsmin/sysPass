@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,29 +24,73 @@
 
 namespace SP\Core\UI;
 
+use SP\Core\Context\ContextBase;
+use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\IconInterface;
+use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileException;
+use SP\Util\FileUtil;
 
-defined('APP_ROOT') || die();
+use function SP\logger;
+use function SP\processException;
 
 /**
- * Class ThemeIconsBase para la implementación de los iconos del tema visual
+ * Class ThemeIcons
  *
- * @package SP\Core
  */
-final class ThemeIcons
+final class ThemeIcons implements ThemeIconsInterface
 {
+    public const CACHE_EXPIRE     = 86400;
+    public const ICONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'icons.cache';
+
     /**
      * @var IconInterface[]
      */
     private array $icons = [];
 
     /**
-     * @return IconInterface
+     * @param ContextInterface $context
+     * @param FileCache $cache
+     * @param ThemeContextInterface $themeContext
+     * @return ThemeIconsInterface
+     * @throws InvalidClassException
+     * @throws FileException
      */
-    public function getIconWarning()
+    public static function loadIcons(
+        ContextInterface      $context,
+        FileCache             $cache,
+        ThemeContextInterface $themeContext
+    ): ThemeIconsInterface {
+        try {
+            if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
+                && !$cache->isExpired(self::CACHE_EXPIRE)
+            ) {
+                return $cache->load();
+                // logger('Loaded icons cache', 'INFO');
+            }
+
+            $icons = FileUtil::require(
+                FileUtil::buildPath($themeContext->getFullPath(), 'inc', 'Icons.php'),
+                ThemeIconsInterface::class
+            );
+
+            $cache->save($icons);
+
+            logger('Saved icons cache', 'INFO');
+
+            return $icons;
+        } catch (FileException $e) {
+            processException($e);
+
+            throw $e;
+        }
+    }
+
+    public function __call(string $name, ?array $arguments = null): IconInterface
     {
-        return $this->getIconByName('warning');
+        return $this->getIconByName($name);
     }
 
     /**
@@ -54,334 +98,13 @@ final class ThemeIcons
      *
      * @return IconInterface
      */
-    public function getIconByName(string $name)
+    public function getIconByName(string $name): IconInterface
     {
-        return $this->icons[$name]
-            ?? new FontIcon($name, 'mdl-color-text--indigo-A200');
+        return $this->icons[$name] ?? new FontIcon($name, 'mdl-color-text--indigo-A200');
     }
 
     /**
-     * @return IconInterface
-     */
-    public function getIconDownload()
-    {
-        return $this->getIconByName('download');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconClear()
-    {
-        return $this->getIconByName('clear');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconPlay()
-    {
-        return $this->getIconByName('play');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconHelp()
-    {
-        return $this->getIconByName('help');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconPublicLink()
-    {
-        return $this->getIconByName('publicLink');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconBack()
-    {
-        return $this->getIconByName('back');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconRestore()
-    {
-        return $this->getIconByName('restore');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconSave()
-    {
-        return $this->getIconByName('save');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconUp()
-    {
-        return $this->getIconByName('up');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconDown()
-    {
-        return $this->getIconByName('down');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconViewPass()
-    {
-        return $this->getIconByName('viewPass');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconCopy()
-    {
-        return $this->getIconByName('copy');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconClipboard()
-    {
-        return $this->getIconByName('clipboard');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconEmail()
-    {
-        return $this->getIconByName('email');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconRefresh()
-    {
-        return $this->getIconByName('refresh');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconEditPass()
-    {
-        return $this->getIconByName('editPass');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconAppAdmin()
-    {
-        return $this->getIconByName('appAdmin');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconAccAdmin()
-    {
-        return $this->getIconByName('accAdmin');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconLdapUser()
-    {
-        return $this->getIconByName('ldapUser');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconDisabled()
-    {
-        return $this->getIconByName('disabled');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconNavPrev()
-    {
-        return $this->getIconByName('previous');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconNavNext()
-    {
-        return $this->getIconByName('next');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconNavFirst()
-    {
-        return $this->getIconByName('first');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconNavLast()
-    {
-        return $this->getIconByName('last');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconAdd()
-    {
-        return $this->getIconByName('add');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconView()
-    {
-        return $this->getIconByName('view');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconEdit()
-    {
-        return $this->getIconByName('edit');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconDelete()
-    {
-        return $this->getIconByName('delete');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconOptional()
-    {
-        return $this->getIconByName('optional');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconCheck()
-    {
-        return $this->getIconByName('check');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconSearch()
-    {
-        return $this->getIconByName('search');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconAccount()
-    {
-        return $this->getIconByName('account');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconGroup()
-    {
-        return $this->getIconByName('group');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconSettings()
-    {
-        return $this->getIconByName('settings');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconHeadline()
-    {
-        return $this->getIconByName('headline');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconInfo()
-    {
-        return $this->getIconByName('info');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconCritical()
-    {
-        return $this->getIconByName('critical');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconEnabled()
-    {
-        return $this->getIconByName('enabled');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconNotices()
-    {
-        return $this->getIconByName('notices');
-    }
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconRemove()
-    {
-        return $this->getIconByName('remove');
-    }
-
-    /**
-     * @param string        $alias
+     * @param string $alias
      * @param IconInterface $icon
      */
     public function addIcon(string $alias, IconInterface $icon): void

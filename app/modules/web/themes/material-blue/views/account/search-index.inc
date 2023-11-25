@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,15 +23,16 @@
  */
 
 /**
- * @var ThemeIcons                     $icons
- * @var callable                       $_getvar
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
- * @var AccountSearchItem              $account
- * @var DataGrid                       $data
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var ConfigDataInterface $configData
+ * @var AccountSearchItem $account
+ * @var DataGrid $data
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\DataGrid\DataGrid;
 
 if (!isset($data)) {
@@ -40,29 +41,39 @@ if (!isset($data)) {
 ?>
 
 <div id="res-content">
-    <?php if ($data->getData()->getDataCount() === 0): ?>
-        <div class="noRes round"><?php echo __('No records found'); ?></div>
-    <?php else: ?>
+    <?php
+    if ($data->getData()->getDataCount() === 0): ?>
+        <div class="noRes round"><?php
+            echo __('No records found'); ?></div>
+    <?php
+    else: ?>
         <!-- Data Header-->
         <div id="search-header">
-            <?php include $data->getDataHeaderTemplate(); ?>
+            <?php
+            include $data->getDataHeaderTemplate(); ?>
         </div>
 
-        <?php if (AccountSearchItem::$topNavbar): ?>
+        <?php
+        if (AccountSearchItem::$topNavbar): ?>
             <!-- Data Pager -->
             <div id="search-pager-top">
-                <?php include $data->getDataPagerTemplate(); ?>
+                <?php
+                include $data->getDataPagerTemplate(); ?>
             </div>
-        <?php endif; ?>
+        <?php
+        endif; ?>
 
         <!-- Data Rows-->
         <div id="search-rows">
-            <?php include $data->getDataRowTemplate(); ?>
+            <?php
+            include $data->getDataRowTemplate(); ?>
         </div>
 
         <!-- Data Pager -->
         <div id="search-pager-bottom">
-            <?php include $data->getDataPagerTemplate(); ?>
+            <?php
+            include $data->getDataPagerTemplate(); ?>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
 </div>

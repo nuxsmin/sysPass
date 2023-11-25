@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,41 +23,57 @@
  */
 
 /**
- * @var ThemeIcons                     $icons
- * @var callable                       $_getvar
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 ?>
 
 <div id="data-linkedAccounts">
     <div class="data">
         <ul class="mdl-list">
-            <?php foreach ($_getvar('linkedAccounts') as $account): ?>
+            <?php
+            foreach ($_getvar('linkedAccounts') as $account): ?>
                 <li class="mdl-list__item">
                     <span class="btn-action mdl-list__item-primary-content">
                         <i class="material-icons mdl-list__item-icon">layers</i>
-                        <?php printf('%s (%s)', htmlspecialchars($account->name, ENT_QUOTES), htmlspecialchars($account->clientName, ENT_QUOTES)); ?>
+                        <?php
+                        printf(
+                            '%s (%s)',
+                            htmlspecialchars($account->name, ENT_QUOTES),
+                            htmlspecialchars($account->clientName, ENT_QUOTES)
+                        ); ?>
                     </span>
                     <span class="list-actions">
-                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconEdit()->getClass(); ?>"
-                           title="<?php echo __('Edit Account'); ?>"
+                        <i class="material-icons btn-action mdl-list__item-icon <?php
+                        echo $icons->edit()->getClass(); ?>"
+                           title="<?php
+                           echo __('Edit Account'); ?>"
                            data-action-route="account/edit"
-                           data-item-id="<?php echo $account->id; ?>"
+                           data-item-id="<?php
+                           echo $account->id; ?>"
                            data-onclick="account/edit">
-                            <?php echo $icons->getIconEdit()->getIcon(); ?></i>
+                            <?php
+                            echo $icons->edit()->getIcon(); ?></i>
 
-                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
-                           title="<?php echo __('Account Details'); ?>"
+                        <i class="material-icons btn-action mdl-list__item-icon <?php
+                        echo $icons->view()->getClass(); ?>"
+                           title="<?php
+                           echo __('Account Details'); ?>"
                            data-action-route="account/view"
-                           data-item-id="<?php echo $account->id; ?>"
+                           data-item-id="<?php
+                           echo $account->id; ?>"
                            data-onclick="account/view">
-                        <?php echo $icons->getIconView()->getIcon(); ?></i>
+                        <?php
+                        echo $icons->view()->getIcon(); ?></i>
                     </span>
                 </li>
-            <?php endforeach; ?>
+            <?php
+            endforeach; ?>
         </ul>
     </div>
 </div>

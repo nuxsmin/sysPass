@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContextInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
@@ -50,6 +50,10 @@ use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 
+use function SP\__;
+use function SP\logger;
+use function SP\processException;
+
 /**
  * Clase base para los controladores
  */
@@ -59,21 +63,21 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected EventDispatcher     $eventDispatcher;
-    protected ConfigFileService   $config;
-    protected ContextInterface    $session;
-    protected ThemeInterface      $theme;
-    protected Acl                 $acl;
-    protected ConfigDataInterface $configData;
-    protected RequestInterface    $request;
-    protected PhpExtensionChecker $extensionChecker;
-    protected TemplateInterface   $view;
-    protected ?UserLoginResponse  $userData        = null;
-    protected ?ProfileData        $userProfileData = null;
-    protected bool                $isAjax;
-    protected LayoutHelper        $layoutHelper;
-    private BrowserAuthInterface  $browser;
-    protected string              $actionName;
+    protected EventDispatcher         $eventDispatcher;
+    protected ConfigFileService       $config;
+    protected SessionContextInterface $session;
+    protected ThemeInterface          $theme;
+    protected Acl                     $acl;
+    protected ConfigDataInterface     $configData;
+    protected RequestInterface        $request;
+    protected PhpExtensionChecker     $extensionChecker;
+    protected TemplateInterface       $view;
+    protected ?UserLoginResponse      $userData        = null;
+    protected ?ProfileData            $userProfileData = null;
+    protected bool                    $isAjax;
+    protected LayoutHelper            $layoutHelper;
+    protected string                  $actionName;
+    private BrowserAuthInterface      $browser;
 
     public function __construct(
         Application $application,
@@ -119,7 +123,7 @@ abstract class ControllerBase
         $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
+        $this->view->assign('themeUri', $this->view->getTheme()->getUri());
         $this->view->assign('configData', $this->configData);
 
         if ($loggedIn) {
@@ -183,10 +187,10 @@ abstract class ControllerBase
     /**
      * Comprobar si el usuario está logado.
      *
-     * @param  bool  $requireAuthCompleted
+     * @param bool $requireAuthCompleted
      *
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws SessionTimeout
+     * @throws AuthException
      */
     protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {
@@ -230,7 +234,7 @@ abstract class ControllerBase
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param  int  $action  La acción a comprobar
+     * @param int $action La acción a comprobar
      */
     protected function checkAccess(int $action): bool
     {

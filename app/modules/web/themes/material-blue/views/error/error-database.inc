@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,29 +23,36 @@
  */
 
 /**
- * @var ThemeIcons $icons
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var ThemeIconsInterface $icons
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
-use SP\Mvc\View\Template;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 <div id="actions" align="center">
-    <?php include $this->includePartial('error-list'); ?>
+    <?php
+    include $this->includePartial('error-list'); ?>
 
     <div class="buttons">
         <button id="btnBack"
                 class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             <i class="material-icons"
-               title="<?php echo __('Back'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-            <?php echo __('Back'); ?>
+               title="<?php
+               echo __('Back'); ?>"><?php
+                echo $icons->back()->getIcon(); ?></i>
+            <?php
+            echo __('Back'); ?>
         </button>
         <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
            href="index.php?r=install&skipInstalled=true">
-            <?php echo __('Install'); ?>
+            <?php
+            echo __('Install'); ?>
             <i class="material-icons"
-               title="<?php echo __('Install'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+               title="<?php
+               echo __('Install'); ?>"><?php
+                echo $icons->play()->getIcon(); ?></i>
         </a>
     </div>
 </div>

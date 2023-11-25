@@ -28,7 +28,12 @@ use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\FileData;
+use SP\Infrastructure\File\FileException;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class FileUtil
@@ -78,5 +83,40 @@ class FileUtil
     public static function isImage(FileData $fileData): bool
     {
         return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
+    }
+
+    /**
+     * Return a well-formed path
+     *
+     * @param string ...$parts
+     * @return string
+     */
+    public static function buildPath(string ...$parts): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $parts);
+    }
+
+    /**
+     * @template T
+     * @param string $file
+     * @param class-string<T>|null $class
+     *
+     * @return null|T
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    public static function require(string $file, ?string $class = null): mixed
+    {
+        if (file_exists($file)) {
+            $out = require $file;
+
+            if ($class !== null && class_exists($class) && !$out instanceof $class) {
+                throw new InvalidClassException(__u('Invalid class for loaded file data'));
+            }
+
+            return $out;
+        } else {
+            throw new FileException(sprintf(__('File not found: %s'), $file));
+        }
     }
 }

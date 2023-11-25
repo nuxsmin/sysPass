@@ -54,12 +54,12 @@ final class LayoutHelper extends HelperBase
     private bool              $loggedIn;
 
     public function __construct(
-        Application $application,
+        Application    $application,
         TemplateInterface $template,
         RequestInterface $request,
         ThemeInterface $theme,
         CryptPKIInterface $cryptPKI,
-        PluginManager $pluginManager
+        PluginManager  $pluginManager
     ) {
         parent::__construct($application, $template, $request);
 
@@ -74,8 +74,8 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a full layout page
      *
-     * @param  string  $page  Page/view name
-     * @param  Acl|null  $acl
+     * @param string $page Page/view name
+     * @param Acl|null $acl
      *
      * @return LayoutHelper
      */
@@ -119,9 +119,9 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', InstallerService::VERSION_TEXT);
-        $this->view->assign('logo_icon', $baseUrl.'/public/images/logo_icon.png');
-        $this->view->assign('logo_no_bg_color', $baseUrl.'/public/images/logo_full_nobg_outline_color.png');
-        $this->view->assign('logo_no_bg', $baseUrl.'/public/images/logo_full_nobg_outline.png');
+        $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
+        $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
+        $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT));
 
@@ -148,7 +148,7 @@ final class LayoutHelper extends HelperBase
     protected function getResourcesLinks(): void
     {
         $version = VersionUtil::getVersionStringNormalized();
-        $baseUrl = ($this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+        $baseUrl = ($this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
 
         $jsUri = new Uri($baseUrl);
         $jsUri->addParam('_r', 'resource/js');
@@ -160,12 +160,12 @@ final class LayoutHelper extends HelperBase
 
         $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
 
-        $themeInfo = $this->theme->getThemeInfo();
+        $themeInfo = $this->theme->getInfo();
 
         if (isset($themeInfo['js'])) {
             $jsUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'js')
-                ->addParam('f', implode(',', $themeInfo['js']));
+                  ->addParam('b', $this->theme->getPath() . DIRECTORY_SEPARATOR . 'js')
+                  ->addParam('f', implode(',', $themeInfo['js']));
 
             $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
         }
@@ -174,7 +174,8 @@ final class LayoutHelper extends HelperBase
 
         if ($this->loggedIn
             && $userPreferences
-            && $userPreferences->getUserId() > 0) {
+            && $userPreferences->getUserId() > 0
+        ) {
             $resultsAsCards = $userPreferences->isResultsAsCards();
         } else {
             $resultsAsCards = $this->configData->isResultsAsCards();
@@ -182,7 +183,7 @@ final class LayoutHelper extends HelperBase
 
         $cssUri = (new Uri($baseUrl))
             ->addParam('_r', 'resource/css')
-            ->addParam('_v', md5($version.$resultsAsCards));
+            ->addParam('_v', md5($version . $resultsAsCards));
 
         $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
 
@@ -196,8 +197,8 @@ final class LayoutHelper extends HelperBase
             }
 
             $cssUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath().DIRECTORY_SEPARATOR.'css')
-                ->addParam('f', implode(',', $themeInfo['css']));
+                   ->addParam('b', $this->theme->getPath() . DIRECTORY_SEPARATOR . 'css')
+                   ->addParam('f', implode(',', $themeInfo['css']));
 
             $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
         }
@@ -207,23 +208,23 @@ final class LayoutHelper extends HelperBase
 
         foreach ($loadedPlugins as $plugin) {
             $base = str_replace(APP_ROOT, '', $plugin->getBase());
-            $base .= DIRECTORY_SEPARATOR.'public';
+            $base .= DIRECTORY_SEPARATOR . 'public';
 
             $jsResources = $plugin->getJsResources();
             $cssResources = $plugin->getCssResources();
 
             if (count($jsResources) > 0) {
                 $jsUri->resetParams()
-                    ->addParam('b', $base.DIRECTORY_SEPARATOR.'js')
-                    ->addParam('f', implode(',', $jsResources));
+                      ->addParam('b', $base . DIRECTORY_SEPARATOR . 'js')
+                      ->addParam('f', implode(',', $jsResources));
 
                 $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
             }
 
             if (count($cssResources) > 0) {
                 $cssUri->resetParams()
-                    ->addParam('b', $base.DIRECTORY_SEPARATOR.'css')
-                    ->addParam('f', implode(',', $cssResources));
+                       ->addParam('b', $base . DIRECTORY_SEPARATOR . 'css')
+                       ->addParam('f', implode(',', $cssResources));
 
                 $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
             }
@@ -254,9 +255,9 @@ final class LayoutHelper extends HelperBase
         $icons = $this->theme->getIcons();
 
         if ($userData->getIsAdminApp()) {
-            $userType = $icons->getIconAppAdmin();
+            $userType = $icons->appAdmin();
         } elseif ($userData->getIsAdminAcc()) {
-            $userType = $icons->getIconAccAdmin();
+            $userType = $icons->accAdmin();
         }
 
         $this->view->assign('ctx_userType', $userType);
@@ -269,7 +270,7 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para mostrar el menú de acciones
      *
-     * @param  Acl  $acl
+     * @param Acl $acl
      */
     public function getMenu(Acl $acl): void
     {
@@ -279,12 +280,12 @@ final class LayoutHelper extends HelperBase
         $actionSearch = new DataGridAction();
         $actionSearch->setId(AclActionsInterface::ACCOUNT);
         $actionSearch->setTitle(__('Search'));
-        $actionSearch->setIcon($icons->getIconSearch());
+        $actionSearch->setIcon($icons->search());
         $actionSearch->setData([
-            'historyReset' => 1,
-            'view'         => 'search',
-            'route'        => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
-        ]);
+                                   'historyReset' => 1,
+                                   'view' => 'search',
+                                   'route' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
+                               ]);
 
         $actions[] = $actionSearch;
 
@@ -292,12 +293,12 @@ final class LayoutHelper extends HelperBase
             $actionNewAccount = new DataGridAction();
             $actionNewAccount->setId(AclActionsInterface::ACCOUNT_CREATE);
             $actionNewAccount->setTitle(__('New Account'));
-            $actionNewAccount->setIcon($icons->getIconAdd());
+            $actionNewAccount->setIcon($icons->add());
             $actionNewAccount->setData([
-                'historyReset' => 0,
-                'view'         => 'account',
-                'route'        => Acl::getActionRoute(AclActionsInterface::ACCOUNT_CREATE),
-            ]);
+                                           'historyReset' => 0,
+                                           'view' => 'account',
+                                           'route' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_CREATE),
+                                       ]);
 
             $actions[] = $actionNewAccount;
         }
@@ -306,12 +307,12 @@ final class LayoutHelper extends HelperBase
             $actionAccessManager = new DataGridAction();
             $actionAccessManager->setId(AclActionsInterface::ACCESS_MANAGE);
             $actionAccessManager->setTitle(Acl::getActionInfo(AclActionsInterface::ACCESS_MANAGE));
-            $actionAccessManager->setIcon($icons->getIconAccount());
+            $actionAccessManager->setIcon($icons->account());
             $actionAccessManager->setData([
-                'historyReset' => 0,
-                'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE),
-            ]);
+                                              'historyReset' => 0,
+                                              'view' => 'datatabs',
+                                              'route' => Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE),
+                                          ]);
 
             $actions[] = $actionAccessManager;
         }
@@ -320,12 +321,12 @@ final class LayoutHelper extends HelperBase
             $actionItemManager = new DataGridAction();
             $actionItemManager->setId(AclActionsInterface::ITEMS_MANAGE);
             $actionItemManager->setTitle(Acl::getActionInfo(AclActionsInterface::ITEMS_MANAGE));
-            $actionItemManager->setIcon($icons->getIconGroup());
+            $actionItemManager->setIcon($icons->group());
             $actionItemManager->setData([
-                'historyReset' => 0,
-                'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
-            ]);
+                                            'historyReset' => 0,
+                                            'view' => 'datatabs',
+                                            'route' => Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
+                                        ]);
 
             $actions[] = $actionItemManager;
         }
@@ -336,10 +337,10 @@ final class LayoutHelper extends HelperBase
             $actionSecurityManager->setTitle(Acl::getActionInfo(AclActionsInterface::SECURITY_MANAGE));
             $actionSecurityManager->setIcon($icons->getIconByName('security'));
             $actionSecurityManager->setData([
-                'historyReset' => 0,
-                'view'         => 'datatabs',
-                'route'        => Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
-            ]);
+                                                'historyReset' => 0,
+                                                'view' => 'datatabs',
+                                                'route' => Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
+                                            ]);
 
             $actions[] = $actionSecurityManager;
         }
@@ -350,10 +351,10 @@ final class LayoutHelper extends HelperBase
             $actionPlugins->setTitle(__('Plugins'));
             $actionPlugins->setIcon($icons->getIconByName('extension'));
             $actionPlugins->setData([
-                'historyReset' => 1,
-                'view'         => 'plugin',
-                'route'        => Acl::getActionRoute(AclActionsInterface::PLUGIN),
-            ]);
+                                        'historyReset' => 1,
+                                        'view' => 'plugin',
+                                        'route' => Acl::getActionRoute(AclActionsInterface::PLUGIN),
+                                    ]);
 
             $actions[] = $actionPlugins;
         }
@@ -362,12 +363,12 @@ final class LayoutHelper extends HelperBase
             $actionConfigManager = new DataGridAction();
             $actionConfigManager->setId('config');
             $actionConfigManager->setTitle(__('Configuration'));
-            $actionConfigManager->setIcon($icons->getIconSettings());
+            $actionConfigManager->setIcon($icons->settings());
             $actionConfigManager->setData([
-                'historyReset' => 1,
-                'view'         => 'config',
-                'route'        => Acl::getActionRoute(AclActionsInterface::CONFIG),
-            ]);
+                                              'historyReset' => 1,
+                                              'view' => 'config',
+                                              'route' => Acl::getActionRoute(AclActionsInterface::CONFIG),
+                                          ]);
 
             $actions[] = $actionConfigManager;
         }
@@ -379,8 +380,8 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a full layout page
      *
-     * @param  string  $template
-     * @param  string  $page  Page/view name
+     * @param string $template
+     * @param string $page Page/view name
      *
      * @return LayoutHelper
      */
@@ -399,8 +400,8 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a custom layout page
      *
-     * @param  string  $template
-     * @param  string  $page  Page/view name
+     * @param string $template
+     * @param string $page Page/view name
      *
      * @return LayoutHelper
      */

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -52,7 +52,7 @@ abstract class GridBase extends HelperBase implements GridInterface
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
-        Acl $acl
+        Acl         $acl
     ) {
         parent::__construct($application, $template, $request);
 
@@ -65,8 +65,8 @@ abstract class GridBase extends HelperBase implements GridInterface
     /**
      * Actualizar los datos del paginador
      *
-     * @param  DataGridInterface  $dataGrid
-     * @param  ItemSearchData  $itemSearchData
+     * @param DataGridInterface $dataGrid
+     * @param ItemSearchData $itemSearchData
      *
      * @return DataGridInterface
      */
@@ -75,9 +75,9 @@ abstract class GridBase extends HelperBase implements GridInterface
         ItemSearchData $itemSearchData
     ): DataGridInterface {
         $dataGrid->getPager()
-            ->setLimitStart($itemSearchData->getLimitStart())
-            ->setLimitCount($itemSearchData->getLimitCount())
-            ->setFilterOn(!empty($itemSearchData->getSeachString()));
+                 ->setLimitStart($itemSearchData->getLimitStart())
+                 ->setLimitCount($itemSearchData->getLimitCount())
+                 ->setFilterOn(!empty($itemSearchData->getSeachString()));
 
         $dataGrid->updatePager();
 
@@ -87,7 +87,7 @@ abstract class GridBase extends HelperBase implements GridInterface
     /**
      * Devolver el paginador por defecto
      *
-     * @param  DataGridActionSearch  $sourceAction
+     * @param DataGridActionSearch $sourceAction
      *
      * @return DataGridPager
      */
@@ -99,10 +99,10 @@ abstract class GridBase extends HelperBase implements GridInterface
         $gridPager->setOnClickFunction('appMgmt/nav');
         $gridPager->setLimitStart(0);
         $gridPager->setLimitCount($this->configData->getAccountCount());
-        $gridPager->setIconPrev($this->icons->getIconNavPrev());
-        $gridPager->setIconNext($this->icons->getIconNavNext());
-        $gridPager->setIconFirst($this->icons->getIconNavFirst());
-        $gridPager->setIconLast($this->icons->getIconNavLast());
+        $gridPager->setIconPrev($this->icons->navPrev());
+        $gridPager->setIconNext($this->icons->navNext());
+        $gridPager->setIconFirst($this->icons->navFirst());
+        $gridPager->setIconLast($this->icons->navLast());
 
         return $gridPager;
     }

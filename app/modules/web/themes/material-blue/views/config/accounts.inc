@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,29 +23,36 @@
  */
 
 /**
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 
-<?php if ($_getvar('gdIsAvailable') !== true): ?>
+<?php
+if ($_getvar('gdIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
-        <?php printf(__('The \'%s\' extension is unavailable'), 'gd'); ?>
+        <?php
+        printf(__('The \'%s\' extension is unavailable'), 'gd'); ?>
         <i id="help-gd"
-           class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+           class="material-icons"><?php
+            echo $icons->help()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-gd">
             <p>
-                <?php echo __('This extension is needed to display passwords as images'); ?>
+                <?php
+                echo __('This extension is needed to display passwords as images'); ?>
             </p>
         </div>
     </div>
-<?php endif; ?>
+<?php
+endif; ?>
 
 <form method="post" name="frmAccounts" id="frmAccounts" class="form-action"
       data-onsubmit="config/save"
@@ -54,19 +61,24 @@ use SP\Mvc\View\Components\SelectItem;
 
     <div id="title" class="titleNormal">
         <i class="material-icons">search</i>
-        <?php echo __('Searching'); ?>
+        <?php
+        echo __('Searching'); ?>
     </div>
 
     <table id="tblAccounts" class="data tblConfig">
         <tr>
             <td class="descField">
-                <?php echo __('Results per page'); ?>
+                <?php
+                echo __('Results per page'); ?>
                 <div id="help-account_count"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-account_count">
                     <p>
-                        <?php echo __('Number of results per page to display when performing a search.'); ?>
+                        <?php
+                        echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
                 </div>
             </td>
@@ -77,10 +89,12 @@ use SP\Mvc\View\Components\SelectItem;
                            pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $configData->getAccountCount(); ?>"
+                           value="<?php
+                           echo $configData->getAccountCount(); ?>"
                            required/>
                     <label class="mdl-textfield__label"
-                           for="account_count"><?php echo __('Results per page'); ?></label>
+                           for="account_count"><?php
+                        echo __('Results per page'); ?></label>
                 </div>
             </td>
         </tr>
@@ -95,13 +109,16 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="account_expire_enabled"
                                        class="mdl-switch__input"
-                                       name="account_expire_enabled" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
+                                       name="account_expire_enabled" <?php
+                                echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Accounts password expiry'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Enables the accounts password expiry date.'); ?></span>
+                            <span><?php
+                                echo __('Accounts password expiry'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php
+                                echo __('Enables the accounts password expiry date.'); ?></span>
                         </span>
                     </li>
                 </ul>
@@ -109,13 +126,17 @@ use SP\Mvc\View\Components\SelectItem;
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Password expiry time'); ?>
+                <?php
+                echo __('Password expiry time'); ?>
                 <div id="help-account_expire_time"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-account_expire_time">
                     <p>
-                        <?php echo __('Number of days for account\'s password expiry date.'); ?>
+                        <?php
+                        echo __('Number of days for account\'s password expiry date.'); ?>
                     </p>
                 </div>
             </td>
@@ -125,9 +146,11 @@ use SP\Mvc\View\Components\SelectItem;
                            type="number"
                            pattern="[0-9]{1,3}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $configData->getAccountExpireTime() / 24 / 3600; ?>"/>
+                           value="<?php
+                           echo $configData->getAccountExpireTime() / 24 / 3600; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="account_expire_time"><?php echo __('Expire time (days)'); ?></label>
+                           for="account_expire_time"><?php
+                        echo __('Expire time (days)'); ?></label>
                 </div>
             </td>
         </tr>
@@ -141,13 +164,16 @@ use SP\Mvc\View\Components\SelectItem;
                                    for="account_link_enabled">
                                 <input type="checkbox" id="account_link_enabled"
                                        class="mdl-switch__input"
-                                       name="account_link_enabled" <?php echo $configData->isAccountLink() ? 'checked' : ''; ?>/>
+                                       name="account_link_enabled" <?php
+                                echo $configData->isAccountLink() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Account name as link'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Enables to use the account name as a link to account details.'); ?></span>
+                            <span><?php
+                                echo __('Account name as link'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php
+                                echo __('Enables to use the account name as a link to account details.'); ?></span>
                         </span>
                     </li>
 
@@ -158,13 +184,18 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="account_globalsearch_enabled"
                                        class="mdl-switch__input"
-                                       name="account_globalsearch_enabled" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
+                                       name="account_globalsearch_enabled" <?php
+                                echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Global searches'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Allows the users to do searches that includes all accounts, they won\'t be able to display the account details if they don\'t have permission.'); ?></span>
+                            <span><?php
+                                echo __('Global searches'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php
+                                echo __(
+                                    'Allows the users to do searches that includes all accounts, they won\'t be able to display the account details if they don\'t have permission.'
+                                ); ?></span>
                         </span>
                     </li>
 
@@ -175,16 +206,22 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="account_passtoimage_enabled"
                                        class="mdl-switch__input"
-                                       name="account_passtoimage_enabled" <?php echo $configData->isAccountPassToImage() ? 'checked' : ''; ?>/>
+                                       name="account_passtoimage_enabled" <?php
+                                echo $configData->isAccountPassToImage() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Image to show password'); ?></span>
+                            <span><?php
+                                echo __('Image to show password'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Generate an image with a text of the account password.'); ?>
+                                <?php
+                                echo __('Generate an image with a text of the account password.'); ?>
                                 <br>
-                                <?php echo __('Useful for environments where copying a password to clipboard is a security risk.'); ?>
+                                <?php
+                                echo __(
+                                    'Useful for environments where copying a password to clipboard is a security risk.'
+                                ); ?>
                             </span>
                         </span>
                     </li>
@@ -196,14 +233,17 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="account_resultsascards_enabled"
                                        class="mdl-switch__input"
-                                       name="account_resultsascards_enabled" <?php echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
+                                       name="account_resultsascards_enabled" <?php
+                                echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Results like Cards'); ?></span>
+                            <span><?php
+                                echo __('Results like Cards'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Displays account\'s search results on a card like format.'); ?>
+                                <?php
+                                echo __('Displays account\'s search results on a card like format.'); ?>
                             </span>
                         </span>
                     </li>
@@ -215,16 +255,22 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="account_fullgroup_access_enabled"
                                        class="mdl-switch__input"
-                                       name="account_fullgroup_access_enabled" <?php echo $configData->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
+                                       name="account_fullgroup_access_enabled" <?php
+                                echo $configData->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Secondary Groups Access'); ?></span>
+                            <span><?php
+                                echo __('Secondary Groups Access'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Grants access to users that are included in secondary groups.'); ?>
+                                <?php
+                                echo __('Grants access to users that are included in secondary groups.'); ?>
                                 <br>
-                                <?php echo __('By default, user in a secondary group is granted if the secondary group is set as user\'s main group.'); ?>
+                                <?php
+                                echo __(
+                                    'By default, user in a secondary group is granted if the secondary group is set as user\'s main group.'
+                                ); ?>
                             </span>
                         </span>
                     </li>
@@ -235,7 +281,8 @@ use SP\Mvc\View\Components\SelectItem;
 
     <div id="title" class="titleNormal">
         <i class="material-icons">link</i>
-        <?php echo __('Public Links'); ?>
+        <?php
+        echo __('Public Links'); ?>
     </div>
 
     <table id="tblFiles" class="data tblConfig round">
@@ -249,18 +296,25 @@ use SP\Mvc\View\Components\SelectItem;
                                    for="publiclinks_enabled">
                                 <input type="checkbox" id="publiclinks_enabled"
                                        class="mdl-switch__input"
-                                       name="publiclinks_enabled" <?php echo $configData->isPublinksEnabled() ? 'checked' : ''; ?>/>
+                                       name="publiclinks_enabled" <?php
+                                echo $configData->isPublinksEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Enable Public Links'); ?></span>
+                            <span><?php
+                                echo __('Enable Public Links'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Enables the ability to create public links to view an account\'s details'); ?>
+                                <?php
+                                echo __('Enables the ability to create public links to view an account\'s details'); ?>
                                 <br>
-                                <?php echo __('Linked accounts will be visible by anyone that have the link.'); ?>
+                                <?php
+                                echo __('Linked accounts will be visible by anyone that have the link.'); ?>
                                 <br>
-                                <?php echo __('In order to create links, users must have activated the option on their profiles.'); ?>
+                                <?php
+                                echo __(
+                                    'In order to create links, users must have activated the option on their profiles.'
+                                ); ?>
                             </span>
                         </span>
                     </li>
@@ -272,14 +326,17 @@ use SP\Mvc\View\Components\SelectItem;
                                 <input type="checkbox"
                                        id="publiclinks_image_enabled"
                                        class="mdl-switch__input"
-                                       name="publiclinks_image_enabled" <?php echo $configData->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
+                                       name="publiclinks_image_enabled" <?php
+                                echo $configData->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Use an image for password'); ?></span>
+                            <span><?php
+                                echo __('Use an image for password'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('The account password is shown as image.'); ?>
+                                <?php
+                                echo __('The account password is shown as image.'); ?>
                             </span>
                         </span>
                     </li>
@@ -288,7 +345,8 @@ use SP\Mvc\View\Components\SelectItem;
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Expire time'); ?>
+                <?php
+                echo __('Expire time'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -297,15 +355,18 @@ use SP\Mvc\View\Components\SelectItem;
                            pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $configData->getPublinksMaxTime() / 60; ?>"/>
+                           value="<?php
+                           echo $configData->getPublinksMaxTime() / 60; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publiclinks_maxtime"><?php echo __('Expire time (minutes)'); ?></label>
+                           for="publiclinks_maxtime"><?php
+                        echo __('Expire time (minutes)'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Maximum visits'); ?>
+                <?php
+                echo __('Maximum visits'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -314,9 +375,11 @@ use SP\Mvc\View\Components\SelectItem;
                            pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $configData->getPublinksMaxViews(); ?>"/>
+                           value="<?php
+                           echo $configData->getPublinksMaxViews(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publiclinks_maxviews"><?php echo __('Maximum visits'); ?></label>
+                           for="publiclinks_maxviews"><?php
+                        echo __('Maximum visits'); ?></label>
                 </div>
             </td>
         </tr>
@@ -324,7 +387,8 @@ use SP\Mvc\View\Components\SelectItem;
 
     <div id="title" class="titleNormal">
         <i class="material-icons">attachment</i>
-        <?php echo __('Files'); ?>
+        <?php
+        echo __('Files'); ?>
     </div>
 
     <table id="tblFiles" class="data tblConfig">
@@ -338,13 +402,16 @@ use SP\Mvc\View\Components\SelectItem;
                                    for="files_enabled">
                                 <input type="checkbox" id="files_enabled"
                                        class="mdl-switch__input"
-                                       name="files_enabled" <?php echo $configData->isFilesEnabled() ? 'checked' : ''; ?>/>
+                                       name="files_enabled" <?php
+                                echo $configData->isFilesEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Files management'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Enables the uploading and downloading of accounts files.'); ?></span>
+                            <span><?php
+                                echo __('Files management'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php
+                                echo __('Enables the uploading and downloading of accounts files.'); ?></span>
                         </span>
                     </li>
                 </ul>
@@ -352,48 +419,66 @@ use SP\Mvc\View\Components\SelectItem;
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Allowed MIME types'); ?>
+                <?php
+                echo __('Allowed MIME types'); ?>
                 <div id="help-files_allowed_mimetypes"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-files_allowed_mimetypes">
                     <p>
-                        <?php echo __('Allowed file MIME types for uploading.'); ?>
+                        <?php
+                        echo __('Allowed file MIME types for uploading.'); ?>
                     </p>
                     <p>
-                        <?php echo __('In order to add more MIME types, you need to add them into mime.xml file within the config directory.'); ?>
+                        <?php
+                        echo __(
+                            'In order to add more MIME types, you need to add them into mime.xml file within the config directory.'
+                        ); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Allowed MIME types'); ?></div>
+                <div class="lowres-title"><?php
+                    echo __('Allowed MIME types'); ?></div>
 
                 <select id="files_allowed_mimetypes"
                         name="files_allowed_mimetypes[]"
                         multiple="multiple" class="select-box"
                         data-create="true">
-                    <?php /** @var SelectItem $mimeType */
+                    <?php
+                    /** @var SelectItem $mimeType */
                     foreach ($_getvar('mimeTypes') as $mimeType): ?>
                         <option
-                                value="<?php echo $mimeType->getName(); ?>"
-                            <?php echo $mimeType->isSelected() ? 'selected' : '' ?>><?php echo $mimeType->getName(); ?></option>
-                    <?php endforeach; ?>
+                                value="<?php
+                                echo $mimeType->getName(); ?>"
+                            <?php
+                            echo $mimeType->isSelected() ? 'selected' : '' ?>><?php
+                            echo $mimeType->getName(); ?></option>
+                    <?php
+                    endforeach; ?>
                 </select>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Maximum file size'); ?>
+                <?php
+                echo __('Maximum file size'); ?>
                 <div id="help-files_allowed_size"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-files_allowed_size">
                     <p>
-                        <?php echo __('Sets the maximum file size for uploading.'); ?>
+                        <?php
+                        echo __('Sets the maximum file size for uploading.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Absolute maximum is 16MB.'); ?>
+                        <?php
+                        echo __('Absolute maximum is 16MB.'); ?>
                     </p>
                 </div>
             </td>
@@ -404,9 +489,11 @@ use SP\Mvc\View\Components\SelectItem;
                            pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $configData->getFilesAllowedSize(); ?>"/>
+                           value="<?php
+                           echo $configData->getFilesAllowedSize(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="files_allowed_size"><?php echo __('Maximum file size in kilobytes'); ?></label>
+                           for="files_allowed_size"><?php
+                        echo __('Maximum file size in kilobytes'); ?></label>
                 </div>
             </td>
         </tr>
@@ -417,16 +504,22 @@ use SP\Mvc\View\Components\SelectItem;
     <ul>
         <li>
             <button id="btnBack" type="button"
-                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Back'); ?>">
-                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->back()->getClassButton(); ?>"
+                    title="<?php
+                    echo __('Back'); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->back()->getIcon(); ?></i>
             </button>
         </li>
         <li>
             <button form="frmAccounts"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->save()->getClassButton(); ?>"
+                    title="<?php
+                    echo $icons->save()->getTitle(); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->save()->getIcon(); ?></i>
             </button>
         </li>
     </ul>

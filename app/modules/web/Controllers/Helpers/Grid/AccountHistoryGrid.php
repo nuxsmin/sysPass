@@ -64,10 +64,11 @@ final class AccountHistoryGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -113,8 +114,8 @@ final class AccountHistoryGrid extends GridBase
     protected function getData(): DataGridData
     {
         // Grid Data
-        $iconEdit = clone $this->icons->getIconEdit();
-        $iconDelete = clone $this->icons->getIconDelete();
+        $iconEdit = clone $this->icons->edit();
+        $iconDelete = clone $this->icons->delete();
 
         // Grid Data
         $gridData = new DataGridData();
@@ -126,12 +127,12 @@ final class AccountHistoryGrid extends GridBase
         $gridData->addDataRowSourceWithIcon(
             'isModify',
             $iconEdit->setTitle(__('Modified'))
-                ->setClass('opacity50')
+                     ->setClass('opacity50')
         );
         $gridData->addDataRowSourceWithIcon(
             'isDeleted',
             $iconDelete->setTitle(__('Removed'))
-                ->setClass('opacity50')
+                       ->setClass('opacity50')
         );
         $gridData->setData($this->queryResult);
 
@@ -167,7 +168,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Account Restore'));
         $gridAction->setTitle(__('Account Restore'));
-        $gridAction->setIcon($this->icons->getIconRestore());
+        $gridAction->setIcon($this->icons->restore());
         $gridAction->setOnClickFunction('accountManager/restore');
         $gridAction->addData(
             'action-route',
@@ -187,7 +188,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Remove Account'));
         $gridAction->setTitle(__('Remove Account'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

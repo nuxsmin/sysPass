@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,14 +24,16 @@
 
 /**
  * @var AccountPrivate $private
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 $private = $_getvar('private');
 ?>
@@ -48,16 +50,20 @@ $private = $_getvar('private');
                                for="private_user_enabled">
                             <input type="checkbox" id="private_user_enabled"
                                    class="mdl-switch__input"
-                                   name="private_user_enabled" <?php echo $private->isPrivateUser() ? 'checked' : ''; ?>/>
+                                   name="private_user_enabled" <?php
+                            echo $private->isPrivateUser() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Private Account'); ?></span>
+                        <span><?php
+                            echo __('Private Account'); ?></span>
                         <span class="mdl-list__item-sub-title">
-                            <?php echo __('Accounts will be only visible by the user.'); ?>
+                            <?php
+                            echo __('Accounts will be only visible by the user.'); ?>
                             <br>
-                            <?php echo __('Administrators won\'t be able to display the accounts.'); ?>
+                            <?php
+                            echo __('Administrators won\'t be able to display the accounts.'); ?>
                         </span>
                     </span>
                 </li>
@@ -68,16 +74,22 @@ $private = $_getvar('private');
                                for="private_group_enabled">
                             <input type="checkbox" id="private_group_enabled"
                                    class="mdl-switch__input"
-                                   name="private_group_enabled" <?php echo $private->isPrivateGroup() ? 'checked' : ''; ?>/>
+                                   name="private_group_enabled" <?php
+                            echo $private->isPrivateGroup() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Private Account for Group'); ?></span>
+                        <span><?php
+                            echo __('Private Account for Group'); ?></span>
                         <span class="mdl-list__item-sub-title">
-                            <?php echo __('Accounts will be only visible by the user and users belonging to the main group.'); ?>
+                            <?php
+                            echo __(
+                                'Accounts will be only visible by the user and users belonging to the main group.'
+                            ); ?>
                             <br>
-                            <?php echo __('Administrators won\'t be able to display the accounts.'); ?>
+                            <?php
+                            echo __('Administrators won\'t be able to display the accounts.'); ?>
                         </span>
                     </span>
                 </li>

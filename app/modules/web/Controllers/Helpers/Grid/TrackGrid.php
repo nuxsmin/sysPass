@@ -190,7 +190,7 @@ final class TrackGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('track/refresh');
         $gridAction->addData('action-form', 'frmSearchTrack');
         $gridAction->addData(
@@ -212,7 +212,7 @@ final class TrackGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
         $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
-        $gridAction->setIcon($this->icons->getIconClear());
+        $gridAction->setIcon($this->icons->clear());
         $gridAction->setOnClickFunction('track/clear');
         $gridAction->addData(
             'action-route',
@@ -232,7 +232,7 @@ final class TrackGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
         $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
-        $gridAction->setIcon($this->icons->getIconCheck());
+        $gridAction->setIcon($this->icons->check());
         $gridAction->setOnClickFunction('track/unlock');
         $gridAction->setFilterRowSource('tracked', 0);
         $gridAction->addData(

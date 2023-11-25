@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,28 +24,41 @@
 
 /**
  * @var SP\Html\DataGrid\DataGridTab $data
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 $data = $_getvar('data');
 ?>
 
-    <!-- Rows -->
-<?php if ($data->getData()->getDataCount() > 0):
+<!-- Rows -->
+<?php
+if ($data->getData()->getDataCount() > 0):
     foreach ($data->getData()->getData() as $dataIndex => $dataItem):
         if ($dataIndex === 'count'): continue; endif; ?>
 
-        <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
-            <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
-                <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
-                <?php $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
-                <td class="cell-data"><?php echo $value !== '' ? $value : '&nbsp;'; // Fix height ?></td>
-            <?php endforeach; ?>
+        <tr data-item-id="<?php
+        echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
+            <?php
+            foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
+                <?php
+                $value = $rowSrc['isMethod'] === true &&
+                         method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}(
+                ) : $dataItem->{$rowSrc['name']}; ?>
+                <?php
+                $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
+                <td class="cell-data"><?php
+                    echo $value !== '' ? $value : '&nbsp;'; // Fix height ?></td>
+            <?php
+            endforeach; ?>
         </tr>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php
+    endforeach; ?>
+<?php
+endif; ?>

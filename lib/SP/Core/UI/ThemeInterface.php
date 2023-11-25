@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,18 +32,11 @@ namespace SP\Core\UI;
 interface ThemeInterface
 {
     /**
-     * @param bool $force Forzar la detección del tema para los inicios de sesión
-     *
-     * @return mixed
-     */
-    public function initTheme(bool $force): void;
-
-    /**
      * Obtener los temas disponibles desde el directorio de temas
      *
      * @return array Con la información del tema
      */
-    public function getThemesAvailable(): array;
+    public function getAvailable(): array;
 
     /**
      * Obtener la información del tema desde el archivo de información
@@ -56,27 +49,22 @@ interface ThemeInterface
      *          'css' => array
      *  )
      */
-    public function getThemeInfo(): array;
+    public function getInfo(): array;
 
     /**
      * @return string
      */
-    public function getThemeUri(): string;
+    public function getUri(): string;
 
     /**
      * @return string
      */
-    public function getThemePath(): string;
+    public function getPath(): string;
 
     /**
-     * @return string
+     * @return ThemeIconsInterface
      */
-    public function getThemeName(): string;
-
-    /**
-     * @return ThemeIcons
-     */
-    public function getIcons(): ThemeIcons;
+    public function getIcons(): ThemeIconsInterface;
 
     /**
      * @return string

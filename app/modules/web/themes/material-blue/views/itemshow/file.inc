@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,22 +24,31 @@
 
 /**
  * @var FileData $fileData
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\FileData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 $fileData = $_getvar('fileData');
 ?>
 
-<?php if ($_getvar('isImage')): ?>
-    <img src="data:'<?php echo $fileData->getType(); ?>;base64, <?php echo $_getvar('data'); ?>"
+<?php
+if ($_getvar('isImage')): ?>
+    <img src="data:'<?php
+    echo $fileData->getType(); ?>;base64, <?php
+    echo $_getvar('data'); ?>"
          border="0"/>
-    <div class="title"><?php echo htmlspecialchars($fileData->getName(), ENT_QUOTES); ?></div>
-<?php else: ?>
-    <pre><?php echo $_getvar('data'); ?></pre>
-<?php endif; ?>
+    <div class="title"><?php
+        echo htmlspecialchars($fileData->getName(), ENT_QUOTES); ?></div>
+<?php
+else: ?>
+    <pre><?php
+        echo $_getvar('data'); ?></pre>
+<?php
+endif; ?>

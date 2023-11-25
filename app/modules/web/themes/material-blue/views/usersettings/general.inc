@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,71 +24,93 @@
 
 /**
  * @var UserPreferencesData $userPreferences
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\TemplateInterface;
 
 $userPreferences = $_getvar('userPreferences');
 ?>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">home</i>
-    <?php echo __('Site'); ?>
+    <?php
+    echo __('Site'); ?>
 </div>
 
 <form method="post" name="frmPreferences" id="frmPreferences"
       class="form-action"
       data-onsubmit="user/saveSettings"
-      data-action-route="<?php echo $_getvar('route'); ?>"
+      data-action-route="<?php
+      echo $_getvar('route'); ?>"
       data-reload="1"
       data-hash="">
 
     <table id="tblSite" class="data tblConfig round">
         <tr>
-            <td class="descField"><?php echo __('Language'); ?></td>
+            <td class="descField"><?php
+                echo __('Language'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Language'); ?></div>
+                <div class="lowres-title"><?php
+                    echo __('Language'); ?></div>
 
                 <select name="userlang" id="sel-userlang" size="1"
                         class="select-box sel-chosen-ns">
-                    <?php /** @var SelectItem $lang */
+                    <?php
+                    /** @var SelectItem $lang */
                     foreach ($_getvar('langs') as $langName => $lang): ?>
                         <option
-                                value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ""; ?>><?php echo $lang->getName(); ?></option>
-                    <?php endforeach; ?>
+                                value='<?php
+                                echo $lang->getId(); ?>' <?php
+                        echo $lang->isSelected() ? 'selected' : ""; ?>><?php
+                            echo $lang->getName(); ?></option>
+                    <?php
+                    endforeach; ?>
                 </select>
             </td>
         </tr>
         <tr>
-            <td class="descField"><?php echo __('Visual Theme'); ?></td>
+            <td class="descField"><?php
+                echo __('Visual Theme'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Visual Theme'); ?></div>
+                <div class="lowres-title"><?php
+                    echo __('Visual Theme'); ?></div>
 
                 <select name="usertheme" id="sel-usertheme" size="1"
                         class="select-box sel-chosen-ns">
-                    <?php /** @var SelectItem $theme */
+                    <?php
+                    /** @var SelectItem $theme */
                     foreach ($_getvar('themes') as $theme): ?>
                         <option
-                                value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>
-                    <?php endforeach; ?>
+                                value='<?php
+                                echo $theme->getId(); ?>' <?php
+                        echo $theme->isSelected() ? 'selected' : ""; ?>><?php
+                            echo $theme->getName(); ?></option>
+                    <?php
+                    endforeach; ?>
                 </select>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Results per page'); ?>
+                <?php
+                echo __('Results per page'); ?>
                 <div id="help-account_count"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-account_count">
                     <p>
-                        <?php echo __('Number of results per page to display when performing a search.'); ?>
+                        <?php
+                        echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
                 </div>
             </td>
@@ -99,10 +121,12 @@ $userPreferences = $_getvar('userPreferences');
                            pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $userPreferences->getResultsPerPage(); ?>"
+                           value="<?php
+                           echo $userPreferences->getResultsPerPage(); ?>"
                            required/>
                     <label class="mdl-textfield__label"
-                           for="resultsperpage"><?php echo __('Results per page'); ?></label>
+                           for="resultsperpage"><?php
+                        echo __('Results per page'); ?></label>
                 </div>
             </td>
         </tr>
@@ -116,14 +140,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="account_link">
                                 <input type="checkbox" id="account_link"
                                        class="mdl-switch__input"
-                                       name="account_link" <?php echo $userPreferences->isAccountLink() ? 'checked' : ''; ?>/>
+                                       name="account_link" <?php
+                                echo $userPreferences->isAccountLink() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Account name as link'); ?></span>
+                            <span><?php
+                                echo __('Account name as link'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Enables to use the account name as a link to account details.'); ?>
+                                <?php
+                                echo __('Enables to use the account name as a link to account details.'); ?>
                             </span>
                         </span>
                     </li>
@@ -134,14 +161,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="sort_views">
                                 <input type="checkbox" id="sort_views"
                                        class="mdl-switch__input"
-                                       name="sort_views" <?php echo $userPreferences->isSortViews() ? 'checked' : ''; ?>/>
+                                       name="sort_views" <?php
+                                echo $userPreferences->isSortViews() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Sort search results by views'); ?></span>
+                            <span><?php
+                                echo __('Sort search results by views'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Sorts accounts search results by the number of account\'s views'); ?>
+                                <?php
+                                echo __('Sorts accounts search results by the number of account\'s views'); ?>
                             </span>
                         </span>
                     </li>
@@ -152,14 +182,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="top_navbar">
                                 <input type="checkbox" id="top_navbar"
                                        class="mdl-switch__input"
-                                       name="top_navbar" <?php echo $userPreferences->isTopNavbar() ? 'checked' : ''; ?>/>
+                                       name="top_navbar" <?php
+                                echo $userPreferences->isTopNavbar() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Navigation bar on top'); ?></span>
+                            <span><?php
+                                echo __('Navigation bar on top'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Displays a navigation bar on top of the search results.'); ?>
+                                <?php
+                                echo __('Displays a navigation bar on top of the search results.'); ?>
                             </span>
                         </span>
                     </li>
@@ -170,14 +203,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="optional_actions">
                                 <input type="checkbox" id="optional_actions"
                                        class="mdl-switch__input"
-                                       name="optional_actions" <?php echo $userPreferences->isOptionalActions() ? 'checked' : ''; ?>/>
+                                       name="optional_actions" <?php
+                                echo $userPreferences->isOptionalActions() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Show Hidden Actions'); ?></span>
+                            <span><?php
+                                echo __('Show Hidden Actions'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Always display hidden actions on the accounts search page.'); ?>
+                                <?php
+                                echo __('Always display hidden actions on the accounts search page.'); ?>
                             </span>
                         </span>
                     </li>
@@ -188,14 +224,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="resultsascards">
                                 <input type="checkbox" id="resultsascards"
                                        class="mdl-switch__input"
-                                       name="resultsascards" <?php echo $userPreferences->isResultsAsCards() ? 'checked' : ''; ?>/>
+                                       name="resultsascards" <?php
+                                echo $userPreferences->isResultsAsCards() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Results like Cards'); ?></span>
+                            <span><?php
+                                echo __('Results like Cards'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Displays account\'s search results on a card like format.'); ?>
+                                <?php
+                                echo __('Displays account\'s search results on a card like format.'); ?>
                             </span>
                         </span>
                     </li>
@@ -206,14 +245,17 @@ $userPreferences = $_getvar('userPreferences');
                                    for="check_notifications">
                                 <input type="checkbox" id="check_notifications"
                                        class="mdl-switch__input"
-                                       name="check_notifications" <?php echo $userPreferences->isCheckNotifications() ? 'checked' : ''; ?>/>
+                                       name="check_notifications" <?php
+                                echo $userPreferences->isCheckNotifications() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('In-App Notifications'); ?></span>
+                            <span><?php
+                                echo __('In-App Notifications'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Enables the active In-App notifications polling'); ?>
+                                <?php
+                                echo __('Enables the active In-App notifications polling'); ?>
                             </span>
                         </span>
                     </li>
@@ -225,14 +267,17 @@ $userPreferences = $_getvar('userPreferences');
                                 <input type="checkbox"
                                        id="show_account_search_filters"
                                        class="mdl-switch__input"
-                                       name="show_account_search_filters" <?php echo $userPreferences->isShowAccountSearchFilters() ? 'checked' : ''; ?>/>
+                                       name="show_account_search_filters" <?php
+                                echo $userPreferences->isShowAccountSearchFilters() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Show Filters'); ?></span>
+                            <span><?php
+                                echo __('Show Filters'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Displays the additional filters selection on the accounts search.'); ?>
+                                <?php
+                                echo __('Displays the additional filters selection on the accounts search.'); ?>
                             </span>
                         </span>
                     </li>
@@ -247,16 +292,22 @@ $userPreferences = $_getvar('userPreferences');
     <ul>
         <li>
             <button id="btnBack" type="button"
-                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Back'); ?>">
-                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->back()->getClassButton(); ?>"
+                    title="<?php
+                    echo __('Back'); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->back()->getIcon(); ?></i>
             </button>
         </li>
         <li>
             <button form="frmPreferences"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->save()->getClassButton(); ?>"
+                    title="<?php
+                    echo $icons->save()->getTitle(); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->save()->getIcon(); ?></i>
             </button>
         </li>
     </ul>

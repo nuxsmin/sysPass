@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,53 +24,62 @@
 
 /**
  * @var UserData $user
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\UserData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 $user = $_getvar('user');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $_getvar('header'); ?><i
+    <h2 class="center"><?php
+        echo $_getvar('header'); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
           data-onsubmit="user/savePassword"
-          data-action-route="<?php echo $_getvar('route', ''); ?>"
+          data-action-route="<?php
+          echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tr>
-                <td class="descField"><?php echo __('Name'); ?></td>
+                <td class="descField"><?php
+                    echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>" readonly
+                               value="<?php
+                               echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>" readonly
                                disabled/>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Login'); ?></td>
+                <td class="descField"><?php
+                    echo __('Login'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
                                readonly disabled/>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Password'); ?></td>
+                <td class="descField"><?php
+                    echo __('Password'); ?></td>
                 <td class="valField">
                     <div class="form-control">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -79,14 +88,16 @@ $user = $_getvar('user');
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
-                                   for="password"><?php echo __('Password'); ?></label>
+                                   for="password"><?php
+                                echo __('Password'); ?></label>
                         </div>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Password (repeat)'); ?></td>
+                <td class="descField"><?php
+                    echo __('Password (repeat)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="password_repeat" name="password_repeat"
@@ -94,7 +105,8 @@ $user = $_getvar('user');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
-                               for="password_repeat"><?php echo __('Password (repeat)'); ?></label>
+                               for="password_repeat"><?php
+                            echo __('Password (repeat)'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -103,9 +115,12 @@ $user = $_getvar('user');
 
     <div class="action-in-box">
         <button form="frmUpdUsrPass"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                echo $icons->save()->getClassButton(); ?>"
+                title="<?php
+                echo $icons->save()->getTitle(); ?>">
+            <i class="material-icons"><?php
+                echo $icons->save()->getIcon(); ?></i>
         </button>
     </div>
 </div>

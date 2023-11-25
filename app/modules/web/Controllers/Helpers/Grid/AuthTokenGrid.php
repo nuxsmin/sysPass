@@ -67,10 +67,11 @@ final class AuthTokenGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -158,7 +159,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Authorization'));
         $gridAction->setTitle(__('New Authorization'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
@@ -179,7 +180,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Authorization token'));
         $gridAction->setTitle(__('View Authorization token'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -199,7 +200,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Authorization'));
         $gridAction->setTitle(__('Edit Authorization'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -219,7 +220,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Authorization'));
         $gridAction->setTitle(__('Delete Authorization'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

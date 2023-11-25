@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,13 +23,15 @@
  */
 
 /**
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 
@@ -47,7 +49,8 @@ use SP\Core\UI\ThemeIcons;
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80" autocomplete="off" autofocus>
                         <label class="mdl-textfield__label"
-                               for="user"><?php echo __('User'); ?></label>
+                               for="user"><?php
+                            echo __('User'); ?></label>
                     </div>
                 </div>
 
@@ -58,7 +61,8 @@ use SP\Core\UI\ThemeIcons;
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="pass"><?php echo __('Password'); ?></label>
+                               for="pass"><?php
+                            echo __('Password'); ?></label>
                     </div>
                 </div>
 
@@ -69,7 +73,8 @@ use SP\Core\UI\ThemeIcons;
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="oldpass"><?php echo __('Previous Password'); ?></label>
+                               for="oldpass"><?php
+                            echo __('Previous Password'); ?></label>
                     </div>
                 </div>
 
@@ -80,16 +85,21 @@ use SP\Core\UI\ThemeIcons;
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="mpass"><?php echo __('Master Password'); ?></label>
+                               for="mpass"><?php
+                            echo __('Master Password'); ?></label>
                     </div>
                 </div>
 
-                <?php if ($_getvar('from') && $_getvar('from_hash')): ?>
+                <?php
+                if ($_getvar('from') && $_getvar('from_hash')): ?>
                     <input type="hidden" name="from"
-                           value="<?php echo $_getvar('from'); ?>"/>
+                           value="<?php
+                           echo $_getvar('from'); ?>"/>
                     <input type="hidden" name="h"
-                           value="<?php echo $_getvar('from_hash'); ?>"/>
-                <?php endif; ?>
+                           value="<?php
+                           echo $_getvar('from_hash'); ?>"/>
+                <?php
+                endif; ?>
 
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
@@ -97,41 +107,53 @@ use SP\Core\UI\ThemeIcons;
             <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--indigo-400"
-                        title="<?php echo __('Sign in'); ?>">
+                        title="<?php
+                        echo __('Sign in'); ?>">
                     <i class="material-icons">play_arrow</i>
                 </button>
             </div>
         </form>
 
         <!-- Close boxData -->
-        <?php if ($_getvar('mailEnabled')): ?>
+        <?php
+        if ($_getvar('mailEnabled')): ?>
             <div id="box-actions">
-                <a href="index.php?r=userPassReset"><?php echo __('Forgot password?'); ?></a>
+                <a href="index.php?r=userPassReset"><?php
+                    echo __('Forgot password?'); ?></a>
             </div>
-        <?php endif; ?>
+        <?php
+        endif; ?>
     </div><!-- Close boxLogin -->
 
-    <?php if ($_getvar('updated')): ?>
+    <?php
+    if ($_getvar('updated')): ?>
         <div id="box-updated"
-             class="round5"><?php echo __('Application successfully updated'); ?></div>
-    <?php endif; ?>
+             class="round5"><?php
+            echo __('Application successfully updated'); ?></div>
+    <?php
+    endif; ?>
 
-    <?php if ($_getvar('isDemo')): ?>
+    <?php
+    if ($_getvar('isDemo')): ?>
         <div id="demo-info">
             <ul>
-                <li title="<?php echo __('User'); ?>">
+                <li title="<?php
+                echo __('User'); ?>">
                     <i class="material-icons">perm_identity</i>
                     <span>demo</span>
                 </li>
-                <li title="<?php echo __('Password'); ?>">
+                <li title="<?php
+                echo __('Password'); ?>">
                     <i class="material-icons">vpn_key</i>
                     <span>syspass</span>
                 </li>
-                <li title="<?php echo __('Master Password'); ?>">
+                <li title="<?php
+                echo __('Master Password'); ?>">
                     <i class="material-icons">vpn_key</i>
                     <span>12345678900</span>
                 </li>
             </ul>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
 </div>

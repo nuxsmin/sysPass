@@ -68,9 +68,9 @@ final class UserGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
             true
         );
 
@@ -126,19 +126,19 @@ final class UserGrid extends GridBase
         $gridData->addDataRowSource('userGroupName');
         $gridData->addDataRowSourceWithIcon(
             'isAdminApp',
-            $this->icons->getIconAppAdmin()
+            $this->icons->appAdmin()
         );
         $gridData->addDataRowSourceWithIcon(
             'isAdminAcc',
-            $this->icons->getIconAccAdmin()
+            $this->icons->accAdmin()
         );
         $gridData->addDataRowSourceWithIcon(
             'isLdap',
-            $this->icons->getIconLdapUser()
+            $this->icons->ldapUser()
         );
         $gridData->addDataRowSourceWithIcon(
             'isDisabled',
-            $this->icons->getIconDisabled()
+            $this->icons->disabled()
         );
         $gridData->setData($this->queryResult);
 
@@ -175,7 +175,7 @@ final class UserGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New User'));
         $gridAction->setTitle(__('New User'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
@@ -196,7 +196,7 @@ final class UserGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View User Details'));
         $gridAction->setTitle(__('View User Details'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -216,7 +216,7 @@ final class UserGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit User'));
         $gridAction->setTitle(__('Edit User'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -236,7 +236,7 @@ final class UserGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Change User\'s Password'));
         $gridAction->setTitle(__('Change User\'s Password'));
-        $gridAction->setIcon($this->icons->getIconEditPass());
+        $gridAction->setIcon($this->icons->editPass());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->setFilterRowSource('isLdap');
         $gridAction->addData(
@@ -257,7 +257,7 @@ final class UserGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete User'));
         $gridAction->setTitle(__('Delete User'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

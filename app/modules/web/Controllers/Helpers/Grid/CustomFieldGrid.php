@@ -66,10 +66,11 @@ final class CustomFieldGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
@@ -128,7 +129,7 @@ final class CustomFieldGrid extends GridBase
         $gridData->addDataRowSource('typeName');
         $gridData->addDataRowSourceWithIcon(
             'isEncrypted',
-            $this->icons->getIconEditPass()->setTitle(__('Encrypted'))
+            $this->icons->editPass()->setTitle(__('Encrypted'))
         );
         $gridData->setData($this->queryResult);
 
@@ -165,7 +166,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Field'));
         $gridAction->setTitle(__('New Field'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
@@ -186,7 +187,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Field'));
         $gridAction->setTitle(__('Edit Field'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -206,7 +207,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Field'));
         $gridAction->setTitle(__('Delete Field'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

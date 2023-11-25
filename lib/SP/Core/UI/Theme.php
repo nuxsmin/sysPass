@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,16 +24,13 @@
 
 namespace SP\Core\UI;
 
-use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
+use SP\Util\FileUtil;
 
-defined('APP_ROOT') || die();
+use function SP\processException;
 
 /**
  * Class Theme
@@ -42,152 +39,55 @@ defined('APP_ROOT') || die();
  */
 final class Theme implements ThemeInterface
 {
-    public const ICONS_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'icons.cache';
-    /**
-     * Cache expire time
-     */
-    public const CACHE_EXPIRE = 86400;
-    private string              $themeUri      = '';
-    private string              $themePath     = '';
-    private string              $themePathFull = '';
-    private string              $themeName     = '';
-    private string              $viewsPath     = '';
-    private ?ThemeIcons         $icons         = null;
-    private ConfigDataInterface $configData;
-    private ContextInterface    $context;
-    private string              $module;
-    private FileCacheInterface  $fileCache;
-
-    /**
-     * Theme constructor.
-     *
-     * @param  string  $module
-     * @param  \SP\Domain\Config\Ports\ConfigInterface  $config
-     * @param  ContextInterface  $context
-     * @param  FileCacheInterface  $fileCache
-     */
     public function __construct(
-        string $module,
-        ConfigInterface $config,
-        ContextInterface $context,
-        FileCacheInterface $fileCache
+        private readonly ThemeContextInterface $themeContext,
+        private readonly ThemeIconsInterface   $icons
     ) {
-        $this->configData = $config->getConfigData();
-        $this->context = $context;
-        $this->fileCache = $fileCache;
-        $this->module = $module;
     }
 
-    /**
-     * Inicializar el tema visual a utilizar
-     *
-     * @param  bool  $force  Forzar la detección del tema para los inicios de sesión
-     *
-     * @throws InvalidClassException
-     */
-    public function initTheme(bool $force): void
+    public static function getThemeName(ConfigDataInterface $configData, ContextInterface $context): ?string
     {
-        if (is_dir(VIEW_PATH)) {
-            if (empty($this->themeName) || $force === true) {
-                $this->themeName = $this->getUserTheme() ?: $this->getGlobalTheme();
-            }
+        $name = $configData->getSiteTheme();
 
-            $this->themeUri = BootstrapBase::$WEBURI.'/app/modules/'.$this->module.'themes'.$this->themeName;
-            $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH).DIRECTORY_SEPARATOR.$this->themeName;
-            $this->themePathFull = VIEW_PATH.DIRECTORY_SEPARATOR.$this->themeName;
-            $this->viewsPath = $this->themePathFull.DIRECTORY_SEPARATOR.'views';
-
-            $this->initIcons();
-        }
-    }
-
-    /**
-     * Obtener el tema visual del usuario
-     */
-    protected function getUserTheme(): ?string
-    {
-        return $this->context->isLoggedIn() ? $this->context->getUserData()->getPreferences()->getTheme() : null;
-    }
-
-    /**
-     * Devolver el tema visual de sysPass desde la configuración
-     */
-    protected function getGlobalTheme(): string
-    {
-        return $this->configData->getSiteTheme();
-    }
-
-    /**
-     * Inicializar los iconos del tema actual
-     *
-     * @throws InvalidClassException
-     */
-    private function initIcons(): void
-    {
-        try {
-            if ($this->context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
-                && !$this->fileCache->isExpired(self::CACHE_EXPIRE)
-            ) {
-                $this->icons = $this->fileCache->load();
-
-                logger('Loaded icons cache', 'INFO');
-
-                return;
-            }
-        } catch (FileException $e) {
-            processException($e);
+        if ($context->isLoggedIn()) {
+            return $context->getUserData()->getPreferences()->getTheme() ?? $name;
         }
 
-        $this->saveIcons();
-
-    }
-
-    /**
-     * @throws InvalidClassException
-     */
-    private function saveIcons(): void
-    {
-        $iconsClass = $this->themePathFull.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Icons.php';
-
-        if (file_exists($iconsClass)) {
-            if (!($this->icons = require $iconsClass) instanceof ThemeIcons) {
-                throw new InvalidClassException(__u('Invalid icons class'));
-            }
-
-            try {
-                $this->fileCache->save($this->icons);
-
-                logger('Saved icons cache', 'INFO');
-            } catch (FileException $e) {
-                processException($e);
-            }
-        }
+        return $name;
     }
 
     /**
      * Obtener los temas disponibles desde el directorio de temas
      */
-    public function getThemesAvailable(): array
+    public function getAvailable(): array
     {
+        $directory = $this->themeContext->getViewsDirectory();
         $themesAvailable = [];
 
-        $themesDirs = dir(VIEW_PATH);
+        while (false !== ($themeDir = $directory->read())) {
+            if (is_dir($themeDir) && $themeDir !== '.' && $themeDir !== '..') {
+                try {
+                    $themeInfo = FileUtil::require(
+                        FileUtil::buildPath($this->themeContext->getViewsPath(), $themeDir, 'index.php')
+                    );
 
-        while (false !== ($themeDir = $themesDirs->read())) {
-            if ($themeDir !== '.' && $themeDir !== '..') {
-                $themeFile = VIEW_PATH.DIRECTORY_SEPARATOR.$themeDir.DIRECTORY_SEPARATOR.'index.php';
-
-                if (file_exists($themeFile)) {
-                    $themeInfo = require $themeFile;
-
-                    $themesAvailable[$themeDir] = $themeInfo['name'];
+                    if (is_array($themeInfo) && isset($themeInfo['name'])) {
+                        $themesAvailable[$themeDir] = $themeInfo['name'];
+                    }
+                } catch (InvalidClassException|FileException $e) {
+                    processException($e);
                 }
             }
         }
 
-        $themesDirs->close();
+        $directory->close();
 
         return $themesAvailable;
+    }
+
+    public function getViewsPath(): string
+    {
+        return $this->themeContext->getViewsPath();
     }
 
     /**
@@ -201,43 +101,33 @@ final class Theme implements ThemeInterface
      *          'css' => array
      *  )
      */
-    public function getThemeInfo(): array
+    public function getInfo(): array
     {
-        $themeFile = $this->themePathFull.DIRECTORY_SEPARATOR.'index.php';
-
-        if (file_exists($themeFile)) {
-            $themeInfo = include $themeFile;
+        try {
+            $themeInfo = FileUtil::require(FileUtil::buildPath($this->themeContext->getFullPath(), 'index.php'));
 
             if (is_array($themeInfo)) {
                 return $themeInfo;
             }
+        } catch (InvalidClassException|FileException $e) {
+            processException($e);
         }
 
         return [];
     }
 
-    public function getThemeUri(): string
+    public function getUri(): string
     {
-        return $this->themeUri;
+        return $this->themeContext->getUri();
     }
 
-    public function getThemePath(): string
+    public function getPath(): string
     {
-        return $this->themePath;
+        return $this->themeContext->getPath();
     }
 
-    public function getThemeName(): string
-    {
-        return $this->themeName;
-    }
-
-    public function getIcons(): ThemeIcons
+    public function getIcons(): ThemeIconsInterface
     {
         return clone $this->icons;
-    }
-
-    public function getViewsPath(): string
-    {
-        return $this->viewsPath;
     }
 }

@@ -37,7 +37,7 @@ final class CopyController extends AccountViewBase
     /**
      * Copy action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      */
     public function copyAction(int $id): void
     {
@@ -54,8 +54,8 @@ final class CopyController extends AccountViewBase
                 'title',
                 [
                     'class' => 'titleGreen',
-                    'name'  => __('New Account'),
-                    'icon'  => $this->icons->getIconAdd()->getIcon(),
+                    'name' => __('New Account'),
+                    'icon' => $this->icons->add()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveCopy');

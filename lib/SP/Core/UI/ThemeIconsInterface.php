@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,17 +24,71 @@
 
 namespace SP\Core\UI;
 
-defined('APP_ROOT') || die();
+use SP\Core\Context\ContextInterface;
+use SP\Html\Assets\IconInterface;
+use SP\Infrastructure\File\FileCache;
 
 /**
- * Interface ThemeIconsInterface
+ * Class ThemeIcons
  *
- * @package SP\Core
+ * @method IconInterface warning
+ * @method IconInterface download
+ * @method IconInterface clear
+ * @method IconInterface play
+ * @method IconInterface help
+ * @method IconInterface publicLink
+ * @method IconInterface back
+ * @method IconInterface restore
+ * @method IconInterface save
+ * @method IconInterface up
+ * @method IconInterface down
+ * @method IconInterface viewPass
+ * @method IconInterface copy
+ * @method IconInterface clipboard
+ * @method IconInterface email
+ * @method IconInterface refresh
+ * @method IconInterface editPass
+ * @method IconInterface appAdmin
+ * @method IconInterface accAdmin
+ * @method IconInterface ldapUser
+ * @method IconInterface disabled
+ * @method IconInterface navPrev
+ * @method IconInterface navNext
+ * @method IconInterface navFirst
+ * @method IconInterface navLast
+ * @method IconInterface add
+ * @method IconInterface view
+ * @method IconInterface edit
+ * @method IconInterface delete
+ * @method IconInterface optional
+ * @method IconInterface check
+ * @method IconInterface search
+ * @method IconInterface account
+ * @method IconInterface group
+ * @method IconInterface settings
+ * @method IconInterface info
+ * @method IconInterface enabled
+ * @method IconInterface remove
+ *
  */
 interface ThemeIconsInterface
 {
+    public static function loadIcons(
+        ContextInterface      $context,
+        FileCache             $cache,
+        ThemeContextInterface $themeContext
+    ): ThemeIconsInterface;
+
     /**
-     * @return mixed
+     * @param string $name
+     *
+     * @return IconInterface
      */
-    public function setIcons();
+    public function getIconByName(string $name): IconInterface;
+
+    /**
+     * @param string $alias
+     * @param IconInterface $icon
+     */
+    public function addIcon(string $alias, IconInterface $icon): void;
 }

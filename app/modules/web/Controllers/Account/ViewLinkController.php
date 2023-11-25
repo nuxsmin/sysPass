@@ -36,6 +36,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Http\Uri;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -49,17 +51,17 @@ use SP\Util\Util;
  */
 final class ViewLinkController extends AccountControllerBase
 {
-    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
     private ThemeIcons                                       $icons;
     private PublicLinkService                                $publicLinkService;
     private ImageUtil                                        $imageUtil;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
-        \SP\Domain\Account\Ports\PublicLinkServiceInterface $publicLinkService,
-        ImageUtilInterface $imageUtil
+        Application                $application,
+        WebControllerHelper        $webControllerHelper,
+        AccountServiceInterface    $accountService,
+        PublicLinkServiceInterface $publicLinkService,
+        ImageUtilInterface         $imageUtil
     ) {
         parent::__construct(
             $application,
@@ -76,7 +78,7 @@ final class ViewLinkController extends AccountControllerBase
     /**
      * View public link action
      *
-     * @param  string  $hash  Link's hash
+     * @param string $hash Link's hash
      */
     public function viewLinkAction(string $hash): void
     {
@@ -106,8 +108,8 @@ final class ViewLinkController extends AccountControllerBase
                     'title',
                     [
                         'class' => 'titleNormal',
-                        'name'  => __('Account Details'),
-                        'icon'  => $this->icons->getIconView()->getIcon(),
+                        'name' => __('Account Details'),
+                        'icon' => $this->icons->view()->getIcon(),
                     ]
                 );
 
@@ -136,24 +138,30 @@ final class ViewLinkController extends AccountControllerBase
                     ? '***'
                     : $this->request->getClientAddress(true);
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
 
                 $deepLink = new Uri($baseUrl);
-                $deepLink->addParam('r', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId());
+                $deepLink->addParam(
+                    'r',
+                    Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId()
+                );
 
                 $this->eventDispatcher->notify(
                     'show.account.link',
                     new Event(
                         $this, EventMessage::factory()
-                        ->addDescription(__u('Link viewed'))
-                        ->addDetail(__u('Account'), $accountData->getName())
-                        ->addDetail(__u('Client'), $accountData->getClientName())
-                        ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
-                        ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
-                        ->addDetail(__u('IP'), $clientAddress)
-                        ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
-                        ->addExtra('userId', $publicLinkData->getUserId())
-                        ->addExtra('notify', $publicLinkData->isNotify())
+                                           ->addDescription(__u('Link viewed'))
+                                           ->addDetail(__u('Account'), $accountData->getName())
+                                           ->addDetail(__u('Client'), $accountData->getClientName())
+                                           ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
+                                           ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
+                                           ->addDetail(__u('IP'), $clientAddress)
+                                           ->addDetail(
+                                               __u('Link'),
+                                               $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                           )
+                                           ->addExtra('userId', $publicLinkData->getUserId())
+                                           ->addExtra('notify', $publicLinkData->isNotify())
                     )
                 );
             } else {

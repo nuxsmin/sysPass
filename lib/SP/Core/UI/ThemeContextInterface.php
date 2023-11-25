@@ -22,31 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace SP\Core\UI;
+
+use Directory;
+
 /**
- * @var ThemeIconsInterface $icons
- * @var ConfigDataInterface $configData
- * @var callable $_getvar
- * @var TemplateInterface $this
+ * Class ThemeContext
  */
+interface ThemeContextInterface
+{
+    public function getModule(): string;
 
-use SP\Core\UI\ThemeIconsInterface;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Mvc\View\TemplateInterface;
+    public function getName(): string;
 
-?>
-<div id="box-popup">
-    <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
-                class="btn-popup-close material-icons">close</i></h2>
-    <table class="popup-data">
-        <tbody>
-        <tr id="ldap-results">
-            <td class="valField">
-                <div class="lowres-title"><?php
-                    echo $_getvar('header'); ?></div>
-                <div class="list-wrap"></div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    public function getFullPath(): string;
+
+    public function getPath(): string;
+
+    public function getViewsPath();
+
+    public function getUri(): string;
+
+    public function getViewsDirectory(): Directory;
+}

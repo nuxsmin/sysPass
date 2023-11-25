@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,36 +23,46 @@
  */
 
 /**
- * @var ThemeIcons                     $icons
- * @var callable                       $_getvar
- * @var AccountExtData                 $accountData
- * @var AccountAcl                     $accountAcl
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var AccountExtData $accountData
+ * @var AccountAcl $accountAcl
+ * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 ?>
 
 <div id="data-files">
     <div class="data">
         <div id="list-account-files"
-             data-action-route="<?php echo $_getvar('fileListRoute'); ?>"
-             data-item-id="<?php echo $_getvar('accountId'); ?>"
-             data-history="<?php echo $_getvar('accountIsHistory', false); ?>"
-             data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
+             data-action-route="<?php
+             echo $_getvar('fileListRoute'); ?>"
+             data-item-id="<?php
+             echo $_getvar('accountId'); ?>"
+             data-history="<?php
+             echo $_getvar('accountIsHistory', false); ?>"
+             data-delete="<?php
+             echo (int)$accountAcl->isShowDelete(); ?>">
         </div>
 
-        <?php if ($_getvar('editAction')): ?>
+        <?php
+        if ($_getvar('editAction')): ?>
             <div id="box-upload-files">
                 <div id="drop-account-files"
                      class="round active-tooltip dropzone"
-                     data-files-ext="<?php echo $_getvar('filesAllowedExts'); ?>"
-                     data-item-id="<?php echo $_getvar('accountId'); ?>"
-                     data-action-route="<?php echo $_getvar('fileUploadRoute'); ?>"
-                     data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
+                     data-files-ext="<?php
+                     echo $_getvar('filesAllowedExts'); ?>"
+                     data-item-id="<?php
+                     echo $_getvar('accountId'); ?>"
+                     data-action-route="<?php
+                     echo $_getvar('fileUploadRoute'); ?>"
+                     data-delete="<?php
+                     echo (int)$accountAcl->isShowDelete(); ?>">
                     <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                 </div>
                 <form method="post" enctype="multipart/form-data"
@@ -61,13 +71,16 @@ use SP\Domain\Account\Services\AccountAcl;
                     <input type="file" id="inFile" multiple name="inFile"/>
                 </form>
                 <div class="mdl-tooltip" for="drop-account-files">
-                    <?php printf(
+                    <?php
+                    printf(
                         __('Drop files here (max. 5) or click to select')
                         . '<br><br>'
                         . __('Maximum file size: %d MB'),
-                        $_getvar('maxFileSize')); ?>
+                        $_getvar('maxFileSize')
+                    ); ?>
                 </div>
             </div>
-        <?php endif; ?>
+        <?php
+        endif; ?>
     </div>
 </div>

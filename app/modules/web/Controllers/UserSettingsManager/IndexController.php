@@ -83,7 +83,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     }
 
     /**
-     * @param  DataTab  $tab
+     * @param DataTab $tab
      */
     public function addTab(DataTab $tab): void
     {
@@ -105,16 +105,16 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $template->assign(
             'langs',
             SelectItemAdapter::factory(Language::getAvailableLanguages())
-                ->getItemsFromArraySelected(
-                    [$userPreferences->getLang() ?: $this->configData->getSiteLang()]
-                )
+                             ->getItemsFromArraySelected(
+                                 [$userPreferences->getLang() ?: $this->configData->getSiteLang()]
+                             )
         );
         $template->assign(
             'themes',
-            SelectItemAdapter::factory($this->theme->getThemesAvailable())
-                ->getItemsFromArraySelected(
-                    [$userPreferences->getTheme() ?: $this->configData->getSiteTheme()]
-                )
+            SelectItemAdapter::factory($this->theme->getAvailable())
+                             ->getItemsFromArraySelected(
+                                 [$userPreferences->getTheme() ?: $this->configData->getSiteTheme()]
+                             )
         );
         $template->assign('userPreferences', $userPreferences);
         $template->assign('route', 'userSettingsGeneral/save');

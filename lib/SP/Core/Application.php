@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContextInterface;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 
@@ -38,12 +39,12 @@ final class Application
      *
      * @param ConfigInterface $config
      * @param EventDispatcherInterface $eventDispatcher
-     * @param ContextInterface $context
+     * @param SessionContextInterface|ContextInterface $context
      */
     public function __construct(
-        private readonly ConfigInterface          $config,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly ContextInterface         $context
+        private readonly ConfigInterface                          $config,
+        private readonly EventDispatcherInterface                 $eventDispatcher,
+        private readonly SessionContextInterface|ContextInterface $context
     ) {
     }
 
@@ -57,7 +58,7 @@ final class Application
         return $this->eventDispatcher;
     }
 
-    public function getContext(): ContextInterface
+    public function getContext(): ContextInterface|SessionContextInterface
     {
         return $this->context;
     }

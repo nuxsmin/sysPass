@@ -39,7 +39,7 @@ final class ViewController extends AccountViewBase
     /**
      * View action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      */
     public function viewAction(int $id): void
     {
@@ -59,8 +59,8 @@ final class ViewController extends AccountViewBase
                 'title',
                 [
                     'class' => 'titleNormal',
-                    'name'  => __('Account Details'),
-                    'icon'  => $this->icons->getIconView()->getIcon(),
+                    'name' => __('Account Details'),
+                    'icon' => $this->icons->view()->getIcon(),
                 ]
             );
 

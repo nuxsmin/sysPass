@@ -68,15 +68,17 @@ final class AccountGrid extends GridBase
 
         $grid->addDataAction(
             $this->getBulkEditAction()
-                ->setIsSelection(true),
-            true);
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -163,7 +165,7 @@ final class AccountGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('Account Details'));
         $gridAction->setTitle(__('Account Details'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction(Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $gridAction->addData(
             'action-route',
@@ -183,7 +185,7 @@ final class AccountGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Remove Account'));
         $gridAction->setTitle(__('Remove Account'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
@@ -203,7 +205,7 @@ final class AccountGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Bulk Update'));
         $gridAction->setTitle(__('Bulk Update'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',

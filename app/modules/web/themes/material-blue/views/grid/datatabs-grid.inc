@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,31 +24,40 @@
 
 /**
  * @var SP\Html\DataGrid\DataGridTab $data
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 $tabs = $_getvar('tabs');
 ?>
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
     <div id="tabsHeader" class="mdl-tabs__tab-bar"></div>
 
-    <?php foreach ($tabs as $index => $data): ?>
-        <div id="tabs-<?php echo $index; ?>"
+    <?php
+    foreach ($tabs as $index => $data): ?>
+        <div id="tabs-<?php
+        echo $index; ?>"
              class="mdl-tabs__panel"
-             data-tab-route="<?php echo $_getvar('tabsRoute'); ?>"
-             data-tab-index="<?php echo $index; ?>">
+             data-tab-route="<?php
+             echo $_getvar('tabsRoute'); ?>"
+             data-tab-index="<?php
+             echo $index; ?>">
 
-            <?php include __DIR__ . DIRECTORY_SEPARATOR . 'datagrid-grid.inc'; ?>
+            <?php
+            include __DIR__ . DIRECTORY_SEPARATOR . 'datagrid-grid.inc'; ?>
         </div>
 
         <script type="text/javascript">
-            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(); ?>", <?php echo $index === $_getvar('activeTab') ? 1 : 0; ?>);
+            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(
+            ); ?>", <?php echo $index === $_getvar('activeTab') ? 1 : 0; ?>);
         </script>
-    <?php endforeach; ?>
+    <?php
+    endforeach; ?>
 </div>
 <!-- End Tabs-->

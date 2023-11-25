@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,62 +23,84 @@
  */
 
 /**
- * @var callable                       $_getvar
- * @var ThemeIcons                     $icons
- * @var AccountExtData                 $accountData
- * @var AccountAcl                     $accountAcl
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl $accountAcl
+ * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 ?>
 <div id="box-popup" class="box-password-view">
-    <h2 class="center"><?php echo $_getvar('header'); ?>&nbsp;
-        <?php if ($_getvar('isLinked')): ?>
-            <i title="<?php echo __('Linked Account'); ?>"
-               class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
-        <?php endif; ?>
+    <h2 class="center"><?php
+        echo $_getvar('header'); ?>&nbsp;
+        <?php
+        if ($_getvar('isLinked')): ?>
+            <i title="<?php
+            echo __('Linked Account'); ?>"
+               class="material-icons"><?php
+                echo $icons->publicLink()->getIcon(); ?></i>
+        <?php
+        endif; ?>
     </h2>
     <table>
         <tbody>
         <tr>
-            <?php if (!$_getvar('isImage')): ?>
-                <td class="dialog-text dialog-user-text"><?php echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
+            <?php
+            if (!$_getvar('isImage')): ?>
+                <td class="dialog-text dialog-user-text"><?php
+                    echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copy Username'); ?>"
+                            title="<?php
+                            echo __('Copy Username'); ?>"
                             data-clipboard-target=".dialog-user-text">
-                        <?php echo __('User'); ?>
-                        <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
+                        <?php
+                        echo __('User'); ?>
+                        <i class="material-icons"><?php
+                            echo $icons->clipboard()->getIcon(); ?></i>
                     </button>
                 </td>
-            <?php else: ?>
+            <?php
+            else: ?>
                 <td class="dialog-user-text">
-                    <img src="data:image/png;base64,<?php echo $_getvar('login'); ?>"/>
+                    <img src="data:image/png;base64,<?php
+                    echo $_getvar('login'); ?>"/>
                 </td>
                 <td>&nbsp;</td>
-            <?php endif; ?>
+            <?php
+            endif; ?>
         </tr>
         <tr>
-            <?php if (!$_getvar('isImage')): ?>
-                <td class="dialog-text dialog-pass-text"><?php echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
+            <?php
+            if (!$_getvar('isImage')): ?>
+                <td class="dialog-text dialog-pass-text"><?php
+                    echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copy Password'); ?>"
+                            title="<?php
+                            echo __('Copy Password'); ?>"
                             data-clipboard-target=".dialog-pass-text">
-                        <?php echo __('Password'); ?>
-                        <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
+                        <?php
+                        echo __('Password'); ?>
+                        <i class="material-icons"><?php
+                            echo $icons->clipboard()->getIcon(); ?></i>
                     </button>
                 </td>
-            <?php else: ?>
+            <?php
+            else: ?>
                 <td class="dialog-pass-text">
-                    <img src="data:image/png;base64,<?php echo $_getvar('pass'); ?>"/>
+                    <img src="data:image/png;base64,<?php
+                    echo $_getvar('pass'); ?>"/>
                 </td>
                 <td>&nbsp;</td>
-            <?php endif; ?>
+            <?php
+            endif; ?>
         </tr>
         </tbody>
     </table>

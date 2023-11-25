@@ -22,31 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace SP\Core\Bootstrap;
+
 /**
- * @var ThemeIconsInterface $icons
- * @var ConfigDataInterface $configData
- * @var callable $_getvar
- * @var TemplateInterface $this
+ * Class UriContext
  */
+interface UriContextInterface
+{
+    /**
+     * The full URL to reach the application (e.g. https://sub.example.com/syspass/)
+     *
+     * @return string
+     */
+    public function getWebUri(): string;
 
-use SP\Core\UI\ThemeIconsInterface;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Mvc\View\TemplateInterface;
+    /**
+     * The current request path relative to the application root (e.g. files/index.php)
+     *
+     * @return string
+     */
+    public function getWebRoot(): string;
 
-?>
-<div id="box-popup">
-    <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
-                class="btn-popup-close material-icons">close</i></h2>
-    <table class="popup-data">
-        <tbody>
-        <tr id="ldap-results">
-            <td class="valField">
-                <div class="lowres-title"><?php
-                    echo $_getvar('header'); ?></div>
-                <div class="list-wrap"></div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    public function getSubUri(): string;
+}

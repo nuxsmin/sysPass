@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,13 +23,15 @@
  */
 
 /**
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 <form method="post" name="frmConfig" id="frmConfig" class="form-action"
@@ -37,26 +39,36 @@ use SP\Core\UI\ThemeIcons;
       data-action-route="configGeneral/save"
       data-hash="">
 
-    <?php include $this->includeTemplate('general-site'); ?>
-    <?php include $this->includeTemplate('general-events'); ?>
-    <?php include $this->includeTemplate('general-proxy'); ?>
-    <?php include $this->includeTemplate('general-auth'); ?>
+    <?php
+    include $this->includeTemplate('general-site'); ?>
+    <?php
+    include $this->includeTemplate('general-events'); ?>
+    <?php
+    include $this->includeTemplate('general-proxy'); ?>
+    <?php
+    include $this->includeTemplate('general-auth'); ?>
 </form>
 
 <div class="tab-actions">
     <ul>
         <li>
             <button id="btnBack" type="button"
-                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Back'); ?>">
-                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->back()->getClassButton(); ?>"
+                    title="<?php
+                    echo __('Back'); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->back()->getIcon(); ?></i>
             </button>
         </li>
         <li>
             <button form="frmConfig"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->save()->getClassButton(); ?>"
+                    title="<?php
+                    echo $icons->save()->getTitle(); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->save()->getIcon(); ?></i>
             </button>
         </li>
     </ul>

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,69 +23,100 @@
  */
 
 /**
- * @var ThemeIcons                     $icons
- * @var callable                       $_getvar
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
- * @var FileData                       $file
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var ConfigDataInterface $configData
+ * @var FileData $file
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\FileData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\Html;
 
 ?>
 
 <div id="files-wrap">
     <ul id="files-list " class="mdl-list">
-        <?php foreach ($_getvar('files') as $file):
+        <?php
+        foreach ($_getvar('files') as $file):
             $extension = mb_strtoupper($file->getExtension());
             ?>
             <li class="mdl-list__item">
                 <span class="mdl-list__item-primary-content"
-                      title="<?php echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>">
+                      title="<?php
+                      echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
-                    <span><?php printf('%s (%d KB)', Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
+                    <span><?php
+                        printf('%s (%d KB)', Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
                 </span>
 
                 <span class="list-actions">
-                    <?php if ($file->getThumb() !== 'no_thumb'): ?>
-                        <span title="<?php echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>"
+                    <?php
+                    if ($file->getThumb() !== 'no_thumb'): ?>
+                        <span title="<?php
+                        echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>"
                               class="btn-action"
-                              data-item-id="<?php echo $file->getId(); ?>"
-                              data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
+                              data-item-id="<?php
+                              echo $file->getId(); ?>"
+                              data-action-route="<?php
+                              echo $_getvar('fileViewRoute'); ?>"
                               data-onclick="file/view">
-                            <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>"
+                            <img src="data:image/png;base64,<?php
+                            echo $file->getThumb(); ?>"
                                  alt="thumbnail"/>
                         </span>
-                    <?php endif; ?>
+                    <?php
+                    endif; ?>
 
-                    <?php if ($_getvar('deleteEnabled') === 1): ?>
-                        <i class="material-icons btn-action <?php echo $icons->getIconDelete()->getClass(); ?>"
-                           title="<?php echo __('Delete File'); ?>"
-                           data-item-id="<?php echo $file->getId(); ?>"
-                           data-action-route="<?php echo $_getvar('fileDeleteRoute'); ?>"
+                    <?php
+                    if ($_getvar('deleteEnabled') === 1): ?>
+                        <i class="material-icons btn-action <?php
+                        echo $icons->delete()->getClass(); ?>"
+                           title="<?php
+                           echo __('Delete File'); ?>"
+                           data-item-id="<?php
+                           echo $file->getId(); ?>"
+                           data-action-route="<?php
+                           echo $_getvar('fileDeleteRoute'); ?>"
                            data-onclick="file/delete">
-                            <?php echo $icons->getIconDelete()->getIcon(); ?></i>
-                    <?php endif; ?>
+                            <?php
+                            echo $icons->delete()->getIcon(); ?></i>
+                    <?php
+                    endif; ?>
 
-                    <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconDownload()->getClass(); ?>"
-                       title="<?php echo __('Download File'); ?>"
-                       data-item-id="<?php echo $file->getId(); ?>"
-                       data-action-route="<?php echo $_getvar('fileDownloadRoute'); ?>"
-                       data-item-type="<?php echo $extension; ?>"
+                    <i class="material-icons btn-action mdl-list__item-icon <?php
+                    echo $icons->download()->getClass(); ?>"
+                       title="<?php
+                       echo __('Download File'); ?>"
+                       data-item-id="<?php
+                       echo $file->getId(); ?>"
+                       data-action-route="<?php
+                       echo $_getvar('fileDownloadRoute'); ?>"
+                       data-item-type="<?php
+                       echo $extension; ?>"
                        data-onclick="file/download">
-                        <?php echo $icons->getIconDownload()->getIcon(); ?></i>
+                        <?php
+                        echo $icons->download()->getIcon(); ?></i>
 
-                    <?php if ($extension !== 'PDF'): ?>
-                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
-                           title="<?php echo __('View File'); ?>"
-                           data-item-id="<?php echo $file->getId(); ?>"
-                           data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
+                    <?php
+                    if ($extension !== 'PDF'): ?>
+                        <i class="material-icons btn-action mdl-list__item-icon <?php
+                        echo $icons->view()->getClass(); ?>"
+                           title="<?php
+                           echo __('View File'); ?>"
+                           data-item-id="<?php
+                           echo $file->getId(); ?>"
+                           data-action-route="<?php
+                           echo $_getvar('fileViewRoute'); ?>"
                            data-onclick="file/view">
-                        <?php echo $icons->getIconView()->getIcon(); ?></i>
-                    <?php endif; ?>
+                        <?php
+                        echo $icons->view()->getIcon(); ?></i>
+                    <?php
+                    endif; ?>
                 </span>
             </li>
-        <?php endforeach; ?>
+        <?php
+        endforeach; ?>
     </ul>
 </div>

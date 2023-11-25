@@ -119,10 +119,13 @@ final class EventlogGrid extends GridBase
         $gridData->addDataRowSource('level');
         $gridData->addDataRowSource('action', null, null, false);
         $gridData->addDataRowSource('login');
-        $gridData->addDataRowSource('ipAddress', false,
+        $gridData->addDataRowSource(
+            'ipAddress',
+            false,
             function ($value) use ($isDemoMode) {
                 return $isDemoMode ? '*.*.*.*' : $value;
-            });
+            }
+        );
         $gridData->addDataRowSource(
             'description',
             false,
@@ -137,10 +140,11 @@ final class EventlogGrid extends GridBase
 
                 if (preg_match('/^SQL.*/m', $value)) {
                     $value = preg_replace([
-                        '/([a-zA-Z_]+),/m',
-                        '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'],
-                        ['\\1,<br>', '<br>\\1'],
-                        $value
+                                              '/([a-zA-Z_]+),/m',
+                                              '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
+                                          ],
+                                          ['\\1,<br>', '<br>\\1'],
+                                          $value
                     );
                 }
 
@@ -189,7 +193,7 @@ final class EventlogGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('eventlog/refresh');
         $gridAction->addData('action-form', 'frmSearchEvent');
         $gridAction->addData(
@@ -211,7 +215,7 @@ final class EventlogGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setName(__('Clear the event log out'));
         $gridAction->setTitle(__('Clear the event log out'));
-        $gridAction->setIcon($this->icons->getIconClear());
+        $gridAction->setIcon($this->icons->clear());
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData(
             'action-route',

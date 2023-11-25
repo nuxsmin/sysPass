@@ -34,6 +34,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchItem;
@@ -68,20 +69,20 @@ final class AccountSearchHelper extends HelperBase
     private bool                          $isIndex;
     private ?AccountSearchFilter          $accountSearchFilter = null;
     private ClientServiceInterface                                 $clientService;
-    private \SP\Domain\Account\Ports\AccountSearchServiceInterface $accountSearchService;
+    private AccountSearchServiceInterface $accountSearchService;
     private AccountActionsHelper                                   $accountActionsHelper;
     private CategoryServiceInterface      $categoryService;
     private TagServiceInterface           $tagService;
 
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestInterface $request,
-        ClientServiceInterface $clientService,
-        CategoryServiceInterface $categoryService,
-        TagServiceInterface $tagService,
-        \SP\Domain\Account\Ports\AccountSearchServiceInterface $accountSearchService,
-        AccountActionsHelper $accountActionsHelper
+        Application                   $application,
+        TemplateInterface             $template,
+        RequestInterface              $request,
+        ClientServiceInterface        $clientService,
+        CategoryServiceInterface      $categoryService,
+        TagServiceInterface           $tagService,
+        AccountSearchServiceInterface $accountSearchService,
+        AccountActionsHelper          $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);
 
@@ -97,10 +98,75 @@ final class AccountSearchHelper extends HelperBase
     }
 
     /**
+     * Establecer las variables necesarias para las plantillas
+     */
+    private function setVars(): void
+    {
+        $userData = $this->context->getUserData();
+
+        $this->view->assign('isAdmin', $userData->getIsAdminApp() || $userData->getIsAdminAcc());
+
+        $profileData = $this->context->getUserProfile() ?? new ProfileData();
+
+        $this->view->assign(
+            'showGlobalSearch',
+            $this->configData->isGlobalSearch() && $profileData->isAccGlobalSearch()
+        );
+
+        $this->accountSearchFilter = $this->getFilters();
+
+        $this->view->assign('searchCustomer', $this->accountSearchFilter->getClientId());
+        $this->view->assign('searchCategory', $this->accountSearchFilter->getCategoryId());
+        $this->view->assign('searchTags', $this->accountSearchFilter->getTagsId());
+        $this->view->assign('searchTxt', $this->accountSearchFilter->getTxtSearch());
+        $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
+        $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
+        $this->view->assign('searchRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_SEARCH));
+        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_ADD));
+        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_DELETE));
+        $this->view->assign('viewAccountRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+    }
+
+    /**
+     * Set search filters
+     *
+     * @return AccountSearchFilter
+     */
+    private function getFilters(): AccountSearchFilter
+    {
+        $accountSearchFilter = $this->context->getSearchFilters();
+
+        // Return search filters from session if accessed from menu
+        if ($accountSearchFilter !== null && $this->isIndex) {
+            return $accountSearchFilter;
+        }
+
+        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
+        $limitCount = $userPreferences->getResultsPerPage() > 0
+            ? $userPreferences->getResultsPerPage()
+            : $this->configData->getAccountCount();
+
+        $accountSearchFilter = new AccountSearchFilter();
+        $accountSearchFilter->setSortKey($this->request->analyzeInt('skey', 0));
+        $accountSearchFilter->setSortOrder($this->request->analyzeInt('sorder', 0));
+        $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));
+        $accountSearchFilter->setLimitCount($this->request->analyzeInt('rpp', $limitCount));
+        $accountSearchFilter->setGlobalSearch($this->request->analyzeBool('gsearch', false));
+        $accountSearchFilter->setClientId($this->request->analyzeInt('client'));
+        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category'));
+        $accountSearchFilter->setTagsId($this->request->analyzeArray('tags', null, []));
+        $accountSearchFilter->setSearchFavorites($this->request->analyzeBool('searchfav', false));
+        $accountSearchFilter->setTxtSearch($this->request->analyzeString('search'));
+        $accountSearchFilter->setSortViews($userPreferences->isSortViews());
+
+        return $accountSearchFilter;
+    }
+
+    /**
      * Obtener los datos para la caja de búsqueda
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getSearchBox(): void
     {
@@ -109,19 +175,19 @@ final class AccountSearchHelper extends HelperBase
         $this->view->assign(
             'clients',
             SelectItemAdapter::factory($this->clientService->getAllForUser())
-                ->getItemsFromModelSelected(
-                    [$this->accountSearchFilter->getClientId()]
-                )
+                             ->getItemsFromModelSelected(
+                                 [$this->accountSearchFilter->getClientId()]
+                             )
         );
         $this->view->assign(
             'categories',
             SelectItemAdapter::factory($this->categoryService->getAllBasic())
-                ->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()])
+                             ->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()])
         );
         $this->view->assign(
             'tags',
             SelectItemAdapter::factory($this->tagService->getAllBasic())
-                ->getItemsFromModelSelected($this->accountSearchFilter->getTagsId())
+                             ->getItemsFromModelSelected($this->accountSearchFilter->getTagsId())
         );
     }
 
@@ -203,7 +269,7 @@ final class AccountSearchHelper extends HelperBase
         $gridActionOptional->setId(0);
         $gridActionOptional->setName(__('More Actions'));
         $gridActionOptional->setTitle(__('More Actions'));
-        $gridActionOptional->setIcon($icons->getIconOptional());
+        $gridActionOptional->setIcon($icons->optional());
         $gridActionOptional->setRuntimeFilter(
             AccountSearchItem::class,
             'isShowOptional'
@@ -211,10 +277,10 @@ final class AccountSearchHelper extends HelperBase
         $gridActionOptional->addData('onclick', 'account/menu');
 
         $gridPager = new DataGridPager();
-        $gridPager->setIconPrev($icons->getIconNavPrev());
-        $gridPager->setIconNext($icons->getIconNavNext());
-        $gridPager->setIconFirst($icons->getIconNavFirst());
-        $gridPager->setIconLast($icons->getIconNavLast());
+        $gridPager->setIconPrev($icons->navPrev());
+        $gridPager->setIconNext($icons->navNext());
+        $gridPager->setIconFirst($icons->navFirst());
+        $gridPager->setIconLast($icons->navLast());
         $gridPager->setSortKey($this->accountSearchFilter->getSortKey());
         $gridPager->setSortOrder($this->accountSearchFilter->getSortOrder());
         $gridPager->setLimitStart($this->accountSearchFilter->getLimitStart());
@@ -274,111 +340,46 @@ final class AccountSearchHelper extends HelperBase
 
         $gridSortCustomer = new DataGridSort();
         $gridSortCustomer->setName(__('Client'))
-            ->setTitle(__('Sort by Client'))
-            ->setSortKey(AccountSearchConstants::SORT_CLIENT)
-            ->setIconUp($icons->getIconUp())
-            ->setIconDown($icons->getIconDown());
+                         ->setTitle(__('Sort by Client'))
+                         ->setSortKey(AccountSearchConstants::SORT_CLIENT)
+                         ->setIconUp($icons->up())
+                         ->setIconDown($icons->down());
 
         $gridSortName = new DataGridSort();
         $gridSortName->setName(__('Name'))
-            ->setTitle(__('Sort by Name'))
-            ->setSortKey(AccountSearchConstants::SORT_NAME)
-            ->setIconUp($icons->getIconUp())
-            ->setIconDown($icons->getIconDown());
+                     ->setTitle(__('Sort by Name'))
+                     ->setSortKey(AccountSearchConstants::SORT_NAME)
+                     ->setIconUp($icons->up())
+                     ->setIconDown($icons->down());
 
         $gridSortCategory = new DataGridSort();
         $gridSortCategory->setName(__('Category'))
-            ->setTitle(__('Sort by Category'))
-            ->setSortKey(AccountSearchConstants::SORT_CATEGORY)
-            ->setIconUp($icons->getIconUp())
-            ->setIconDown($icons->getIconDown());
+                         ->setTitle(__('Sort by Category'))
+                         ->setSortKey(AccountSearchConstants::SORT_CATEGORY)
+                         ->setIconUp($icons->up())
+                         ->setIconDown($icons->down());
 
         $gridSortLogin = new DataGridSort();
         $gridSortLogin->setName(__('User'))
-            ->setTitle(__('Sort by Username'))
-            ->setSortKey(AccountSearchConstants::SORT_LOGIN)
-            ->setIconUp($icons->getIconUp())
-            ->setIconDown($icons->getIconDown());
+                      ->setTitle(__('Sort by Username'))
+                      ->setSortKey(AccountSearchConstants::SORT_LOGIN)
+                      ->setIconUp($icons->up())
+                      ->setIconDown($icons->down());
 
         $gridSortUrl = new DataGridSort();
         $gridSortUrl->setName(__('URL / IP'))
-            ->setTitle(__('Sort by URL / IP'))
-            ->setSortKey(AccountSearchConstants::SORT_URL)
-            ->setIconUp($icons->getIconUp())
-            ->setIconDown($icons->getIconDown());
+                    ->setTitle(__('Sort by URL / IP'))
+                    ->setSortKey(AccountSearchConstants::SORT_URL)
+                    ->setIconUp($icons->up())
+                    ->setIconDown($icons->down());
 
         $gridHeaderSort = new DataGridHeaderSort();
         $gridHeaderSort->addSortField($gridSortCustomer)
-            ->addSortField($gridSortName)
-            ->addSortField($gridSortCategory)
-            ->addSortField($gridSortLogin)
-            ->addSortField($gridSortUrl);
+                       ->addSortField($gridSortName)
+                       ->addSortField($gridSortCategory)
+                       ->addSortField($gridSortLogin)
+                       ->addSortField($gridSortUrl);
 
         return $gridHeaderSort;
-    }
-
-    /**
-     * Establecer las variables necesarias para las plantillas
-     */
-    private function setVars(): void
-    {
-        $userData = $this->context->getUserData();
-
-        $this->view->assign('isAdmin', $userData->getIsAdminApp() || $userData->getIsAdminAcc());
-
-        $profileData = $this->context->getUserProfile() ?? new ProfileData();
-
-        $this->view->assign(
-            'showGlobalSearch',
-            $this->configData->isGlobalSearch() && $profileData->isAccGlobalSearch()
-        );
-
-        $this->accountSearchFilter = $this->getFilters();
-
-        $this->view->assign('searchCustomer', $this->accountSearchFilter->getClientId());
-        $this->view->assign('searchCategory', $this->accountSearchFilter->getCategoryId());
-        $this->view->assign('searchTags', $this->accountSearchFilter->getTagsId());
-        $this->view->assign('searchTxt', $this->accountSearchFilter->getTxtSearch());
-        $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
-        $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
-        $this->view->assign('searchRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_SEARCH));
-        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_ADD));
-        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_DELETE));
-        $this->view->assign('viewAccountRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
-    }
-
-    /**
-     * Set search filters
-     *
-     * @return \SP\Domain\Account\Search\AccountSearchFilter
-     */
-    private function getFilters(): AccountSearchFilter
-    {
-        $accountSearchFilter = $this->context->getSearchFilters();
-
-        // Return search filters from session if accessed from menu
-        if ($accountSearchFilter !== null && $this->isIndex) {
-            return $accountSearchFilter;
-        }
-
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
-        $limitCount = $userPreferences->getResultsPerPage() > 0
-            ? $userPreferences->getResultsPerPage()
-            : $this->configData->getAccountCount();
-
-        $accountSearchFilter = new AccountSearchFilter();
-        $accountSearchFilter->setSortKey($this->request->analyzeInt('skey', 0));
-        $accountSearchFilter->setSortOrder($this->request->analyzeInt('sorder', 0));
-        $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));
-        $accountSearchFilter->setLimitCount($this->request->analyzeInt('rpp', $limitCount));
-        $accountSearchFilter->setGlobalSearch($this->request->analyzeBool('gsearch', false));
-        $accountSearchFilter->setClientId($this->request->analyzeInt('client'));
-        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category'));
-        $accountSearchFilter->setTagsId($this->request->analyzeArray('tags', null, []));
-        $accountSearchFilter->setSearchFavorites($this->request->analyzeBool('searchfav', false));
-        $accountSearchFilter->setTxtSearch($this->request->analyzeString('search'));
-        $accountSearchFilter->setSortViews($userPreferences->isSortViews());
-
-        return $accountSearchFilter;
     }
 }

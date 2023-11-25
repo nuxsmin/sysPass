@@ -113,16 +113,16 @@ final class PluginGrid extends GridBase
         $gridData->addDataRowSource('name');
         $gridData->addDataRowSourceWithIcon(
             'enabled',
-            $this->icons->getIconEnabled()
+            $this->icons->enabled()
         );
         $gridData->addDataRowSourceWithIcon(
             'enabled',
-            $this->icons->getIconDisabled(),
+            $this->icons->disabled(),
             0
         );
         $gridData->addDataRowSourceWithIcon(
             'available',
-            $this->icons->getIconDelete()->setTitle(__('Unavailable')),
+            $this->icons->delete()->setTitle(__('Unavailable')),
             0
         );
         $gridData->setData($this->queryResult);
@@ -160,7 +160,7 @@ final class PluginGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Plugin'));
         $gridAction->setTitle(__('View Plugin'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('plugin/show');
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
@@ -180,7 +180,7 @@ final class PluginGrid extends GridBase
         $gridAction->setId(AclActionsInterface::PLUGIN_ENABLE);
         $gridAction->setName(__('Enable'));
         $gridAction->setTitle(__('Enable'));
-        $gridAction->setIcon($this->icons->getIconEnabled());
+        $gridAction->setIcon($this->icons->enabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled');
         $gridAction->setFilterRowSource('available', 0);
@@ -202,7 +202,7 @@ final class PluginGrid extends GridBase
         $gridAction->setId(AclActionsInterface::PLUGIN_DISABLE);
         $gridAction->setName(__('Disable'));
         $gridAction->setTitle(__('Disable'));
-        $gridAction->setIcon($this->icons->getIconDisabled());
+        $gridAction->setIcon($this->icons->disabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled', 0);
         $gridAction->setFilterRowSource('available', 0);
@@ -224,7 +224,7 @@ final class PluginGrid extends GridBase
         $gridAction->setId(AclActionsInterface::PLUGIN_RESET);
         $gridAction->setName(__('Reset Data'));
         $gridAction->setTitle(__('Reset Data'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('plugin/reset');
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
@@ -250,7 +250,7 @@ final class PluginGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Plugin'));
         $gridAction->setTitle(__('Delete Plugin'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setFilterRowSource('available');
         $gridAction->setOnClickFunction('plugin/delete');
         $gridAction->addData(

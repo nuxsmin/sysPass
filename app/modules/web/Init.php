@@ -25,23 +25,25 @@
 namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use JsonException;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Bootstrap\BootstrapWeb;
+use SP\Core\Bootstrap\UriContextInterface;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\CsrfInterface;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Crypt\UuidCookie;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\LanguageInterface;
@@ -60,6 +62,7 @@ use SP\Domain\User\Services\UserProfileService;
 use SP\Http\Address;
 use SP\Http\RequestInterface;
 use SP\Http\Uri;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
@@ -82,6 +85,9 @@ use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
 use SP\Plugin\PluginManager;
 use SP\Util\HttpUtil;
+
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Init
@@ -142,18 +148,19 @@ final class Init extends HttpModuleBase
     private bool                 $isIndex = false;
 
     public function __construct(
-        Application                   $application,
-        ProvidersHelper               $providersHelper,
-        RequestInterface              $request,
-        Klein                         $router,
-        CsrfInterface                 $csrf,
-        ThemeInterface                $theme,
-        LanguageInterface             $language,
-        SecureSessionServiceInterface $secureSessionService,
-        PluginManager                 $pluginManager,
-        ItemPresetService             $itemPresetService,
-        DatabaseUtil                  $databaseUtil,
-        UserProfileServiceInterface   $userProfileService
+        Application                          $application,
+        ProvidersHelper                      $providersHelper,
+        RequestInterface                     $request,
+        Klein                                $router,
+        CsrfInterface                        $csrf,
+        ThemeInterface                       $theme,
+        LanguageInterface                    $language,
+        SecureSessionServiceInterface        $secureSessionService,
+        PluginManager                        $pluginManager,
+        ItemPresetService                    $itemPresetService,
+        DatabaseUtil                         $databaseUtil,
+        UserProfileServiceInterface          $userProfileService,
+        private readonly UriContextInterface $uriContext
     ) {
         parent::__construct(
             $application,
@@ -175,17 +182,17 @@ final class Init extends HttpModuleBase
     /**
      * Initialize Web App
      *
-     * @param  string  $controller
+     * @param string $controller
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InitializationException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Infrastructure\File\FileException
-     * @throws \Exception
+     * @throws EnvironmentIsBrokenException
+     * @throws JsonException
+     * @throws ConstraintException
+     * @throws InitializationException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws FileException
+     * @throws Exception
      */
     public function initialize(string $controller): void
     {
@@ -211,9 +218,6 @@ final class Init extends HttpModuleBase
         // Setup language
         $this->language->setLanguage($isReload);
 
-        // Setup theme
-        $this->theme->initTheme($isReload);
-
         // Comprobar si es necesario cambiar a HTTPS
         HttpUtil::checkHttps($this->configData, $this->request);
 
@@ -227,7 +231,7 @@ final class Init extends HttpModuleBase
             if (!$this->checkInstalled()) {
                 logger('Not installed', 'ERROR');
 
-                $this->router->response()->redirect(self::getUriFor(self::ROUTE_INSTALL))->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_INSTALL))->send();
 
                 throw new InitializationException('Not installed');
             }
@@ -236,7 +240,7 @@ final class Init extends HttpModuleBase
             if (!$this->databaseUtil->checkDatabaseConnection()) {
                 logger('Database connection error', 'ERROR');
 
-                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
 
                 throw new InitializationException('Database connection error');
             }
@@ -245,7 +249,7 @@ final class Init extends HttpModuleBase
             if ($this->checkMaintenanceMode()) {
                 logger('Maintenance mode', 'INFO');
 
-                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
 
                 throw new InitializationException('Maintenance mode');
             }
@@ -256,7 +260,7 @@ final class Init extends HttpModuleBase
 
                 $this->config->generateUpgradeKey();
 
-                $this->router->response()->redirect(self::getUriFor(self::ROUTE_UPGRADE))->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
 
                 throw new InitializationException('Upgrade needed');
             }
@@ -265,7 +269,7 @@ final class Init extends HttpModuleBase
             if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
                 logger('Database checking error', 'ERROR');
 
-                $this->router->response()->redirect(self::getUriFor(self::ROUTE_ERROR_DATABASE))->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE))->send();
 
                 throw new InitializationException('Database checking error');
             }
@@ -312,7 +316,8 @@ final class Init extends HttpModuleBase
     {
         if ($encrypt === true
             && BootstrapBase::$checkPhpVersion
-            && ($key = $this->secureSessionService->getKey()) !== false) {
+            && ($key = $this->secureSessionService->getKey()) !== false
+        ) {
             session_set_save_handler(new CryptSessionHandler($key), true);
         }
 
@@ -334,6 +339,11 @@ final class Init extends HttpModuleBase
     {
         return $this->configData->isInstalled()
                && $this->router->request()->param('r') !== 'install/index';
+    }
+
+    private function getUriFor(string $route): string
+    {
+        return (new Uri($this->uriContext->getWebRoot()))->addParam('r', $route)->getUri();
     }
 
     /**
@@ -408,7 +418,7 @@ final class Init extends HttpModuleBase
             if ($this->isIndex || $timeout === null) {
                 $userTimeout = $this->getSessionTimeoutForUser($timeout) ?: $this->configData->getSessionTimeout();
 
-                logger('Session timeout: '.$userTimeout);
+                logger('Session timeout: ' . $userTimeout);
 
                 return $this->context->setSessionTimeout($userTimeout);
             }
@@ -437,17 +447,13 @@ final class Init extends HttpModuleBase
                     $this->request->getClientAddress(),
                     $sessionTimeout->getAddress(),
                     $sessionTimeout->getMask()
-                )) {
+                )
+                ) {
                     return $sessionTimeout->getTimeout();
                 }
             }
         }
 
         return $default;
-    }
-
-    private static function getUriFor(string $route): string
-    {
-        return (new Uri(BootstrapWeb::$WEBROOT))->addParam('r', $route)->getUri();
     }
 }

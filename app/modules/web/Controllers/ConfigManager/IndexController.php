@@ -41,6 +41,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\MimeTypesInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Crypt\Services\TemporaryMasterPassService;
 use SP\Domain\Export\Services\BackupFiles;
@@ -180,10 +181,10 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataTab
+     * @throws CheckException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getConfigGeneral(): DataTab
     {
@@ -200,7 +201,7 @@ final class IndexController extends ControllerBase
         $template->assign(
             'themes',
             SelectItemAdapter::factory(
-                $this->theme->getThemesAvailable()
+                $this->theme->getAvailable()
             )->getItemsFromArraySelected([$this->configData->getSiteTheme()])
         );
         $template->assign(
@@ -245,8 +246,8 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Core\Exceptions\CheckException
+     * @return DataTab
+     * @throws CheckException
      */
     protected function getAccountConfig(): DataTab
     {
@@ -294,10 +295,10 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataTab
+     * @throws CheckException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getLdapConfig(): DataTab
     {
@@ -357,9 +358,9 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataTab
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getMailConfig(): DataTab
     {
@@ -401,7 +402,7 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     protected function getEncryptionConfig(): DataTab
     {
@@ -521,9 +522,9 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataTab
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getImportConfig(): DataTab
     {
@@ -546,9 +547,9 @@ final class IndexController extends ControllerBase
     }
 
     /**
-     * @return \SP\Mvc\View\Components\DataTab
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return DataTab
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     protected function getInfo(): DataTab
     {

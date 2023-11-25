@@ -29,6 +29,7 @@ use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
@@ -40,13 +41,13 @@ final class DeleteController extends AccountControllerBase
 {
     private AccountHelper                                    $accountHelper;
     private ThemeIcons                                       $icons;
-    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHelper $accountHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService
+        Application             $application,
+        WebControllerHelper     $webControllerHelper,
+        AccountHelper           $accountHelper,
+        AccountServiceInterface $accountService
     ) {
         parent::__construct(
             $application,
@@ -62,7 +63,7 @@ final class DeleteController extends AccountControllerBase
     /**
      * Delete action
      *
-     * @param  int|null  $id  Account's ID
+     * @param int|null $id Account's ID
      */
     public function deleteAction(?int $id = null): void
     {
@@ -79,8 +80,8 @@ final class DeleteController extends AccountControllerBase
                 'title',
                 [
                     'class' => 'titleRed',
-                    'name'  => __('Remove Account'),
-                    'icon'  => $this->icons->getIconDelete()->getIcon(),
+                    'name' => __('Remove Account'),
+                    'icon' => $this->icons->delete()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveDelete');

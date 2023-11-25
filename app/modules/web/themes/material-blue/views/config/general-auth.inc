@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,20 +23,23 @@
  */
 
 /**
- * @var ThemeIcons $icons
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">verified_user</i>
-    <?php echo __('Authentication'); ?>
+    <?php
+    echo __('Authentication'); ?>
 </div>
 
 <table id="tblAuth" class="data tblConfig">
@@ -50,13 +53,16 @@ use SP\Mvc\View\Components\SelectItem;
                                for="authbasic_enabled">
                             <input type="checkbox" id="authbasic_enabled"
                                    class="mdl-switch__input"
-                                   name="authbasic_enabled" <?php echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
+                                   name="authbasic_enabled" <?php
+                            echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Use Auth Basic'); ?></span>
-                        <span class="mdl-list__item-sub-title"><?php echo __('Use Auth Basic for authorizing accesses to the application'); ?></span>
+                        <span><?php
+                            echo __('Use Auth Basic'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php
+                            echo __('Use Auth Basic for authorizing accesses to the application'); ?></span>
                     </span>
                 </li>
 
@@ -67,13 +73,16 @@ use SP\Mvc\View\Components\SelectItem;
                             <input type="checkbox"
                                    id="authbasicautologin_enabled"
                                    class="mdl-switch__input"
-                                   name="authbasicautologin_enabled" <?php echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
+                                   name="authbasicautologin_enabled" <?php
+                            echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Use Auth Basic SSO'); ?></span>
-                        <span class="mdl-list__item-sub-title"><?php echo __('Use auto-login through Auth Basic'); ?></span>
+                        <span><?php
+                            echo __('Use Auth Basic SSO'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php
+                            echo __('Use auto-login through Auth Basic'); ?></span>
                     </span>
                 </li>
             </ul>
@@ -81,12 +90,18 @@ use SP\Mvc\View\Components\SelectItem;
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Domain'); ?>
+            <?php
+            echo __('Domain'); ?>
             <div id="help-domain"
-                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                 class="icon material-icons <?php
+                 echo $icons->help()->getClass(); ?>"><?php
+                echo $icons->help()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-domain">
                 <p>
-                    <?php echo __('The domain will be added to sysPass user name for checking against the Auth Basic one.'); ?>
+                    <?php
+                    echo __(
+                        'The domain will be added to sysPass user name for checking against the Auth Basic one.'
+                    ); ?>
                 </p>
             </div>
         </td>
@@ -95,61 +110,85 @@ use SP\Mvc\View\Components\SelectItem;
                 <input id="authbasic_domain" name="authbasic_domain" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo htmlspecialchars($configData->getAuthBasicDomain(), ENT_QUOTES); ?>">
+                       value="<?php
+                       echo htmlspecialchars($configData->getAuthBasicDomain(), ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
-                       for="authbasic_domain"><?php echo __('Domain name'); ?></label>
+                       for="authbasic_domain"><?php
+                    echo __('Domain name'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Default Group'); ?>
+            <?php
+            echo __('Default Group'); ?>
             <div id="help-sso_defaultgroup"
-                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                 class="icon material-icons <?php
+                 echo $icons->help()->getClass(); ?>"><?php
+                echo $icons->help()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large"
                  for="help-sso_defaultgroup">
                 <p>
-                    <?php echo __('Sets the default users group for newly created SSO users'); ?>
+                    <?php
+                    echo __('Sets the default users group for newly created SSO users'); ?>
                 </p>
             </div>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Default Group'); ?></div>
+            <div class="lowres-title"><?php
+                echo __('Default Group'); ?></div>
 
             <select id="sso_defaultgroup" name="sso_defaultgroup"
                     class="select-box sel-chosen-usergroup">
-                <option value=""><?php echo __('Select Group'); ?></option>
-                <?php /** @var SelectItem $userGroup */
+                <option value=""><?php
+                    echo __('Select Group'); ?></option>
+                <?php
+                /** @var SelectItem $userGroup */
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
-                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
-                <?php endforeach; ?>
+                            value="<?php
+                            echo $userGroup->getId(); ?>" <?php
+                    echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php
+                        echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                <?php
+                endforeach; ?>
             </select>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Default Profile'); ?>
+            <?php
+            echo __('Default Profile'); ?>
             <div id="help-sso_defaultprofile"
-                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                 class="icon material-icons <?php
+                 echo $icons->help()->getClass(); ?>"><?php
+                echo $icons->help()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large"
                  for="help-sso_defaultprofile">
                 <p>
-                    <?php echo __('Sets the default profile for the newly created SSO users.'); ?>
+                    <?php
+                    echo __('Sets the default profile for the newly created SSO users.'); ?>
                 </p>
             </div>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Default Profile'); ?></div>
+            <div class="lowres-title"><?php
+                echo __('Default Profile'); ?></div>
 
             <select id="sso_defaultprofile" name="sso_defaultprofile"
                     class="select-box sel-chosen-profile">
-                <option value=""><?php echo __('Select User'); ?></option>
-                <?php /** @var SelectItem $userProfile */
+                <option value=""><?php
+                    echo __('Select User'); ?></option>
+                <?php
+                /** @var SelectItem $userProfile */
                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                     <option
-                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
-                <?php endforeach; ?>
+                            value="<?php
+                            echo $userProfile->getId(); ?>" <?php
+                    echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php
+                        echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
+                <?php
+                endforeach; ?>
             </select>
         </td>
     </tr>

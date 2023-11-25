@@ -38,7 +38,7 @@ final class EditController extends AccountViewBase
     /**
      * Edit action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      */
     public function editAction(int $id): void
     {
@@ -55,8 +55,8 @@ final class EditController extends AccountViewBase
                 'title',
                 [
                     'class' => 'titleOrange',
-                    'name'  => __('Edit Account'),
-                    'icon'  => $this->icons->getIconEdit()->getIcon(),
+                    'name' => __('Edit Account'),
+                    'icon' => $this->icons->edit()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveEdit');

@@ -67,9 +67,9 @@ final class PublicLinkGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
             true
         );
 
@@ -170,7 +170,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Link'));
         $gridAction->setTitle(__('New Link'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
@@ -191,7 +191,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Link'));
         $gridAction->setTitle(__('View Link'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -210,7 +210,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setId(AclActionsInterface::PUBLICLINK_REFRESH);
         $gridAction->setName(__('Renew Link'));
         $gridAction->setTitle(__('Renew Link'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('link/refresh');
         $gridAction->addData(
             'action-route',
@@ -230,7 +230,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Link'));
         $gridAction->setTitle(__('Delete Link'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

@@ -26,6 +26,7 @@ namespace SP\Core\Bootstrap;
 
 use Closure;
 use Klein\Klein;
+use Klein\Request;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Container\ContainerExceptionInterface;
@@ -33,17 +34,22 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Http\RequestInterface;
 use SP\Plugin\PluginManager;
 use SP\Util\Checks;
 use Symfony\Component\Debug\Debug;
 use Throwable;
+
+use function SP\__;
 use function SP\__u;
 use function SP\logger;
 use function SP\processException;
@@ -59,49 +65,40 @@ abstract class BootstrapBase
 
     protected const OOPS_MESSAGE = "Oops, it looks like this content does not exist...";
     /**
+     * @deprecated Use {@see UriContextInterface::getWebRoot()} instead
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
      */
     public static string $WEBROOT = '';
     /**
+     * @deprecated Use {@see UriContextInterface::getWebUri()} instead
      * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
      */
     public static string $WEBURI = '';
+    /**
+     * @deprecated Use {@see UriContextInterface::getSubUri()} instead
+     */
     public static string $SUBURI = '';
     /**
      * @var mixed
      */
-    public static                 $LOCK;
-    public static bool            $checkPhpVersion = false;
-    protected Klein               $router;
-    protected RequestInterface    $request;
-    protected ConfigDataInterface $configData;
-    protected ContextInterface    $context;
-    private ContainerInterface    $container;
-    private UpgradeConfigChecker  $upgradeConfigChecker;
-    private PhpExtensionChecker   $phpExtensionChecker;
+    public static      $LOCK;
+    public static bool $checkPhpVersion = false;
 
     /**
      * Bootstrap constructor.
      */
     final public function __construct(
-        ConfigDataInterface $configData,
-        Klein $router,
-        RequestInterface $request,
-        UpgradeConfigChecker $upgradeConfigChecker,
-        PhpExtensionChecker $extensionChecker,
-        ContextInterface $context,
-        ContainerInterface $container
+        protected readonly ConfigDataInterface $configData,
+        protected readonly Klein               $router,
+        protected readonly RequestInterface    $request,
+        private readonly UpgradeConfigChecker  $upgradeConfigChecker,
+        protected readonly PhpExtensionChecker $extensionChecker,
+        protected readonly ContextInterface    $context,
+        private readonly ContainerInterface    $container,
+        protected readonly UriContextInterface $uriContext
     ) {
         // Set the default language
         Language::setLocales('en_US');
-
-        $this->configData = $configData;
-        $this->router = $router;
-        $this->request = $request;
-        $this->upgradeConfigChecker = $upgradeConfigChecker;
-        $this->phpExtensionChecker = $extensionChecker;
-        $this->context = $context;
-        $this->container = $container;
 
         $this->initRouter();
         $this->configureRouter();
@@ -110,10 +107,10 @@ abstract class BootstrapBase
     private function initRouter(): void
     {
         $this->router->onError(function ($router, $err_msg, $type, $err) {
-            logger('Routing error: '.$err_msg);
+            logger('Routing error: ' . $err_msg);
 
             /** @var Exception|Throwable $err */
-            logger('Routing error: '.$err->getTraceAsString());
+            logger('Routing error: ' . $err->getTraceAsString());
 
             /** @var Klein $router */
             $router->response()->body(__($err_msg));
@@ -126,8 +123,8 @@ abstract class BootstrapBase
     private function manageCorsRequest(): Closure
     {
         return function ($request, $response) {
-            /** @var \Klein\Request $request */
-            /** @var \Klein\Response $response */
+            /** @var Request $request */
+            /** @var Response $response */
 
             $this->setCors($response);
         };
@@ -180,10 +177,10 @@ abstract class BootstrapBase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws \SP\Core\Exceptions\ConfigException
-     * @throws \SP\Core\Exceptions\InitializationException
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
+     * @throws CheckException
+     * @throws ConfigException
+     * @throws InitializationException
+     * @throws UpgradeException
      */
     final protected function initializeCommon(): void
     {
@@ -197,10 +194,7 @@ abstract class BootstrapBase
         // Initialize logging
         $this->initPHPVars();
 
-        // Set application paths
-        $this->initPaths();
-
-        $this->phpExtensionChecker->checkMandatory();
+        $this->extensionChecker->checkMandatory();
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
@@ -223,7 +217,8 @@ abstract class BootstrapBase
 
         // Copiar la cabecera http de autentificación para apache+php-fcgid
         if ($server->get('HTTP_XAUTHORIZATION') !== null
-            && $server->get('HTTP_AUTHORIZATION') === null) {
+            && $server->get('HTTP_AUTHORIZATION') === null
+        ) {
             $server->set('HTTP_AUTHORIZATION', $server->get('HTTP_XAUTHORIZATION'));
         }
 
@@ -273,7 +268,7 @@ abstract class BootstrapBase
             && touch(LOG_FILE)
             && chmod(LOG_FILE, 0600)
         ) {
-            logger('Setup log file: '.LOG_FILE);
+            logger('Setup log file: ' . LOG_FILE);
         }
 
         if (date_default_timezone_get() === 'UTC') {
@@ -288,30 +283,10 @@ abstract class BootstrapBase
     }
 
     /**
-     * Establecer las rutas de la aplicación.
-     * Esta función establece las rutas del sistema de archivos y web de la aplicación.
-     * Las variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
-     */
-    private function initPaths(): void
-    {
-        self::$SUBURI = '/'.basename($this->request->getServer('SCRIPT_FILENAME'));
-
-        $uri = $this->request->getServer('REQUEST_URI');
-
-        $pos = strpos($uri, self::$SUBURI);
-
-        if ($pos > 0) {
-            self::$WEBROOT = substr($uri, 0, $pos);
-        }
-
-        self::$WEBURI = $this->request->getHttpHost().self::$WEBROOT;
-    }
-
-    /**
      * Cargar la configuración
      *
-     * @throws \SP\Core\Exceptions\ConfigException
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
+     * @throws ConfigException
+     * @throws UpgradeException
      */
     private function initConfig(): void
     {
@@ -326,7 +301,7 @@ abstract class BootstrapBase
     }
 
     /**
-     * @param  string  $class
+     * @param string $class
      *
      * @return object
      */

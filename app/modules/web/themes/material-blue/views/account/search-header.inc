@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,15 +23,16 @@
  */
 
 /**
- * @var ThemeIcons                     $icons
- * @var callable                       $_getvar
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
- * @var AccountSearchItem              $account
- * @var DataGridTab                    $data
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var ConfigDataInterface $configData
+ * @var AccountSearchItem $account
+ * @var DataGridTab $data
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\DataGrid\DataGridTab;
 
 if (!isset($data)) {
@@ -41,36 +42,53 @@ if (!isset($data)) {
 
 <div id="data-search-header" class="data-header data-header-minimal">
     <ul>
-        <?php foreach ($data->getHeader()->getSortFields() as $field): ?>
+        <?php
+        foreach ($data->getHeader()->getSortFields() as $field): ?>
             <li>
-                <a id="btn-order-<?php echo $field->getSortKey(); ?>"
-                   class="round <?php echo ($data->getPager()->getSortKey() == $field->getSortKey()) ? 'filterOn' : ''; ?>">
-                    <?php echo $field->getName(); ?>
+                <a id="btn-order-<?php
+                echo $field->getSortKey(); ?>"
+                   class="round <?php
+                   echo ($data->getPager()->getSortKey() == $field->getSortKey()) ? 'filterOn' : ''; ?>">
+                    <?php
+                    echo $field->getName(); ?>
                 </a>
-                <span for="btn-order-<?php echo $field->getSortKey(); ?>"
-                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo $field->getTitle(); ?></span>
+                <span for="btn-order-<?php
+                echo $field->getSortKey(); ?>"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php
+                    echo $field->getTitle(); ?></span>
                 <?php
                 $classDown = ($data->getPager()->getSortKey() == $field->getSortKey()
-                    && $data->getPager()->getSortOrder() === 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                              && $data->getPager()->getSortOrder() ===
+                                 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
                 $classUp = ($data->getPager()->getSortKey() == $field->getSortKey()
-                    && $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                            &&
+                            $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
                 ?>
                 <div
-                        class="icon material-icons sort-down cursor-pointer <?php echo $classDown; ?>"
-                        data-start="<?php echo $data->getPager()->getLimitStart(); ?>"
-                        data-key="<?php echo $field->getSortKey(); ?>"
+                        class="icon material-icons sort-down cursor-pointer <?php
+                        echo $classDown; ?>"
+                        data-start="<?php
+                        echo $data->getPager()->getLimitStart(); ?>"
+                        data-key="<?php
+                        echo $field->getSortKey(); ?>"
                         data-dir="0">
-                    <?php echo $field->getIconDown()->getIcon(); ?>
+                    <?php
+                    echo $field->getIconDown()->getIcon(); ?>
                 </div>
                 <div
-                        class="icon material-icons sort-up cursor-pointer <?php echo $classUp; ?>"
-                        data-start="<?php echo $data->getPager()->getLimitStart(); ?>"
-                        data-key="<?php echo $field->getSortKey(); ?>"
+                        class="icon material-icons sort-up cursor-pointer <?php
+                        echo $classUp; ?>"
+                        data-start="<?php
+                        echo $data->getPager()->getLimitStart(); ?>"
+                        data-key="<?php
+                        echo $field->getSortKey(); ?>"
                         data-dir="1">
-                    <?php echo $field->getIconUp()->getIcon(); ?>
+                    <?php
+                    echo $field->getIconUp()->getIcon(); ?>
                 </div>
             </li>
-        <?php endforeach; ?>
+        <?php
+        endforeach; ?>
         <li class="search-filter-spacer"></li>
     </ul>
 </div>

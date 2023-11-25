@@ -65,10 +65,11 @@ final class FileGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
@@ -163,7 +164,7 @@ final class FileGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View File'));
         $gridAction->setTitle(__('View File'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('file/view');
         $gridAction->setFilterRowSource('type', 'application/pdf');
         $gridAction->addData(
@@ -184,7 +185,7 @@ final class FileGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('Download File'));
         $gridAction->setTitle(__('Download File'));
-        $gridAction->setIcon($this->icons->getIconDownload());
+        $gridAction->setIcon($this->icons->download());
         $gridAction->setOnClickFunction('file/download');
         $gridAction->addData(
             'action-route',
@@ -209,7 +210,7 @@ final class FileGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete File'));
         $gridAction->setTitle(__('Delete File'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

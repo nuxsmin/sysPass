@@ -66,10 +66,11 @@ final class CategoryGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -151,7 +152,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Category'));
         $gridAction->setTitle(__('New Category'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
@@ -172,7 +173,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Category'));
         $gridAction->setTitle(__('Edit Category'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -192,7 +193,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Category'));
         $gridAction->setTitle(__('Delete Category'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

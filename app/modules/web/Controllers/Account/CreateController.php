@@ -47,8 +47,8 @@ final class CreateController extends AccountViewBase
                 'title',
                 [
                     'class' => 'titleGreen',
-                    'name'  => __('New Account'),
-                    'icon'  => $this->icons->getIconAdd()->getIcon(),
+                    'name' => __('New Account'),
+                    'icon' => $this->icons->add()->getIcon(),
                 ]
             );
             $this->view->assign('formRoute', 'account/saveCreate');

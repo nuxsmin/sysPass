@@ -26,6 +26,7 @@ namespace SP\Core\Bootstrap;
 
 use Closure;
 use Exception;
+use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -34,6 +35,7 @@ use SP\Core\HttpModuleBase;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Modules\Api\Init as InitApi;
+
 use function SP\logger;
 use function SP\processException;
 
@@ -71,10 +73,7 @@ final class BootstrapApi extends BootstrapBase
 
     private function manageApiRequest(): Closure
     {
-        return function ($request, $response, $service) {
-            /** @var \Klein\Request $request */
-            /** @var \Klein\Response $response */
-
+        return function (Request $request, Response $response) {
             try {
                 logger('API route');
 
@@ -84,10 +83,10 @@ final class BootstrapApi extends BootstrapBase
 
                 $controllerClass = self::getClassFor($controllerName, $actionName);
 
-                $method = $actionName.'Action';
+                $method = $actionName . 'Action';
 
                 if (!method_exists($controllerClass, $method)) {
-                    logger($controllerClass.'::'.$method);
+                    logger($controllerClass . '::' . $method);
 
                     /** @var Response $response */
                     $response->headers()->set('Content-type', 'application/json; charset=utf-8');
@@ -107,7 +106,7 @@ final class BootstrapApi extends BootstrapBase
 
                 $this->module->initialize($controllerName);
 
-                logger('Routing call: '.$controllerClass.'::'.$method);
+                logger('Routing call: ' . $controllerClass . '::' . $method);
 
                 return call_user_func([$this->createObjectFor($controllerClass), $method]);
             } catch (Exception $e) {

@@ -82,10 +82,12 @@ final class NotificationGrid extends GridBase
         $grid->addDataAction(
             $this->setNonAdminFilter(
                 $this->getDeleteAction()
-                    ->setTitle(__('Delete Selected'))
-                    ->setName(__('Delete Selected'))
-                    ->setIsSelection(true)),
-            true);
+                     ->setTitle(__('Delete Selected'))
+                     ->setName(__('Delete Selected'))
+                     ->setIsSelection(true)
+            ),
+            true
+        );
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
@@ -153,15 +155,15 @@ final class NotificationGrid extends GridBase
         );
         $gridData->addDataRowSourceWithIcon(
             'checked',
-            $this->icons->getIconEnabled()->setTitle(__('Read'))
+            $this->icons->enabled()->setTitle(__('Read'))
         );
         $gridData->addDataRowSourceWithIcon(
             'onlyAdmin',
-            $this->icons->getIconAppAdmin()->setTitle(__('Only Admins'))
+            $this->icons->appAdmin()->setTitle(__('Only Admins'))
         );
         $gridData->addDataRowSourceWithIcon(
             'sticky',
-            $this->icons->getIconGroup()->setTitle(__('Global'))
+            $this->icons->group()->setTitle(__('Global'))
         );
         $gridData->setData($this->queryResult);
 
@@ -198,7 +200,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Notification'));
         $gridAction->setTitle(__('New Notification'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
@@ -219,7 +221,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Notification'));
         $gridAction->setTitle(__('View Notification'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
             'action-route',
@@ -236,8 +238,7 @@ final class NotificationGrid extends GridBase
      */
     private function setNonAdminFilter(
         DataGridActionInterface $gridAction
-    ): DataGridActionInterface
-    {
+    ): DataGridActionInterface {
         if (!$this->isAdminApp) {
             $gridAction->setFilterRowSource('sticky');
         }
@@ -254,7 +255,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setId(AclActionsInterface::NOTIFICATION_CHECK);
         $gridAction->setName(__('Checkout Notification'));
         $gridAction->setTitle(__('Checkout Notification'));
-        $gridAction->setIcon($this->icons->getIconEnabled());
+        $gridAction->setIcon($this->icons->enabled());
         $gridAction->setOnClickFunction('notification/check');
         $gridAction->setFilterRowSource('checked');
         $gridAction->addData(
@@ -278,7 +279,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setId(AclActionsInterface::NOTIFICATION_EDIT);
         $gridAction->setName(__('Edit Notification'));
         $gridAction->setTitle(__('Edit Notification'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
             'action-route',
@@ -298,7 +299,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Notification'));
         $gridAction->setTitle(__('Delete Notification'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('notification/delete');
         $gridAction->setFilterRowSource('checked', 0);
         $gridAction->addData(

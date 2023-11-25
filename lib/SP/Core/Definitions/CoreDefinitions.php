@@ -32,6 +32,8 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
+use SP\Core\Bootstrap\UriContext;
+use SP\Core\Bootstrap\UriContextInterface;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Crypt;
@@ -49,6 +51,10 @@ use SP\Core\MimeTypes;
 use SP\Core\MimeTypesInterface;
 use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeContext;
+use SP\Core\UI\ThemeContextInterface;
+use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\Core\UI\ThemeInterface;
 use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapAuthInterface;
@@ -114,6 +120,7 @@ final class CoreDefinitions
         return [
             RequestInterface::class => create(Request::class)
                 ->constructor(\Klein\Request::createFromGlobals(), autowire(CryptPKI::class)),
+            UriContextInterface::class => autowire(UriContext::class),
             ContextInterface::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
             ConfigInterface::class => create(ConfigFileService::class)
@@ -128,8 +135,8 @@ final class CoreDefinitions
                 static fn(ConfigInterface $config) => $config->getConfigData(),
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
             DbStorageInterface::class => autowire(MysqlHandler::class),
-            Actions::class =>
-                static fn() => new ActionsInterface(
+            ActionsInterface::class =>
+                static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
                     new XmlHandler(new FileHandler(ACTIONS_FILE))
                 ),
@@ -140,12 +147,17 @@ final class CoreDefinitions
                 ),
             Acl::class => autowire(Acl::class)
                 ->constructorParameter('actions', get(Actions::class)),
-            ThemeInterface::class => autowire(Theme::class)
+            ThemeContextInterface::class => autowire(ThemeContext::class)
+                ->constructorParameter('basePath', VIEW_PATH)
+                ->constructorParameter('baseUri', factory([UriContextInterface::class, 'getWebRoot']))
                 ->constructorParameter('module', APP_MODULE)
-                ->constructorParameter(
-                    'fileCache',
-                    create(FileCache::class)->constructor(Theme::ICONS_CACHE_FILE)
+                ->constructorParameter('name', factory([Theme::class, 'getThemeName'])),
+            ThemeIconsInterface::class => factory([ThemeIcons::class, 'loadIcons'])
+                ->parameter(
+                    'iconsCache',
+                    create(FileCache::class)->constructor(ThemeIcons::ICONS_CACHE_FILE)
                 ),
+            ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class),
             DatabaseAuthInterface::class => autowire(DatabaseAuth::class),
             BrowserAuthInterface::class => autowire(BrowserAuth::class),

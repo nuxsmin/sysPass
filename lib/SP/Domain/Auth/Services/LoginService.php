@@ -33,6 +33,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\LanguageInterface;
@@ -96,8 +97,8 @@ final class LoginService extends Service implements LoginServiceInterface
     private UserProfileServiceInterface         $userProfileService;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws InvalidArgumentException
+     * @throws AuthException
      */
     public function __construct(
         Application                         $application,
@@ -442,11 +443,7 @@ final class LoginService extends Service implements LoginServiceInterface
     private function loadUserPreferences(): void
     {
         $this->language->setLanguage(true);
-
-        $this->theme->initTheme(true);
-
         $this->context->setAuthCompleted(true);
-
         $this->eventDispatcher->notify('login.preferences.load', new Event($this));
     }
 

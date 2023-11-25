@@ -69,10 +69,11 @@ final class ItemPresetGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setTitle(__('Delete Selected'))
-                ->setName(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setTitle(__('Delete Selected'))
+                 ->setName(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -126,7 +127,7 @@ final class ItemPresetGrid extends GridBase
         $gridData->addDataRowSource('userGroupName');
         $gridData->addDataRowSource('userProfileName');
         $gridData->addDataRowSource('priority');
-        $gridData->addDataRowSourceWithIcon('fixed', $this->icons->getIconEnabled());
+        $gridData->addDataRowSourceWithIcon('fixed', $this->icons->enabled());
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -163,13 +164,14 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setName(__('Permission Preset'));
         $gridAction->setTitle(__('New Permission Preset'));
 
-        $icon = clone $this->icons->getIconAdd();
+        $icon = clone $this->icons->add();
 
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION;
+        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+                 ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION;
 
         $gridAction->addData('action-route', $route);
 
@@ -187,13 +189,14 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setName(__('Private Account Preset'));
         $gridAction->setTitle(__('New Private Account Preset'));
 
-        $icon = clone $this->icons->getIconAdd();
+        $icon = clone $this->icons->add();
 
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE;
+        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+                 ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE;
 
         $gridAction->addData('action-route', $route);
 
@@ -211,13 +214,14 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setName(__('Session Timeout Preset'));
         $gridAction->setTitle(__('New Session Timeout Preset'));
 
-        $icon = clone $this->icons->getIconAdd();
+        $icon = clone $this->icons->add();
 
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT;
+        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+                 ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT;
 
         $gridAction->addData('action-route', $route);
 
@@ -235,13 +239,14 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setName(__('Account Password Preset'));
         $gridAction->setTitle(__('New Account Password Preset'));
 
-        $icon = clone $this->icons->getIconAdd();
+        $icon = clone $this->icons->add();
 
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD;
+        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+                 ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD;
 
         $gridAction->addData('action-route', $route);
 
@@ -258,7 +263,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Edit Value'));
         $gridAction->setTitle(__('Edit Value'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
@@ -278,7 +283,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Value'));
         $gridAction->setTitle(__('Delete Value'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',

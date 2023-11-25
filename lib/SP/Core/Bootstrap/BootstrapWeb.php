@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,8 @@ namespace SP\Core\Bootstrap;
 
 use Closure;
 use Exception;
+use Klein\Request;
+use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -34,6 +36,10 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\HttpModuleBase;
 use SP\Modules\Web\Init as InitWeb;
 use SP\Util\Filter;
+
+use function SP\__;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Bootstrap web interface
@@ -73,14 +79,10 @@ final class BootstrapWeb extends BootstrapBase
     /** @noinspection PhpInconsistentReturnPointsInspection */
     private function manageWebRequest(): Closure
     {
-        return function ($request, $response, $service) {
-            /** @var \Klein\Request $request */
-            /** @var \Klein\Response $response */
-
+        return function (Request $request, Response $response) {
             try {
                 logger('WEB route');
 
-                /** @var \Klein\Request $request */
                 $route = Filter::getString($request->param('r', 'index/index'));
 
                 if (!preg_match_all(self::ROUTE_REGEX, $route, $matches)) {
@@ -99,7 +101,7 @@ final class BootstrapWeb extends BootstrapBase
                 $this->initializePluginClasses();
 
                 if (!method_exists($controllerClass, $methodName)) {
-                    logger($controllerClass.'::'.$methodName);
+                    logger($controllerClass . '::' . $methodName);
 
                     $response->code(404);
 

@@ -63,7 +63,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Account Details'));
         $action->setTitle(__('Account Details'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconView());
+        $action->setIcon($this->icons->view());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowView');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
@@ -75,8 +75,8 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param  AccountAcl  $accountAcl
-     * @param  AccountActionsDto  $accountActionsDto
+     * @param AccountAcl $accountAcl
+     * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
@@ -139,7 +139,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Back'));
         $action->setTitle(__('Back'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconBack());
+        $action->setIcon($this->icons->back());
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
@@ -158,7 +158,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Edit Account Password'));
         $action->setTitle(__('Edit Account Password'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEditPass());
+        $action->setIcon($this->icons->editPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
@@ -178,7 +178,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Edit Account'));
         $action->setTitle(__('Edit Account'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEdit());
+        $action->setIcon($this->icons->edit());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
@@ -197,7 +197,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Request Modification'));
         $action->setTitle(__('Request Modification'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEmail());
+        $action->setIcon($this->icons->email());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_REQUEST));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
@@ -217,7 +217,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Restore account from this point'));
         $action->setTitle(__('Restore account from this point'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconRestore());
+        $action->setIcon($this->icons->restore());
         $action->addData('action-route', 'account/saveEditRestore');
         $action->addData('onclick', 'account/saveEditRestore');
         $action->addAttribute('type', 'button');
@@ -236,7 +236,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Save'));
         $action->setTitle(__('Save'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconSave());
+        $action->setIcon($this->icons->save());
         $action->addData('action-route', 'account/save');
         $action->addData('onclick', 'account/save');
         $action->addAttribute('type', 'submit');
@@ -247,8 +247,8 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param  AccountAcl  $accountAcl
-     * @param  AccountActionsDto  $accountActionsDto
+     * @param AccountAcl $accountAcl
+     * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
@@ -262,7 +262,7 @@ final class AccountActionsHelper extends HelperBase
 
         if ($accountAcl->isShowDelete()) {
             $actions[] = $this->getDeleteAction()
-                ->addData('item-id', $accountActionsDto->getAccountId());
+                              ->addData('item-id', $accountActionsDto->getAccountId());
         }
 
         if ($accountActionsDto->isHistory() === false
@@ -300,14 +300,14 @@ final class AccountActionsHelper extends HelperBase
         if ($accountAcl->isShowViewPass()) {
             if ($accountActionsDto->isHistory()) {
                 $actionViewPass = $this->getViewPassHistoryAction()
-                    ->addData('item-id', $accountActionsDto->getAccountHistoryId());
+                                       ->addData('item-id', $accountActionsDto->getAccountHistoryId());
                 $actionCopy = $this->getCopyPassHistoryAction()
-                    ->addData('item-id', $accountActionsDto->getAccountHistoryId());
+                                   ->addData('item-id', $accountActionsDto->getAccountHistoryId());
             } else {
                 $actionViewPass = $this->getViewPassAction()
-                    ->addData('item-id', $accountActionsDto->getAccountId());
+                                       ->addData('item-id', $accountActionsDto->getAccountId());
                 $actionCopy = $this->getCopyPassAction()
-                    ->addData('item-id', $accountActionsDto->getAccountId());
+                                   ->addData('item-id', $accountActionsDto->getAccountId());
             }
 
             $actionViewPass->addData('parent-id', $accountActionsDto->getAccountParentId());
@@ -319,7 +319,7 @@ final class AccountActionsHelper extends HelperBase
 
         if ($accountAcl->isShowCopy()) {
             $actions[] = $this->getCopyAction()
-                ->addData('item-id', $accountActionsDto->getAccountId());
+                              ->addData('item-id', $accountActionsDto->getAccountId());
         }
 
         return $actions;
@@ -336,7 +336,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Remove Account'));
         $action->setTitle(__('Remove Account'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconDelete());
+        $action->setIcon($this->icons->delete());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowDelete');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
@@ -355,7 +355,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Update Public Link'));
         $action->setTitle(__('Update Public Link'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconPublicLink());
+        $action->setIcon($this->icons->publicLink());
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('onclick', 'link/refresh');
         $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
@@ -369,7 +369,7 @@ final class AccountActionsHelper extends HelperBase
      */
     public function getPublicLinkDeleteAction(): DataGridAction
     {
-        $icon = clone $this->icons->getIconPublicLink();
+        $icon = clone $this->icons->publicLink();
         $icon->setIcon('link_off');
 
         $action = new DataGridAction();
@@ -396,7 +396,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Create Public Link'));
         $action->setTitle(__('Create Public Link'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconPublicLink());
+        $action->setIcon($this->icons->publicLink());
         $action->addData('action-route', 'publicLink/saveCreateFromAccount');
         $action->addData('onclick', 'link/save');
         $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
@@ -416,7 +416,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('View password'));
         $action->setTitle(__('View password'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconViewPass());
+        $action->setIcon($this->icons->viewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
         $action->addData('action-full', 1);
@@ -438,7 +438,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Copy Password to Clipboard'));
         $action->addClass('btn-action');
         $action->addClass('clip-pass-button');
-        $action->setIcon($this->icons->getIconClipboard());
+        $action->setIcon($this->icons->clipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
         $action->addData('action-full', 0);
@@ -459,7 +459,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('View password'));
         $action->setTitle(__('View password'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconViewPass());
+        $action->setIcon($this->icons->viewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
@@ -481,7 +481,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Copy Password to Clipboard'));
         $action->addClass('btn-action');
         $action->addClass('clip-pass-button');
-        $action->setIcon($this->icons->getIconClipboard());
+        $action->setIcon($this->icons->clipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);
@@ -502,7 +502,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setName(__('Copy Account'));
         $action->setTitle(__('Copy Account'));
         $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconCopy());
+        $action->setIcon($this->icons->copy());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopy');
         $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));
         $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,16 +23,17 @@
  */
 
 /**
- * @var callable                       $_getvar
- * @var ThemeIcons                     $icons
- * @var AccountExtData                 $accountData
- * @var AccountAcl                     $accountAcl
- * @var \SP\Domain\Config\Ports\ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl $accountAcl
+ * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIcons;
+use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /** @var AccountExtData $accountData */
 $accountData = $_getvar('accountData');
@@ -40,43 +41,53 @@ $accountData = $_getvar('accountData');
 
 <div class="data-container">
     <div id="title"
-         class="titleNormal"><?php echo __('Request Account Modification'); ?></div>
+         class="titleNormal"><?php
+        echo __('Request Account Modification'); ?></div>
 
     <form method="post" name="requestmodify" id="frmRequestModify"
           class="form-action"
           data-onsubmit="account/request"
-          data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
-          data-item-id="<?php echo $_getvar('accountId', ''); ?>"
+          data-action-route="<?php
+          echo $_getvar('formRoute', ''); ?>"
+          data-item-id="<?php
+          echo $_getvar('accountId', ''); ?>"
           data-hash="">
         <table class="data">
             <tr>
-                <td class="descField"><?php echo __('Name'); ?></td>
+                <td class="descField"><?php
+                    echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Account name'); ?></label>
+                               for="name"><?php
+                            echo __('Account name'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Client'); ?></td>
+                <td class="descField"><?php
+                    echo __('Client'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getClientName(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountData->getClientName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="client"><?php echo __('Client'); ?></label>
+                               for="client"><?php
+                            echo __('Client'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Request'); ?></td>
+                <td class="descField"><?php
+                    echo __('Request'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <textarea
@@ -84,7 +95,8 @@ $accountData = $_getvar('accountData');
                             rows="3" id="description"
                             name="description" maxlength="1000"></textarea>
                         <label class="mdl-textfield__label"
-                               for="description"><?php echo __('Request description'); ?></label>
+                               for="description"><?php
+                            echo __('Request description'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -97,16 +109,22 @@ $accountData = $_getvar('accountData');
         <ul>
             <li>
                 <button id="btnBack" type="button"
-                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Back'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                        echo $icons->back()->getClassButton(); ?>"
+                        title="<?php
+                        echo __('Back'); ?>">
+                    <i class="material-icons"><?php
+                        echo $icons->back()->getIcon(); ?></i>
                 </button>
             </li>
             <li>
                 <button id="btnSave" form="frmRequestModify"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                        title="<?php echo __('Send'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                        echo $icons->save()->getClassButton(); ?>"
+                        title="<?php
+                        echo __('Send'); ?>">
+                    <i class="material-icons"><?php
+                        echo $icons->save()->getIcon(); ?></i>
                 </button>
             </li>
         </ul>
