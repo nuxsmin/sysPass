@@ -28,8 +28,8 @@
  * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 
 ?>
 

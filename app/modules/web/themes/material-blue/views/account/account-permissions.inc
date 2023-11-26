@@ -24,14 +24,13 @@
 
 /**
  * @var callable $_getvar
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var AccountExtData $accountData
  * @var AccountAcl $accountAcl
  * @var ConfigDataInterface $configData
  * @var AccountPrivate $accountPrivate
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\Domain\Account\Services\AccountAcl;

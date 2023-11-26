@@ -26,7 +26,6 @@ namespace SP\Domain\Crypt\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Exception;
-use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
@@ -37,6 +36,7 @@ use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;

@@ -26,13 +26,13 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\AclActionsInterface;
-use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\UI\ThemeInterface;
+use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Install\Services\InstallerService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\RequestInterface;

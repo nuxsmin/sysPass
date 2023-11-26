@@ -27,7 +27,7 @@ namespace SP\Html\DataGrid;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\ThemeInterface;
+use SP\Domain\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
@@ -133,7 +133,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * DataGridBase constructor.
      *
-     * @param ThemeInterface $theme
+     * @param \SP\Domain\Core\UI\ThemeInterface $theme
      */
     public function __construct(ThemeInterface $theme)
     {

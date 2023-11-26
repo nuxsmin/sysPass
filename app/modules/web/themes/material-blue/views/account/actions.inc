@@ -30,10 +30,10 @@
  * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 
 ?>

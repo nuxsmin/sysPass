@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,23 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Domain\Core;
+
 
 /**
- * Interface ItemsTypeInterface para la definición de tipos de elementos
+ * Interface AppInfoInterface
  *
  * @package SP\Core
  */
-interface ItemsTypeInterface
+interface AppInfoInterface
 {
-    public const ITEM_CATEGORIES = 1;
-    public const ITEM_CUSTOMERS = 2;
-    public const ITEM_CUSTOMERS_USER = 52;
-    public const ITEM_FILES = 3;
-    public const ITEM_TAGS = 4;
-    public const ITEM_USERS = 5;
-    public const ITEM_GROUPS = 6;
-    public const ITEM_PROFILES = 7;
-    public const ITEM_ACCOUNTS = 8;
-    public const ITEM_ACCOUNTS_USER = 58;
+    public const APP_NAME = 'sysPass';
+    public const APP_DESC = 'Systems Password Manager';
+    public const APP_ALIAS = 'SPM';
+    public const APP_WEBSITE_URL = 'https://www.syspass.org';
+    public const APP_BLOG_URL = 'https://www.cygnux.org';
+    public const APP_DOC_URL = 'https://doc.syspass.org';
+    public const APP_UPDATES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
+    public const APP_NOTICES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
+    public const APP_ISSUES_URL = 'https://github.com/nuxsmin/sysPass/issues';
 }

@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Status;
 
-use SP\Core\AppInfoInterface;
 use SP\Core\Exceptions\CheckException;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\VersionUtil;

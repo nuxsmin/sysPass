@@ -22,26 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\UI;
-
-use Directory;
+namespace SP\Domain\Core;
 
 /**
- * Class ThemeContext
+ * Interface ItemsTypeInterface para la definición de tipos de elementos
+ *
+ * @package SP\Core
  */
-interface ThemeContextInterface
+interface ItemsTypeInterface
 {
-    public function getModule(): string;
-
-    public function getName(): string;
-
-    public function getFullPath(): string;
-
-    public function getPath(): string;
-
-    public function getViewsPath();
-
-    public function getUri(): string;
-
-    public function getViewsDirectory(): Directory;
+    public const ITEM_CATEGORIES = 1;
+    public const ITEM_CUSTOMERS = 2;
+    public const ITEM_CUSTOMERS_USER = 52;
+    public const ITEM_FILES = 3;
+    public const ITEM_TAGS = 4;
+    public const ITEM_USERS = 5;
+    public const ITEM_GROUPS = 6;
+    public const ITEM_PROFILES = 7;
+    public const ITEM_ACCOUNTS = 8;
+    public const ITEM_ACCOUNTS_USER = 58;
 }

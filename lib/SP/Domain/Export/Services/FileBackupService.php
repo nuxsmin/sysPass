@@ -27,7 +27,6 @@ namespace SP\Domain\Export\Services;
 
 use Exception;
 use PDO;
-use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
@@ -39,6 +38,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
 use SP\Infrastructure\Common\Repositories\Query;

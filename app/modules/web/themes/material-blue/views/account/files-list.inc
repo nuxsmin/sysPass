@@ -23,15 +23,15 @@
  */
 
 /**
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
  * @var FileData $file
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\FileData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\Html;
 
 ?>

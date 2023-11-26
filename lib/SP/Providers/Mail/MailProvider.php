@@ -25,9 +25,9 @@
 namespace SP\Providers\Mail;
 
 use Exception;
-use SP\Core\AppInfoInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
 use SP\Providers\Provider;

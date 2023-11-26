@@ -31,10 +31,10 @@
  * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
 
 $profile = $_getvar('profile');

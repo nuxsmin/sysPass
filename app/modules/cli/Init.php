@@ -26,9 +26,9 @@ namespace SP\Modules\Cli;
 
 use SP\Core\Application;
 use SP\Core\Language;
-use SP\Core\LanguageInterface;
 use SP\Core\ModuleBase;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Core\LanguageInterface;
 use SP\Util\VersionUtil;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;

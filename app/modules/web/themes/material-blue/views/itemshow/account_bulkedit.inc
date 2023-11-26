@@ -23,7 +23,7 @@
  */
 
 /**
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
@@ -34,7 +34,6 @@
  * @var SelectItem $tag
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;

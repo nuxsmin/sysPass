@@ -31,8 +31,8 @@
  * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;

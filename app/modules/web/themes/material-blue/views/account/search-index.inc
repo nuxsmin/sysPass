@@ -30,9 +30,9 @@
  * @var DataGrid $data
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\DataGrid;
 
 if (!isset($data)) {

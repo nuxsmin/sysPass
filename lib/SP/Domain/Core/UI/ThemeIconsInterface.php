@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\UI;
+namespace SP\Domain\Core\UI;
 
 use SP\Core\Context\ContextInterface;
 use SP\Html\Assets\IconInterface;

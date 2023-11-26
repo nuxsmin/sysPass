@@ -24,7 +24,7 @@
 
 /** @var $icons ThemeIconsInterface */
 
-use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 
 ?>
 

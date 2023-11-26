@@ -26,6 +26,8 @@ namespace SP\Core;
 
 use SP\Core\Exceptions\CheckException;
 
+use function SP\logger;
+
 /**
  * Class PhpExtensionChecker
  *
@@ -99,16 +101,15 @@ final class PhpExtensionChecker
      * Checks if the extension is installed
      *
      * @param string $extension
-     * @param bool   $exception Throws an exception if the extension is not available
+     * @param bool $exception Throws an exception if the extension is not available
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function checkIsAvailable(
         string $extension,
         bool   $exception = false
-    ): bool
-    {
+    ): bool {
         $result = in_array(strtolower($extension), $this->available, true);
 
         if (!$result && $exception) {
@@ -251,7 +252,7 @@ final class PhpExtensionChecker
     /**
      * @throws CheckException
      */
-    public function checkMandatory()
+    public function checkMandatory(): void
     {
         $missing = array_filter(
             self::EXTENSIONS,

@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\ThemeInterface;
+use SP\Domain\Core\UI\ThemeInterface;
 use SP\Http\Uri;
 
 /**
@@ -59,7 +59,7 @@ final class Template implements TemplateInterface
     private bool   $upgraded         = false;
 
     /**
-     * @param  ThemeInterface  $theme
+     * @param  \SP\Domain\Core\UI\ThemeInterface $theme
      */
     public function __construct(ThemeInterface $theme)
     {

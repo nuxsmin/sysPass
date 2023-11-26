@@ -24,13 +24,12 @@
 
 /**
  * @var CustomFieldDefinitionData $field
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Mvc\View\Components\SelectItem;

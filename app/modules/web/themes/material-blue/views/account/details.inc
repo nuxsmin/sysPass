@@ -23,14 +23,13 @@
  */
 
 /**
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var AccountExtData $accountData
  * @var AccountAcl $accountAcl
  * @var ConfigDataInterface $configData
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Config\Ports\ConfigDataInterface;

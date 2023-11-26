@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 
@@ -36,25 +36,23 @@ use SP\Domain\Config\Services\ConfigFileService;
  */
 abstract class ModuleBase
 {
-    protected ConfigFileService   $config;
-    protected ConfigDataInterface $configData;
-    protected ContextInterface    $context;
-    private EventDispatcher       $eventDispatcher;
-    private ProvidersHelper       $providersHelper;
+    protected ConfigFileService      $config;
+    protected ConfigDataInterface    $configData;
+    protected ContextInterface       $context;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * Module constructor.
      *
-     * @param  \SP\Core\Application  $application
-     * @param  \SP\Core\ProvidersHelper  $providersHelper
+     * @param Application $application
+     * @param ProvidersHelper $providersHelper
      */
-    public function __construct(Application $application, ProvidersHelper $providersHelper)
+    public function __construct(Application $application, private readonly ProvidersHelper $providersHelper)
     {
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->context = $application->getContext();
         $this->eventDispatcher = $application->getEventDispatcher();
-        $this->providersHelper = $providersHelper;
     }
 
     abstract public function initialize(string $controller): void;

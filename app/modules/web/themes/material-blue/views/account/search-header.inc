@@ -23,14 +23,13 @@
  */
 
 /**
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
  * @var AccountSearchItem $account
  * @var DataGridTab $data
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Html\DataGrid\DataGridTab;

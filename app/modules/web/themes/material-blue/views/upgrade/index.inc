@@ -24,10 +24,9 @@
 
 /**
  * @var TemplateInterface $this
- * @var ThemeIconsInterface $icons
+ * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
 
 ?>

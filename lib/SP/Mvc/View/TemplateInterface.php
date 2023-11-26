@@ -26,7 +26,7 @@ namespace SP\Mvc\View;
 
 
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\ThemeInterface;
+use SP\Domain\Core\UI\ThemeInterface;
 
 /**
  * Class Template

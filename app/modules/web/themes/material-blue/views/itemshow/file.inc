@@ -30,9 +30,9 @@
  * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIconsInterface;
 use SP\DataModel\FileData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
 
 $fileData = $_getvar('fileData');

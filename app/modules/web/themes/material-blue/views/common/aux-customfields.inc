@@ -29,7 +29,7 @@
  * @var TemplateInterface $this
  */
 
-use SP\Core\UI\ThemeIconsInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Mvc\View\TemplateInterface;
 
