@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,9 @@ namespace SP\Core;
 
 use SP\Core\Context\ContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Http\Request;
 use SP\Http\RequestInterface;
 
-defined('APP_ROOT') || die();
+use function SP\logger;
 
 /**
  * Class Language para el manejo del lenguaje utilizado por la aplicación
@@ -52,7 +50,7 @@ final class Language implements LanguageInterface
      *
      * @var string|false
      */
-    public static $localeStatus;
+    public static string|false $localeStatus;
     /**
      * Si se ha establecido a las de la App
      */
@@ -60,7 +58,7 @@ final class Language implements LanguageInterface
     /**
      *  Available languages
      */
-    private static array          $langs = [
+    private static array $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
         'en_US' => 'English',
@@ -72,23 +70,16 @@ final class Language implements LanguageInterface
         'nl_NL' => 'Nederlands',
         'pt_BR' => 'Português',
         'it_IT' => 'Italiano',
-        'da'    => 'Dansk',
-        'fo'    => 'Føroyskt mál',
+        'da' => 'Dansk',
+        'fo' => 'Føroyskt mál',
         'ja_JP' => '日本語',
     ];
-    protected ConfigDataInterface $configData;
-    protected ContextInterface    $context;
-    private Request               $request;
 
-    /**
-     * Language constructor.
-     */
-    public function __construct(ContextInterface $session, ConfigInterface $config, RequestInterface $request)
-    {
-        $this->context = $session;
-        $this->configData = $config->getConfigData();
-        $this->request = $request;
-
+    public function __construct(
+        private readonly ContextInterface    $context,
+        private readonly ConfigDataInterface $configData,
+        private readonly RequestInterface    $request
+    ) {
         ksort(self::$langs);
     }
 
@@ -103,7 +94,7 @@ final class Language implements LanguageInterface
     /**
      * Establecer el lenguaje a utilizar
      *
-     * @param  bool  $force  Forzar la detección del lenguaje para los inicios de sesión
+     * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
      */
     public function setLanguage(bool $force = false): void
     {
@@ -163,16 +154,16 @@ final class Language implements LanguageInterface
 
         self::$localeStatus = setlocale(LC_MESSAGES, $lang);
 
-        putenv('LANG='.$lang);
-        putenv('LANGUAGE='.$lang);
+        putenv('LANG=' . $lang);
+        putenv('LANGUAGE=' . $lang);
 
         $locale = setlocale(LC_ALL, $lang);
 
         if ($locale === false) {
-            logger('Could not set locale to '.$lang, 'ERROR');
-            logger('Domain path: '.LOCALES_PATH);
+            logger('Could not set locale to ' . $lang, 'ERROR');
+            logger('Domain path: ' . LOCALES_PATH);
         } else {
-            logger('Locale set to: '.$locale);
+            logger('Locale set to: ' . $locale);
         }
 
         bindtextdomain('messages', LOCALES_PATH);
