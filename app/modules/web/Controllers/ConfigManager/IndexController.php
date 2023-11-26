@@ -228,7 +228,7 @@ final class IndexController extends ControllerBase
             SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
         );
 
-        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
+        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurl());
 
         $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
 
@@ -255,7 +255,7 @@ final class IndexController extends ControllerBase
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('accounts');
-        $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
+        $template->assign('gdIsAvailable', $this->extensionChecker->checkGd());
 
         $mimeTypesAvailable = array_map(
             static fn(MimeType $mimeType) => $mimeType->getType(),
@@ -289,7 +289,7 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'curlIsAvailable',
-            $this->extensionChecker->checkCurlAvailable()
+            $this->extensionChecker->checkCurl()
         );
 
         return new DataTab(__('Wiki'), $template);
@@ -309,7 +309,7 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'ldapIsAvailable',
-            $this->extensionChecker->checkIsAvailable('ldap')
+            $this->extensionChecker->checkLdap('ldap')
         );
         $template->assign(
             'userGroups',
@@ -459,7 +459,7 @@ final class IndexController extends ControllerBase
         $template->addTemplate('backup');
         $template->assign(
             'pharIsAvailable',
-            $this->extensionChecker->checkPharAvailable()
+            $this->extensionChecker->checkPhar()
         );
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);

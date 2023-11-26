@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,16 +24,17 @@
 
 namespace SP\Core;
 
+use RuntimeException;
 use SP\Core\Exceptions\CheckException;
+use SP\Domain\Core\PhpExtensionCheckerInterface;
 
+use function SP\__u;
 use function SP\logger;
 
 /**
  * Class PhpExtensionChecker
- *
- * @package SP\Core
  */
-final class PhpExtensionChecker
+final class PhpExtensionChecker implements PhpExtensionCheckerInterface
 {
     /**
      * Array of extensions needed by sysPass.
@@ -79,7 +80,7 @@ final class PhpExtensionChecker
     /**
      * Check for available extensions
      */
-    public function checkExtensions(): void
+    private function checkExtensions(): void
     {
         $this->available = array_intersect(
             array_keys(self::EXTENSIONS),
@@ -88,13 +89,17 @@ final class PhpExtensionChecker
     }
 
     /**
-     * Checks if the extension is installed
-     *
      * @throws CheckException
      */
-    public function checkCurlAvailable(bool $exception = false): bool
+    public function __call(string $name, array $arguments)
     {
-        return $this->checkIsAvailable('curl', $exception);
+        if (str_contains($name, 'check')) {
+            $extension = strtolower(str_replace('check', '', $name));
+
+            return $this->checkIsAvailable($extension, ...$arguments);
+        } else {
+            throw new RuntimeException(__u('Unknown magic method'));
+        }
     }
 
     /**
@@ -117,136 +122,6 @@ final class PhpExtensionChecker
         }
 
         return $result;
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkLdapAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('ldap', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkSimpleXmlAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('simplexml', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkXmlAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('xml', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkPharAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('phar', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkJsonAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('json', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkPdoAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('pdo', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkGettextAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('gettext', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkOpenSslAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('openssl', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkGdAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('gd', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkMbstringAvailable(bool $exception = false): bool
-    {
-        return $this->checkIsAvailable('mbstring', $exception);
     }
 
     /**

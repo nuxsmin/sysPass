@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Status;
 
+use JsonException;
 use SP\Core\Exceptions\CheckException;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Http\JsonResponse;
@@ -46,12 +47,12 @@ final class StatusController extends StatusBase
      * checkReleaseAction
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function checkReleaseAction(): bool
     {
         try {
-            $this->extensionChecker->checkCurlAvailable(true);
+            $this->extensionChecker->checkCurl(true);
 
             $request = $this->client->request('GET', AppInfoInterface::APP_UPDATES_URL);
 

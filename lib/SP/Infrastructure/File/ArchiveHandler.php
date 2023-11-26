@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,7 @@ namespace SP\Infrastructure\File;
 
 use Phar;
 use PharData;
+use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
 
 /**
@@ -41,11 +42,11 @@ final class ArchiveHandler implements ArchiveHandlerInterface
     private PharData $archive;
 
     /**
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     public function __construct(string $archive, PhpExtensionChecker $extensionChecker)
     {
-        $extensionChecker->checkPharAvailable(true);
+        $extensionChecker->checkPhar(true);
 
         $this->archive = new PharData(self::makeArchiveName($archive));
     }

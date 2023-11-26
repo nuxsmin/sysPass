@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,9 @@
 
 namespace SP\Util;
 
-use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\InvalidImageException;
 use SP\Core\PhpExtensionChecker;
+
 use function SP\__u;
 
 defined('APP_ROOT') || die();
@@ -39,11 +39,11 @@ defined('APP_ROOT') || die();
 final class ImageUtil implements ImageUtilInterface
 {
     /**
-     * @throws CheckException
+     * @param PhpExtensionChecker $checker
      */
     public function __construct(PhpExtensionChecker $checker)
     {
-        $checker->checkCurlAvailable(true);
+        $checker->checkCurl(true);
     }
 
     /**

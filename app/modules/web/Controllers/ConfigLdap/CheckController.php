@@ -114,7 +114,7 @@ final class CheckController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
-            $this->extensionChecker->checkLdapAvailable(true);
+            $this->extensionChecker->checkLdap(true);
         } catch (UnauthorizedPageException|CheckException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
