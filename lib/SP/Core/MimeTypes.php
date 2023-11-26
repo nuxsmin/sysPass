@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,14 @@
 
 namespace SP\Core;
 
+use SP\Domain\Core\File\MimeType;
+use SP\Domain\Core\File\MimeTypesInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;
+
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Mime
@@ -43,9 +48,11 @@ final class MimeTypes implements MimeTypesInterface
      * Cache expire time
      */
     public const CACHE_EXPIRE = 86400;
-    protected ?array $mimeTypes = null;
-    protected XmlFileStorageInterface $xmlFileStorage;
-    private FileCacheInterface $fileCache;
+
+    /**
+     * @var MimeType[]
+     */
+    protected array $mimeTypes = [];
 
     /**
      * Mime constructor.
@@ -53,13 +60,9 @@ final class MimeTypes implements MimeTypesInterface
      * @throws FileException
      */
     public function __construct(
-        FileCacheInterface      $fileCache,
-        XmlFileStorageInterface $xmlFileStorage
-    )
-    {
-        $this->xmlFileStorage = $xmlFileStorage;
-        $this->fileCache = $fileCache;
-
+        private readonly FileCacheInterface      $fileCache,
+        private readonly XmlFileStorageInterface $xmlFileStorage
+    ) {
         $this->loadCache();
     }
 
@@ -68,29 +71,25 @@ final class MimeTypes implements MimeTypesInterface
      *
      * @throws FileException
      */
-    protected function loadCache(): void
+    private function loadCache(): void
     {
-        try {
-            if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
-                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
-            ) {
-                $this->mapAndSave();
-            } else {
-                $this->mimeTypes = $this->fileCache->load();
-
-                logger('Loaded MIME types cache', 'INFO');
-            }
-        } catch (FileException $e) {
-            processException($e);
-
+        if (!$this->fileCache->exists()
+            || $this->fileCache->isExpired(self::CACHE_EXPIRE)
+            || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
+        ) {
             $this->mapAndSave();
+        } else {
+            $this->mimeTypes = $this->fileCache->load();
+
+            logger('Loaded MIME types cache', 'INFO');
         }
     }
 
     /**
+     * @return void
      * @throws FileException
      */
-    protected function mapAndSave(): void
+    private function mapAndSave(): void
     {
         logger('MIME TYPES CACHE MISS', 'INFO');
 
@@ -103,29 +102,18 @@ final class MimeTypes implements MimeTypesInterface
      *
      * @throws FileException
      */
-    protected function map(): void
+    private function map(): void
     {
-        $this->mimeTypes = [];
-
-        foreach ($this->load() as $item) {
-            $this->mimeTypes[] = $item;
-        }
-    }
-
-    /**
-     * Loads MIME types from XML
-     *
-     * @throws FileException
-     */
-    protected function load(): array
-    {
-        return $this->xmlFileStorage->load('mimetypes')->getItems();
+        $this->mimeTypes = array_map(
+            static fn($item) => new MimeType($item['type'], $item['description'], $item['extension']),
+            $this->xmlFileStorage->load('mimetypes')->getItems()
+        );
     }
 
     /**
      * Saves MIME types into cache file
      */
-    protected function saveCache(): void
+    private function saveCache(): void
     {
         try {
             $this->fileCache->save($this->mimeTypes);
@@ -141,12 +129,17 @@ final class MimeTypes implements MimeTypesInterface
      */
     public function reset(): void
     {
-        @unlink(self::MIME_CACHE_FILE);
+        logger('Reset MIME types cache', 'INFO');
+
+        $this->fileCache->delete();
 
         $this->loadCache();
     }
 
-    public function getMimeTypes(): ?array
+    /**
+     * @return MimeType[]
+     */
+    public function getMimeTypes(): array
     {
         return $this->mimeTypes;
     }

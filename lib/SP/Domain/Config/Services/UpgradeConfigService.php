@@ -28,10 +28,10 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\MimeTypesInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\UpgradeConfigServiceInterface;
+use SP\Domain\Core\File\MimeTypesInterface;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
 use SP\Providers\Auth\Ldap\LdapTypeEnum;
@@ -274,8 +274,8 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             $exists = false;
 
             foreach ($this->mimeTypes->getMimeTypes() as $mimeType) {
-                if (strtolower($mimeType['extension']) === $extension) {
-                    $configMimeTypes[] = $mimeType['type'];
+                if (strtolower($mimeType->getExtension()) === $extension) {
+                    $configMimeTypes[] = $mimeType->getType();
                     $exists = true;
 
                     $this->eventDispatcher->notify(
@@ -284,7 +284,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
                             $this,
                             EventMessage::factory()
                                         ->addDescription(__u('MIME type set for this extension'))
-                                        ->addDetail(__u('MIME type'), $mimeType['type'])
+                                        ->addDetail(__u('MIME type'), $mimeType->getType())
                                         ->addDetail(__u('Extension'), $extension)
                         )
                     );

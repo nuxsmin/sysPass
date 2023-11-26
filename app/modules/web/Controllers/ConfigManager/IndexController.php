@@ -39,10 +39,11 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\MimeTypesInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\File\MimeType;
+use SP\Domain\Core\File\MimeTypesInterface;
 use SP\Domain\Crypt\Services\TemporaryMasterPassService;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Domain\Export\Services\XmlExportService;
@@ -257,7 +258,7 @@ final class IndexController extends ControllerBase
         $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
 
         $mimeTypesAvailable = array_map(
-            static fn($value) => $value['type'],
+            static fn(MimeType $mimeType) => $mimeType->getType(),
             $this->mimeTypes->getMimeTypes()
         );
 

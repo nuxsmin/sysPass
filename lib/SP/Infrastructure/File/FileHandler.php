@@ -47,7 +47,7 @@ final class FileHandler implements FileHandlerInterface
     /**
      * FileHandler constructor.
      */
-    public function __construct(private string $file)
+    public function __construct(private readonly string $file)
     {
     }
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,22 +22,33 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
-
-
-use SP\Infrastructure\File\FileException;
+namespace SP\Domain\Core\File;
 
 /**
- * Class Mime
- *
- * @package SP\Core
+ * Class MimeType
  */
-interface MimeTypesInterface
+final class MimeType
 {
-    /**
-     * @throws FileException
-     */
-    public function reset(): void;
 
-    public function getMimeTypes(): ?array;
+    public function __construct(
+        private readonly string $type,
+        private readonly string $description,
+        private readonly string $extension
+    ) {
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getExtension(): string
+    {
+        return $this->extension;
+    }
 }
