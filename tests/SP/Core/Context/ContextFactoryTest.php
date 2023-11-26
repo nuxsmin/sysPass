@@ -22,22 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Context;
+namespace SP\Tests\Core\Context;
 
-use SP\Domain\Core\Context\ContextInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Core\Context\ContextFactory;
+use SP\Core\Context\SessionContext;
+use SP\Core\Context\StatelessContext;
+use SP\Tests\UnitaryTestCase;
 
 /**
- * ContextFactory
+ * Class ContextFactoryTest
+ *
+ * @group unitary
  */
-final class ContextFactory
+class ContextFactoryTest extends UnitaryTestCase
 {
-    public static function getForModule(string $module): ContextInterface|SessionContextInterface
+    public function testGetForModuleWithWeb()
     {
-        if ($module === 'web') {
-            return new SessionContext();
-        }
+        $out = ContextFactory::getForModule('web');
 
-        return new StatelessContext();
+        $this->assertInstanceOf(SessionContext::class, $out);
+    }
+
+    public function testGetForModuleWithOther()
+    {
+        $out = ContextFactory::getForModule(self::$faker->colorName);
+
+        $this->assertInstanceOf(StatelessContext::class, $out);
     }
 }
