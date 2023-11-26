@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,8 @@
 
 namespace SP\Html\DataGrid\Action;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridActionHelp
- *
- * @package SP\Html\DataGrid
  */
 final class DataGridActionHelp extends DataGridActionBase
 {

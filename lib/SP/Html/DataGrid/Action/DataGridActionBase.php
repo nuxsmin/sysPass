@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,116 +28,78 @@ use Closure;
 use RuntimeException;
 use SP\Html\Assets\IconInterface;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
- *
- * @package SP\Html\DataGrid
  */
 abstract class DataGridActionBase implements DataGridActionInterface
 {
     /**
      * The runtime function that determines if the action should be displayed
-     *
-     * @var \Closure|null
      */
     protected ?Closure $runtimeFilter = null;
     /**
      * The runtime function to pass in the row dato to the action
-     *
-     * @var \Closure|null
      */
     protected ?Closure $runtimeData = null;
     /**
      * Action's name
-     *
-     * @var string
      */
-    protected string $name = '';
+    protected ?string $name = null;
     /**
      * Action's title
-     *
-     * @var string
      */
-    protected string $title = '';
+    protected ?string $title = null;
     /**
      * Action's title ID
-     *
-     * @var string
      */
-    protected $id = '';
+    protected ?int $id = null;
     /**
      * The JavaScript function to be triggered on OnClick event
-     *
-     * @var string
      */
     protected string $onClickFunction = '';
     /**
      * The OnClick event arguments
-     *
-     * @var array|null
      */
     protected ?array $onClickArgs = null;
     /**
      * Action's icon
-     *
-     * @var IconInterface|null
      */
     protected ?IconInterface $icon = null;
     /**
      * Sets whether this action should be skipped from listing in rows
-     *
-     * @var bool
      */
     protected bool $isSkip = false;
     /**
      * The row name which determines whether the action is displayed
-     *
-     * @var array|null
      */
     protected ?array $filterRowSource = null;
     /**
      * Sets as a help action
-     *
-     * @var bool
      */
     protected ?bool $isHelper = null;
     /**
      * Action's type
-     *
-     * @var int
      */
-    protected int $type = 0;
+    protected ?int $type = null;
     /**
      * Data attributes (ie. data-*)
-     *
-     * @var array|null
      */
     protected ?array $data = null;
     /**
      * Additional attributes (ie. name=*)
-     *
-     * @var array|null
      */
     protected ?array $attributes = null;
     /**
      * CSS classes
-     *
-     * @var array|null
      */
     protected ?array $classes = null;
     /**
      * Sets as a selection action, that is, to be displayed on a selection menu
-     *
-     * @var bool
      */
     protected bool $isSelection = false;
 
     /**
      * DataGridActionBase constructor.
-     *
-     * @param int|null $id EL id de la acción
      */
     public function __construct(?int $id = null)
     {
@@ -146,8 +108,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Devolver el método reflexivo que determina si se muestra la acción
-     *
-     * @return callable|null
      */
     public function getRuntimeFilter(): ?callable
     {
@@ -157,17 +117,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * Establecer el método reflexivo que determina si se muestra la acción
      *
-     * @param string $class
-     * @param string $method
-     *
-     * @return $this
      * @throws RuntimeException
      */
     public function setRuntimeFilter(string $class, string $method): DataGridActionInterface
     {
         if (method_exists($class, $method)) {
             $this->runtimeFilter = static function ($filter) use ($method) {
-//                new \ReflectionMethod($class, $method);
                 return $filter->{$method}();
             };
         } else {
@@ -177,19 +132,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param $name string
-     *
-     * @return $this
-     */
     public function setName(string $name): DataGridActionInterface
     {
         $this->name = $name;
@@ -197,39 +144,23 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return $this
-     */
-    public function setId(string $id): DataGridActionBase
+    public function setId(int $id): DataGridActionBase
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param $title string
-     *
-     * @return $this
-     */
     public function setTitle(string $title): DataGridActionBase
     {
         $this->title = $title;
@@ -237,11 +168,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @param $function string
-     *
-     * @return $this
-     */
     public function setOnClickFunction(string $function): DataGridActionBase
     {
         $this->onClickFunction = $function;
@@ -249,11 +175,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @param $args string
-     *
-     * @return $this
-     */
     public function setOnClickArgs(string $args): DataGridActionBase
     {
         if ($this->onClickArgs === null) {
@@ -265,42 +186,27 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getOnClick(): ?string
     {
         if ($this->onClickArgs !== null) {
-
             $args = array_map(
-                static function ($value) {
-                    return (!is_numeric($value) && $value !== 'this') ? '\'' . $value . '\'' : $value;
-                },
+                static fn($value) => (!is_numeric($value) && $value !== 'this') ? sprintf('\'%s\'', $value) : $value,
                 $this->onClickArgs
             );
 
             return count($args) > 0
-                ? $this->onClickFunction . '(' . implode(',', $args) . ')'
+                ? sprintf('%s(%s)', $this->onClickFunction, implode(',', $args))
                 : $this->onClickFunction;
         }
 
         return $this->onClickFunction;
-
     }
 
-    /**
-     * @return IconInterface|null
-     */
     public function getIcon(): ?IconInterface
     {
         return $this->icon;
     }
 
-    /**
-     * @param $icon IconInterface
-     *
-     * @return $this
-     */
     public function setIcon(IconInterface $icon): DataGridActionBase
     {
         $this->icon = $icon;
@@ -308,11 +214,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @param $skip bool
-     *
-     * @return $this
-     */
     public function setSkip(bool $skip): DataGridActionBase
     {
         $this->isSkip = $skip;
@@ -320,27 +221,16 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function isSkip(): ?bool
     {
         return $this->isSkip;
     }
 
-    /**
-     * @return bool|null
-     */
     public function isHelper(): ?bool
     {
         return $this->isHelper;
     }
 
-    /**
-     * @param bool $helper
-     *
-     * @return $this
-     */
     public function setIsHelper(bool $helper): DataGridActionBase
     {
         $this->isHelper = $helper;
@@ -348,9 +238,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getFilterRowSource(): ?array
     {
         return $this->filterRowSource;
@@ -359,12 +246,9 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * Filtro para mostrar la acción
      *
-     * @param       $rowSource string
-     * @param mixed $value     Valor a filtrar
-     *
      * @return $this
      */
-    public function setFilterRowSource(string $rowSource, $value = 1): DataGridActionBase
+    public function setFilterRowSource(string $rowSource, mixed $value = 1): DataGridActionBase
     {
         if ($this->filterRowSource === null) {
             $this->filterRowSource = [];
@@ -375,19 +259,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return int El tipo de acción
-     */
     public function getType(): ?int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type El tipo de acción definido en DataGridActionType
-     *
-     * @return $this
-     */
     public function setType(int $type): DataGridActionBase
     {
         $this->type = $type;
@@ -395,19 +271,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getData(): array
+    public function getData(): ?array
     {
         return $this->data;
     }
 
-    /**
-     * @param array $data Los datos de los atributos
-     *
-     * @return $this
-     */
     public function setData(array $data): DataGridActionInterface
     {
         $this->data = $data;
@@ -417,13 +285,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Añadir nuevo atributo de datos
-     *
-     * @param string $name El nombe del atributo
-     * @param mixed  $data Los datos del atributo
-     *
-     * @return $this
      */
-    public function addData(string $name, $data): DataGridActionBase
+    public function addData(string $name, mixed $data): DataGridActionBase
     {
         if ($this->data === null) {
             $this->data = [];
@@ -434,9 +297,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getAttributes(): array
     {
         return (array)$this->attributes;
@@ -444,10 +304,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Establecer atributos
-     *
-     * @param array $attributes Los datos de los atributos
-     *
-     * @return $this
      */
     public function setAttributes(array $attributes): DataGridActionInterface
     {
@@ -458,13 +314,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Añadir nuevo atributo
-     *
-     * @param string $name El nombe del atributo
-     * @param mixed  $value
-     *
-     * @return $this
      */
-    public function addAttribute(string $name, $value): DataGridActionBase
+    public function addAttribute(string $name, mixed $value): DataGridActionBase
     {
         if ($this->attributes === null) {
             $this->attributes = [];
@@ -477,8 +328,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Returns classes as a string
-     *
-     * @return string|null
      */
     public function getClassesAsString(): ?string
     {
@@ -491,8 +340,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Returns classes
-     *
-     * @return array
      */
     public function getClasses(): array
     {
@@ -501,22 +348,16 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Set classes
-     *
-     * @param array $classes
      */
-    public function setClasses(array $classes)
+    public function setClasses(array $classes): void
     {
         $this->classes = $classes;
     }
 
     /**
      * Adds a new class
-     *
-     * @param mixed $value
-     *
-     * @return $this
      */
-    public function addClass($value): DataGridActionInterface
+    public function addClass(mixed $value): DataGridActionInterface
     {
         if ($this->classes === null) {
             $this->classes = [];
@@ -529,19 +370,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Returns if the action is used for selecting multiple items
-     *
-     * @return bool
      */
     public function isSelection(): bool
     {
         return $this->isSelection;
     }
 
-    /**
-     * @param bool $isSelection
-     *
-     * @return DataGridActionBase
-     */
     public function setIsSelection(bool $isSelection): DataGridActionBase
     {
         $this->isSelection = $isSelection;
@@ -549,9 +383,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    /**
-     * @return callable|null
-     */
     public function getRuntimeData(): ?callable
     {
         return $this->runtimeData;
@@ -559,10 +390,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Sets the runtime data function
-     *
-     * @param callable $function
-     *
-     * @return $this
      */
     public function setRuntimeData(callable $function): DataGridActionBase
     {

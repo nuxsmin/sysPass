@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,6 @@
 
 namespace SP\Html\DataGrid\Action;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridActionSearch para definir una acción de búsqueda de datos
  *
@@ -33,22 +31,15 @@ defined('APP_ROOT') || die();
  */
 final class DataGridActionSearch extends DataGridActionBase
 {
-    /**
-     * @var string
-     */
     private string $onSubmitFunction = '';
 
     /**
      * Los argumentos de la función OnSubmit
-     *
-     * @var array
      */
     private array $onSubmitArgs = [];
 
     /**
      * DataGridActionSearch constructor.
-     *
-     * @param int|null $id EL id de la acción
      */
     public function __construct(?int $id = null)
     {
@@ -57,9 +48,6 @@ final class DataGridActionSearch extends DataGridActionBase
         $this->setSkip(true);
     }
 
-    /**
-     * @return string
-     */
     public function getOnSubmit(): string
     {
         $args = [];
@@ -71,23 +59,12 @@ final class DataGridActionSearch extends DataGridActionBase
         }
 
         return count($args) > 0
-            ? 'return ' . $this->onSubmitFunction . '(' . implode(',', $args) . ');'
+            ? sprintf('return %s(%s);', $this->onSubmitFunction, implode(',', $args))
             : $this->onSubmitFunction;
     }
 
-    /**
-     * @param string $onSubmitFunction
-     */
     public function setOnSubmitFunction(string $onSubmitFunction): void
     {
         $this->onSubmitFunction = $onSubmitFunction;
-    }
-
-    /**
-     * @param array $args
-     */
-    public function setOnSubmitArgs(array $args): void
-    {
-        $this->onSubmitArgs[] = $args;
     }
 }

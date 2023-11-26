@@ -24,12 +24,8 @@
 
 namespace SP\Html\Assets;
 
-defined('APP_ROOT') || die();
-
 /**
  * Interface IconInterface
- *
- * @package SP\Html\Assets
  */
 interface IconInterface
 {

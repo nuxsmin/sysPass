@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,8 @@
 
 namespace SP\Html\Assets;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class FontIcon para crear los iconos de la matriz
- *
- * @package SP\Html\Assets
  */
 final class FontIcon extends IconBase
 {

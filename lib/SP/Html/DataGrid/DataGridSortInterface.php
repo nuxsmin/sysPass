@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,9 +26,6 @@ namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
 
-defined('APP_ROOT') || die();
-
-
 /**
  * Interface DataGridSortInterface para la definicíon de campos de ordenación
  *
@@ -36,63 +33,27 @@ defined('APP_ROOT') || die();
  */
 interface DataGridSortInterface
 {
-    /**
-     * @return int
-     */
     public function getSortKey(): int;
 
-    /**
-     * @param $key int
-     */
     public function setSortKey(int $key): DataGridSortInterface;
 
-    /**
-     * @return string
-     */
     public function getTitle(): string;
 
-    /**
-     * @param $title string
-     */
     public function setTitle(string $title): DataGridSortInterface;
 
-    /**
-     * @return string
-     */
     public function getName(): string;
 
-    /**
-     * @param $name string
-     */
     public function setName(string $name): DataGridSortInterface;
 
-    /**
-     * @return string
-     */
     public function getClass(): string;
 
-    /**
-     * @param $class string
-     */
     public function setClass(string $class): DataGridSortInterface;
 
-    /**
-     * @return IconInterface|null
-     */
     public function getIconUp(): ?IconInterface;
 
-    /**
-     * @param IconInterface $icon
-     */
     public function setIconUp(IconInterface $icon): DataGridSortInterface;
 
-    /**
-     * @return IconInterface|null
-     */
     public function getIconDown(): ?IconInterface;
 
-    /**
-     * @param IconInterface $icon
-     */
     public function setIconDown(IconInterface $icon): DataGridSortInterface;
 }

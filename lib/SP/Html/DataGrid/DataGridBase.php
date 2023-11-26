@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,16 +24,16 @@
 
 namespace SP\Html\DataGrid;
 
-defined('APP_ROOT') || die();
-
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
-use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
-use SP\Html\DataGrid\Layout\DataGridHeaderSort;
 use SP\Html\DataGrid\Layout\DataGridPagerBase;
 use SP\Html\DataGrid\Layout\DataGridPagerInterface;
+
+use function SP\__;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class DataGridBase para crear una matriz de datos
@@ -44,115 +44,76 @@ abstract class DataGridBase implements DataGridInterface
 {
     /**
      * Tiempo de ejecución
-     *
-     * @var int
      */
     protected int $time = 0;
     /**
      * El id de la matriz
-     *
-     * @var string
      */
     protected string $id = '';
     /**
      * La cabecera de la matriz
-     *
-     * @var DataGridHeaderInterface|null
      */
     protected ?DataGridHeaderInterface $header = null;
     /**
      * Los datos de la matriz
-     *
-     * @var DataGridData|null
      */
     protected ?DataGridData $data = null;
-    /**
-     * El paginador
-     *
-     * @var DataGridPagerBase|null
-     */
     protected ?DataGridPagerBase $pager = null;
     /**
      * Las acciones asociadas a los elementos de la matriz
      *
      * @var DataGridActionInterface[]
      */
-    protected array $actions = [];
-    /**
-     * @var int
-     */
-    protected int $actionsCount = 0;
+    protected array $actions      = [];
+    protected int   $actionsCount = 0;
     /**
      * Las acciones asociadas a los elementos de la matriz que se muestran en un menú
      *
      * @var DataGridActionInterface[]
      */
-    protected array $actionsMenu = [];
-    /**
-     * @var int
-     */
-    protected int $actionsMenuCount = 0;
+    protected array $actionsMenu      = [];
+    protected int   $actionsMenuCount = 0;
     /**
      * La acción a realizar al cerrar la matriz
-     *
-     * @var int
      */
     protected int $onCloseAction = 0;
     /**
      * La plantilla a utilizar para presentar la cabecera
-     *
-     * @var string|null
      */
     protected ?string $headerTemplate = null;
     /**
      * La plantilla a utilizar para presentar las acciones
-     *
-     * @var string|null
      */
     protected ?string $actionsTemplate = null;
     /**
      * La plantilla a utilizar para presentar el paginador
-     *
-     * @var string|null
      */
     protected ?string $pagerTemplate = null;
     /**
      * La plantilla a utilizar para presentar los datos
-     *
-     * @var string|null
      */
     protected ?string $rowsTemplate = null;
     /**
      * La plantilla a utilizar para presentar la tabla
-     *
-     * @var string|null
      */
-    protected ?string $tableTemplate = null;
-    protected ?ThemeInterface $theme = null;
+    protected ?string         $tableTemplate = null;
+    protected ?ThemeInterface $theme         = null;
 
     /**
      * DataGridBase constructor.
      *
-     * @param \SP\Domain\Core\UI\ThemeInterface $theme
+     * @param ThemeInterface $theme
      */
     public function __construct(ThemeInterface $theme)
     {
         $this->theme = $theme;
     }
 
-    /**
-     * @return int
-     */
-    public function getOnCloseAction()
+    public function getOnCloseAction(): int
     {
         return $this->onCloseAction;
     }
 
-    /**
-     * @param int $action
-     *
-     * @return $this
-     */
     public function setOnCloseAction(int $action): DataGridBase
     {
         $this->onCloseAction = $action;
@@ -160,19 +121,11 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param $id string
-     *
-     * @return $this
-     */
     public function setId(string $id): DataGridBase
     {
         $this->id = $id;
@@ -180,19 +133,11 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @return DataGridHeader|DataGridHeaderSort|DataGridHeaderInterface
-     */
     public function getHeader(): DataGridHeaderInterface
     {
         return $this->header;
     }
 
-    /**
-     * @param DataGridHeaderInterface $header
-     *
-     * @return $this
-     */
     public function setHeader(DataGridHeaderInterface $header): DataGridBase
     {
         $this->header = $header;
@@ -200,19 +145,11 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @return DataGridDataInterface
-     */
-    public function getData()
+    public function getData(): DataGridDataInterface
     {
         return $this->data;
     }
 
-    /**
-     * @param DataGridDataInterface $data
-     *
-     * @return $this
-     */
     public function setData(DataGridDataInterface $data): DataGridBase
     {
         $this->data = $data;
@@ -220,13 +157,7 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @param DataGridActionInterface $action
-     * @param bool                    $isMenu Añadir al menu de acciones
-     *
-     * @return $this
-     */
-    public function addDataAction(DataGridActionInterface $action, $isMenu = false): DataGridInterface
+    public function addDataAction(DataGridActionInterface $action, bool $isMenu = false): DataGridInterface
     {
         if ($isMenu === false) {
             $this->actions[] = $action;
@@ -253,9 +184,6 @@ abstract class DataGridBase implements DataGridInterface
         return $this->actions;
     }
 
-    /**
-     * @return $this
-     */
     public function getGrid(): DataGridInterface
     {
         return $this;
@@ -263,10 +191,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Establecer la plantilla utilizada para la cabecera
-     *
-     * @param string $template El nombre de la plantilla a utilizar
-     *
-     * @return $this
      */
     public function setDataHeaderTemplate(string $template): DataGridBase
     {
@@ -282,10 +206,6 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Comprobar si existe una plantilla y devolver la ruta completa
      *
-     * @param string      $template
-     * @param string|null $base
-     *
-     * @return string
      * @throws FileNotFoundException
      */
     protected function checkTemplate(string $template, ?string $base = null): string
@@ -305,8 +225,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Devolver la plantilla utilizada para la cabecera
-     *
-     * @return string
      */
     public function getDataHeaderTemplate(): string
     {
@@ -315,10 +233,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Establecer la plantilla utilizada para las acciones
-     *
-     * @param string $template El nombre de la plantilla a utilizar
-     *
-     * @return $this
      */
     public function setDataActionsTemplate(string $template): DataGridBase
     {
@@ -333,8 +247,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Devolver la plantilla utilizada para las acciones
-     *
-     * @return string|null
      */
     public function getDataActionsTemplate(): ?string
     {
@@ -343,11 +255,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Establecer la plantilla utilizada para el paginador
-     *
-     * @param string      $template El nombre de la plantilla a utilizar
-     * @param string|null $base
-     *
-     * @return $this
      */
     public function setDataPagerTemplate(string $template, ?string $base = null): DataGridBase
     {
@@ -362,20 +269,12 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Devolver la plantilla utilizada para el paginador
-     *
-     * @return string|null
      */
     public function getDataPagerTemplate(): ?string
     {
         return $this->pagerTemplate;
     }
 
-    /**
-     * @param string      $template El nombre de la plantilla a utilizar
-     * @param string|null $base
-     *
-     * @return \SP\Html\DataGrid\DataGridBase
-     */
     public function setDataRowTemplate(string $template, ?string $base = null): DataGridBase
     {
         try {
@@ -387,9 +286,6 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataRowTemplate(): ?string
     {
         return $this->rowsTemplate;
@@ -397,8 +293,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Devolver el paginador
-     *
-     * @return DataGridPagerInterface|null
      */
     public function getPager(): ?DataGridPagerInterface
     {
@@ -407,10 +301,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * Establecer el paginador
-     *
-     * @param DataGridPagerInterface $pager
-     *
-     * @return $this
      */
     public function setPager(DataGridPagerInterface $pager): DataGridBase
     {
@@ -431,20 +321,12 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTime(): int
     {
         return abs($this->time);
     }
 
-    /**
-     * @param int|float $time
-     *
-     * @return $this
-     */
-    public function setTime($time): DataGridInterface
+    public function setTime(int|float $time): DataGridInterface
     {
         $this->time = $time;
 
@@ -464,11 +346,9 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Devolver las acciones filtradas
      *
-     * @param $filter
-     *
      * @return DataGridActionInterface[]
      */
-    public function getDataActionsFiltered($filter): array
+    public function getDataActionsFiltered(mixed $filter): array
     {
         $actions = [];
 
@@ -484,11 +364,9 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Devolver las acciones de menu filtradas
      *
-     * @param $filter
-     *
      * @return DataGridActionInterface[]
      */
-    public function getDataActionsMenuFiltered($filter): array
+    public function getDataActionsMenuFiltered(mixed $filter): array
     {
         $actions = [];
 
@@ -501,42 +379,16 @@ abstract class DataGridBase implements DataGridInterface
         return $actions;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataTableTemplate(): ?string
     {
         return $this->tableTemplate;
     }
 
-    /**
-     * @param      $template
-     * @param null $base
-     *
-     * @return DataGridBase
-     */
-    public function setDataTableTemplate($template, $base = null): DataGridBase
-    {
-        try {
-            $this->tableTemplate = $this->checkTemplate($template, $base);
-        } catch (FileNotFoundException $e) {
-            processException($e);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getDataActionsMenuCount(): int
     {
         return $this->actionsMenuCount;
     }
 
-    /**
-     * @return int
-     */
     public function getDataActionsCount(): int
     {
         return $this->actionsCount;

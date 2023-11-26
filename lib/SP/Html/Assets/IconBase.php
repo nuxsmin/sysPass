@@ -26,12 +26,8 @@ namespace SP\Html\Assets;
 
 use function SP\__;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridIconBase para crear los iconos de la matriz
- *
- * @package SP\Html\DataGrid
  */
 abstract class IconBase implements IconInterface
 {

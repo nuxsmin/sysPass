@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,6 @@
 
 namespace SP\Html\DataGrid\Layout;
 
-defined('APP_ROOT') || die();
-
-use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\DataGridSortInterface;
 use SplObjectStorage;
 
@@ -37,55 +34,25 @@ use SplObjectStorage;
  */
 final class DataGridHeaderSort extends DataGridHeaderBase
 {
-    /**
-     * @var SplObjectStorage|DataGridActionInterface[]|null
-     */
-    private ?SplObjectStorage $actions = null;
+    private SplObjectStorage $sortFields;
 
-    /**
-     * @var SplObjectStorage|DataGridSortInterface[]|null
-     */
-    private ?SplObjectStorage $sortFields = null;
+    public function __construct()
+    {
+        $this->sortFields = new SplObjectStorage();
+    }
+
 
     /**
      * @return DataGridSortInterface[]|null
      */
-    public function getSortFields(): ?object
+    public function getSortFields(): ?SplObjectStorage
     {
         return $this->sortFields;
     }
 
-    /**
-     * @return DataGridActionInterface[]|null
-     */
-    public function getActions(): ?object
-    {
-        return $this->actions;
-    }
 
-    /**
-     * @param DataGridActionInterface $action
-     */
-    public function addAction(DataGridActionInterface $action): void
-    {
-        if (null === $this->actions) {
-            $this->actions = new SplObjectStorage();
-        }
-
-        $this->actions->attach($action);
-    }
-
-    /**
-     * @param DataGridSortInterface $field
-     *
-     * @return $this
-     */
     public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
     {
-        if (null === $this->sortFields) {
-            $this->sortFields = new SplObjectStorage();
-        }
-
         $this->sortFields->attach($field);
 
         return $this;

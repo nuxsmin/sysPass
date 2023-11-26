@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,9 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Core\Exceptions\SPException;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class DataGridDataBase para establecer el origen de datos de la matriz
@@ -38,54 +37,33 @@ abstract class DataGridDataBase implements DataGridDataInterface
 {
     /**
      * Los datos de la matriz
-     *
-     * @var array
      */
     private array $data = [];
     /**
      * Las columnas a mostrar de los datos obtenidos
-     *
-     * @var array
      */
     private array $sources = [];
     /**
      * La columna que identifica cada elemento de los datos de la matriz
-     *
-     * @var string
      */
     private string $sourceId = '';
     /**
      * Las columnas a mostrar de los datos obtenidos que son representadas con iconos
-     *
-     * @var array
      */
     private array $sourcesWithIcon = [];
-    /**
-     * @var int
-     */
     private int $dataCount = 0;
 
-    /**
-     * @return array
-     */
     public function getDataRowSourcesWithIcon(): array
     {
         return $this->sourcesWithIcon;
     }
 
-    /**
-     * @param string        $source
-     * @param bool          $isMethod
-     * @param callable|null $filter
-     * @param bool          $truncate
-     */
     public function addDataRowSource(
         string    $source,
         ?bool     $isMethod = false,
         ?callable $filter = null,
         ?bool     $truncate = true
-    ): void
-    {
+    ): void {
         $this->sources[] = [
             'name' => $source,
             'isMethod' => (bool)$isMethod,
@@ -94,40 +72,28 @@ abstract class DataGridDataBase implements DataGridDataInterface
         ];
     }
 
-    /**
-     * @param $id string
-     */
     public function setDataRowSourceId(string $id): void
     {
         $this->sourceId = $id;
     }
 
-    /**
-     * @return array
-     */
     public function getDataRowSources(): array
     {
         return $this->sources;
     }
 
-    /**
-     * @return string
-     */
     public function getDataRowSourceId(): string
     {
         return $this->sourceId;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
     /**
-     * @param QueryResult $queryResult
+     * @throws SPException
      */
     public function setData(QueryResult $queryResult): void
     {
@@ -135,17 +101,11 @@ abstract class DataGridDataBase implements DataGridDataInterface
         $this->data = $queryResult->getDataAsArray();
     }
 
-    /**
-     * @param string        $source
-     * @param IconInterface $icon
-     * @param mixed         $value Valor para mostrar el icono
-     */
     public function addDataRowSourceWithIcon(
         string        $source,
         IconInterface $icon,
         int           $value = 1
-    ): void
-    {
+    ): void {
         $this->sourcesWithIcon[] = [
             'field' => $source,
             'icon' => $icon,
@@ -153,11 +113,6 @@ abstract class DataGridDataBase implements DataGridDataInterface
         ];
     }
 
-    /**
-     * Devolver el número de elementos obtenidos
-     *
-     * @return int
-     */
     public function getDataCount(): int
     {
         return $this->dataCount;

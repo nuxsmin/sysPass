@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,8 +27,6 @@ namespace SP\Html\DataGrid;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
 
-defined('APP_ROOT') || die();
-
 /**
  * Interface DataGridDataInterface
  *
@@ -38,11 +36,6 @@ interface DataGridDataInterface
 {
     /**
      * Establecer los orígenes de datos de la consulta
-     *
-     * @param string        $source
-     * @param bool          $isMethod
-     * @param callable|null $filter
-     * @param bool          $truncate
      */
     public function addDataRowSource(
         string   $source,
@@ -53,45 +46,31 @@ interface DataGridDataInterface
 
     /**
      * Devolver los orígenes de datos de la consulta
-     *
-     * @return array
      */
     public function getDataRowSources(): array;
 
     /**
      * Establecer el origen de datos utilizado como Id de los elementos
-     *
-     * @param $id string
      */
     public function setDataRowSourceId(string $id): void;
 
     /**
      * Devolver el origen de datos utilizado como Id de los elementos
-     *
-     * @return string
      */
     public function getDataRowSourceId(): string;
 
     /**
      * Establecer los datos de la consulta
-     *
-     * @param QueryResult $queryResult
      */
     public function setData(QueryResult $queryResult): void;
 
     /**
      * Devolver los datos de la consulta
-     *
-     * @return array
      */
     public function getData(): array;
 
     /**
      * Establecer los orígenes de datos que se muestran con iconos
-     *
-     * @param       $source string
-     * @param       $icon   IconInterface
-     * @param mixed $value  Valor para mostrar el icono
      */
     public function addDataRowSourceWithIcon(
         string        $source,
@@ -101,15 +80,11 @@ interface DataGridDataInterface
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos
-     *
-     * @return array
      */
     public function getDataRowSourcesWithIcon(): array;
 
     /**
      * Devolver el número de elementos obtenidos
-     *
-     * @return int
      */
     public function getDataCount(): int;
 }

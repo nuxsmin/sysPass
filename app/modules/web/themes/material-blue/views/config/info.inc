@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
@@ -35,11 +35,13 @@
     <?php
 
     use SP\Domain\Config\Ports\ConfigDataInterface;
+    use SP\Domain\Core\UI\ThemeIconsInterface;
     use SP\Domain\Install\Services\InstallerService;
-    use SP\Html\Html;
     use SP\Mvc\View\TemplateInterface;
     use SP\Plugin\PluginInterface;
     use SP\Util\VersionUtil;
+
+    use function SP\__;
 
     echo __('Application Information'); ?>
 </div>
@@ -56,9 +58,9 @@
 
             <?php
             printf(
-                '%s (%s)',
+                '%s (<b>%s</b>)',
                 InstallerService::VERSION_TEXT,
-                Html::strongText(VersionUtil::getVersionStringNormalized())
+                VersionUtil::getVersionStringNormalized()
             ); ?>
             <br>
             <?php
@@ -83,12 +85,12 @@
             <?php
             foreach ($_getvar('dbInfo') as $infoattr => $infoval): ?>
                 <?php
-                printf('%s : %s', Html::strongText($infoattr), $infoval); ?>
+                printf('<b>%s</b> : %s', $infoattr, $infoval); ?>
                 <br>
             <?php
             endforeach; ?>
             <?php
-            printf('%s: %s', Html::strongText(__('Name')), (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'); ?>
+            printf('<b>%s</b>: %s', __('Name'), (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'); ?>
         </td>
     </tr>
     <tr>
@@ -101,40 +103,38 @@
                 echo __('PHP'); ?></div>
 
             <?php
-            printf('%s: %s', Html::strongText(__('Version')), PHP_VERSION); ?>
+            printf('<b>%s</b>: %s', __('Version'), PHP_VERSION); ?>
             <br>
             <?php
-            printf('%s: %s', Html::strongText(__('Extensions')), implode(', ', get_loaded_extensions())); ?>
+            printf('<b>%s</b>: %s', __('Extensions'), implode(', ', get_loaded_extensions())); ?>
             <br>
             <?php
             if (!empty($_getvar('missingExtensions'))) {
                 printf(
-                    '%s: %s',
-                    Html::strongText(__('Unavailable extensions')),
+                    '<b>%s</b>: %s',
+                    __('Unavailable extensions'),
                     implode(', ', $_getvar('missingExtensions'))
                 );
                 echo '<br>';
             }
             ?>
             <?php
-            printf('%s: %d KB', Html::strongText(__('Used Memory')), (memory_get_usage(true) / 1024)); ?>
+            printf('<b>%s</b>: %d KB', __('Used Memory'), (memory_get_usage(true) / 1024)); ?>
             <br>
             <?php
-            printf('%s: %s', Html::strongText(__('User')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
+            printf('<b>%s</b>: %s', __('User'), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
             <br>
             <?php
-            printf('%s: %d MB/s', Html::strongText(__('Download rate')), $_getvar('downloadRate')); ?>
+            printf('<b>%s</b>: %d MB/s', __('Download rate'), $_getvar('downloadRate')); ?>
             <?php
             if (function_exists('opcache_get_status') && PHP_VERSION_ID >= 50600): ?>
                 <br>
                 <?php
-                echo Html::strongText(__('OP Cache')); ?>
-                <?php
-                foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value): ?>
-                    <br><?php
-                    printf('%s : %s', $key, $value); ?>
-                <?php
-                endforeach; ?>
+                printf('<b>%s</b>', __('OP Cache'));
+                foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value):
+                    printf('<br/>%s : %s', $key, $value);
+                endforeach;
+                ?>
             <?php
             endif; ?>
         </td>
@@ -146,10 +146,11 @@
         </td>
         <td class="valField">
             <div class="lowres-title"><?php
-                echo __('Server'); ?></div>
-
+                echo __('Server'); ?>
+            </div>
             <?php
-            echo (!$_getvar('isDemo')) ? Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
+            printf('<b>%s</b>', !$_getvar('isDemo') ? $_SERVER['SERVER_SOFTWARE'] : '***');
+            ?>
         </td>
     </tr>
     <tr>

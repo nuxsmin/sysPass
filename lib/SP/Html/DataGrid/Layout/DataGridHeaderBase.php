@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,6 @@
 
 namespace SP\Html\DataGrid\Layout;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridHeaderBase para establecer las cabeceras de la matriz
  *
@@ -35,20 +33,13 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
 {
     /**
      * Las cabeceras que identifican las columnas de datos
-     *
-     * @var array
      */
     private array $headers = [];
     /**
      * El ancho de las columnas
-     *
-     * @var int
      */
     private int $width = 0;
 
-    /**
-     * @param $header string
-     */
     public function addHeader(string $header): void
     {
         $this->headers[] = $header;
@@ -57,17 +48,11 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
         $this->width = ($numHeaders > 0) ? floor(65 / $numHeaders) : 65;
     }
 
-    /**
-     * @return int
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @return array
-     */
     public function getHeaders(): array
     {
         return $this->headers;

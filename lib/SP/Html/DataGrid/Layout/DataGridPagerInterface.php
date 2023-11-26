@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,6 @@ namespace SP\Html\DataGrid\Layout;
 
 use SP\Html\Assets\IconInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
-
-defined('APP_ROOT') || die();
 
 /**
  * Interface DataGridPagerInterface para la definición del paginador

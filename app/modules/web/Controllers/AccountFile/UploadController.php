@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -32,7 +33,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Domain\Account\Ports\AccountFileServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Html\Html;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
@@ -53,8 +53,8 @@ final class UploadController extends ControllerBase
     private AccountServiceInterface     $accountService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
+        Application             $application,
+        WebControllerHelper     $webControllerHelper,
         AccountFileServiceInterface $accountFileService,
         AccountServiceInterface $accountService
     ) {
@@ -69,10 +69,10 @@ final class UploadController extends ControllerBase
     /**
      * Upload action
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function uploadAction(int $accountId): bool
     {
@@ -94,7 +94,7 @@ final class UploadController extends ControllerBase
 
                 $fileData = new FileData();
                 $fileData->setAccountId($accountId);
-                $fileData->setName(Html::sanitize($file['name']));
+                $fileData->setName(htmlspecialchars($file['name'], ENT_QUOTES));
                 $fileData->setSize($file['size']);
                 $fileData->setType($file['type']);
                 $fileData->setExtension(mb_strtoupper(pathinfo($fileData->getName(), PATHINFO_EXTENSION)));
@@ -135,12 +135,12 @@ final class UploadController extends ControllerBase
                 new Event(
                     $this,
                     EventMessage::factory()
-                        ->addDescription(__u('File saved'))
-                        ->addDetail(__u('File'), $fileData->getName())
-                        ->addDetail(__u('Account'), $account->getName())
-                        ->addDetail(__u('Client'), $account->getClientName())
-                        ->addDetail(__u('Type'), $fileData->getType())
-                        ->addDetail(__u('Size'), $fileData->getRoundSize().'KB')
+                                ->addDescription(__u('File saved'))
+                                ->addDetail(__u('File'), $fileData->getName())
+                                ->addDetail(__u('Account'), $account->getName())
+                                ->addDetail(__u('Client'), $account->getClientName())
+                                ->addDetail(__u('Type'), $fileData->getType())
+                                ->addDetail(__u('Size'), $fileData->getRoundSize() . 'KB')
                 )
             );
 
@@ -161,8 +161,8 @@ final class UploadController extends ControllerBase
     }
 
     /**
-     * @param  FileData  $fileData
-     * @param  FileHandlerInterface  $fileHandler
+     * @param FileData $fileData
+     * @param FileHandlerInterface $fileHandler
      *
      * @return string
      * @throws SPException

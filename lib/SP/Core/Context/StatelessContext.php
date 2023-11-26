@@ -38,21 +38,14 @@ class StatelessContext extends ContextBase
 {
     /**
      * Establece los datos del usuario en la sesión.
-     *
-     * @param UserLoginResponse|null $userLoginResponse
      */
-    public function setUserData(UserLoginResponse $userLoginResponse = null): void
+    public function setUserData(?UserLoginResponse $userLoginResponse = null): void
     {
         $this->setContextKey('userData', $userLoginResponse);
     }
 
     /**
-     * Establecer una variable de sesión
-     *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
-     *
-     * @return mixed
+     * Set a context variable and its value
      */
     protected function setContextKey(string $key, mixed $value): mixed
     {
@@ -67,8 +60,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
-     *
-     * @return ProfileData|null
      */
     public function getUserProfile(): ?ProfileData
     {
@@ -76,14 +67,9 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * Devolver una variable de sesión
-     *
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
+     * Return a context variable's value
      */
-    protected function getContextKey(string $key, $default = null): mixed
+    protected function getContextKey(string $key, mixed $default = null): mixed
     {
         try {
             return parent::getContextKey($key, $default);
@@ -96,8 +82,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Establece el objeto de perfil de usuario en la sesión.
-     *
-     * @param ProfileData $profileData
      */
     public function setUserProfile(ProfileData $profileData): void
     {
@@ -106,8 +90,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Returns if user is logged in
-     *
-     * @return bool
      */
     public function isLoggedIn(): bool
     {
@@ -116,8 +98,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Devuelve los datos del usuario en la sesión.
-     *
-     * @return UserLoginResponse
      */
     public function getUserData(): UserLoginResponse
     {
@@ -167,7 +147,6 @@ class StatelessContext extends ContextBase
     }
 
     /**
-     * @return void
      * @throws ContextException
      */
     public function initialize(): void
@@ -177,8 +156,6 @@ class StatelessContext extends ContextBase
 
     /**
      * Establecer la hora de carga de la configuración
-     *
-     * @param int $time
      */
     public function setConfigTime(int $time): void
     {
@@ -187,17 +164,12 @@ class StatelessContext extends ContextBase
 
     /**
      * Devolver la hora de carga de la configuración
-     *
-     * @return int
      */
     public function getConfigTime(): int
     {
         return $this->getContextKey('configTime');
     }
 
-    /**
-     * @return array|null
-     */
     public function getAccountsCache(): ?array
     {
         return $this->getContextKey('accountsCache');
@@ -206,8 +178,6 @@ class StatelessContext extends ContextBase
     /**
      * Sets a temporary master password
      *
-     * @param string $password
-     *
      * @throws ContextException
      */
     public function setTemporaryMasterPass(string $password): void
@@ -215,13 +185,6 @@ class StatelessContext extends ContextBase
         $this->setTrasientKey('_tempmasterpass', $password);
     }
 
-    /**
-     * @param string $pluginName
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return mixed
-     */
     public function setPluginKey(string $pluginName, string $key, mixed $value): mixed
     {
         $ctxKey = $this->getContextKey('plugins');
@@ -231,12 +194,6 @@ class StatelessContext extends ContextBase
         return $value;
     }
 
-    /**
-     * @param string $pluginName
-     * @param string $key
-     *
-     * @return mixed
-     */
     public function getPluginKey(string $pluginName, string $key): mixed
     {
         $ctxKey = $this->getContextKey('plugins');

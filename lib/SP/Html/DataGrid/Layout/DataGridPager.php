@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,8 +23,6 @@
  */
 
 namespace SP\Html\DataGrid\Layout;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class DataGridPager

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,6 @@
 
 namespace SP\Html\DataGrid\Action;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridActionType para definir los tipos de acciones
  *
@@ -34,10 +32,10 @@ defined('APP_ROOT') || die();
 interface DataGridActionType
 {
     public const MENUBAR_ITEM = 1;
-    public const VIEW_ITEM = 2;
-    public const EDIT_ITEM = 3;
+    public const VIEW_ITEM   = 2;
+    public const EDIT_ITEM   = 3;
     public const DELETE_ITEM = 4;
     public const SEARCH_ITEM = 5;
     public const SELECT_ITEM = 6;
-    public const HELP_ITEM = 7;
+    public const HELP_ITEM   = 7;
 }

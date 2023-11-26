@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,6 @@
 
 namespace SP\Html\DataGrid;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class DataGridTab para crear una matriz de datos a usar en pestañas
  *
@@ -35,24 +33,14 @@ final class DataGridTab extends DataGridBase
 {
     /**
      * Título de la pestaña
-     *
-     * @var string
      */
     private string $title = '';
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param $title string
-     *
-     * @return DataGridTab
-     */
     public function setTitle(string $title): DataGridTab
     {
         $this->title = $title;
