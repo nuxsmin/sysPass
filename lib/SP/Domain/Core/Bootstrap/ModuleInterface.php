@@ -22,13 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Bootstrap\BootstrapApi;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
+namespace SP\Domain\Core\Bootstrap;
 
-const APP_ROOT = __DIR__;
-const APP_MODULE = 'api';
-
-$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
-
-BootstrapApi::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
+/**
+ * Interface ModuleInterface
+ */
+interface ModuleInterface
+{
+    public function initialize(string $controller): void;
+}

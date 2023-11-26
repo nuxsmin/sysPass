@@ -22,13 +22,38 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Bootstrap\BootstrapApi;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
+namespace SP\Domain\Core\Bootstrap;
 
-const APP_ROOT = __DIR__;
-const APP_MODULE = 'api';
+/**
+ * Class RouteContextData
+ */
+final class RouteContextData
+{
+    public function __construct(
+        private readonly string $controller,
+        private readonly string $actionName,
+        private readonly string $methodName,
+        private readonly array  $methodParams
+    ) {
+    }
 
-$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
+    public function getController(): string
+    {
+        return $this->controller;
+    }
 
-BootstrapApi::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
+    public function getActionName(): string
+    {
+        return $this->actionName;
+    }
+
+    public function getMethodName(): string
+    {
+        return $this->methodName;
+    }
+
+    public function getMethodParams(): array
+    {
+        return $this->methodParams;
+    }
+}

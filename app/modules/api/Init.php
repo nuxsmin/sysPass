@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -42,6 +42,8 @@ use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Util\HttpUtil;
 
+use function SP\logger;
+
 /**
  * Class Init
  */
@@ -51,12 +53,12 @@ final class Init extends HttpModuleBase
     private DatabaseUtil $databaseUtil;
 
     public function __construct(
-        Application $application,
-        ProvidersHelper $providersHelper,
+        Application      $application,
+        ProvidersHelper  $providersHelper,
         RequestInterface $request,
-        Klein $router,
+        Klein            $router,
         LanguageInterface $language,
-        DatabaseUtil $databaseUtil
+        DatabaseUtil     $databaseUtil
     ) {
         parent::__construct(
             $application,

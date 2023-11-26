@@ -29,12 +29,11 @@ use Exception;
 use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
-use SP\Core\HttpModuleBase;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Modules\Web\Init as InitWeb;
 use SP\Util\Filter;
 
 use function SP\__;
@@ -46,24 +45,16 @@ use function SP\processException;
  */
 final class BootstrapWeb extends BootstrapBase
 {
-    private const ROUTE_REGEX = /** @lang RegExp */
-        '#(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#';
+    protected ModuleInterface $module;
 
-    protected HttpModuleBase $module;
-
-    public static function run(ContainerInterface $container): BootstrapWeb
+    public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void
     {
         logger('------------');
         logger('Boostrap:web');
 
         try {
-            /** @noinspection SelfClassReferencingInspection */
-            $bs = $container->get(BootstrapWeb::class);
-            $bs->module = $container->get(InitWeb::class);
-
-            $bs->handleRequest();
-
-            return $bs;
+            $bootstrap->module = $initModule;
+            $bootstrap->handleRequest();
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
 
@@ -85,30 +76,24 @@ final class BootstrapWeb extends BootstrapBase
 
                 $route = Filter::getString($request->param('r', 'index/index'));
 
-                if (!preg_match_all(self::ROUTE_REGEX, $route, $matches)) {
-                    throw new RuntimeException(self::OOPS_MESSAGE);
-                }
+                $routeContextData = RouteContext::getRouteContextData($route);
 
-                $controllerName = $matches['controller'][0];
-                $actionName = empty($matches['actions'][0]) ? 'index' : $matches['actions'][0];
-                $methodName = sprintf('%sAction', $actionName);
-                $methodParams = empty($matches['params'][0])
-                    ? []
-                    : Filter::getArray(explode('/', trim($matches['params'][0], '/')));
-
-                $controllerClass = self::getClassFor($controllerName, $actionName);
+                $controllerClass = self::getClassFor(
+                    $routeContextData->getController(),
+                    $routeContextData->getActionName()
+                );
 
                 $this->initializePluginClasses();
 
-                if (!method_exists($controllerClass, $methodName)) {
-                    logger($controllerClass . '::' . $methodName);
+                if (!method_exists($controllerClass, $routeContextData->getMethodName())) {
+                    logger($controllerClass . '::' . $routeContextData->getMethodName());
 
                     $response->code(404);
 
                     throw new RuntimeException(self::OOPS_MESSAGE);
                 }
 
-                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $actionName);
+                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $routeContextData->getActionName());
 
                 $this->setCors($response);
 
@@ -120,15 +105,18 @@ final class BootstrapWeb extends BootstrapBase
                     sprintf(
                         'Routing call: %s::%s::%s',
                         $controllerClass,
-                        $methodName,
-                        print_r($methodParams, true)
+                        $routeContextData->getMethodName(),
+                        print_r($routeContextData->getMethodParams(), true)
                     )
                 );
 
                 $controller = $this->createObjectFor($controllerClass);
 
-                return call_user_func_array([$controller, $methodName], $methodParams);
-            } catch (SessionTimeout $sessionTimeout) {
+                return call_user_func_array(
+                    [$controller, $routeContextData->getMethodName()],
+                    $routeContextData->getMethodParams()
+                );
+            } catch (SessionTimeout) {
                 logger('Session timeout');
             } catch (Exception $e) {
                 processException($e);

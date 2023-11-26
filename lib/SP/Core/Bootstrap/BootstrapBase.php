@@ -37,6 +37,8 @@ use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -57,10 +59,8 @@ use function SP\processException;
 
 /**
  * Class BootstrapBase
- *
- * @package SP
  */
-abstract class BootstrapBase
+abstract class BootstrapBase implements BootstrapInterface
 {
     public const CONTEXT_ACTION_NAME = "_actionName";
 
@@ -146,7 +146,7 @@ abstract class BootstrapBase
 
     abstract protected function configureRouter(): void;
 
-    abstract public static function run(ContainerInterface $container): BootstrapBase;
+    abstract public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void;
 
     /**
      * @deprecated

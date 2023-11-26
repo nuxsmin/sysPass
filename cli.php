@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Modules\Cli\Init as InitCli;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
+
+use function SP\logger;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'cli';
 
-$dic = require APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Base.php';
+$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 logger('------------');
 logger('Boostrap:cli');
 
-$cli = $dic->get(InitCli::class);
+$cli = $dic->get(ModuleInterface::class);
 $cli->initialize('');

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web;
 
-use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use JsonException;
@@ -43,13 +42,13 @@ use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CsrfInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
 use SP\Domain\Crypt\Services\SecureSessionService;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -137,8 +136,7 @@ final class Init extends HttpModuleBase
     public const  ROUTE_UPGRADE                   = 'upgrade';
 
 
-    private Csrf           $csrf;
-    private ThemeInterface $theme;
+    private Csrf $csrf;
     private Language             $language;
     private SecureSessionService $secureSessionService;
     private PluginManager        $pluginManager;
@@ -153,7 +151,6 @@ final class Init extends HttpModuleBase
         RequestInterface                     $request,
         Klein                                $router,
         CsrfInterface                        $csrf,
-        ThemeInterface                       $theme,
         LanguageInterface                    $language,
         SecureSessionServiceInterface        $secureSessionService,
         PluginManager                        $pluginManager,
@@ -170,7 +167,6 @@ final class Init extends HttpModuleBase
         );
 
         $this->csrf = $csrf;
-        $this->theme = $theme;
         $this->language = $language;
         $this->secureSessionService = $secureSessionService;
         $this->pluginManager = $pluginManager;
@@ -392,7 +388,7 @@ final class Init extends HttpModuleBase
             ) {
                 try {
                     CryptSession::reKey($this->context);
-                } catch (CryptoException $e) {
+                } catch (CryptException $e) {
                     logger($e->getMessage());
 
                     SessionContext::restart();

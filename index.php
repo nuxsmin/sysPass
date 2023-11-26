@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,10 +23,12 @@
  */
 
 use SP\Core\Bootstrap\BootstrapWeb;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'web';
 
-$dic = require APP_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Base.php';
+$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
-BootstrapWeb::run($dic);
+BootstrapWeb::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));

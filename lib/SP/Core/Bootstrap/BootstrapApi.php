@@ -29,12 +29,11 @@ use Exception;
 use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\HttpModuleBase;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\JsonRpcResponse;
-use SP\Modules\Api\Init as InitApi;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 
 use function SP\logger;
 use function SP\processException;
@@ -45,20 +44,16 @@ use function SP\processException;
 final class BootstrapApi extends BootstrapBase
 {
 
-    protected HttpModuleBase $module;
+    protected ModuleInterface $module;
 
-    public static function run(ContainerInterface $container): BootstrapApi
+    public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void
     {
         logger('------------');
         logger('Boostrap:api');
 
         try {
-            /** @noinspection SelfClassReferencingInspection */
-            $bs = $container->get(BootstrapApi::class);
-            $bs->module = $container->get(InitApi::class);
-            $bs->handleRequest();
-
-            return $bs;
+            $bootstrap->module = $initModule;
+            $bootstrap->handleRequest();
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
 
@@ -88,7 +83,6 @@ final class BootstrapApi extends BootstrapBase
                 if (!method_exists($controllerClass, $method)) {
                     logger($controllerClass . '::' . $method);
 
-                    /** @var Response $response */
                     $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                     return $response->body(
@@ -112,7 +106,6 @@ final class BootstrapApi extends BootstrapBase
             } catch (Exception $e) {
                 processException($e);
 
-                /** @var Response $response */
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                 return $response->body(JsonRpcResponse::getResponseException($e, 0));

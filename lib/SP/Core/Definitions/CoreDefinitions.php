@@ -25,12 +25,15 @@
 namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
+use http\Exception\RuntimeException;
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
+use SP\Core\Bootstrap\BootstrapApi;
+use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Crypt\Crypt;
@@ -52,6 +55,8 @@ use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -80,6 +85,9 @@ use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
+use SP\Modules\Api\Init as InitApi;
+use SP\Modules\Cli\Init as InitCli;
+use SP\Modules\Web\Init as InitWeb;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Acl\AclHandler;
@@ -241,6 +249,29 @@ final class CoreDefinitions
                     get(RequestInterface::class)
                 ),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
+            BootstrapInterface::class => factory(static function (ContainerInterface $c) {
+                switch (APP_MODULE) {
+                    case 'web':
+                        return $c->get(BootstrapWeb::class);
+                    case 'api':
+                        return $c->get(BootstrapApi::class);
+                }
+
+                throw new RuntimeException(__u('Unknown module'));
+            }),
+            ModuleInterface::class => factory(static function (ContainerInterface $c) {
+                switch (APP_MODULE) {
+                    case 'web':
+                        return $c->get(InitWeb::class);
+                    case 'api':
+                        return $c->get(InitApi::class);
+                    case 'cli':
+                        return $c->get(InitCli::class);
+                }
+
+                throw new RuntimeException(__u('Unknown module'));
+            }),
+
         ];
     }
 }
