@@ -22,15 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Crypt;
 
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
+use SP\Core\Exceptions\CryptException;
 
 /**
  * Class Crypt
- *
- * @package SP\Core\Crypt
  */
 interface CryptInterface
 {
@@ -41,7 +40,7 @@ interface CryptInterface
      * @param  bool  $useAscii
      *
      * @return string|KeyProtectedByPassword
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function makeSecuredKey(string $password, bool $useAscii = true): KeyProtectedByPassword|string;
 
@@ -53,7 +52,7 @@ interface CryptInterface
      * @param  string|null  $password
      *
      * @return string
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function encrypt(string $data, Key|string $securedKey, ?string $password = null): string;
 
@@ -65,7 +64,7 @@ interface CryptInterface
      * @param  string|null  $password
      *
      * @return string
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function decrypt(
         string $data,

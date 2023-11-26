@@ -24,14 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Account\Adapters\AccountPassData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Http\RequestInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\View\TemplateInterface;
@@ -70,14 +77,14 @@ final class AccountPasswordHelper extends HelperBase
      * @param  bool  $useImage
      *
      * @return array
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Modules\Web\Controllers\Helpers\HelperException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws BadFormatException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
+     * @throws FileNotFoundException
+     * @throws HelperException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getPasswordView(
         AccountPassData $accountData,
@@ -131,13 +138,13 @@ final class AccountPasswordHelper extends HelperBase
      * @param  AccountPassData  $accountData
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     * @throws \SP\Modules\Web\Controllers\Helpers\HelperException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws BadFormatException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
+     * @throws HelperException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getPasswordClear(AccountPassData $accountData): string
     {

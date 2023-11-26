@@ -26,8 +26,9 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -44,7 +45,7 @@ final class EditController extends PublicLinkViewBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function editAction(int $id): bool
     {

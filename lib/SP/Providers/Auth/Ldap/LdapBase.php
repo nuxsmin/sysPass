@@ -26,10 +26,10 @@ namespace SP\Providers\Auth\Ldap;
 
 use Exception;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__u;
 

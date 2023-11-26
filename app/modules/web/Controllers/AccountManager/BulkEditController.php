@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
@@ -34,6 +34,7 @@ use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
@@ -53,7 +54,8 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 final class BulkEditController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountServiceInterface        $accountService;
     private AccountSearchServiceInterface  $accountSearchService;
@@ -90,7 +92,7 @@ final class BulkEditController extends ControllerBase
      * bulkEditAction
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function bulkEditAction(): bool
     {

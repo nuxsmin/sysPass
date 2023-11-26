@@ -26,16 +26,17 @@ namespace SP\Tests\Services\CustomField;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -66,7 +67,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDelete()
     {
@@ -192,7 +193,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdate()
     {

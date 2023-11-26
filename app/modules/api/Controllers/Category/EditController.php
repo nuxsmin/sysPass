@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 final class EditController extends CategoryBase
 {
@@ -68,8 +69,8 @@ final class EditController extends CategoryBase
     }
 
     /**
-     * @return \SP\DataModel\CategoryData
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return CategoryData
+     * @throws ServiceException
      */
     private function buildCategoryData(): CategoryData
     {

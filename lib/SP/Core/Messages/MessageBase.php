@@ -24,6 +24,9 @@
 
 namespace SP\Core\Messages;
 
+use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\MessageInterface;
+
 /**
  * Class MessageBase
  *

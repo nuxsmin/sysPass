@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\TagData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class CreateController
@@ -71,8 +72,8 @@ final class CreateController extends TagBase
     }
 
     /**
-     * @return \SP\DataModel\TagData
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return TagData
+     * @throws ServiceException
      */
     private function buildTagData(): TagData
     {

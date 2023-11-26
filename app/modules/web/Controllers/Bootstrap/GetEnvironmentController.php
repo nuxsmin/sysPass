@@ -25,10 +25,11 @@
 namespace SP\Modules\Web\Controllers\Bootstrap;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\CryptPKI;
-use SP\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Import\Services\ImportService;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -68,7 +69,7 @@ final class GetEnvironmentController extends SimpleControllerBase
      * Returns environment data
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function getEnvironmentAction(): bool
     {

@@ -27,16 +27,17 @@ namespace SP\Infrastructure\Common\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use Closure;
 use Exception;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 use function SP\logger;
 
@@ -61,11 +62,11 @@ abstract class Repository implements RepositoryInterface
     /**
      * Bubbles a Closure in a database transaction
      *
-     * @param  \Closure  $closure
+     * @param Closure $closure
      * @param  object  $newThis
      *
      * @return mixed
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     final public function transactionAware(Closure $closure, object $newThis): mixed
     {
@@ -102,7 +103,7 @@ abstract class Repository implements RepositoryInterface
      * @param  string|null  $where
      * @param  array|null  $bindValues
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     final public function getAny(
         array $columns,

@@ -22,19 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Domain\Core\Bootstrap;
 
 /**
- * Interface EventSource
+ * Class UriContext
  */
-interface EventSource
+interface UriContextInterface
 {
     /**
-     * Notify an event
+     * The full URL to reach the application (e.g. https://sub.example.com/syspass/)
      *
-     * @param string $eventType
-     * @param Event $event
-     * @return void
+     * @return string
      */
-    public function notify(string $eventType, Event $event): void;
+    public function getWebUri(): string;
+
+    /**
+     * The current request path relative to the application root (e.g. files/index.php)
+     *
+     * @return string
+     */
+    public function getWebRoot(): string;
+
+    public function getSubUri(): string;
 }

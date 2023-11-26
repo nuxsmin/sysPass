@@ -26,12 +26,16 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -68,7 +72,7 @@ final class ViewController extends ControllerBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function viewAction(int $id): bool
     {
@@ -102,9 +106,9 @@ final class ViewController extends ControllerBase
      *
      * @param  int|null  $pluginId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     protected function setViewData(?int $pluginId = null): void
     {

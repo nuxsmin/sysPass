@@ -30,10 +30,12 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use SP\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Infrastructure\Database\DbStorageInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+
 use function SP\Tests\getDbHandler;
+
 use const SP\Tests\APP_DEFINITIONS_FILE;
 
 define('APP_MODULE', 'cli');

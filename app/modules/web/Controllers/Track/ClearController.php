@@ -26,10 +26,11 @@ namespace SP\Modules\Web\Controllers\Track;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -44,7 +45,7 @@ final class ClearController extends TrackBase
      * Clears tracks
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function clearAction(): bool
     {

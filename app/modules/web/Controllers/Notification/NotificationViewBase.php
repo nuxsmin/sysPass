@@ -26,11 +26,11 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\NotificationData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -47,10 +47,10 @@ abstract class NotificationViewBase extends ControllerBase
     private UserServiceInterface         $userService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\Notification\Ports\NotificationServiceInterface $notificationService,
-        UserServiceInterface $userService
+        Application                  $application,
+        WebControllerHelper          $webControllerHelper,
+        NotificationServiceInterface $notificationService,
+        UserServiceInterface         $userService
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -24,14 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Util\Util;
@@ -46,7 +48,7 @@ final class SaveController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveAction(): bool
     {
@@ -76,7 +78,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
+     * @param ConfigDataInterface $configData
      *
      * @return void
      */
@@ -106,11 +108,11 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
-     * @param  \SP\Core\Events\EventMessage  $eventMessage
+     * @param ConfigDataInterface $configData
+     * @param EventMessage $eventMessage
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     private function handleEventsConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
@@ -151,11 +153,11 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
-     * @param  \SP\Core\Events\EventMessage  $eventMessage
+     * @param ConfigDataInterface $configData
+     * @param EventMessage $eventMessage
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     private function handleProxyConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
@@ -190,8 +192,8 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
-     * @param  \SP\Core\Events\EventMessage  $eventMessage
+     * @param ConfigDataInterface $configData
+     * @param EventMessage $eventMessage
      *
      * @return void
      */
@@ -222,8 +224,8 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

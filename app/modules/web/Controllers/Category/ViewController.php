@@ -25,8 +25,9 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -43,7 +44,7 @@ final class ViewController extends CategoryViewBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function viewAction(int $id): bool
     {

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -33,6 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -50,9 +50,9 @@ abstract class CategoryViewBase extends ControllerBase
     private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\Category\Ports\CategoryServiceInterface $categoryService,
+        Application                 $application,
+        WebControllerHelper         $webControllerHelper,
+        CategoryServiceInterface    $categoryService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

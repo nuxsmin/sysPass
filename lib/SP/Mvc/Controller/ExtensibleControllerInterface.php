@@ -25,7 +25,7 @@
 namespace SP\Mvc\Controller;
 
 
-use SP\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Mvc\View\TemplateInterface;
 
 /**

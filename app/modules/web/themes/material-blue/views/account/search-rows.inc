@@ -33,9 +33,9 @@
  * @var AccountSearchItem $accountSearchItem
  */
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridActionBase;
 use SP\Html\DataGrid\DataGridTab;

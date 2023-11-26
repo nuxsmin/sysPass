@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\UI;
 
-use SP\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\File\FileCache;
 

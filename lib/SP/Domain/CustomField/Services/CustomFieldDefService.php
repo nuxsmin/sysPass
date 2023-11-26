@@ -24,7 +24,6 @@
 
 namespace SP\Domain\CustomField\Services;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -34,6 +33,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDefRepositoryInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
@@ -104,7 +104,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function delete(int $id): CustomFieldDefService
     {
@@ -147,11 +147,11 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     }
 
     /**
-     * @param  \SP\DataModel\CustomFieldDefinitionData  $itemData
+     * @param CustomFieldDefinitionData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(CustomFieldDefinitionData $itemData): int
     {
@@ -193,9 +193,9 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): CustomFieldDefinitionData
     {

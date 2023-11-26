@@ -22,22 +22,33 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Crypt;
+
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class CSRF
- *
- * @package SP\Core\Crypt
+ * Class CryptPKI para el manejo de las funciones para PKI
  */
-interface CsrfInterface
+interface CryptPKIInterface
 {
     /**
-     * Check for CSRF token on POST requests
+     * Crea el par de claves pública y privada
+     *
+     * @throws FileException
      */
-    public function check(): bool;
+    public function createKeys(): void;
 
     /**
-     * Initialize the CSRF key
+     * Devuelve la clave pública desde el archivo
+     *
+     * @throws FileException
      */
-    public function initialize(): void;
+    public function getPublicKey(): string;
+
+    /**
+     * Desencriptar datos cifrados con la clave pública
+     *
+     * @throws FileException
+     */
+    public function decryptRSA(string $data): ?string;
 }

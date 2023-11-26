@@ -26,10 +26,12 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -41,15 +43,16 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SaveDeleteController extends AccountControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
-    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
     private CustomFieldServiceInterface                      $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
+        AccountServiceInterface $accountService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct(
@@ -67,7 +70,7 @@ final class SaveDeleteController extends AccountControllerBase
      * @param  int  $id  Account's ID
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveDeleteAction(int $id): bool
     {

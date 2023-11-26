@@ -25,11 +25,13 @@
 namespace SP\Modules\Web\Controllers\Client;
 
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -43,15 +45,16 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SearchController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
-    private \SP\Domain\Client\Ports\ClientServiceInterface $clientService;
+    private ClientServiceInterface $clientService;
     private ClientGrid                                     $clientGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Client\Ports\ClientServiceInterface $clientService,
+        ClientServiceInterface $clientService,
         ClientGrid $clientGrid
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -69,7 +72,7 @@ final class SearchController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function searchAction(): bool
     {

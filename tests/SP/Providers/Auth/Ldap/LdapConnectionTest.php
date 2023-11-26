@@ -25,8 +25,10 @@
 namespace SP\Tests\Providers\Auth\Ldap;
 
 use Laminas\Ldap\Ldap;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Events\EventDispatcherInterface;
+use SP\Core\Context\ContextException;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
@@ -176,8 +178,8 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Context\ContextException
+     * @throws Exception
+     * @throws ContextException
      * @throws LdapException
      */
     protected function setUp(): void

@@ -25,13 +25,13 @@
 namespace SP\Domain\Auth\Services;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 
 

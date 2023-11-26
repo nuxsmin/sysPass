@@ -26,12 +26,13 @@ namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Export\Services\XmlExportService;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -98,8 +99,8 @@ final class DownloadExportController extends SimpleControllerBase
     /**
      * initialize
      *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SPException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

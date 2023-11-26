@@ -25,11 +25,11 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;

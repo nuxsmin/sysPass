@@ -27,9 +27,9 @@ namespace SP\Http;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Core\Crypt\CryptPKIInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Util\Filter;
 use SP\Util\Util;
 

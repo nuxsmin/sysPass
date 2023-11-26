@@ -24,27 +24,38 @@
 
 namespace SP\Tests\Modules\Api;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\ContainerBuilder;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use JsonException;
 use Klein\Klein;
 use Klein\Request;
 use Klein\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Bootstrap\BootstrapApi;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Tests\DatabaseTrait;
 use stdClass;
+
 use function DI\create;
+
 use const SP\Tests\APP_DEFINITIONS_FILE;
 
 define('APP_MODULE', 'api');
@@ -92,7 +103,7 @@ abstract class ApiTestCase extends TestCase
     protected static ?ConfigDataInterface $configData = null;
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected static function processJsonResponse(
         Response $response,
@@ -120,9 +131,9 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Exception
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws Exception
      */
     final protected function callApi(int $actionId, array $params): Response
     {
@@ -206,11 +217,11 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws SPException
      */
     private static function createApiToken(
         AuthTokenService $service,

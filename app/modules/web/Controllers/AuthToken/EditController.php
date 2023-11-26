@@ -25,8 +25,9 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -42,7 +43,7 @@ final class EditController extends AuthTokenViewBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function editAction(int $id): bool
     {

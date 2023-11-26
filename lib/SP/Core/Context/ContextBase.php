@@ -24,6 +24,8 @@
 
 namespace SP\Core\Context;
 
+use SP\Domain\Core\Context\ContextInterface;
+
 use function SP\__u;
 
 /**

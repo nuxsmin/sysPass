@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -34,6 +33,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -47,7 +48,8 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 abstract class AuthTokenViewBase extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AuthTokenServiceInterface   $authTokenService;
     private CustomFieldServiceInterface $customFieldService;
@@ -75,7 +77,7 @@ abstract class AuthTokenViewBase extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     protected function setViewData(?int $authTokenId = null): void
     {

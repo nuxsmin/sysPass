@@ -27,17 +27,19 @@ namespace SP\Tests\Services\Notification;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Domain\Notification\Services\NotificationService;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -52,7 +54,7 @@ class NotificationServiceTest extends DatabaseTestCase
      */
     private static $context;
     /**
-     * @var \SP\Domain\Notification\Ports\NotificationServiceInterface
+     * @var NotificationServiceInterface
      */
     private static $service;
 

@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\Account;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\ErrorUtil;
 
 /**

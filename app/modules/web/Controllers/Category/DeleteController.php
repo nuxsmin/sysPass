@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\Category;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -42,7 +43,7 @@ final class DeleteController extends CategorySaveBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {

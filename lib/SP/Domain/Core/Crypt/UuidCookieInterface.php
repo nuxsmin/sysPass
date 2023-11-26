@@ -22,42 +22,39 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Domain\Core\Crypt;
 
 /**
- * Interface EventDispatcherInterface
+ * Class UuidCookie
  */
-interface EventDispatcherInterface
+interface UuidCookieInterface
 {
     /**
-     * Check whether an EventReceiver is attached
-     *
-     * @param EventReceiver $receiver
-     * @return bool
+     * Firmar la cookie para autentificación
      */
-    public function has(EventReceiver $receiver): bool;
+    public function sign(string $data, string $cypher): string;
 
     /**
-     * Attach an EventReceiver
+     * Comprobar la firma de la cookie y devolver los datos
      *
-     * @param EventReceiver $receiver
-     * @return void
+     * @param string $data
+     * @param string $cypher
+     *
+     * @return bool|string
      */
-    public function attach(EventReceiver $receiver): void;
+    public function getCookieData(string $data, string $cypher): bool|string;
 
     /**
-     * Detach an EventReceiver
+     * Creates a cookie and sets its data
      *
-     * @param EventReceiver $receiver
-     * @return void
+     * @return string|false
      */
-    public function detach(EventReceiver $receiver): void;
+    public function create(string $signKey): bool|string;
 
     /**
-     * Notify to receivers
+     * Loads cookie data
      *
-     * @param string $eventName Nombre del evento
-     * @param Event $event Objeto del evento
+     * @return false|string
      */
-    public function notify(string $eventName, Event $event): void;
+    public function load(string $signKey): bool|string;
 }

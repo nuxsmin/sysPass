@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-use SP\Core\Acl\AclActionsInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class IndexController
@@ -36,8 +38,8 @@ final class IndexController extends PluginSearchBase
     /**
      * indexAction
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function indexAction(): void
     {

@@ -26,13 +26,15 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -62,7 +64,7 @@ final class RefreshController extends SimpleControllerBase
      * Refresh master password hash
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function refreshAction(): bool
     {
@@ -93,8 +95,8 @@ final class RefreshController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

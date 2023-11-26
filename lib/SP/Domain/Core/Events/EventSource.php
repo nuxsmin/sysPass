@@ -22,41 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Events;
+
+use SP\Core\Events\Event;
 
 /**
- * Class UuidCookie
- *
- * @package SP\Core\Crypt
+ * Interface EventSource
  */
-interface UuidCookieInterface
+interface EventSource
 {
     /**
-     * Firmar la cookie para autentificación
-     */
-    public function sign(string $data, string $cypher): string;
-
-    /**
-     * Comprobar la firma de la cookie y devolver los datos
+     * Notify an event
      *
-     * @param string $data
-     * @param string $cypher
-     *
-     * @return bool|string
+     * @param string $eventType
+     * @param Event $event
+     * @return void
      */
-    public function getCookieData(string $data, string $cypher): bool|string;
-
-    /**
-     * Creates a cookie and sets its data
-     *
-     * @return string|false
-     */
-    public function create(string $signKey): bool|string;
-
-    /**
-     * Loads cookie data
-     *
-     * @return false|string
-     */
-    public function load(string $signKey): bool|string;
+    public function notify(string $eventType, Event $event): void;
 }

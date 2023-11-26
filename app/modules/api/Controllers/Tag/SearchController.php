@@ -26,10 +26,11 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class SearchController
@@ -60,8 +61,8 @@ final class SearchController extends TagBase
     }
 
     /**
-     * @return \SP\DataModel\ItemSearchData
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return ItemSearchData
+     * @throws ServiceException
      */
     private function buildSearchData(): ItemSearchData
     {

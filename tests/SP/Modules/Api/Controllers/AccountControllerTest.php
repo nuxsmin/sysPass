@@ -24,7 +24,10 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\AclActionsInterface;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JsonException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -56,9 +59,9 @@ class AccountControllerTest extends ApiTestCase
     protected AccountController $controller;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateAction(): void
     {
@@ -100,9 +103,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     private function createAccount(?array $params = null): stdClass
     {
@@ -115,9 +118,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionNoUserData(): void
     {
@@ -152,9 +155,9 @@ class AccountControllerTest extends ApiTestCase
     /**
      * @dataProvider getUnsetParams
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionRequiredParameters(string $unsetParam): void
     {
@@ -172,9 +175,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewPassAction(): void
     {
@@ -200,9 +203,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewPassActionRequiredParamater(): void
     {
@@ -220,9 +223,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditPassAction(): void
     {
@@ -264,9 +267,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditPassActionRequiredParameters(): void
     {
@@ -290,9 +293,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewPassActionNonExistant(): void
     {
@@ -308,9 +311,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewAction(): void
     {
@@ -369,9 +372,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewActionNonExistant(): void
     {
@@ -387,9 +390,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewActionRequiredParameter(): void
     {
@@ -409,9 +412,9 @@ class AccountControllerTest extends ApiTestCase
     /**
      * @dataProvider searchProvider
      *
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
@@ -428,9 +431,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testEditAction(): void
     {
@@ -521,9 +524,9 @@ class AccountControllerTest extends ApiTestCase
     /**
      * @dataProvider getUnsetParams
      *
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testEditActionRequiredParameter(string $unsetParam): void
     {
@@ -564,9 +567,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testEditActionNonExistant(): void
     {
@@ -599,9 +602,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteAction(): void
     {
@@ -623,9 +626,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionNonExistant(): void
     {
@@ -641,9 +644,9 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionRequiredParameters(): void
     {

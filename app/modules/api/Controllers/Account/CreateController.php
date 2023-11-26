@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class CreateController
@@ -74,8 +75,8 @@ final class CreateController extends AccountBase
     }
 
     /**
-     * @return \SP\Domain\Account\Dtos\AccountRequest
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return AccountRequest
+     * @throws ServiceException
      */
     private function buildAccountRequest(): AccountRequest
     {

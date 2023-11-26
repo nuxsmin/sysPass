@@ -24,15 +24,16 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\RequestInterface;
 use SP\Util\Chainable;
+
 use function SP\__u;
 
 /**
@@ -60,7 +61,7 @@ final class AccountForm extends FormBase implements FormInterface
      * @param  int  $action
      * @param  int|null  $id
      *
-     * @return \SP\Modules\Web\Forms\FormInterface
+     * @return FormInterface
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
@@ -110,7 +111,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * Analizar los datos de la petición HTTP
      *
-     * @return \SP\Domain\Account\Dtos\AccountCreateDto|\SP\Domain\Account\Dtos\AccountUpdateDto
+     * @return AccountCreateDto|AccountUpdateDto
      */
     private function analyzeRequestData(): AccountCreateDto|AccountUpdateDto
     {

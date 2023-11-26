@@ -25,10 +25,14 @@
 namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Acl\AclActionsInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\Controller\ItemTrait;
@@ -54,10 +58,10 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
     public function includeCustomFields(AccountEnrichedDto $data,): Collection
     {

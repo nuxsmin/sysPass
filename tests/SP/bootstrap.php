@@ -29,14 +29,15 @@ use DI\ContainerBuilder;
 use Exception;
 use RuntimeException;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\ProfileData;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Util\FileUtil;
+
 use function SP\logger;
 use function SP\processException;
 
@@ -165,7 +166,7 @@ function saveResource(string $dir, string $file, string $data): bool|int
 }
 
 /**
- * @throws \SP\Core\Exceptions\FileNotFoundException
+ * @throws FileNotFoundException
  */
 function recreateDir(string $dir): void
 {

@@ -26,12 +26,12 @@ namespace SP\Domain\Api\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\CryptException;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
@@ -41,6 +41,8 @@ use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -49,6 +51,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Util\Filter;
+
 use function SP\__u;
 use function SP\logger;
 use function SP\processException;
@@ -69,7 +72,7 @@ final class ApiService extends Service implements ApiServiceInterface
     private ?int                  $status        = null;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(
         Application $application,
@@ -88,7 +91,7 @@ final class ApiService extends Service implements ApiServiceInterface
     /**
      * Sets up API
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws SPException
      * @throws Exception
      */
@@ -138,7 +141,7 @@ final class ApiService extends Service implements ApiServiceInterface
     /**
      * Añadir un seguimiento
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function addTracking(): void
     {
@@ -197,7 +200,7 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function accessDenied(): void
     {
@@ -230,8 +233,8 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ContextException
+     * @throws ServiceException
      */
     public function requireMasterPass(): void
     {
@@ -241,7 +244,7 @@ final class ApiService extends Service implements ApiServiceInterface
     /**
      * Devolver la clave maestra
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function getMasterPassFromVault(): string
     {
@@ -278,7 +281,7 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function requireInitialized(): void
     {
@@ -293,7 +296,7 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getParamInt(string $param, bool $required = false, $default = null): ?int
     {
@@ -321,7 +324,7 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getParamArray(string $param, bool $required = false, $default = null): ?array
     {
@@ -349,7 +352,7 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getMasterPass(): string
     {

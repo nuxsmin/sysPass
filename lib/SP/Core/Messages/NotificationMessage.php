@@ -24,6 +24,8 @@
 
 namespace SP\Core\Messages;
 
+use SP\Domain\Core\Messages\FormatterInterface;
+
 /**
  * Class NoticeMessage
  *

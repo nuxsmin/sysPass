@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserGroupData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class EditController
@@ -72,8 +73,8 @@ final class EditController extends UserGroupBase
     }
 
     /**
-     * @return \SP\DataModel\UserGroupData
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return UserGroupData
+     * @throws ServiceException
      */
     private function buildUserGroupData(): UserGroupData
     {

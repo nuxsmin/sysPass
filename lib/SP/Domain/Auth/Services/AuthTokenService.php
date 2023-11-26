@@ -28,11 +28,9 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -42,7 +40,10 @@ use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Infrastructure\Auth\Repositories\AuthTokenRepository;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\PasswordUtil;
@@ -128,8 +129,8 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): AuthTokenData
     {
@@ -137,9 +138,9 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): AuthTokenService
     {
@@ -278,13 +279,13 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function update(AuthTokenData $itemData, ?string $token = null): void
     {

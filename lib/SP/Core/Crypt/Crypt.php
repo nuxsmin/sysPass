@@ -30,6 +30,7 @@ use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Crypt\CryptInterface;
 
 /**
  * Class Crypt

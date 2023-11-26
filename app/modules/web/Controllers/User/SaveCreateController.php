@@ -26,10 +26,11 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -39,11 +40,12 @@ use SP\Mvc\Controller\ItemTrait;
  */
 final class SaveCreateController extends UserSaveBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveCreateAction()
     {

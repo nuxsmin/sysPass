@@ -24,7 +24,10 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\AclActionsInterface;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JsonException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -42,9 +45,9 @@ class UserGroupControllerTest extends ApiTestCase
     ];
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateAction(): void
     {
@@ -66,9 +69,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     private function createUserGroup(?array $params = null): stdClass
     {
@@ -81,9 +84,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionInvalidUser(): void
     {
@@ -97,9 +100,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionRequiredParameters(): void
     {
@@ -115,9 +118,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionDuplicatedName(): void
     {
@@ -131,9 +134,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewAction(): void
     {
@@ -161,9 +164,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewActionNonExistant(): void
     {
@@ -181,9 +184,9 @@ class UserGroupControllerTest extends ApiTestCase
     /**
      * @dataProvider getGroupUsers
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditAction(array $users, int $usersCount): void
     {
@@ -229,9 +232,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionInvalidUser(): void
     {
@@ -258,9 +261,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionRequiredParameters(): void
     {
@@ -287,9 +290,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionNonExistant(): void
     {
@@ -312,9 +315,9 @@ class UserGroupControllerTest extends ApiTestCase
     /**
      * @dataProvider searchProvider
      *
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
@@ -331,9 +334,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteAction(): void
     {
@@ -355,9 +358,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionNonExistant(): void
     {
@@ -373,9 +376,9 @@ class UserGroupControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionRequiredParameters(): void
     {

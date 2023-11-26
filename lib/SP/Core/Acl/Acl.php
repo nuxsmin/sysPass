@@ -25,11 +25,13 @@
 
 namespace SP\Core\Acl;
 
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__;
 use function SP\__u;

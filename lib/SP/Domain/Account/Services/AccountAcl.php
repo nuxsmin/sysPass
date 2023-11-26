@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class AccountAcl

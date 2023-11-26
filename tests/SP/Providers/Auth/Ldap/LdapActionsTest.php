@@ -29,7 +29,7 @@ use Laminas\Ldap\Ldap;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Providers\Auth\Ldap\AttributeCollection;
 use SP\Providers\Auth\Ldap\LdapActions;
 use SP\Providers\Auth\Ldap\LdapCodeEnum;
@@ -174,7 +174,7 @@ class LdapActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testGetAttributesError(): void
     {
@@ -194,8 +194,8 @@ class LdapActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws LdapException
+     * @throws Exception
      */
     public function testSearchGroupsDn(): void
     {
@@ -228,8 +228,8 @@ class LdapActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws LdapException
+     * @throws Exception
      */
     public function testSearchGroupsDnNoGroups(): void
     {
@@ -260,7 +260,7 @@ class LdapActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function testSearchGroupsDnError(): void
     {

@@ -25,14 +25,16 @@
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use Exception;
+use JsonException;
 use RuntimeException;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -102,8 +104,8 @@ final class DownloadConfigBackup extends SimpleControllerBase
     }
 
     /**
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

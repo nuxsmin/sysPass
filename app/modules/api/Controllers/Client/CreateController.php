@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\Client;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ClientData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class CreateController
@@ -71,8 +72,8 @@ final class CreateController extends ClientBase
     }
 
     /**
-     * @return \SP\DataModel\ClientData
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return ClientData
+     * @throws ServiceException
      */
     private function buildClientData(): ClientData
     {

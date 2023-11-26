@@ -26,12 +26,15 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
@@ -39,6 +42,8 @@ use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -67,9 +72,9 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws JsonException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function saveAction(): bool
     {
@@ -190,7 +195,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     private function getTask(): ?TaskInterface
     {
@@ -203,8 +208,8 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

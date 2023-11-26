@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use Exception;
 use JsonException;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -35,6 +34,7 @@ use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

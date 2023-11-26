@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class CustomFieldDefForm

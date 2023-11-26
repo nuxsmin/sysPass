@@ -24,10 +24,10 @@
 
 namespace SP\Core;
 
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * Class ModuleBase

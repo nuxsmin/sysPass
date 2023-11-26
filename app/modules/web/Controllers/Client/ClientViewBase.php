@@ -26,13 +26,14 @@ namespace SP\Modules\Web\Controllers\Client;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -46,8 +47,8 @@ abstract class ClientViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private \SP\Domain\Client\Ports\ClientServiceInterface $clientService;
-    private CustomFieldServiceInterface                    $customFieldService;
+    private ClientServiceInterface      $clientService;
+    private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
         Application $application,
@@ -72,7 +73,7 @@ abstract class ClientViewBase extends ControllerBase
      * @throws NoSuchItemException
      * @throws QueryException
      * @throws SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     protected function setViewData(?int $clientId = null): void
     {

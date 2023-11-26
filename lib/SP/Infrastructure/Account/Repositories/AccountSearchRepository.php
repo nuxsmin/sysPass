@@ -26,13 +26,13 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountSearchRepositoryInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -192,7 +192,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
      * @param  int  $userId
      * @param  int  $userGroupId
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForUser(int $userId, int $userGroupId): SelectInterface
     {
@@ -215,7 +215,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  int  $userGroupId
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForGroup(int $userGroupId): SelectInterface
     {
@@ -233,7 +233,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $userGroupName
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForMainGroup(string $userGroupName): SelectInterface
     {
@@ -249,7 +249,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $owner
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForOwner(string $owner): SelectInterface
     {
@@ -266,7 +266,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $fileName
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForFile(string $fileName): SelectInterface
     {
@@ -284,7 +284,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  int  $accountId
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForAccountId(int $accountId): SelectInterface
     {
@@ -298,7 +298,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $clientName
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForClient(string $clientName): SelectInterface
     {
@@ -314,7 +314,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $categoryName
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForCategory(string $categoryName): SelectInterface
     {
@@ -330,7 +330,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     /**
      * @param  string  $accountName
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForAccountNameRegex(string $accountName): SelectInterface
     {
@@ -359,7 +359,7 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
      * @param  int  $userId
      * @param  int  $userGroupId
      *
-     * @return \Aura\SqlQuery\Common\SelectInterface
+     * @return SelectInterface
      */
     public function withFilterForIsPrivate(int $userId, int $userGroupId): SelectInterface
     {

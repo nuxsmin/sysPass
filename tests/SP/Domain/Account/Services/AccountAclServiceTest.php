@@ -24,8 +24,8 @@
 
 namespace SP\Tests\Domain\Account\Services;
 
+use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
@@ -33,6 +33,7 @@ use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
@@ -167,8 +168,8 @@ class AccountAclServiceTest extends UnitaryTestCase
     /**
      * @group acl:admin
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAclForAdminApp(): void
     {
@@ -197,7 +198,7 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @param  \SP\Domain\Account\Dtos\AccountAclDto  $accountAclDto  The ACL dto to compile the ACL for the user
+     * @param AccountAclDto $accountAclDto  The ACL dto to compile the ACL for the user
      * @param  AccountAcl  $example  An example ACL to test against the compiled ACL
      *
      * @throws ConstraintException
@@ -336,7 +337,7 @@ class AccountAclServiceTest extends UnitaryTestCase
     /**
      * @group acl:admin
      *
-     * @return \SP\Domain\Account\Services\AccountAcl
+     * @return AccountAcl
      */
     private function getExampleAclForAdmin(): AccountAcl
     {
@@ -365,8 +366,8 @@ class AccountAclServiceTest extends UnitaryTestCase
     /**
      * @group acl:admin
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testGetAclForAdminAcc(): void
     {
@@ -406,8 +407,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckViewPass(
         int $accountId,
@@ -442,8 +443,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckDelete(
         int $accountId,
@@ -478,8 +479,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testEditPass(
         int $accountId,
@@ -514,8 +515,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testEditAndRestore(
         int $accountId,
@@ -551,8 +552,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckPermission(
         int $accountId,
@@ -587,8 +588,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testViewFiles(
         int $accountId,
@@ -623,8 +624,8 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @param  bool  $shouldView
      * @param  bool  $shouldEdit
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckView(
         int $accountId,
@@ -657,9 +658,9 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCacheIsUsedWithHit(): void
     {
@@ -697,9 +698,9 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCacheIsUsedWithMiss(): void
     {
@@ -741,9 +742,9 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCacheLoadThrowsExceptionAndLogged(): void
     {
@@ -776,9 +777,9 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCacheSaveThrowsExceptionAndLogged(): void
     {

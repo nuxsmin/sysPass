@@ -26,8 +26,10 @@ namespace SP\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
 use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
+
 use function SP\processException;
 
 /**
@@ -111,7 +113,7 @@ final class CryptPKI implements CryptPKIInterface
     }
 
     /**
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     private function getPrivateKey(): string
     {

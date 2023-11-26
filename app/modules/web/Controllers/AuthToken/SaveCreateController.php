@@ -25,9 +25,10 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -39,7 +40,7 @@ final class SaveCreateController extends AuthTokenSaveBase
 {
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveCreateAction(): bool
     {

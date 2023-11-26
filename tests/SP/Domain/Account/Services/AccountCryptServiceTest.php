@@ -24,16 +24,20 @@
 
 namespace SP\Tests\Domain\Account\Services;
 
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Crypt\CryptInterface;
+use RuntimeException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountCryptService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\TaskFactory;
+use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -51,9 +55,9 @@ class AccountCryptServiceTest extends UnitaryTestCase
     private MockObject|CryptInterface                 $crypt;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\File\FileException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws Exception
      */
     public function testUpdateMasterPassword(): void
     {
@@ -94,7 +98,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateMasterPasswordWithNoAccounts(): void
     {
@@ -121,7 +125,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateMasterPasswordDoesNotThrowException(): void
     {
@@ -139,7 +143,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateMasterPasswordThrowException(): void
     {
@@ -147,7 +151,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
 
         $this->accountService->expects(self::once())
                              ->method('getAccountsPassData')
-                             ->willThrowException(new \RuntimeException('test'));
+                             ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords');
@@ -156,8 +160,8 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function testUpdateHistoryMasterPassword(): void
     {
@@ -191,7 +195,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateHistoryMasterPasswordWithNoAccounts(): void
     {
@@ -218,7 +222,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateHistoryMasterPasswordThrowException(): void
     {
@@ -226,7 +230,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
 
         $this->accountHistoryService->expects(self::once())
                                     ->method('getAccountsPassData')
-                                    ->willThrowException(new \RuntimeException('test'));
+                                    ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords in history');
@@ -235,7 +239,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
     {
@@ -253,7 +257,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetPasswordEncrypted(): void
     {
@@ -278,8 +282,8 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Context\ContextException
+     * @throws ServiceException
+     * @throws ContextException
      */
     public function testGetPasswordEncryptedThrowsExceptionWithNoMasterPassword(): void
     {
@@ -298,7 +302,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetPasswordEncryptedThrowsExceptionWithEmptyMasterPassword(): void
     {
@@ -315,7 +319,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetPasswordEncryptedThrowsExceptionWithLongPass(): void
     {
@@ -334,7 +338,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetPasswordEncryptedThrowsExceptionWithLongKey(): void
     {

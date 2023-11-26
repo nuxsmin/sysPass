@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,26 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Acl;
-
-
-use SP\DataModel\ActionData;
-use SP\Infrastructure\File\FileException;
+namespace SP\Domain\Core\Messages;
 
 /**
- * Class Actions
+ * Interface MessageInterface
  */
-interface ActionsInterface
+interface MessageInterface
 {
     /**
-     * Returns an action by id
+     * Componer un mensaje en formato texto
      *
-     * @throws ActionNotFoundException
+     * @param string $delimiter
+     *
+     * @return string
      */
-    public function getActionById(int $id): ActionData;
+    public function composeText(string $delimiter = PHP_EOL): string;
 
     /**
-     * @throws FileException
+     * Componer un mensaje en formato HTML
+     *
+     * @return string
      */
-    public function reset(): void;
+    public function composeHtml(): string;
 }

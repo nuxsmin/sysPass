@@ -28,9 +28,10 @@ use Directory;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\SessionContextInterface;
 use SP\Core\UI\Theme;
+use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -43,8 +44,8 @@ use SP\Tests\UnitaryTestCase;
 class ThemeTest extends UnitaryTestCase
 {
 
-    private \SP\Domain\Core\UI\ThemeContextInterface|MockObject $themeContext;
-    private \SP\Domain\Core\UI\ThemeIconsInterface|MockObject   $themeIcons;
+    private ThemeContextInterface|MockObject $themeContext;
+    private ThemeIconsInterface|MockObject   $themeIcons;
     private Theme                                               $theme;
 
     public function testGetIcons()
@@ -180,7 +181,7 @@ class ThemeTest extends UnitaryTestCase
         parent::setUp();
 
         $this->themeContext = $this->createMock(ThemeContextInterface::class);
-        $this->themeIcons = $this->createMock(\SP\Domain\Core\UI\ThemeIconsInterface::class);
+        $this->themeIcons = $this->createMock(ThemeIconsInterface::class);
 
         $this->theme = new Theme($this->themeContext, $this->themeIcons);
     }

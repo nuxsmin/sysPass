@@ -26,11 +26,11 @@ namespace SP\Modules\Api\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class ViewController

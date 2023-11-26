@@ -22,10 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Acl;
-
-use SP\DataModel\ActionData;
-use SP\Infrastructure\File\FileException;
+namespace SP\Domain\Core\Acl;
 
 /**
  * Interface ActionsInterface para la definición de constantes de acciones disponibles.

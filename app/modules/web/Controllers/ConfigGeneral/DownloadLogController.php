@@ -26,11 +26,13 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -85,8 +87,8 @@ final class DownloadLogController extends SimpleControllerBase
     }
 
     /**
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

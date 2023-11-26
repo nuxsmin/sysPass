@@ -27,13 +27,14 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 
 /**
@@ -78,8 +79,8 @@ final class SearchController extends ControllerBase
     }
 
     /**
-     * @return \SP\Domain\Account\Search\AccountSearchFilter
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return AccountSearchFilter
+     * @throws ServiceException
      */
     private function buildAccountSearchFilter(): AccountSearchFilter
     {

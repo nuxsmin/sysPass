@@ -24,12 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -45,7 +46,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SearchController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AuthTokenServiceInterface $authTokenService;
     private AuthTokenGrid             $authTokenGrid;
@@ -71,7 +73,7 @@ final class SearchController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function searchAction(): bool
     {

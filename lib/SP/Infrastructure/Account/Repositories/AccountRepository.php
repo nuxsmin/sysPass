@@ -25,8 +25,6 @@
 namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
@@ -36,11 +34,14 @@ use SP\Domain\Account\Models\AccountDataView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -128,9 +129,9 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      *
      * @param  int  $accountId
      *
-     * @return \SP\Infrastructure\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function incrementDecryptCounter(int $accountId): QueryResult
     {
@@ -147,11 +148,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(Account $account): QueryResult
     {
@@ -170,11 +171,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Create an account from deleted
      *
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function createRemoved(Account $account): QueryResult
     {
@@ -192,11 +193,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function editPassword(int $accountId, Account $account): QueryResult
     {
@@ -218,11 +219,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
+     * @param EncryptedPassword $encryptedPassword
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): QueryResult
     {
@@ -242,11 +243,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Restaurar una cuenta desde el histórico.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function restoreModified(int $accountId, Account $account): QueryResult
     {
@@ -281,8 +282,8 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $accountId): QueryResult
     {
@@ -301,13 +302,13 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Updates an item
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      * @param  bool  $changeOwner
      * @param  bool  $changeUserGroup
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult
     {
@@ -352,13 +353,13 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
      * Updates an item for bulk action
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      * @param  bool  $changeOwner
      * @param  bool  $changeUserGroup
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult
     {
@@ -625,7 +626,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function getAccountsPassData(): QueryResult
     {

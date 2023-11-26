@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -41,9 +42,10 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class DeleteController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
-    private \SP\Domain\Plugin\Ports\PluginServiceInterface $pluginService;
+    private PluginServiceInterface $pluginService;
 
     public function __construct(
         Application $application,
@@ -63,7 +65,7 @@ final class DeleteController extends ControllerBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {

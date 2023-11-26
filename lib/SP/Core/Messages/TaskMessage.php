@@ -24,7 +24,9 @@
 
 namespace SP\Core\Messages;
 
+use JsonException;
 use JsonSerializable;
+use SP\Domain\Core\Messages\MessageInterface;
 
 /**
  * Class TaskMessage
@@ -126,7 +128,7 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     /**
      * Componer un mensaje en formato JSON
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function composeJson(): bool|string
     {

@@ -22,47 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Events;
 
-use SP\Core\Exceptions\CryptException;
+use SP\Core\Events\Event;
 
 /**
- * Class Vault
- *
- * @package SP\Core\Crypt
+ * Interface EventReceiver
  */
-interface VaultInterface
+interface EventReceiver
 {
     /**
-     * Re-key this vault
+     * Update from sources
      *
-     * @throws CryptException
+     * @param string $eventType event's type
+     * @param Event $event event's source object
      */
-    public function reKey(string $newSeed, string $oldSeed): VaultInterface;
+    public function update(string $eventType, Event $event): void;
 
     /**
-     * Create a new vault with the saved data
+     * Return the events handled by this receiver in string format
      *
-     * @throws CryptException
+     * @return string|null
      */
-    public function saveData(string $data, string $key): VaultInterface;
-
-    /**
-     * Get the data decrypted
-     *
-     * @throws CryptException
-     */
-    public function getData(string $key): string;
-
-    /**
-     * Serialize the current vault
-     */
-    public function getSerialized(): string;
-
-    /**
-     * Get the last time the key and data were set
-     *
-     * @return int
-     */
-    public function getTimeSet(): int;
+    public function getEventsString(): ?string;
 }

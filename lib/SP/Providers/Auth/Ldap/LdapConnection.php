@@ -29,9 +29,9 @@ namespace SP\Providers\Auth\Ldap;
 use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
 use Laminas\Ldap\Ldap as LaminasLdap;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__u;
 

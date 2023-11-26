@@ -25,14 +25,15 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -40,6 +41,7 @@ use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
+
 use function SP\processException;
 
 /**
@@ -49,7 +51,8 @@ use function SP\processException;
  */
 final class SaveBulkEditController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountServiceInterface        $accountService;
     private AccountHistoryServiceInterface $accountHistoryService;
@@ -75,7 +78,7 @@ final class SaveBulkEditController extends ControllerBase
      * saveBulkEditAction
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function saveBulkEditAction(): bool
     {

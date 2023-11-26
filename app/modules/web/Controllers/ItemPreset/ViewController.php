@@ -25,8 +25,9 @@
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -38,7 +39,8 @@ use SP\Mvc\Controller\ItemTrait;
  */
 final class ViewController extends ItemPresetViewBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     /**
      * View action
@@ -46,7 +48,7 @@ final class ViewController extends ItemPresetViewBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function viewAction(int $id): bool
     {

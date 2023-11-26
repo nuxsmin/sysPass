@@ -25,9 +25,10 @@
 namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Html\Assets\FontIcon;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
@@ -85,7 +86,7 @@ class ThemeIconsTest extends UnitaryTestCase
     {
         $context = $this->createMock(ContextInterface::class);
         $fileCache = $this->createMock(FileCacheInterface::class);
-        $themeContext = $this->createMock(\SP\Domain\Core\UI\ThemeContextInterface::class);
+        $themeContext = $this->createMock(ThemeContextInterface::class);
 
         $context->expects(self::once())
                 ->method('getAppStatus')

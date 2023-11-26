@@ -24,10 +24,10 @@
 
 namespace SP\Core;
 
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContextInterface;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * The Application helper class. It holds all the needed dependencies for the application
@@ -38,8 +38,8 @@ final class Application
      * Module constructor.
      *
      * @param ConfigInterface $config
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionContextInterface|ContextInterface $context
+     * @param \SP\Domain\Core\Events\EventDispatcherInterface $eventDispatcher
+     * @param SessionContextInterface|\SP\Domain\Core\Context\ContextInterface $context
      */
     public function __construct(
         private readonly ConfigInterface                          $config,

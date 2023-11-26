@@ -24,6 +24,7 @@
 
 namespace SP\Core\Crypt;
 
+use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Http\RequestInterface;
 
 /**

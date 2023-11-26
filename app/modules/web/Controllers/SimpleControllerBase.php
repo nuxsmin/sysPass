@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
@@ -58,7 +58,7 @@ abstract class SimpleControllerBase
     protected ConfigDataInterface $configData;
 
     /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SessionTimeout
      */
     public function __construct(
         Application $application,
@@ -84,8 +84,8 @@ abstract class SimpleControllerBase
     /**
      * Comprobaciones
      *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SPException
+     * @throws SessionTimeout
      */
     protected function checks(): void
     {

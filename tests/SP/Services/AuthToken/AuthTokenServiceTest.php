@@ -29,11 +29,9 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -41,11 +39,14 @@ use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -55,8 +56,8 @@ use function SP\Tests\setupContext;
  */
 class AuthTokenServiceTest extends DatabaseTestCase
 {
-    const AUTH_TOKEN = '2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146';
-    const AUTH_TOKEN_PASS = 123456;
+    public const AUTH_TOKEN = '2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146';
+    public const AUTH_TOKEN_PASS = 123456;
 
     /**
      * @var AuthTokenService
@@ -142,7 +143,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws CryptoException
      * @throws ConstraintException
      * @throws QueryException

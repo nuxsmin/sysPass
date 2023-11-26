@@ -24,10 +24,13 @@
 
 namespace SP\Tests\Domain\Account\Services;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Crypt\CryptInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -35,6 +38,8 @@ use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -56,9 +61,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     private MockObject|AccountServiceInterface       $accountService;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testAddLinkView()
     {
@@ -80,9 +85,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testAddLinkViewWithoutHash()
     {
@@ -95,9 +100,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testAddLinkViewWithUseInfo()
     {
@@ -128,7 +133,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetByHash()
     {
@@ -148,7 +153,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetByHashNotFound()
     {
@@ -167,9 +172,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatch()
     {
@@ -187,9 +192,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatchWithCountMismatch()
     {
@@ -213,9 +218,9 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -230,8 +235,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -258,8 +263,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetHashForItem()
     {
@@ -278,8 +283,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetHashForItemNotFound()
     {
@@ -298,13 +303,13 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testRefresh()
     {
@@ -357,13 +362,13 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testRefreshNotFound()
     {
@@ -383,7 +388,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
 
     /**
      * @return void
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function testGetPublicLinkKey()
     {
@@ -397,7 +402,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
 
     /**
      * @return void
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function testGetPublicLinkKeyWithoutHash()
     {
@@ -409,8 +414,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
 
     /**
      * @return void
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function testGetById()
     {
@@ -430,8 +435,8 @@ class PublicLinkServiceTest extends UnitaryTestCase
 
     /**
      * @return void
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function testGetByIdNotFound()
     {
@@ -450,7 +455,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetAllBasic()
     {
@@ -497,10 +502,10 @@ class PublicLinkServiceTest extends UnitaryTestCase
 
     /**
      * @return void
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreate()
     {

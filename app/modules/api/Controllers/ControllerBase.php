@@ -30,13 +30,14 @@ use League\Fractal\Manager;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Domain\Api\Services\JsonRpcResponse;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Http\Json;
 
 /**
@@ -86,7 +87,7 @@ abstract class ControllerBase
 
     /**
      * @throws SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     final protected function setupApi(int $actionId): void
     {

@@ -25,7 +25,10 @@
 namespace SP\Modules\Web\Controllers\Plugin;
 
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -37,9 +40,9 @@ final class SearchController extends PluginSearchBase
      * Search action
      *
      * @return bool
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws JsonException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function searchAction(): bool
     {

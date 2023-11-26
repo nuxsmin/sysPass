@@ -24,11 +24,11 @@
 
 namespace SP\Domain\Account\Search;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
-use SP\DataModel\AccountSearchVData;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountAclDto;
-use SP\Domain\Account\Models\AccountDataView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountCacheServiceInterface;
@@ -38,9 +38,11 @@ use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
+
 use function SP\logger;
 use function SP\processException;
 
@@ -102,12 +104,12 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
     }
 
     /**
-     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
+     * @param QueryResult $queryResult
      *
      * @return AccountSearchItem[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function buildFrom(QueryResult $queryResult): array
     {
@@ -122,10 +124,10 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
         /**
          * @param  AccountSearchView  $accountSearchView
          *
-         * @return \SP\Domain\Account\Services\AccountSearchItem
-         * @throws \SP\Core\Exceptions\ConstraintException
-         * @throws \SP\Core\Exceptions\QueryException
-         * @throws \SP\Core\Exceptions\SPException
+         * @return AccountSearchItem
+         * @throws ConstraintException
+         * @throws QueryException
+         * @throws SPException
          */
             function (AccountSearchView $accountSearchView) use ($maxTextLength, $accountLinkEnabled, $favorites) {
                 $cache = $this->accountCacheService->getCacheForAccount(

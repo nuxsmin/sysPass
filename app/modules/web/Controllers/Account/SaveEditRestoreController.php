@@ -26,12 +26,13 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -43,7 +44,7 @@ final class SaveEditRestoreController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
 
     public function __construct(
         Application $application,
@@ -65,7 +66,7 @@ final class SaveEditRestoreController extends AccountControllerBase
      * @param  int  $id  Account's ID
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveEditRestoreAction(int $historyId, int $id): bool
     {

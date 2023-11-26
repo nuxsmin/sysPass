@@ -25,13 +25,15 @@
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -43,11 +45,12 @@ use SP\Modules\Web\Controllers\Traits\ConfigTrait;
  */
 final class SaveController extends SimpleControllerBase
 {
-    use ConfigTrait, ConfigLdapTrait;
+    use ConfigLdapTrait;
+    use ConfigTrait;
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveAction(): bool
     {
@@ -117,8 +120,8 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

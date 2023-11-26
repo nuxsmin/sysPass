@@ -22,25 +22,44 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Domain\Core\Events;
+
+use SP\Core\Events\Event;
 
 /**
- * Interface EventReceiver
+ * Interface EventDispatcherInterface
  */
-interface EventReceiver
+interface EventDispatcherInterface
 {
     /**
-     * Update from sources
+     * Check whether an EventReceiver is attached
      *
-     * @param string $eventType event's type
-     * @param Event $event event's source object
+     * @param EventReceiver $receiver
+     * @return bool
      */
-    public function update(string $eventType, Event $event): void;
+    public function has(EventReceiver $receiver): bool;
 
     /**
-     * Return the events handled by this receiver in string format
+     * Attach an EventReceiver
      *
-     * @return string|null
+     * @param EventReceiver $receiver
+     * @return void
      */
-    public function getEventsString(): ?string;
+    public function attach(EventReceiver $receiver): void;
+
+    /**
+     * Detach an EventReceiver
+     *
+     * @param EventReceiver $receiver
+     * @return void
+     */
+    public function detach(EventReceiver $receiver): void;
+
+    /**
+     * Notify to receivers
+     *
+     * @param string $eventName Nombre del evento
+     * @param Event $event Objeto del evento
+     */
+    public function notify(string $eventName, Event $event): void;
 }

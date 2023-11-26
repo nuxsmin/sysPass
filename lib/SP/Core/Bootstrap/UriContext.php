@@ -24,6 +24,7 @@
 
 namespace SP\Core\Bootstrap;
 
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Http\RequestInterface;
 
 /**

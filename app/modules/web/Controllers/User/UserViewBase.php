@@ -26,10 +26,15 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -45,7 +50,7 @@ abstract class UserViewBase extends ControllerBase
     use ItemTrait;
 
     protected UserServiceInterface                          $userService;
-    private \SP\Domain\User\Ports\UserGroupServiceInterface $userGroupService;
+    private UserGroupServiceInterface $userGroupService;
     private UserProfileServiceInterface                     $userProfileService;
     private CustomFieldServiceInterface $customFieldService;
 
@@ -53,7 +58,7 @@ abstract class UserViewBase extends ControllerBase
         Application $application,
         WebControllerHelper $webControllerHelper,
         UserServiceInterface $userService,
-        \SP\Domain\User\Ports\UserGroupServiceInterface $userGroupService,
+        UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
         CustomFieldServiceInterface $customFieldService
     ) {
@@ -72,10 +77,10 @@ abstract class UserViewBase extends ControllerBase
      *
      * @param  int|null  $userId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
     protected function setViewData(?int $userId = null): void
     {

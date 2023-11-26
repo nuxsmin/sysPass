@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Messages;
+namespace SP\Domain\Core\Acl;
+
+use SP\Core\Acl\ActionNotFoundException;
+use SP\DataModel\ActionData;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Interface DetailsFormatterInterface
- *
- * @package SP\Core\Messages
+ * Class Actions
  */
-interface FormatterInterface
+interface ActionsInterface
 {
-    public function formatDetail(array $text, bool $translate = false): string;
+    /**
+     * Returns an action by id
+     *
+     * @throws ActionNotFoundException
+     */
+    public function getActionById(int $id): ActionData;
 
-    public function formatDescription(array $text, bool $translate = false): string;
+    /**
+     * @throws FileException
+     */
+    public function reset(): void;
 }

@@ -25,9 +25,8 @@
 namespace SP\Domain\Crypt\Ports;
 
 use Defuse\Crypto\Key;
-use SP\Core\Crypt\UuidCookie;
-use SP\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\UuidCookieInterface;
 
 /**
  * Class SecureSessionService

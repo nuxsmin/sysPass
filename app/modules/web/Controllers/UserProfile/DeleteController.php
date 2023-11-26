@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -38,7 +39,8 @@ use SP\Mvc\Controller\ItemTrait;
  */
 final class DeleteController extends UserProfileSaveBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     /**
      * Delete action
@@ -46,7 +48,7 @@ final class DeleteController extends UserProfileSaveBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {

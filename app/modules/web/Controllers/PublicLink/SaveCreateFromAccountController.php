@@ -25,10 +25,11 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\PasswordUtil;
@@ -47,7 +48,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
      * @param  int  $notify
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveCreateFromAccountAction(int $accountId, int $notify): bool
     {

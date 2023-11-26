@@ -26,11 +26,12 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -44,7 +45,7 @@ final class SaveEditController extends AccountSaveBase
      * @param  int  $id  Account's ID
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveEditAction(int $id): ?bool
     {

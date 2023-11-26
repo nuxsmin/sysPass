@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,28 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Messages;
+namespace SP\Domain\Core\Messages;
 
 /**
- * Interface MessageInterface
- *
- * @package SP\Core\Messages
+ * Interface DetailsFormatterInterface
  */
-interface MessageInterface
+interface FormatterInterface
 {
-    /**
-     * Componer un mensaje en formato texto
-     *
-     * @param string $delimiter
-     *
-     * @return string
-     */
-    public function composeText(string $delimiter = PHP_EOL): string;
+    public function formatDetail(array $text, bool $translate = false): string;
 
-    /**
-     * Componer un mensaje en formato HTML
-     *
-     * @return string
-     */
-    public function composeHtml(): string;
+    public function formatDescription(array $text, bool $translate = false): string;
 }

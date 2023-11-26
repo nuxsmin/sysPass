@@ -26,6 +26,8 @@ namespace SP\Core\Crypt;
 
 use RuntimeException;
 use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 
 /**
  * Class Vault

@@ -24,10 +24,10 @@
 
 namespace SP\Core\Events;
 
-use SP\Core\Messages\FormatterInterface;
 use SP\Core\Messages\HtmlFormatter;
-use SP\Core\Messages\MessageInterface;
 use SP\Core\Messages\TextFormatter;
+use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\MessageInterface;
 
 /**
  * Class EventMessage

@@ -25,10 +25,11 @@
 namespace SP\Modules\Web\Controllers\CustomField;
 
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
@@ -43,16 +44,17 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SearchController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private CustomFieldDefServiceInterface $customFieldDefService;
     private CustomFieldGrid                $customFieldGrid;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService,
-        CustomFieldGrid $customFieldGrid
+        Application                    $application,
+        WebControllerHelper            $webControllerHelper,
+        CustomFieldDefServiceInterface $customFieldDefService,
+        CustomFieldGrid                $customFieldGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -66,9 +68,9 @@ final class SearchController extends ControllerBase
      * Search action
      *
      * @return bool
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws JsonException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function searchAction(): bool
     {

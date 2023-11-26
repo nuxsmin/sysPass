@@ -25,12 +25,12 @@
 namespace SP\Modules\Web\Controllers\UserSettingsManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Language;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\ExtensibleTabControllerInterface;
@@ -139,7 +139,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     }
 
     /**
-     * @return EventDispatcherInterface
+     * @return \SP\Domain\Core\Events\EventDispatcherInterface
      */
     public function getEventDispatcher(): EventDispatcherInterface
     {

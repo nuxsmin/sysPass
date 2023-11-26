@@ -28,12 +28,13 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Export\Ports\XmlExportServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
@@ -46,7 +47,7 @@ final class ExportController extends ControllerBase
     private XmlExportServiceInterface $xmlExportService;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function __construct(
         Application $application,

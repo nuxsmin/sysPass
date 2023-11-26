@@ -26,11 +26,12 @@ namespace SP\Modules\Web\Controllers\CustomField;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldDefinitionData;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -40,13 +41,13 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 
 abstract class CustomFieldViewBase extends ControllerBase
 {
-    private \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService;
+    private CustomFieldDefServiceInterface $customFieldDefService;
     private CustomFieldTypeServiceInterface                             $customFieldTypeService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService,
+        CustomFieldDefServiceInterface $customFieldDefService,
         CustomFieldTypeServiceInterface $customFieldTypeService
     ) {
         parent::__construct($application, $webControllerHelper);

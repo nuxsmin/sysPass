@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ItemManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -36,6 +35,7 @@ use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
@@ -135,8 +135,8 @@ final class IndexController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getGridTabs(): void
     {
@@ -191,9 +191,9 @@ final class IndexController extends ControllerBase
     /**
      * Returns categories' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getCategoriesList(): DataGridTab
     {
@@ -204,8 +204,8 @@ final class IndexController extends ControllerBase
      * Returns tags' data tab
      *
      * @return DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getTagsList(): DataGridTab
     {
@@ -253,8 +253,8 @@ final class IndexController extends ControllerBase
      * Returns accounts' data tab
      *
      * @return DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getAccountsList(): DataGridTab
     {
@@ -265,8 +265,8 @@ final class IndexController extends ControllerBase
      * Returns accounts' history data tab
      *
      * @return DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getAccountsHistoryList(): DataGridTab
     {
@@ -278,8 +278,8 @@ final class IndexController extends ControllerBase
      * Returns API tokens data tab
      *
      * @return DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getItemPresetList(): DataGridTab
     {

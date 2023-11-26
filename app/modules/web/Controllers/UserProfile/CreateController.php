@@ -26,8 +26,9 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -40,7 +41,7 @@ final class CreateController extends UserProfileViewBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function createAction(): bool
     {

@@ -24,8 +24,9 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\Context\SessionContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Crypt\CsrfInterface;
 use SP\Http\RequestInterface;
 
 use function SP\logger;

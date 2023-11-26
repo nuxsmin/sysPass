@@ -24,7 +24,10 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\AclActionsInterface;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JsonException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -36,9 +39,9 @@ use stdClass;
 class ConfigControllerTest extends ApiTestCase
 {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testExportAction(): void
     {
@@ -58,9 +61,9 @@ class ConfigControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testExportActionCustomPath(): void
     {
@@ -82,9 +85,9 @@ class ConfigControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testExportActionInvalidPath(): void
     {
@@ -102,9 +105,9 @@ class ConfigControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testBackupAction(): void
     {
@@ -126,9 +129,9 @@ class ConfigControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testBackupActionInvalidPath(): void
     {
@@ -146,9 +149,9 @@ class ConfigControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testBackupActionCustomPath(): void
     {

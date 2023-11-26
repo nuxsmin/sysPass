@@ -24,11 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Ports\AccountSearchServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -45,15 +50,16 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SearchController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountServiceInterface       $accountService;
     private AccountSearchServiceInterface $accountSearchService;
     private AccountGrid                   $accountGrid;
 
     /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws SessionTimeout
+     * @throws AuthException
      */
     public function __construct(
         Application $application,
@@ -71,9 +77,9 @@ final class SearchController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction(): bool
     {
@@ -94,10 +100,10 @@ final class SearchController extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @return \SP\Html\DataGrid\DataGridInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @return DataGridInterface
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     protected function getSearchGrid(): DataGridInterface
     {

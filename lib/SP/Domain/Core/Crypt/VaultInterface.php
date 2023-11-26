@@ -22,12 +22,45 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Crypt;
+
+use SP\Core\Exceptions\CryptException;
 
 /**
- * Class RequestBasedPassword
+ * Class VaultInterface
  */
-interface RequestBasedPasswordInterface
+interface VaultInterface
 {
-    public function build(): string;
+    /**
+     * Re-key this vault
+     *
+     * @throws CryptException
+     */
+    public function reKey(string $newSeed, string $oldSeed): VaultInterface;
+
+    /**
+     * Create a new vault with the saved data
+     *
+     * @throws CryptException
+     */
+    public function saveData(string $data, string $key): VaultInterface;
+
+    /**
+     * Get the data decrypted
+     *
+     * @throws CryptException
+     */
+    public function getData(string $key): string;
+
+    /**
+     * Serialize the current vault
+     */
+    public function getSerialized(): string;
+
+    /**
+     * Get the last time the key and data were set
+     *
+     * @return int
+     */
+    public function getTimeSet(): int;
 }

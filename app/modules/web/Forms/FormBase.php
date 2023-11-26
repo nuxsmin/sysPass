@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Http\RequestInterface;
 
 /**
@@ -44,8 +44,8 @@ abstract class FormBase
     /**
      * FormBase constructor.
      *
-     * @param  \SP\Core\Application  $application
-     * @param  \SP\Http\RequestInterface  $request
+     * @param Application $application
+     * @param RequestInterface $request
      * @param  int|null  $itemId
      */
     public function __construct(

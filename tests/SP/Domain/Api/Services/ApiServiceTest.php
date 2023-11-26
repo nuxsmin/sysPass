@@ -28,16 +28,20 @@ use Exception;
 use Faker\Factory;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use SP\Core\Acl\AclActionsInterface;
-use SP\Core\Context\ContextInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\CryptException;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\ApiService;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -48,6 +52,7 @@ use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
+
 use function PHPUnit\Framework\onConsecutiveCalls;
 
 /**
@@ -186,8 +191,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidClassException
+     * @throws InvalidArgumentException
      */
     public function testGetParamWithHelp()
     {
@@ -214,7 +219,7 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function testSetHelpClass()
     {
@@ -227,7 +232,7 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function testSetHelpClassError()
     {
@@ -246,8 +251,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetup()
     {
@@ -285,8 +290,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Context\ContextException
+     * @throws InvalidArgumentException
+     * @throws ContextException
      */
     protected function setUp(): void
     {
@@ -313,8 +318,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetupAttemptsExceeded()
     {
@@ -333,8 +338,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetupTrackingError()
     {
@@ -358,7 +363,7 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testSetupInvalidToken()
     {
@@ -383,8 +388,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetupAccessDenied()
     {
@@ -419,8 +424,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetupWithMasterPass()
     {
@@ -470,8 +475,8 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetupWithMasterPassWrongTokenPass()
     {
@@ -557,10 +562,10 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Core\Exceptions\CryptException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testRequireMasterPass()
     {
@@ -608,9 +613,9 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ContextException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testRequireMasterPassNotInitialized()
     {
@@ -621,9 +626,9 @@ class ApiServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\CryptException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws CryptException
+     * @throws SPException
      */
     public function testGetMasterPass()
     {

@@ -26,21 +26,22 @@ namespace SP\Domain\Account\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Crypt\CryptInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\SPException;
-use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Util\Util;
+
 use function SP\__;
 use function SP\__u;
 use function SP\logger;
@@ -116,11 +117,11 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
     }
 
     /**
-     * @param  \SP\Domain\Account\Models\Account[]  $accounts
+     * @param  Account[]  $accounts
      * @param  callable  $passUpdater
-     * @param  \SP\Domain\Crypt\Services\UpdateMasterPassRequest  $updateMasterPassRequest
+     * @param UpdateMasterPassRequest $updateMasterPassRequest
      *
-     * @return \SP\Core\Events\EventMessage
+     * @return EventMessage
      */
     private function processAccounts(
         array $accounts,
@@ -225,7 +226,7 @@ final class AccountCryptService extends Service implements AccountCryptServiceIn
     /**
      * Devolver los datos de la clave encriptados
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getPasswordEncrypted(string $pass, ?string $masterPass = null): EncryptedPassword
     {

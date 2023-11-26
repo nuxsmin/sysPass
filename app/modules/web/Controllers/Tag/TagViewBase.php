@@ -26,11 +26,11 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TagData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -41,7 +41,7 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class TagViewBase extends ControllerBase
 {
-    private \SP\Domain\Tag\Ports\TagServiceInterface $tagService;
+    private TagServiceInterface $tagService;
 
     public function __construct(
         Application $application,

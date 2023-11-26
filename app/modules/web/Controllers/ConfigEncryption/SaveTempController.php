@@ -25,10 +25,12 @@
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -60,7 +62,7 @@ final class SaveTempController extends SimpleControllerBase
      * Create a temporary master pass
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveTempAction(): bool
     {
@@ -112,8 +114,8 @@ final class SaveTempController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

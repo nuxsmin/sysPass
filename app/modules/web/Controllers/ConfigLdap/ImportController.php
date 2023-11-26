@@ -26,17 +26,19 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 
 use Exception;
+use JsonException;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Import\Ports\LdapImportServiceInterface;
 use SP\Domain\Import\Services\LdapImportParams;
@@ -50,7 +52,8 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
  */
 final class ImportController extends SimpleControllerBase
 {
-    use JsonTrait, ConfigLdapTrait;
+    use ConfigLdapTrait;
+    use JsonTrait;
 
     private LdapImportServiceInterface $ldapImportService;
 
@@ -72,7 +75,7 @@ final class ImportController extends SimpleControllerBase
      * importAction
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function importAction(): bool
     {
@@ -129,7 +132,7 @@ final class ImportController extends SimpleControllerBase
 
     /**
      * @return array
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     private function getImportParams(): array
     {
@@ -158,8 +161,8 @@ final class ImportController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

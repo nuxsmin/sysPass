@@ -25,10 +25,10 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
 use SP\Mvc\View\TemplateInterface;
@@ -50,9 +50,9 @@ abstract class HelperBase
     /**
      * Constructor
      *
-     * @param  \SP\Core\Application  $application
-     * @param  \SP\Mvc\View\TemplateInterface  $template
-     * @param  \SP\Http\RequestInterface  $request
+     * @param Application $application
+     * @param TemplateInterface $template
+     * @param RequestInterface $request
      */
     public function __construct(
         Application $application,

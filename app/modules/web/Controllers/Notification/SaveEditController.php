@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -45,7 +46,7 @@ final class SaveEditController extends NotificationSaveBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveEditAction(int $id): bool
     {

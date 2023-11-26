@@ -25,11 +25,12 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
+use JsonException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 
 /**
@@ -39,7 +40,7 @@ final class SaveCopyController extends AccountSaveBase
 {
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveCopyAction(): ?bool
     {

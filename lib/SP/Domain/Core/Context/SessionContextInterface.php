@@ -22,16 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Context;
+namespace SP\Domain\Core\Context;
 
-use SP\Core\Crypt\Vault;
-use SP\Core\Crypt\VaultInterface;
 use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Core\Crypt\VaultInterface;
 
 /**
  * Class Session
- *
- * @package SP\Core\Session
  */
 interface SessionContextInterface extends ContextInterface
 {

@@ -27,7 +27,7 @@ namespace SP\Tests\Core\Events;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventReceiver;
+use SP\Domain\Core\Events\EventReceiver;
 use SP\Tests\UnitaryTestCase;
 
 /**

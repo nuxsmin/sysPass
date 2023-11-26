@@ -24,7 +24,10 @@
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Core\Acl\AclActionsInterface;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JsonException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -41,9 +44,9 @@ class CategoryControllerTest extends ApiTestCase
     ];
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateAction(): void
     {
@@ -63,9 +66,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     private function createCategory(?array $params = null): stdClass
     {
@@ -78,9 +81,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionDuplicated(): void
     {
@@ -91,9 +94,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testCreateActionRequiredParameter(): void
     {
@@ -110,9 +113,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewAction(): void
     {
@@ -143,9 +146,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testViewActionNonExistant(): void
     {
@@ -161,9 +164,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditAction(): void
     {
@@ -209,9 +212,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionDuplicated(): void
     {
@@ -236,9 +239,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionRequiredParameters(): void
     {
@@ -265,9 +268,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testEditActionNonExistant(): void
     {
@@ -291,9 +294,9 @@ class CategoryControllerTest extends ApiTestCase
     /**
      * @dataProvider searchProvider
      *
-     * @throws \DI\DependencyException
-     * @throws \JsonException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
      */
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
@@ -310,9 +313,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteAction(): void
     {
@@ -334,9 +337,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionNonExistant(): void
     {
@@ -352,9 +355,9 @@ class CategoryControllerTest extends ApiTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \JsonException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
     public function testDeleteActionRequiredParameters(): void
     {

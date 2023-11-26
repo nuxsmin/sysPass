@@ -24,11 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -45,7 +46,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class SearchController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountHistoryServiceInterface $accountHistoryService;
     private AccountHistoryGrid             $accountHistoryGrid;
@@ -67,9 +69,9 @@ final class SearchController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws JsonException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function searchAction(): bool
     {

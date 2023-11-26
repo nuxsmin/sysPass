@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,35 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
-
-use SP\Infrastructure\File\FileException;
+namespace SP\Domain\Core\Crypt;
 
 /**
- * Class CryptPKI para el manejo de las funciones para PKI
- *
- * @package SP
+ * Class RequestBasedPassword
  */
-interface CryptPKIInterface
+interface RequestBasedPasswordInterface
 {
-    /**
-     * Crea el par de claves pública y privada
-     *
-     * @throws FileException
-     */
-    public function createKeys(): void;
-
-    /**
-     * Devuelve la clave pública desde el archivo
-     *
-     * @throws FileException
-     */
-    public function getPublicKey(): string;
-
-    /**
-     * Desencriptar datos cifrados con la clave pública
-     *
-     * @throws FileException
-     */
-    public function decryptRSA(string $data): ?string;
+    public function build(): string;
 }

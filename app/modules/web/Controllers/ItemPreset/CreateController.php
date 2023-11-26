@@ -26,8 +26,9 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\Filter;
@@ -43,7 +44,7 @@ final class CreateController extends ItemPresetViewBase
      * @param  mixed  ...$args
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function createAction(...$args): bool
     {

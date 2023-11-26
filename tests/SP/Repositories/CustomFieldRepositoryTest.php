@@ -26,14 +26,15 @@ namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldRepository;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**

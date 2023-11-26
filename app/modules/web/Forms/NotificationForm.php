@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\NotificationData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class NotificationForm

@@ -25,10 +25,10 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -43,10 +43,10 @@ final class RequestAccessController extends ControllerBase
     private AccountServiceInterface $accountService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
-        AccountRequestHelper $accountRequestHelper
+        Application             $application,
+        WebControllerHelper     $webControllerHelper,
+        AccountServiceInterface $accountService,
+        AccountRequestHelper    $accountRequestHelper
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -24,10 +24,11 @@
 
 namespace SP\Core\Context;
 
-use SP\Core\Crypt\VaultInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 
 use function SP\logger;

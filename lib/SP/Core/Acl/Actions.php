@@ -24,8 +24,8 @@
 
 namespace SP\Core\Acl;
 
-use RuntimeException;
 use SP\DataModel\ActionData;
+use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;

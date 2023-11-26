@@ -27,17 +27,16 @@ namespace SP\Domain\Crypt\Services;
 use Defuse\Crypto\Key;
 use Exception;
 use SP\Core\Application;
-use SP\Core\Crypt\CryptInterface;
-use SP\Core\Crypt\RequestBasedPassword;
-use SP\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Core\Crypt\UuidCookie;
-use SP\Core\Crypt\UuidCookieInterface;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
+use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
+
 use function SP\logger;
 use function SP\processException;
 

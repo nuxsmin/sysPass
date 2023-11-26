@@ -25,12 +25,14 @@
 namespace SP\Modules\Web\Controllers\ConfigImport;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportParams;
@@ -61,7 +63,7 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function importAction(): bool
     {
@@ -110,7 +112,7 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @return \SP\Domain\Import\Services\ImportParams
+     * @return ImportParams
      */
     private function getImportParams(): ImportParams
     {
@@ -130,8 +132,8 @@ final class ImportController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

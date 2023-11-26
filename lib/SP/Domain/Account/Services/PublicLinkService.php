@@ -27,9 +27,9 @@ namespace SP\Domain\Account\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
-use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\CryptException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
@@ -43,10 +43,12 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -90,9 +92,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -100,13 +102,13 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function refresh(int $id): bool
     {
@@ -123,9 +125,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * @param  int  $id
      *
-     * @return \SP\DataModel\PublicLinkListData
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return PublicLinkListData
+     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): PublicLinkListData
     {
@@ -139,15 +141,15 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     * @param PublicLinkData $publicLinkData
      *
-     * @return \SP\DataModel\PublicLinkData
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\CryptException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return PublicLinkData
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws CryptException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     private function buildPublicLink(PublicLinkData $publicLinkData): PublicLinkData
     {
@@ -182,14 +184,14 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
      * @param  int  $itemId
-     * @param  \SP\Domain\Account\Services\PublicLinkKey  $key
+     * @param PublicLinkKey $key
      *
      * @return string
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\CryptException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws CryptException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     private function getSecuredLinkData(int $itemId, PublicLinkKey $key): string
     {
@@ -218,9 +220,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * @param  int  $id
      *
-     * @return \SP\Domain\Account\Ports\PublicLinkServiceInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return PublicLinkServiceInterface
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): PublicLinkServiceInterface
     {
@@ -261,7 +263,7 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getAllBasic(): array
     {
@@ -271,11 +273,11 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
     /**
      * Incrementar el contador de visitas de un enlace
      *
-     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     * @param PublicLinkData $publicLinkData
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function addLinkView(PublicLinkData $publicLinkData): void
     {
@@ -334,9 +336,9 @@ final class PublicLinkService extends Service implements PublicLinkServiceInterf
      *
      * @param  int  $itemId
      *
-     * @return \SP\DataModel\PublicLinkData
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return PublicLinkData
+     * @throws SPException
+     * @throws NoSuchItemException
      */
     public function getHashForItem(int $itemId): PublicLinkData
     {

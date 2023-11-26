@@ -24,8 +24,8 @@
 
 namespace SP\Core;
 
-use SP\Core\Context\ContextInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\LanguageInterface;
 use SP\Http\RequestInterface;
 

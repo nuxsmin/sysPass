@@ -25,7 +25,6 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -35,10 +34,12 @@ use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
+
 use function SP\processException;
 
 /**
@@ -78,7 +79,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      * Obtener la ACL de una cuenta
      *
      * @param  int  $actionId
-     * @param  \SP\Domain\Account\Dtos\AccountAclDto  $accountAclDto
+     * @param AccountAclDto $accountAclDto
      * @param  bool  $isHistory
      *
      * @return AccountAcl
@@ -145,7 +146,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
      * @param  int  $accountId
      * @param  int  $actionId
      *
-     * @return \SP\Domain\Account\Services\AccountAcl|null
+     * @return AccountAcl|null
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl
     {

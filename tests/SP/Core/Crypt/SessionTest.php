@@ -26,10 +26,10 @@ namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\SessionContextInterface;
 use SP\Core\Crypt\Session;
-use SP\Core\Crypt\VaultInterface;
 use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

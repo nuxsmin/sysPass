@@ -26,14 +26,16 @@ namespace SP\Modules\Web\Controllers\ConfigMail;
 
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -62,7 +64,7 @@ final class CheckController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function checkAction(): bool
     {
@@ -103,7 +105,7 @@ final class CheckController extends SimpleControllerBase
     }
 
     /**
-     * @return \SP\Providers\Mail\MailParams
+     * @return MailParams
      */
     private function handleMailConfig(): MailParams
     {
@@ -125,8 +127,8 @@ final class CheckController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws JsonException
+     * @throws SessionTimeout
      */
     protected function initialize(): void
     {

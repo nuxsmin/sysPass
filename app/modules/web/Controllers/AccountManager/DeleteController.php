@@ -25,11 +25,12 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use SP\Core\Acl\AclActionsInterface;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -44,7 +45,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class DeleteController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountServiceInterface     $accountService;
     private CustomFieldServiceInterface $customFieldService;
@@ -69,7 +71,7 @@ final class DeleteController extends ControllerBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {

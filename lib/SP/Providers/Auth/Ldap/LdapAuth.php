@@ -26,12 +26,12 @@ namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Ports\LdapInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__u;
 use function SP\processException;

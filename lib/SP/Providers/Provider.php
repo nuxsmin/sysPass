@@ -25,9 +25,9 @@
 namespace SP\Providers;
 
 use SP\Core\Application;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * Class Service

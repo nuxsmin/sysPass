@@ -27,12 +27,13 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Modules\Api\Controllers\ControllerBase;
@@ -48,7 +49,7 @@ final class BackupController extends ControllerBase
     private FileBackupServiceInterface $fileBackupService;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function __construct(
         Application $application,

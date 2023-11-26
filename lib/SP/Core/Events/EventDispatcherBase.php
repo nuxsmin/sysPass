@@ -24,6 +24,8 @@
 
 namespace SP\Core\Events;
 
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
 use SplObjectStorage;
 
 use function SP\logger;

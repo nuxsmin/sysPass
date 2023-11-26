@@ -24,8 +24,8 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\Context\SessionContextInterface;
 use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Context\SessionContextInterface;
 
 use function SP\logger;
 

@@ -26,11 +26,11 @@ namespace SP\Domain\Account\Services;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
-use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 
 /**
@@ -97,9 +97,9 @@ final class AccountFilterUser implements AccountFilterUserInterface
     }
 
     /**
-     * @param  \SP\Domain\User\Services\UserLoginResponse  $userData
+     * @param UserLoginResponse $userData
      * @param  bool  $useGlobalSearch
-     * @param  \SP\DataModel\ProfileData|null  $userProfile
+     * @param ProfileData|null  $userProfile
      *
      * @return bool
      */

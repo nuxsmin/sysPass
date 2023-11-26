@@ -26,10 +26,11 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
+use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemPreset\AccountPermission;
@@ -45,6 +46,8 @@ use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -52,6 +55,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Mvc\Controller\ItemTrait;
@@ -124,17 +128,17 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
+     * @param AccountEnrichedDto $accountDetailsResponse
      * @param  int  $actionId
      *
-     * @throws \SP\Core\Acl\AccountPermissionException
-     * @throws \SP\Core\Acl\UnauthorizedPageException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws AccountPermissionException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
+     * @throws UpdatedMasterPassException
+     * @throws NoSuchItemException
      */
     public function setViewForAccount(
         AccountEnrichedDto $accountDetailsResponse,
@@ -287,7 +291,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
+     * @param AccountEnrichedDto $accountDetailsResponse
      *
      * @return AccountAcl
      * @throws AccountPermissionException
@@ -311,10 +315,10 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view common data
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
     protected function setViewCommon(): void
     {
@@ -379,14 +383,14 @@ final class AccountHelper extends AccountHelperBase
      * @param  int  $actionId
      *
      * @return void
-     * @throws \SP\Core\Acl\UnauthorizedPageException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws UpdatedMasterPassException
      */
     public function setViewForBlank(int $actionId): void
     {

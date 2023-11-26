@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\AccessManager;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ConstraintException;
@@ -33,6 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;

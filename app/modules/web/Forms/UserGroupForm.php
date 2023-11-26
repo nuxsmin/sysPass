@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class UserGroupForm
@@ -89,7 +89,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getItemData(): UserGroupData
     {

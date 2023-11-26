@@ -24,15 +24,18 @@
 
 namespace SP\Tests\Domain\Crypt\Services;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\CryptInterface;
-use SP\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\CryptException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Crypt\Services\SecureSessionService;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
@@ -52,8 +55,8 @@ class SecureSessionServiceTest extends UnitaryTestCase
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws CryptException
      */
     public function testGetKey()
     {
@@ -118,8 +121,8 @@ class SecureSessionServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws CryptException
      */
     public function testGetKeyBuildPasswordException()
     {
@@ -136,7 +139,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetFileNameFrom()
     {
@@ -152,7 +155,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetFileNameFromErrorLoadingCookie()
     {
@@ -168,7 +171,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetFileNameFromErrorCreatingCookie()
     {
@@ -185,7 +188,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     /**
      * @return void
      * @throws \PHPUnit\Framework\MockObject\Exception
-     * @throws \SP\Core\Context\ContextException
+     * @throws ContextException
      */
     protected function setUp(): void
     {

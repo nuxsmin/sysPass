@@ -24,11 +24,11 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class UserProfileForm
@@ -81,7 +81,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return \SP\DataModel\ProfileData
+     * @return ProfileData
      */
     private function getProfileDataFromRequest(): ProfileData
     {
@@ -131,7 +131,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getItemData(): UserProfileData
     {

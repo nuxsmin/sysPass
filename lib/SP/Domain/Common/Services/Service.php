@@ -27,11 +27,12 @@ namespace SP\Domain\Common\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
-use SP\Core\Events\EventDispatcherInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+
 use function SP\__u;
 use function SP\logger;
 

@@ -26,15 +26,16 @@ namespace SP\Core\Definitions;
 
 use Psr\Container\ContainerInterface;
 use SP\Core\Application;
-use SP\Core\Crypt\CryptInterface;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
 use SP\Domain\Account\Search\AccountSearchDataBuilder;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
 use SP\Domain\Crypt\Services\SecureSessionService;
 use SP\Infrastructure\File\FileCache;
+
 use function DI\autowire;
 use function DI\factory;
 

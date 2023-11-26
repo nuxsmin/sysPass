@@ -26,8 +26,9 @@ namespace SP\Modules\Web\Controllers\Upgrade;
 
 
 use SP\Core\Acl\Actions;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Application;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -48,7 +49,7 @@ final class IndexController extends ControllerBase
     /**
      * indexAction
      *
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws FileException
      */
     public function indexAction(): void
     {

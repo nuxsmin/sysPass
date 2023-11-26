@@ -22,26 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Bootstrap;
+namespace SP\Domain\Core\Crypt;
 
 /**
- * Class UriContext
+ * Class CSRF
+ *
+ * @package SP\Core\Crypt
  */
-interface UriContextInterface
+interface CsrfInterface
 {
     /**
-     * The full URL to reach the application (e.g. https://sub.example.com/syspass/)
-     *
-     * @return string
+     * Check for CSRF token on POST requests
      */
-    public function getWebUri(): string;
+    public function check(): bool;
 
     /**
-     * The current request path relative to the application root (e.g. files/index.php)
-     *
-     * @return string
+     * Initialize the CSRF key
      */
-    public function getWebRoot(): string;
-
-    public function getSubUri(): string;
+    public function initialize(): void;
 }

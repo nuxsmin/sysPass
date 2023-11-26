@@ -26,14 +26,15 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\AclActionsInterface;
 use SP\Core\Application;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Models\ItemPreset;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
@@ -44,13 +45,13 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ItemPresetViewBase extends ControllerBase
 {
-    private \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService;
+    private ItemPresetServiceInterface $itemPresetService;
     private ItemPresetHelper                                       $itemPresetHelper;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService,
+        ItemPresetServiceInterface $itemPresetService,
         ItemPresetHelper $itemPresetHelper
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -94,7 +95,7 @@ abstract class ItemPresetViewBase extends ControllerBase
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
                 $this->itemPresetHelper->makeAccountPrivateView($itemPresetData);
                 break;
-            case \SP\Domain\ItemPreset\Ports\ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
+            case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
                 $this->itemPresetHelper->makeSessionTimeoutView($itemPresetData);
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
