@@ -25,7 +25,7 @@
 namespace SP\Domain\Import\Services;
 
 use DOMDocument;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 
 /**
@@ -41,7 +41,7 @@ final class XmlFileImport implements XmlFileImportInterface
     /**
      * XmlFileImport constructor.
      *
-     * @param  \SP\Domain\Import\Services\FileImportInterface  $fileImport
+     * @param FileImportInterface $fileImport
      *
      * @throws ImportException
      * @throws FileException

@@ -24,6 +24,7 @@
 
 namespace SP\Domain\Install\Services;
 
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 
 /**
@@ -32,10 +33,10 @@ use SP\Domain\Install\Adapters\InstallData;
 interface MysqlSetupBuilderInterface
 {
     /**
-     * @param  \SP\Domain\Install\Adapters\InstallData  $installData
+     * @param InstallData $installData
      *
-     * @return \SP\Domain\Install\Services\DatabaseSetupInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @return DatabaseSetupInterface
+     * @throws SPException
      */
     public static function build(InstallData $installData): DatabaseSetupInterface;
 }

@@ -24,10 +24,11 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -52,28 +53,28 @@ interface UserGroupServiceInterface
     public function getById(int $id): UserGroupData;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserGroupServiceInterface;
 
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
     public function deleteByIdBatch(array $ids): int;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(UserGroupData $itemData): int;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(UserGroupData $itemData): void;
 

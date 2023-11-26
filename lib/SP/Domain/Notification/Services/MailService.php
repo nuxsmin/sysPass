@@ -29,16 +29,17 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
 use SP\Html\Html;
 use SP\Providers\Mail\MailParams;
+use SP\Providers\Mail\MailProviderException;
 
 /**
  * Class MailService
@@ -51,7 +52,7 @@ final class MailService extends Service implements MailServiceInterface
     private MailProviderInterface $mailProvider;
 
     /**
-     * @throws \SP\Providers\Mail\MailProviderException
+     * @throws MailProviderException
      */
     public function __construct(Application $application, MailProviderInterface $mailProvider)
     {
@@ -145,7 +146,7 @@ final class MailService extends Service implements MailServiceInterface
      * @param  array|string  $to
      * @param  MailMessage  $mailMessage
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function send(string $subject, $to, MailMessage $mailMessage): void
     {
@@ -201,7 +202,7 @@ final class MailService extends Service implements MailServiceInterface
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function sendBatch(string $subject, array $to, MailMessage $mailMessage): void
     {

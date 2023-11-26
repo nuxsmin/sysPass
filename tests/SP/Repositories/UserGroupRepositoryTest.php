@@ -27,15 +27,16 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\User\Repositories\UserGroupRepository;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**

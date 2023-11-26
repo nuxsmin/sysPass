@@ -25,7 +25,7 @@
 namespace SP;
 
 use Exception;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use Throwable;
 
 /**
@@ -240,7 +240,7 @@ function getElapsedTime(float $from): float
 /**
  * Inicializar módulo
  *
- * @throws \SP\Core\Exceptions\SPException
+ * @throws SPException
  */
 function initModule(string $module): array
 {

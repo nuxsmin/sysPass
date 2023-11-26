@@ -24,8 +24,9 @@
 
 namespace SP\Http;
 
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
+
 use function SP\__;
 use function SP\__u;
 use function SP\logger;
@@ -40,7 +41,7 @@ final class Address
     public const PATTERN_IP_ADDRESS = '#^(?<address>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})(?:/(?:(?<mask>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})|(?<cidr>[\d]{1,2})))?$#';
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function toBinary(string $address): string
     {

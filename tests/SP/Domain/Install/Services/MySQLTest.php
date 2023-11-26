@@ -26,10 +26,12 @@ namespace SP\Tests\Domain\Install\Services;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlService;
 use SP\Infrastructure\Database\DatabaseFileInterface;
@@ -37,6 +39,7 @@ use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
+
 use function SP\__;
 use function SP\__u;
 
@@ -56,7 +59,7 @@ class MySQLTest extends UnitaryTestCase
     private DatabaseUtil|MockObject          $databaseUtil;
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testConnectDatabaseIsSuccessful(): void
     {
@@ -66,7 +69,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testConnectDatabaseIsNotSuccessful(): void
     {
@@ -83,13 +86,13 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testSetupUserIsSuccessful(): void
     {
         $query = 'SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -125,7 +128,7 @@ class MySQLTest extends UnitaryTestCase
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -142,7 +145,7 @@ class MySQLTest extends UnitaryTestCase
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -156,14 +159,14 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws SPException
+     * @throws Exception
      */
     public function testCreateDatabaseIsSuccessful(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -209,7 +212,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDatabaseIsSuccessfulInHostingMode(): void
     {
@@ -228,13 +231,13 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDatabaseIsNotSuccessfulWithDuplicateDatabase(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -251,14 +254,14 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws SPException
+     * @throws Exception
      */
     public function testCreateDatabaseIsSuccessfulWithDns(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -315,13 +318,13 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDatabaseIsNotSuccessfulWithCreateError(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -348,14 +351,14 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws SPException
+     * @throws Exception
      */
     public function testCreateDatabaseIsNotSuccessfulWithPermissionError(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
-        $pdoStatement = $this->createMock(\PDOStatement::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
 
         $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
         $pdoStatement->expects(self::once())->method('execute')->with(
@@ -421,7 +424,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDatabaseIsNotSuccessfulInHostingMode(): void
     {
@@ -531,7 +534,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBStructureIsSuccessful(): void
     {
@@ -556,7 +559,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBStructureIsNotSuccessfulWithUseDatabaseError(): void
     {
@@ -580,7 +583,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBStructureIsNotSuccessfulWithCreateSchemaError(): void
     {
@@ -624,7 +627,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBStructureIsNotSuccessfulWithParseSchemaError(): void
     {
@@ -659,7 +662,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCheckConnectionIsSuccessful(): void
     {
@@ -672,7 +675,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCheckConnectionIsNotSuccessful(): void
     {
@@ -701,7 +704,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBUserIsSuccessful(): void
     {
@@ -732,7 +735,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBUserIsSuccessfulWithDns(): void
     {
@@ -773,7 +776,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBUserIsSuccessfulWithHostingMode(): void
     {
@@ -788,7 +791,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBUserIsNotSuccessful(): void
     {
@@ -806,7 +809,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function setUp(): void
     {
@@ -832,7 +835,7 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\Adapters\InstallData
+     * @return InstallData
      */
     private function getInstallData(): InstallData
     {

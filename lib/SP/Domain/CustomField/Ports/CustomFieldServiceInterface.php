@@ -25,10 +25,11 @@
 namespace SP\Domain\CustomField\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
@@ -42,15 +43,15 @@ interface CustomFieldServiceInterface
      * Desencriptar y formatear los datos del campo
      *
      * @throws CryptoException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function decryptData(string $data, string $key): string;
 
     /**
      * Returns the module's item for given id
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): array;
 
@@ -76,7 +77,7 @@ interface CustomFieldServiceInterface
      *
      * @throws CryptoException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
@@ -116,10 +117,10 @@ interface CustomFieldServiceInterface
     /**
      * Updates an item
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function updateMasterPass(CustomFieldData $customFieldData, string $masterPass): int;
 

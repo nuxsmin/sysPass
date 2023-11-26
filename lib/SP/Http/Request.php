@@ -28,8 +28,8 @@ use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Filter;
 use SP\Util\Util;
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,14 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Exceptions;
+namespace SP\Domain\Core\Acl;
+
+use Exception;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
- * Class ConfigException
- *
- * @package SP\Core\Exceptions
+ * Class AccountPermissionException
  */
-final class ConfigException extends SPException
+final class AccountPermissionException extends SPException
 {
-
+    /**
+     * SPException constructor.
+     */
+    public function __construct(string $type, $code = 0, Exception $previous = null)
+    {
+        parent::__construct(
+            __u('You don\'t have permission to access this account'),
+            $type,
+            __u('Please contact to the administrator'),
+            $code,
+            $previous
+        );
+    }
 }

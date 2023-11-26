@@ -27,6 +27,8 @@ namespace SP\Domain\Account\Ports;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Services\UserLoginResponse;
 
 /**
@@ -54,8 +56,8 @@ interface AccountAclServiceInterface
      * @param  bool  $isHistory
      *
      * @return AccountAcl
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountAcl;
 
@@ -65,7 +67,7 @@ interface AccountAclServiceInterface
      * @param  int  $accountId
      * @param  int  $actionId
      *
-     * @return \SP\Domain\Account\Services\AccountAcl|null
+     * @return AccountAcl|null
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountAcl;
 }

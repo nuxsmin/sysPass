@@ -26,7 +26,7 @@ namespace SP\Tests\Services\Import;
 
 use DI\Container;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportParams;
@@ -34,6 +34,7 @@ use SP\Domain\Import\Services\XmlFileImport;
 use SP\Domain\Import\Services\XmlImport;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**

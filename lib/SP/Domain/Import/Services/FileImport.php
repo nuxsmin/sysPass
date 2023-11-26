@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
@@ -67,8 +67,8 @@ final class FileImport implements FileImportInterface
      * @param  array|null  $file  con los datos del archivo
      *
      * @return FileHandlerInterface
-     * @throws \SP\Domain\Import\Services\ImportException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws ImportException
+     * @throws FileException
      */
     private static function checkFile(?array $file): FileHandlerInterface
     {

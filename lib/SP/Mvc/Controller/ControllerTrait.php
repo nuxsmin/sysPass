@@ -27,8 +27,8 @@ namespace SP\Mvc\Controller;
 use Closure;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Http\RequestInterface;
@@ -63,11 +63,11 @@ trait ControllerTrait
     /**
      * Logout from current session
      *
-     * @param  \SP\Http\RequestInterface  $request
-     * @param  \SP\Domain\Config\Ports\ConfigDataInterface  $configData
-     * @param  \Closure  $onRedirect
+     * @param RequestInterface $request
+     * @param ConfigDataInterface $configData
+     * @param Closure $onRedirect
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function sessionLogout(
         RequestInterface $request,
@@ -111,7 +111,7 @@ trait ControllerTrait
     /**
      * Acción no disponible
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function invalidAction(): void
     {

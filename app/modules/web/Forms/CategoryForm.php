@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
 
 /**
  * Class CategoryForm

@@ -30,6 +30,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\FileData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -48,8 +50,8 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     private AccountFileRepository        $accountFileRepository;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch(): void
     {
@@ -76,8 +78,8 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatchWithNoIds(): void
     {
@@ -88,8 +90,8 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testCreate(): void
     {
@@ -145,8 +147,8 @@ class AccountFileRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDelete(): void
     {

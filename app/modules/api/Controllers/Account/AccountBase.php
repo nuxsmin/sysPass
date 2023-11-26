@@ -32,6 +32,7 @@ use SP\Domain\Account\Adapters\AccountAdapterInterface;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
@@ -47,7 +48,7 @@ abstract class AccountBase extends ControllerBase
     protected AccountAdapterInterface       $accountAdapter;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function __construct(
         Application $application,

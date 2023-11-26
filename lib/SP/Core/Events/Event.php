@@ -24,8 +24,8 @@
 
 namespace SP\Core\Events;
 
-use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class Event

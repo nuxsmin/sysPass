@@ -24,10 +24,10 @@
 
 namespace SP\Infrastructure\Security\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\TrackRepositoryInterface;
 use SP\Domain\Security\Services\TrackService;
 use SP\Infrastructure\Common\Repositories\Repository;

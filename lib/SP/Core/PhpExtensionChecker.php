@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use RuntimeException;
-use SP\Core\Exceptions\CheckException;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\PhpExtensionCheckerInterface;
 
 use function SP\__u;

@@ -29,6 +29,9 @@ use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserServiceInterface;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class AccountToUserService
@@ -46,9 +49,9 @@ final class AccountToUserService extends Service implements AccountToUserService
      * @param  int  $id
      *
      * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getUsersByAccountId(int $id): array
     {

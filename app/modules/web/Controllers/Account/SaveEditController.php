@@ -30,8 +30,8 @@ use JsonException;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
 
 /**

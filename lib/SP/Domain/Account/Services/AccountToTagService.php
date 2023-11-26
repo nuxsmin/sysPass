@@ -30,6 +30,9 @@ use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToTagServiceInterface;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class AccountToTagService
@@ -54,9 +57,9 @@ final class AccountToTagService extends Service implements AccountToTagServiceIn
      *
      * @return ItemData[]
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getTagsByAccountId(int $id): array
     {

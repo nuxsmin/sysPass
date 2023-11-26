@@ -26,10 +26,6 @@ namespace SP\Domain\Import\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
@@ -37,6 +33,10 @@ use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 
@@ -80,7 +80,7 @@ trait ImportTrait
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    protected function addAccount(\SP\Domain\Account\Dtos\AccountRequest $accountRequest): void
+    protected function addAccount(AccountRequest $accountRequest): void
     {
         if (empty($accountRequest->categoryId)) {
             throw new ImportException(__u('Category Id not set. Unable to import account.'));

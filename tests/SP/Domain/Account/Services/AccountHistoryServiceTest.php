@@ -32,6 +32,7 @@ use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Services\AccountHistoryService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -73,7 +74,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetHistoryForAccount()
     {
@@ -85,7 +86,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetAccountsPassData()
     {
@@ -95,7 +96,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDelete()
     {
@@ -107,7 +108,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDeleteError()
     {
@@ -122,7 +123,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws NoSuchItemException
      */
     public function testGetById()
     {
@@ -137,7 +138,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws NoSuchItemException
      */
     public function testGetByIdError()
     {
@@ -172,7 +173,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdatePasswordMasterPass()
     {
@@ -188,7 +189,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdatePasswordMasterPassError()
     {

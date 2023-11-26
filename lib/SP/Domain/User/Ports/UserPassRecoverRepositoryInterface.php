@@ -24,9 +24,9 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -78,8 +78,8 @@ interface UserPassRecoverRepositoryInterface
      * @param  int  $time
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserIdForHash(string $hash, int $time): QueryResult;
 }

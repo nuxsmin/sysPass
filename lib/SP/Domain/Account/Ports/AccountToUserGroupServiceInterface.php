@@ -25,6 +25,9 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\ItemData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class AccountToUserGroupService
@@ -35,9 +38,9 @@ interface AccountToUserGroupServiceInterface
      * @param  int  $id
      *
      * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getUserGroupsByAccountId(int $id): array;
 }

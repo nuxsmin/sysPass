@@ -25,14 +25,14 @@
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidImageException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
 use SP\Domain\Account\Services\AccountFileService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidImageException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\FileDataGenerator;

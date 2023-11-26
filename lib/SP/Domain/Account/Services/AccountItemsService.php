@@ -25,9 +25,6 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountItemsServiceInterface;
@@ -35,6 +32,11 @@ use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+
 use function SP\processException;
 
 /**
@@ -56,7 +58,7 @@ final class AccountItemsService extends Service implements AccountItemsServiceIn
      *
      * @throws QueryException
      * @throws ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function updateItems(
         bool $userCanChangePermissions,

@@ -25,14 +25,19 @@
 namespace SP\Mvc\Controller;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Http\RequestInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\Filter;
+
 use function SP\__u;
 
 /**
@@ -43,10 +48,10 @@ trait ItemTrait
     /**
      * Obtener la lista de campos personalizados y sus valores
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
     protected function getCustomFieldsForItem(
         int $moduleId,
@@ -93,13 +98,13 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param  RequestInterface  $request
-     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
+     * @param CustomFieldServiceInterface $customFieldService
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     protected function addCustomFieldsForItem(
         int $moduleId,
@@ -127,7 +132,7 @@ trait ItemTrait
     }
 
     /**
-     * @param  \SP\Http\RequestInterface  $request
+     * @param RequestInterface $request
      *
      * @return array|null
      */
@@ -144,11 +149,11 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
+     * @param CustomFieldServiceInterface $customFieldService
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     protected function deleteCustomFieldsForItem(
         int $moduleId,
@@ -168,11 +173,11 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param  RequestInterface  $request
-     * @param  \SP\Domain\CustomField\Ports\CustomFieldServiceInterface  $customFieldService
+     * @param CustomFieldServiceInterface $customFieldService
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     protected function updateCustomFieldsForItem(
         int $moduleId,

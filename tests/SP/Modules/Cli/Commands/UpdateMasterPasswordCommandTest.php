@@ -26,11 +26,12 @@ namespace SP\Tests\Modules\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Modules\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
 use SP\Tests\DatabaseTrait;
 use SP\Tests\Modules\Cli\CliTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
+
 use function SP\Tests\recreateDir;
 
 /**
@@ -192,8 +193,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function testSameMasterPassword(): void
     {
@@ -214,8 +215,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function testWrongMasterPassword(): void
     {

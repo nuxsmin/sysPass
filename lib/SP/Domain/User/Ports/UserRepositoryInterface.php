@@ -24,10 +24,11 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Services\UpdatePassRequest;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -36,7 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\User\Repositories
  */
-interface UserRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInterface
+interface UserRepositoryInterface extends RepositoryInterface
 {
     /**
      * Updates an user's pass
@@ -76,8 +77,8 @@ interface UserRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInte
      * @param  string  $key
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateMasterPassById(int $id, string $pass, string $key): int;
 
@@ -96,8 +97,8 @@ interface UserRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInte
      * @param  string  $login
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin(string $login): bool;
 
@@ -128,8 +129,8 @@ interface UserRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInte
      * @param  int  $groupId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup(int $groupId): QueryResult;
 

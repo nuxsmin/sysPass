@@ -27,15 +27,15 @@ namespace SP\Domain\User\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserRepositoryInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -126,8 +126,8 @@ final class UserService extends Service implements UserServiceInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin(string $login): bool
     {
@@ -153,9 +153,9 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Returns the item for given id
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getByLogin(string $login): UserData
     {
@@ -171,9 +171,9 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserService
     {
@@ -187,7 +187,7 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -283,7 +283,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(UserData $userData): void
     {
@@ -299,7 +299,7 @@ final class UserService extends Service implements UserServiceInterface
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function updatePass(int $userId, string $pass): void
     {
@@ -318,8 +318,8 @@ final class UserService extends Service implements UserServiceInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePreferencesById(int $userId, UserPreferencesData $userPreferencesData): int
     {
@@ -360,8 +360,8 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup(int $groupId): array
     {

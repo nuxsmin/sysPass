@@ -29,6 +29,9 @@ use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Services\AccountCacheService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -45,9 +48,9 @@ class AccountCacheServiceTest extends UnitaryTestCase
     private AccountCacheService                              $accountCacheService;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetCacheForAccount()
     {
@@ -74,9 +77,9 @@ class AccountCacheServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetCacheForAccountWithCacheHit()
     {

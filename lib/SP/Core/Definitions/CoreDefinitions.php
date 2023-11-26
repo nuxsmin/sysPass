@@ -38,7 +38,6 @@ use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\MimeTypes;
 use SP\Core\ProvidersHelper;
@@ -58,6 +57,7 @@ use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeTypesInterface;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
@@ -146,7 +146,7 @@ final class CoreDefinitions
                     new XmlHandler(new FileHandler(MIMETYPES_FILE))
                 ),
             Acl::class => autowire(Acl::class)
-                ->constructorParameter('actions', get(Actions::class)),
+                ->constructorParameter('actions', get(ActionsInterface::class)),
             ThemeContextInterface::class => autowire(ThemeContext::class)
                 ->constructorParameter('basePath', VIEW_PATH)
                 ->constructorParameter('baseUri', factory([UriContextInterface::class, 'getWebRoot']))

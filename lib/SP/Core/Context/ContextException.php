@@ -24,7 +24,7 @@
 
 namespace SP\Core\Context;
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class ContextException

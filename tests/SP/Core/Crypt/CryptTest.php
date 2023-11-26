@@ -24,9 +24,8 @@
 
 namespace SP\Tests\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -39,7 +38,7 @@ class CryptTest extends UnitaryTestCase
     /**
      * Comprobar la generación de una llave de cifrado
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testMakeSecuredKey()
     {
@@ -51,7 +50,7 @@ class CryptTest extends UnitaryTestCase
     /**
      * Comprobar la generación de una llave de cifrado
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testMakeSecuredKeyNoAscii()
     {
@@ -63,7 +62,7 @@ class CryptTest extends UnitaryTestCase
     /**
      * Comprobar la encriptación y desencriptado de datos
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testEncryptAndDecrypt()
     {
@@ -83,7 +82,7 @@ class CryptTest extends UnitaryTestCase
     /**
      * Comprobar la encriptación y desencriptado de datos
      *
-     * @throws \SP\Core\Exceptions\CryptException
+     * @throws CryptException
      */
     public function testEncryptAndDecryptWithDifferentPassword()
     {

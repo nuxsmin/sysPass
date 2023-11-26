@@ -26,11 +26,12 @@ namespace SP\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
 use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -62,7 +63,7 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(PluginDataModel $itemData): QueryResult
     {
@@ -76,7 +77,7 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(PluginDataModel $itemData): int
     {
@@ -91,7 +92,7 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getByItemId(string $name, int $id): PluginDataModel
     {
@@ -110,13 +111,13 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
     /**
      * Returns the item for given id
      *
-     * @return \SP\Infrastructure\Plugin\Repositories\PluginDataModel[]
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return PluginDataModel[]
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getById(string $id): array
     {
@@ -142,12 +143,12 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
     /**
      * Returns all the items
      *
-     * @return \SP\Infrastructure\Plugin\Repositories\PluginDataModel[]
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @return PluginDataModel[]
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function getAll(): array
     {
@@ -156,7 +157,7 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
         array_walk(
             $data,
             function ($itemData) {
-                /** @var \SP\Infrastructure\Plugin\Repositories\PluginDataModel $itemData */
+                /** @var PluginDataModel $itemData */
                 $itemData->decrypt($this->getMasterKeyFromContext());
             }
         );
@@ -167,9 +168,9 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(string $id): void
     {

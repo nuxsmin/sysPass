@@ -25,14 +25,17 @@
 namespace SP\Domain\Category\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Domain\Category\Ports\CategoryAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\Controller\ItemTrait;
@@ -49,33 +52,46 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
 
     protected array $availableIncludes = ['customFields'];
 
+    public function __construct(
+        ConfigDataInterface                          $configData,
+        private readonly CustomFieldServiceInterface $customFieldService,
+        private readonly ActionsInterface            $actions
+    ) {
+        parent::__construct($configData);
+    }
+
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(CategoryData $data, CustomFieldServiceInterface $customFieldService): Collection
+    public function includeCustomFields(CategoryData $data): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $this->customFieldService),
             new CustomFieldAdapter($this->configData)
         );
     }
 
+    /**
+     * @throws ActionNotFoundException
+     */
     public function transform(CategoryData $data): array
     {
+        $actionRoute = $this->actions->getActionById(AclActionsInterface::CATEGORY_VIEW)->getRoute();
+
         return [
-            'id'           => $data->getId(),
-            'name'         => $data->getName(),
-            'description'  => $data->getDescription(),
+            'id' => $data->getId(),
+            'name' => $data->getName(),
+            'description' => $data->getDescription(),
             'customFields' => null,
-            'links'        => [
+            'links' => [
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $data->getId(),
-                        AclActionsInterface::CATEGORY_VIEW,
+                        $actionRoute,
                         $this->configData,
                         true
                     ),

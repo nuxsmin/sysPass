@@ -25,12 +25,13 @@
 namespace SP\Domain\User\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UserLoginRequest;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -54,8 +55,8 @@ interface UserServiceInterface
     public function updateLastLoginById(int $id): int;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin(string $login): bool;
 
@@ -69,25 +70,25 @@ interface UserServiceInterface
     /**
      * Returns the item for given id
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getByLogin(string $login): UserData;
 
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserService;
 
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -129,7 +130,7 @@ interface UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(UserData $userData): void;
 
@@ -138,13 +139,13 @@ interface UserServiceInterface
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function updatePass(int $userId, string $pass): void;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePreferencesById(int $userId, UserPreferencesData $userPreferencesData): int;
 
@@ -166,8 +167,8 @@ interface UserServiceInterface
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup(int $groupId): array;
 

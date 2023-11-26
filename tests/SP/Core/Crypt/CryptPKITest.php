@@ -25,12 +25,14 @@
 namespace SP\Tests\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\CryptPKI;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Tests\UnitaryTestCase;
+
 use function PHPUnit\Framework\once;
 
 /**
@@ -78,7 +80,7 @@ class CryptPKITest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateKeys()
     {
@@ -108,7 +110,7 @@ class CryptPKITest extends UnitaryTestCase
      * This method is called before a test is executed.
      *
      * @throws SPException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     protected function setUp(): void
     {

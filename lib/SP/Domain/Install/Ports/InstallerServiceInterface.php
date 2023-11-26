@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Install\Ports;
 
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 
 /**

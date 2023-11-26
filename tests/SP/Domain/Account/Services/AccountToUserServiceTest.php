@@ -28,6 +28,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Services\AccountToUserService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -43,9 +46,9 @@ class AccountToUserServiceTest extends UnitaryTestCase
     private AccountToUserService                        $accountToUserService;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetUsersByAccountId()
     {
@@ -79,9 +82,9 @@ class AccountToUserServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetUsersByAccountIdWithNoUsers()
     {

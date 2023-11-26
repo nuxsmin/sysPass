@@ -26,9 +26,12 @@ namespace SP\Modules\Web\Controllers\Eventlog;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -45,9 +48,9 @@ final class ClearController extends ControllerBase
     private EventlogServiceInterface $eventlogService;
 
     /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
-     * @throws \JsonException
+     * @throws SessionTimeout
+     * @throws AuthException
+     * @throws JsonException
      */
     public function __construct(
         Application $application,
@@ -64,7 +67,7 @@ final class ClearController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function clearAction(): bool
     {

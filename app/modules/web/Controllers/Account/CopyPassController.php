@@ -25,10 +25,21 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
+use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -39,13 +50,13 @@ final class CopyPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private \SP\Domain\Account\Ports\AccountServiceInterface $accountService;
+    private AccountServiceInterface $accountService;
     private AccountPasswordHelper                            $accountPasswordHelper;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
+        AccountServiceInterface $accountService,
         AccountPasswordHelper $accountPasswordHelper
     ) {
         parent::__construct(
@@ -63,16 +74,16 @@ final class CopyPassController extends AccountControllerBase
      * @param  int  $id  Account's ID
      *
      * @return bool
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException
-     * @throws \JsonException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Modules\Web\Controllers\Helpers\HelperException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws BadFormatException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
+     * @throws JsonException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws HelperException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function copyPassAction(int $id): bool
     {

@@ -25,7 +25,7 @@
 namespace SP\Domain\User\Services;
 
 use Exception;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class UpdatedMasterPassException
@@ -39,7 +39,7 @@ final class UpdatedMasterPassException extends SPException
      *
      * @param  string  $type
      * @param  int  $code
-     * @param  \Exception|null  $previous
+     * @param Exception|null  $previous
      */
     public function __construct(string $type, int $code = 0, Exception $previous = null)
     {

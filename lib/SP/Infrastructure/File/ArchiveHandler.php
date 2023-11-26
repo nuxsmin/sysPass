@@ -27,8 +27,8 @@ namespace SP\Infrastructure\File;
 
 use Phar;
 use PharData;
-use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Exceptions\CheckException;
 
 /**
  * Class ArchiveHandler

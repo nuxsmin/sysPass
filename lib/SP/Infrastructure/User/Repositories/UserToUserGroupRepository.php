@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\User\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -67,8 +67,8 @@ final class UserToUserGroupRepository extends Repository implements UserToUserGr
      * @param  int  $userId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getGroupsForUser(int $userId): QueryResult
     {

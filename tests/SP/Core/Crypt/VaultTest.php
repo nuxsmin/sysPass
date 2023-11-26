@@ -24,9 +24,10 @@
 
 namespace SP\Tests\Core\Crypt;
 
+use RuntimeException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -57,7 +58,7 @@ class VaultTest extends UnitaryTestCase
 
         $vault = Vault::factory(new Crypt());
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Either data or key must be set');
 
         $vault->getData($key);

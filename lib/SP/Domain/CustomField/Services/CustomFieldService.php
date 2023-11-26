@@ -27,12 +27,12 @@ namespace SP\Domain\CustomField\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDefRepositoryInterface;
 use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
@@ -101,9 +101,9 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
     /**
      * Returns the module's item for given id
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): array
     {
@@ -180,8 +180,8 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws ServiceException
      */
     protected function setSecureData(CustomFieldData $customFieldData, ?string $key = null): void
     {
@@ -239,12 +239,12 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
     /**
      * Updates an item
      *
-     * @param  \SP\DataModel\CustomFieldData  $customFieldData
+     * @param CustomFieldData $customFieldData
      * @param  string  $masterPass
      *
      * @return int
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws ServiceException
      */
     public function updateMasterPass(CustomFieldData $customFieldData, string $masterPass): int
     {

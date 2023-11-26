@@ -24,11 +24,9 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Domain\Account\Dtos\AccountDto;
-use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -66,8 +64,8 @@ interface AccountToTagRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      * @param  array  $tags
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(int $accountId, array $tags): void;
 }

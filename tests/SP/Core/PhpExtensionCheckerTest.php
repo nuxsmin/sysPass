@@ -25,8 +25,8 @@
 namespace SP\Tests\Core;
 
 use RuntimeException;
-use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Tests\UnitaryTestCase;
 
 /**

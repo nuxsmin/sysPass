@@ -25,11 +25,11 @@
 namespace SP\Domain\User\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -52,8 +52,8 @@ final class UserToUserGroupService extends Service implements UserToUserGroupSer
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(int $id, array $users): int
     {
@@ -92,9 +92,9 @@ final class UserToUserGroupService extends Service implements UserToUserGroupSer
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): array
     {
@@ -110,8 +110,8 @@ final class UserToUserGroupService extends Service implements UserToUserGroupSer
     /**
      * Checks whether the user is included in the group
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkUserInGroup(int $groupId, int $userId): bool
     {
@@ -121,8 +121,8 @@ final class UserToUserGroupService extends Service implements UserToUserGroupSer
     /**
      * Returns the groups which the user belongs to
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getGroupsForUser(int $userId): array
     {

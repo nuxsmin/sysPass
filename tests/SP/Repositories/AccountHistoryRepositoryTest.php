@@ -28,17 +28,18 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountPasswordRequest;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
+
 use function SP\Tests\setupContext;
 
 /**

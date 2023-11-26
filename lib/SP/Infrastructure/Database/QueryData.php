@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Database;
 
 use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryInterface;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Exceptions\QueryException;
 
 use function SP\__u;
 

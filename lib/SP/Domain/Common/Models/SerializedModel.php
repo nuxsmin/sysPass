@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Common\Models;
 
-use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Util\Util;
 
 /**

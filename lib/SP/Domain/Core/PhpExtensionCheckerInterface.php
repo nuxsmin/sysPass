@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core;
 
-use SP\Core\Exceptions\CheckException;
+use SP\Domain\Core\Exceptions\CheckException;
 
 /**
  * Class PhpExtensionCheckerInterface

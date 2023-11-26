@@ -27,17 +27,18 @@ namespace SP\Tests\Services\Plugin;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Domain\Plugin\Services\PluginService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -48,7 +49,7 @@ use function SP\Tests\setupContext;
 class PluginServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Plugin\Ports\PluginServiceInterface
+     * @var PluginServiceInterface
      */
     private static $service;
 

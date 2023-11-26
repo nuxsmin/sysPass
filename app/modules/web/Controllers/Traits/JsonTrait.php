@@ -25,8 +25,9 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
+use Klein\Klein;
 use SP\Core\Context\SessionContext;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 
@@ -34,7 +35,7 @@ use SP\Http\JsonResponse;
  * Trait JsonTrait
  *
  * @property SessionContext $session
- * @property \Klein\Klein $router
+ * @property Klein $router
  */
 trait JsonTrait
 {
@@ -46,7 +47,7 @@ trait JsonTrait
      * @param  array|null  $messages  Untranslated massages array of strings
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function returnJsonResponse(int $status, string $description, ?array $messages = null): bool
     {
@@ -70,7 +71,7 @@ trait JsonTrait
      * @param  array|null  $messages
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function returnJsonResponseData(
         $data,
@@ -97,11 +98,11 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param  \Exception  $exception
+     * @param Exception $exception
      * @param  int  $status
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function returnJsonResponseException(Exception $exception, int $status = JsonResponse::JSON_ERROR): bool
     {

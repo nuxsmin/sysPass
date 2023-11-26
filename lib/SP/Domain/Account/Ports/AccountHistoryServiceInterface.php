@@ -24,16 +24,14 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Dtos\AccountPasswordRequest;
-use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -55,8 +53,8 @@ interface AccountHistoryServiceInterface
      * Obtiene el listado del histórico de una cuenta.
      *
      * @return array Con los registros con id como clave y fecha - usuario como valor
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getHistoryForAccount(int $id): array;
 
@@ -69,8 +67,8 @@ interface AccountHistoryServiceInterface
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(AccountHistoryCreateDto $dto): int;
 

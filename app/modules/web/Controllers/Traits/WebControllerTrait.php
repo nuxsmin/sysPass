@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\RequestInterface;
 use SP\Mvc\Controller\ControllerTrait;
 
@@ -66,7 +66,7 @@ trait WebControllerTrait
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function handleSessionTimeout(): void
     {

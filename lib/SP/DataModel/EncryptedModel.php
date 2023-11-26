@@ -27,7 +27,7 @@ namespace SP\DataModel;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 
 /**
  * Trait EncryptedModel

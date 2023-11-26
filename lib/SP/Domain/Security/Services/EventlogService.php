@@ -25,12 +25,12 @@
 namespace SP\Domain\Security\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Ports\EventlogRepositoryInterface;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Http\RequestInterface;

@@ -27,16 +27,17 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Ports\CategoryRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Category\Repositories\CategoryRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -49,7 +50,7 @@ use function SP\Tests\setupContext;
 class CategoryRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Category\Ports\CategoryRepositoryInterface
+     * @var CategoryRepositoryInterface
      */
     private static $repository;
 

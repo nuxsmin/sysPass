@@ -31,6 +31,7 @@ use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Category\Ports\CategoryAdapterInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 
@@ -43,7 +44,7 @@ abstract class CategoryBase extends ControllerBase
     protected CategoryAdapterInterface $categoryAdapter;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function __construct(
         Application $application,

@@ -29,6 +29,7 @@ use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
@@ -41,7 +42,7 @@ abstract class TagBase extends ControllerBase
     protected TagServiceInterface $tagService;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function __construct(
         Application $application,

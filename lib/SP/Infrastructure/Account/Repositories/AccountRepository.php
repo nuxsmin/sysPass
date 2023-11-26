@@ -25,8 +25,6 @@
 namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
@@ -36,6 +34,8 @@ use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\DatabaseInterface;

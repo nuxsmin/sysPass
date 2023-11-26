@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Crypt;
 
-use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\CryptException;
 
 /**
  * Class VaultInterface

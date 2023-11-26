@@ -24,9 +24,9 @@
 
 namespace SP\Domain\Export\Services;
 
-use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\ArchiveHandlerInterface;

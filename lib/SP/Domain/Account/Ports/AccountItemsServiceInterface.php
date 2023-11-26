@@ -24,10 +24,11 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 
 /**
  * Class AccountItemsService
@@ -39,7 +40,7 @@ interface AccountItemsServiceInterface
      *
      * @throws QueryException
      * @throws ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function updateItems(
         bool $userCanChangePermissions,

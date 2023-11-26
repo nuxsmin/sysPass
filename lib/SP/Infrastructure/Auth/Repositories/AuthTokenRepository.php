@@ -25,11 +25,11 @@
 namespace SP\Infrastructure\Auth\Repositories;
 
 use RuntimeException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -51,8 +51,8 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): int
     {
@@ -286,8 +286,8 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
      * @param  int  $id
      *
      * @return string
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTokenByUserId(int $id): ?string
     {
@@ -379,8 +379,8 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
      * @param  string  $token
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function refreshTokenByUserId(int $id, string $token): int
     {
@@ -406,8 +406,8 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
      * @param  string  $hash
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function refreshVaultByUserId(int $id, string $vault, string $hash): int
     {

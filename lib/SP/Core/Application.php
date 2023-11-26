@@ -38,8 +38,8 @@ final class Application
      * Module constructor.
      *
      * @param ConfigInterface $config
-     * @param \SP\Domain\Core\Events\EventDispatcherInterface $eventDispatcher
-     * @param SessionContextInterface|\SP\Domain\Core\Context\ContextInterface $context
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param SessionContextInterface|ContextInterface $context
      */
     public function __construct(
         private readonly ConfigInterface                          $config,

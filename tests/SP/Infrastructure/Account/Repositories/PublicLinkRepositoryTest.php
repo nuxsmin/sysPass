@@ -30,6 +30,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -49,8 +52,8 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     private MockObject|DatabaseInterface $database;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testDelete(): void
     {
@@ -140,8 +143,8 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAddLinkView(): void
     {
@@ -192,9 +195,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCreate(): void
     {
@@ -234,9 +237,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\DuplicatedItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCreateWithDuplicate(): void
     {
@@ -281,9 +284,9 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testRefresh(): void
     {
@@ -312,8 +315,8 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testDeleteByIdBatch(): void
     {
@@ -340,8 +343,8 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatchWithNoIds(): void
     {
@@ -372,8 +375,8 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate(): void
     {

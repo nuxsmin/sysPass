@@ -24,15 +24,16 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -141,8 +142,8 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      * @param  int  $id
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): bool
     {
@@ -187,7 +188,7 @@ final class AccountFileRepository extends Repository implements AccountFileRepos
      *
      * @param  ItemSearchData  $itemSearchData
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {

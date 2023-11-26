@@ -26,8 +26,11 @@ namespace SP\Modules\Web\Controllers\UserPassReset;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
@@ -48,9 +51,9 @@ abstract class UserPassResetSaveBase extends ControllerBase
     private TrackRequest                      $trackRequest;
 
     /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \JsonException
+     * @throws SessionTimeout
+     * @throws InvalidArgumentException
+     * @throws JsonException
      */
     public function __construct(
         Application $application,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,35 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Acl;
+namespace SP\Domain\Core\Acl;
 
-use SP\Core\Exceptions\SPException;
+use Exception;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
- * Class ActionNotFoundException
+ * Class UnauthorizedActionException
  *
  * @package SP\Core\Acl
  */
-final class ActionNotFoundException extends SPException
+final class UnauthorizedActionException extends SPException
 {
-
+    /**
+     * SPException constructor.
+     *
+     * @param string $type
+     * @param int $code
+     * @param Exception|null $previous
+     */
+    public function __construct(string $type, int $code = 0, Exception $previous = null)
+    {
+        parent::__construct(
+            __u('You don\'t have permission to do this operation'),
+            $type,
+            __u('Please contact to the administrator'),
+            $code,
+            $previous
+        );
+    }
 }

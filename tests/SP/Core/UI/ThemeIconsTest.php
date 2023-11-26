@@ -25,9 +25,9 @@
 namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Html\Assets\FontIcon;
 use SP\Infrastructure\File\FileCacheInterface;

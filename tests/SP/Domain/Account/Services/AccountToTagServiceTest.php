@@ -29,6 +29,9 @@ use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Services\AccountToTagService;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -44,9 +47,9 @@ class AccountToTagServiceTest extends UnitaryTestCase
     private AccountToTagRepositoryInterface|MockObject $accountToTagRepository;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetTagsByAccountId()
     {
@@ -69,9 +72,9 @@ class AccountToTagServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetTagsByAccountIdWithNotags()
     {

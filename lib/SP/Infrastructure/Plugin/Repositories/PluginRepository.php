@@ -25,11 +25,11 @@
 namespace SP\Infrastructure\Plugin\Repositories;
 
 use RuntimeException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Ports\PluginRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -241,8 +241,8 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): int
     {
@@ -358,8 +358,8 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
      * @param  bool  $enabled
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabled(int $id, bool $enabled): int
     {
@@ -378,8 +378,8 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
      * @param  bool  $enabled
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabledByName(string $name, bool $enabled): int
     {
@@ -398,8 +398,8 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
      * @param  bool  $available
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailable(int $id, bool $available): int
     {
@@ -418,8 +418,8 @@ final class PluginRepository extends Repository implements PluginRepositoryInter
      * @param  bool  $available
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailableByName(string $name, bool $available): int
     {

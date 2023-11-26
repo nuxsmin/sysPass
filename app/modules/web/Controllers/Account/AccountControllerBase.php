@@ -26,6 +26,8 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use SP\Core\Application;
 use SP\Core\Context\ContextBase;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -37,11 +39,11 @@ abstract class AccountControllerBase extends ControllerBase
     private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
 
     /**
-     * @param  \SP\Core\Application  $application
-     * @param  \SP\Mvc\Controller\WebControllerHelper  $webControllerHelper
+     * @param Application $application
+     * @param WebControllerHelper $webControllerHelper
      *
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws SessionTimeout
+     * @throws AuthException
      */
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
     {
@@ -53,8 +55,8 @@ abstract class AccountControllerBase extends ControllerBase
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Domain\Auth\Services\AuthException
+     * @throws SessionTimeout
+     * @throws AuthException
      */
     private function initialize(): void
     {

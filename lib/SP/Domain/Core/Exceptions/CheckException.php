@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,34 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Acl;
-
-use Exception;
-use SP\Core\Exceptions\SPException;
+namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class UnauthorizedPageException
+ * Class CheckException
  *
- * @package SP\Core\Acl
+ * @package SP\Domain\Core\Exceptions
  */
-final class UnauthorizedPageException extends SPException
+class CheckException extends SPException
 {
-    /**
-     * SPException constructor.
-     *
-     * @param string         $type
-     * @param int            $code
-     * @param Exception|null $previous
-     */
-    public function __construct($type, $code = 0, Exception $previous = null)
-    {
-        parent::__construct(
-            __u('You don\'t have permission to access this page'),
-            $type,
-            __u('Please contact to the administrator'),
-            $code,
-            $previous
-        );
-    }
 
 }

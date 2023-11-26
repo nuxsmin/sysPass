@@ -25,13 +25,13 @@
 namespace SP\Domain\ItemPreset\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -75,9 +75,9 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): ItemPresetService
     {
@@ -109,7 +109,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
     /**
      * Returns all the items
      *
-     * @return \SP\Domain\Account\Models\ItemPreset[]
+     * @return ItemPreset[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -172,9 +172,9 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int
     {

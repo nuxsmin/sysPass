@@ -24,10 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
@@ -37,8 +35,16 @@ use SP\Domain\Account\Ports\AccountToUserServiceInterface;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Http\RequestInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
@@ -70,17 +76,17 @@ final class AccountHistoryHelper extends AccountHelperBase
     }
 
     /**
-     * @param  \SP\Domain\Account\Models\AccountHistory  $accountHistoryData
+     * @param AccountHistory $accountHistoryData
      * @param  int  $actionId
      *
-     * @throws \SP\Core\Acl\AccountPermissionException
-     * @throws \SP\Core\Acl\UnauthorizedPageException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws AccountPermissionException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
+     * @throws UpdatedMasterPassException
+     * @throws NoSuchItemException
      */
     public function setView(AccountHistory $accountHistoryData, int $actionId): void
     {
@@ -144,10 +150,10 @@ final class AccountHistoryHelper extends AccountHelperBase
      *
      * @param  AccountHistory  $accountHistoryData
      *
-     * @throws \SP\Core\Acl\AccountPermissionException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws AccountPermissionException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     protected function checkAccess(AccountHistory $accountHistoryData): void
     {

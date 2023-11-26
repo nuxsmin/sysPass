@@ -25,6 +25,10 @@
 namespace SP\Domain\Crypt\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
+use PHPMailer\PHPMailer\Exception;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
@@ -40,7 +44,7 @@ interface TemporaryMasterPassServiceInterface
      * @param  int  $maxTime  El tiempo máximo de validez de la clave
      *
      * @return string
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(int $maxTime = 14400): string;
 
@@ -50,23 +54,23 @@ interface TemporaryMasterPassServiceInterface
      * @param  string  $pass  clave a comprobar
      *
      * @return bool
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function checkTempMasterPass(string $pass): bool;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws Exception
      */
     public function sendByEmailForGroup(int $groupId, string $key): void;
 
     /**
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function sendByEmailForAllUsers(string $key): void;
 
@@ -77,7 +81,7 @@ interface TemporaryMasterPassServiceInterface
      *
      * @return string con la clave maestra desencriptada
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws CryptoException
      */
     public function getUsingKey(string $key): string;

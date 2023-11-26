@@ -25,10 +25,6 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Account\Dtos\AccountDto;
@@ -37,6 +33,10 @@ use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Mvc\Controller\Validators\ValidatorInterface;

@@ -27,9 +27,9 @@ namespace SP\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\FileData;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\File\FileException;
 
 use function SP\__;

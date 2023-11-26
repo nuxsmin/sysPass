@@ -33,8 +33,10 @@ use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -73,7 +75,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
      * @param  int  $id
      *
      * @return array Con los registros con id como clave y fecha - usuario como valor
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getHistoryForAccount(int $id): array
     {
@@ -81,9 +83,9 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     }
 
     /**
-     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -93,7 +95,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\Domain\Account\Dtos\AccountHistoryCreateDto  $dto
+     * @param AccountHistoryCreateDto $dto
      *
      * @return int
      */
@@ -104,7 +106,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
 
     /**
      * @return array
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getAccountsPassData(): array
     {
@@ -116,7 +118,7 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
      *
      * @param  int  $id
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function delete(int $id): void
     {
@@ -151,9 +153,9 @@ final class AccountHistoryService extends Service implements AccountHistoryServi
 
     /**
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
+     * @param EncryptedPassword $encryptedPassword
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function updatePasswordMasterPass(int $accountId, EncryptedPassword $encryptedPassword): void
     {

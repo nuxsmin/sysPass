@@ -27,14 +27,15 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogRepositoryInterface;
 use SP\Infrastructure\Security\Repositories\EventlogRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**

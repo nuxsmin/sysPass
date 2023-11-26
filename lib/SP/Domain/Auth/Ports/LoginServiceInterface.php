@@ -27,11 +27,11 @@ namespace SP\Domain\Auth\Ports;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginResponse;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class LoginService

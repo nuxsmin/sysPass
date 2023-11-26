@@ -24,11 +24,11 @@
 
 namespace SP\Infrastructure\User\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
@@ -51,8 +51,8 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): int
     {
@@ -214,9 +214,9 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
      *
      * @param  array  $ids
      *
-     * @return \SP\Infrastructure\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids): QueryResult
     {

@@ -24,9 +24,6 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 
 /**

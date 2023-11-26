@@ -25,15 +25,15 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;

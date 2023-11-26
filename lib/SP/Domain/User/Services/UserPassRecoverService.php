@@ -27,12 +27,12 @@ namespace SP\Domain\User\Services;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassRecoverRepositoryInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Html\Html;
@@ -82,8 +82,8 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws SPException
+     * @throws ServiceException
      */
     public function toggleUsedByHash(string $hash): void
     {
@@ -99,7 +99,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws EnvironmentIsBrokenException
      */
     public function requestForUserId(int $id): string
@@ -130,8 +130,8 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(int $userId, string $hash): bool
     {
@@ -141,7 +141,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */

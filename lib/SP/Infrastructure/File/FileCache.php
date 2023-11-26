@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\File;
 
-use SP\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 
 use function SP\__u;
 

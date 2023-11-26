@@ -28,9 +28,9 @@ use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
-use SP\Core\Exceptions\CryptException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class Crypt

@@ -28,14 +28,15 @@ use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 use SP\Infrastructure\Plugin\Repositories\PluginDataRepository;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -86,7 +87,7 @@ class PluginDataRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
 
-        /** @var \SP\Infrastructure\Plugin\Repositories\PluginDataModel $itemData */
+        /** @var PluginDataModel $itemData */
         $itemData = $result->getData();
 
         $this->assertEquals($data->getData(), $itemData->getData());
@@ -177,7 +178,7 @@ class PluginDataRepositoryTest extends DatabaseTestCase
     public function testGetById()
     {
         $result = self::$repository->getById('Authenticator');
-        /** @var \SP\Infrastructure\Plugin\Repositories\PluginDataModel[] $data */
+        /** @var PluginDataModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(2, $result->getNumRows());
@@ -250,7 +251,7 @@ class PluginDataRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
 
-        /** @var \SP\Infrastructure\Plugin\Repositories\PluginDataModel $itemData */
+        /** @var PluginDataModel $itemData */
         $itemData = $result->getData();
 
         $this->assertEquals($data->getName(), $itemData->getName());
@@ -288,7 +289,7 @@ class PluginDataRepositoryTest extends DatabaseTestCase
     public function testGetByIdBatch()
     {
         $result = self::$repository->getByIdBatch(['Authenticator', 'XML Exporter', 'Test']);
-        /** @var \SP\Infrastructure\Plugin\Repositories\PluginDataModel[] $data */
+        /** @var PluginDataModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(3, $result->getNumRows());

@@ -32,7 +32,6 @@ use SP\Http\RequestInterface;
  */
 final class UriContext implements UriContextInterface
 {
-
     private readonly string $subUri;
     private readonly string $webRoot;
     private readonly string $webUri;

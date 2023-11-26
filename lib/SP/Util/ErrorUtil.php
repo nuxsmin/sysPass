@@ -25,13 +25,14 @@
 namespace SP\Util;
 
 use Exception;
-use SP\Core\Acl\AccountPermissionException;
-use SP\Core\Acl\UnauthorizedPageException;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
+
 use function SP\processException;
 
 /**

@@ -25,9 +25,10 @@
 namespace SP\Domain\Plugin\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
@@ -46,7 +47,7 @@ interface PluginDataServiceInterface
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(PluginDataModel $itemData): QueryResult;
 
@@ -57,7 +58,7 @@ interface PluginDataServiceInterface
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(PluginDataModel $itemData): int;
 
@@ -69,7 +70,7 @@ interface PluginDataServiceInterface
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getByItemId(string $name, int $id): PluginDataModel;
 
@@ -77,12 +78,12 @@ interface PluginDataServiceInterface
      * Returns the item for given id
      *
      * @return PluginDataModel[]
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getById(string $id): array;
 
@@ -90,20 +91,20 @@ interface PluginDataServiceInterface
      * Returns all the items
      *
      * @return PluginDataModel[]
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function getAll(): array;
 
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(string $id): void;
 

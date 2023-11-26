@@ -27,14 +27,14 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use Exception;
 use JsonException;
-use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;

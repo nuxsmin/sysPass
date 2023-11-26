@@ -24,12 +24,13 @@
 
 namespace SP\Domain\CustomField\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -46,7 +47,7 @@ interface CustomFieldDefServiceInterface
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function delete(int $id): CustomFieldDefService;
 
@@ -55,16 +56,16 @@ interface CustomFieldDefServiceInterface
      *
      * @param  int[]  $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): void;
 
     /**
-     * @param  \SP\DataModel\CustomFieldDefinitionData  $itemData
+     * @param CustomFieldDefinitionData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(CustomFieldDefinitionData $itemData): int;
 
@@ -74,14 +75,14 @@ interface CustomFieldDefServiceInterface
     public function update(CustomFieldDefinitionData $itemData);
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getById(int $id): CustomFieldDefinitionData;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */

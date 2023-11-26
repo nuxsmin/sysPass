@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Database;
 
 use Exception;
 use PDO;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
 

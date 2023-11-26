@@ -45,6 +45,9 @@ use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -74,7 +77,7 @@ class AccountServiceTest extends UnitaryTestCase
     private AccountService                                   $accountService;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -103,7 +106,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateUserCannotChangePermissionsWithoutAdminApp()
     {
@@ -132,7 +135,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateUserCanChangePermissionsWithAdminAcc()
     {
@@ -163,7 +166,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateUserCanChangePermissionsWithProfilePermission()
     {
@@ -194,7 +197,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateWithPresetPrivateForUser()
     {
@@ -261,7 +264,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateWithPresetPrivateForGroup()
     {
@@ -328,9 +331,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetLinked()
     {
@@ -342,9 +345,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetForUser()
     {
@@ -356,10 +359,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetPasswordForId()
     {
@@ -372,10 +375,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetPasswordForIdNotFound()
     {
@@ -391,9 +394,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testUpdatePasswordMasterPass()
     {
@@ -412,9 +415,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
      */
     public function testUpdatePasswordMasterPassError()
     {
@@ -436,8 +439,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetById()
     {
@@ -452,8 +455,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetByIdNotFound()
     {
@@ -470,8 +473,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetByIdEnriched()
     {
@@ -486,8 +489,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetByIdEnrichedError()
     {
@@ -504,7 +507,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateBulk()
     {
@@ -536,7 +539,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateBulkCannotChangePermissionsWithoutAdminApp()
     {
@@ -565,7 +568,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateBulkCanChangePermissionsWithAdminAcc()
     {
@@ -599,7 +602,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateBulkCanChangePermissionsWithProfilePermission()
     {
@@ -632,9 +635,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testWithUsersById()
     {
@@ -652,7 +655,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDelete()
     {
@@ -679,7 +682,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDeleteNotFound()
     {
@@ -709,8 +712,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testIncrementViewCounter()
     {
@@ -726,8 +729,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testIncrementViewCounterNoRows()
     {
@@ -743,7 +746,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetAllBasic()
     {
@@ -753,10 +756,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetDataForLink()
     {
@@ -771,10 +774,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetDataForLinkNotFound()
     {
@@ -792,9 +795,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testRestoreRemoved()
     {
@@ -813,9 +816,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testRestoreRemovedError()
     {
@@ -836,7 +839,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testEditPassword()
     {
@@ -870,7 +873,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testRestoreModified()
     {
@@ -906,7 +909,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testRestoreModifiedError()
     {
@@ -954,9 +957,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testWithTagsById()
     {
@@ -974,7 +977,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCreate()
     {
@@ -1010,7 +1013,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCreateCannotChangePermissions()
     {
@@ -1048,7 +1051,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCreateWithPrivateForUser()
     {
@@ -1106,7 +1109,7 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCreateWithPrivateForGroup()
     {
@@ -1164,9 +1167,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetTotalNumAccounts()
     {
@@ -1181,10 +1184,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetPasswordHistoryForId()
     {
@@ -1197,10 +1200,10 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetPasswordHistoryForIdNotFound()
     {
@@ -1216,9 +1219,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetAccountsPassData()
     {
@@ -1229,8 +1232,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testDeleteByIdBatch()
     {
@@ -1246,8 +1249,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testDeleteByIdBatchError()
     {
@@ -1266,9 +1269,9 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testWithUserGroupsById()
     {
@@ -1286,8 +1289,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testIncrementDecryptCounter()
     {
@@ -1303,8 +1306,8 @@ class AccountServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testIncrementDecryptCounterNoRows()
     {

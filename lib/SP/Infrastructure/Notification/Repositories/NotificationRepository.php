@@ -25,10 +25,10 @@
 namespace SP\Infrastructure\Notification\Repositories;
 
 use RuntimeException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Ports\NotificationRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -128,8 +128,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): int
     {
@@ -147,8 +147,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteAdmin(int $id): int
     {
@@ -473,8 +473,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function setCheckedById(int $id): int
     {
@@ -496,8 +496,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $userId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $userId): QueryResult
     {
@@ -530,8 +530,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForUserId(int $id): QueryResult
     {
@@ -563,8 +563,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId(int $id): QueryResult
     {
@@ -597,8 +597,8 @@ final class NotificationRepository extends Repository implements NotificationRep
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForAdmin(int $id): QueryResult
     {

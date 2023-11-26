@@ -24,10 +24,11 @@
 
 namespace SP\Domain\ItemPreset\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\ItemPreset;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Domain\ItemPreset\Services\ItemPresetService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -55,9 +56,9 @@ interface ItemPresetServiceInterface
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): ItemPresetService;
 
@@ -102,9 +103,9 @@ interface ItemPresetServiceInterface
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int;
 }

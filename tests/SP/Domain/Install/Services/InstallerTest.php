@@ -25,9 +25,11 @@
 namespace SP\Tests\Domain\Install\Services;
 
 use Exception;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
@@ -35,6 +37,7 @@ use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Services\UserService;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Tests\UnitaryTestCase;
@@ -48,27 +51,27 @@ use SP\Util\VersionUtil;
 class InstallerTest extends UnitaryTestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Install\Services\DatabaseSetupInterface
+     * @var MockObject|DatabaseSetupInterface
      */
     private $databaseSetup;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Services\UserService
+     * @var MockObject|UserService
      */
     private $userService;
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub|RequestInterface
+     * @var Stub|RequestInterface
      */
     private $request;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\Config\Ports\ConfigServiceInterface
+     * @var MockObject|ConfigServiceInterface
      */
     private $configService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Ports\UserGroupServiceInterface
+     * @var MockObject|UserGroupServiceInterface
      */
     private $userGroupService;
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\SP\Domain\User\Ports\UserProfileServiceInterface
+     * @var MockObject|UserProfileServiceInterface
      */
     private $userProfileService;
 
@@ -112,7 +115,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\Adapters\InstallData
+     * @return InstallData
      */
     private function getInstallData(): InstallData
     {
@@ -130,7 +133,7 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return \SP\Domain\Install\Ports\InstallerServiceInterface
+     * @return InstallerServiceInterface
      */
     private function getDefaultInstaller(): InstallerServiceInterface
     {
@@ -147,8 +150,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testSocketIsUsedForDBConnection(): void
     {
@@ -173,8 +176,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testLocalhostIsUsedForDBConnection(): void
     {
@@ -194,8 +197,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testHostAndPortAreUsedForDBConnection(): void
     {
@@ -217,8 +220,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testHostingModeIsUsed(): void
     {
@@ -239,8 +242,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testAdminUserIsNotCreated(): void
     {
@@ -259,8 +262,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testConfigIsNotSaved(): void
     {
@@ -280,8 +283,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testAdminLoginIsNotBlank(): void
     {
@@ -297,8 +300,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testAdminPassIsNotBlank(): void
     {
@@ -314,8 +317,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testMasterPasswordIsNotBlank(): void
     {
@@ -331,8 +334,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testMasterPasswordLengthIsWrong(): void
     {
@@ -348,8 +351,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testDbAdminUserIsWrong(): void
     {
@@ -365,8 +368,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testDbAdminPassIsWrong(): void
     {
@@ -382,8 +385,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testDbNameIsBlank(): void
     {
@@ -399,8 +402,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testDbNameIsWrong(): void
     {
@@ -416,8 +419,8 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidArgumentException
+     * @throws SPException
      **/
     public function testDbHostIsBlank(): void
     {

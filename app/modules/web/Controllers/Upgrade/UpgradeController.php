@@ -25,13 +25,16 @@
 namespace SP\Modules\Web\Controllers\Upgrade;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
-use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
+use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Http\JsonResponse;
+use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -62,7 +65,7 @@ final class UpgradeController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function upgradeAction(): bool
     {
@@ -90,7 +93,7 @@ final class UpgradeController extends ControllerBase
 
     /**
      * @return void
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     private function checkEnvironment(): void
     {
@@ -118,8 +121,8 @@ final class UpgradeController extends ControllerBase
 
     /**
      * @return void
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws UpgradeException
+     * @throws FileException
      */
     private function handleApplication(): void
     {

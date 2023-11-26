@@ -27,7 +27,7 @@ namespace SP\Providers\Log;
 
 use Monolog\Handler\StreamHandler;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Providers\EventsTrait;
 use SplSubject;
 

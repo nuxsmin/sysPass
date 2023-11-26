@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Exceptions;
+namespace SP\Domain\Core\Exceptions;
 
 use Exception;
 

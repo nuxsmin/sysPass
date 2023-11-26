@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Exceptions\ValidationException;
 
 /**
  * Interface FormInterface

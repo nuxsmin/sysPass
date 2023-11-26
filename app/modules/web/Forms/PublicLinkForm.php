@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
 
 /**
  * Class PublicLinkForm

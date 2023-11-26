@@ -26,6 +26,9 @@ namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -56,9 +59,9 @@ final class AccountsUserController extends SimpleControllerBase
      *
      * @param  int|null  $accountId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function accountsUserAction(?int $accountId = null): void
     {

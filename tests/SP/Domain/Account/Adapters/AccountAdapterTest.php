@@ -26,7 +26,12 @@ namespace SP\Tests\Domain\Account\Adapters;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
+use PHPUnit\Framework\MockObject\Exception;
+use SP\DataModel\ActionData;
 use SP\Domain\Account\Adapters\AccountAdapter;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -40,13 +45,30 @@ use SP\Tests\UnitaryTestCase;
  */
 class AccountAdapterTest extends UnitaryTestCase
 {
+    /**
+     * @throws Exception
+     * @throws ActionNotFoundException
+     */
     public function testAdapt(): void
     {
         $dataGenerator = AccountDataGenerator::factory();
+        $actions = $this->createMock(ActionsInterface::class);
+        $actions->expects(self::once())
+                ->method('getActionById')
+                ->with(AclActionsInterface::ACCOUNT_VIEW)
+                ->willReturn(
+                    new ActionData(
+                        self::$faker->randomNumber(),
+                        self::$faker->colorName,
+                        self::$faker->sentence,
+                        self::$faker->colorName
+                    )
+                );
 
         $adapter = new AccountAdapter(
             $this->config->getConfigData(),
-            $this->createStub(CustomFieldServiceInterface::class)
+            $this->createStub(CustomFieldServiceInterface::class),
+            $actions
         );
         $accountData = $dataGenerator->buildAccountEnrichedDto();
 
@@ -102,6 +124,9 @@ class AccountAdapterTest extends UnitaryTestCase
         $this->assertNotEmpty($out['links'][0]['uri']);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testIncludeCustomFields(): void
     {
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();
@@ -110,7 +135,21 @@ class AccountAdapterTest extends UnitaryTestCase
                             ->method('getForModuleAndItemId')
                             ->willReturn([$customFieldData]);
 
-        $adapter = new AccountAdapter($this->config->getConfigData(), $customFieldsService);
+        $actions = $this->createMock(ActionsInterface::class);
+        $actions->expects(self::once())
+                ->method('getActionById')
+                ->with(AclActionsInterface::ACCOUNT_VIEW)
+                ->willReturn(
+                    new ActionData(
+                        self::$faker->randomNumber(),
+                        self::$faker->colorName,
+                        self::$faker->sentence,
+                        self::$faker->colorName
+                    )
+                );
+
+
+        $adapter = new AccountAdapter($this->config->getConfigData(), $customFieldsService, $actions);
 
         $fractal = new Manager();
         $fractal->parseIncludes('customFields');

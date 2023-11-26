@@ -25,6 +25,8 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\ItemData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 
 /**
  * Class AccountToTagService
@@ -35,8 +37,8 @@ interface AccountToTagServiceInterface
 {
     /**
      * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTagsByAccountId(int $id): array;
 }

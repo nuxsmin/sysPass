@@ -26,9 +26,6 @@ namespace SP\Domain\Account\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
 use SP\Domain\Account\Ports\AccountSearchRepositoryInterface;
 use SP\Domain\Account\Ports\AccountSearchServiceInterface;
@@ -36,10 +33,14 @@ use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Search\AccountSearchTokenizer;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\Filter;
+
 use function SP\processException;
 
 /**

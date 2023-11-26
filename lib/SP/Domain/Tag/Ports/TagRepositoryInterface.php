@@ -24,8 +24,9 @@
 
 namespace SP\Domain\Tag\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -33,7 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Common\Repositories\Tag
  */
-interface TagRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInterface
+interface TagRepositoryInterface extends RepositoryInterface
 {
     /**
      * Returns the item for given id

@@ -25,7 +25,7 @@
 namespace SP\Http;
 
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Clase Request para la gestión de peticiones HTTP

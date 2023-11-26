@@ -24,9 +24,9 @@
 
 namespace SP\Core\UI;
 
-use SP\Core\Exceptions\InvalidClassException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;

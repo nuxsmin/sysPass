@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Install;
 
-use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 

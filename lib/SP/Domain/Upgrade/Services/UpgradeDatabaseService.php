@@ -28,9 +28,9 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\MysqlFileParser;
@@ -141,7 +141,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
     /**
      * Actualiza la BBDD según la versión.
      *
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
+     * @throws UpgradeException
      */
     private function applyUpgrade(string $version): bool
     {

@@ -24,10 +24,11 @@
 
 namespace SP\Mvc\Controller\Validators;
 
-use SP\Core\Exceptions\SPException;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\PresetInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
+
 use function SP\__;
 use function SP\__u;
 

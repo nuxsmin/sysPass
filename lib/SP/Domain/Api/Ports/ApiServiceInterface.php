@@ -26,9 +26,9 @@ namespace SP\Domain\Api\Ports;
 
 use Exception;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class ApiService
@@ -54,7 +54,7 @@ interface ApiServiceInterface
      * @param  mixed|null  $default  Valor por defecto
      *
      * @return mixed
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getParam(string $param, bool $required = false, mixed $default = null): mixed;
 
@@ -85,7 +85,7 @@ interface ApiServiceInterface
     public function getParamRaw(string $param, bool $required = false, $default = null): ?string;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getMasterPass(): string;
 

@@ -25,14 +25,16 @@
 namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\Controller\ItemTrait;
@@ -48,13 +50,12 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
 
     protected array $availableIncludes = ['customFields'];
 
-    private CustomFieldServiceInterface $customFieldService;
-
-    public function __construct(ConfigDataInterface $configData, CustomFieldServiceInterface $customFieldService)
-    {
+    public function __construct(
+        ConfigDataInterface                          $configData,
+        private readonly CustomFieldServiceInterface $customFieldService,
+        private readonly ActionsInterface            $actions
+    ) {
         parent::__construct($configData);
-
-        $this->customFieldService = $customFieldService;
     }
 
     /**
@@ -71,50 +72,54 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
         );
     }
 
+    /**
+     * @throws ActionNotFoundException
+     */
     public function transform(AccountEnrichedDto $data): array
     {
         $account = $data->getAccountDataView();
+        $actionRoute = $this->actions->getActionById(AclActionsInterface::ACCOUNT_VIEW)->getRoute();
 
         return [
-            'id'                 => (int)$account->getId(),
-            'name'               => $account->getName(),
-            'clientId'           => $account->getClientId(),
-            'clientName'         => $account->getClientName(),
-            'categoryId'         => $account->getCategoryId(),
-            'categoryName'       => $account->getCategoryName(),
-            'userId'             => $account->getUserId(),
-            'userName'           => $account->getUserName(),
-            'userLogin'          => $account->getUserLogin(),
-            'userGroupId'        => $account->getUserGroupId(),
-            'userGroupName'      => $account->getUserGroupName(),
-            'userEditId'         => $account->getUserEditId(),
-            'userEditName'       => $account->getUserEditName(),
-            'userEditLogin'      => $account->getUserEditLogin(),
-            'login'              => $account->getLogin(),
-            'url'                => $account->getUrl(),
-            'notes'              => $account->getNotes(),
-            'otherUserEdit'      => $account->getOtherUserEdit(),
+            'id' => (int)$account->getId(),
+            'name' => $account->getName(),
+            'clientId' => $account->getClientId(),
+            'clientName' => $account->getClientName(),
+            'categoryId' => $account->getCategoryId(),
+            'categoryName' => $account->getCategoryName(),
+            'userId' => $account->getUserId(),
+            'userName' => $account->getUserName(),
+            'userLogin' => $account->getUserLogin(),
+            'userGroupId' => $account->getUserGroupId(),
+            'userGroupName' => $account->getUserGroupName(),
+            'userEditId' => $account->getUserEditId(),
+            'userEditName' => $account->getUserEditName(),
+            'userEditLogin' => $account->getUserEditLogin(),
+            'login' => $account->getLogin(),
+            'url' => $account->getUrl(),
+            'notes' => $account->getNotes(),
+            'otherUserEdit' => $account->getOtherUserEdit(),
             'otherUserGroupEdit' => $account->getOtherUserGroupEdit(),
-            'dateAdd'            => $account->getDateAdd(),
-            'dateEdit'           => $account->getDateEdit(),
-            'countView'          => $account->getCountView(),
-            'countDecrypt'       => $account->getCountDecrypt(),
-            'isPrivate'          => $account->getIsPrivate(),
-            'isPrivateGroup'     => $account->getIsPrivateGroup(),
-            'passDate'           => $account->getPassDate(),
-            'passDateChange'     => $account->getPassDateChange(),
-            'parentId'           => $account->getParentId(),
-            'publicLinkHash'     => $account->getPublicLinkHash(),
-            'tags'               => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
-            'users'              => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
-            'userGroups'         => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
-            'customFields'       => null,
-            'links'              => [
+            'dateAdd' => $account->getDateAdd(),
+            'dateEdit' => $account->getDateEdit(),
+            'countView' => $account->getCountView(),
+            'countDecrypt' => $account->getCountDecrypt(),
+            'isPrivate' => $account->getIsPrivate(),
+            'isPrivateGroup' => $account->getIsPrivateGroup(),
+            'passDate' => $account->getPassDate(),
+            'passDateChange' => $account->getPassDateChange(),
+            'parentId' => $account->getParentId(),
+            'publicLinkHash' => $account->getPublicLinkHash(),
+            'tags' => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
+            'users' => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
+            'userGroups' => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
+            'customFields' => null,
+            'links' => [
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $account->getId(),
-                        AclActionsInterface::ACCOUNT_VIEW,
+                        $actionRoute,
                         $this->configData,
                         true
                     ),

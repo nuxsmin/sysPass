@@ -25,9 +25,10 @@
 namespace SP\Mvc\View\Components;
 
 use RuntimeException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
+
 use function SP\__u;
 
 /**

@@ -24,7 +24,7 @@
 
 namespace SP\Providers\Mail;
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class MailerException

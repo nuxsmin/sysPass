@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Config\Services;
 
-use SP\Core\Exceptions\ConfigException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Checks;
 
 /**

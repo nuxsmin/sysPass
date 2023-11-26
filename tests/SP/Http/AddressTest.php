@@ -25,7 +25,7 @@
 namespace SP\Tests\Http;
 
 use Faker\Factory;
-use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 use SP\Tests\UnitaryTestCase;
 

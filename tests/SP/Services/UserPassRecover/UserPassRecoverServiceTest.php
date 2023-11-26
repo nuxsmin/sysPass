@@ -28,13 +28,15 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Services\UserPassRecoverService;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -45,7 +47,7 @@ use function SP\Tests\setupContext;
 class UserPassRecoverServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\User\Ports\UserPassRecoverServiceInterface
+     * @var UserPassRecoverServiceInterface
      */
     private static $service;
 

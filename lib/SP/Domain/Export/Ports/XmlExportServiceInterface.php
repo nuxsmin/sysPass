@@ -24,7 +24,8 @@
 
 namespace SP\Domain\Export\Ports;
 
-use SP\Core\Exceptions\CheckException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Infrastructure\File\FileException;
 
 /**
@@ -40,8 +41,8 @@ interface XmlExportServiceInterface
      * @param  string  $exportPath
      * @param  string|null  $pass  La clave de exportación
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function doExport(string $exportPath, ?string $pass = null): void;
 

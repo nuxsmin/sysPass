@@ -27,13 +27,15 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\ItemPreset;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPresetRepository;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -44,7 +46,7 @@ use function SP\Tests\setupContext;
 class ItemPresetRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface
+     * @var ItemPresetRepositoryInterface
      */
     private static $repository;
 

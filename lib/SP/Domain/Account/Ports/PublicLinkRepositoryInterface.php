@@ -24,12 +24,12 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -46,8 +46,8 @@ interface PublicLinkRepositoryInterface extends RepositoryInterface
      * @param  int  $id
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): void;
 
@@ -96,19 +96,19 @@ interface PublicLinkRepositoryInterface extends RepositoryInterface
      * @param  PublicLinkData  $publicLinkData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function addLinkView(PublicLinkData $publicLinkData): bool;
 
     /**
      * Updates an item
      *
-     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     * @param PublicLinkData $publicLinkData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(PublicLinkData $publicLinkData): bool;
 

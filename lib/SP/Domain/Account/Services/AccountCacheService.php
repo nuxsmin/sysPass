@@ -30,6 +30,9 @@ use SP\Domain\Account\Ports\AccountCacheServiceInterface;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class AccountCacheService
@@ -50,10 +53,10 @@ final class AccountCacheService extends Service implements AccountCacheServiceIn
      * @param  int  $accountId  The account's ID
      * @param  int  $dateEdit  The account's date edit
      *
-     * @return \SP\Domain\Account\Dtos\AccountCacheDto
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @return AccountCacheDto
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto
     {

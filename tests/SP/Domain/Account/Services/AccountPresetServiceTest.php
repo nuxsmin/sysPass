@@ -25,11 +25,14 @@
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Services\AccountPresetService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Mvc\Controller\Validators\ValidatorInterface;
@@ -50,10 +53,10 @@ class AccountPresetServiceTest extends UnitaryTestCase
     private ValidatorInterface|MockObject         $passwordValidator;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\ValidationException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ValidationException
+     * @throws NoSuchPropertyException
      */
     public function testCheckPasswordPreset(): void
     {
@@ -77,10 +80,10 @@ class AccountPresetServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\ValidationException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ValidationException
+     * @throws NoSuchPropertyException
      */
     public function testCheckPasswordPresetThrowsValidatorException(): void
     {
@@ -107,10 +110,10 @@ class AccountPresetServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\ValidationException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ValidationException
+     * @throws NoSuchPropertyException
      */
     public function testCheckPasswordPresetWithoutFixed(): void
     {
@@ -131,10 +134,10 @@ class AccountPresetServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\ValidationException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ValidationException
+     * @throws NoSuchPropertyException
      */
     public function testCheckPasswordPresetWithPassDateChangeModified(): void
     {

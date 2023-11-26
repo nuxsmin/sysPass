@@ -24,12 +24,14 @@
 
 namespace SP\Tests\Domain\Export\Services;
 
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\BackupFilesInterface;
 use SP\Domain\Export\Services\FileBackupService;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -42,8 +44,6 @@ use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
-
-use function SP\__u;
 
 /**
  * Class FileBackupServiceTest
@@ -90,10 +90,10 @@ class FileBackupServiceTest extends UnitaryTestCase
             )
             ->willReturn(...$queryResults);
 
-        $statement = $this->createMock(\PDOStatement::class);
+        $statement = $this->createMock(PDOStatement::class);
         $statement->expects(self::exactly($tablesCount - 1))
                   ->method('fetch')
-                  ->with(\PDO::FETCH_NUM)
+                  ->with(PDO::FETCH_NUM)
                   ->willReturn(['value1', 2, null], false);
 
         $this->database
@@ -103,7 +103,7 @@ class FileBackupServiceTest extends UnitaryTestCase
                 new Callback(static function (QueryData $queryData) {
                     return preg_match('/^SELECT \* FROM `\w+`$/', $queryData->getQuery()) === 1;
                 }),
-                [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL],
+                [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
                 false
             )
             ->willReturn($statement);

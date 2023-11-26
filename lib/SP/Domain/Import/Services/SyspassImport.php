@@ -34,10 +34,11 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
+use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Services\XmlVerifyService;
 use SP\Util\VersionUtil;
 
@@ -421,7 +422,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Accounts',
             'Account',
             function (DOMElement $account) {
-                $accountRequest = new \SP\Domain\Account\Dtos\AccountRequest();
+                $accountRequest = new AccountRequest();
 
                 /** @var DOMElement $node */
                 foreach ($account->childNodes as $node) {

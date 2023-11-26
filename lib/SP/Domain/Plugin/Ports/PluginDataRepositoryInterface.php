@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
@@ -64,8 +64,8 @@ interface PluginDataRepositoryInterface
      * @param  string  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(string $id): int;
 

@@ -27,7 +27,7 @@ namespace SP\Providers\Log;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SplSubject;
 
 /**

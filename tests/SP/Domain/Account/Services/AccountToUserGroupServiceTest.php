@@ -28,6 +28,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
 use SP\Domain\Account\Services\AccountToUserGroupService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -43,9 +46,9 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
     private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetUserGroupsByAccountId()
     {
@@ -78,9 +81,9 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetUserGroupsByAccountIdWithNoUserGroups()
     {

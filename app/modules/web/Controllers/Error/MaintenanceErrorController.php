@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Error;
 
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 final class MaintenanceErrorController extends ErrorBase
 {

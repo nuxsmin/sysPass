@@ -32,8 +32,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
-use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\HttpModuleBase;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Init as InitWeb;
 use SP\Util\Filter;
 

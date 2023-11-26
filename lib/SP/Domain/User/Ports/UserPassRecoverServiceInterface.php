@@ -25,9 +25,10 @@
 namespace SP\Domain\User\Ports;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class UserPassRecoverService
@@ -37,8 +38,8 @@ use SP\Domain\Common\Services\ServiceException;
 interface UserPassRecoverServiceInterface
 {
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws SPException
+     * @throws ServiceException
      */
     public function toggleUsedByHash(string $hash): void;
 
@@ -59,15 +60,15 @@ interface UserPassRecoverServiceInterface
     public function checkAttemptsByUserId(int $userId): bool;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(int $userId, string $hash): bool;
 
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */

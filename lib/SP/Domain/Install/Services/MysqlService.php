@@ -24,14 +24,16 @@
 
 namespace SP\Domain\Install\Services;
 
+use Exception;
 use PDOException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\PasswordUtil;
+
 use function SP\__;
 use function SP\__u;
 use function SP\logger;
@@ -92,7 +94,7 @@ final class MysqlService implements DatabaseSetupInterface
 
     /**
      * @throws SPException
-     * @throws \Exception
+     * @throws Exception
      */
     public function setupDbUser(): array
     {
@@ -320,7 +322,7 @@ final class MysqlService implements DatabaseSetupInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function checkDatabase(string $exceptionHint): void
     {

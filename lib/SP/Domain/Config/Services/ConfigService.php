@@ -26,15 +26,15 @@ namespace SP\Domain\Config\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigRepositoryInterface;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Config\Repositories\ConfigRepository;
 
@@ -56,7 +56,7 @@ final class ConfigService extends Service implements ConfigServiceInterface
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getByParam(string $param, $default = null)
     {
@@ -90,9 +90,9 @@ final class ConfigService extends Service implements ConfigServiceInterface
     }
 
     /**
-     * @param  \SP\DataModel\Dto\ConfigRequest  $configRequest
+     * @param ConfigRequest $configRequest
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function saveBatch(ConfigRequest $configRequest): void
     {
@@ -152,9 +152,9 @@ final class ConfigService extends Service implements ConfigServiceInterface
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function deleteByParam(string $param): void
     {

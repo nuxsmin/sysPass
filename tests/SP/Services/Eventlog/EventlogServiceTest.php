@@ -27,15 +27,16 @@ namespace SP\Tests\Services\Eventlog;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Domain\Security\Services\EventlogService;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -46,7 +47,7 @@ use function SP\Tests\setupContext;
 class EventlogServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Security\Ports\EventlogServiceInterface
+     * @var EventlogServiceInterface
      */
     private static $service;
 

@@ -25,11 +25,12 @@
 namespace SP\Domain\Security\Ports;
 
 use Exception;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
@@ -97,7 +98,7 @@ interface TrackServiceInterface
     public function getTracksForClientFromTime(TrackRequest $trackRequest): int;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */

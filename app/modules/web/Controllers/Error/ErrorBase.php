@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Error;
 
 
-use SP\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
 
@@ -40,8 +40,8 @@ abstract class ErrorBase
     /**
      * ErrorController constructor.
      *
-     * @param  \SP\Mvc\View\TemplateInterface  $template
-     * @param  \SP\Modules\Web\Controllers\Helpers\LayoutHelper  $layoutHelper
+     * @param TemplateInterface $template
+     * @param LayoutHelper $layoutHelper
      */
     public function __construct(TemplateInterface $template, LayoutHelper $layoutHelper)
     {

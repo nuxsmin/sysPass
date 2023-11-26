@@ -33,8 +33,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\CheckException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\DataModel\CategoryData;
 use SP\Domain\Account\Ports\AccountServiceInterface;
@@ -45,6 +43,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Exceptions\CheckException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\File\ArchiveHandler;
@@ -103,8 +103,8 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
      * @param  string  $exportPath
      * @param  string|null  $pass  La clave de exportación
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function doExport(string $exportPath, ?string $pass = null): void
     {
@@ -122,7 +122,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function setExportPath(string $exportPath): void
     {
@@ -178,7 +178,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     /**
      * Crear el documento XML y guardarlo
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function makeXML(): void
     {
@@ -207,7 +207,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     /**
      * Crear el nodo raíz
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function createRoot(): void
     {
@@ -303,7 +303,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
      *
      * @param  DOMElement  $node  El nodo a añadir
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function appendNode(DOMElement $node): void
     {
@@ -413,7 +413,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     /**
      * Crear el nodo con los datos de las etiquetas
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function createTags(): void
     {
@@ -520,7 +520,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     /**
      * Crear el hash del archivo XML e insertarlo en el árbol DOM
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function createHash(): void
     {
@@ -561,7 +561,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     /**
      * Generar el archivo XML
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function writeXML(): void
     {

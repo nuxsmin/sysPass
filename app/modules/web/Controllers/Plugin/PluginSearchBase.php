@@ -26,6 +26,8 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use SP\Core\Application;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -39,7 +41,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class PluginSearchBase extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private PluginServiceInterface $pluginService;
     private PluginGrid             $pluginGrid;
@@ -61,9 +64,9 @@ abstract class PluginSearchBase extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @return \SP\Html\DataGrid\DataGridInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridInterface
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid(): DataGridInterface
     {

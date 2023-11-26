@@ -24,7 +24,7 @@
 
 namespace SP\Html\DataGrid;
 
-use SP\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\Layout\DataGridHeaderInterface;

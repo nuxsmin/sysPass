@@ -25,9 +25,9 @@
 namespace SP\Providers\Auth;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Providers\Provider;
 use SplObjectStorage;
 

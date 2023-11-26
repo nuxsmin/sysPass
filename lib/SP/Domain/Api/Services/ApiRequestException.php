@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Api\Services;
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class ApiRequestException

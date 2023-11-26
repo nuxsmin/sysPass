@@ -25,8 +25,8 @@
 namespace SP\Domain\Import\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
 
@@ -78,7 +78,7 @@ final class XmlImport implements XmlImportInterface
      * @param  string  $format
      *
      * @return KeepassImport|SyspassImport
-     * @throws \SP\Domain\Import\Services\ImportException
+     * @throws ImportException
      */
     protected function selectImportType(string $format)
     {

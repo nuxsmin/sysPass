@@ -27,18 +27,20 @@ namespace SP\Tests\Services\UserProfile;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Services\UserProfileService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -49,7 +51,7 @@ use function SP\Tests\setupContext;
 class UserProfileServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\User\Ports\UserProfileServiceInterface
+     * @var UserProfileServiceInterface
      */
     private static $service;
 
@@ -66,7 +68,7 @@ class UserProfileServiceTest extends DatabaseTestCase
         self::$loadFixtures = true;
 
         // Inicializar el servicio
-        self::$service = $dic->get(\SP\Domain\User\Services\UserProfileService::class);
+        self::$service = $dic->get(UserProfileService::class);
     }
 
     /**

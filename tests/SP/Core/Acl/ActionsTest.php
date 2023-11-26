@@ -26,10 +26,10 @@ namespace SP\Tests\Core\Acl;
 
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Acl\ActionNotFoundException;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextException;
 use SP\DataModel\ActionData;
+use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;

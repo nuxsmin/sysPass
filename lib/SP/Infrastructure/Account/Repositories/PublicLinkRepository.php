@@ -24,17 +24,18 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -52,8 +53,8 @@ final class PublicLinkRepository extends Repository implements PublicLinkReposit
      * @param  int  $id
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): void
     {
@@ -223,8 +224,8 @@ final class PublicLinkRepository extends Repository implements PublicLinkReposit
      * @param  int  $id
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkDuplicatedOnAdd(int $id): bool
     {
@@ -244,8 +245,8 @@ final class PublicLinkRepository extends Repository implements PublicLinkReposit
      * @param  PublicLinkData  $publicLinkData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function addLinkView(PublicLinkData $publicLinkData): bool
     {
@@ -266,11 +267,11 @@ final class PublicLinkRepository extends Repository implements PublicLinkReposit
     /**
      * Updates an item
      *
-     * @param  \SP\DataModel\PublicLinkData  $publicLinkData
+     * @param PublicLinkData $publicLinkData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(PublicLinkData $publicLinkData): bool
     {

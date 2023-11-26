@@ -26,10 +26,10 @@ namespace SP\Modules\Cli\Commands;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Core\Exceptions\InstallError;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Language;
 use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Exceptions\InstallError;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\Install\Services\InstallerService;

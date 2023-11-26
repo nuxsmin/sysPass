@@ -26,8 +26,8 @@ namespace SP\Providers\Mail;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
 use SP\Providers\Provider;
@@ -40,7 +40,7 @@ use SP\Providers\Provider;
 final class MailProvider extends Provider implements MailProviderInterface
 {
     /**
-     * @var \SP\Domain\Providers\MailerInterface | \SP\Providers\Mail\PhpMailerWrapper
+     * @var MailerInterface | PhpMailerWrapper
      */
     private MailerInterface $mailer;
     private bool            $debug = false;

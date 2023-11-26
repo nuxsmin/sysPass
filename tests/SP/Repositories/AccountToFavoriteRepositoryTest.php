@@ -27,11 +27,12 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Account\Repositories\AccountToFavoriteRepository;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -42,7 +43,7 @@ use function SP\Tests\setupContext;
 class AccountToFavoriteRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface
+     * @var AccountToFavoriteRepositoryInterface
      */
     private static $repository;
 

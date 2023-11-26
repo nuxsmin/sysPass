@@ -24,7 +24,7 @@
 
 namespace SP\Mvc\View\Components;
 
-use SP\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Mvc\View\TemplateInterface;
 
 /**

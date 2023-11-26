@@ -24,9 +24,10 @@
 
 namespace SP\Domain\Notification\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -34,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Notification\Repositories
  */
-interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInterface
+interface NotificationRepositoryInterface extends RepositoryInterface
 {
     /**
      * Deletes an item
@@ -42,8 +43,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteAdmin(int $id): int;
 
@@ -88,8 +89,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function setCheckedById(int $id): int;
 
@@ -100,8 +101,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $userId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $userId): QueryResult;
 
@@ -109,8 +110,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForUserId(int $id): QueryResult;
 
@@ -118,8 +119,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId(int $id): QueryResult;
 
@@ -127,8 +128,8 @@ interface NotificationRepositoryInterface extends \SP\Domain\Common\Ports\Reposi
      * @param  int  $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForAdmin(int $id): QueryResult;
 }

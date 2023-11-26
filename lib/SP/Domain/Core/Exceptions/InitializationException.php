@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,12 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Exceptions;
+namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class CryptException
+ * Class InitializationException
+ *
+ * @package SP\Domain\Core\Exceptions
  */
-final class CryptException extends SPException
+final class InitializationException extends SPException
 {
 
 }

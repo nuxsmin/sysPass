@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Application;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\Minify;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -37,8 +39,8 @@ abstract class ResourceBase extends SimpleControllerBase
     protected Minify $minify;
 
     /**
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SessionTimeout
+     * @throws SPException
      */
     public function __construct(
         Application $application,

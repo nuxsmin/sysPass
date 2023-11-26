@@ -27,10 +27,6 @@ namespace SP\Domain\Install\Services;
 
 use Exception;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
@@ -39,6 +35,10 @@ use SP\DataModel\UserProfileData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
@@ -47,6 +47,7 @@ use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Http\RequestInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Util\VersionUtil;
+
 use function SP\__u;
 use function SP\processException;
 
@@ -311,7 +312,7 @@ final class InstallerService implements InstallerServiceInterface
     /**
      * Saves the master password metadata
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function saveMasterPassword(): void
     {

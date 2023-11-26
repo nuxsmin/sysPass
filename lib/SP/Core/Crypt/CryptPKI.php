@@ -25,8 +25,8 @@
 namespace SP\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 

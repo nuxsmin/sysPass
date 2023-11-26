@@ -26,8 +26,8 @@ namespace SP\Tests\Storage;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
 use UnexpectedValueException;
@@ -39,7 +39,7 @@ use UnexpectedValueException;
  */
 class ArchiveHandlerTest extends TestCase
 {
-    const  ARCHIVE = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive';
+    public const  ARCHIVE = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive';
 
     /**
      * @throws CheckException

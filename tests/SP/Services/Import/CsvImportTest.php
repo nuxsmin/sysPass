@@ -30,11 +30,11 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Category\Services\CategoryService;
 use SP\Domain\Client\Services\ClientService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportException;
@@ -42,6 +42,7 @@ use SP\Domain\Import\Services\ImportParams;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**

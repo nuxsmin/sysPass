@@ -26,7 +26,7 @@ namespace SP\Http;
 
 use JsonException;
 use Klein\Response;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 
 
 /**
@@ -118,10 +118,10 @@ final class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param  \SP\Http\JsonResponse  $jsonResponse
+     * @param JsonResponse $jsonResponse
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function returnJson(JsonResponse $jsonResponse): bool
     {

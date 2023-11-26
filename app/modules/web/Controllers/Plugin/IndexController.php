@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 
 /**
  * Class IndexController

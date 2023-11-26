@@ -24,7 +24,7 @@
 
 namespace SP\Util;
 
-use SP\Core\Exceptions\InvalidImageException;
+use SP\Domain\Core\Exceptions\InvalidImageException;
 
 /**
  * Class ImageUtil para la manipulación de imágenes

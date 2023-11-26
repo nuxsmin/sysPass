@@ -25,14 +25,14 @@
 namespace SP\Domain\Client\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Mvc\Controller\ItemTrait;

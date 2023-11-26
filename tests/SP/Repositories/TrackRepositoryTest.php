@@ -27,14 +27,15 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TrackData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\TrackRepositoryInterface;
 use SP\Infrastructure\Security\Repositories\TrackRepository;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**

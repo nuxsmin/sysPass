@@ -32,9 +32,9 @@ use PDOStatement;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
 use function SP\logger;
@@ -160,9 +160,9 @@ final class Database implements DatabaseInterface
      * @param QueryInterface $query Los datos de la consulta
      * @param array $options
      *
-     * @return \PDOStatement
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return PDOStatement
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function prepareQueryData(
         QueryInterface $query,

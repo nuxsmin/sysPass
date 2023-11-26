@@ -25,8 +25,8 @@
 namespace SP\Core\UI;
 
 use SP\Core\Context\ContextBase;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\Assets\FontIcon;

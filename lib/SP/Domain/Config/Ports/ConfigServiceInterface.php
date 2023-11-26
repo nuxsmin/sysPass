@@ -24,10 +24,11 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
@@ -39,7 +40,7 @@ interface ConfigServiceInterface
 {
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function getByParam(string $param, $default = null);
 
@@ -50,7 +51,7 @@ interface ConfigServiceInterface
     public function create(ConfigData $configData): int;
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function saveBatch(ConfigRequest $configRequest): void;
 
@@ -70,9 +71,9 @@ interface ConfigServiceInterface
     public function getAll(): array;
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function deleteByParam(string $param): void;
 }

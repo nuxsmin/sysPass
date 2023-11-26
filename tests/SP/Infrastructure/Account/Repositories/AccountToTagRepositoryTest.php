@@ -26,8 +26,12 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Account\Repositories\AccountToTagRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -68,8 +72,8 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testDeleteByAccountId(): void
     {
@@ -98,8 +102,8 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAdd(): void
     {
@@ -133,8 +137,8 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws ContextException
+     * @throws Exception
      */
     protected function setUp(): void
     {

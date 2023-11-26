@@ -26,11 +26,12 @@ namespace SP\Tests\Modules\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Modules\Cli\Commands\BackupCommand;
 use SP\Tests\Modules\Cli\CliTestCase;
+
 use function SP\Tests\recreateDir;
 
 /**

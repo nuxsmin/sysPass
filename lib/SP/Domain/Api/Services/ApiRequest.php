@@ -25,8 +25,9 @@
 namespace SP\Domain\Api\Services;
 
 use JsonException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Api\Ports\ApiRequestInterface;
+use SP\Domain\Core\Exceptions\SPException;
+
 use function SP\__u;
 
 /**
@@ -50,7 +51,7 @@ final class ApiRequest implements ApiRequestInterface
      * @param  string  $stream
      *
      * @return ApiRequestInterface
-     * @throws \SP\Domain\Api\Services\ApiRequestException
+     * @throws ApiRequestException
      */
     public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestInterface
     {
@@ -74,7 +75,7 @@ final class ApiRequest implements ApiRequestInterface
      * @param  string  $json
      *
      * @return ApiRequestInterface
-     * @throws \SP\Domain\Api\Services\ApiRequestException
+     * @throws ApiRequestException
      */
     private static function buildFromJson(string $json): ApiRequestInterface
     {

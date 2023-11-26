@@ -25,8 +25,13 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPMailer\PHPMailer\Exception;
 use SP\Core\Application;
 use SP\DataModel\UserData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
@@ -70,11 +75,11 @@ abstract class UserSaveBase extends ControllerBase
      * @param  int  $userId
      * @param  UserData  $userData
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     final protected function checkChangeUserPass(int $userId, UserData $userData): void
     {

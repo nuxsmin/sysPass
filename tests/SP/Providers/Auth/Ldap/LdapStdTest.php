@@ -25,10 +25,10 @@
 namespace SP\Tests\Providers\Auth\Ldap;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapStd;

@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Application;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Http\RequestInterface;
@@ -74,7 +75,7 @@ abstract class AccountHelperBase extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     final protected function checkActionAccess(): void
     {

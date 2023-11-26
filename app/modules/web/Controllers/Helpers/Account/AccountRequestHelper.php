@@ -27,6 +27,10 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
  * Class AccountRequestHelper
@@ -36,14 +40,14 @@ final class AccountRequestHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param  \SP\Domain\Account\Dtos\AccountEnrichedDto  $accountDetailsResponse
+     * @param AccountEnrichedDto $accountDetailsResponse
      * @param  int  $actionId
      *
      * @return bool
-     * @throws \SP\Core\Acl\UnauthorizedPageException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Domain\User\Services\UpdatedMasterPassException
+     * @throws UnauthorizedPageException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws UpdatedMasterPassException
      */
     public function setViewForRequest(
         AccountEnrichedDto $accountDetailsResponse,

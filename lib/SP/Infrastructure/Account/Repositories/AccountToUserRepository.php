@@ -24,15 +24,16 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\Query;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
+
 use function SP\__u;
 
 /**
@@ -51,8 +52,8 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
      * @param  bool  $isEdit
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteTypeByAccountId(int $id, bool $isEdit): void
     {
@@ -79,8 +80,8 @@ final class AccountToUserRepository extends Repository implements AccountToUserR
      * @param  bool  $isEdit
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function addByType(int $accountId, array $items, bool $isEdit = false): void
     {

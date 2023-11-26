@@ -24,11 +24,11 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Exceptions\SPException;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
 
 /**
  * Class UserProfileForm

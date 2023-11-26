@@ -25,12 +25,14 @@
 namespace SP\Modules\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use JsonException;
 use Klein\Klein;
 use SP\Core\Application;
-use SP\Core\Exceptions\InitializationException;
+use SP\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
@@ -68,11 +70,11 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \JsonException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Core\Exceptions\InitializationException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws EnvironmentIsBrokenException
+     * @throws JsonException
+     * @throws ContextException
+     * @throws InitializationException
+     * @throws FileException
      */
     public function initialize(string $controller): void
     {

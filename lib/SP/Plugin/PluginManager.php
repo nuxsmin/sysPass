@@ -30,9 +30,9 @@ use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
@@ -63,7 +63,7 @@ class PluginManager
     /**
      * PluginManager constructor.
      *
-     * @param  \SP\Domain\Plugin\Ports\PluginServiceInterface  $pluginService
+     * @param PluginServiceInterface $pluginService
      * @param  PluginDataServiceInterface  $pluginDataService
      * @param  EventDispatcher  $eventDispatcher
      */

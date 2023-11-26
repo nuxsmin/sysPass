@@ -25,8 +25,8 @@
 namespace SP\Tests\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\TestCase;
-use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**

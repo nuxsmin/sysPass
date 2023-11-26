@@ -27,6 +27,9 @@ namespace SP\Tests\Domain\Account\Services;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface;
 use SP\Domain\Account\Services\AccountToFavoriteService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -42,9 +45,9 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
     private AccountToFavoriteService                        $accountToFavoriteService;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetForUserId()
     {
@@ -63,8 +66,8 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testDelete()
     {
@@ -83,8 +86,8 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testAdd()
     {

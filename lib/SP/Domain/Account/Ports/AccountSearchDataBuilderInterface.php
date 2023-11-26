@@ -25,6 +25,8 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -33,11 +35,11 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountSearchDataBuilderInterface
 {
     /**
-     * @param  \SP\Infrastructure\Database\QueryResult  $queryResult
+     * @param QueryResult $queryResult
      *
      * @return AccountSearchItem[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function buildFrom(QueryResult $queryResult): array;
 }

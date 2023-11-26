@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Export\Ports;
 
-use SP\Core\Exceptions\CheckException;
+use SP\Domain\Core\Exceptions\CheckException;
 use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileHandlerInterface;
 

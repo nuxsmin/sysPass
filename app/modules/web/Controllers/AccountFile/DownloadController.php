@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**

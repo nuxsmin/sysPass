@@ -25,12 +25,12 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use RuntimeException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserRepositoryInterface;
 use SP\Domain\User\Services\UpdatePassRequest;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -176,8 +176,8 @@ final class UserRepository extends Repository implements UserRepositoryInterface
      * @param  int  $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $id): int
     {
@@ -287,9 +287,9 @@ final class UserRepository extends Repository implements UserRepositoryInterface
      *
      * @param  array  $ids
      *
-     * @return \SP\Infrastructure\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids): QueryResult
     {
@@ -599,8 +599,8 @@ final class UserRepository extends Repository implements UserRepositoryInterface
      * @param  string  $key
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateMasterPassById(
         int $id,
@@ -645,8 +645,8 @@ final class UserRepository extends Repository implements UserRepositoryInterface
      * @param  string  $login
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin(string $login): bool
     {
@@ -719,8 +719,8 @@ final class UserRepository extends Repository implements UserRepositoryInterface
      * @param  int  $groupId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup(int $groupId): QueryResult
     {

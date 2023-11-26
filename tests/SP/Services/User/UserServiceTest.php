@@ -29,20 +29,21 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UserLoginRequest;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -55,7 +56,7 @@ class UserServiceTest extends DatabaseTestCase
     private const CURRENT_MASTERPASS = '12345678900';
 
     /**
-     * @var \SP\Domain\Config\Ports\ConfigDataInterface
+     * @var ConfigDataInterface
      */
     private static $configData;
 
@@ -158,7 +159,7 @@ class UserServiceTest extends DatabaseTestCase
      * @throws QueryException
      * @throws SPException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -199,7 +200,7 @@ class UserServiceTest extends DatabaseTestCase
      * @throws QueryException
      * @throws SPException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateDuplicatedLogin()
     {
@@ -227,7 +228,7 @@ class UserServiceTest extends DatabaseTestCase
      * @throws QueryException
      * @throws SPException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateDuplicatedEmail()
     {
@@ -255,7 +256,7 @@ class UserServiceTest extends DatabaseTestCase
      * @throws QueryException
      * @throws SPException
      * @throws DuplicatedItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateUnknown()
     {
@@ -298,7 +299,7 @@ class UserServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws SPException
      */
     public function testUpdatePass()

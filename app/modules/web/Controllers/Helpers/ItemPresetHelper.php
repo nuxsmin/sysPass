@@ -25,13 +25,15 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Domain\Account\Models\ItemPreset;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -131,7 +133,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPasswordView(ItemPreset $itemPresetData): void
     {
-        $password = $itemPresetData->hydrate(Password::class) ?? new Password;
+        $password = $itemPresetData->hydrate(Password::class) ?? new Password();
 
         $this->view->assign('typeTemplate', 'item_preset-password');
         $this->view->assign('presetName', __('Account Password Preset'));
@@ -142,8 +144,8 @@ final class ItemPresetHelper extends HelperBase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function setCommon(ItemPreset $itemPresetData): void
     {

@@ -26,9 +26,9 @@
 namespace SP\Core\Acl;
 
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -40,21 +40,14 @@ use function SP\processException;
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class Acl implements AclActionsInterface
+final class Acl implements AclActionsInterface
 {
-    protected static ?ActionsInterface $actions = null;
+    private static ActionsInterface $actions;
 
-    /**
-     * Acl constructor.
-     *
-     * @param ContextInterface $context
-     * @param EventDispatcher $eventDispatcher
-     * @param ActionsInterface|null $actions
-     */
     public function __construct(
         private readonly ContextInterface         $context,
         private readonly EventDispatcherInterface $eventDispatcher,
-        ActionsInterface                          $actions = null
+        ActionsInterface $actions
     ) {
         self::$actions = $actions;
     }
@@ -65,7 +58,7 @@ class Acl implements AclActionsInterface
     public static function getActionRoute(string $actionId): string
     {
         try {
-            return self::$actions !== null ? self::$actions->getActionById($actionId)->getRoute() : '';
+            return self::$actions?->getActionById($actionId)->getRoute();
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
@@ -80,12 +73,12 @@ class Acl implements AclActionsInterface
      * @param bool $translate
      *
      * @return string
-     * @internal param bool $shortName Si se devuelve el nombre corto de la acción
+     * @internal param bool $translate Si se devuelve el nombre corto de la acción
      */
     public static function getActionInfo(int $actionId, bool $translate = true): string
     {
         try {
-            $text = self::$actions->getActionById($actionId)->getText();
+            $text = self::$actions?->getActionById($actionId)->getText();
 
             return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {

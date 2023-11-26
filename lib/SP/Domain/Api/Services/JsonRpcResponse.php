@@ -25,7 +25,7 @@
 namespace SP\Domain\Api\Services;
 
 use Exception;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
 
 /**

@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 use Exception;
 use JsonException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
 
 /**

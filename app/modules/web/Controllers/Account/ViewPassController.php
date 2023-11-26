@@ -26,11 +26,15 @@ namespace SP\Modules\Web\Controllers\Account;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
@@ -72,7 +76,7 @@ final class ViewPassController extends AccountControllerBase
      * @param  int  $parentId
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function viewPassAction(int $id, int $parentId = 0): ?bool
     {
@@ -110,9 +114,9 @@ final class ViewPassController extends AccountControllerBase
 
     /**
      * @return Password
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     private function getPasswordPreset(): ?Password
     {

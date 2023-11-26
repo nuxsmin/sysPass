@@ -29,15 +29,16 @@ use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Services\PluginDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Plugin\PluginOperation;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -75,7 +76,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -101,7 +102,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testUpdateUnknown()
     {
@@ -174,7 +175,7 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetUnknown()
     {

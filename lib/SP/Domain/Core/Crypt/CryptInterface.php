@@ -26,7 +26,7 @@ namespace SP\Domain\Core\Crypt;
 
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
-use SP\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\CryptException;
 
 /**
  * Class Crypt

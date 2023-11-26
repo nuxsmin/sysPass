@@ -24,10 +24,10 @@
 
 namespace SP\Domain\CustomField\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -68,8 +68,8 @@ interface CustomFieldRepositoryInterface extends RepositoryInterface
      * @param  int|null  $definitionId
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteCustomFieldDataForDefinition(int $id, int $moduleId, ?int $definitionId): int;
 
@@ -123,8 +123,8 @@ interface CustomFieldRepositoryInterface extends RepositoryInterface
      * @param  int|null  $itemId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult;
 }

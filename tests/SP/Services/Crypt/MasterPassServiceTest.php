@@ -30,15 +30,20 @@ use DI\NotFoundException;
 use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
+use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -49,15 +54,15 @@ use function SP\Tests\setupContext;
 class MasterPassServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\CustomField\Ports\CustomFieldServiceInterface
+     * @var CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
-     * @var \SP\Domain\Account\Ports\AccountServiceInterface
+     * @var AccountServiceInterface
      */
     private static $accountService;
     /**
-     * @var \SP\Domain\Crypt\Ports\MasterPassServiceInterface
+     * @var MasterPassServiceInterface
      */
     private static $service;
 
@@ -177,7 +182,7 @@ class MasterPassServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCheckUserUpdateMPass()
     {
@@ -187,7 +192,7 @@ class MasterPassServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCheckMasterPassword()
     {

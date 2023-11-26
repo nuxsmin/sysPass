@@ -25,9 +25,10 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\FileUtil;
@@ -49,7 +50,7 @@ final class ViewController extends AccountFileBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function viewAction(int $id): bool
     {

@@ -26,14 +26,15 @@ namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Acl\Acl;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
@@ -68,48 +69,48 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         self::$accounts = [
             1 => [
-                'userGroupId'        => 1,
-                'userId'             => 1,
-                'isPrivate'          => 0,
-                'isPrivateGroup'     => 0,
+                'userGroupId' => 1,
+                'userId' => 1,
+                'isPrivate' => 0,
+                'isPrivateGroup' => 0,
                 'otherUserGroupEdit' => 0,
-                'otherUserEdit'      => 0,
-                'users'              => [new ItemData(['id' => 3, 'isEdit' => 1])],
-                'groups'             => [new ItemData(['id' => 2, 'isEdit' => 1])],
+                'otherUserEdit' => 0,
+                'users' => [new ItemData(['id' => 3, 'isEdit' => 1])],
+                'groups' => [new ItemData(['id' => 2, 'isEdit' => 1])],
 
             ],
             2 => [
-                'userGroupId'        => 1,
-                'userId'             => 1,
-                'isPrivate'          => 0,
-                'isPrivateGroup'     => 0,
+                'userGroupId' => 1,
+                'userId' => 1,
+                'isPrivate' => 0,
+                'isPrivateGroup' => 0,
                 'otherUserGroupEdit' => 0,
-                'otherUserEdit'      => 0,
-                'users'              => [],
-                'groups'             => [
+                'otherUserEdit' => 0,
+                'users' => [],
+                'groups' => [
                     new ItemData(['id' => 2, 'isEdit' => 1]),
                     new ItemData(['id' => 3, 'isEdit' => 1]),
                 ],
             ],
             3 => [
-                'userGroupId'        => 3,
-                'userId'             => 3,
-                'isPrivate'          => 1,
-                'isPrivateGroup'     => 0,
+                'userGroupId' => 3,
+                'userId' => 3,
+                'isPrivate' => 1,
+                'isPrivateGroup' => 0,
                 'otherUserGroupEdit' => 0,
-                'otherUserEdit'      => 0,
-                'users'              => [],
-                'groups'             => [],
+                'otherUserEdit' => 0,
+                'users' => [],
+                'groups' => [],
             ],
             4 => [
-                'userGroupId'        => 3,
-                'userId'             => 3,
-                'isPrivate'          => 0,
-                'isPrivateGroup'     => 1,
+                'userGroupId' => 3,
+                'userId' => 3,
+                'isPrivate' => 0,
+                'isPrivateGroup' => 1,
                 'otherUserGroupEdit' => 0,
-                'otherUserEdit'      => 0,
-                'users'              => [],
-                'groups'             => [],
+                'otherUserEdit' => 0,
+                'users' => [],
+                'groups' => [],
             ],
         ];
     }
@@ -198,8 +199,8 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @param AccountAclDto $accountAclDto  The ACL dto to compile the ACL for the user
-     * @param  AccountAcl  $example  An example ACL to test against the compiled ACL
+     * @param AccountAclDto $accountAclDto The ACL dto to compile the ACL for the user
+     * @param AccountAcl $example An example ACL to test against the compiled ACL
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -301,12 +302,12 @@ class AccountAclServiceTest extends UnitaryTestCase
     }
 
     /**
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
      *
-     * @param  bool  $isAdminApp
-     * @param  bool|int  $isAdminAcc
+     * @param bool $isAdminApp
+     * @param bool|int $isAdminAcc
      *
      * @return AccountAclDto
      */
@@ -401,11 +402,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -437,11 +438,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -473,11 +474,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -509,11 +510,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -546,11 +547,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -582,11 +583,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -618,11 +619,11 @@ class AccountAclServiceTest extends UnitaryTestCase
      * @group acl:action
      * @dataProvider accountPropertiesProvider
      *
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  int  $groupId
-     * @param  bool  $shouldView
-     * @param  bool  $shouldEdit
+     * @param int $accountId
+     * @param int $userId
+     * @param int $groupId
+     * @param bool $shouldView
+     * @param bool $shouldEdit
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -676,10 +677,11 @@ class AccountAclServiceTest extends UnitaryTestCase
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheInterface::class);
+        $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
             $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher()),
+            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
@@ -716,10 +718,11 @@ class AccountAclServiceTest extends UnitaryTestCase
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheInterface::class);
+        $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
             $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher()),
+            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
@@ -760,10 +763,11 @@ class AccountAclServiceTest extends UnitaryTestCase
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheInterface::class);
+        $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
             $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher()),
+            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
@@ -795,10 +799,11 @@ class AccountAclServiceTest extends UnitaryTestCase
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheInterface::class);
+        $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
             $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher()),
+            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
@@ -818,15 +823,17 @@ class AccountAclServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $acl = new Acl($this->context, $this->application->getEventDispatcher());
+        $actions = $this->createMock(ActionsInterface::class);
+
+        $acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')
                                ->willReturnMap([
-                                   [1, [new Simple(['userGroupId' => 2])]],
-                                   [2, [new Simple(['userGroupId' => 1])]],
-                                   [3, [new Simple(['userGroupId' => 2])]],
-                                   [4, []],
-                               ]);
+                                                   [1, [new Simple(['userGroupId' => 2])]],
+                                                   [2, [new Simple(['userGroupId' => 1])]],
+                                                   [3, [new Simple(['userGroupId' => 2])]],
+                                                   [4, []],
+                                               ]);
 
         $this->accountAclService = new AccountAclService(
             $this->application,

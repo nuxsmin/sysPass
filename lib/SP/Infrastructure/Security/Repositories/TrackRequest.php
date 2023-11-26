@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Security\Repositories;
 
-use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 
 /**

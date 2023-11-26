@@ -29,14 +29,17 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldCryptService;
 use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -47,11 +50,11 @@ use function SP\Tests\setupContext;
 class CustomFieldCryptServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\CustomField\Ports\CustomFieldServiceInterface
+     * @var CustomFieldServiceInterface
      */
     private static $customFieldService;
     /**
-     * @var \SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface
+     * @var CustomFieldCryptServiceInterface
      */
     private static $service;
 
@@ -74,7 +77,7 @@ class CustomFieldCryptServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws CryptoException
      */
     public function testUpdateMasterPassword()

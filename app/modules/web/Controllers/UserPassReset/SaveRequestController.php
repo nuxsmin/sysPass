@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\UserPassReset;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UserPassRecoverService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -42,7 +43,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveRequestAction(): bool
     {

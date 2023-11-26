@@ -24,8 +24,8 @@
 
 namespace SP\DataModel;
 
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 
 /**

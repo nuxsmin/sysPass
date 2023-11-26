@@ -27,14 +27,15 @@ namespace SP\Tests\Services\UserGroup;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Domain\User\Services\UserToUserGroupService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -46,7 +47,7 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
 {
 
     /**
-     * @var \SP\Domain\User\Ports\UserToUserGroupServiceInterface
+     * @var UserToUserGroupServiceInterface
      */
     private static $service;
 

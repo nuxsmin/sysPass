@@ -25,9 +25,6 @@
 namespace SP\Domain\Client\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
@@ -37,6 +34,9 @@ use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -49,8 +49,8 @@ final class ClientService extends Service implements ClientServiceInterface
 {
     use ServiceItemTrait;
 
-    private ClientRepositoryInterface                           $clientRepository;
-    private \SP\Domain\Account\Ports\AccountFilterUserInterface $accountFilterUser;
+    private ClientRepositoryInterface  $clientRepository;
+    private AccountFilterUserInterface $accountFilterUser;
 
     public function __construct(
         Application $application,
@@ -64,9 +64,9 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @param  \SP\DataModel\ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -110,8 +110,8 @@ final class ClientService extends Service implements ClientServiceInterface
     /**
      * @param  int  $id
      *
-     * @return \SP\Domain\Client\Ports\ClientServiceInterface
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @return ClientServiceInterface
+     * @throws NoSuchItemException
      */
     public function delete(int $id): ClientServiceInterface
     {
@@ -126,7 +126,7 @@ final class ClientService extends Service implements ClientServiceInterface
      * @param  int[]  $ids
      *
      * @return int
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int
     {

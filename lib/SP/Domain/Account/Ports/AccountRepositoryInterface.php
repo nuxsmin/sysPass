@@ -24,12 +24,13 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -51,8 +52,8 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordForId(int $accountId): QueryResult;
 
@@ -60,8 +61,8 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordHistoryForId(int $accountId): QueryResult;
 
@@ -80,11 +81,11 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function editPassword(int $accountId, Account $account): QueryResult;
 
@@ -92,11 +93,11 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Dtos\EncryptedPassword  $encryptedPassword
+     * @param EncryptedPassword $encryptedPassword
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): QueryResult;
 
@@ -104,11 +105,11 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * Restaurar una cuenta desde el histórico.
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function restoreModified(int $accountId, Account $account): QueryResult;
 
@@ -116,12 +117,12 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * Updates an item for bulk action
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      * @param  bool  $changeOwner
      * @param  bool  $changeUserGroup
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
 
@@ -142,8 +143,8 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getDataForLink(int $accountId): QueryResult;
 
@@ -151,8 +152,8 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int|null  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUser(?int $accountId = null): QueryResult;
 
@@ -160,15 +161,15 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getLinked(int $accountId): QueryResult;
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -177,11 +178,11 @@ interface AccountRepositoryInterface extends RepositoryInterface
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(Account $account): QueryResult;
 
@@ -191,8 +192,8 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * @param  int  $accountId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete(int $accountId): QueryResult;
 
@@ -200,12 +201,12 @@ interface AccountRepositoryInterface extends RepositoryInterface
      * Updates an item
      *
      * @param  int  $accountId
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      * @param  bool  $changeOwner
      * @param  bool  $changeUserGroup
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function update(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
 
@@ -257,11 +258,11 @@ interface AccountRepositoryInterface extends RepositoryInterface
     /**
      * Create an account from deleted
      *
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param Account $account
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function createRemoved(Account $account): QueryResult;
 }

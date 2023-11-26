@@ -24,7 +24,7 @@
 
 namespace SP\Html\DataGrid;
 
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
 

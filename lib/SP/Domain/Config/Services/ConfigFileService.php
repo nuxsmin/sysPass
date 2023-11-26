@@ -26,14 +26,14 @@ namespace SP\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Core\Exceptions\ConfigException;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\XmlFileStorageInterface;

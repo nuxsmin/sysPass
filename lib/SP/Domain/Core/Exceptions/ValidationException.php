@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,34 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Acl;
-
-
-use Exception;
-use SP\Core\Exceptions\SPException;
+namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class UnauthorizedActionException
+ * Class ValidationException para excepciones en validación de formularios
  *
- * @package SP\Core\Acl
+ * @package SP\Domain\Core\Exceptions
  */
-final class UnauthorizedActionException extends SPException
+final class ValidationException extends SPException
 {
-    /**
-     * SPException constructor.
-     *
-     * @param string         $type
-     * @param int            $code
-     * @param Exception|null $previous
-     */
-    public function __construct(string $type, $code = 0, Exception $previous = null)
-    {
-        parent::__construct(
-            __u('You don\'t have permission to do this operation'),
-            $type,
-            __u('Please contact to the administrator'),
-            $code,
-            $previous
-        );
-    }
+
 }

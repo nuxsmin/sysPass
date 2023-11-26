@@ -37,6 +37,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigServiceInterface;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -90,7 +92,7 @@ final class TemporaryMasterPassService extends Service
      * @param  int  $maxTime  El tiempo máximo de validez de la clave
      *
      * @return string
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(int $maxTime = 14400): string
     {
@@ -139,7 +141,7 @@ final class TemporaryMasterPassService extends Service
      * @param  string  $pass  clave a comprobar
      *
      * @return bool
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function checkTempMasterPass(string $pass): bool
     {
@@ -194,7 +196,7 @@ final class TemporaryMasterPassService extends Service
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     protected function expire(): void
     {
@@ -218,9 +220,9 @@ final class TemporaryMasterPassService extends Service
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      * @throws \PHPMailer\PHPMailer\Exception
      */
     public function sendByEmailForGroup(int $groupId, string $key): void
@@ -255,9 +257,9 @@ final class TemporaryMasterPassService extends Service
 
     /**
      * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function sendByEmailForAllUsers(string $key): void
     {
@@ -280,7 +282,7 @@ final class TemporaryMasterPassService extends Service
      *
      * @return string con la clave maestra desencriptada
      * @throws NoSuchItemException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws CryptoException
      */
     public function getUsingKey(string $key): string

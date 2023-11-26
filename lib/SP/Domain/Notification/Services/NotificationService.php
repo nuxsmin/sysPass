@@ -25,13 +25,13 @@
 namespace SP\Domain\Notification\Services;
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\NotificationRepositoryInterface;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -93,9 +93,9 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Deletes an item preserving the sticky ones
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): NotificationServiceInterface
     {
@@ -109,9 +109,9 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function deleteAdmin(int $id): NotificationServiceInterface
     {
@@ -129,7 +129,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteAdminBatch(array $ids): int
     {
@@ -152,7 +152,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int
     {
@@ -201,9 +201,9 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Marcar una notificación como leída
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function setCheckedById(int $id): void
     {
@@ -216,8 +216,8 @@ final class NotificationService extends Service implements NotificationServiceIn
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $id): array
     {
@@ -236,8 +236,8 @@ final class NotificationService extends Service implements NotificationServiceIn
 
     /**
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId(int $id): array
     {

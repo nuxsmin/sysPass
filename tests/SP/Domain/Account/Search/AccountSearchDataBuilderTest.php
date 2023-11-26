@@ -25,17 +25,20 @@
 namespace SP\Tests\Domain\Account\Search;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Account\Ports\AccountCacheServiceInterface;
 use SP\Domain\Account\Ports\AccountToFavoriteServiceInterface;
 use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
 use SP\Domain\Account\Search\AccountSearchDataBuilder;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
+
 use function PHPUnit\Framework\exactly;
 use function PHPUnit\Framework\once;
 
@@ -55,9 +58,9 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     private MockObject|FileCacheInterface                $fileCache;
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testBuildFrom(): void
     {
@@ -93,9 +96,9 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testBuildFromWithColorCacheException(): void
     {

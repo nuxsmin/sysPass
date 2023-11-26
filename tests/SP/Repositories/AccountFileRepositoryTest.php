@@ -27,14 +27,15 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Account\Repositories\AccountFileRepository;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -45,7 +46,7 @@ use function SP\Tests\setupContext;
 class AccountFileRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var \SP\Domain\Account\Ports\AccountFileRepositoryInterface
+     * @var AccountFileRepositoryInterface
      */
     private static $repository;
 

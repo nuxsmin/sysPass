@@ -27,10 +27,10 @@ namespace SP\Modules\Web\Controllers\Track;
 
 use Exception;
 use JsonException;
-use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 

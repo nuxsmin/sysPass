@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
 use SP\Core\Application;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Http\JsonResponse;
@@ -41,7 +42,7 @@ final class InstallController extends ControllerBase
 {
     use JsonTrait;
 
-    private \SP\Domain\Install\Ports\InstallerServiceInterface $installer;
+    private InstallerServiceInterface $installer;
 
     public function __construct(
         Application $application,
@@ -55,7 +56,7 @@ final class InstallController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function installAction(): bool
     {

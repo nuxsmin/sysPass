@@ -26,14 +26,14 @@ namespace SP\Domain\User\Services;
 
 
 use SP\Core\Application;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupRepositoryInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
@@ -97,9 +97,9 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): UserGroupServiceInterface
     {
@@ -115,7 +115,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * @param  int[]  $ids
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -134,7 +134,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function create(UserGroupData $itemData): int
     {
@@ -155,7 +155,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function update(UserGroupData $itemData): void
     {

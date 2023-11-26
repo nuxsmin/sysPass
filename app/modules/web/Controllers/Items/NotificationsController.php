@@ -26,6 +26,9 @@ namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\DataModel\NotificationData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Html\Html;
 use SP\Http\Json;
@@ -54,9 +57,9 @@ final class NotificationsController extends SimpleControllerBase
 
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function notificationsAction(): void
     {

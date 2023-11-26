@@ -24,10 +24,11 @@
 
 namespace SP\Domain\Notification\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -68,18 +69,18 @@ interface NotificationServiceInterface
     /**
      * Deletes an item preserving the sticky ones
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete(int $id): NotificationServiceInterface;
 
     /**
      * Deletes an item
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function deleteAdmin(int $id): NotificationServiceInterface;
 
@@ -90,7 +91,7 @@ interface NotificationServiceInterface
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteAdminBatch(array $ids): int;
 
@@ -101,7 +102,7 @@ interface NotificationServiceInterface
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int;
 
@@ -126,9 +127,9 @@ interface NotificationServiceInterface
     /**
      * Marcar una notificación como leída
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function setCheckedById(int $id): void;
 
@@ -136,8 +137,8 @@ interface NotificationServiceInterface
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $id): array;
 
@@ -150,8 +151,8 @@ interface NotificationServiceInterface
 
     /**
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId(int $id): array;
 

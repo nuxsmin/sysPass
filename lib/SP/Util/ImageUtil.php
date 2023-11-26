@@ -24,8 +24,8 @@
 
 namespace SP\Util;
 
-use SP\Core\Exceptions\InvalidImageException;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Exceptions\InvalidImageException;
 
 use function SP\__u;
 

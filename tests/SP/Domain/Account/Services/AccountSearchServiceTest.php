@@ -34,6 +34,9 @@ use SP\Domain\Account\Ports\AccountSearchRepositoryInterface;
 use SP\Domain\Account\Search\AccountSearchConstants;
 use SP\Domain\Account\Search\AccountSearchFilter;
 use SP\Domain\Account\Services\AccountSearchService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -56,9 +59,9 @@ class AccountSearchServiceTest extends UnitaryTestCase
     /**
      * @dataProvider searchUsingStringDataProvider
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetByFilter(string $search)
     {
@@ -81,9 +84,9 @@ class AccountSearchServiceTest extends UnitaryTestCase
     /**
      * @dataProvider searchByItemDataProvider
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetByFilterUsingItems(string $search, array $expected)
     {
@@ -152,9 +155,9 @@ class AccountSearchServiceTest extends UnitaryTestCase
     /**
      * @dataProvider searchByItemDataProvider
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetByFilterUsingItemsDoesNotThrowException(string $search, array $expected)
     {
@@ -180,9 +183,9 @@ class AccountSearchServiceTest extends UnitaryTestCase
     /**
      * @dataProvider searchByConditionDataProvider
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testGetByFilterUsingConditions(string $search, array $expected)
     {

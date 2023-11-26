@@ -24,7 +24,6 @@
 
 namespace SP\Util;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\Uri;
@@ -37,17 +36,17 @@ use SP\Http\Uri;
 final class Link
 {
     public static function getDeepLink(
-        int $itemId,
-        int $actionId,
+        int    $itemId,
+        string $actionRoute,
         ConfigDataInterface $configData,
-        bool $useUI = false
+        bool   $useUI = false
     ): string {
-        $route = Acl::getActionRoute($actionId).'/'.$itemId;
+        $route = sprintf('%s/%d', $actionRoute, $itemId);
 
         if ($useUI) {
-            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI).'/index.php';
+            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . '/index.php';
         } else {
-            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
         }
 
         $uri = new Uri($baseUrl);

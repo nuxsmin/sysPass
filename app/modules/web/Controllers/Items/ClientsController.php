@@ -26,6 +26,9 @@ namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -51,9 +54,9 @@ final class ClientsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function clientsAction(): void
     {

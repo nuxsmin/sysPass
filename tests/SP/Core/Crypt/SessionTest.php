@@ -27,9 +27,9 @@ namespace SP\Tests\Core\Crypt;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Session;
-use SP\Core\Exceptions\CryptException;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 
 /**

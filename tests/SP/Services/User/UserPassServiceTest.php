@@ -30,15 +30,17 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Services\UserPassServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserPassService;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\DatabaseTestCase;
+
 use function SP\Tests\setupContext;
 
 /**
@@ -48,8 +50,8 @@ use function SP\Tests\setupContext;
  */
 class UserPassServiceTest extends DatabaseTestCase
 {
-    const CURRENT_MASTERPASS = '12345678900';
-    const NEW_MASTERPASS = '00123456789';
+    public const CURRENT_MASTERPASS = '12345678900';
+    public const NEW_MASTERPASS     = '00123456789';
 
     /**
      * @var Closure
@@ -57,7 +59,7 @@ class UserPassServiceTest extends DatabaseTestCase
     private static $getUserLoginResponse;
 
     /**
-     * @var \SP\Domain\Services\UserPassServiceInterface
+     * @var UserPassServiceInterface
      */
     private static $service;
 

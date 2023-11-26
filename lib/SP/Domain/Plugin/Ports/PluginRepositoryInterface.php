@@ -24,9 +24,9 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\QueryException;
 use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -54,8 +54,8 @@ interface PluginRepositoryInterface extends RepositoryInterface
      * @param  bool  $enabled
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabled(int $id, bool $enabled): int;
 
@@ -66,8 +66,8 @@ interface PluginRepositoryInterface extends RepositoryInterface
      * @param  bool  $enabled
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabledByName(string $name, bool $enabled): int;
 
@@ -78,8 +78,8 @@ interface PluginRepositoryInterface extends RepositoryInterface
      * @param  bool  $available
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailable(int $id, bool $available): int;
 
@@ -90,8 +90,8 @@ interface PluginRepositoryInterface extends RepositoryInterface
      * @param  bool  $available
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailableByName(string $name, bool $available): int;
 
