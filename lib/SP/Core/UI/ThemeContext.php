@@ -48,7 +48,7 @@ final class ThemeContext implements ThemeContextInterface
         $this->path = FileUtil::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
         $this->viewsPath = FileUtil::buildPath($this->fullPath, 'views');
         $this->uri = sprintf(
-            '%s/app/modules/%sthemes%s',
+            '%s/app/modules/%s/themes/%s',
             $baseUri,
             $module,
             $name
