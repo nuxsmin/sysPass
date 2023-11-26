@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,9 @@
 
 namespace SP\Core;
 
+use JsonException;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Http\Request;
 use SP\Http\RequestInterface;
 use SP\Util\Util;
 
@@ -35,18 +35,12 @@ use SP\Util\Util;
  */
 abstract class HttpModuleBase extends ModuleBase
 {
-    protected Request $request;
-    protected Klein   $router;
-
     public function __construct(
-        Application $application,
-        ProvidersHelper $providersHelper,
-        RequestInterface $request,
-        Klein $router
+        Application                         $application,
+        ProvidersHelper                     $providersHelper,
+        protected readonly RequestInterface $request,
+        protected readonly Klein            $router
     ) {
-        $this->request = $request;
-        $this->router = $router;
-
         parent::__construct($application, $providersHelper);
     }
 
@@ -54,7 +48,7 @@ abstract class HttpModuleBase extends ModuleBase
      * Comprobar si el modo mantenimiento está activado
      * Esta función comprueba si el modo mantenimiento está activado.
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected function checkMaintenanceMode(): bool
     {

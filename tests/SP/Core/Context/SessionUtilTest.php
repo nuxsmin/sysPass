@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,24 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Tests\Core\Context;
 
-defined('APP_ROOT') || die();
+use SP\Core\Context\SessionUtil;
+use SP\Tests\UnitaryTestCase;
 
 /**
- * Class SessionUtil para las utilidades de la sesión
+ * Class SessionUtilTest
  *
- * @package SP
+ * @group unitary
  */
-final class SessionUtil
+class SessionUtilTest extends UnitaryTestCase
 {
-    /**
-     * Limpiar la sesión del usuario
-     */
-    public static function cleanSession(): void
+
+    public function testCleanSession()
     {
-        foreach ($_SESSION as $key => $value) {
-            unset($_SESSION[$key]);
-        }
+        session_start();
+
+        $_SESSION['test'] = self::$faker->colorName;
+
+        SessionUtil::cleanSession();
+
+        $this->assertArrayNotHasKey('test', $_SESSION);
     }
 }

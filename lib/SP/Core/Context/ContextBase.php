@@ -127,7 +127,7 @@ abstract class ContextBase implements ContextInterface
      *
      * @throws ContextException
      */
-    protected function getContextKey(string $key, $default = null)
+    protected function getContextKey(string $key, mixed $default = null)
     {
         $this->checkContext();
 
@@ -150,8 +150,8 @@ abstract class ContextBase implements ContextInterface
     /**
      * Establecer una variable de contexto
      *
-     * @param  string  $key  El nombre de la variable
-     * @param  mixed  $value  El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      *
      * @throws ContextException
      */

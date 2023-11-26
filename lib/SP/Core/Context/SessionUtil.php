@@ -22,26 +22,35 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\Login;
+namespace SP\Core\Context;
 
-use SP\Core\Context\SessionUtil;
-use SP\Modules\Web\Controllers\ControllerBase;
-
-final class IndexController extends ControllerBase
+/**
+ * Class SessionUtil
+ */
+final class SessionUtil
 {
     /**
-     * Index action
+     * Limpiar la sesión del usuario
      */
-    public function indexAction(): void
+    public static function cleanSession(): void
     {
-        SessionUtil::cleanSession();
+        session_start();
 
-        $this->layoutHelper->getCustomLayout('index', 'login');
+        $_SESSION = [];
 
-        $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
 
-        $this->prepareSignedUriOnView();
-
-        $this->view();
+        session_destroy();
     }
 }

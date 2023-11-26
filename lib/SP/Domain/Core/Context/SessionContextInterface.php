@@ -60,10 +60,8 @@ interface SessionContextInterface extends ContextInterface
 
     /**
      * Establecer si el usuario está completamente autorizado
-     *
-     * @param $bool
      */
-    public function setAuthCompleted($bool): void;
+    public function setAuthCompleted(bool $bool): void;
 
     /**
      * Devolver si el usuario está completamente logeado
@@ -86,10 +84,8 @@ interface SessionContextInterface extends ContextInterface
 
     /**
      * Establecer la clave pública
-     *
-     * @param $key
      */
-    public function setPublicKey($key): void;
+    public function setPublicKey(string $key): void;
 
     /**
      * Devuelve el timeout de la sesión

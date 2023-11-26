@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,37 +39,16 @@ use SP\Providers\ProviderInterface;
  */
 final class ProvidersHelper
 {
-    private FileLogHandler       $fileLogHandler;
-    private ?DatabaseLogHandler  $databaseLogHandler;
-    private ?MailHandler         $mailHandler;
-    private ?SyslogHandler       $syslogHandler;
-    private ?RemoteSyslogHandler $remoteSyslogHandler;
-    private ?AclHandler          $aclHandler;
-    private ?NotificationHandler $notificationHandler;
 
     public function __construct(
-        FileLogHandler $fileLogHandler,
-        ?DatabaseLogHandler $databaseLogHandler = null,
-        ?MailHandler $mailHandler = null,
-        ?SyslogHandler $syslogHandler = null,
-        ?RemoteSyslogHandler $remoteSyslogHandler = null,
-        ?AclHandler $aclHandler = null,
-        ?NotificationHandler $notificationHandler = null
+        private readonly FileLogHandler       $fileLogHandler,
+        private readonly ?DatabaseLogHandler  $databaseLogHandler = null,
+        private readonly ?MailHandler         $mailHandler = null,
+        private readonly ?SyslogHandler       $syslogHandler = null,
+        private readonly ?RemoteSyslogHandler $remoteSyslogHandler = null,
+        private readonly ?AclHandler          $aclHandler = null,
+        private readonly ?NotificationHandler $notificationHandler = null
     ) {
-        $this->fileLogHandler = $fileLogHandler;
-        $this->databaseLogHandler = $databaseLogHandler;
-        $this->mailHandler = $mailHandler;
-        $this->syslogHandler = $syslogHandler;
-        $this->remoteSyslogHandler = $remoteSyslogHandler;
-        $this->aclHandler = $aclHandler;
-        $this->notificationHandler = $notificationHandler;
-    }
-
-    private static function ensureIsInitialized(?ProviderInterface $provider = null): void
-    {
-        if ($provider !== null && !$provider->isInitialized()) {
-            $provider->initialize();
-        }
     }
 
     public function getFileLogHandler(): FileLogHandler
@@ -77,6 +56,13 @@ final class ProvidersHelper
         self::ensureIsInitialized($this->fileLogHandler);
 
         return $this->fileLogHandler;
+    }
+
+    private static function ensureIsInitialized(?ProviderInterface $provider = null): void
+    {
+        if ($provider !== null && !$provider->isInitialized()) {
+            $provider->initialize();
+        }
     }
 
     public function getDatabaseLogHandler(): DatabaseLogHandler
