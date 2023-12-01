@@ -107,15 +107,13 @@ abstract class BootstrapBase implements BootstrapInterface
 
     private function initRouter(): void
     {
-        $this->router->onError(function ($router, $err_msg, $type, $err) {
-            logger('Routing error: ' . $err_msg);
-
-            /** @var Exception|Throwable $err */
-            logger('Routing error: ' . $err->getTraceAsString());
-
-            /** @var Klein $router */
-            $router->response()->body(__($err_msg));
-        });
+        $this->router->onError(
+            static function (Klein $router, string $err_msg, string $type, Exception|Throwable $err): void {
+                logger(sprintf('Routing error: %s', $err_msg));
+                logger(sprintf('Routing error: %s', $err->getTraceAsString()));
+                $router->response()->body(__($err_msg));
+            }
+        );
 
         // Manage requests for options
         $this->router->respond('OPTIONS', null, $this->manageCorsRequest());
@@ -302,9 +300,8 @@ abstract class BootstrapBase implements BootstrapInterface
     }
 
     /**
-     * @param string $class
-     *
-     * @return object
+     * @deprecated
+     * FIXME: delete
      */
     final protected function createObjectFor(string $class): object
     {
