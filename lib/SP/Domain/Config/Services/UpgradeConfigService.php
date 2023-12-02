@@ -39,6 +39,7 @@ use SP\Providers\Log\FileLogHandler;
 use SP\Util\VersionUtil;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class UpgradeService
@@ -87,8 +88,10 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
         $this->eventDispatcher->notify('upgrade.config.old.start', new Event($this, $message));
 
+        $oldConfigFile = CONFIG_PATH . DS . 'config.php';
+
         // Include the file, save the data from $CONFIG
-        include OLD_CONFIG_FILE;
+        include $oldConfigFile;
 
         $message = EventMessage::factory();
 
@@ -113,7 +116,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             }
         }
 
-        $oldFile = OLD_CONFIG_FILE . '.old.' . time();
+        $oldFile = $oldConfigFile . '.old.' . time();
 
         try {
             $configData->setSiteTheme('material-blue');
@@ -121,7 +124,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $this->config->saveConfig($configData, false);
 
-            rename(OLD_CONFIG_FILE, $oldFile);
+            rename($oldConfigFile, $oldFile);
 
             $message->addDetail(__u('Version'), $version);
 
@@ -223,6 +226,9 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
         $this->eventDispatcher->notify('upgrade.config.end', new Event($this, $message));
     }
 
+    /**
+     * @throws FileException
+     */
     private function applyUpgrade(string $version): void
     {
         switch ($version) {

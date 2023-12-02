@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,7 @@ namespace SP\Core\Bootstrap;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\UpgradeConfigServiceInterface;
 use SP\Domain\Config\Services\UpgradeConfigService;
+use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Util\VersionUtil;
 
@@ -48,7 +49,7 @@ class UpgradeConfigChecker
     /**
      * Comprobar la versión de configuración y actualizarla
      *
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
+     * @throws UpgradeException
      */
     public function checkConfigVersion(): void
     {
@@ -58,8 +59,7 @@ class UpgradeConfigChecker
             return;
         }
 
-        if (defined('OLD_CONFIG_FILE')
-            && file_exists(OLD_CONFIG_FILE)) {
+        if (file_exists(CONFIG_PATH . DS . 'config.php')) {
             $this->upgradeConfigService->upgradeOldConfigFile(VersionUtil::getVersionStringNormalized());
         }
 

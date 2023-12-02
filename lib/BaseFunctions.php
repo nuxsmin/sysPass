@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Util\FileUtil;
 use Throwable;
 
 /**
@@ -35,7 +36,7 @@ const LOG_FORMAT = "[%s] [%s] %s";
 /**
  * [timestamp] [type] [caller] data
  */
-const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}'.PHP_EOL;
+const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL;
 
 /**
  * Basic logger to handle some debugging and exception messages.
@@ -46,8 +47,8 @@ const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}'.
  *
  * A more advanced event logging should be handled through EventDispatcher
  *
- * @param  mixed  $data
- * @param  string  $type
+ * @param mixed $data
+ * @param string $type
  */
 function logger(mixed $data, string $type = 'DEBUG'): void
 {
@@ -91,7 +92,7 @@ function getLastCaller(int $skip = 2): string
     $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
     if (isset($callers[$skip]['class'], $callers[$skip]['function'])) {
-        return $callers[$skip]['class'].'::'.$callers[$skip]['function'];
+        return $callers[$skip]['class'] . '::' . $callers[$skip]['function'];
     }
 
     return 'N/A';
@@ -151,7 +152,7 @@ function formatStackTrace(Throwable $e): string
 /**
  * Process an exception and log into the error log
  *
- * @param  Exception  $exception
+ * @param Exception $exception
  */
 function processException(Exception $exception): void
 {
@@ -179,8 +180,8 @@ function processException(Exception $exception): void
 /**
  * Alias gettext function
  *
- * @param  string  $message
- * @param  bool  $translate  Si es necesario traducir
+ * @param string $message
+ * @param bool $translate Si es necesario traducir
  *
  * @return string
  */
@@ -250,19 +251,35 @@ function initModule(string $module): array
 
     logger(sprintf('Initializing module: %s', $module));
 
-    $moduleFile = MODULES_PATH.DIRECTORY_SEPARATOR.$module.DIRECTORY_SEPARATOR.'module.php';
-
-    if (is_dir(MODULES_PATH) && file_exists($moduleFile)) {
-        $definitions = require $moduleFile;
+    try {
+        $definitions = FileUtil::require(FileUtil::buildPath(MODULES_PATH, $module, 'module.php'));
 
         if (is_array($definitions)) {
             return $definitions;
         }
-    } else {
+    } catch (Infrastructure\File\FileException $e) {
         throw new SPException('Either module dir or module file don\'t exist');
     }
 
     logger(sprintf('No definitions found for module: %s', $module));
 
     return [];
+}
+
+/**
+ * Defines a constant by looking up its value in an environment variable with the same name.
+ *
+ * @param string $envVar
+ * @param mixed|null $default
+ * @return string|array|mixed|false
+ */
+function getFromEnv(string $envVar, mixed $default = null): mixed
+{
+    $env = getenv($envVar) ?: $default;
+
+    if ($default !== null) {
+        settype($env, gettype($default));
+    }
+
+    return $env;
 }

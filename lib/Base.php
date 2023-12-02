@@ -27,6 +27,7 @@ use Dotenv\Dotenv;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 
+use function SP\getFromEnv;
 use function SP\initModule;
 use function SP\processException;
 
@@ -52,61 +53,21 @@ $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
 
 defined('APP_MODULE') || define('APP_MODULE', 'web');
-define('DEBUG', (bool)getenv('DEBUG'));
-define(
-    'IS_TESTING',
-    getenv('IS_TESTING')
-        ?: defined('TEST_ROOT')
-);
 
-define(
-    'CONFIG_PATH',
-    getenv('CONFIG_PATH')
-        ?: APP_PATH . DS . 'config'
-);
-
-// Setup config files
-const OLD_CONFIG_FILE = CONFIG_PATH . DS . 'config.php';
-
-define(
-    'CONFIG_FILE',
-    getenv('CONFIG_FILE')
-        ?: CONFIG_PATH . DS . 'config.xml'
-);
-define(
-    'ACTIONS_FILE',
-    getenv('ACTIONS_FILE')
-        ?: RESOURCES_PATH . DS . 'actions.xml'
-);
-define(
-    'MIMETYPES_FILE',
-    getenv('MIMETYPES_FILE')
-        ?: RESOURCES_PATH . DS . 'mime.xml'
-);
-define(
-    'LOG_FILE',
-    getenv('LOG_FILE')
-        ?: CONFIG_PATH . DS . 'syspass.log'
-);
+define('DEBUG', getFromEnv('DEBUG', false));
+define('IS_TESTING', getFromEnv('IS_TESTING', defined('TEST_ROOT')));
+define('CONFIG_PATH', getFromEnv('CONFIG_PATH', APP_PATH . DS . 'config'));
+define('CONFIG_FILE', getFromEnv('CONFIG_FILE', CONFIG_PATH . DS . 'config.xml'));
+define('ACTIONS_FILE', getFromEnv('ACTIONS_FILE', RESOURCES_PATH . DS . 'actions.xml'));
+define('MIMETYPES_FILE', getFromEnv('MIMETYPES_FILE', RESOURCES_PATH . DS . 'mime.xml'));
+define('LOG_FILE', getFromEnv('LOG_FILE', CONFIG_PATH . DS . 'syspass.log'));
 
 const LOCK_FILE = CONFIG_PATH . DS . '.lock';
 
 // Setup application paths
-define(
-    'BACKUP_PATH',
-    getenv('BACKUP_PATH')
-        ?: APP_PATH . DS . 'backup'
-);
-define(
-    'CACHE_PATH',
-    getenv('CACHE_PATH')
-        ?: APP_PATH . DS . 'cache'
-);
-define(
-    'TMP_PATH',
-    getenv('TMP_PATH')
-        ?: APP_PATH . DS . 'temp'
-);
+define('BACKUP_PATH', getFromEnv('BACKUP_PATH', APP_PATH . DS . 'backup'));
+define('CACHE_PATH', getFromEnv('CACHE_PATH', APP_PATH . DS . 'cache'));
+define('TMP_PATH', getFromEnv('TMP_PATH', APP_PATH . DS . 'temp'));
 
 try {
     $moduleDefinitions = initModule(APP_MODULE);
@@ -119,7 +80,7 @@ try {
     }
 
     return $containerBuilder
-        ->addDefinitions(CoreDefinitions::getDefinitions(), DomainDefinitions::getDefinitions())
+        ->addDefinitions(CoreDefinitions::getDefinitions(), DomainDefinitions::getDefinitions(), $moduleDefinitions)
         ->build();
 } catch (Exception $e) {
     processException($e);
