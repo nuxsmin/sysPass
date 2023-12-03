@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use SP\Html\Minify;
+use SP\Util\FileUtil;
 
 /**
- * Class ResourceController
- *
- * @package SP\Modules\Web\Controllers
+ * Class CssController
  */
 final class CssController extends ResourceBase
 {
@@ -43,7 +41,7 @@ final class CssController extends ResourceBase
     ];
 
     /**
-     * Returns CSS resources
+     * Return CSS resources
      */
     public function cssAction(): void
     {
@@ -51,17 +49,14 @@ final class CssController extends ResourceBase
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $this->minify
-                ->setType(Minify::FILETYPE_CSS)
-                ->setBase(urldecode($base), true)
-                ->addFilesFromString(urldecode($file))
-                ->getMinified();
+            $this->minify->builder(urldecode($base), true)
+                         ->addFilesFromString(urldecode($file))
+                         ->getMinified();
         } else {
-            $this->minify->setType(Minify::FILETYPE_CSS)
-                ->setBase(PUBLIC_PATH.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'css')
-                ->addFiles(self::CSS_MIN_FILES, false)
-                ->addFile('fonts.min.css', false, PUBLIC_PATH.DIRECTORY_SEPARATOR.'css')
-                ->getMinified();
+            $this->minify->builder(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'css'))
+                         ->addFiles(self::CSS_MIN_FILES, false)
+                         ->addFile('fonts.min.css', false, FileUtil::buildPath(PUBLIC_PATH, 'css'))
+                         ->getMinified();
         }
     }
 }

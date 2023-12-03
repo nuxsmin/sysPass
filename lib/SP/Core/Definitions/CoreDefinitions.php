@@ -25,15 +25,15 @@
 namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
-use http\Exception\RuntimeException;
+use Klein\Klein;
+use Klein\Request as KleinRequest;
+use Klein\Response as KleinResponse;
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapApi;
-use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Crypt\Crypt;
@@ -55,8 +55,6 @@ use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Config\Services\ConfigBackupService;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -68,11 +66,13 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Html\MinifyInterface;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
+use SP\Html\Minify;
 use SP\Http\Client;
 use SP\Http\Request;
 use SP\Http\RequestInterface;
@@ -85,9 +85,6 @@ use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
-use SP\Modules\Api\Init as InitApi;
-use SP\Modules\Cli\Init as InitCli;
-use SP\Modules\Web\Init as InitWeb;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Acl\AclHandler;
@@ -126,8 +123,10 @@ final class CoreDefinitions
     public static function getDefinitions(): array
     {
         return [
-            RequestInterface::class => create(Request::class)
-                ->constructor(\Klein\Request::createFromGlobals(), autowire(CryptPKI::class)),
+            Klein::class => autowire(Klein::class),
+            KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
+            KleinResponse::class => create(KleinResponse::class),
+            RequestInterface::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
             ContextInterface::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
@@ -249,29 +248,7 @@ final class CoreDefinitions
                     get(RequestInterface::class)
                 ),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
-            BootstrapInterface::class => factory(static function (ContainerInterface $c) {
-                switch (APP_MODULE) {
-                    case 'web':
-                        return $c->get(BootstrapWeb::class);
-                    case 'api':
-                        return $c->get(BootstrapApi::class);
-                }
-
-                throw new RuntimeException(__u('Unknown module'));
-            }),
-            ModuleInterface::class => factory(static function (ContainerInterface $c) {
-                switch (APP_MODULE) {
-                    case 'web':
-                        return $c->get(InitWeb::class);
-                    case 'api':
-                        return $c->get(InitApi::class);
-                    case 'cli':
-                        return $c->get(InitCli::class);
-                }
-
-                throw new RuntimeException(__u('Unknown module'));
-            }),
-
+            MinifyInterface::class => autowire(Minify::class)
         ];
     }
 }

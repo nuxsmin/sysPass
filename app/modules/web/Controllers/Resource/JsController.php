@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use SP\Html\Minify;
+use SP\Util\FileUtil;
 
 /**
- * Class ResourceController
- *
- * @package SP\Modules\Web\Controllers
+ * Class JsController
  */
 final class JsController extends ResourceBase
 {
@@ -60,7 +58,7 @@ final class JsController extends ResourceBase
     ];
 
     /**
-     * Returns JS resources
+     * Return JS resources
      */
     public function jsAction(): void
     {
@@ -68,27 +66,23 @@ final class JsController extends ResourceBase
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $this->minify
-                ->setType(Minify::FILETYPE_JS)
-                ->setBase(urldecode($base), true)
-                ->addFilesFromString(urldecode($file))
-                ->getMinified();
+            $this->minify->builder(urldecode($base), true)
+                         ->addFilesFromString(urldecode($file))
+                         ->getMinified();
         } else {
             $group = $this->request->analyzeInt('g', 0);
 
             if ($group === 0) {
-                $this->minify->setType(Minify::FILETYPE_JS)
-                    ->setBase(PUBLIC_PATH.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'js');
-
-                $this->minify->addFiles(self::JS_MIN_FILES, false);
+                $this->minify
+                    ->builder(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'))
+                    ->addFiles(self::JS_MIN_FILES, false)
+                    ->getMinified();
             } elseif ($group === 1) {
-                $this->minify->setType(Minify::FILETYPE_JS)
-                    ->setBase(PUBLIC_PATH.DIRECTORY_SEPARATOR.'js');
-
-                $this->minify->addFiles(self::JS_APP_MIN_FILES, false);
+                $this->minify
+                    ->builder(FileUtil::buildPath(PUBLIC_PATH, 'js'))
+                    ->addFiles(self::JS_APP_MIN_FILES, false)
+                    ->getMinified();
             }
-
-            $this->minify->getMinified();
         }
     }
 }

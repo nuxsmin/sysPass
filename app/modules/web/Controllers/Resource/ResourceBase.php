@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Resource;
 use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Html\Minify;
+use SP\Domain\Html\MinifyInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
@@ -36,20 +36,17 @@ use SP\Mvc\Controller\SimpleControllerHelper;
  */
 abstract class ResourceBase extends SimpleControllerBase
 {
-    protected Minify $minify;
 
     /**
      * @throws SessionTimeout
      * @throws SPException
      */
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        Minify $minify
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        protected readonly MinifyInterface $minify
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->minify = $minify;
 
         $this->request->verifySignature($this->configData->getPasswordSalt());
     }

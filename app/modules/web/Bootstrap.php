@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Bootstrap;
+namespace SP\Modules\Web;
 
 use Closure;
 use Exception;
@@ -31,6 +31,7 @@ use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -41,9 +42,9 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Bootstrap web interface
+ * Class Bootstrap
  */
-final class BootstrapWeb extends BootstrapBase
+final class Bootstrap extends BootstrapBase
 {
     protected ModuleInterface $module;
 

@@ -96,7 +96,8 @@ abstract class BootstrapBase implements BootstrapInterface
         protected readonly PhpExtensionChecker $extensionChecker,
         protected readonly ContextInterface    $context,
         private readonly ContainerInterface    $container,
-        protected readonly UriContextInterface $uriContext
+        protected readonly UriContextInterface $uriContext,
+        protected readonly Response            $response,
     ) {
         // Set the default language
         Language::setLocales('en_US');
@@ -172,7 +173,7 @@ abstract class BootstrapBase implements BootstrapInterface
      */
     final protected function handleRequest(): void
     {
-        $this->router->dispatch($this->request->getRequest());
+        $this->router->dispatch($this->request->getRequest(), $this->response);
     }
 
     /**

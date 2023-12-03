@@ -22,17 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Util\FileUtil;
 
 use function SP\logger;
+use function SP\processException;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'cli';
 
-$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
+try {
+    $dic = FileUtil::require(FileUtil::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
 
-logger('------------');
-logger('Boostrap:cli');
+    logger('------------');
+    logger('Boostrap:cli');
 
-$cli = $dic->get(ModuleInterface::class);
-$cli->initialize('');
+    $cli = $dic->get(ModuleInterface::class);
+    $cli->initialize('');
+} catch (Throwable $e) {
+    processException($e);
+}

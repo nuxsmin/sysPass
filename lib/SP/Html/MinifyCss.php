@@ -22,21 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Domain\Api\Ports\ApiRequestInterface;
-use SP\Domain\Api\Services\ApiRequest;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
-use SP\Modules\Api\Bootstrap;
-use SP\Modules\Api\Init;
+namespace SP\Html;
 
-use function DI\autowire;
-use function DI\factory;
+use SP\Util\FileUtil;
 
-const MODULE_PATH = __DIR__;
-const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
+/**
+ * Class MinifyCss
+ */
+final class MinifyCss extends Minify
+{
 
-return [
-    ApiRequestInterface::class => factory([ApiRequest::class, 'buildFromRequest']),
-    BootstrapInterface::class => autowire(Bootstrap::class),
-    ModuleInterface::class => autowire(Init::class)
-];
+    protected function minify(array $files): string
+    {
+        $data = '';
+
+        foreach ($files as $file) {
+            $filePath = FileUtil::buildPath($file['base'], $file['name']);
+            $data .= sprintf('%s/* FILE: %s */%s%s', PHP_EOL, $file['name'], PHP_EOL, file_get_contents($filePath));
+        }
+
+        return $data;
+    }
+
+    protected function getContentTypeHeader(): string
+    {
+        return 'text/css; charset: UTF-8';
+    }
+}

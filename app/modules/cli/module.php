@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,11 +25,15 @@
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Modules\Cli\Init;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function DI\autowire;
 use function DI\create;
 
 const MODULE_PATH = __DIR__;
@@ -40,5 +44,6 @@ return [
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)
         ->constructor(OutputInterface::VERBOSITY_NORMAL, true),
-    InputInterface::class => create(ArgvInput::class)
+    InputInterface::class => create(ArgvInput::class),
+    ModuleInterface::class => autowire(Init::class)
 ];

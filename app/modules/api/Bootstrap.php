@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Bootstrap;
+namespace SP\Modules\Api;
 
 use Closure;
 use Exception;
@@ -30,6 +30,7 @@ use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
@@ -39,9 +40,9 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Bootstrap API interface
+ * Class Bootstrap
  */
-final class BootstrapApi extends BootstrapBase
+final class Bootstrap extends BootstrapBase
 {
 
     protected ModuleInterface $module;

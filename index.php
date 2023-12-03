@@ -22,13 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Bootstrap\BootstrapWeb;
+use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Modules\Web\Bootstrap;
+use SP\Util\FileUtil;
+
+use function SP\processException;
 
 const APP_ROOT = __DIR__;
 const APP_MODULE = 'web';
 
-$dic = require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
+try {
+    $dic = FileUtil::require(FileUtil::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
 
-BootstrapWeb::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
+    Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
+} catch (Throwable $e) {
+    processException($e);
+}

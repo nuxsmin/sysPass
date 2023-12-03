@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,6 +33,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Filter;
 use SP\Util\Util;
 
+use function SP\logger;
+use function SP\processException;
+
 /**
  * Clase Request para la gestión de peticiones HTTP
  *
@@ -45,8 +48,6 @@ class Request implements RequestInterface
      */
     public const SECURE_DIRS = ['css', 'js'];
 
-    private \Klein\Request       $request;
-    private CryptPKIInterface    $cryptPKI;
     private HeaderDataCollection $headers;
     private DataCollection       $params;
     private ?string              $method = null;
@@ -55,10 +56,8 @@ class Request implements RequestInterface
     /**
      * Request constructor.
      */
-    public function __construct(\Klein\Request $request, CryptPKIInterface $cryptPKI)
+    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIInterface $cryptPKI)
     {
-        $this->request = $request;
-        $this->cryptPKI = $cryptPKI;
         $this->headers = $this->request->headers();
         $this->params = $this->getParamsByMethod();
         $this->detectHttps();
@@ -109,10 +108,10 @@ class Request implements RequestInterface
             return '';
         }
 
-        $realPath = realpath($base.DIRECTORY_SEPARATOR.$path);
+        $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
 
         if ($realPath === false
-            || strpos($realPath, $base) !== 0
+            || !str_starts_with($realPath, $base)
         ) {
             return '';
         }
@@ -166,7 +165,7 @@ class Request implements RequestInterface
 
         if ($xForwarded !== null) {
             $matches = preg_split(
-                '/(?<=[\w])+,\s?/',
+                '/(?<=\w)+,\s?/',
                 $xForwarded,
                 -1,
                 PREG_SPLIT_NO_EMPTY
@@ -252,16 +251,16 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param  string  $param
-     * @param  callable|null  $mapper
-     * @param  null  $default
+     * @param string $param
+     * @param callable|null $mapper
+     * @param null $default
      *
      * @return array|null
      */
     public function analyzeArray(
         string $param,
         callable $mapper = null,
-        $default = null
+        mixed  $default = null
     ): ?array {
         $requestValue = $this->params->get($param);
 
@@ -281,7 +280,7 @@ class Request implements RequestInterface
      */
     public function isJson(): bool
     {
-        return strpos($this->headers->get('Accept'), 'application/json') !== false;
+        return str_contains($this->headers->get('Accept'), 'application/json');
     }
 
     /**
@@ -317,8 +316,8 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param  string  $key
-     * @param  string|null  $param  Checks the signature only for the given param
+     * @param string $key
+     * @param string|null $param Checks the signature only for the given param
      *
      * @throws SPException
      */
@@ -331,7 +330,7 @@ class Request implements RequestInterface
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = str_replace('&h='.$hash, '', $this->request->uri());
+                $uri = str_replace('&h=' . $hash, '', $this->request->uri());
                 $uri = substr($uri, strpos($uri, '?') + 1);
             } else {
                 $uri = $this->params->get($param, '');
@@ -361,7 +360,7 @@ class Request implements RequestInterface
         $forwarded = $this->getForwardedData() ?? $this->getXForwardedData();
 
         if (null !== $forwarded) {
-            return strtolower($forwarded['proto'].'://'.$forwarded['host']);
+            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
         }
 
         /** @noinspection HttpUrlsUsage */
@@ -372,7 +371,7 @@ class Request implements RequestInterface
             $protocol = 'https://';
         }
 
-        return $protocol.$this->request->server()->get('HTTP_HOST');
+        return $protocol . $this->request->server()->get('HTTP_HOST');
     }
 
     /**
@@ -395,7 +394,7 @@ class Request implements RequestInterface
             $data = [
                 'host ' => $matches['host'][1] ?? null,
                 'proto' => $matches['proto'][1] ?? null,
-                'for'   => $this->getForwardedFor(),
+                'for' => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty
@@ -423,9 +422,9 @@ class Request implements RequestInterface
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
             $data = [
-                'host'  => trim(str_replace('"', '', $forwardedHost)),
+                'host' => trim(str_replace('"', '', $forwardedHost)),
                 'proto' => trim(str_replace('"', '', $forwardedProto)),
-                'for'   => $this->getForwardedFor(),
+                'for' => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty
