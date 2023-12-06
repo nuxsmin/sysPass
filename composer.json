@@ -69,7 +69,8 @@
   },
   "scripts": {
     "phpcs": "phpcs --standard=PSR2 lib",
-    "phpstan": "vendor/bin/phpstan analyse lib tests --xdebug"
+    "phpstan-app": "vendor/bin/phpstan analyse --level 6 lib",
+    "phpstan-test": "vendor/bin/phpstan analyse --level 6 tests"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.2",

@@ -33,7 +33,11 @@ use function SP\processException;
 
 // Core PATHS
 const DS = DIRECTORY_SEPARATOR;
-const BASE_PATH = __DIR__;
+
+if (!defined('APP_ROOT')) {
+    define('APP_ROOT', realpath(__DIR__ . DS . '..'));
+}
+
 const APP_PATH = APP_ROOT . DS . 'app';
 const VENDOR_PATH = APP_ROOT . DS . 'vendor';
 const SQL_PATH = APP_ROOT . DS . 'schemas';

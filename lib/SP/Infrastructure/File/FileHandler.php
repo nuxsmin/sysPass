@@ -356,4 +356,19 @@ final class FileHandler implements FileHandlerInterface
 
         return $this;
     }
+
+    public function getBase(): string
+    {
+        return dirname($this->file);
+    }
+
+    public function getName(): string
+    {
+        return basename($this->file);
+    }
+
+    public function getHash(): string
+    {
+        return sha1_file($this->file);
+    }
 }

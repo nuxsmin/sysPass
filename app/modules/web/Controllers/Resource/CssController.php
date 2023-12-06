@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
+use SP\Infrastructure\File\FileHandler;
 use SP\Util\FileUtil;
 
 /**
@@ -49,14 +50,31 @@ final class CssController extends ResourceBase
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $this->minify->builder(urldecode($base), true)
-                         ->addFilesFromString(urldecode($file))
+            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)));
+
+            $this->minify->builder(true)
+                         ->addFiles($files)
                          ->getMinified();
         } else {
-            $this->minify->builder(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'css'))
-                         ->addFiles(self::CSS_MIN_FILES, false)
-                         ->addFile('fonts.min.css', false, FileUtil::buildPath(PUBLIC_PATH, 'css'))
+            $files = $this->buildFiles(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'css'), self::CSS_MIN_FILES);
+
+            $this->minify->builder()
+                         ->addFiles($files, false)
+                         ->addFile(new FileHandler(FileUtil::buildPath(PUBLIC_PATH, 'css', 'fonts.min.css')), false)
                          ->getMinified();
         }
+    }
+
+    /**
+     * @param string $base
+     * @param array $files
+     * @return FileHandler[]
+     */
+    private function buildFiles(string $base, array $files): array
+    {
+        return array_map(
+            fn(string $file) => new FileHandler(FileUtil::buildPath($base, $file)),
+            $files
+        );
     }
 }

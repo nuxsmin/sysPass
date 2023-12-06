@@ -24,21 +24,26 @@
 
 namespace SP\Html;
 
-use SP\Util\FileUtil;
+use SP\Domain\Html\MinifyFile;
+use SP\Infrastructure\File\FileException;
+use SplObjectStorage;
 
 /**
  * Class MinifyCss
  */
 final class MinifyCss extends Minify
 {
-
-    protected function minify(array $files): string
+    /**
+     * @param SplObjectStorage<MinifyFile> $files
+     * @return string
+     * @throws FileException
+     */
+    protected function minify(SplObjectStorage $files): string
     {
         $data = '';
 
         foreach ($files as $file) {
-            $filePath = FileUtil::buildPath($file['base'], $file['name']);
-            $data .= sprintf('%s/* FILE: %s */%s%s', PHP_EOL, $file['name'], PHP_EOL, file_get_contents($filePath));
+            $data .= sprintf('%s/* FILE: %s */%s%s', PHP_EOL, $file->getName(), PHP_EOL, $file->getContent());
         }
 
         return $data;

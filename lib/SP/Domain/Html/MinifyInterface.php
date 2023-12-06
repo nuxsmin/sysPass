@@ -24,6 +24,8 @@
 
 namespace SP\Domain\Html;
 
+use SP\Infrastructure\File\FileHandlerInterface;
+
 /**
  * Interface MinifyInterface
  */
@@ -36,25 +38,26 @@ interface MinifyInterface
      */
     public function getMinified(): void;
 
-    public function addFilesFromString(string $files, bool $minify = true): MinifyInterface;
-
     /**
      * Añadir un archivo
      *
-     * @param string $file
+     * @param FileHandlerInterface $fileHandler
      * @param bool $minify Si es necesario reducir
-     * @param string|null $base
      *
      * @return MinifyInterface
      */
-    public function addFile(string $file, bool $minify = true, ?string $base = null): MinifyInterface;
+    public function addFile(FileHandlerInterface $fileHandler, bool $minify = true): MinifyInterface;
 
+    /**
+     * @param FileHandlerInterface[] $files
+     * @param bool $minify
+     * @return MinifyInterface
+     */
     public function addFiles(array $files, bool $minify = true): MinifyInterface;
 
     /**
-     * @param string $base
      * @param bool $insecure Whether the $base path is insecure
-     * @return mixed
+     * @return MinifyInterface
      */
-    public function builder(string $base, bool $insecure = false): MinifyInterface;
+    public function builder(bool $insecure = false): MinifyInterface;
 }

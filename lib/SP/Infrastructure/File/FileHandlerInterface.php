@@ -150,4 +150,10 @@ interface FileHandlerInterface
      * @throws FileException
      */
     public function chmod(int $permissions): FileHandlerInterface;
+
+    public function getBase(): string;
+
+    public function getName(): string;
+
+    public function getHash(): string;
 }

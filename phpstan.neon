@@ -1,4 +1,3 @@
 parameters:
     bootstrapFiles:
-        - lib/BaseFunctions.php
         - lib/Base.php

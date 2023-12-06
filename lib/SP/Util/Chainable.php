@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ final class Chainable
 {
     private array $args;
 
-    public function __construct(private Closure $next, private object $bindTo, ...$args)
+    public function __construct(private readonly Closure $next, private readonly object $bindTo, ...$args)
     {
         $this->args = $args;
     }

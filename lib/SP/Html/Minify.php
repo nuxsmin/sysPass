@@ -24,15 +24,14 @@
 
 namespace SP\Html;
 
-use Klein\DataCollection\HeaderDataCollection;
 use Klein\Request;
 use Klein\Response;
 use SP\Domain\Html\Header;
+use SP\Domain\Html\MinifyFile;
 use SP\Domain\Html\MinifyInterface;
-use SP\Http\Request as HttpRequest;
-use SP\Util\FileUtil;
-
-use function SP\logger;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
+use SplObjectStorage;
 
 /**
  * Class Minify
@@ -41,17 +40,18 @@ abstract class Minify implements MinifyInterface
 {
     private const OFFSET = 3600 * 24 * 30;
 
-    /**
-     * Array con los archivos a procesar
-     */
-    private array $files = [];
-    /**
-     * Base relativa de búsqueda de los archivos
-     */
-    private string $base = '';
 
-    public function __construct(private readonly Response $response, private readonly Request $request)
-    {
+    /**
+     * @var SplObjectStorage<MinifyFile>
+     */
+    private SplObjectStorage $files;
+
+    public function __construct(
+        private readonly Response $response,
+        private readonly Request  $request,
+        private bool              $insecure = false
+    ) {
+        $this->files = new SplObjectStorage();
     }
 
     /**
@@ -61,12 +61,15 @@ abstract class Minify implements MinifyInterface
      */
     public function getMinified(): void
     {
-        if (count($this->files) === 0) {
+        if ($this->files->count() === 0) {
             return;
         }
 
         $this->setHeaders();
-        $this->response->body($this->minify($this->files));
+
+        if (!$this->response->isSent()) {
+            $this->response->body($this->minify($this->files));
+        }
     }
 
     /**
@@ -74,10 +77,9 @@ abstract class Minify implements MinifyInterface
      */
     private function setHeaders(): void
     {
-        $headers = $this->request->headers();
-
-        $etag = $this->getEtag();
-        $this->checkEtag($headers, $etag);
+        if (($etag = $this->checkEtag()) === null) {
+            return;
+        }
 
         $this->response->header(Header::ETAG->value, $etag);
         $this->response->header(
@@ -89,6 +91,26 @@ abstract class Minify implements MinifyInterface
         $this->response->header(Header::CONTENT_TYPE->value, $this->getContentTypeHeader());
     }
 
+    private function checkEtag(): ?string
+    {
+        $etag = $this->getEtag();
+        $headers = $this->request->headers();
+
+        // Devolver código 304 si la versión es la misma y no se solicita refrescar
+        if ($etag === $headers->get(Header::IF_NONE_MATCH->value)
+            && !($headers->get(Header::CACHE_CONTROL->value) === 'no-cache'
+                 || $headers->get(Header::CACHE_CONTROL->value) === 'max-age=0'
+                 || $headers->get(Header::PRAGMA->value) === 'no-cache')
+        ) {
+            $this->response->header($this->request->server()->get('SERVER_PROTOCOL'), '304 Not Modified');
+            $this->response->send();
+
+            return null;
+        }
+
+        return $etag;
+    }
+
     /**
      * Calcular el hash de varios archivos.
      *
@@ -96,45 +118,28 @@ abstract class Minify implements MinifyInterface
      */
     private function getEtag(): string
     {
-        return sha1(array_reduce($this->files, static fn(string $out, array $file) => $out . $file['hash'], ''));
-    }
+        $etag = '';
 
-    /**
-     * @param HeaderDataCollection $headers
-     * @param string $etag
-     * @return void
-     */
-    private function checkEtag(HeaderDataCollection $headers, string $etag): void
-    {
-        // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $headers->get(Header::IF_NONE_MATCH->value)
-            && !($headers->get(Header::CACHE_CONTROL->value) === 'no-cache'
-                 || $headers->get(Header::CACHE_CONTROL->value) === 'max-age=0'
-                 || $headers->get(Header::PRAGMA->value) === 'no-cache')
-        ) {
-            $this->response->header($_SERVER['SERVER_PROTOCOL'], '304 Not Modified');
-            $this->response->send();
-            exit();
+        foreach ($this->files as $file) {
+            $etag .= $file->getHash();
         }
+
+        return sha1($etag);
     }
 
     abstract protected function getContentTypeHeader(): string;
 
-    abstract protected function minify(array $files): string;
+    abstract protected function minify(SplObjectStorage $files): string;
 
-    public function addFilesFromString(
-        string $files,
-        bool   $minify = true
-    ): MinifyInterface {
-        if (strrpos($files, ',')) {
-            $filesList = explode(',', $files);
-
-            foreach ($filesList as $filename) {
-                $this->addFile($filename, $minify);
-            }
-        } else {
-            $this->addFile($files, $minify);
-        }
+    /**
+     * @param FileHandlerInterface[] $files
+     * @param bool $minify
+     * @return MinifyInterface
+     * @throws FileException
+     */
+    public function addFiles(array $files, bool $minify = true): MinifyInterface
+    {
+        array_walk($files, fn(FileHandlerInterface $fileHandler) => $this->addFile($fileHandler));
 
         return $this;
     }
@@ -142,79 +147,28 @@ abstract class Minify implements MinifyInterface
     /**
      * Añadir un archivo
      *
-     * @param string $file
+     * @param FileHandlerInterface $fileHandler
      * @param bool $minify Si es necesario reducir
-     * @param string|null $base
      *
      * @return MinifyInterface
+     * @throws FileException
      */
     public function addFile(
-        string  $file,
-        bool    $minify = true,
-        ?string $base = null
+        FileHandlerInterface $fileHandler,
+        bool                 $minify = true
     ): MinifyInterface {
-        $filePath = FileUtil::buildPath($base ?? $this->base, $file);
+        $fileHandler->checkFileExists();
 
-        if (file_exists($filePath)) {
-            $this->files[] = Minify::buildFile($base, $file, $minify, $filePath);
-        } else {
-            logger('File not found: ' . $filePath);
-        }
+        $this->files->attach(new MinifyFile($fileHandler, $minify, $this->insecure));
 
         return $this;
     }
 
-    private static function buildFile(string $base, string $file, bool $minify, string $filePath): array
-    {
-        return [
-            'type' => 'file',
-            'base' => $base,
-            'name' => HttpRequest::getSecureAppFile($file, $base),
-            'min' => $minify === true && Minify::needsMinify($file),
-            'hash' => sha1_file($filePath)
-        ];
-    }
-
-    /**
-     * Comprobar si es necesario reducir
-     * @param string $file
-     * @return bool
-     */
-    private static function needsMinify(string $file): bool
-    {
-        return !preg_match('/\.min|pack\.css|js/', $file);
-    }
-
-    public function addFiles(array $files, bool $minify = true): MinifyInterface
-    {
-        foreach ($files as $filename) {
-            $this->processFile($filename, $minify);
-        }
-
-        return $this;
-    }
-
-    private function processFile(string $file, bool $minify = true): void
-    {
-        $filePath = FileUtil::buildPath($this->base, $file);
-
-        if (file_exists($filePath)) {
-            $this->files[] = Minify::buildFile($this->base, $file, $minify, $filePath);
-        } else {
-            logger('File not found: ' . $filePath);
-        }
-    }
-
-    public function builder(string $base, bool $insecure = false): MinifyInterface
+    public function builder(bool $insecure = false): MinifyInterface
     {
         $clone = clone $this;
-        $clone->setBase($base, $insecure);
+        $clone->insecure = $insecure;
 
         return $clone;
-    }
-
-    private function setBase(string $path, bool $insecure = false): void
-    {
-        $this->base = $insecure ? HttpRequest::getSecureAppPath($path) : $path;
     }
 }

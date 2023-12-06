@@ -24,7 +24,9 @@
 
 namespace SP\Html;
 
-use SP\Util\FileUtil;
+use SP\Domain\Html\MinifyFile;
+use SP\Infrastructure\File\FileException;
+use SplObjectStorage;
 
 /**
  * Class MinifyJs
@@ -32,17 +34,18 @@ use SP\Util\FileUtil;
 final class MinifyJs extends Minify
 {
 
-    protected function minify(array $files): string
+    /**
+     * @param SplObjectStorage<MinifyFile> $files
+     * @return string
+     * @throws FileException
+     */
+    protected function minify(SplObjectStorage $files): string
     {
         $data = '';
 
         foreach ($files as $file) {
-            $filePath = FileUtil::buildPath($file['base'], $file['name']);
-
-            if ($file['min'] === true) {
-                $data .= sprintf('/* MINIFIED FILE: %s */%s', $file['name'], PHP_EOL);
-                $data .= $this->jsCompress(file_get_contents($filePath));
-            }
+            $data .= sprintf('%s/* MINIFIED FILE: %s */%s', PHP_EOL, $file->getName(), PHP_EOL);
+            $data .= $this->jsCompress($file->getContent());
         }
 
         return $data;

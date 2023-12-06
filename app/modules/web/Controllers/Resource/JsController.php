@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
+use SP\Infrastructure\File\FileHandler;
 use SP\Util\FileUtil;
 
 /**
@@ -66,23 +67,41 @@ final class JsController extends ResourceBase
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $this->minify->builder(urldecode($base), true)
-                         ->addFilesFromString(urldecode($file))
+            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)));
+
+            $this->minify->builder(true)
+                         ->addFiles($files)
                          ->getMinified();
         } else {
             $group = $this->request->analyzeInt('g', 0);
 
             if ($group === 0) {
                 $this->minify
-                    ->builder(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'))
-                    ->addFiles(self::JS_MIN_FILES, false)
+                    ->builder()
+                    ->addFiles(
+                        $this->buildFiles(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
+                        false
+                    )
                     ->getMinified();
             } elseif ($group === 1) {
                 $this->minify
-                    ->builder(FileUtil::buildPath(PUBLIC_PATH, 'js'))
-                    ->addFiles(self::JS_APP_MIN_FILES, false)
+                    ->builder()
+                    ->addFiles($this->buildFiles(FileUtil::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES), false)
                     ->getMinified();
             }
         }
+    }
+
+    /**
+     * @param string $base
+     * @param array $files
+     * @return FileHandler[]
+     */
+    private function buildFiles(string $base, array $files): array
+    {
+        return array_map(
+            fn(string $file) => new FileHandler(FileUtil::buildPath($base, $file)),
+            $files
+        );
     }
 }
