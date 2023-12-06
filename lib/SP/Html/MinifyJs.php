@@ -45,7 +45,12 @@ final class MinifyJs extends Minify
 
         foreach ($files as $file) {
             $data .= sprintf('%s/* MINIFIED FILE: %s */%s', PHP_EOL, $file->getName(), PHP_EOL);
-            $data .= $this->jsCompress($file->getContent());
+
+            if ($file->needsMinify()) {
+                $data .= $this->jsCompress($file->getContent());
+            } else {
+                $data .= $file->getContent();
+            }
         }
 
         return $data;
