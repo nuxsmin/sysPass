@@ -44,6 +44,9 @@ defined('APP_ROOT') || die();
  */
 class AuthProvider extends Provider implements AuthProviderInterface
 {
+    /**
+     * @var SplObjectStorage<AuthInterface>
+     */
     protected readonly SplObjectStorage $auths;
 
     public function __construct(Application $application)
@@ -95,7 +98,6 @@ class AuthProvider extends Provider implements AuthProviderInterface
         $this->auths->rewind();
 
         while ($this->auths->valid()) {
-            /** @var AuthInterface $auth */
             $auth = $this->auths->current();
             $authName = $this->auths->getInfo();
 
