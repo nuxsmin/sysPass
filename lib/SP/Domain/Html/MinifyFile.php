@@ -35,8 +35,7 @@ final class MinifyFile
 {
     public function __construct(
         private readonly FileHandlerInterface $fileHandler,
-        private readonly bool                 $minify,
-        private readonly bool                 $insecure
+        private readonly bool $minify
     ) {
     }
 
@@ -53,13 +52,6 @@ final class MinifyFile
     public function getName(): string
     {
         return HttpRequest::getSecureAppFile($this->fileHandler->getName(), $this->fileHandler->getBase());
-    }
-
-    public function getBase(): string
-    {
-        return $this->insecure ? HttpRequest::getSecureAppPath(
-            $this->fileHandler->getBase()
-        ) : $this->fileHandler->getBase();
     }
 
     /**

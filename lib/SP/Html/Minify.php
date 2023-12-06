@@ -164,11 +164,8 @@ abstract class Minify implements MinifyInterface
         return $this;
     }
 
-    public function builder(bool $insecure = false): MinifyInterface
+    public function builder(): MinifyInterface
     {
-        $clone = clone $this;
-        $clone->insecure = $insecure;
-
-        return $clone;
+        return clone $this;
     }
 }

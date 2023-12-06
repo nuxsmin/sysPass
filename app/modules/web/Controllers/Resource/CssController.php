@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
+use SP\Http\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Util\FileUtil;
 
@@ -50,9 +51,9 @@ final class CssController extends ResourceBase
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)));
+            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)), true);
 
-            $this->minify->builder(true)
+            $this->minify->builder()
                          ->addFiles($files)
                          ->getMinified();
         } else {
@@ -68,10 +69,13 @@ final class CssController extends ResourceBase
     /**
      * @param string $base
      * @param array $files
+     * @param bool $insecure
      * @return FileHandler[]
      */
-    private function buildFiles(string $base, array $files): array
+    private function buildFiles(string $base, array $files, bool $insecure = false): array
     {
+        $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
+
         return array_map(
             fn(string $file) => new FileHandler(FileUtil::buildPath($base, $file)),
             $files

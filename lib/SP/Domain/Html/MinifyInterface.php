@@ -55,9 +55,5 @@ interface MinifyInterface
      */
     public function addFiles(array $files, bool $minify = true): MinifyInterface;
 
-    /**
-     * @param bool $insecure Whether the $base path is insecure
-     * @return MinifyInterface
-     */
-    public function builder(bool $insecure = false): MinifyInterface;
+    public function builder(): MinifyInterface;
 }

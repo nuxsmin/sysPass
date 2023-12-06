@@ -234,13 +234,6 @@ class MinifyCssTest extends UnitaryTestCase
         self::assertNotEquals(spl_object_id($this->minifyCss), spl_object_id($out));
     }
 
-    public function testBuilderWithInsecure()
-    {
-        $out = $this->minifyCss->builder(true);
-
-        self::assertNotEquals(spl_object_id($this->minifyCss), spl_object_id($out));
-    }
-
     /**
      * @throws Exception
      * @throws FileException
