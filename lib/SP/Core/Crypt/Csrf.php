@@ -27,7 +27,8 @@ namespace SP\Core\Crypt;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Crypt\CsrfInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\Method;
+use SP\Domain\Http\RequestInterface;
 
 use function SP\logger;
 
@@ -51,13 +52,13 @@ class Csrf implements CsrfInterface
      */
     public function check(): bool
     {
-        $method = strtoupper($this->request->getMethod());
+        $method = $this->request->getMethod();
         $with = $this->request->getHeader('X-Requested-With');
 
         if ($this->context->isLoggedIn()
             && $this->context->getCSRF() !== null
-            && ($method === 'POST'
-                || ($method === 'GET' && $with === 'XMLHttpRequest'))
+            && ($method === Method::POST
+                || ($method === Method::GET && $with === 'XMLHttpRequest'))
         ) {
             $token = $this->request->getHeader('X-CSRF');
 

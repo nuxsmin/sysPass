@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ use Exception;
 use Klein\Klein;
 use SP\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonMessage;
 use SP\Http\JsonResponse;
 
 /**
@@ -51,7 +51,7 @@ trait JsonTrait
      */
     protected function returnJsonResponse(int $status, string $description, ?array $messages = null): bool
     {
-        $jsonResponse = new JsonResponse();
+        $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($description);
 
@@ -59,7 +59,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return Json::factory($this->router->response())->returnJson($jsonResponse);
+        return JsonResponse::factory($this->router->response())->send($jsonResponse);
     }
 
     /**
@@ -75,12 +75,12 @@ trait JsonTrait
      */
     protected function returnJsonResponseData(
         $data,
-        int $status = JsonResponse::JSON_SUCCESS,
+        int $status = JsonMessage::JSON_SUCCESS,
         ?string $description = null,
         ?array $messages = null
     ): bool
     {
-        $jsonResponse = new JsonResponse();
+        $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
 
@@ -92,7 +92,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return Json::factory($this->router->response())->returnJson($jsonResponse);
+        return JsonResponse::factory($this->router->response())->send($jsonResponse);
     }
 
     /**
@@ -104,9 +104,9 @@ trait JsonTrait
      * @return bool
      * @throws SPException
      */
-    protected function returnJsonResponseException(Exception $exception, int $status = JsonResponse::JSON_ERROR): bool
+    protected function returnJsonResponseException(Exception $exception, int $status = JsonMessage::JSON_ERROR): bool
     {
-        $jsonResponse = new JsonResponse();
+        $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($exception->getMessage());
 
@@ -114,6 +114,6 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        return Json::factory($this->router->response())->returnJson($jsonResponse);
+        return JsonResponse::factory($this->router->response())->send($jsonResponse);
     }
 }

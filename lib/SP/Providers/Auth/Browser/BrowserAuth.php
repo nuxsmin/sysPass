@@ -26,7 +26,7 @@ namespace SP\Providers\Auth\Browser;
 
 use SP\DataModel\UserLoginData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Providers\Auth\AuthInterface;
 
 /**

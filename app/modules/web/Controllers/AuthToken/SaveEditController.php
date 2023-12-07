@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * Class SaveEditController
@@ -52,7 +52,7 @@ final class SaveEditController extends AuthTokenSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -92,9 +92,9 @@ final class SaveEditController extends AuthTokenSaveBase
                 $this->customFieldService
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization updated'));
         } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
         } catch (Exception $e) {
             processException($e);
 

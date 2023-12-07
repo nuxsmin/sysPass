@@ -46,7 +46,7 @@ final class Html
         string $ellipsis = '...'
     ): string {
         if (mb_strlen($text) > $limit) {
-            return trim(mb_substr($text, 0, $limit)) . $ellipsis;
+            return sprintf('%s%s', trim(mb_substr($text, 0, $limit)), $ellipsis);
         }
 
         return $text;

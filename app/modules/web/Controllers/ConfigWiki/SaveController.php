@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -58,7 +58,7 @@ final class SaveController extends SimpleControllerBase
         $wikiFilter = $this->request->analyzeString('wiki_filter');
 
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Wiki parameters'));
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Missing Wiki parameters'));
         }
 
         if ($wikiEnabled) {
@@ -75,7 +75,7 @@ final class SaveController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Wiki disabled'));
         } else {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('No changes'));
         }
 
         return $this->saveConfig(

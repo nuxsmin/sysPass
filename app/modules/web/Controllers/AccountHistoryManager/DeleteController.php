@@ -25,12 +25,13 @@
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -43,7 +44,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class DeleteController extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     private AccountHistoryServiceInterface $accountHistoryService;
     private AccountServiceInterface        $accountService;
@@ -67,7 +69,7 @@ final class DeleteController extends ControllerBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {
@@ -85,7 +87,7 @@ final class DeleteController extends ControllerBase
                 );
 
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_SUCCESS,
+                    JsonMessage::JSON_SUCCESS,
                     __u('Accounts removed')
                 );
             }
@@ -105,7 +107,7 @@ final class DeleteController extends ControllerBase
             );
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Account removed')
             );
         } catch (Exception $e) {

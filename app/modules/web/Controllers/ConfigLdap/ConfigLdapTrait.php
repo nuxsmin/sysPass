@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapTypeEnum;
 

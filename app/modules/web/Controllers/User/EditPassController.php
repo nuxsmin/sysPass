@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\DataModel\UserData;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -54,7 +54,7 @@ final class EditPassController extends UserViewBase
             // Comprobar si el usuario a modificar es distinto al de la sesión
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }

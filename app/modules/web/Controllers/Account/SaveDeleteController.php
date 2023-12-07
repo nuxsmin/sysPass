@@ -33,7 +33,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -91,7 +91,7 @@ final class SaveDeleteController extends AccountControllerBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Account removed'));
         } catch (Exception $e) {
             processException($e);
 

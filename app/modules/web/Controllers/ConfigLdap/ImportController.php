@@ -40,10 +40,10 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Domain\Import\Ports\LdapImportServiceInterface;
 use SP\Domain\Import\Services\LdapImportParams;
-use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -81,7 +81,7 @@ final class ImportController extends SimpleControllerBase
     {
         try {
             if ($this->configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             [$ldapImportParams, $checkImportGroups] = $this->getImportParams();
@@ -109,7 +109,7 @@ final class ImportController extends SimpleControllerBase
             }
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('LDAP users import finished'),
                 [
                     sprintf(

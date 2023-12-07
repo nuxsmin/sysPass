@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Domain\Import\Services\FileImport;
 use SP\Domain\Import\Services\ImportParams;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -68,7 +68,7 @@ final class ImportController extends SimpleControllerBase
     public function importAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
 
         try {
@@ -91,14 +91,14 @@ final class ImportController extends SimpleControllerBase
 
             if ($counter > 0) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_SUCCESS,
+                    JsonMessage::JSON_SUCCESS,
                     __u('Import finished'),
                     [__u('Please check out the event log for more details')]
                 );
             }
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_WARNING,
+                JsonMessage::JSON_WARNING,
                 __u('No accounts were imported'),
                 [__u('Please check out the event log for more details')]
             );

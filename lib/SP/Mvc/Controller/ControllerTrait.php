@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,9 +29,9 @@ use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Domain\Http\RequestInterface;
+use SP\Http\JsonMessage;
 use SP\Http\JsonResponse;
-use SP\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Util\Util;
 
@@ -75,10 +75,10 @@ trait ControllerTrait
         Closure $onRedirect
     ): void {
         if ($request->isJson()) {
-            $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
+            $jsonResponse = new JsonMessage(__u('Session not started or timed out'));
             $jsonResponse->setStatus(10);
 
-            Json::factory($this->router->response())->returnJson($jsonResponse);
+            JsonResponse::factory($this->router->response())->send($jsonResponse);
         } elseif ($request->isAjax()) {
             Util::logout();
         } else {
@@ -115,7 +115,7 @@ trait ControllerTrait
      */
     protected function invalidAction(): void
     {
-        Json::factory($this->router->response())->returnJson(new JsonResponse(__u('Invalid Action')));
+        JsonResponse::factory($this->router->response())->send(new JsonMessage(__u('Invalid Action')));
     }
 
     /**

@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -55,7 +55,7 @@ final class DeleteController extends ItemPresetSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -68,7 +68,7 @@ final class DeleteController extends ItemPresetSaveBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Values deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Values deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Values deleted'));
             }
 
             $this->itemPresetService->delete($id);
@@ -83,7 +83,7 @@ final class DeleteController extends ItemPresetSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value deleted'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Value deleted'));
         } catch (Exception $e) {
             processException($e);
 

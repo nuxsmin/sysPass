@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -72,7 +72,7 @@ final class DeleteController extends ControllerBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -82,14 +82,14 @@ final class DeleteController extends ControllerBase
 
                 $this->eventDispatcher->notify('delete.plugin.selection', new Event($this));
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugins deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugins deleted'));
             }
 
             $this->pluginService->delete($id);
 
             $this->eventDispatcher->notify('delete.plugin', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deleted'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin deleted'));
         } catch (Exception $e) {
             processException($e);
 

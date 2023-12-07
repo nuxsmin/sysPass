@@ -26,7 +26,7 @@ namespace SP\Tests\Core\Bootstrap;
 
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Bootstrap\UriContext;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

@@ -26,7 +26,7 @@ namespace SP\Core\Crypt;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 
 /**
  * Class RequestBasedPassword

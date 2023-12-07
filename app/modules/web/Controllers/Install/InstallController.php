@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -65,7 +65,7 @@ final class InstallController extends ControllerBase
         try {
             $this->installer->run($installData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Installation finished'));
         } catch (Exception $e) {
             processException($e);
 

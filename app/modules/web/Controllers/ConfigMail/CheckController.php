@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Ports\MailServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -91,7 +91,7 @@ final class CheckController extends SimpleControllerBase
             );
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Email sent'),
                 [__u('Please, check your inbox')]
             );

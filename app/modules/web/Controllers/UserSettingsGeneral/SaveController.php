@@ -25,13 +25,14 @@
 namespace SP\Modules\Web\Controllers\UserSettingsGeneral;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserService;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -61,7 +62,7 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveAction(): bool
     {
@@ -75,7 +76,7 @@ final class SaveController extends SimpleControllerBase
             // Save preferences in current session
             $userData->setPreferences($userPreferencesData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Preferences updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Preferences updated'));
         } catch (Exception $e) {
             processException($e);
 
@@ -86,9 +87,9 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param  \SP\Domain\User\Services\UserLoginResponse  $userData
+     * @param UserLoginResponse $userData
      *
-     * @return \SP\DataModel\UserPreferencesData
+     * @return UserPreferencesData
      */
     private function getUserPreferencesData(UserLoginResponse $userData): UserPreferencesData
     {

@@ -39,7 +39,7 @@ use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -99,7 +99,7 @@ final class BulkEditController extends ControllerBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }

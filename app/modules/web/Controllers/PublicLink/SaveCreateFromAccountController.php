@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\DataModel\PublicLinkData;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\PasswordUtil;
 
@@ -55,7 +55,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -70,7 +70,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $this->eventDispatcher->notify('create.publicLink.account', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link created'));
         } catch (Exception $e) {
             processException($e);
 

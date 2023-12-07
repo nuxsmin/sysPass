@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\CustomField\Services\CustomFieldService;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\Filter;
 
@@ -97,7 +97,7 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  RequestInterface  $request
+     * @param RequestInterface $request
      * @param CustomFieldServiceInterface $customFieldService
      *
      * @throws ConstraintException
@@ -172,7 +172,7 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param  RequestInterface  $request
+     * @param RequestInterface $request
      * @param CustomFieldServiceInterface $customFieldService
      *
      * @throws ConstraintException

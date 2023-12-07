@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,11 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
+use JsonException;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Util\Util;
 
 /**
@@ -43,7 +44,7 @@ trait ConfigTrait
     /**
      * Guardar la configuración
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
@@ -52,7 +53,7 @@ trait ConfigTrait
     ): bool {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $config->saveConfig($configData);
@@ -65,12 +66,12 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Configuration updated'));
         } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('Error while saving the configuration'),
                 [$e]
             );

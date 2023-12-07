@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -82,7 +82,7 @@ final class SaveResetController extends UserPassResetSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Password updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Password updated'));
         } catch (Exception $e) {
             processException($e);
 

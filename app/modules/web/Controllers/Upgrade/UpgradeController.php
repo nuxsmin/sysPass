@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -78,12 +78,12 @@ final class UpgradeController extends ControllerBase
             $this->config->saveConfig($this->configData, false);
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Application successfully updated'),
                 [__u('You will be redirected to log in within 5 seconds')]
             );
         } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
         } catch (Exception $e) {
             processException($e);
 

@@ -36,7 +36,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -70,7 +70,7 @@ final class RefreshController extends SimpleControllerBase
     {
         try {
             if ($this->config->getConfigData()->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
@@ -80,14 +80,14 @@ final class RefreshController extends SimpleControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Master password hash updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Master password hash updated'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('Error while updating the master password hash')
             );
         }

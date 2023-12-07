@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -52,7 +52,7 @@ final class SaveCreateController extends UserProfileSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_CREATE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -75,7 +75,7 @@ final class SaveCreateController extends UserProfileSaveBase
 
             $this->addCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile added'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Profile added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {

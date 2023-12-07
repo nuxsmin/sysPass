@@ -28,8 +28,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

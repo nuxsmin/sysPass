@@ -25,7 +25,7 @@
 namespace SP\Core\Bootstrap;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 
 /**
  * Class UriContext

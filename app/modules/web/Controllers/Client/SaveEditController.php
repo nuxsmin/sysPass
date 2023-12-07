@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -56,7 +56,7 @@ final class SaveEditController extends ClientSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_EDIT)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -80,7 +80,7 @@ final class SaveEditController extends ClientSaveBase
                 $this->customFieldService
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Client updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {

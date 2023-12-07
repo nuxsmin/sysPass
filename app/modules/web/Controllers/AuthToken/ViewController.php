@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * Class ViewController
@@ -51,7 +51,7 @@ final class ViewController extends AuthTokenViewBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_VIEW)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }

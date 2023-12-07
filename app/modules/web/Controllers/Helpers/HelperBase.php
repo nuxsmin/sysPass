@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFileService;
 use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
-use SP\Http\RequestInterface;
 use SP\Mvc\View\TemplateInterface;
 
 /**

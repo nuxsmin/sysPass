@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -58,7 +58,7 @@ final class ClearController extends TrackBase
 
             $this->eventDispatcher->notify('clear.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks cleared out'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tracks cleared out'));
         } catch (Exception $e) {
             processException($e);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -60,7 +60,9 @@ final class CategoriesController extends SimpleControllerBase
      */
     public function categoriesAction(): void
     {
-        Json::factory($this->router->response())
-            ->returnRawJson(SelectItemAdapter::factory($this->categoryService->getAllBasic())->getJsonItemsFromModel());
+        JsonResponse::factory($this->router->response())
+                    ->sendRaw(
+                        SelectItemAdapter::factory($this->categoryService->getAllBasic())->getJsonItemsFromModel()
+                    );
     }
 }

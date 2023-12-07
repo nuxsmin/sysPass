@@ -33,7 +33,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -79,7 +79,7 @@ final class ClearController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Event log cleared')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Event log cleared'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Event log cleared'));
         } catch (Exception $e) {
             processException($e);
 

@@ -35,7 +35,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -66,7 +66,7 @@ final class FileBackupController extends SimpleControllerBase
     public function fileBackupAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
 
         try {
@@ -84,7 +84,7 @@ final class FileBackupController extends SimpleControllerBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Backup process finished'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Backup process finished'));
         } catch (Exception $e) {
             processException($e);
 

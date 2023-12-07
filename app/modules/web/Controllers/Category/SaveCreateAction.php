@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * SaveCreateAction
@@ -46,7 +46,7 @@ final class SaveCreateAction extends CategorySaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_CREATE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -74,7 +74,7 @@ final class SaveCreateAction extends CategorySaveBase
                 $this->customFieldService
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category added'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Category added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {

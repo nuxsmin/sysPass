@@ -30,6 +30,9 @@ use Klein\DataCollection\HeaderDataCollection;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Header;
+use SP\Domain\Http\Method;
+use SP\Domain\Http\RequestInterface;
 use SP\Util\Filter;
 use SP\Util\Util;
 
@@ -50,8 +53,8 @@ class Request implements RequestInterface
 
     private HeaderDataCollection $headers;
     private DataCollection       $params;
-    private ?string              $method = null;
-    private ?bool                $https  = null;
+    private Method $method;
+    private ?bool  $https = null;
 
     /**
      * Request constructor.
@@ -59,21 +62,18 @@ class Request implements RequestInterface
     public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIInterface $cryptPKI)
     {
         $this->headers = $this->request->headers();
+        $this->method = Method::from($this->request->method());
         $this->params = $this->getParamsByMethod();
         $this->detectHttps();
     }
 
     private function getParamsByMethod(): DataCollection
     {
-        if ($this->request->method('GET')) {
-            $this->method = 'GET';
-
-            return $this->request->paramsGet();
-        }
-
-        $this->method = 'POST';
-
-        return $this->request->paramsPost();
+        return match ($this->method) {
+            Method::GET => $this->request->paramsGet(),
+            Method::POST => $this->request->paramsPost(),
+            default => new DataCollection(),
+        };
     }
 
     /**
@@ -142,8 +142,8 @@ class Request implements RequestInterface
     public function getForwardedFor(): ?array
     {
         // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
-        // Forwarded: for=12.34.56.78;host=example.com;proto=https, for=23.45.67.89
-        $forwarded = $this->headers->get('HTTP_FORWARDED');
+        // Forwarded: for=12.34.56.78;host=example.com;proto=https,for=23.45.67.89
+        $forwarded = $this->headers->get(Header::HTTP_FORWARDED->value);
 
         if ($forwarded !== null
             && preg_match_all(
@@ -161,7 +161,7 @@ class Request implements RequestInterface
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
-        $xForwarded = $this->headers->get('HTTP_X_FORWARDED_FOR');
+        $xForwarded = $this->headers->get(Header::HTTP_X_FORWARDED_FOR->value);
 
         if ($xForwarded !== null) {
             $matches = preg_split(
@@ -184,7 +184,7 @@ class Request implements RequestInterface
      */
     public function checkReload(): bool
     {
-        return $this->headers->get('Cache-Control') === 'max-age=0';
+        return $this->headers->get(Header::CACHE_CONTROL->value) === 'max-age=0';
     }
 
     public function analyzeEmail(
@@ -258,9 +258,9 @@ class Request implements RequestInterface
      * @return array|null
      */
     public function analyzeArray(
-        string $param,
-        callable $mapper = null,
-        mixed  $default = null
+        string    $param,
+        ?callable $mapper = null,
+        mixed     $default = null
     ): ?array {
         $requestValue = $this->params->get($param);
 
@@ -280,7 +280,7 @@ class Request implements RequestInterface
      */
     public function isJson(): bool
     {
-        return str_contains($this->headers->get('Accept'), 'application/json');
+        return str_contains($this->headers->get(Header::ACCEPT->value), Header::ACCEPT_JSON->value);
     }
 
     /**
@@ -288,7 +288,7 @@ class Request implements RequestInterface
      */
     public function isAjax(): bool
     {
-        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest'
+        return $this->headers->get(Header::X_REQUESTED_WITH->value) === 'XMLHttpRequest'
                || $this->analyzeInt('isAjax', 0) === 1;
     }
 
@@ -381,7 +381,7 @@ class Request implements RequestInterface
      */
     public function getForwardedData(): ?array
     {
-        $forwarded = $this->getHeader('HTTP_FORWARDED');
+        $forwarded = $this->getHeader(Header::HTTP_FORWARDED->value);
 
         // Check in style of RFC 7239
         if (!empty($forwarded)
@@ -416,8 +416,8 @@ class Request implements RequestInterface
      */
     public function getXForwardedData(): ?array
     {
-        $forwardedHost = $this->getHeader('HTTP_X_FORWARDED_HOST');
-        $forwardedProto = $this->getHeader('HTTP_X_FORWARDED_PROTO');
+        $forwardedHost = $this->getHeader(Header::HTTP_X_FORWARDED_HOST->value);
+        $forwardedProto = $this->getHeader(Header::HTTP_X_FORWARDED_PROTO->value);
 
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
@@ -436,7 +436,7 @@ class Request implements RequestInterface
         return null;
     }
 
-    public function getMethod(): ?string
+    public function getMethod(): Method
     {
         return $this->method;
     }

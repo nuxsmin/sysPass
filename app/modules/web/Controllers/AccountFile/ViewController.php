@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\FileUtil;
 
@@ -105,6 +105,6 @@ final class ViewController extends AccountFileBase
             return $this->returnJsonResponseException($e);
         }
 
-        return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('File not supported for preview'));
+        return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('File not supported for preview'));
     }
 }

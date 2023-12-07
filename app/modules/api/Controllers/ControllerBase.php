@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonResponse;
 
 /**
  * Class ControllerBase
@@ -121,7 +121,7 @@ abstract class ControllerBase
      */
     private function sendJsonResponse(string $response): void
     {
-        Json::factory($this->router->response())->returnRawJson($response);
+        JsonResponse::factory($this->router->response())->sendRaw($response);
     }
 
     final protected function returnResponseException(Exception $e): void

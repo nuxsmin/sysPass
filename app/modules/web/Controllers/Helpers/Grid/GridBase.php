@@ -28,12 +28,12 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Http\RequestInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\DataGrid\Layout\DataGridPager;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\TemplateInterface;
 

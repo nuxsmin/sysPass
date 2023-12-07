@@ -28,7 +28,7 @@ use Exception;
 use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -53,7 +53,7 @@ final class ViewController extends UserProfileViewBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_VIEW)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }

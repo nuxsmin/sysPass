@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;

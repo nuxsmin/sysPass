@@ -29,7 +29,7 @@ use Exception;
 use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -54,7 +54,7 @@ final class DeleteController extends TagSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -66,7 +66,7 @@ final class DeleteController extends TagSaveBase
 
                 $this->eventDispatcher->notify('delete.tag.selection', new Event($this));
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tags deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tags deleted'));
             }
 
             $this->tagService->delete($id);
@@ -76,7 +76,7 @@ final class DeleteController extends TagSaveBase
             $this->eventDispatcher->notify('delete.tag', new Event($this));
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Tag removed')
             );
         } catch (Exception $e) {

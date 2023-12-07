@@ -26,10 +26,12 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Http\JsonResponse;
+use SP\Domain\Plugin\Ports\PluginServiceInterface;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -41,12 +43,12 @@ final class DisableController extends ControllerBase
 {
     use JsonTrait;
 
-    private \SP\Domain\Plugin\Ports\PluginServiceInterface $pluginService;
+    private PluginServiceInterface $pluginService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\Plugin\Ports\PluginServiceInterface $pluginService
+        PluginServiceInterface $pluginService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -61,7 +63,7 @@ final class DisableController extends ControllerBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function disableAction(int $id): bool
     {
@@ -73,7 +75,7 @@ final class DisableController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Plugin disabled')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin disabled'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin disabled'));
         } catch (Exception $e) {
             processException($e);
 

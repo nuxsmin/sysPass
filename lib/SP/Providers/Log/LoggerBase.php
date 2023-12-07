@@ -32,8 +32,8 @@ use SP\Core\Language;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
-use SP\Http\RequestInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 

@@ -36,7 +36,7 @@ use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -125,7 +125,7 @@ final class SaveRequestController extends AccountControllerBase
                     'itemId'     => $id,
                     'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
                 ],
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Request done')
             );
         } catch (ValidationException $e) {

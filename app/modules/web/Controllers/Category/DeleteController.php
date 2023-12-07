@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * DeleteController
@@ -50,7 +50,7 @@ final class DeleteController extends CategorySaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -68,7 +68,7 @@ final class DeleteController extends CategorySaveBase
                     )
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categories deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Categories deleted'));
             }
 
             $this->categoryService->delete($id);
@@ -86,7 +86,7 @@ final class DeleteController extends CategorySaveBase
             );
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Category deleted')
             );
         } catch (Exception $e) {

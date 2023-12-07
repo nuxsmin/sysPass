@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\UuidCookie;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

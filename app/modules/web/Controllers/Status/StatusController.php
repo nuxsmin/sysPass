@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Status;
 use JsonException;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\VersionUtil;
 use Throwable;
@@ -85,7 +85,7 @@ final class StatusController extends StatusBase
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Version unavailable'));
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Version unavailable'));
         } catch (CheckException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Throwable $e) {

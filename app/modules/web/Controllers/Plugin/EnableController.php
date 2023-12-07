@@ -26,11 +26,12 @@ namespace SP\Modules\Web\Controllers\Plugin;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Plugin\Ports\PluginServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -42,7 +43,7 @@ final class EnableController extends ControllerBase
 {
     use JsonTrait;
 
-    private \SP\Domain\Plugin\Ports\PluginServiceInterface $pluginService;
+    private PluginServiceInterface $pluginService;
 
     public function __construct(
         Application $application,
@@ -62,7 +63,7 @@ final class EnableController extends ControllerBase
      * @param  int  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function enableAction(int $id): bool
     {
@@ -74,7 +75,7 @@ final class EnableController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Plugin enabled')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin enabled'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin enabled'));
         } catch (Exception $e) {
             processException($e);
 

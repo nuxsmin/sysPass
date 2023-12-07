@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -99,7 +99,7 @@ final class SaveController extends SimpleControllerBase
 
                 $eventMessage->addDescription(__u('LDAP disabled'));
             } else {
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('No changes'));
             }
 
             return $this->saveConfig(

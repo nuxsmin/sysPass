@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
@@ -85,7 +85,7 @@ final class SearchController extends ControllerBase
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_SEARCH)) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('You don\'t have permission to do this operation')
             );
         }

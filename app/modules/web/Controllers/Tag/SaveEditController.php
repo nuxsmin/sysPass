@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -53,7 +53,7 @@ final class SaveEditController extends TagSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -64,7 +64,7 @@ final class SaveEditController extends TagSaveBase
 
             $this->eventDispatcher->notify('edit.tag', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tag updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tag updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {

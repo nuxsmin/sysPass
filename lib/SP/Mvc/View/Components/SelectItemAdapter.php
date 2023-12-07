@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Mvc\View\Components;
 use RuntimeException;
 use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonResponse;
 
 use function SP\__u;
 
@@ -83,7 +83,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
             $out[] = ['id' => $item->getId(), 'name' => $item->getName()];
         }
 
-        return Json::getJson($out);
+        return JsonResponse::buildJsonFrom($out);
     }
 
     /**
@@ -99,7 +99,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
             $out[] = ['id' => $key, 'name' => $value];
         }
 
-        return Json::getJson($out);
+        return JsonResponse::buildJsonFrom($out);
     }
 
     /**

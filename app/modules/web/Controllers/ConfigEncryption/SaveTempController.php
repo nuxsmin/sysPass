@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -85,7 +85,7 @@ final class SaveTempController extends SimpleControllerBase
                     }
 
                     return $this->returnJsonResponse(
-                        JsonResponse::JSON_SUCCESS,
+                        JsonMessage::JSON_SUCCESS,
                         __u('Temporary password generated'),
                         [__u('Email sent')]
                     );
@@ -95,14 +95,14 @@ final class SaveTempController extends SimpleControllerBase
                     $this->eventDispatcher->notify('exception', new Event($e));
 
                     return $this->returnJsonResponse(
-                        JsonResponse::JSON_WARNING,
+                        JsonMessage::JSON_WARNING,
                         __u('Temporary password generated'),
                         [__u('Error while sending the email')]
                     );
                 }
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Temporary password generated'));
         } catch (Exception $e) {
             processException($e);
 

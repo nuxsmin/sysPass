@@ -22,36 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html;
-
-use SP\Domain\Html\Header;
-use SP\Domain\Html\MinifyFile;
-use SP\Infrastructure\File\FileException;
-use SplObjectStorage;
+namespace SP\Domain\Http;
 
 /**
- * Class MinifyCss
+ * Enum Method
  */
-final class MinifyCss extends Minify
+enum Method: string
 {
-    /**
-     * @param SplObjectStorage<MinifyFile> $files
-     * @return string
-     * @throws FileException
-     */
-    protected function minify(SplObjectStorage $files): string
-    {
-        $data = '';
-
-        foreach ($files as $file) {
-            $data .= sprintf('%s/* FILE: %s */%s%s', PHP_EOL, $file->getName(), PHP_EOL, $file->getContent());
-        }
-
-        return $data;
-    }
-
-    protected function getContentTypeHeader(): string
-    {
-        return Header::CONTENT_TYPE_CSS->value;
-    }
+    case GET  = 'GET';
+    case POST = 'POST';
 }

@@ -34,7 +34,7 @@ use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
@@ -104,7 +104,7 @@ final class SaveBulkEditController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Accounts updated')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts updated'));
         } catch (Exception $e) {
             processException($e);
 

@@ -41,7 +41,7 @@ use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\Task\Services\TaskFactory;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -87,7 +87,7 @@ final class SaveController extends SimpleControllerBase
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS_STICKY,
+                JsonMessage::JSON_SUCCESS_STICKY,
                 __u('Master password updated'),
                 [__u('Please, restart the session for update it')]
             );
@@ -95,42 +95,42 @@ final class SaveController extends SimpleControllerBase
 
         if (empty($newMasterPass) || empty($currentMasterPass)) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('Master password not entered')
             );
         }
 
         if ($confirmPassChange === false) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('The password update must be confirmed')
             );
         }
 
         if ($newMasterPass === $currentMasterPass) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('Passwords are the same')
             );
         }
 
         if ($newMasterPass !== $newMasterPassR) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('Master passwords do not match')
             );
         }
 
         if (!$this->masterPassService->checkMasterPassword($currentMasterPass)) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('The current master password does not match')
             );
         }
 
         if (!$this->config->getConfigData()->isMaintenance()) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_WARNING,
+                JsonMessage::JSON_WARNING,
                 __u('Maintenance mode not enabled'),
                 [__u('Please, enable it to avoid unwanted behavior from other sessions')]
             );
@@ -138,7 +138,7 @@ final class SaveController extends SimpleControllerBase
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_WARNING,
+                JsonMessage::JSON_WARNING,
                 __u('Ey, this is a DEMO!!')
             );
         }
@@ -181,14 +181,14 @@ final class SaveController extends SimpleControllerBase
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('Error while saving the Master Password\'s hash')
                 );
             }
         }
 
         return $this->returnJsonResponse(
-            JsonResponse::JSON_SUCCESS_STICKY,
+            JsonMessage::JSON_SUCCESS_STICKY,
             __u('Master password updated'),
             [__u('Please, restart the session to update it')]
         );

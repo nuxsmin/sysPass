@@ -27,7 +27,7 @@ namespace SP\Core;
 use JsonException;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Util\Util;
 
 /**

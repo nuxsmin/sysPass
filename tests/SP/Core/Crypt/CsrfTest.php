@@ -29,7 +29,7 @@ use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

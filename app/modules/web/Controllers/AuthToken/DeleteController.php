@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * Class DeleteController
@@ -51,7 +51,7 @@ final class DeleteController extends AuthTokenSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -66,7 +66,7 @@ final class DeleteController extends AuthTokenSaveBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Authorizations deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorizations deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorizations deleted'));
             }
 
             $this->authTokenService->delete($id);
@@ -83,7 +83,7 @@ final class DeleteController extends AuthTokenSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization deleted'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization deleted'));
         } catch (Exception $e) {
             processException($e);
 

@@ -25,7 +25,7 @@
 namespace SP\Core\Crypt;
 
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 
 use function SP\logger;
 

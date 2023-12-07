@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\Api\Services;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonResponse;
 
 /**
  * Class JsonRpcResponse
@@ -53,11 +53,11 @@ final class JsonRpcResponse
         ApiResponse $apiResponse,
         int $id
     ): string {
-        return Json::getJson([
+        return JsonResponse::buildJsonFrom([
             'jsonrpc' => '2.0',
             'result'  => $apiResponse->getResponse(),
             'id'      => $id,
-        ], JSON_UNESCAPED_SLASHES);
+                                           ], JSON_UNESCAPED_SLASHES);
     }
 
     public static function getResponseException(Exception $e, int $id): string

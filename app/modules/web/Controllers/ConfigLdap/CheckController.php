@@ -35,7 +35,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -78,7 +78,7 @@ final class CheckController extends SimpleControllerBase
                   || $ldapParams->getBindDn())
             ) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('Missing LDAP parameters')
                 );
             }
@@ -90,7 +90,7 @@ final class CheckController extends SimpleControllerBase
 
             return $this->returnJsonResponseData(
                 ['template' => $this->template->render(), 'items' => $data['results']],
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('LDAP connection OK'),
                 [sprintf(__('Objects found: %d'), $data['count'])]
             );

@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportServiceInterface;
 use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -72,7 +72,7 @@ final class XmlExportController extends SimpleControllerBase
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Passwords do not match'));
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Passwords do not match'));
         }
 
         try {
@@ -120,7 +120,7 @@ final class XmlExportController extends SimpleControllerBase
             // Create the XML archive after verifying the export integrity
             $this->xmlExportService->createArchive();
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Export process finished'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Export process finished'));
         } catch (Exception $e) {
             processException($e);
 

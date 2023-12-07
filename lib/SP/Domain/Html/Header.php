@@ -29,10 +29,20 @@ namespace SP\Domain\Html;
  */
 enum Header: string
 {
-    case ETAG          = 'Etag';
-    case EXPIRES       = 'Expires';
-    case CONTENT_TYPE  = 'Content-type';
-    case PRAGMA        = 'Pragma';
-    case CACHE_CONTROL = 'Cache-Control';
-    case IF_NONE_MATCH = 'If-None-Match';
+    case ETAG                   = 'Etag';
+    case EXPIRES                = 'Expires';
+    case CONTENT_TYPE           = 'Content-type';
+    case PRAGMA                 = 'Pragma';
+    case CACHE_CONTROL          = 'Cache-Control';
+    case IF_NONE_MATCH          = 'If-None-Match';
+    case CONTENT_TYPE_JSON      = 'application/json; charset=utf-8';
+    case CONTENT_TYPE_CSS       = 'text/css; charset: UTF-8';
+    case CONTENT_TYPE_JS        = 'application/javascript; charset: UTF-8';
+    case ACCEPT                 = 'Accept';
+    case ACCEPT_JSON            = 'application/json';
+    case X_REQUESTED_WITH       = 'X-Requested-With';
+    case HTTP_FORWARDED         = 'Http-Forwarded';
+    case HTTP_X_FORWARDED_HOST  = 'Http-Forwarded-Host';
+    case HTTP_X_FORWARDED_PROTO = 'Http-Forwarded-Proto';
+    case HTTP_X_FORWARDED_FOR   = 'Http-Forwarded-For';
 }

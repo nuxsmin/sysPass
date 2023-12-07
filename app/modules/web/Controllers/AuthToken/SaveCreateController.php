@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * Class SaveCreateController
@@ -47,7 +47,7 @@ final class SaveCreateController extends AuthTokenSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -65,9 +65,9 @@ final class SaveCreateController extends AuthTokenSaveBase
 
             $this->eventDispatcher->notify('create.authToken', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization added'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization added'));
         } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
         } catch (Exception $e) {
             processException($e);
 

@@ -37,7 +37,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;

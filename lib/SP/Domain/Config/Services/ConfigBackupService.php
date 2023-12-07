@@ -31,7 +31,7 @@ use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\Json;
+use SP\Http\JsonResponse;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Util\Util;
@@ -57,7 +57,7 @@ class ConfigBackupService implements ConfigBackupServiceInterface
      */
     public static function configToJson(string $configData): string
     {
-        return Json::getJson(Util::unserialize(ConfigData::class, $configData), JSON_PRETTY_PRINT);
+        return JsonResponse::buildJsonFrom(Util::unserialize(ConfigData::class, $configData), JSON_PRETTY_PRINT);
     }
 
     /**

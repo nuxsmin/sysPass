@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -52,7 +52,7 @@ final class SaveCreateController extends UserSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_CREATE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -77,7 +77,7 @@ final class SaveCreateController extends UserSaveBase
 
             $this->checkChangeUserPass($id, $itemData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User added'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('User added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (Exception $e) {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,9 +22,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Http;
+namespace SP\Domain\Http;
 
-
+use Klein\Request;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
@@ -58,13 +58,13 @@ interface RequestInterface
     public function analyzeUnsafeString(string $param, ?string $default = null): ?string;
 
     /**
-     * @param  string  $param
-     * @param  callable|null  $mapper
-     * @param  null  $default
+     * @param string $param
+     * @param callable|null $mapper
+     * @param mixed $default
      *
      * @return array|null
      */
-    public function analyzeArray(string $param, callable $mapper = null, $default = null): ?array;
+    public function analyzeArray(string $param, ?callable $mapper = null, mixed $default = null): ?array;
 
     /**
      * Comprobar si la petición es en formato JSON
@@ -83,8 +83,8 @@ interface RequestInterface
     public function analyzeBool(string $param, ?bool $default = null): bool;
 
     /**
-     * @param  string  $key
-     * @param  string|null  $param  Checks the signature only for the given param
+     * @param string $key
+     * @param string|null $param Checks the signature only for the given param
      *
      * @throws SPException
      */
@@ -111,13 +111,13 @@ interface RequestInterface
      */
     public function getXForwardedData(): ?array;
 
-    public function getMethod(): ?string;
+    public function getMethod(): Method;
 
     public function isHttps(): ?bool;
 
     public function getServerPort(): int;
 
-    public function getRequest(): \Klein\Request;
+    public function getRequest(): Request;
 
     public function getServer(string $key): string;
 }

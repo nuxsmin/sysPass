@@ -24,6 +24,7 @@
 
 namespace SP\Html;
 
+use SP\Domain\Html\Header;
 use SP\Domain\Html\MinifyFile;
 use SP\Infrastructure\File\FileException;
 use SplObjectStorage;
@@ -78,6 +79,6 @@ final class MinifyJs extends Minify
 
     protected function getContentTypeHeader(): string
     {
-        return 'application/javascript; charset: UTF-8';
+        return Header::CONTENT_TYPE_JS->value;
     }
 }

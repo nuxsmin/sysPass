@@ -31,7 +31,7 @@ use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -67,7 +67,7 @@ final class SaveController extends SimpleControllerBase
 
         if ($mailEnabled && (empty($mailServer) || empty($mailFrom))
         ) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
+            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
         if ($mailEnabled) {
@@ -101,7 +101,7 @@ final class SaveController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Mail disabled'));
         } else {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('No changes'));
         }
 
         return $this->saveConfig(

@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -61,7 +61,7 @@ final class UnlockController extends TrackBase
 
             $this->eventDispatcher->notify('unlock.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track unlocked'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Track unlocked'));
         } catch (Exception $e) {
             processException($e);
 

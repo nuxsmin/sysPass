@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,89 +27,39 @@ namespace SP\Http;
 use JsonException;
 use Klein\Response;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Header;
+use SP\Domain\Http\JsonResponseInterface;
 
+use function SP\__u;
 
 /**
- * Class Json con utilidades para JSON
- *
- * @package SP\Util
+ * Class JsonResponse
  */
-final class Json
+final class JsonResponse implements JsonResponseInterface
 {
-    public const SAFE = [
-        'from' => ['\\', '"', '\''],
-        'to'   => ['\\', '\"', '\\\''],
-    ];
-
-    private Response $response;
-
     /**
      * Json constructor.
      */
-    public function __construct(Response $response)
+    public function __construct(private readonly Response $response)
     {
-        $this->response = $response;
     }
 
-    public static function factory(Response $response): Json
+    public static function factory(Response $response): JsonResponseInterface
     {
         return new self($response);
     }
 
     /**
-     * Devuelve un array con las cadenas formateadas para JSON
-     */
-    public static function safeJson(&$data): string
-    {
-        if (is_array($data) || is_object($data)) {
-            array_walk_recursive(
-                $data,
-                static function ($value) {
-                    if (is_object($value)) {
-                        foreach ($value as $property => $v) {
-                            if (is_string($v) && $v !== '') {
-                                $value->$property = self::safeJsonString($v);
-                            }
-                        }
-
-                        return $value;
-                    }
-
-                    if (is_string($value) && $value !== '') {
-                        return self::safeJsonString($value);
-                    }
-
-                    return $value;
-                }
-            );
-        } elseif (is_string($data) && $data !== '') {
-            return self::safeJsonString($data);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Devuelve una cadena con los carácteres formateadas para JSON
-     *
-     * @return array|string|string[]
-     */
-    public static function safeJsonString($string)
-    {
-        return str_replace(self::SAFE['from'], self::SAFE['to'], $string);
-    }
-
-    /**
      * Devuelve una respuesta en formato JSON
      *
-     * @param  string  $data  JSON string
+     * @param string $data JSON string
      *
      * @return bool
      */
-    public function returnRawJson(string $data): bool
+    public function sendRaw(string $data): bool
     {
         return $this->response
-            ->header('Content-type', 'application/json; charset=utf-8')
+            ->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value)
             ->body($data)
             ->send(true)
             ->isSent();
@@ -118,22 +68,22 @@ final class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param JsonResponse $jsonResponse
+     * @param JsonMessage $jsonMessage
      *
      * @return bool
      * @throws SPException
      */
-    public function returnJson(JsonResponse $jsonResponse): bool
+    public function send(JsonMessage $jsonMessage): bool
     {
-        $this->response->header('Content-type', 'application/json; charset=utf-8');
+        $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
 
         try {
-            $this->response->body(self::getJson($jsonResponse));
+            $this->response->body(self::buildJsonFrom($jsonMessage));
         } catch (SPException $e) {
-            $jsonResponse = new JsonResponse($e->getMessage());
-            $jsonResponse->addMessage($e->getHint());
+            $jsonMessage = new JsonMessage($e->getMessage());
+            $jsonMessage->addMessage($e->getHint());
 
-            $this->response->body(self::getJson($jsonResponse));
+            $this->response->body(self::buildJsonFrom($jsonMessage));
         }
 
         return $this->response->send(true)->isSent();
@@ -142,12 +92,13 @@ final class Json
     /**
      * Devuelve una cadena en formato JSON
      *
-     * @param  mixed  $data
-     * @param  int  $flags  JSON_* flags
+     * @param mixed $data
+     * @param int $flags JSON_* flags
      *
+     * @return string
      * @throws SPException
      */
-    public static function getJson($data, int $flags = 0): string
+    public static function buildJsonFrom(mixed $data, int $flags = 0): string
     {
         try {
             return json_encode($data, JSON_THROW_ON_ERROR | $flags);

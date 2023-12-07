@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UserPassRecoverService;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -86,7 +86,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             );
 
             return $this->returnJsonResponse(
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Request sent'),
                 [__u('You will receive an email to complete the request shortly.')]
             );

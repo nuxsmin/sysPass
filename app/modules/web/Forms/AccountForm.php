@@ -31,7 +31,7 @@ use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Util\Chainable;
 
 use function SP\__u;

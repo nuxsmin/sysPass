@@ -27,7 +27,7 @@ namespace SP\Core;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\LanguageInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 
 use function SP\logger;
 

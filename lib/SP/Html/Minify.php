@@ -48,8 +48,7 @@ abstract class Minify implements MinifyInterface
 
     public function __construct(
         private readonly Response $response,
-        private readonly Request  $request,
-        private bool              $insecure = false
+        private readonly Request $request
     ) {
         $this->files = new SplObjectStorage();
     }
@@ -159,7 +158,7 @@ abstract class Minify implements MinifyInterface
     ): MinifyInterface {
         $fileHandler->checkFileExists();
 
-        $this->files->attach(new MinifyFile($fileHandler, $minify, $this->insecure));
+        $this->files->attach(new MinifyFile($fileHandler, $minify));
 
         return $this;
     }

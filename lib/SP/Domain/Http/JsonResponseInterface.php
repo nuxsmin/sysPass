@@ -22,41 +22,32 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\AccountFavorite;
+namespace SP\Domain\Http;
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
- * Class MarkController
- *
- * @package SP\Modules\Web\Controllers
+ * Interface JsonResponseInterface
  */
-final class UnmarkController extends AccountFavoriteBase
+interface JsonResponseInterface
 {
-    use JsonTrait;
-
     /**
-     * @param  int  $accountId
+     * Devuelve una respuesta en formato JSON
+     *
+     * @param string $data JSON string
      *
      * @return bool
-     * @throws JsonException
      */
-    public function unmarkAction(int $accountId): bool
-    {
-        try {
-            $this->accountToFavoriteService->delete($accountId, $this->session->getUserData()->getId());
+    public function sendRaw(string $data): bool;
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Favorite deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
-    }
+    /**
+     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     *
+     * @param JsonMessage $jsonMessage
+     *
+     * @return bool
+     * @throws SPException
+     */
+    public function send(JsonMessage $jsonMessage): bool;
 }

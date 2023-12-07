@@ -30,9 +30,9 @@ use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Account\Services\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionType;
-use SP\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\TemplateInterface;
 

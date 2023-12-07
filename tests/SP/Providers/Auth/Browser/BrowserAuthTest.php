@@ -27,7 +27,7 @@ namespace SP\Tests\Providers\Auth\Browser;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Http\RequestInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Providers\Auth\Browser\BrowserAuth;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Tests\UnitaryTestCase;

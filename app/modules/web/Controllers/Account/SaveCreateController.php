@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 
 /**
  * Class SaveCreateController
@@ -73,7 +73,7 @@ final class SaveCreateController extends AccountSaveBase
                     'itemId'     => $accountId,
                     'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT),
                 ],
-                JsonResponse::JSON_SUCCESS,
+                JsonMessage::JSON_SUCCESS,
                 __u('Account created')
             );
         } catch (ValidationException $e) {

@@ -26,9 +26,10 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 
 use Exception;
+use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -37,7 +38,8 @@ use SP\Mvc\Controller\ItemTrait;
  */
 final class DeleteController extends NotificationSaveBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     /**
      * Delete action
@@ -45,7 +47,7 @@ final class DeleteController extends NotificationSaveBase
      * @param  int|null  $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function deleteAction(?int $id = null): bool
     {
@@ -62,7 +64,7 @@ final class DeleteController extends NotificationSaveBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Notifications deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notifications deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notifications deleted'));
             }
 
             if ($this->userData->getIsAdminApp()) {
@@ -81,7 +83,7 @@ final class DeleteController extends NotificationSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification deleted'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification deleted'));
         } catch (Exception $e) {
             processException($e);
 

@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
@@ -55,7 +55,7 @@ final class DeleteController extends UserSaveBase
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_DELETE)) {
                 return $this->returnJsonResponse(
-                    JsonResponse::JSON_ERROR,
+                    JsonMessage::JSON_ERROR,
                     __u('You don\'t have permission to do this operation')
                 );
             }
@@ -75,7 +75,7 @@ final class DeleteController extends UserSaveBase
 
                 $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Users deleted'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Users deleted'));
             }
 
             $this->userService->delete($id);
@@ -93,7 +93,7 @@ final class DeleteController extends UserSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User deleted'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('User deleted'));
         } catch (Exception $e) {
             processException($e);
 

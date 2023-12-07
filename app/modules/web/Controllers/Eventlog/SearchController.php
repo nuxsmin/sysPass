@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Http\JsonResponse;
+use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -76,7 +76,7 @@ final class SearchController extends ControllerBase
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::EVENTLOG_SEARCH)) {
             return $this->returnJsonResponse(
-                JsonResponse::JSON_ERROR,
+                JsonMessage::JSON_ERROR,
                 __u('You don\'t have permission to do this operation')
             );
         }
