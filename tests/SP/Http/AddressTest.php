@@ -114,7 +114,7 @@ class AddressTest extends UnitaryTestCase
      *
      * @throws InvalidArgumentException
      */
-    public function testBinary(string $address)
+    public function testToBinary(string $address)
     {
         $binary = Address::toBinary($address);
 
@@ -125,7 +125,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
-    public function testBinaryInvalidIpv4()
+    public function testToBinaryInvalidIpv4()
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -135,11 +135,46 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
-    public function testBinaryInvalidIpv6()
+    public function testToBinaryInvalidIpv6()
     {
         $this->expectException(InvalidArgumentException::class);
 
         Address::toBinary('1200::AB00:1234::2552:7777:1313');
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testFromBinaryWithIpv4()
+    {
+        $address = self::$faker->ipv4;
+
+        $out = Address::fromBinary(inet_pton($address));
+
+        $this->assertEquals($address, $out);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testFromBinaryWithIpv6()
+    {
+        $address = self::$faker->ipv6;
+
+        $out = Address::fromBinary(inet_pton($address));
+
+        $this->assertEquals($address, $out);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testFromBinaryWithInvalidAddress()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid IP');
+
+        Address::fromBinary('something');
     }
 
     /**
@@ -170,6 +205,17 @@ class AddressTest extends UnitaryTestCase
     public function testCheckWithCidr(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, Address::cidrToDec($inMask)));
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testCheckWithInvalidAddress()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid IP');
+
+        Address::check('123', '123', '123');
     }
 
     /**
