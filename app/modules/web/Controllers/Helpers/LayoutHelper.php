@@ -39,6 +39,7 @@ use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\Uri;
 use SP\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
+use SP\Util\FileUtil;
 use SP\Util\VersionUtil;
 
 /**
@@ -54,12 +55,12 @@ final class LayoutHelper extends HelperBase
     private bool              $loggedIn;
 
     public function __construct(
-        Application    $application,
+        Application      $application,
         TemplateInterface $template,
         RequestInterface $request,
-        ThemeInterface $theme,
+        ThemeInterface   $theme,
         CryptPKIInterface $cryptPKI,
-        PluginManager  $pluginManager
+        PluginManager    $pluginManager
     ) {
         parent::__construct($application, $template, $request);
 
@@ -150,24 +151,28 @@ final class LayoutHelper extends HelperBase
         $version = VersionUtil::getVersionStringNormalized();
         $baseUrl = ($this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
 
-        $jsUri = new Uri($baseUrl);
-        $jsUri->addParam('_r', 'resource/js');
-        $jsUri->addParam('_v', md5($version));
+        $jsUriApp = new Uri($baseUrl);
+        $jsUriApp->addParams(['_r' => 'resource/js', '_v' => sha1($version)]);
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('jsLinks', $jsUriApp->getUriSigned($this->configData->getPasswordSalt()));
 
-        $jsUri->resetParams()->addParam('g', 1);
+        $jsUriVendor = new Uri($baseUrl);
+        $jsUriVendor->addParams(['g' => 1]);
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('jsLinks', $jsUriVendor->getUriSigned($this->configData->getPasswordSalt()));
 
         $themeInfo = $this->theme->getInfo();
 
         if (isset($themeInfo['js'])) {
-            $jsUri->resetParams()
-                  ->addParam('b', $this->theme->getPath() . DIRECTORY_SEPARATOR . 'js')
-                  ->addParam('f', implode(',', $themeInfo['js']));
+            $jsUriTheme = new Uri($baseUrl);
+            $jsUriTheme->addParams(
+                [
+                    'b' => FileUtil::buildPath($this->theme->getPath(), 'js'),
+                    'f' => implode(',', $themeInfo['js'])
+                ]
+            );
 
-            $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append('jsLinks', $jsUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
         $userPreferences = $this->context->getUserData()->getPreferences();
@@ -181,11 +186,10 @@ final class LayoutHelper extends HelperBase
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
-        $cssUri = (new Uri($baseUrl))
-            ->addParam('_r', 'resource/css')
-            ->addParam('_v', md5($version . $resultsAsCards));
+        $cssUriApp = new Uri($baseUrl);
+        $cssUriApp->addParams(['_r' => 'resource/css', '_v' => sha1($version . $resultsAsCards)]);
 
-        $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('cssLinks', $cssUriApp->getUriSigned($this->configData->getPasswordSalt()));
 
         if (isset($themeInfo['css'])) {
             $themeInfo['css'][] = $resultsAsCards
@@ -196,11 +200,15 @@ final class LayoutHelper extends HelperBase
                 $themeInfo['css'][] = 'styles-wiki.min.css';
             }
 
-            $cssUri->resetParams()
-                   ->addParam('b', $this->theme->getPath() . DIRECTORY_SEPARATOR . 'css')
-                   ->addParam('f', implode(',', $themeInfo['css']));
+            $cssUriTheme = new Uri($baseUrl);
+            $cssUriTheme->addParams(
+                [
+                    'b' => FileUtil::buildPath($this->theme->getPath(), 'css'),
+                    'f' => implode(',', $themeInfo['css'])
+                ]
+            );
 
-            $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append('cssLinks', $cssUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
         // Cargar los recursos de los plugins
@@ -214,19 +222,24 @@ final class LayoutHelper extends HelperBase
             $cssResources = $plugin->getCssResources();
 
             if (count($jsResources) > 0) {
-                $jsUri->resetParams()
-                      ->addParam('b', $base . DIRECTORY_SEPARATOR . 'js')
-                      ->addParam('f', implode(',', $jsResources));
+                $jsUriPlugin = new Uri($baseUrl);
+                $jsUriPlugin->addParams([
+                                            'b' => FileUtil::buildPath($base, 'js'),
+                                            'f' => implode(',', $jsResources)
+                                        ]);
 
-                $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+                $this->view->append('jsLinks', $jsUriPlugin->getUriSigned($this->configData->getPasswordSalt()));
             }
 
             if (count($cssResources) > 0) {
-                $cssUri->resetParams()
-                       ->addParam('b', $base . DIRECTORY_SEPARATOR . 'css')
-                       ->addParam('f', implode(',', $cssResources));
+                $cssUriPlugin = new Uri($baseUrl);
+                $cssUriPlugin->addParams([
+                                             'b' => FileUtil::buildPath($base, 'css'),
+                                             'f' => implode(',', $cssResources)
+                                         ]
+                );
 
-                $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+                $this->view->append('cssLinks', $cssUriPlugin->getUriSigned($this->configData->getPasswordSalt()));
             }
         }
     }

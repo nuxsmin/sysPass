@@ -59,6 +59,18 @@ final class Uri
         return $this;
     }
 
+    /**
+     * @param array $params Param's name. If an '_' is set at the beginning, it will be a protected param
+     *
+     * @return Uri
+     */
+    public function addParams(array $params): Uri
+    {
+        $this->params = array_map(static fn(int|string $value) => (string)$value, $params);
+
+        return $this;
+    }
+
     public function getUri(): string
     {
         return sprintf(
@@ -73,23 +85,5 @@ final class Uri
         $uri = implode('&', array_map([__CLASS__, 'mapParts'], array_keys($this->params), $this->params));
 
         return sprintf('%s?%s&h=%s', $this->base, $uri, Hash::signMessage($uri, $key));
-    }
-
-    /**
-     * Clear params array
-     *
-     * Only clears unprotected params (without '_' at the beginning of the param's name)
-     */
-    public function resetParams(): Uri
-    {
-        $this->params = array_filter(
-            $this->params,
-            static function ($key) {
-                return str_starts_with($key, '_');
-            },
-            ARRAY_FILTER_USE_KEY
-        );
-
-        return $this;
     }
 }
