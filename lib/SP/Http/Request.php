@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
+use SP\Util\FileUtil;
 use SP\Util\Filter;
 use SP\Util\Util;
 
@@ -63,16 +64,15 @@ class Request implements RequestInterface
     {
         $this->headers = $this->request->headers();
         $this->method = Method::from($this->request->method());
-        $this->params = $this->getParamsByMethod();
+        $this->params = $this->getParamsForMethod();
         $this->detectHttps();
     }
 
-    private function getParamsByMethod(): DataCollection
+    private function getParamsForMethod(): DataCollection
     {
         return match ($this->method) {
             Method::GET => $this->request->paramsGet(),
-            Method::POST => $this->request->paramsPost(),
-            default => new DataCollection(),
+            Method::POST => $this->request->paramsPost()
         };
     }
 
@@ -81,8 +81,10 @@ class Request implements RequestInterface
      */
     private function detectHttps(): void
     {
-        $this->https = Util::boolval($this->request->server()->get('HTTPS', 'off'))
-                       || $this->request->server()->get('SERVER_PORT', 0) === 443;
+        $server = $this->request->server();
+
+        $this->https = Util::boolval($server->get('HTTPS', 'off'))
+                       || $server->get('SERVER_PORT', 0) === 443;
     }
 
     /**
@@ -108,11 +110,9 @@ class Request implements RequestInterface
             return '';
         }
 
-        $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
+        $realPath = realpath(FileUtil::buildPath($base, $path));
 
-        if ($realPath === false
-            || !str_starts_with($realPath, $base)
-        ) {
+        if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';
         }
 
@@ -121,10 +121,6 @@ class Request implements RequestInterface
 
     public function getClientAddress(bool $fullForwarded = false): string
     {
-        if (IS_TESTING) {
-            return '127.0.0.1';
-        }
-
         $forwarded = $this->getForwardedFor();
 
         if ($forwarded !== null) {
@@ -154,9 +150,7 @@ class Request implements RequestInterface
         ) {
             return array_filter(
                 $matches[1],
-                static function ($value) {
-                    return !empty($value);
-                }
+                static fn($value) => !empty($value)
             );
         }
 
@@ -265,7 +259,7 @@ class Request implements RequestInterface
         $requestValue = $this->params->get($param);
 
         if (is_array($requestValue)) {
-            if (is_callable($mapper)) {
+            if ($mapper !== null) {
                 return $mapper($requestValue);
             }
 
@@ -330,8 +324,7 @@ class Request implements RequestInterface
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = str_replace('&h=' . $hash, '', $this->request->uri());
-                $uri = substr($uri, strpos($uri, '?') + 1);
+                $uri = implode('&', $this->request->params('h'));
             } else {
                 $uri = $this->params->get($param, '');
             }
@@ -360,7 +353,7 @@ class Request implements RequestInterface
         $forwarded = $this->getForwardedData() ?? $this->getXForwardedData();
 
         if (null !== $forwarded) {
-            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
+            return strtolower(sprintf('%s://%s', $forwarded['proto'], $forwarded['host']));
         }
 
         /** @noinspection HttpUrlsUsage */
@@ -371,7 +364,7 @@ class Request implements RequestInterface
             $protocol = 'https://';
         }
 
-        return $protocol . $this->request->server()->get('HTTP_HOST');
+        return sprintf('%s%s', $protocol, $this->request->server()->get('HTTP_HOST'));
     }
 
     /**
@@ -386,14 +379,18 @@ class Request implements RequestInterface
         // Check in style of RFC 7239
         if (!empty($forwarded)
             && preg_match_all(
-                '/(?P<proto>proto=(\w+))|(?P<host>host=([\w.]+))/i',
+                '/proto=(?P<proto>(\w+))|host=(?P<host>([\w.]+))/i',
                 $forwarded,
                 $matches
             )
         ) {
+            $mapper = static fn(array $values): string => (string)current(
+                array_filter($values, static fn(mixed $value) => !empty($value))
+            );
+
             $data = [
-                'host ' => $matches['host'][1] ?? null,
-                'proto' => $matches['proto'][1] ?? null,
+                'host' => $mapper($matches['host']),
+                'proto' => $mapper($matches['proto']),
                 'for' => $this->getForwardedFor(),
             ];
 
@@ -416,21 +413,18 @@ class Request implements RequestInterface
      */
     public function getXForwardedData(): ?array
     {
-        $forwardedHost = $this->getHeader(Header::HTTP_X_FORWARDED_HOST->value);
-        $forwardedProto = $this->getHeader(Header::HTTP_X_FORWARDED_PROTO->value);
+        $clean = static fn(string $value) => trim(str_replace('"', '', $value));
+
+        $forwardedHost = $clean($this->getHeader(Header::HTTP_X_FORWARDED_HOST->value));
+        $forwardedProto = $clean($this->getHeader(Header::HTTP_X_FORWARDED_PROTO->value));
 
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
-            $data = [
-                'host' => trim(str_replace('"', '', $forwardedHost)),
-                'proto' => trim(str_replace('"', '', $forwardedProto)),
+            return [
+                'host' => $forwardedHost,
+                'proto' => $forwardedProto,
                 'for' => $this->getForwardedFor(),
             ];
-
-            // Check if protocol and host are not empty
-            if (!empty($data['host']) && !empty($data['proto'])) {
-                return $data;
-            }
         }
 
         return null;
