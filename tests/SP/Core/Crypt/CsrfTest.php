@@ -29,6 +29,7 @@ use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
 use SP\Tests\UnitaryTestCase;
 
@@ -48,8 +49,8 @@ class CsrfTest extends UnitaryTestCase
     public static function httpMethodDataProvider(): array
     {
         return [
-            ['post', 'test'],
-            ['get', 'XMLHttpRequest']
+            [Method::POST, 'test'],
+            [Method::GET, 'XMLHttpRequest']
         ];
     }
 
@@ -106,7 +107,7 @@ class CsrfTest extends UnitaryTestCase
      *
      * @return void
      */
-    public function testCheckWithValidToken(string $method, string $header)
+    public function testCheckWithValidToken(Method $method, string $header)
     {
         $salt = self::$faker->sha1;
         $userAgent = self::$faker->userAgent;
@@ -153,7 +154,7 @@ class CsrfTest extends UnitaryTestCase
      *
      * @return void
      */
-    public function testCheckWithInvalidToken(string $method, string $header)
+    public function testCheckWithInvalidToken(Method $method, string $header)
     {
         $this->requestInterface
             ->expects(self::once())
@@ -194,7 +195,7 @@ class CsrfTest extends UnitaryTestCase
      *
      * @return void
      */
-    public function testCheckWithNoToken(string $method, string $header)
+    public function testCheckWithNoToken(Method $method, string $header)
     {
         $this->requestInterface
             ->expects(self::once())
@@ -228,7 +229,7 @@ class CsrfTest extends UnitaryTestCase
         $this->requestInterface
             ->expects(self::once())
             ->method('getMethod')
-            ->willReturn('test');
+            ->willReturn(Method::GET);
 
         $this->requestInterface
             ->expects(self::once())
@@ -252,7 +253,7 @@ class CsrfTest extends UnitaryTestCase
         $this->requestInterface
             ->expects(self::once())
             ->method('getMethod')
-            ->willReturn('test');
+            ->willReturn(Method::GET);
 
         $this->requestInterface
             ->expects(self::once())
@@ -283,6 +284,4 @@ class CsrfTest extends UnitaryTestCase
 
         $this->csrf = new Csrf($this->sessionContext, $this->requestInterface, $this->configData);
     }
-
-
 }
