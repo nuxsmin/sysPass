@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -333,6 +333,10 @@ final class CustomFieldDefRepository extends Repository implements CustomFieldDe
         $this->customFieldDefCollection->clear();
     }
 
+    /**
+     * FIXME: Move to constructor
+     * @return void
+     */
     protected function initialize(): void
     {
         $this->customFieldDefCollection = new CustomFieldDefCollection();

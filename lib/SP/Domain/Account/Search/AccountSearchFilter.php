@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,8 +46,8 @@ final class AccountSearchFilter
     private ?int    $clientId        = null;
     private ?int    $categoryId      = null;
     private ?array  $tagsId          = null;
-    private int     $sortOrder       = AccountSearchConstants::SORT_DEFAULT;
-    private int     $sortKey         = AccountSearchConstants::SORT_DIR_ASC;
+    private int $sortOrder = AccountSearchConstants::SORT_DIR_ASC;
+    private int $sortKey   = AccountSearchConstants::SORT_DEFAULT;
     private int     $limitStart      = 0;
     private ?int    $limitCount      = null;
     private ?bool   $sortViews       = null;
@@ -55,9 +55,9 @@ final class AccountSearchFilter
     private ?string $filterOperator  = null;
 
     /**
-     * @param  string  $txtSearch
+     * @param string $txtSearch
      *
-     * @return \SP\Domain\Account\Search\AccountSearchFilter
+     * @return AccountSearchFilter
      */
     public static function build(string $txtSearch): AccountSearchFilter
     {

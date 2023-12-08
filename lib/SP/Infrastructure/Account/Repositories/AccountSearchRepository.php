@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -44,50 +44,116 @@ use SP\Util\Filter;
  */
 final class AccountSearchRepository extends Repository implements AccountSearchRepositoryInterface
 {
-    private SelectInterface            $query;
-    private AccountFilterUserInterface $accountFilterUser;
+    private readonly SelectInterface $query;
 
     public function __construct(
-        DatabaseInterface $database,
-        ContextInterface $session,
-        EventDispatcherInterface $eventDispatcher,
-        QueryFactory $queryFactory,
-        AccountFilterUserInterface $accountFilterUser
+        DatabaseInterface                           $database,
+        ContextInterface                            $session,
+        EventDispatcherInterface                    $eventDispatcher,
+        QueryFactory                                $queryFactory,
+        private readonly AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
 
-        $this->accountFilterUser = $accountFilterUser;
+        $this->initQuery();
+    }
+
+    /**
+     * @return void
+     */
+    private function initQuery(): void
+    {
+        $cols = [
+            'id',
+            'clientId',
+            'categoryId',
+            'name',
+            'login',
+            'url',
+            'notes',
+            'userId',
+            'userGroupId',
+            'otherUserEdit',
+            'otherUserGroupEdit',
+            'isPrivate',
+            'isPrivateGroup',
+            'passDate',
+            'passDateChange',
+            'parentId',
+            'countView',
+            'dateEdit',
+            'userName',
+            'userLogin',
+            'userGroupName',
+            'categoryName',
+            'clientName',
+            'num_files',
+            'publicLinkHash',
+            'publicLinkDateExpire',
+            'publicLinkTotalCountViews',
+        ];
+        $this->query = $this->queryFactory->newSelect()->cols($cols)->from('account_search_v AS Account')->distinct();
     }
 
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @param  AccountSearchFilter  $accountSearchFilter
+     * @param AccountSearchFilter $accountSearchFilter
      *
      * @return QueryResult
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter): QueryResult
     {
         $this->accountFilterUser->buildFilter($accountSearchFilter->getGlobalSearch(), $this->query);
+        $this->filterByText($accountSearchFilter);
+        $this->filterByCategory($accountSearchFilter);
+        $this->filterByClient($accountSearchFilter);
+        $this->filterByFavorite($accountSearchFilter);
+        $this->filterByTags($accountSearchFilter);
+        $this->setOrder($accountSearchFilter);
 
+        if ($accountSearchFilter->getLimitCount() > 0) {
+            $this->query->limit($accountSearchFilter->getLimitCount());
+            $this->query->offset($accountSearchFilter->getLimitStart());
+        }
+
+        return $this->db->doSelect(
+            QueryData::build($this->query)->setMapClassName(AccountSearchVData::class),
+            true
+        );
+    }
+
+    /**
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return void
+     */
+    private function filterByText(AccountSearchFilter $accountSearchFilter): void
+    {
         // Sets the search text depending on whether special search filters are being used
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
         if (!empty($searchText)) {
-            $searchTextLike = '%'.$searchText.'%';
+            $searchTextLike = '%' . $searchText . '%';
 
             $this->query
                 ->where(
                     '(Account.name LIKE :name OR Account.login LIKE :login OR Account.url LIKE :url OR Account.notes LIKE :notes)',
                     [
-                        'name'  => $searchTextLike,
+                        'name' => $searchTextLike,
                         'login' => $searchTextLike,
-                        'url'   => $searchTextLike,
+                        'url' => $searchTextLike,
                         'notes' => $searchTextLike,
                     ]
                 );
         }
+    }
 
+    /**
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return void
+     */
+    private function filterByCategory(AccountSearchFilter $accountSearchFilter): void
+    {
         if ($accountSearchFilter->getCategoryId() !== null) {
             $this->query
                 ->where(
@@ -97,7 +163,14 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                     ]
                 );
         }
+    }
 
+    /**
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return void
+     */
+    private function filterByClient(AccountSearchFilter $accountSearchFilter): void
+    {
         if ($accountSearchFilter->getClientId() !== null) {
             $this->query
                 ->where(
@@ -107,7 +180,14 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                     ]
                 );
         }
+    }
 
+    /**
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return void
+     */
+    private function filterByFavorite(AccountSearchFilter $accountSearchFilter): void
+    {
         if ($accountSearchFilter->isSearchFavorites() === true) {
             $this->query
                 ->join(
@@ -119,7 +199,14 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                     ]
                 );
         }
+    }
 
+    /**
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return void
+     */
+    private function filterByTags(AccountSearchFilter $accountSearchFilter): void
+    {
         if ($accountSearchFilter->hasTags()) {
             $this->query->join(
                 'INNER',
@@ -146,18 +233,6 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                     );
             }
         }
-
-        $this->setOrder($accountSearchFilter);
-
-        if ($accountSearchFilter->getLimitCount() > 0) {
-            $this->query->limit($accountSearchFilter->getLimitCount());
-            $this->query->offset($accountSearchFilter->getLimitStart());
-        }
-
-        return $this->db->doSelect(
-            QueryData::build($this->query)->setMapClassName(AccountSearchVData::class),
-            true
-        );
     }
 
     /**
@@ -183,14 +258,14 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
             };
 
             $this->query->orderBy([
-                sprintf('%s %s', $orderKey, $sortOrder),
-            ]);
+                                      sprintf('%s %s', $orderKey, $sortOrder),
+                                  ]);
         }
     }
 
     /**
-     * @param  int  $userId
-     * @param  int  $userGroupId
+     * @param int $userId
+     * @param int $userGroupId
      *
      * @return SelectInterface
      */
@@ -207,13 +282,13 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
         return $this->query
             ->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)))
             ->bindValues([
-                'userId'      => $userId,
-                'userGroupId' => $userGroupId,
-            ]);
+                             'userId' => $userId,
+                             'userGroupId' => $userGroupId,
+                         ]);
     }
 
     /**
-     * @param  int  $userGroupId
+     * @param int $userGroupId
      *
      * @return SelectInterface
      */
@@ -225,110 +300,109 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                 '(Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = :userGroupId))'
             )
             ->bindValues([
-                'userGroupId' => $userGroupId,
-            ]);
-
+                             'userGroupId' => $userGroupId,
+                         ]);
     }
 
     /**
-     * @param  string  $userGroupName
+     * @param string $userGroupName
      *
      * @return SelectInterface
      */
     public function withFilterForMainGroup(string $userGroupName): SelectInterface
     {
-        $userGroupNameLike = '%'.Filter::safeSearchString($userGroupName).'%';
+        $userGroupNameLike = '%' . Filter::safeSearchString($userGroupName) . '%';
 
         return $this->query
             ->where('Account.userGroupName LIKE :userGroupName')
             ->bindValues([
-                'userGroupName' => $userGroupNameLike,
-            ]);
+                             'userGroupName' => $userGroupNameLike,
+                         ]);
     }
 
     /**
-     * @param  string  $owner
+     * @param string $owner
      *
      * @return SelectInterface
      */
     public function withFilterForOwner(string $owner): SelectInterface
     {
-        $ownerLike = '%'.Filter::safeSearchString($owner).'%';
+        $ownerLike = '%' . Filter::safeSearchString($owner) . '%';
 
         return $this->query
             ->where('(Account.userLogin LIKE :userLogin OR Account.userName LIKE :userName)')
             ->bindValues([
-                'userLogin' => $ownerLike,
-                'userName'  => $ownerLike,
-            ]);
+                             'userLogin' => $ownerLike,
+                             'userName' => $ownerLike,
+                         ]);
     }
 
     /**
-     * @param  string  $fileName
+     * @param string $fileName
      *
      * @return SelectInterface
      */
     public function withFilterForFile(string $fileName): SelectInterface
     {
-        $fileNameLike = '%'.Filter::safeSearchString($fileName).'%';
+        $fileNameLike = '%' . Filter::safeSearchString($fileName) . '%';
 
         return $this->query
             ->where(
                 '(Account.id IN (SELECT AccountFile.accountId FROM AccountFile WHERE AccountFile.name LIKE :fileName))'
             )
             ->bindValues([
-                'fileName' => $fileNameLike,
-            ]);
+                             'fileName' => $fileNameLike,
+                         ]);
     }
 
     /**
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return SelectInterface
      */
     public function withFilterForAccountId(int $accountId): SelectInterface
     {
         return $this->query
-            ->where('Account.id = :id')
+            ->where('Account.id = :accountId')
             ->bindValues([
-                'id' => $accountId,
-            ]);
+                             'accountId' => $accountId,
+                         ]);
     }
 
     /**
-     * @param  string  $clientName
+     * @param string $clientName
      *
      * @return SelectInterface
      */
     public function withFilterForClient(string $clientName): SelectInterface
     {
-        $clientNameLike = '%'.Filter::safeSearchString($clientName).'%';
+        $clientNameLike = '%' . Filter::safeSearchString($clientName) . '%';
 
         return $this->query
             ->where('Account.clientName LIKE :clientName')
             ->bindValues([
-                'clientName' => $clientNameLike,
-            ]);
+                             'clientName' => $clientNameLike,
+                         ]);
     }
 
     /**
-     * @param  string  $categoryName
+     * @param string $categoryName
      *
      * @return SelectInterface
      */
     public function withFilterForCategory(string $categoryName): SelectInterface
     {
-        $categoryNameLike = '%'.Filter::safeSearchString($categoryName).'%';
+        $categoryNameLike = '%' . Filter::safeSearchString($categoryName) . '%';
 
         return $this->query
             ->where('Account.categoryName LIKE :categoryName')
             ->bindValues([
-                'categoryName' => $categoryNameLike,
-            ]);
+                             'categoryName' => $categoryNameLike,
+                         ]);
     }
 
     /**
-     * @param  string  $accountName
+     * @param string $accountName
      *
      * @return SelectInterface
      */
@@ -337,8 +411,8 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
         return $this->query
             ->where('Account.name REGEXP :name')
             ->bindValues([
-                'name' => $accountName,
-            ]);
+                             'name' => $accountName,
+                         ]);
     }
 
     public function withFilterForIsExpired(): SelectInterface
@@ -356,8 +430,8 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
     }
 
     /**
-     * @param  int  $userId
-     * @param  int  $userGroupId
+     * @param int $userId
+     * @param int $userGroupId
      *
      * @return SelectInterface
      */
@@ -368,9 +442,9 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
                 '(Account.isPrivate = 1 AND Account.userId = :userId) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId)'
             )
             ->bindValues([
-                'userId'      => $userId,
-                'userGroupId' => $userGroupId,
-            ]);
+                             'userId' => $userId,
+                             'userGroupId' => $userGroupId,
+                         ]);
     }
 
     public function withFilterForIsNotPrivate(): SelectInterface
@@ -379,13 +453,5 @@ final class AccountSearchRepository extends Repository implements AccountSearchR
             ->where(
                 '(Account.isPrivate = 0 OR Account.isPrivate IS NULL) AND (Account.isPrivateGroup = 0 OR Account.isPrivateGroup IS NULL)'
             );
-    }
-
-    protected function initialize()
-    {
-        $this->query = $this->queryFactory
-            ->newSelect()
-            ->from('account_search_v AS Account')
-            ->distinct();
     }
 }
