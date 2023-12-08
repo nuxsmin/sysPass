@@ -25,9 +25,6 @@
 namespace SP\Providers\Log;
 
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
-use SP\Core\Events\Event;
-use SP\Domain\Core\Exceptions\InvalidClassException;
-use SplSubject;
 
 /**
  * Class SyslogHandler
@@ -37,16 +34,6 @@ use SplSubject;
 final class SyslogHandler extends LoggerBase
 {
     /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents(): array
-    {
-        return LogInterface::EVENTS;
-    }
-
-    /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
      * @return string
@@ -54,24 +41,6 @@ final class SyslogHandler extends LoggerBase
     public function getEventsString(): string
     {
         return $this->events;
-    }
-
-    /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param  SplSubject  $subject  <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject): void
-    {
-        $this->update('update', new Event($subject));
     }
 
     /**

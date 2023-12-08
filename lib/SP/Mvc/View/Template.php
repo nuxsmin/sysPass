@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,14 @@
 
 namespace SP\Mvc\View;
 
-defined('APP_ROOT') || die();
-
-use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Http\Uri;
+
+use function SP\__;
+use function SP\logger;
 
 /**
  * Class Template
@@ -42,10 +44,9 @@ use SP\Http\Uri;
  */
 final class Template implements TemplateInterface
 {
-    public const TEMPLATE_EXTENSION = '.inc';
-    public const PARTIALS_DIR       = '_partials';
+    private const TEMPLATE_EXTENSION = '.inc';
+    public const  PARTIALS_DIR       = '_partials';
 
-    protected ThemeInterface $theme;
     /**
      * @var array List of templates to load into the view
      */
@@ -58,20 +59,19 @@ final class Template implements TemplateInterface
     private array  $contentTemplates = [];
     private bool   $upgraded         = false;
 
-    /**
-     * @param ThemeInterface $theme
-     */
-    public function __construct(ThemeInterface $theme)
-    {
-        $this->theme = $theme;
+    public function __construct(
+        protected readonly ThemeInterface    $theme,
+        private readonly UriContextInterface $uriContext,
+        private readonly ConfigDataInterface $configData
+    ) {
         $this->vars = new TemplateVarCollection();
     }
 
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param  string  $name  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
+     * @param string $name Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      */
     public function addContentTemplate(string $name, ?string $base = null): string
     {
@@ -90,8 +90,8 @@ final class Template implements TemplateInterface
     /**
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
-     * @param  string  $template  Con el nombre del archivo
-     * @param  string|null  $base  Directorio base para la plantilla
+     * @param string $template Con el nombre del archivo
+     * @param string|null $base Directorio base para la plantilla
      *
      * @return string La ruta al archivo de la plantilla
      *
@@ -104,12 +104,12 @@ final class Template implements TemplateInterface
         $base = $base ?? $this->base;
 
         if ($base === null) {
-            $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
-        } elseif (strpos($base, APP_ROOT) === 0 && is_dir($base)) {
-            $templateFile = $base.DIRECTORY_SEPARATOR.$template.self::TEMPLATE_EXTENSION;
+            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+        } elseif (str_starts_with($base, APP_ROOT) && is_dir($base)) {
+            $templateFile = $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         } else {
-            $templateFile = $this->theme->getViewsPath().DIRECTORY_SEPARATOR.$base.DIRECTORY_SEPARATOR.$template
-                            .self::TEMPLATE_EXTENSION;
+            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $base . DIRECTORY_SEPARATOR . $template
+                            . self::TEMPLATE_EXTENSION;
         }
 
         if (!is_readable($templateFile)) {
@@ -126,8 +126,8 @@ final class Template implements TemplateInterface
     /**
      * Añadir un nuevo archivo de plantilla al array de plantillas de contenido
      *
-     * @param  string  $file  Con el nombre del archivo
-     * @param  string  $name  Nombre de la plantilla
+     * @param string $file Con el nombre del archivo
+     * @param string $name Nombre de la plantilla
      */
     private function setContentTemplate(string $file, string $name): void
     {
@@ -155,40 +155,10 @@ final class Template implements TemplateInterface
     }
 
     /**
-     * Removes a template from the stack
-     *
-     * @param  string  $src  Source template
-     * @param  string  $dst  Destination template
-     * @param  string  $base
-     *
-     * @return mixed|string
-     */
-    public function replaceTemplate(string $src, string $dst, string $base)
-    {
-        try {
-            if (isset($this->contentTemplates[$dst])) {
-                $this->contentTemplates[$dst] = $this->checkTemplate($src, $base);
-            }
-        } catch (FileNotFoundException $e) {
-            return '';
-        }
-
-        return $this->contentTemplates[$dst];
-    }
-
-    /**
-     * Add partial template
-     */
-    public function addPartial(string $partial): void
-    {
-        $this->addTemplate($partial, self::PARTIALS_DIR);
-    }
-
-    /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param  string  $name  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
+     * @param string $name Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
      * @return string
      */
@@ -197,7 +167,7 @@ final class Template implements TemplateInterface
         try {
             $template = $this->checkTemplate($name, $base);
             $this->setTemplate($template, $name);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             return '';
         }
 
@@ -207,8 +177,8 @@ final class Template implements TemplateInterface
     /**
      * Añadir un nuevo archivo de plantilla al array de plantillas
      *
-     * @param  string  $file  Con el nombre del archivo
-     * @param  string  $name  Nombre de la plantilla
+     * @param string $file Con el nombre del archivo
+     * @param string $name Nombre de la plantilla
      */
     private function setTemplate(string $file, string $name): void
     {
@@ -218,11 +188,11 @@ final class Template implements TemplateInterface
     /**
      * Añadir una nueva plantilla dentro de una plantilla
      *
-     * @param  string  $file  Con el nombre del archivo de plantilla
+     * @param string $file Con el nombre del archivo de plantilla
      *
-     * @return bool
+     * @return bool|string
      */
-    public function includePartial(string $file)
+    public function includePartial(string $file): bool|string
     {
         return $this->includeTemplate($file, self::PARTIALS_DIR);
     }
@@ -230,16 +200,16 @@ final class Template implements TemplateInterface
     /**
      * Añadir una nueva plantilla dentro de una plantilla
      *
-     * @param  string  $file  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
+     * @param string $file Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
-     * @return bool
+     * @return bool|string
      */
-    public function includeTemplate(string $file, ?string $base = null)
+    public function includeTemplate(string $file, ?string $base = null): bool|string
     {
         try {
             return $this->checkTemplate($file, $base);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             return false;
         }
     }
@@ -256,8 +226,8 @@ final class Template implements TemplateInterface
      * Overloading para añadir nuevas variables en al array de variables dela plantilla
      * pasadas como atributos dinámicos de la clase
      *
-     * @param  string  $name  Nombre del atributo
-     * @param  string  $value  Valor del atributo
+     * @param string $name Nombre del atributo
+     * @param string $value Valor del atributo
      */
     public function __set(string $name, string $value)
     {
@@ -283,7 +253,7 @@ final class Template implements TemplateInterface
      * Overloading para comprobar si el atributo solicitado está declarado como variable
      * en el array de variables de la plantilla.
      *
-     * @param  string  $name  Nombre del atributo
+     * @param string $name Nombre del atributo
      *
      * @return bool
      */
@@ -301,7 +271,7 @@ final class Template implements TemplateInterface
         if (!$this->vars->exists($name)) {
             logger(sprintf(__('Unable to unset "%s" variable'), $name));
         } else {
-            $this->vars->remove($name);
+            $this->vars->offsetUnset($name);
         }
     }
 
@@ -319,10 +289,10 @@ final class Template implements TemplateInterface
         }
 
         $icons = $this->theme->getIcons();
-        $configData = $this->vars->get('configData');
+        $this->vars->set('configData', $this->configData);
 
         // An anonymous proxy function for handling views variables
-        $_getvar = function ($key, $default = null) {
+        $_getvar = function (string $key, mixed $default = null) {
             if (DEBUG && !$this->vars->exists($key)) {
                 logger(sprintf(__('Unable to retrieve "%s" variable'), $key), 'WARN');
 
@@ -332,8 +302,9 @@ final class Template implements TemplateInterface
             return $this->vars->get($key, $default);
         };
 
-        $_getRoute = static function ($path) use ($configData) {
-            $baseUrl = ($configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+        $_getRoute = function (string $path) {
+            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
 
             $uri = new Uri($baseUrl);
             $uri->addParam('r', $path);
@@ -354,19 +325,19 @@ final class Template implements TemplateInterface
     /**
      * Anexar el valor de la variable al array de la misma en el array de variables
      *
-     * @param  string  $name  nombre de la variable
-     * @param  mixed  $value  valor de la variable
-     * @param  string|null  $scope  string ámbito de la variable
-     * @param  int|null  $index  string índice del array
+     * @param string $name nombre de la variable
+     * @param mixed $value valor de la variable
+     * @param string|null $scope string ámbito de la variable
+     * @param int|null $index string índice del array
      */
     public function append(
         string $name,
-        $value,
+        mixed  $value,
         ?string $scope = null,
-        int $index = null
+        int    $index = null
     ): void {
         if (null !== $scope) {
-            $name = $scope.'_'.$name;
+            $name = $scope . '_' . $name;
         }
 
         $var = $this->vars->get($name, []);
@@ -415,14 +386,6 @@ final class Template implements TemplateInterface
         return $this->theme;
     }
 
-    /**
-     * Dumps current stored vars
-     */
-    public function dumpVars()
-    {
-        logger($this->vars);
-    }
-
     public function getContentTemplates(): array
     {
         return $this->contentTemplates;
@@ -431,11 +394,6 @@ final class Template implements TemplateInterface
     public function hasContentTemplates(): bool
     {
         return count($this->contentTemplates) > 0;
-    }
-
-    public function getTemplates(): array
-    {
-        return $this->templates;
     }
 
     /**
@@ -457,14 +415,14 @@ final class Template implements TemplateInterface
     /**
      * Crear la variable y asignarle un valor en el array de variables
      *
-     * @param  string  $name  nombre de la variable
-     * @param  mixed  $value  valor de la variable
-     * @param  string|null  $scope  string ámbito de la variable
+     * @param string $name nombre de la variable
+     * @param mixed $value valor de la variable
+     * @param string|null $scope string ámbito de la variable
      */
     public function assign(string $name, $value = '', ?string $scope = null): void
     {
         if (null !== $scope) {
-            $name = $scope.'_'.$name;
+            $name = $scope . '_' . $name;
         }
 
         $this->vars->set($name, $value);

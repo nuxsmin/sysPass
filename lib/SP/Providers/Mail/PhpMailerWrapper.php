@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -48,7 +48,7 @@ final class PhpMailerWrapper implements MailerInterface
     }
 
     /**
-     * @throws \SP\Providers\Mail\MailProviderException
+     * @throws MailProviderException
      */
     public function addAddress(string $address): MailerInterface
     {
@@ -76,7 +76,7 @@ final class PhpMailerWrapper implements MailerInterface
     }
 
     /**
-     * @throws \SP\Providers\Mail\MailProviderException
+     * @throws MailProviderException
      */
     public function send(): bool
     {

@@ -32,11 +32,11 @@ use SP\Core\Messages\TextFormatter;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Notification\Ports\MailServiceInterface;
-use SP\Domain\Notification\Services\MailService;
-use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SplSubject;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class MailHandler
@@ -68,29 +68,14 @@ final class MailHandler extends Provider implements EventReceiver
         'create.tempMasterPassword',
     ];
 
-    private MailService $mailService;
-    private Request     $request;
-    private string      $events;
+    private string $events;
 
     public function __construct(
-        Application $application,
-        MailServiceInterface $mailService,
-        RequestInterface $request
+        Application                           $application,
+        private readonly MailServiceInterface $mailService,
+        private readonly RequestInterface     $request
     ) {
-        $this->mailService = $mailService;
-        $this->request = $request;
-
         parent::__construct($application);
-    }
-
-    /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents(): array
-    {
-        return self::EVENTS;
     }
 
     /**
@@ -104,37 +89,20 @@ final class MailHandler extends Provider implements EventReceiver
     }
 
     /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param  SplSubject  $subject  <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject): void
-    {
-        $this->update('update', new Event($subject));
-    }
-
-    /**
      * Evento de actualización
      *
-     * @param  string  $eventType  Nombre del evento
-     * @param  Event  $event  Objeto del evento
+     * @param string $eventType Nombre del evento
+     * @param Event $event Objeto del evento
      */
     public function update(string $eventType, Event $event): void
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
                 $configData = $this->config->getConfigData();
-                $extra = $eventMessage->getExtra();
+                $emails = $eventMessage->getExtra('email');
 
-                if (isset($extra['userId'], $extra['email'])) {
-                    $recipients = $extra['email'];
+                if ($emails && count($emails) > 0) {
+                    $recipients = $emails;
                 } else {
                     $recipients = $configData->getMailRecipients();
                 }

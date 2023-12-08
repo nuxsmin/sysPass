@@ -37,6 +37,8 @@ use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 
+use function SP\getLastCaller;
+
 /**
  * Class LoggerBase
  *
@@ -52,8 +54,8 @@ abstract class LoggerBase extends Provider implements EventReceiver
     protected ?string  $events = null;
 
     public function __construct(
-        Application $application,
-        Logger $logger,
+        Application      $application,
+        Logger           $logger,
         LanguageInterface $language,
         RequestInterface $request
     ) {
@@ -82,8 +84,8 @@ abstract class LoggerBase extends Provider implements EventReceiver
     /**
      * Evento de actualización
      *
-     * @param  string  $eventType  Nombre del evento
-     * @param  Event  $event  Objeto del evento
+     * @param string $eventType Nombre del evento
+     * @param Event $event Objeto del evento
      *
      * @throws InvalidClassException
      */
@@ -132,9 +134,9 @@ abstract class LoggerBase extends Provider implements EventReceiver
     }
 
     /**
-     * @param  string  $message
-     * @param  string  $address
-     * @param  string  $user
+     * @param string $message
+     * @param string $address
+     * @param string $user
      *
      * @return array
      */
@@ -145,9 +147,9 @@ abstract class LoggerBase extends Provider implements EventReceiver
     ): array {
         return [
             'message' => trim($message),
-            'user'    => trim($user),
+            'user' => trim($user),
             'address' => trim($address),
-            'caller'  => getLastCaller(4),
+            'caller' => getLastCaller(4),
         ];
     }
 }

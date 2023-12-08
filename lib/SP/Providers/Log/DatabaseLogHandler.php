@@ -27,17 +27,17 @@ namespace SP\Providers\Log;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Language;
 use SP\DataModel\EventlogData;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
-use SP\Domain\Security\Services\EventlogService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SplSubject;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class LogHandler
@@ -48,51 +48,28 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    private EventlogService $eventlogService;
-    private Language        $language;
-    private string          $events;
+    private string $events;
 
     public function __construct(
-        Application $application,
-        EventlogServiceInterface $eventlogService,
-        LanguageInterface $language
+        Application                               $application,
+        private readonly EventlogServiceInterface $eventlogService,
+        private readonly LanguageInterface        $language
     ) {
-        $this->eventlogService = $eventlogService;
-        $this->language = $language;
-
         parent::__construct($application);
     }
 
 
     /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param  SplSubject  $subject  <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject): void
-    {
-        $this->update('update', new Event($subject));
-    }
-
-    /**
      * Evento de actualización
      *
-     * @param  string  $eventType  Nombre del evento
-     * @param  Event  $event  Objeto del evento
+     * @param string $eventType Nombre del evento
+     * @param Event $event Objeto del evento
      *
      * @throws InvalidClassException
      */
     public function update(string $eventType, Event $event): void
     {
-        if (strpos($eventType, 'database.') !== false) {
+        if (str_contains($eventType, 'database.')) {
             return;
         }
 
@@ -110,7 +87,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
             $hint = $source->getHint();
 
             if ($hint !== null) {
-                $eventlogData->setDescription(__($source->getMessage()).PHP_EOL.$hint);
+                $eventlogData->setDescription(__($source->getMessage()) . PHP_EOL . $hint);
             } else {
                 $eventlogData->setDescription(__($source->getMessage()));
             }
@@ -133,21 +110,11 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
-     * @return string
+     * @return string|null
      */
     public function getEventsString(): ?string
     {
         return $this->events;
-    }
-
-    /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents(): array
-    {
-        return LogInterface::EVENTS;
     }
 
     public function initialize(): void

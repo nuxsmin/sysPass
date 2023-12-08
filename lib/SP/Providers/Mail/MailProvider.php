@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,10 @@ use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
 use SP\Providers\Provider;
 
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
+
 /**
  * Class MailProvider
  *
@@ -39,19 +43,13 @@ use SP\Providers\Provider;
  */
 final class MailProvider extends Provider implements MailProviderInterface
 {
-    /**
-     * @var MailerInterface | PhpMailerWrapper
-     */
-    private MailerInterface $mailer;
-    private bool            $debug = false;
+    private bool $debug = false;
 
     public function __construct(
-        Application $application,
-        MailerInterface $mailer
+        Application                      $application,
+        private readonly MailerInterface $mailer
     ) {
         parent::__construct($application);
-
-        $this->mailer = $mailer;
     }
 
     /**
@@ -110,7 +108,7 @@ final class MailProvider extends Provider implements MailProviderInterface
     }
 
     /**
-     * @param  bool  $debug
+     * @param bool $debug
      */
     public function setDebug(bool $debug): void
     {

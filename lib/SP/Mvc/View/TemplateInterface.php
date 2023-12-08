@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -56,22 +56,6 @@ interface TemplateInterface
      * Removes a template from the stack
      */
     public function removeContentTemplate(string $name): TemplateInterface;
-
-    /**
-     * Removes a template from the stack
-     *
-     * @param  string  $src  Source template
-     * @param  string  $dst  Destination template
-     * @param  string  $base
-     *
-     * @return mixed|string
-     */
-    public function replaceTemplate(string $src, string $dst, string $base);
-
-    /**
-     * Add partial template
-     */
-    public function addPartial(string $partial): void;
 
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
@@ -142,16 +126,10 @@ interface TemplateInterface
 
     public function getTheme(): ThemeInterface;
 
-    /**
-     * Dumps current stored vars
-     */
-    public function dumpVars();
 
     public function getContentTemplates(): array;
 
     public function hasContentTemplates(): bool;
-
-    public function getTemplates(): array;
 
     /**
      * Assigns the current templates to contentTemplates

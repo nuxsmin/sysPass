@@ -24,12 +24,8 @@
 
 namespace SP\Providers\Log;
 
-
 use Monolog\Handler\StreamHandler;
-use SP\Core\Events\Event;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Providers\EventsTrait;
-use SplSubject;
 
 /**
  * Class FileLogHandler
@@ -41,16 +37,6 @@ final class FileLogHandler extends LoggerBase
     use EventsTrait;
 
     /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents(): array
-    {
-        return LogInterface::EVENTS;
-    }
-
-    /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
      * @return string
@@ -58,24 +44,6 @@ final class FileLogHandler extends LoggerBase
     public function getEventsString(): string
     {
         return $this->events;
-    }
-
-    /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param  SplSubject  $subject  <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject): void
-    {
-        $this->update('update', new Event($subject));
     }
 
     public function initialize(): void
