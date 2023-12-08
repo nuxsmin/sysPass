@@ -33,7 +33,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Http\JsonMessage;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
@@ -49,14 +49,14 @@ final class ViewController extends ControllerBase
 {
     use JsonTrait;
 
-    private PluginServiceInterface $pluginService;
+    private PluginManagerInterface $pluginService;
     private PluginManager          $pluginManager;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        PluginServiceInterface $pluginService,
-        PluginManager $pluginManager
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        PluginManagerInterface $pluginService,
+        PluginManager          $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);
 

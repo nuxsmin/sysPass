@@ -37,8 +37,8 @@
     use SP\Domain\Config\Ports\ConfigDataInterface;
     use SP\Domain\Core\UI\ThemeIconsInterface;
     use SP\Domain\Install\Services\InstallerService;
+    use SP\Domain\Plugin\Ports\PluginInterface;
     use SP\Mvc\View\TemplateInterface;
-    use SP\Plugin\PluginInterface;
     use SP\Util\VersionUtil;
 
     use function SP\__;

@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Plugin\Ports\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,12 +45,12 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private PluginServiceInterface $pluginService;
+    private PluginManagerInterface $pluginService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        PluginServiceInterface $pluginService
+        PluginManagerInterface $pluginService
     ) {
         parent::__construct($application, $webControllerHelper);
 
