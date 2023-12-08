@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Services\Plugin;
@@ -33,9 +33,10 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Domain\Plugin\Ports\PluginOperationInterface;
+use SP\Domain\Plugin\Services\PluginData;
+use SP\Domain\Plugin\Services\PluginOperation;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Plugin\PluginOperation;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 
@@ -67,7 +68,7 @@ class PluginOperationTest extends DatabaseTestCase
 
         // Inicializar el servicio
         self::$pluginOperation = function ($name) use ($dic) {
-            return new PluginOperation($dic->get(PluginDataService::class), $name);
+            return new PluginOperation($dic->get(PluginData::class), $name);
         };
     }
 
@@ -80,7 +81,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var \SP\Domain\Plugin\Ports\PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $data = [1, 2, 3];
@@ -106,7 +107,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testUpdateUnknown()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var \SP\Domain\Plugin\Ports\PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $data = [1, 2, 3];
@@ -125,7 +126,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testUpdateWrongPlugin()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Test');
 
         $data = [1, 2, 3];
@@ -142,7 +143,7 @@ class PluginOperationTest extends DatabaseTestCase
     {
         $this->assertEquals(4, self::getRowCount('PluginData'));
 
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
         $pluginOperation->delete(1);
 
@@ -156,7 +157,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testDeleteUnknown()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $this->expectException(NoSuchItemException::class);
@@ -179,7 +180,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testGetUnknown()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $this->assertNull($pluginOperation->get(4));
@@ -194,7 +195,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $data = new stdClass();
@@ -216,7 +217,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testCreateDuplicated()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var \SP\Domain\Plugin\Ports\PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
         $data = new stdClass();
@@ -238,7 +239,7 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testCreateWrongPlugin()
     {
-        /** @var PluginOperation $pluginOperation */
+        /** @var PluginOperationInterface $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Test');
 
         $data = new stdClass();

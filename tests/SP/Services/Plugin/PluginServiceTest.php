@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,8 +33,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Plugin\Ports\PluginServiceInterface;
-use SP\Domain\Plugin\Services\PluginService;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Services\PluginManager;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Tests\DatabaseTestCase;
@@ -49,7 +49,7 @@ use function SP\Tests\setupContext;
 class PluginServiceTest extends DatabaseTestCase
 {
     /**
-     * @var PluginServiceInterface
+     * @var PluginManagerInterface
      */
     private static $service;
 
@@ -65,7 +65,7 @@ class PluginServiceTest extends DatabaseTestCase
         self::$loadFixtures = true;
 
         // Inicializar el servicio
-        self::$service = $dic->get(PluginService::class);
+        self::$service = $dic->get(PluginManager::class);
     }
 
     /**

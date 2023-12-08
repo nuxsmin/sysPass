@@ -30,8 +30,8 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
-use SP\Domain\Plugin\Ports\PluginServiceInterface;
+use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -44,14 +44,14 @@ final class ResetController extends ControllerBase
 {
     use JsonTrait;
 
-    private PluginServiceInterface $pluginService;
-    private PluginDataServiceInterface                     $pluginDataService;
+    private PluginManagerInterface $pluginService;
+    private PluginDataInterface    $pluginDataService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        PluginServiceInterface $pluginService,
-        PluginDataServiceInterface $pluginDataService
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        PluginManagerInterface $pluginService,
+        PluginDataInterface    $pluginDataService
     ) {
         parent::__construct($application, $webControllerHelper);
 

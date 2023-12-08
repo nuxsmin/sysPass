@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,11 +34,9 @@ use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 /**
- * Class PluginDataService
- *
- * @package SP\Domain\Plugin\Services
+ * Class PluginDataInterface
  */
-interface PluginDataServiceInterface
+interface PluginDataInterface
 {
     /**
      * Creates an item

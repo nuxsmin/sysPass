@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,8 +33,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
-use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Services\PluginData;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 use SP\Tests\DatabaseTestCase;
@@ -49,7 +49,7 @@ use function SP\Tests\setupContext;
 class PluginDataServiceTest extends DatabaseTestCase
 {
     /**
-     * @var PluginDataServiceInterface
+     * @var PluginDataInterface
      */
     private static $service;
 
@@ -65,7 +65,7 @@ class PluginDataServiceTest extends DatabaseTestCase
         self::$loadFixtures = true;
 
         // Inicializar el servicio
-        self::$service = $dic->get(PluginDataService::class);
+        self::$service = $dic->get(PluginData::class);
     }
 
     /**

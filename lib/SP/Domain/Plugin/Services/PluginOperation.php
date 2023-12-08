@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,45 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Plugin;
+namespace SP\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
-use SP\Domain\Plugin\Services\PluginDataService;
+use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Ports\PluginOperationInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 /**
  * Class PluginOperation
- *
- * @package SP\Plugin
  */
-final class PluginOperation
+final class PluginOperation implements PluginOperationInterface
 {
-    private PluginDataService $pluginDataService;
-    private string $pluginName;
-
-    /**
-     * PluginOperation constructor.
-     *
-     * @param  PluginDataServiceInterface  $pluginDataService
-     * @param  string  $pluginName
-     */
     public function __construct(
-        PluginDataServiceInterface $pluginDataService,
-        string                     $pluginName
-    )
-    {
-        $this->pluginDataService = $pluginDataService;
-        $this->pluginName = $pluginName;
+        private readonly PluginDataInterface $pluginDataService,
+        private readonly string              $pluginName
+    ) {
     }
 
     /**
-     * @param int   $itemId
+     * @param int $itemId
      * @param mixed $data
      *
      * @return int
@@ -70,18 +56,15 @@ final class PluginOperation
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(int $itemId, $data): int
+    public function create(int $itemId, mixed $data): int
     {
-        $itemData = new PluginDataModel();
-        $itemData->setName($this->pluginName);
-        $itemData->setItemId($itemId);
-        $itemData->setData(serialize($data));
+        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId, 'data' => serialize($data)]);
 
         return $this->pluginDataService->create($itemData)->getLastId();
     }
 
     /**
-     * @param int   $itemId
+     * @param int $itemId
      * @param mixed $data
      *
      * @return int
@@ -91,12 +74,9 @@ final class PluginOperation
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(int $itemId, $data): int
+    public function update(int $itemId, mixed $data): int
     {
-        $itemData = new PluginDataModel();
-        $itemData->setName($this->pluginName);
-        $itemData->setItemId($itemId);
-        $itemData->setData(serialize($data));
+        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId, 'data' => serialize($data)]);
 
         return $this->pluginDataService->update($itemData);
     }
@@ -112,13 +92,19 @@ final class PluginOperation
     }
 
     /**
+     * @template T
+     *
+     * @param int $itemId
+     * @param class-string<T>|null $class
+     *
+     * @return mixed|null
      * @throws ConstraintException
      * @throws CryptoException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function get(int $itemId, ?string $class = null)
+    public function get(int $itemId, ?string $class = null): mixed
     {
         try {
             return $this->pluginDataService

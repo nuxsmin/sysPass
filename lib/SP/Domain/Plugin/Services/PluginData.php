@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,74 +24,81 @@
 
 namespace SP\Domain\Plugin\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Ports\PluginDataInterface;
 use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
-use SP\Domain\Plugin\Ports\PluginDataServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
-use SP\Infrastructure\Plugin\Repositories\PluginDataRepository;
+
+use function SP\__u;
 
 /**
- * Class PluginDataService
- *
- * @package SP\Domain\Plugin\Services
+ * Class PluginData
  */
-final class PluginDataService extends Service implements PluginDataServiceInterface
+final class PluginData extends Service implements PluginDataInterface
 {
-    private PluginDataRepository $pluginDataRepository;
-
-    public function __construct(Application $application, PluginDataRepositoryInterface $pluginDataRepository)
-    {
+    public function __construct(
+        Application                                    $application,
+        private readonly PluginDataRepositoryInterface $pluginDataRepository,
+        private readonly CryptInterface                $crypt,
+    ) {
         parent::__construct($application);
-
-        $this->pluginDataRepository = $pluginDataRepository;
     }
 
 
     /**
      * Creates an item
      *
-     * @throws CryptoException
+     * @param PluginDataModel $itemData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
+     * @throws CryptException
      */
     public function create(PluginDataModel $itemData): QueryResult
     {
-        return $this->pluginDataRepository->create($itemData->encrypt($this->getMasterKeyFromContext()));
+        return $this->pluginDataRepository->create($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
     }
 
     /**
      * Updates an item
      *
-     * @throws CryptoException
+     * @param PluginDataModel $itemData
+     * @return int
      * @throws ConstraintException
+     * @throws CryptException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
     public function update(PluginDataModel $itemData): int
     {
-        return $this->pluginDataRepository->update($itemData->encrypt($this->getMasterKeyFromContext()));
+        return $this->pluginDataRepository->update($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
     }
 
     /**
      * Returns the item for given plugin and id
      *
-     * @throws NoSuchItemException
-     * @throws CryptoException
+     * @param string $name
+     * @param int $id
+     * @return PluginDataModel
      * @throws ConstraintException
+     * @throws CryptException
+     * @throws NoSuchItemException
      * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      * @throws ServiceException
      */
     public function getByItemId(string $name, int $id): PluginDataModel
@@ -105,18 +112,20 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
         /** @var PluginDataModel $itemData */
         $itemData = $result->getData();
 
-        return $itemData->decrypt($this->getMasterKeyFromContext());
+        return $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt);
     }
 
     /**
      * Returns the item for given id
      *
+     * @param string $id
      * @return PluginDataModel[]
-     * @throws CryptoException
      * @throws ConstraintException
+     * @throws CryptException
+     * @throws NoSuchItemException
      * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws SPException
      * @throws ServiceException
      */
     public function getById(string $id): array
@@ -131,9 +140,8 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
 
         array_walk(
             $data,
-            function ($itemData) {
-                /** @var PluginDataModel $itemData */
-                $itemData->decrypt($this->getMasterKeyFromContext());
+            function (PluginDataModel $itemData) {
+                $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt);
             }
         );
 
@@ -144,10 +152,11 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
      * Returns all the items
      *
      * @return PluginDataModel[]
-     * @throws CryptoException
      * @throws ConstraintException
+     * @throws CryptException
      * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      * @throws ServiceException
      */
     public function getAll(): array
@@ -158,7 +167,7 @@ final class PluginDataService extends Service implements PluginDataServiceInterf
             $data,
             function ($itemData) {
                 /** @var PluginDataModel $itemData */
-                $itemData->decrypt($this->getMasterKeyFromContext());
+                $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt);
             }
         );
 

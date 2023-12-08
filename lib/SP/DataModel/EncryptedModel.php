@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,41 +24,36 @@
 
 namespace SP\DataModel;
 
-
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 
 /**
  * Trait EncryptedModel
- *
- * @package SP\DataModel
  */
 trait EncryptedModel
 {
-    /**
-     * @var string
-     */
-    private $key;
+    protected ?string $key = null;
 
     /**
      * @param string $key
+     * @param CryptInterface $crypt
      * @param string $property
      *
-     * @return static|null
+     * @return EncryptedModel
+     * @throws CryptException
      * @throws NoSuchPropertyException
-     * @throws CryptoException
      */
-    public function encrypt(string $key, string $property = 'data')
+    public function encrypt(string $key, CryptInterface $crypt, string $property = 'data'): static
     {
         if (property_exists($this, $property)) {
-            if ($this->$property === null) {
-                return null;
+            if ($this->{$property} === null) {
+                return $this;
             }
 
-            $this->key = Crypt::makeSecuredKey($key);
+            $this->key = $crypt->makeSecuredKey($key);
 
-            $this->$property = Crypt::encrypt($this->$property, $this->key, $key);
+            $this->{$property} = $crypt->encrypt($this->{$property}, $this->key, $key);
 
             return $this;
         }
@@ -68,22 +63,21 @@ trait EncryptedModel
 
     /**
      * @param string $key
+     * @param CryptInterface $crypt
      * @param string $property
      *
-     * @return static|null
+     * @return EncryptedModel
+     * @throws CryptException
      * @throws NoSuchPropertyException
-     * @throws CryptoException
      */
-    public function decrypt(string $key, string $property = 'data')
+    public function decrypt(string $key, CryptInterface $crypt, string $property = 'data'): static
     {
-        if (property_exists($this, $property)
-            && !empty($this->key)
-        ) {
-            if ($this->$property === null) {
-                return null;
+        if (property_exists($this, $property) && !empty($this->key)) {
+            if ($this->{$property} === null) {
+                return $this;
             }
 
-            $this->$property = Crypt::decrypt($this->$property, $this->key, $key);
+            $this->{$property} = $crypt->decrypt($this->{$property}, $this->key, $key);
 
             return $this;
         }
@@ -91,10 +85,7 @@ trait EncryptedModel
         throw new NoSuchPropertyException($property);
     }
 
-    /**
-     * @return string
-     */
-    public function getKey(): string
+    public function getKey(): ?string
     {
         return $this->key;
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,48 +28,24 @@ use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class PluginData
- *
- * @package SP\DataModel
+ * Class PluginModel
  */
 class PluginModel extends Model implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    protected $id;
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $data;
-    /**
-     * @var int
-     */
-    protected $enabled = 0;
-    /**
-     * @var int
-     */
-    protected $available = 1;
-    /**
-     * @var string
-     */
-    protected $versionLevel;
+    protected ?int    $id           = null;
+    protected ?string $name         = null;
+    protected ?string $data         = null;
+    protected ?bool   $enabled      = null;
+    protected ?string $versionLevel = null;
 
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
-    /**
-     * @param  int  $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
-        $this->id = (int)$id;
+        $this->id = $id;
     }
 
     public function getName(): ?string
@@ -77,74 +53,38 @@ class PluginModel extends Model implements DataModelInterface
         return $this->name;
     }
 
-    /**
-     * @param  string  $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getData()
+    public function getData(): ?string
     {
         return $this->data;
     }
 
-    /**
-     * @param  string  $data
-     */
-    public function setData($data)
+    public function setData(string $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return int
-     */
-    public function getEnabled()
+    public function getEnabled(): ?bool
     {
-        return (int)$this->enabled;
+        return $this->enabled;
     }
 
-    /**
-     * @param  int  $enabled
-     */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): void
     {
-        $this->enabled = (int)$enabled;
+        $this->enabled = $enabled;
     }
 
-    /**
-     * @return int
-     */
-    public function getAvailable()
-    {
-        return (int)$this->available;
-    }
 
-    /**
-     * @param  int  $available
-     */
-    public function setAvailable($available)
-    {
-        $this->available = (int)$available;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersionLevel()
+    public function getVersionLevel(): ?string
     {
         return $this->versionLevel;
     }
 
-    /**
-     * @param  string  $versionLevel
-     */
-    public function setVersionLevel(string $versionLevel)
+    public function setVersionLevel(string $versionLevel): void
     {
         $this->versionLevel = $versionLevel;
     }

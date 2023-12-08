@@ -1,0 +1,114 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Domain\Plugin\Services;
+
+use SP\Core\Application;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Util\VersionUtil;
+
+use function SP\__;
+use function SP\__u;
+
+/**
+ * Class PluginUpgrader
+ */
+final class PluginUpgrader extends Service implements PluginUpgraderInterface
+{
+    public function __construct(
+        Application                             $application,
+        private readonly PluginManagerInterface $pluginService,
+        private readonly PluginDataInterface    $pluginDataService
+    ) {
+        parent::__construct($application);
+    }
+
+    /**
+     * @param PluginInterface $plugin
+     * @param string $version
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function upgradeFor(PluginInterface $plugin, string $version): void
+    {
+        try {
+            $pluginModel = $this->pluginService->getByName($plugin->getName());
+        } catch (NoSuchItemException $e) {
+            $this->eventDispatcher->notify(
+                'plugin.upgrade',
+                new Event(
+                    $e,
+                    EventMessage::factory()
+                                ->addDetail(__('Plugin not registered'), $plugin->getName())
+                )
+            );
+
+            return;
+        }
+
+        if ($pluginModel->getVersionLevel() === null
+            || VersionUtil::checkVersion($pluginModel->getVersionLevel(), $version)
+        ) {
+            $this->eventDispatcher->notify(
+                'plugin.upgrade.process',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Upgrading plugin'))
+                                ->addDetail(__u('Name'), $plugin->getName())
+                )
+            );
+
+            $plugin->onUpgrade(
+                $version,
+                new PluginOperation($this->pluginDataService, $plugin->getName()),
+                $pluginModel
+            );
+
+            $pluginModel->setData(null);
+            $pluginModel->setVersionLevel($version);
+
+            $this->pluginService->update($pluginModel);
+
+            $this->eventDispatcher->notify(
+                'plugin.upgrade.process',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Plugin upgraded'))
+                                ->addDetail(__u('Name'), $plugin->getName())
+                )
+            );
+        }
+    }
+}

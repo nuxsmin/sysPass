@@ -22,37 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Plugin\Repositories;
+namespace SP\Domain\Plugin\Ports;
 
-use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Adapters\HydratableInterface;
-use SP\Domain\Common\Models\Model;
-use SP\Domain\Common\Models\SerializedModel;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
- * Class PluginDataModel
+ * Class PluginCompatilityInterface
  */
-final class PluginDataModel extends Model implements HydratableInterface
+interface PluginCompatilityInterface
 {
-    use SerializedModel;
-    use EncryptedModel;
-
-    protected ?string $name   = null;
-    protected ?int    $itemId = null;
-    protected ?string $data   = null;
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function getData(): ?string
-    {
-        return $this->data;
-    }
+    /**
+     * @param PluginInterface $plugin
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function checkFor(PluginInterface $plugin): bool;
 }

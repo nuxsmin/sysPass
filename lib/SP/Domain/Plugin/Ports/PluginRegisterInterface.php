@@ -22,37 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Plugin\Repositories;
-
-use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Adapters\HydratableInterface;
-use SP\Domain\Common\Models\Model;
-use SP\Domain\Common\Models\SerializedModel;
+namespace SP\Domain\Plugin\Ports;
 
 /**
- * Class PluginDataModel
+ * Interface PluginRegisterInterface
  */
-final class PluginDataModel extends Model implements HydratableInterface
+interface PluginRegisterInterface
 {
-    use SerializedModel;
-    use EncryptedModel;
-
-    protected ?string $name   = null;
-    protected ?int    $itemId = null;
-    protected ?string $data   = null;
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function getData(): ?string
-    {
-        return $this->data;
-    }
+    public function registerFor(PluginInterface $plugin): void;
 }

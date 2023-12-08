@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,19 +32,19 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Domain\Plugin\Ports\PluginRepositoryInterface;
-use SP\Domain\Plugin\Ports\PluginServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Infrastructure\Plugin\Repositories\PluginRepository;
 
+use function SP\__u;
+
 /**
- * Class PluginService
- *
- * @package SP\Domain\Plugin\Services
+ * Class PluginManager
  */
-final class PluginService extends Service implements PluginServiceInterface
+final class PluginManager extends Service implements PluginManagerInterface
 {
     private PluginRepository $pluginRepository;
 
@@ -80,9 +80,12 @@ final class PluginService extends Service implements PluginServiceInterface
     /**
      * Returns the item for given id
      *
+     * @param int $id
+     * @return PluginModel
      * @throws ConstraintException
-     * @throws QueryException
      * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getById(int $id): PluginModel
     {
@@ -101,6 +104,7 @@ final class PluginService extends Service implements PluginServiceInterface
      * @return PluginModel[]
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getAll(): array
     {
@@ -110,11 +114,12 @@ final class PluginService extends Service implements PluginServiceInterface
     /**
      * Returns all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @return PluginModel[]
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getByIdBatch(array $ids): array
     {
@@ -124,7 +129,7 @@ final class PluginService extends Service implements PluginServiceInterface
     /**
      * Deletes all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws SPException
      * @throws ConstraintException
@@ -166,9 +171,12 @@ final class PluginService extends Service implements PluginServiceInterface
     /**
      * Devuelve los datos de un plugin por su nombre
      *
-     * @throws NoSuchItemException
+     * @param string $name
+     * @return PluginModel
      * @throws ConstraintException
+     * @throws NoSuchItemException
      * @throws QueryException
+     * @throws SPException
      */
     public function getByName(string $name): PluginModel
     {
@@ -259,6 +267,7 @@ final class PluginService extends Service implements PluginServiceInterface
      * @return ItemData[]
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getEnabled(): array
     {

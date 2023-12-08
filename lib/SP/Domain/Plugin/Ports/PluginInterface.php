@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,22 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Plugin;
+namespace SP\Domain\Plugin\Ports;
+
+use SP\Domain\Core\Events\EventReceiver;
 
 /**
  * Interface PluginInterface
- *
- * @package SP\Plugin
  */
-interface PluginInterface extends PluginEventReceiver
+interface PluginInterface extends EventReceiver
 {
-    /**
-     * Devuelve el tipo de plugin
-     *
-     * @return string|null
-     */
-    public function getType(): ?string;
-
     /**
      * Devuelve el directorio base del plugin
      *
@@ -73,37 +66,13 @@ interface PluginInterface extends PluginEventReceiver
      */
     public function getCompatibleVersion(): ?array;
 
-    /**
-     * Devuelve el nombre del plugin
-     *
-     * @return string|null
-     */
     public function getName(): ?string;
 
-    /**
-     * @return mixed|null
-     */
-    public function getData();
+    public function getData(): mixed;
 
-    /**
-     * onLoad
-     */
+    public function saveData(int $id, mixed $data): void;
+
     public function onLoad();
 
-    /**
-     * @return int
-     */
-    public function getEnabled();
-
-    /**
-     * @param int $enabled
-     */
-    public function setEnabled(int $enabled);
-
-    /**
-     * @param string          $version
-     * @param PluginOperation $pluginOperation
-     * @param mixed           $extra
-     */
-    public function upgrade(string $version, PluginOperation $pluginOperation, $extra = null);
+    public function onUpgrade(string $version, PluginOperationInterface $pluginOperation, mixed $extra = null);
 }

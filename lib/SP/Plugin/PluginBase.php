@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,104 +25,62 @@
 namespace SP\Plugin;
 
 use Defuse\Crypto\Exception\CryptoException;
-use Psr\Container\ContainerInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Services\PluginService;
+use SP\Domain\Plugin\Ports\PluginCompatilityInterface;
+use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\PluginLoaderInterface;
+use SP\Domain\Plugin\Ports\PluginOperationInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
  * Class PluginBase
- *
- * @package SP\Plugin
  */
 abstract class PluginBase implements PluginInterface
 {
-    /**
-     * @var string|null Directorio base
-     */
     protected ?string $base = null;
-    /**
-     * @var string|null Tipo de plugin
-     */
-    protected ?string $type = null;
     protected ?string $themeDir = null;
-    /**
-     * @var mixed
-     */
-    protected $data;
-    protected ?int $enabled;
-    protected PluginOperation $pluginOperation;
-    private PluginService $pluginService;
+    protected mixed   $data;
 
     /**
-     * PluginBase constructor.
-     *
-     * @param ContainerInterface $dic
-     * @param PluginOperation    $pluginOperation
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
-    final public function __construct(
-        ContainerInterface $dic,
-        PluginOperation    $pluginOperation
-    )
-    {
-        /** @noinspection UnusedConstructorDependenciesInspection */
-        $this->pluginService = $dic->get(PluginService::class);
-        $this->pluginOperation = $pluginOperation;
-        $this->init($dic);
+    public function __construct(
+        protected readonly PluginOperationInterface $pluginOperation,
+        private readonly PluginCompatilityInterface $pluginCompatilityService,
+        private readonly PluginLoaderInterface      $pluginLoadService
+    ) {
+        $this->load();
     }
 
     /**
-     * @return string
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
-    public function getType(): ?string
+    private function load(): void
     {
-        return $this->type;
+        if ($this->pluginCompatilityService->checkFor($this)) {
+            $this->pluginLoadService->loadFor($this);
+        }
     }
 
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
     public function getThemeDir(): ?string
     {
         return $this->themeDir;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }
 
     /**
-     * @return int
-     */
-    public function getEnabled(): ?int
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param int $enabled
-     */
-    public function setEnabled(int $enabled): void
-    {
-        $this->enabled = $enabled;
-    }
-
-    /**
-     * @param int   $id
+     * @param int $id
      * @param mixed $data
      *
      * @throws CryptoException
@@ -131,7 +89,7 @@ abstract class PluginBase implements PluginInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    final public function saveData(int $id, $data): void
+    final public function saveData(int $id, mixed $data): void
     {
         if ($this->data === null) {
             $this->pluginOperation->create($id, $data);
@@ -142,21 +100,15 @@ abstract class PluginBase implements PluginInterface
         $this->data = $data;
     }
 
-    /**
-     * Establecer las locales del plugin
-     */
     protected function setLocales(): void
     {
-        $locales = $this->getBase() . DIRECTORY_SEPARATOR . 'locales';
+        $locales = sprintf('%s%slocales', $this->getBase(), DIRECTORY_SEPARATOR);
         $name = strtolower($this->getName());
 
         bindtextdomain($name, $locales);
         bind_textdomain_codeset($name, 'UTF-8');
     }
 
-    /**
-     * @return string
-     */
     public function getBase(): ?string
     {
         return $this->base;

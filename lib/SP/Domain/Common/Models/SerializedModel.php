@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,16 +29,15 @@ use SP\Util\Util;
 
 /**
  * Trait Datamodel
- *
- * @package SP\DataModel
  */
 trait SerializedModel
 {
     /**
-     * @param  string|null  $class
-     * @param  string  $property
+     * @template T
+     * @param class-string<T>|null $class
+     * @param string $property
      *
-     * @return mixed|null
+     * @return T|null
      * @throws NoSuchPropertyException
      */
     public function hydrate(?string $class = null, string $property = 'data'): mixed
