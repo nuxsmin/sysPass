@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -76,7 +76,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
             $itemData->getName(),
             $itemData->getDescription(),
             $itemData->getIsGlobal(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
         ]);
         $queryData->setOnErrorMessage(__u('Error while creating the client'));
 
@@ -96,7 +96,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? LIMIT 1');
-        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($this->makeItemHash($itemData->getName()));
 
         return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
@@ -131,7 +131,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
             $itemData->getName(),
             $itemData->getDescription(),
             $itemData->getIsGlobal(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getId(),
         ]);
         $queryData->setOnErrorMessage(__u('Error while updating the client'));
@@ -153,7 +153,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Client WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
         $queryData->setParams([
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getName(),
             $itemData->getId(),
         ]);
@@ -198,7 +198,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         );
         $queryData->setParams([
             $name,
-            $this->makeItemHash($name, $this->db->getDbHandler()),
+                                  $this->makeItemHash($name),
         ]);
 
         return $this->db->doSelect($queryData);

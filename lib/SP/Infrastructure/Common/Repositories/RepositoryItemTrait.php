@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,6 @@
 
 namespace SP\Infrastructure\Common\Repositories;
 
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DbStorageInterface;
-
 /**
  * Trait RepositoryItemTrait
  *
@@ -40,17 +37,13 @@ trait RepositoryItemTrait
      * Esta función crear un hash para detectar nombres de elementos duplicados mediante
      * la eliminación de carácteres especiales y capitalización
      */
-    protected function makeItemHash(
-        string $name,
-        DbStorageInterface $DBStorage
-    ): string {
+    protected function makeItemHash(string $name): string
+    {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 
-        $databaseUtil = new DatabaseUtil($DBStorage);
-
-        return md5(
+        return sha1(
             strtolower(
-                str_replace($charsSrc, '', $databaseUtil->escape($name))
+                str_replace($charsSrc, '', $name)
             )
         );
     }
@@ -58,15 +51,13 @@ trait RepositoryItemTrait
     /**
      * Devuelve una cadena con los parámetros para una consulta SQL desde un array
      *
-     * @param  array  $items
-     * @param  string  $placeholder  Cadena a utilizar para los parámetros
+     * @param array $items
+     * @param string $placeholder Cadena a utilizar para los parámetros
      *
      * @return string
      */
-    protected function buildParamsFromArray(
-        array $items,
-        string $placeholder = '?'
-    ): string {
+    protected function buildParamsFromArray(array $items, string $placeholder = '?'): string
+    {
         return implode(
             ',',
             array_fill(0, count($items), $placeholder)

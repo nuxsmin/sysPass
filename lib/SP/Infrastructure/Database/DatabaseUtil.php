@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\Database;
 
 use Exception;
+
 use function SP\processException;
 
 /**
@@ -66,14 +67,12 @@ class DatabaseUtil
         'account_data_v',
         'account_search_v',
     ];
-    private DbStorageInterface $DBStorage;
 
     /**
      * DatabaseUtil constructor.
      */
-    public function __construct(DbStorageInterface $DBStorage)
+    public function __construct(private readonly DbStorageInterface $dbStorage)
     {
-        $this->DBStorage = $DBStorage;
     }
 
     /**
@@ -86,7 +85,7 @@ class DatabaseUtil
                 ',',
                 array_map(
                     static function ($value) {
-                        return '\''.$value.'\'';
+                        return '\'' . $value . '\'';
                     },
                     self::TABLES
                 )
@@ -102,7 +101,7 @@ class DatabaseUtil
                     $tables
                 );
 
-            $numTables = $this->DBStorage
+            $numTables = $this->dbStorage
                 ->getConnection()
                 ->query($query)
                 ->fetchColumn();
@@ -118,7 +117,7 @@ class DatabaseUtil
     public function checkDatabaseConnection(): bool
     {
         try {
-            $this->DBStorage->getConnection();
+            $this->dbStorage->getConnection();
 
             return true;
         } catch (Exception $e) {
@@ -136,7 +135,7 @@ class DatabaseUtil
         $dbinfo = [];
 
         try {
-            $db = $this->DBStorage->getConnection();
+            $db = $this->dbStorage->getConnection();
 
             $attributes = [
                 'SERVER_VERSION',
@@ -146,7 +145,7 @@ class DatabaseUtil
             ];
 
             foreach ($attributes as $val) {
-                $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_'.$val));
+                $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
         } catch (Exception $e) {
             processException($e);
@@ -161,7 +160,7 @@ class DatabaseUtil
     public function escape(string $str): string
     {
         try {
-            return $this->DBStorage->getConnection()->quote(trim($str));
+            return $this->dbStorage->getConnection()->quote(trim($str));
         } catch (Exception $e) {
             processException($e);
         }

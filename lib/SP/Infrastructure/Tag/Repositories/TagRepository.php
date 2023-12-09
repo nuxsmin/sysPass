@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -64,7 +64,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         $queryData->setQuery('INSERT INTO Tag SET `name` = ?, `hash` = ?');
         $queryData->setParams([
             $itemData->getName(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
         ]);
         $queryData->setOnErrorMessage(__u('Error while creating the tag'));
 
@@ -86,7 +86,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         $queryData->setQuery('SELECT id FROM Tag WHERE `name` = ? OR `hash` = ?');
         $queryData->setParams([
             $itemData->getName(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
         ]);
 
         return $this->db->doSelect($queryData)->getNumRows() > 0;
@@ -112,7 +112,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         $queryData->setQuery('UPDATE Tag SET `name` = ?, `hash` = ? WHERE id = ? LIMIT 1');
         $queryData->setParams([
             $itemData->getName(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getId(),
         ]);
         $queryData->setOnErrorMessage(__u('Error while updating the tag'));
@@ -135,7 +135,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         $queryData->setQuery('SELECT `hash` FROM Tag WHERE (`name` = ?  OR `hash` = ?) AND id <> ?');
         $queryData->setParams([
             $itemData->getName(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getId(),
         ]);
 
@@ -175,7 +175,7 @@ final class TagRepository extends Repository implements TagRepositoryInterface
         $queryData = new QueryData();
         $queryData->setMapClassName(TagData::class);
         $queryData->setQuery('SELECT id, `name` FROM Tag WHERE `hash` = ? OR `name` = ? ORDER BY  `name` LIMIT 1');
-        $queryData->setParams([$this->makeItemHash($name, $this->db->getDbHandler()), $name]);
+        $queryData->setParams([$this->makeItemHash($name), $name]);
 
         return $this->db->doSelect($queryData);
     }

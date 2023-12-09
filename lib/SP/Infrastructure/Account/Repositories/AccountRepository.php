@@ -54,11 +54,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     use RepositoryItemTrait;
 
     public function __construct(
-        DatabaseInterface $database,
-        ContextInterface $session,
-        QueryFactory $queryFactory,
-        EventDispatcherInterface $eventDispatcher,
-        private AccountFilterUserInterface $accountFilterUser
+        DatabaseInterface                           $database,
+        ContextInterface                            $session,
+        QueryFactory                                $queryFactory,
+        EventDispatcherInterface                    $eventDispatcher,
+        private readonly AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
     }
@@ -77,7 +77,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     }
 
     /**
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -86,13 +86,13 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                'Account.id,',
-                'Account.name',
-                'Account.login',
-                'Account.pass',
-                'Account.key',
-                'Account.parentId',
-            ])
+                       'Account.id,',
+                       'Account.name',
+                       'Account.login',
+                       'Account.pass',
+                       'Account.key',
+                       'Account.parentId',
+                   ])
             ->where('Account.id = :id')
             ->bindValues(['id' => $accountId])
             ->limit(1);
@@ -101,7 +101,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     }
 
     /**
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -110,14 +110,14 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->accountFilterUser
             ->buildFilterHistory()
             ->cols([
-                'AccountHistory.id,',
-                'AccountHistory.name',
-                'AccountHistory.login',
-                'AccountHistory.pass',
-                'AccountHistory.key',
-                'AccountHistory.parentId',
-                'AccountHistory.mPassHash',
-            ])
+                       'AccountHistory.id,',
+                       'AccountHistory.name',
+                       'AccountHistory.login',
+                       'AccountHistory.pass',
+                       'AccountHistory.key',
+                       'AccountHistory.parentId',
+                       'AccountHistory.mPassHash',
+                   ])
             ->where('AccountHistory.accountId = :accountId')
             ->bindValues(['accountId' => $accountId]);
 
@@ -127,7 +127,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -192,7 +192,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param Account $account
      *
      * @return QueryResult
@@ -218,7 +218,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
      *
      * @return QueryResult
@@ -242,7 +242,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Restaurar una cuenta desde el histórico.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param Account $account
      *
      * @return QueryResult
@@ -279,7 +279,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -301,10 +301,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Updates an item
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param Account $account
-     * @param  bool  $changeOwner
-     * @param  bool  $changeUserGroup
+     * @param bool $changeOwner
+     * @param bool $changeUserGroup
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -352,10 +352,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Updates an item for bulk action
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param Account $account
-     * @param  bool  $changeOwner
-     * @param  bool  $changeUserGroup
+     * @param bool $changeOwner
+     * @param bool $changeUserGroup
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -400,7 +400,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Returns the item for given id with referential data
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -423,7 +423,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Returns the item for given id
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -461,7 +461,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $accountsId
+     * @param array $accountsId
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -486,7 +486,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      */
@@ -507,15 +507,15 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
                   ->orWhere('userName LIKE :userName')
                   ->orWhere('userGroupName LIKE :userGroupName');
 
-            $search = '%'.$itemSearchData->getSeachString().'%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
 
             $query->bindValues([
-                'name'          => $search,
-                'clientName'    => $search,
-                'categoryName'  => $search,
-                'userName'      => $search,
-                'userGroupName' => $search,
-            ]);
+                                   'name' => $search,
+                                   'clientName' => $search,
+                                   'categoryName' => $search,
+                                   'userName' => $search,
+                                   'userGroupName' => $search,
+                               ]);
         }
 
         return $this->db->doSelect(QueryData::buildWithMapper($query, AccountSearchView::class), true);
@@ -524,7 +524,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Incrementa el contador de visitas de una cuenta en la BBDD
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -545,7 +545,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     /**
      * Obtener los datos de una cuenta.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -555,15 +555,15 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->newSelect()
             ->from('Account')
             ->cols([
-                'Account.name',
-                'Account.login',
-                'Account.pass',
-                'Account.key',
-                'Account.url',
-                'Account.notes',
-                'Client.name AS clientName',
-                'Category.name AS categoryName',
-            ])
+                       'Account.name',
+                       'Account.login',
+                       'Account.pass',
+                       'Account.key',
+                       'Account.url',
+                       'Account.notes',
+                       'Client.name AS clientName',
+                       'Category.name AS categoryName',
+                   ])
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->where('Account.id = :id')
@@ -575,7 +575,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     }
 
     /**
-     * @param  int|null  $accountId
+     * @param int|null $accountId
      *
      * @return QueryResult
      */
@@ -584,10 +584,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                'Account.id',
-                'Account.name',
-                'Client.name AS clientName',
-            ])
+                       'Account.id',
+                       'Account.name',
+                       'Client.name AS clientName',
+                   ])
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->orderBy(['Account.name ASC']);
 
@@ -602,7 +602,7 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
     }
 
     /**
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return QueryResult
      */
@@ -611,10 +611,10 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                'Account.id',
-                'Account.name',
-                'Client.name AS clientName',
-            ])
+                       'Account.id',
+                       'Account.name',
+                       'Client.name AS clientName',
+                   ])
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->where('Account.parentId = :parentId')
             ->bindValues(['parentId' => $accountId])
@@ -634,11 +634,11 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
             ->newSelect()
             ->from('Account')
             ->cols([
-                'id',
-                'name',
-                'pass',
-                'key',
-            ])
+                       'id',
+                       'name',
+                       'pass',
+                       'key',
+                   ])
             ->where('BIT_LENGTH(pass) > 0');
 
         return $this->db->doSelect(QueryData::buildWithMapper($query, Account::class));

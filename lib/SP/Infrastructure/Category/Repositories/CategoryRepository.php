@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -66,7 +66,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $queryData->setParams([
             $itemData->getName(),
             $itemData->getDescription(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
         ]);
         $queryData->setOnErrorMessage(__u('Error while creating the category'));
 
@@ -87,7 +87,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Category WHERE `hash` = ? OR `name` = ?');
         $queryData->setParams([
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getName(),
         ]);
 
@@ -122,7 +122,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $queryData->setParams([
             $itemData->getName(),
             $itemData->getDescription(),
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getId(),
         ]);
         $queryData->setOnErrorMessage(__u('Error while updating the category'));
@@ -144,7 +144,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Category WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
         $queryData->setParams([
-            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+                                  $this->makeItemHash($itemData->getName()),
             $itemData->getName(),
             $itemData->getId(),
         ]);
@@ -187,7 +187,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE `name` = ? OR `hash` = ? LIMIT 1');
         $queryData->setParams([
             $name,
-            $this->makeItemHash($name, $this->db->getDbHandler()),
+                                  $this->makeItemHash($name),
         ]);
 
         return $this->db->doSelect($queryData);
