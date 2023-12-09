@@ -38,7 +38,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Core\Bootstrap\BootstrapApi;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -226,8 +226,9 @@ abstract class ApiTestCase extends TestCase
     private static function createApiToken(
         AuthTokenService $service,
         int $actionId
-    ): AuthTokenData {
-        $data = new AuthTokenData();
+    ): AuthToken
+    {
+        $data = new AuthToken();
         $data->setActionId($actionId);
         $data->setCreatedBy(1);
         $data->setHash(self::AUTH_TOKEN_PASS);

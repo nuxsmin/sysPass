@@ -29,7 +29,7 @@ use JsonException;
 use JsonSerializable;
 
 /**
- * Class DataModel
+ * Class Model
  */
 abstract class Model implements JsonSerializable, ArrayAccess
 {

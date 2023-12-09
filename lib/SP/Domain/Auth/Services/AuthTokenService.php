@@ -31,8 +31,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -71,7 +72,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
 
     private AuthTokenRepository $authTokenRepository;
 
-    public function __construct(Application $application, AuthTokenRepository $authTokenRepository)
+    public function __construct(Application $application, AuthTokenRepositoryInterface $authTokenRepository)
     {
         parent::__construct($application);
 
@@ -132,7 +133,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): AuthTokenData
+    public function getById(int $id): AuthToken
     {
         return $this->authTokenRepository->getById($id)->getData();
     }
@@ -179,7 +180,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(AuthTokenData $itemData): int
+    public function create(AuthToken $itemData): int
     {
         return $this->authTokenRepository->create($this->injectSecureData($itemData));
     }
@@ -193,7 +194,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function injectSecureData(AuthTokenData $authTokenData, ?string $token = null): AuthTokenData
+    private function injectSecureData(AuthToken $authTokenData, ?string $token = null): AuthToken
     {
         if ($token === null) {
             $token = $this->authTokenRepository
@@ -254,7 +255,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     /**
      * @throws Exception
      */
-    public function refreshAndUpdate(AuthTokenData $itemData): void
+    public function refreshAndUpdate(AuthToken $itemData): void
     {
         $this->transactionAware(
             function () use ($itemData) {
@@ -287,7 +288,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function update(AuthTokenData $itemData, ?string $token = null): void
+    public function update(AuthToken $itemData, ?string $token = null): void
     {
         if ($this->authTokenRepository->update($this->injectSecureData($itemData, $token)) === 0) {
             throw new NoSuchItemException(__u('Token not found'));
@@ -299,7 +300,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(AuthTokenData $itemData): void
+    public function updateRaw(AuthToken $itemData): void
     {
         if ($this->authTokenRepository->update($itemData) === 0) {
             throw new NoSuchItemException(__u('Token not found'));
@@ -325,7 +326,7 @@ final class AuthTokenService extends Service implements AuthTokenServiceInterfac
     }
 
     /**
-     * @return AuthTokenData[]
+     * @return AuthToken[]
      * @throws ConstraintException
      * @throws QueryException
      */

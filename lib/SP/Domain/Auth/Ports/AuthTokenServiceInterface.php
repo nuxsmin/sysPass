@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Domain\Auth\Ports;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
@@ -56,7 +56,7 @@ interface AuthTokenServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): AuthTokenData;
+    public function getById(int $id): AuthToken;
 
     /**
      * @throws ConstraintException
@@ -81,12 +81,12 @@ interface AuthTokenServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(AuthTokenData $itemData): int;
+    public function create(AuthToken $itemData): int;
 
     /**
      * @throws Exception
      */
-    public function refreshAndUpdate(AuthTokenData $itemData): void;
+    public function refreshAndUpdate(AuthToken $itemData): void;
 
     /**
      * @throws CryptoException
@@ -97,14 +97,14 @@ interface AuthTokenServiceInterface
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function update(AuthTokenData $itemData, ?string $token = null): void;
+    public function update(AuthToken $itemData, ?string $token = null): void;
 
     /**
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(AuthTokenData $itemData): void;
+    public function updateRaw(AuthToken $itemData): void;
 
     /**
      * Devolver los datos de un token
@@ -116,7 +116,7 @@ interface AuthTokenServiceInterface
     public function getTokenByToken(int $actionId, string $token);
 
     /**
-     * @return AuthTokenData[]
+     * @return AuthToken[]
      * @throws ConstraintException
      * @throws QueryException
      */

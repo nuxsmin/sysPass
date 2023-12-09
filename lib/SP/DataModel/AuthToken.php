@@ -24,28 +24,25 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class AuthTokenData
- *
- * @package SP\DataModel
+ * Class AuthToken
  */
-class AuthTokenData extends Model implements DataModelInterface
+class AuthToken extends Model
 {
-    public ?int       $userId    = null;
-    public ?string    $token     = null;
-    public ?int       $createdBy = null;
-    public ?int       $startDate = null;
-    public ?int       $actionId  = null;
-    public ?string    $hash      = null;
     protected ?int    $id        = null;
+    protected ?int    $userId    = null;
+    protected ?string $token     = null;
+    protected ?int    $createdBy = null;
+    protected ?int    $startDate = null;
+    protected ?int    $actionId  = null;
+    protected ?string $hash      = null;
     protected ?string $vault     = null;
 
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
     public function getVault(): ?string
@@ -71,11 +68,6 @@ class AuthTokenData extends Model implements DataModelInterface
     public function getStartDate(): ?int
     {
         return $this->startDate;
-    }
-
-    public function getName(): ?string
-    {
-        return null;
     }
 
     public function getActionId(): ?int

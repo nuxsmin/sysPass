@@ -31,7 +31,7 @@ use ReflectionClass;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\ApiService;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
@@ -270,7 +270,7 @@ class ApiServiceTest extends UnitaryTestCase
 
         $userId = self::$faker->randomNumber();
 
-        $authTokenData = new AuthTokenData(['actionId' => $actionId, 'userId' => $userId]);
+        $authTokenData = new AuthToken(['actionId' => $actionId, 'userId' => $userId]);
 
         $this->authTokenService
             ->expects(self::once())
@@ -407,7 +407,7 @@ class ApiServiceTest extends UnitaryTestCase
 
         $userId = self::$faker->randomNumber();
 
-        $authTokenData = new AuthTokenData(['actionId' => self::$faker->randomNumber(), 'userId' => $userId]);
+        $authTokenData = new AuthToken(['actionId' => self::$faker->randomNumber(), 'userId' => $userId]);
 
         $this->authTokenService
             ->expects(self::once())
@@ -451,7 +451,7 @@ class ApiServiceTest extends UnitaryTestCase
         $userId = self::$faker->randomNumber();
 
         $authTokenData =
-            new AuthTokenData(
+            new AuthToken(
                 ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => serialize($vault)]
             );
 
@@ -500,7 +500,7 @@ class ApiServiceTest extends UnitaryTestCase
         $userId = self::$faker->randomNumber();
 
         $authTokenData =
-            new AuthTokenData(
+            new AuthToken(
                 ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => serialize($vault)]
             );
 
@@ -586,7 +586,7 @@ class ApiServiceTest extends UnitaryTestCase
         $userId = self::$faker->randomNumber();
 
         $authTokenData =
-            new AuthTokenData(
+            new AuthToken(
                 ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => serialize($vault)]
             );
 
@@ -649,7 +649,7 @@ class ApiServiceTest extends UnitaryTestCase
         $userId = self::$faker->randomNumber();
 
         $authTokenData =
-            new AuthTokenData(
+            new AuthToken(
                 ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => serialize($vault)]
             );
 

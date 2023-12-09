@@ -23,14 +23,14 @@
  */
 
 /**
- * @var  AuthTokenData $authToken
+ * @var  AuthToken $authToken
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,10 @@
 
 namespace SP\Infrastructure\Auth\Repositories;
 
-use RuntimeException;
-use SP\DataModel\AuthTokenData;
+use Exception;
+use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -36,61 +36,56 @@ use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__u;
+
 /**
  * Class AuthTokenRepository
  *
- * @package SP\Infrastructure\Common\Repositories\ApiToken
+ * @template T of AuthToken
  */
-final class AuthTokenRepository extends Repository implements RepositoryInterface
+final class AuthTokenRepository extends Repository implements AuthTokenRepositoryInterface
 {
     use RepositoryItemTrait;
 
+    public const TABLE = 'AuthToken';
+
     /**
-     * Deletes an item
-     *
-     * @param  int  $id
-     *
-     * @return int
+     * @param int $id
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AuthToken WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Internal error'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
+
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param int $authTokenId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
-    public function getById(int $id): QueryResult
+    public function getById(int $authTokenId): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT id,
-            userId,
-            actionId,
-            createdBy,
-            startDate,
-            vault,
-            token,
-            `hash` 
-            FROM AuthToken 
-            WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(AuthToken::getCols())
+            ->where('id = :id')
+            ->bindValues(['id' => $authTokenId])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(AuthTokenData::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
+        $queryData = QueryData::buildWithMapper($query, AuthToken::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -98,302 +93,237 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
     /**
      * Returns all the items
      *
-     * @return QueryResult
-     *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getAll(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT id,
-            userId,
-            actionId,
-            createdBy,
-            startDate,
-            vault,
-            token,
-            `hash` 
-            FROM AuthToken
-            ORDER BY actionId, userId';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(AuthToken::getCols());
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(AuthTokenData::class);
-        $queryData->setQuery($query);
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return void
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthToken::class));
     }
 
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $ids
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteByIdBatch(array $ids): int
-    {
-        if (count($ids) === 0) {
-            return 0;
-        }
-
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AuthToken WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Internal error'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Searches for items by a given filter
-     *
-     * @param  ItemSearchData  $itemSearchData
+     * @param array $authTokensId
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function deleteByIdBatch(array $authTokensId): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setSelect(
-            'AuthToken.id,
-            AuthToken.userId,
-            AuthToken.actionId, 
-            AuthToken.token,
-            CONCAT(User.name, \' (\', User.login, \')\') AS userLogin'
-        );
-        $queryData->setFrom(
-            'AuthToken 
-            INNER JOIN User ON AuthToken.userid = User.id'
-        );
-
-        if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('User.login LIKE ? OR User.name LIKE ?');
-
-            $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+        if (count($authTokensId) === 0) {
+            return new QueryResult();
         }
 
-        $queryData->setOrder('User.login, AuthToken.actionId');
-        $queryData->setLimit(
-            '?,?',
-            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
-        );
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id IN (:ids)', ['ids' => $authTokensId]);
 
-        return $this->db->doSelect($queryData, true);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
+
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->innerJoin('User', 'AuthToken.userid = User.id')
+            ->cols([
+                       'AuthToken.id',
+                       'AuthToken.userId',
+                       'AuthToken.actionId',
+                       'AuthToken.token',
+                       'User.name',
+                       'User.login'
+                   ])
+            ->orderBy(['name ASC', 'clientName ASC'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
+
+        if (!empty($itemSearchData->getSeachString())) {
+            $query->where('User.login  LIKE :userLogin OR User.name LIKE :userName');
+
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+
+            $query->bindValues(['userLogin' => $search, 'userName' => $search]);
+        }
+
+        return $this->db->doSelect(QueryData::build($query), true);
     }
 
     /**
      * Creates an item
      *
-     * @param  AuthTokenData  $itemData
+     * @param AuthToken $authToken
      *
-     * @return int
-     * @throws DuplicatedItemException
+     * @return QueryResult
      * @throws ConstraintException
+     * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function create($itemData): int
+    public function create(AuthToken $authToken): QueryResult
     {
-        if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('The authorization already exist'));
+        if ($this->checkDuplicatedOnAdd($authToken)) {
+            throw new DuplicatedItemException(__u('Authorization already exist'));
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO AuthToken 
-            SET userId = ?,
-            actionId = ?,
-            createdBy = ?,
-            token = ?,
-            vault = ?,
-            `hash` = ?,
-            startDate = UNIX_TIMESTAMP()';
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into(self::TABLE)
+            ->cols($authToken->toArray(null, ['id', 'startDate']))
+            ->set('startDate', 'UNIX_TIMESTAMP()');
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getUserId(),
-            $itemData->getActionId(),
-            $itemData->getCreatedBy(),
-            $itemData->getToken(),
-            $itemData->getVault(),
-            $itemData->getHash(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Internal error'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  AuthTokenData  $itemData
-     *
+     * @param AuthToken $authToken
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData): bool
+    private function checkDuplicatedOnAdd(AuthToken $authToken): bool
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM AuthToken 
-            WHERE (userId = ? OR token = ?)
-            AND actionId = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('userId = :userId')
+            ->orWhere('token = :token')
+            ->where('actionId = :actionId')
+            ->bindValues(
+                [
+                    'userId' => $authToken->getUserId(),
+                    'token' => $authToken->getToken(),
+                    'actionId' => $authToken->getActionId()
+                ]
+            );
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getUserId(),
-            $itemData->getToken(),
-            $itemData->getActionId(),
-        ]);
-
-        return $this->db->doSelect($queryData)->getNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
     }
 
     /**
      * Obtener el token de la API de un usuario
      *
-     * @param  int  $id
-     *
-     * @return string
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $userId
+     * @return QueryResult<T>
      */
-    public function getTokenByUserId(int $id): ?string
+    public function getTokenByUserId(int $userId): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1');
-        $queryData->addParam($id);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(AuthToken::getCols())
+            ->where('userId = :userId')
+            ->where('token <> \'\'')
+            ->bindValues(['userId' => $userId])
+            ->limit(1);
 
-        $result = $this->db->doSelect($queryData);
+        $queryData = QueryData::buildWithMapper($query, AuthToken::class);
 
-        return $result->getNumRows() === 1 ? $result->getData()->token : null;
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Updates an item
      *
-     * @param  AuthTokenData  $itemData
-     *
-     * @return int
-     * @throws DuplicatedItemException
+     * @param AuthToken $authToken
+     * @return bool
      * @throws ConstraintException
+     * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function update($itemData): int
+    public function update(AuthToken $authToken): bool
     {
-        if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('The authorization already exist'));
+        if ($this->checkDuplicatedOnUpdate($authToken)) {
+            throw new DuplicatedItemException(__u('Authorization already exist'));
         }
 
-        $query = /** @lang SQL */
-            'UPDATE AuthToken 
-            SET userId = ?,
-            actionId = ?,
-            createdBy = ?,
-            token = ?,
-            vault = ?,
-            `hash` = ?,
-            startDate = UNIX_TIMESTAMP() 
-            WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->cols($authToken->toArray(null, ['id', 'startDate']))
+            ->set('startDate', 'UNIX_TIMESTAMP()')
+            ->where('id = :id')
+            ->limit(1)
+            ->bindValues(['id' => $authToken->getId()]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getUserId(),
-            $itemData->getActionId(),
-            $itemData->getCreatedBy(),
-            $itemData->getToken(),
-            $itemData->getVault(),
-            $itemData->getHash(),
-            $itemData->getId(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Internal error'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  AuthTokenData  $itemData
-     *
+     * @param AuthToken $authToken
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData): bool
+    private function checkDuplicatedOnUpdate(AuthToken $authToken): bool
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM AuthToken 
-            WHERE (userId = ? OR token = ?)
-            AND actionId = ?  
-            AND id <> ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('(userId = :userId OR token = :token)')
+            ->where('actionId = :actionId')
+            ->where('id <> :id')
+            ->bindValues(
+                [
+                    'id' => $authToken->getId(),
+                    'userId' => $authToken->getUserId(),
+                    'token' => $authToken->getToken(),
+                    'actionId' => $authToken->getActionId()
+                ]
+            );
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getUserId(),
-            $itemData->getToken(),
-            $itemData->getActionId(),
-            $itemData->getId(),
-        ]);
-
-        return $this->db->doSelect($queryData)->getNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
     }
 
     /**
      * Regenerar el hash de los tokens de un usuario
      *
-     * @param  int  $id
-     * @param  string  $token
+     * @param int $userId
+     * @param string $token
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function refreshTokenByUserId(int $id, string $token): int
+    public function refreshTokenByUserId(int $userId, string $token): int
     {
-        $query = /** @lang SQL */
-            'UPDATE AuthToken 
-            SET token = ?,
-            startDate = UNIX_TIMESTAMP() 
-            WHERE userId = ?';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->col('token', $token)
+            ->set('startDate', 'UNIX_TIMESTAMP()')
+            ->where('userId = :userId', ['userId' => $userId]);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([$token, $id]);
-        $queryData->setOnErrorMessage(__u('Internal error'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -401,49 +331,30 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
     /**
      * Regenerar el hash de los tokens de un usuario
      *
-     * @param  int  $id
-     * @param  string  $vault
-     * @param  string  $hash
+     * @param int $userId
+     * @param string $vault
+     * @param string $hash
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function refreshVaultByUserId(int $id, string $vault, string $hash): int
+    public function refreshVaultByUserId(int $userId, string $vault, string $hash): int
     {
-        $query = /** @lang SQL */
-            'UPDATE AuthToken 
-            SET vault = ?,
-            `hash` = ?,
-            startDate = UNIX_TIMESTAMP() 
-            WHERE userId = ? AND vault IS NOT NULL';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->cols([
+                       'vault' => $vault,
+                       'hash' => $hash
+                   ])
+            ->set('startDate', 'UNIX_TIMESTAMP()')
+            ->where('userId = :userId', ['userId' => $userId])
+            ->where('vault IS NOT NULL');
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([$vault, $hash, $id]);
-        $queryData->setOnErrorMessage(__u('Internal error'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Obtener el usuario a partir del token
-     *
-     * @param $token string El token de autorización
-     *
-     * @return false|int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getUserIdForToken(string $token)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT userId FROM AuthToken WHERE token = ? LIMIT 1');
-        $queryData->addParam($token);
-
-        $result = $this->db->doSelect($queryData);
-
-        return $result->getNumRows() === 1 ? (int)$result->getData()->userId : false;
     }
 
     /**
@@ -452,23 +363,19 @@ final class AuthTokenRepository extends Repository implements RepositoryInterfac
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getTokenByToken(int $actionId, string $token): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT id, actionId, userId, vault, `hash`, token
-            FROM AuthToken
-            WHERE actionId = ? 
-            AND token = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(AuthToken::getCols())
+            ->where('actionId = :actionId')
+            ->where('token = :token')
+            ->bindValues(['actionId' => $actionId, 'token' => $token])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(AuthTokenData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams([$actionId, $token]);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthToken::class));
     }
 }

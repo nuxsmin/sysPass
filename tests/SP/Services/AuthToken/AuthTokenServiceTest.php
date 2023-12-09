@@ -32,7 +32,7 @@ use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
@@ -119,7 +119,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
      */
     public function testRefreshAndUpdate()
     {
-        $data = new AuthTokenData();
+        $data = new AuthToken();
         $data->setId(1);
         $data->setActionId(AclActionsInterface::ACCOUNT_CREATE);
         $data->setCreatedBy(1);
@@ -152,7 +152,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getTokenByToken(AclActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
 
-        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertInstanceOf(AuthToken::class, $data);
         $this->assertEquals(2, $data->getId());
         $this->assertEquals(AclActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
@@ -176,7 +176,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $data = new AuthTokenData();
+        $data = new AuthToken();
         $data->setId(1);
         $data->setActionId(AclActionsInterface::ACCOUNT_CREATE);
         $data->setCreatedBy(1);
@@ -187,7 +187,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
         $data = self::$service->getTokenByToken(AclActionsInterface::ACCOUNT_CREATE, $data->getToken());
 
-        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertInstanceOf(AuthToken::class, $data);
         $this->assertEquals(AclActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertEquals(2, $data->getUserId());
@@ -213,7 +213,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getById(1);
 
-        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertInstanceOf(AuthToken::class, $data);
         $this->assertEquals(1, $data->getId());
         $this->assertEquals(AclActionsInterface::ACCOUNT_SEARCH, $data->getActionId());
         $this->assertEquals(pack('H*', '31326239303237643234656666663762666261636138626437373461346333346234356465333565303333643262313932613838663464666165653563323333'), $data->getToken());
@@ -221,7 +221,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
         $data = self::$service->getById(2);
 
-        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertInstanceOf(AuthToken::class, $data);
         $this->assertEquals(2, $data->getId());
         $this->assertEquals(AclActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
         $this->assertEquals(self::AUTH_TOKEN, $data->getToken());
@@ -275,7 +275,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $authTokenData = new AuthTokenData();
+        $authTokenData = new AuthToken();
         $authTokenData->setActionId(AclActionsInterface::ACCOUNT_CREATE);
         $authTokenData->setCreatedBy(1);
         $authTokenData->setHash(self::AUTH_TOKEN_PASS);
@@ -286,7 +286,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
         $data = self::$service->getTokenByToken(AclActionsInterface::ACCOUNT_CREATE, $authTokenData->getToken());
 
-        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertInstanceOf(AuthToken::class, $data);
         $this->assertEquals(AclActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertEquals(6, $data->getId());

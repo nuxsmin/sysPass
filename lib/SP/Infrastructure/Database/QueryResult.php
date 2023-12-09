@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Database;
 
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
@@ -31,7 +32,7 @@ use function SP\__u;
 /**
  * Class QueryResult
  *
- * @package SP\Infrastructure\Database
+ * @template T of Model
  */
 class QueryResult
 {
@@ -71,8 +72,6 @@ class QueryResult
     }
 
     /**
-     * @template T
-     *
      * @param class-string<T>|null $dataType
      *
      * @return T|mixed|null
@@ -100,8 +99,6 @@ class QueryResult
     }
 
     /**
-     * @template T
-     *
      * @param class-string<T>|null $dataType
      *
      * @return T[]
@@ -158,10 +155,5 @@ class QueryResult
         $this->lastId = $lastId;
 
         return $this;
-    }
-
-    public function getDataType(): ?string
-    {
-        return $this->dataType;
     }
 }

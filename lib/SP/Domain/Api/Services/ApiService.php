@@ -30,7 +30,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
@@ -66,9 +66,9 @@ final class ApiService extends Service implements ApiServiceInterface
     private const STATUS_INITIALIZED  = 0;
     private const STATUS_INITIALIZING = 1;
     private TrackServiceInterface $trackService;
-    private TrackRequest          $trackRequest;
-    private ?AuthTokenData        $authTokenData = null;
-    private ?string               $helpClass     = null;
+    private TrackRequest $trackRequest;
+    private ?AuthToken   $authTokenData = null;
+    private ?string      $helpClass     = null;
     private ?int                  $status        = null;
 
     /**

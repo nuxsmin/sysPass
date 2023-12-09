@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -36,8 +36,8 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class AuthTokenForm extends FormBase implements FormInterface
 {
-    protected ?AuthTokenData $authTokenData = null;
-    protected bool           $refresh       = false;
+    protected ?AuthToken $authTokenData = null;
+    protected bool       $refresh       = false;
 
     /**
      * Validar el formulario
@@ -74,7 +74,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
     {
         $this->refresh = $this->request->analyzeBool('refreshtoken', false);
 
-        $this->authTokenData = new AuthTokenData();
+        $this->authTokenData = new AuthToken();
         $this->authTokenData->setId($this->itemId);
         $this->authTokenData->setUserId($this->request->analyzeInt('users'));
         $this->authTokenData->setActionId($this->request->analyzeInt('actions'));
@@ -106,7 +106,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
         return $this->refresh;
     }
 
-    public function getItemData(): ?AuthTokenData
+    public function getItemData(): ?AuthToken
     {
         return $this->authTokenData;
     }

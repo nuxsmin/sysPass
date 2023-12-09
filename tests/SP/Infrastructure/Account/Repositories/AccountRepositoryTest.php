@@ -646,7 +646,7 @@ class AccountRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->getSeachString().'%';
+                $searchStringLike = '%' . $item->getSeachString() . '%';
 
                 return count($params) === 5
                        && $params['name'] === $searchStringLike
@@ -659,7 +659,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('doSelect')->with($callback, true);
 
         $this->accountRepository->search($item);
     }
@@ -674,7 +674,7 @@ class AccountRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('doSelect')->with($callback, true);
 
         $this->accountRepository->search(new ItemSearchData());
     }

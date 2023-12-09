@@ -25,6 +25,8 @@
 namespace SP\Domain\Common\Ports;
 
 use Closure;
+use Exception;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -37,12 +39,12 @@ interface RepositoryInterface
     /**
      * Bubbles a Closure in a database transaction
      *
-     * @param  \Closure  $closure
+     * @param Closure $closure
      * @param  object  $newThis
      *
      * @return mixed
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \Exception
+     * @throws ServiceException
+     * @throws Exception
      */
     public function transactionAware(Closure $closure, object $newThis): mixed;
 
@@ -54,7 +56,7 @@ interface RepositoryInterface
      * @param  string|null  $where
      * @param  array|null  $bindValues
      *
-     * @return \SP\Infrastructure\Database\QueryResult
+     * @return QueryResult
      */
     public function getAny(
         array $columns,

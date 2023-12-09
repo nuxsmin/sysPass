@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\AuthTokenData;
+use SP\DataModel\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Services\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
@@ -85,7 +85,7 @@ abstract class AuthTokenViewBase extends ControllerBase
 
         $authToken = $authTokenId
             ? $this->authTokenService->getById($authTokenId)
-            : new AuthTokenData();
+            : new AuthToken();
 
         $this->view->assign('authToken', $authToken);
 
