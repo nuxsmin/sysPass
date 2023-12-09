@@ -29,10 +29,10 @@ use SP\Domain\Core\Exceptions\CheckException;
 /**
  * Class PhpExtensionCheckerInterface
  *
- * @method checkCurl(bool $exception = false): bool
- * @method checkLdap(bool $exception = false): bool
- * @method checkPhar(bool $exception = false): bool
- * @method checkGd(bool $exception = false): bool
+ * @method bool checkCurl(bool $exception = false)
+ * @method bool checkLdap(bool $exception = false)
+ * @method bool checkPhar(bool $exception = false)
+ * @method bool checkGd(bool $exception = false)
  */
 interface PhpExtensionCheckerInterface
 {
