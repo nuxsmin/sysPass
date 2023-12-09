@@ -1,0 +1,205 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SPT\Services\Api;
+
+use Closure;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
+use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Api\Services\ApiRequest;
+use SP\Domain\Api\Services\ApiService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SPT\DatabaseTestCase;
+
+use function SPT\getResource;
+use function SPT\setupContext;
+
+/**
+ * Class ApiServiceTest
+ *
+ * @package SPT\Services
+ */
+class ApiServiceTest extends DatabaseTestCase
+{
+    public const ADMIN_TOKEN = '2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146';
+    public const ADMIN_PASS  = '123456';
+    public const DEMO_TOKEN = '12b9027d24efff7bfbaca8bd774a4c34b45de35e033d2b192a88f4dfaee5c233';
+
+    /**
+     * @var ApiServiceInterface
+     */
+    private static $service;
+    /**
+     * @var Closure
+     */
+    private static $changeRequest;
+
+    /**
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     */
+    public static function setUpBeforeClass(): void
+    {
+        $dic = setupContext();
+
+        self::$loadFixtures = true;
+
+        // Inicializar el servicio
+        self::$service = $dic->get(ApiService::class);
+
+        self::$changeRequest = function (string $request) use ($dic) {
+            $dic->set(ApiRequest::class, new ApiRequest($request));
+        };
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testSetup()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_VIEW);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_DELETE);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$changeRequest->call($this, getResource('json', 'account_viewPass.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        $this->expectException(ServiceException::class);
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testGetParam()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals('2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146', self::$service->getParam('authToken'));
+        $this->assertEquals('API', self::$service->getParam('text'));
+        $this->assertEquals('5', self::$service->getParam('count'));
+        $this->assertEquals('1', self::$service->getParam('categoryId'));
+        $this->assertEquals('1', self::$service->getParam('clientId'));
+
+        $this->assertNull(self::$service->getParam('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionCode(-32602);
+
+        self::$service->getParam('test', true);
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testGetParamInt()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals(1, self::$service->getParamInt('categoryId'));
+        $this->assertEquals(0, self::$service->getParamInt('text'));
+    }
+
+    /**
+     */
+    public function testGetParamEmail()
+    {
+        $this->markTestIncomplete();
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testGetParamString()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_add.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamString('notes'));
+
+        $this->assertEmpty(self::$service->getParamString('test'));
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testGetParamRaw()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_add.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamRaw('notes'));
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testGetRequestId()
+    {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
+
+        self::$service->setup(AclActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals(10, self::$service->getRequestId());
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    public function testGetMasterPass()
+    {
+        $this->assertEquals('12345678900', self::$service->getMasterPass());
+    }
+}

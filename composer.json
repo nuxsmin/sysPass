@@ -13,7 +13,7 @@
       "SP\\Modules\\Web\\": "app/modules/web/",
       "SP\\Modules\\Api\\": "app/modules/api/",
       "SP\\Modules\\Cli\\": "app/modules/cli/",
-      "SP\\Tests\\": "tests/SP/"
+      "SPT\\": "tests/SPT/"
     }
   },
   "config": {
