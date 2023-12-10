@@ -32,11 +32,12 @@ use SP\Domain\Account\Models\Account;
 class AccountHistoryCreateDto
 {
     public function __construct(
-        private Account $account,
-        private bool $isModify,
-        private bool $isDelete,
-        private string $masterPassHash
-    ) {}
+        private readonly Account $account,
+        private readonly bool    $isModify,
+        private readonly bool    $isDelete,
+        private readonly string  $masterPassHash
+    ) {
+    }
 
     public function isModify(): bool
     {

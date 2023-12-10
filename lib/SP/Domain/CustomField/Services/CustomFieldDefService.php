@@ -209,7 +209,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->customFieldDefRepository->getAll()->getDataAsArray();
     }

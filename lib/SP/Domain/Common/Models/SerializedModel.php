@@ -33,11 +33,11 @@ use SP\Util\Util;
 trait SerializedModel
 {
     /**
-     * @template T
-     * @param class-string<T>|null $class
+     * @template THydrate
+     * @param class-string<THydrate>|null $class
      * @param string $property
      *
-     * @return T|null
+     * @return THydrate|null
      * @throws NoSuchPropertyException
      */
     public function hydrate(?string $class = null, string $property = 'data'): mixed

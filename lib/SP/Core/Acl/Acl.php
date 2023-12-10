@@ -28,6 +28,7 @@ namespace SP\Core\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Context\ContextInterface;
@@ -40,25 +41,55 @@ use function SP\processException;
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-final class Acl implements AclActionsInterface
+final class Acl implements AclActionsInterface, AclInterface
 {
-    private static ActionsInterface $actions;
+    /**
+     * @deprecated
+     */
+    private static ActionsInterface $actionsStatic;
+    private ActionsInterface        $actions;
 
     public function __construct(
         private readonly ContextInterface         $context,
         private readonly EventDispatcherInterface $eventDispatcher,
         ActionsInterface $actions
     ) {
-        self::$actions = $actions;
+        self::$actionsStatic = $actions;
+        $this->actions = $actions;
     }
 
     /**
      * Returns action route
+     *
+     * @deprecated Use {@link Acl::getRouteFor()} instead
      */
     public static function getActionRoute(string $actionId): string
     {
         try {
-            return self::$actions?->getActionById($actionId)->getRoute();
+            return self::$actionsStatic?->getActionById($actionId)->getRoute();
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Obtener el nombre de la acción indicada
+     *
+     * @param int $actionId El id de la acción
+     * @param bool $translate
+     *
+     * @return string
+     * @internal param bool $translate Si se devuelve el nombre corto de la acción
+     * @deprecated Use {@link Acl::getInfoFor()} instead
+     */
+    public static function getActionInfo(int $actionId, bool $translate = true): string
+    {
+        try {
+            $text = self::$actionsStatic?->getActionById($actionId)->getText();
+
+            return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
@@ -75,12 +106,26 @@ final class Acl implements AclActionsInterface
      * @return string
      * @internal param bool $translate Si se devuelve el nombre corto de la acción
      */
-    public static function getActionInfo(int $actionId, bool $translate = true): string
+    public function getInfoFor(int $actionId, bool $translate = true): string
     {
         try {
-            $text = self::$actions?->getActionById($actionId)->getText();
+            $text = $this->actions->getActionById($actionId)->getText();
 
             return $translate ? __($text) : $text;
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns action route
+     */
+    public function getRouteFor(string $actionId): string
+    {
+        try {
+            return $this->actions->getActionById($actionId)->getRoute();
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
@@ -267,8 +312,8 @@ final class Acl implements AclActionsInterface
         }
 
         try {
-            $actionName = self::$actions->getActionById($action)->getName();
-        } catch (ActionNotFoundException $e) {
+            $actionName = $this->actions->getActionById($action)->getName();
+        } catch (ActionNotFoundException) {
             $actionName = __u('N/A');
         }
 

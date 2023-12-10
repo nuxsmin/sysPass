@@ -24,13 +24,11 @@
 
 namespace SP\Domain\Auth\Ports;
 
-
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,13 +40,14 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class AuthTokenService
  *
- * @package SP\Domain\Common\Services\AuthToken
+ * @template T of AuthTokenModel
  */
 interface AuthTokenServiceInterface
 {
     /**
-     * @throws ConstraintException
+     * @return QueryResult<T>
      * @throws QueryException
+     * @throws ConstraintException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
@@ -56,14 +55,14 @@ interface AuthTokenServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): AuthToken;
+    public function getById(int $id): AuthTokenModel;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): AuthTokenService;
+    public function delete(int $id): void;
 
     /**
      * Deletes all the items for given ids
@@ -72,7 +71,7 @@ interface AuthTokenServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int;
+    public function deleteByIdBatch(array $ids): void;
 
     /**
      * @throws SPException
@@ -81,12 +80,12 @@ interface AuthTokenServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(AuthToken $itemData): int;
+    public function create(AuthTokenModel $authToken): int;
 
     /**
      * @throws Exception
      */
-    public function refreshAndUpdate(AuthToken $itemData): void;
+    public function refreshAndUpdate(AuthTokenModel $authToken): void;
 
     /**
      * @throws CryptoException
@@ -97,14 +96,14 @@ interface AuthTokenServiceInterface
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function update(AuthToken $itemData, ?string $token = null): void;
+    public function update(AuthTokenModel $authToken): void;
 
     /**
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(AuthToken $itemData): void;
+    public function updateRaw(AuthTokenModel $authToken): void;
 
     /**
      * Devolver los datos de un token
@@ -113,12 +112,12 @@ interface AuthTokenServiceInterface
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function getTokenByToken(int $actionId, string $token);
+    public function getTokenByToken(int $actionId, string $token): AuthTokenModel;
 
     /**
-     * @return AuthToken[]
+     * @return T[]
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array;
+    public function getAll(): array;
 }

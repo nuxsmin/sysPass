@@ -27,8 +27,8 @@ namespace SP\Domain\Account\Ports;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PublicLinkData;
-use SP\DataModel\PublicLinkListData;
+use SP\DataModel\PublicLinkList;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Services\PublicLinkKey;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -55,7 +55,7 @@ interface PublicLinkServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): PublicLinkListData;
+    public function getById(int $id): PublicLinkList;
 
     /**
      * @throws CryptoException
@@ -97,16 +97,16 @@ interface PublicLinkServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PublicLinkData $itemData): int;
+    public function create(PublicLink $itemData): int;
 
     /**
      * Get all items from the service's repository
      *
-     * @return PublicLinkListData[]
+     * @return PublicLinkList[]
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array;
+    public function getAll(): array;
 
     /**
      * Incrementar el contador de visitas de un enlace
@@ -115,12 +115,12 @@ interface PublicLinkServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLinkData $publicLinkData): void;
+    public function addLinkView(PublicLink $publicLink): void;
 
     /**
      * @throws SPException
      */
-    public function getByHash(string $hash): PublicLinkData;
+    public function getByHash(string $hash): PublicLink;
 
     /**
      * Devolver el hash asociado a un elemento
@@ -129,7 +129,7 @@ interface PublicLinkServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getHashForItem(int $itemId): PublicLinkData;
+    public function getHashForItem(int $itemId): PublicLink;
 
     /**
      * Updates an item
@@ -138,5 +138,5 @@ interface PublicLinkServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkData $itemData): void;
+    public function update(PublicLink $itemData): void;
 }

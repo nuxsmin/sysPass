@@ -30,10 +30,11 @@ namespace SP\Domain\Account\Dtos;
 final class AccountPasswordRequest
 {
     public function __construct(
-        private int $id,
-        private EncryptedPassword $encryptedPassword,
-        private ?string $hash = null
-    ) {}
+        private readonly int               $id,
+        private readonly EncryptedPassword $encryptedPassword,
+        private readonly ?string           $hash = null
+    ) {
+    }
 
     public function getId(): int
     {

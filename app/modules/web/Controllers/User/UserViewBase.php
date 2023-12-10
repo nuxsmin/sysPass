@@ -93,11 +93,11 @@ abstract class UserViewBase extends ControllerBase
         $this->view->assign('user', $user);
         $this->view->assign(
             'groups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
         $this->view->assign(
             'profiles',
-            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign(

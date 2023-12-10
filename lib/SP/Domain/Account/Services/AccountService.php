@@ -28,7 +28,6 @@ use SP\Core\Application;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
-use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
@@ -37,7 +36,7 @@ use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
 use SP\Domain\Account\Ports\AccountItemsServiceInterface;
@@ -71,17 +70,17 @@ use function SP\__u;
 final class AccountService extends Service implements AccountServiceInterface
 {
     public function __construct(
-        Application $application,
-        private AccountRepositoryInterface $accountRepository,
+        Application                              $application,
+        private AccountRepositoryInterface       $accountRepository,
         private AccountToUserGroupRepositoryInterface $accountToUserGroupRepository,
         private AccountToUserRepositoryInterface $accountToUserRepository,
-        private AccountToTagRepositoryInterface $accountToTagRepository,
-        private ItemPresetServiceInterface $itemPresetService,
-        private AccountHistoryServiceInterface $accountHistoryService,
-        private AccountItemsServiceInterface $accountItemsService,
-        private AccountPresetServiceInterface $accountPresetService,
-        private ConfigServiceInterface $configService,
-        private AccountCryptServiceInterface $accountCryptService
+        private AccountToTagRepositoryInterface  $accountToTagRepository,
+        private ItemPresetServiceInterface       $itemPresetService,
+        private AccountHistoryServiceInterface   $accountHistoryService,
+        private AccountItemsServiceInterface     $accountItemsService,
+        private AccountPresetServiceInterface    $accountPresetService,
+        private ConfigServiceInterface           $configService,
+        private AccountCryptServiceInterface     $accountCryptService
     ) {
         parent::__construct($application);
     }
@@ -169,13 +168,13 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
-     * @return AccountDataView
+     * @return AccountView
      * @throws SPException
      * @throws NoSuchItemException
      */
-    public function getByIdEnriched(int $id): AccountDataView
+    public function getByIdEnriched(int $id): AccountView
     {
         $result = $this->accountRepository->getByIdEnriched($id);
 
@@ -183,7 +182,7 @@ final class AccountService extends Service implements AccountServiceInterface
             throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
-        return $result->getData(AccountDataView::class);
+        return $result->getData(AccountView::class);
     }
 
     /**
@@ -230,7 +229,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return Account
      * @throws SPException
@@ -257,7 +256,7 @@ final class AccountService extends Service implements AccountServiceInterface
     protected function userCanChangeOwner(
         UserLoginResponse $userData,
         ProfileData $userProfile,
-        Account $account
+        Account     $account
     ): bool {
         return $userData->getIsAdminApp() || $userData->getIsAdminAcc()
                || ($userProfile->isAccPermission() && $userData->getId() === $account->getUserId());
@@ -273,7 +272,7 @@ final class AccountService extends Service implements AccountServiceInterface
     protected function userCanChangeGroup(
         UserLoginResponse $userData,
         ProfileData $userProfile,
-        Account $account
+        Account     $account
     ): bool {
         return $this->userCanChangeOwner($userData, $userProfile, $account)
                || ($userProfile->isAccPermission() && $userData->getUserGroupId() === $account->getUserGroupId());
@@ -385,7 +384,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param  int  $id
+     * @param int $id
      * @param AccountUpdateDto $accountUpdateDto
      *
      * @throws ServiceException
@@ -429,7 +428,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      * @param AccountUpdateDto $accountUpdateDto
      *
      * @throws ServiceException
@@ -454,7 +453,7 @@ final class AccountService extends Service implements AccountServiceInterface
     /**
      * Updates an already encrypted password data from a master password changing action
      *
-     * @param  int  $id
+     * @param int $id
      * @param EncryptedPassword $encryptedPassword
      *
      * @return void
@@ -534,7 +533,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws SPException
      * @throws ServiceException
@@ -547,7 +546,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int|null  $id
+     * @param int|null $id
      *
      * @return array
      * @throws ConstraintException
@@ -560,7 +559,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return array
      * @throws ConstraintException
@@ -590,7 +589,7 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @return AccountData[]
+     * @return Account[]
      * @throws SPException
      */
     public function getAllBasic(): array

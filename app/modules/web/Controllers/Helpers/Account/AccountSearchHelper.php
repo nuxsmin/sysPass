@@ -181,12 +181,12 @@ final class AccountSearchHelper extends HelperBase
         );
         $this->view->assign(
             'categories',
-            SelectItemAdapter::factory($this->categoryService->getAllBasic())
+            SelectItemAdapter::factory($this->categoryService->getAll())
                              ->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()])
         );
         $this->view->assign(
             'tags',
-            SelectItemAdapter::factory($this->tagService->getAllBasic())
+            SelectItemAdapter::factory($this->tagService->getAll())
                              ->getItemsFromModelSelected($this->accountSearchFilter->getTagsId())
         );
     }

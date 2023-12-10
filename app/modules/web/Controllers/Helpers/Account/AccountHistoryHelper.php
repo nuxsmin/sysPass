@@ -37,6 +37,7 @@ use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -59,17 +60,17 @@ final class AccountHistoryHelper extends AccountHelperBase
     private ?AccountAcl $accountAcl = null;
 
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestInterface $request,
-        Acl $acl,
-        AccountActionsHelper $accountActionsHelper,
-        MasterPassServiceInterface $masterPassService,
+        Application                            $application,
+        TemplateInterface                      $template,
+        RequestInterface                       $request,
+        AclInterface                           $acl,
+        AccountActionsHelper                   $accountActionsHelper,
+        MasterPassServiceInterface             $masterPassService,
         private AccountHistoryServiceInterface $accountHistoryService,
-        private AccountAclServiceInterface $accountAclService,
-        private CategoryServiceInterface $categoryService,
-        private ClientServiceInterface $clientService,
-        private AccountToUserServiceInterface $accountToUserService,
+        private AccountAclServiceInterface     $accountAclService,
+        private CategoryServiceInterface       $categoryService,
+        private ClientServiceInterface         $clientService,
+        private AccountToUserServiceInterface  $accountToUserService,
         private AccountToUserGroupServiceInterface $accountToUserGroupService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
@@ -116,12 +117,12 @@ final class AccountHistoryHelper extends AccountHelperBase
         );
         $this->view->assign(
             'categories',
-            SelectItemAdapter::factory($this->categoryService->getAllBasic())
+            SelectItemAdapter::factory($this->categoryService->getAll())
                 ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()])
         );
         $this->view->assign(
             'clients',
-            SelectItemAdapter::factory($this->clientService->getAllBasic())
+            SelectItemAdapter::factory($this->clientService->getAll())
                 ->getItemsFromModelSelected([$accountHistoryData->getClientId()])
         );
         $this->view->assign(

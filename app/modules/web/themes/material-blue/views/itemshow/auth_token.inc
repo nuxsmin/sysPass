@@ -30,7 +30,7 @@
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\AuthToken;
+use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;

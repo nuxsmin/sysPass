@@ -217,15 +217,15 @@ final class IndexController extends ControllerBase
         );
         $template->assign(
             'users',
-            SelectItemAdapter::factory($this->userService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModel()
         );
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
 
         $template->assign('curlIsAvailable', $this->extensionChecker->checkCurl());
@@ -313,11 +313,11 @@ final class IndexController extends ControllerBase
         );
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
 
         $serverTypes = [
@@ -372,11 +372,11 @@ final class IndexController extends ControllerBase
         $template->assign('mailSecurity', ['SSL', 'TLS']);
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
         $template->assign(
             'userProfiles',
-            SelectItemAdapter::factory($this->userProfileService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
 
         $mailEvents = $this->configData->getMailEvents();
@@ -443,7 +443,7 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel()
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
 
         return new DataTab(__('Encryption'), $template);
@@ -535,12 +535,12 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAllBasic())
+            SelectItemAdapter::factory($this->userGroupService->getAll())
                              ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
         );
         $template->assign(
             'users',
-            SelectItemAdapter::factory($this->userService->getAllBasic())
+            SelectItemAdapter::factory($this->userService->getAll())
                              ->getItemsFromModelSelected([$this->userData->getId()])
         );
 

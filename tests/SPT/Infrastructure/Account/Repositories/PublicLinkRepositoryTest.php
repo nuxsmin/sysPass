@@ -28,7 +28,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -172,7 +172,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $this->assertTrue($this->publicLinkRepository->addLinkView($publicLinkData));
     }
 
-    private function buildPublicLinkData(): PublicLinkData
+    private function buildPublicLinkData(): PublicLink
     {
         $data = [
             'id'              => self::$faker->randomNumber(),
@@ -191,7 +191,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
             'data'            => self::$faker->text(),
         ];
 
-        return new PublicLinkData($data);
+        return new PublicLink($data);
     }
 
     /**

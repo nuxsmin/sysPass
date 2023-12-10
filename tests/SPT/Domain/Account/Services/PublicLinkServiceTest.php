@@ -29,7 +29,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Domain\Account\Services\PublicLinkService;
@@ -67,21 +67,20 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testAddLinkView()
     {
-        $publicLinkData = new PublicLinkData();
-        $publicLinkData->setHash(self::$faker->sha1);
+        $publicLink = new PublicLink(['hash' => self::$faker->sha1]);
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('addLinkView')
             ->with(
-                new Callback(function (PublicLinkData $publicLinkData) {
+                new Callback(function (PublicLink $publicLinkData) {
                     $useInfo = unserialize($publicLinkData->getUseInfo(), ['allowed_classes' => false]);
 
                     return is_array($useInfo) && count($useInfo) === 1;
                 })
             );
 
-        $this->publicLinkService->addLinkView($publicLinkData);
+        $this->publicLinkService->addLinkView($publicLink);
     }
 
     /**
@@ -91,7 +90,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testAddLinkViewWithoutHash()
     {
-        $publicLinkData = new PublicLinkData();
+        $publicLinkData = new PublicLink();
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Public link hash not set');
@@ -106,30 +105,34 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testAddLinkViewWithUseInfo()
     {
-        $publicLinkData = new PublicLinkData();
-        $publicLinkData->setHash(self::$faker->sha1);
-        $publicLinkData->setUseInfo([
-            [
-                'who'   => self::$faker->ipv4,
-                'time'  => time(),
-                'hash'  => self::$faker->sha1,
-                'agent' => self::$faker->userAgent,
-                'https' => self::$faker->boolean,
-            ],
-        ]);
+        $properties = [
+            'useInfo' => serialize(
+                [
+                    [
+                        'who' => self::$faker->ipv4,
+                        'time' => time(),
+                        'hash' => self::$faker->sha1,
+                        'agent' => self::$faker->userAgent,
+                        'https' => self::$faker->boolean,
+                    ],
+                ]
+            ),
+            'hash' => self::$faker->sha1
+        ];
+        $publicLink = new PublicLink($properties);
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('addLinkView')
             ->with(
-                new Callback(function (PublicLinkData $publicLinkData) {
+                new Callback(function (PublicLink $publicLinkData) {
                     $useInfo = unserialize($publicLinkData->getUseInfo(), ['allowed_classes' => false]);
 
                     return is_array($useInfo) && count($useInfo) === 2;
                 })
             );
 
-        $this->publicLinkService->addLinkView($publicLinkData);
+        $this->publicLinkService->addLinkView($publicLink);
     }
 
     /**
@@ -326,7 +329,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('refresh')
             ->with(
-                new Callback(function (PublicLinkData $actual) use ($publicLinkData) {
+                new Callback(function (PublicLink $actual) use ($publicLinkData) {
                     $filter = ['hash', 'dateExpire', 'maxCountViews', 'data'];
 
                     return $actual->toArray(null, $filter) === $publicLinkData->toArray(null, $filter)
@@ -462,7 +465,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Not implemented');
 
-        $this->publicLinkService->getAllBasic();
+        $this->publicLinkService->getAll();
     }
 
     public function testGetUseInfo()
@@ -517,7 +520,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('create')
             ->with(
-                new Callback(function (PublicLinkData $actual) use ($publicLinkData) {
+                new Callback(function (PublicLink $actual) use ($publicLinkData) {
                     $filter = ['hash', 'dateExpire', 'maxCountViews', 'data'];
 
                     return $actual->toArray(null, $filter) === $publicLinkData->toArray(null, $filter)

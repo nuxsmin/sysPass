@@ -158,7 +158,7 @@ final class CategoryService extends Service implements CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->categoryRepository->getAll()->getDataAsArray();
     }

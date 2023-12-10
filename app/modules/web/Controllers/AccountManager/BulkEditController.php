@@ -133,11 +133,11 @@ final class BulkEditController extends ControllerBase
 
         $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
 
-        $clients = SelectItemAdapter::factory($this->clientService->getAllBasic())->getItemsFromModel();
-        $categories = SelectItemAdapter::factory($this->categoryService->getAllBasic())->getItemsFromModel();
-        $tags = SelectItemAdapter::factory($this->tagService->getAllBasic())->getItemsFromModel();
-        $users = SelectItemAdapter::factory($this->userService->getAllBasic())->getItemsFromModel();
-        $userGroups = SelectItemAdapter::factory($this->userGroupService->getAllBasic())->getItemsFromModel();
+        $clients = SelectItemAdapter::factory($this->clientService->getAll())->getItemsFromModel();
+        $categories = SelectItemAdapter::factory($this->categoryService->getAll())->getItemsFromModel();
+        $tags = SelectItemAdapter::factory($this->tagService->getAll())->getItemsFromModel();
+        $users = SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModel();
+        $userGroups = SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel();
 
         $this->view->assign('users', $users);
         $this->view->assign('userGroups', $userGroups);

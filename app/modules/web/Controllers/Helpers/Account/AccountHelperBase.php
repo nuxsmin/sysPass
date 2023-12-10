@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
@@ -49,10 +50,10 @@ abstract class AccountHelperBase extends HelperBase
     private MasterPassServiceInterface $masterPassService;
 
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestInterface $request,
-        Acl $acl,
+        Application          $application,
+        TemplateInterface    $template,
+        RequestInterface     $request,
+        AclInterface         $acl,
         AccountActionsHelper $accountActionsHelper,
         MasterPassServiceInterface $masterPassService
     ) {

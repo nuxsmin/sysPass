@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -81,48 +81,48 @@ interface PublicLinkRepositoryInterface extends RepositoryInterface
     /**
      * Creates an item
      *
-     * @param  PublicLinkData  $publicLinkData
+     * @param \SP\Domain\Account\Models\PublicLink $publicLinkData
      *
      * @return QueryResult
      * @throws DuplicatedItemException
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create(PublicLinkData $publicLinkData): QueryResult;
+    public function create(PublicLink $publicLinkData): QueryResult;
 
     /**
      * Incrementar el contador de visitas de un enlace
      *
-     * @param  PublicLinkData  $publicLinkData
+     * @param \SP\Domain\Account\Models\PublicLink $publicLinkData
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLinkData $publicLinkData): bool;
+    public function addLinkView(PublicLink $publicLinkData): bool;
 
     /**
      * Updates an item
      *
-     * @param PublicLinkData $publicLinkData
+     * @param \SP\Domain\Account\Models\PublicLink $publicLinkData
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkData $publicLinkData): bool;
+    public function update(PublicLink $publicLinkData): bool;
 
     /**
      * Refreshes a public link
      *
-     * @param  PublicLinkData  $publicLinkData
+     * @param \SP\Domain\Account\Models\PublicLink $publicLinkData
      *
      * @return bool
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function refresh(PublicLinkData $publicLinkData): bool;
+    public function refresh(PublicLink $publicLinkData): bool;
 
     /**
      * Returns the item for given id

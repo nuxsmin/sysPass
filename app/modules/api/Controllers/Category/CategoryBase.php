@@ -31,6 +31,7 @@ use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Category\Ports\CategoryAdapterInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
@@ -47,10 +48,10 @@ abstract class CategoryBase extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application $application,
-        Klein $router,
+        Application         $application,
+        Klein               $router,
         ApiServiceInterface $apiService,
-        Acl $acl,
+        AclInterface        $acl,
         CategoryServiceInterface $categoryService,
         CategoryAdapterInterface $categoryAdapter
     ) {

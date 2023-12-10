@@ -29,7 +29,12 @@ namespace SP\Domain\Account\Dtos;
  */
 final class EncryptedPassword
 {
-    public function __construct(private string $pass, private string $key, private ?string $hash = null) {}
+    public function __construct(
+        private readonly string  $pass,
+        private readonly string  $key,
+        private readonly ?string $hash = null
+    ) {
+    }
 
     public function getPass(): string
     {

@@ -78,7 +78,7 @@ abstract class CustomFieldViewBase extends ControllerBase
         $this->view->assign('field', $customField);
         $this->view->assign(
             'types',
-            SelectItemAdapter::factory($this->customFieldTypeService->getAllBasic())
+            SelectItemAdapter::factory($this->customFieldTypeService->getAll())
                 ->getItemsFromModelSelected([$customField->getTypeId()])
         );
         $this->view->assign(

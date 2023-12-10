@@ -31,9 +31,9 @@ use ReflectionClass;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthToken;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Services\ApiService;
+use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -569,7 +569,7 @@ class ApiServiceTest extends UnitaryTestCase
      */
     public function testRequireMasterPass()
     {
-        $actionId = self::$faker->randomNumber();
+        $actionId = self::$faker->randomNumber(4);
         $authToken = self::$faker->password;
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 

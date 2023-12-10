@@ -25,8 +25,8 @@
 namespace SP\Domain\Auth\Ports;
 
 use Exception;
-use SP\DataModel\AuthToken;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;

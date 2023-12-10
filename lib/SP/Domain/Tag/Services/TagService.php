@@ -154,7 +154,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->tagRepository->getAll();
     }

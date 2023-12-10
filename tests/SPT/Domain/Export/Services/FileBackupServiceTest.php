@@ -30,6 +30,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\BackupFilesInterface;
@@ -43,7 +44,6 @@ use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
-use stdClass;
 
 /**
  * Class FileBackupServiceTest
@@ -158,7 +158,7 @@ class FileBackupServiceTest extends UnitaryTestCase
 
     private function buildCreateResult(string $type): QueryResult
     {
-        $data = new StdClass();
+        $data = new Simple();
 
         switch ($type) {
             case 'table':

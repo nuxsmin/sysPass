@@ -123,7 +123,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
      *
      * @param array $properties
      *
-     * @return $this
+     * @return static
      */
     final public function mutate(array $properties): static
     {

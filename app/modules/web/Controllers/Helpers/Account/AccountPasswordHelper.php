@@ -35,6 +35,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\Http\RequestInterface;
@@ -57,10 +58,10 @@ final class AccountPasswordHelper extends HelperBase
     private MasterPassServiceInterface $masterPassService;
 
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestInterface $request,
-        Acl $acl,
+        Application        $application,
+        TemplateInterface  $template,
+        RequestInterface   $request,
+        AclInterface       $acl,
         ImageUtilInterface $imageUtil,
         MasterPassServiceInterface $masterPassService
     ) {

@@ -78,7 +78,7 @@ final class UpgradeAuthTokenService extends Service
         try {
             $this->transactionAware(
                 function () {
-                    foreach ($this->authTokenService->getAllBasic() as $item) {
+                    foreach ($this->authTokenService->getAll() as $item) {
 
                         $itemData = clone $item;
                         $itemData->setActionId($this->actionMapper($item->getActionId()));

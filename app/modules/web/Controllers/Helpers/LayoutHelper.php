@@ -29,6 +29,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Language;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -76,11 +77,11 @@ final class LayoutHelper extends HelperBase
      * Sets a full layout page
      *
      * @param string $page Page/view name
-     * @param Acl|null $acl
+     * @param AclInterface|null $acl
      *
      * @return LayoutHelper
      */
-    public function getFullLayout(string $page, Acl $acl = null): LayoutHelper
+    public function getFullLayout(string $page, AclInterface $acl = null): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->assign('useFixedHeader', true);
@@ -283,9 +284,9 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para mostrar el menú de acciones
      *
-     * @param Acl $acl
+     * @param AclInterface $acl
      */
-    public function getMenu(Acl $acl): void
+    public function getMenu(AclInterface $acl): void
     {
         $icons = $this->theme->getIcons();
         $actions = [];

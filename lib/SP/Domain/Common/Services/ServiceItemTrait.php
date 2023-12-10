@@ -36,5 +36,5 @@ trait ServiceItemTrait
      *
      * @return mixed
      */
-    abstract public function getAllBasic();
+    abstract public function getAll();
 }

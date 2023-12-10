@@ -24,17 +24,17 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\PublicLinkData;
-use SP\DataModel\PublicLinkListData;
+use SP\DataModel\PublicLinkList;
+use SP\Domain\Account\Models\PublicLink;
 
 /**
  * Class PublicLinkDataGenerator
  */
 final class PublicLinkDataGenerator extends DataGenerator
 {
-    public function buildPublicLink(): PublicLinkData
+    public function buildPublicLink(): PublicLink
     {
-        return new PublicLinkData($this->getPublicLinkProperties());
+        return new PublicLink($this->getPublicLinkProperties());
     }
 
     private function getPublicLinkProperties(): array
@@ -71,9 +71,9 @@ final class PublicLinkDataGenerator extends DataGenerator
         );
     }
 
-    public function buildPublicLinkList(): PublicLinkListData
+    public function buildPublicLinkList(): PublicLinkList
     {
-        return new PublicLinkListData(
+        return new PublicLinkList(
             array_merge($this->getPublicLinkProperties(), [
                 'userName'    => $this->faker->name,
                 'userLogin'   => $this->faker->userName,

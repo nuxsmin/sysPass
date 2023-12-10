@@ -30,11 +30,11 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthToken;
 use SP\Domain\Api\Ports\ApiRequestInterface;
 use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
-use SP\Domain\Auth\Services\AuthTokenService;
+use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\ContextInterface;
@@ -65,26 +65,24 @@ final class ApiService extends Service implements ApiServiceInterface
 {
     private const STATUS_INITIALIZED  = 0;
     private const STATUS_INITIALIZING = 1;
-    private TrackServiceInterface $trackService;
-    private TrackRequest $trackRequest;
-    private ?AuthToken   $authTokenData = null;
-    private ?string      $helpClass     = null;
-    private ?int                  $status        = null;
+    private TrackRequest    $trackRequest;
+    private ?AuthTokenModel $authToken = null;
+    private ?string         $helpClass = null;
+    private ?int            $status    = null;
 
     /**
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application $application,
-        TrackServiceInterface $trackService,
-        private ApiRequestInterface $apiRequest,
-        private AuthTokenServiceInterface $authTokenService,
-        private UserServiceInterface $userService,
-        private UserProfileServiceInterface $userProfileService
+        Application                                  $application,
+        private readonly TrackServiceInterface       $trackService,
+        private readonly ApiRequestInterface         $apiRequest,
+        private readonly AuthTokenServiceInterface   $authTokenService,
+        private readonly UserServiceInterface        $userService,
+        private readonly UserProfileServiceInterface $userProfileService
     ) {
         parent::__construct($application);
 
-        $this->trackService = $trackService;
         $this->trackRequest = $trackService->getTrackRequest(__CLASS__);
     }
 
@@ -111,7 +109,7 @@ final class ApiService extends Service implements ApiServiceInterface
         }
 
         try {
-            $this->authTokenData = $this->authTokenService
+            $this->authToken = $this->authTokenService
                 ->getTokenByToken($actionId, $this->getParam('authToken'));
         } catch (NoSuchItemException $e) {
             logger($e->getMessage(), 'ERROR');
@@ -125,13 +123,13 @@ final class ApiService extends Service implements ApiServiceInterface
             );
         }
 
-        if ($this->authTokenData->getActionId() !== $actionId) {
+        if ($this->authToken->getActionId() !== $actionId) {
             $this->accessDenied();
         }
 
         $this->setupUser();
 
-        if (AuthTokenService::isSecuredAction($actionId)) {
+        if (AuthToken::isSecuredAction($actionId)) {
             $this->requireMasterPass();
         }
 
@@ -162,9 +160,9 @@ final class ApiService extends Service implements ApiServiceInterface
     /**
      * Devolver el valor de un parámetro
      *
-     * @param  string  $param
-     * @param  bool  $required  Si es requerido
-     * @param  mixed|null  $default  Valor por defecto
+     * @param string $param
+     * @param bool $required Si es requerido
+     * @param mixed|null $default Valor por defecto
      *
      * @return mixed
      * @throws ServiceException
@@ -186,7 +184,7 @@ final class ApiService extends Service implements ApiServiceInterface
     /**
      * Devuelve la ayuda para una acción
      *
-     * @param  string  $action
+     * @param string $action
      *
      * @return array
      */
@@ -222,7 +220,7 @@ final class ApiService extends Service implements ApiServiceInterface
     private function setupUser(): void
     {
         $userLoginResponse = UserService::mapUserLoginResponse(
-            $this->userService->getById($this->authTokenData->getUserId())
+            $this->userService->getById($this->authToken->getUserId())
         );
         $userLoginResponse->getIsDisabled() && $this->accessDenied();
 
@@ -253,12 +251,12 @@ final class ApiService extends Service implements ApiServiceInterface
         try {
             $tokenPass = $this->getParam('tokenPass', true);
 
-            Hash::checkHashKey($tokenPass, $this->authTokenData->getHash()) || $this->accessDenied();
+            Hash::checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
 
             /** @var VaultInterface $vault */
-            $vault = unserialize($this->authTokenData->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
+            $vault = unserialize($this->authToken->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
 
-            $key = sha1($tokenPass.$this->getParam('authToken'));
+            $key = sha1($tokenPass . $this->getParam('authToken'));
 
             if ($vault && ($pass = $vault->getData($key))) {
                 return $pass;

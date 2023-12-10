@@ -28,7 +28,7 @@ use Aura\SqlQuery\QueryFactory;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Account\Ports\AccountRepositoryInterface;
@@ -409,12 +409,12 @@ final class AccountRepository extends Repository implements AccountRepositoryInt
         $query = $this->queryFactory
             ->newSelect()
             ->from('account_data_v')
-            ->cols(AccountDataView::getCols())
+            ->cols(AccountView::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $accountId])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, AccountDataView::class)
+        $queryData = QueryData::buildWithMapper($query, AccountView::class)
                               ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->doSelect($queryData);

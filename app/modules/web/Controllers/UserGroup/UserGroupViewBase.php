@@ -94,7 +94,7 @@ abstract class UserGroupViewBase extends ControllerBase
 
         $this->view->assign(
             'users',
-            SelectItemAdapter::factory($this->userService->getAllBasic())->getItemsFromModelSelected($users)
+            SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModelSelected($users)
         );
         $this->view->assign(
             'usedBy',

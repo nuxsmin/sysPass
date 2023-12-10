@@ -28,6 +28,7 @@ use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
@@ -44,10 +45,10 @@ abstract class UserGroupBase extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application $application,
-        Klein $router,
+        Application         $application,
+        Klein               $router,
         ApiServiceInterface $apiService,
-        Acl $acl,
+        AclInterface        $acl,
         UserGroupServiceInterface $groupService
     ) {
         parent::__construct($application, $router, $apiService, $acl);

@@ -95,5 +95,5 @@ interface CustomFieldDefServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array;
+    public function getAll(): array;
 }

@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapWeb;
-use SP\DataModel\PublicLinkListData;
+use SP\DataModel\PublicLinkList;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Ports\PublicLinkServiceInterface;
 use SP\Domain\Account\Services\PublicLinkService;
@@ -77,7 +77,7 @@ abstract class PublicLinkViewBase extends ControllerBase
 
         $publicLink = $publicLinkId
             ? $this->publicLinkService->getById($publicLinkId)
-            : new PublicLinkListData();
+            : new PublicLinkList();
 
         $this->view->assign('publicLink', $publicLink);
         $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo(), ['allowed_classes' => false]));

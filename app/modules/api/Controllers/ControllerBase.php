@@ -36,6 +36,7 @@ use SP\Domain\Api\Services\ApiResponse;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
@@ -64,7 +65,7 @@ abstract class ControllerBase
         Application $application,
         Klein $router,
         ApiServiceInterface $apiService,
-        Acl $acl
+        AclInterface $acl
     ) {
         $this->context = $application->getContext();
         $this->configData = $application->getConfig()->getConfigData();

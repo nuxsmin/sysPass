@@ -162,7 +162,7 @@ interface UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array;
+    public function getAll(): array;
 
     /**
      * Obtener el email de los usuarios de un grupo

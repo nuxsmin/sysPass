@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
 use SP\Domain\Common\Models\Simple;
@@ -578,7 +578,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === $id
-                       && $arg->getMapClassName() === AccountDataView::class
+                       && $arg->getMapClassName() === AccountView::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

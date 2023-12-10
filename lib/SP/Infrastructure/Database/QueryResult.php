@@ -36,7 +36,10 @@ use function SP\__u;
  */
 class QueryResult
 {
-    private ?array  $data            = null;
+    private ?array $data = null;
+    /**
+     * @var class-string<T>|null $dataType
+     */
     private ?string $dataType        = null;
     private int     $numRows         = 0;
     private int     $totalNumRows    = 0;
@@ -73,12 +76,10 @@ class QueryResult
 
     /**
      * @param class-string<T>|null $dataType
-     *
-     * @return T|mixed|null
-     *
+     * @return T
      * @throws SPException
      */
-    public function getData(?string $dataType = null): mixed
+    public function getData(?string $dataType = null): ?Model
     {
         $this->checkDataType($dataType);
 
@@ -87,7 +88,6 @@ class QueryResult
 
     /**
      * @param string|null $dataType
-     *
      * @return void
      * @throws SPException
      */

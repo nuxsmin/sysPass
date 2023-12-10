@@ -33,6 +33,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
 use SP\Domain\Export\Services\BackupFiles;
@@ -52,10 +53,10 @@ final class BackupController extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application $application,
-        Klein $router,
+        Application         $application,
+        Klein               $router,
         ApiServiceInterface $apiService,
-        Acl $acl,
+        AclInterface        $acl,
         FileBackupServiceInterface $fileBackupService
     ) {
         parent::__construct($application, $router, $apiService, $acl);

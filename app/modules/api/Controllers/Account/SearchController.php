@@ -35,6 +35,7 @@ use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Modules\Api\Controllers\ControllerBase;
 
 /**
@@ -45,10 +46,10 @@ final class SearchController extends ControllerBase
     private AccountSearchServiceInterface $accountSearchService;
 
     public function __construct(
-        Application $application,
-        Klein $router,
+        Application         $application,
+        Klein               $router,
         ApiServiceInterface $apiService,
-        Acl $acl,
+        AclInterface        $acl,
         AccountSearchServiceInterface $accountSearchService
     ) {
         parent::__construct($application, $router, $apiService, $acl);

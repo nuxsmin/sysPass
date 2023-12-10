@@ -169,7 +169,7 @@ final class ClientService extends Service implements ClientServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->clientRepository->getAll()->getDataAsArray();
     }

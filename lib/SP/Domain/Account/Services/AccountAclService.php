@@ -33,6 +33,7 @@ use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
@@ -62,8 +63,8 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
     private UserLoginResponse               $userData;
 
     public function __construct(
-        Application $application,
-        Acl $acl,
+        Application         $application,
+        AclInterface        $acl,
         UserToUserGroupServiceInterface $userGroupService,
         ?FileCacheInterface $fileCache = null
     ) {

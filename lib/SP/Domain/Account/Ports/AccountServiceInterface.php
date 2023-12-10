@@ -25,7 +25,6 @@
 namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Adapters\AccountData;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
@@ -33,7 +32,7 @@ use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -78,7 +77,7 @@ interface AccountServiceInterface
     public function withTags(AccountEnrichedDto $accountEnrichedDto): AccountEnrichedDto;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return bool
      * @throws ConstraintException
@@ -87,7 +86,7 @@ interface AccountServiceInterface
     public function incrementViewCounter(int $id): bool;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return bool
      * @throws QueryException
@@ -96,7 +95,7 @@ interface AccountServiceInterface
     public function incrementDecryptCounter(int $id): bool;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return Account
      * @throws ConstraintException
@@ -126,17 +125,17 @@ interface AccountServiceInterface
     public function create(AccountCreateDto $accountCreateDto): int;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
-     * @return AccountDataView
+     * @return AccountView
      * @throws QueryException
      * @throws NoSuchItemException
      * @throws ConstraintException
      */
-    public function getByIdEnriched(int $id): AccountDataView;
+    public function getByIdEnriched(int $id): AccountView;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return Account
      * @throws NoSuchItemException
@@ -146,7 +145,7 @@ interface AccountServiceInterface
     /**
      * Updates external items for the account
      *
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      * @param AccountUpdateDto $accountUpdateDto
      *
      * @throws ServiceException
@@ -163,7 +162,7 @@ interface AccountServiceInterface
     public function updateBulk(AccountUpdateBulkDto $accountUpdateBulkDto): void;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      * @param AccountUpdateDto $accountUpdateDto
      *
      * @throws ServiceException
@@ -187,7 +186,7 @@ interface AccountServiceInterface
     public function restoreModified(AccountHistoryDto $accountHistoryDto): void;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return AccountServiceInterface
      * @throws ServiceException
@@ -195,7 +194,7 @@ interface AccountServiceInterface
     public function delete(int $id): AccountServiceInterface;
 
     /**
-     * @param  int[]  $ids  The accounts ID
+     * @param int[] $ids The accounts ID
      *
      * @throws SPException
      * @throws ServiceException
@@ -203,7 +202,7 @@ interface AccountServiceInterface
     public function deleteByIdBatch(array $ids): void;
 
     /**
-     * @param  int|null  $id  The account ID
+     * @param int|null $id The account ID
      *
      * @return array
      * @throws QueryException
@@ -212,7 +211,7 @@ interface AccountServiceInterface
     public function getForUser(?int $id = null): array;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return array
      * @throws QueryException
@@ -221,7 +220,7 @@ interface AccountServiceInterface
     public function getLinked(int $id): array;
 
     /**
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return Simple
      * @throws QueryException
@@ -231,7 +230,7 @@ interface AccountServiceInterface
     public function getPasswordHistoryForId(int $id): Simple;
 
     /**
-     * @return AccountData[]
+     * @return Account[]
      */
     public function getAllBasic(): array;
 
@@ -253,7 +252,7 @@ interface AccountServiceInterface
     /**
      * Obtener los datos de una cuenta.
      *
-     * @param  int  $id  The account ID
+     * @param int $id The account ID
      *
      * @return Simple
      * @throws ConstraintException

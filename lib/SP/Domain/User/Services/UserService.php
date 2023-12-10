@@ -352,7 +352,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->userRepository->getBasicInfo()->getDataAsArray();
     }

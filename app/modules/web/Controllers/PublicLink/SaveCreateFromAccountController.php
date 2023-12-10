@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 use Exception;
 use JsonException;
 use SP\Core\Events\Event;
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonMessage;
@@ -44,8 +44,8 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
     /**
      * Saves create action
      *
-     * @param  int  $accountId
-     * @param  int  $notify
+     * @param int $accountId
+     * @param int $notify
      *
      * @return bool
      * @throws JsonException
@@ -60,11 +60,14 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
                 );
             }
 
-            $publicLinkData = new PublicLinkData();
-            $publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
-            $publicLinkData->setItemId($accountId);
-            $publicLinkData->setNotify((bool)$notify);
-            $publicLinkData->setHash(PasswordUtil::generateRandomBytes());
+            $publicLinkData = new PublicLink(
+                [
+                    'id' => PublicLinkService::TYPE_ACCOUNT,
+                    'itemId' => $accountId,
+                    'notify' => (bool)$notify,
+                    'hash' => PasswordUtil::generateRandomBytes()
+                ]
+            );
 
             $this->publicLinkService->create($publicLinkData);
 

@@ -44,8 +44,8 @@ trait AccountUseCases
     }
 
     /**
-     * @param  \SP\Domain\Account\Dtos\AccountCreateDto  $accountDto
-     * @param  \SP\Domain\Account\Models\Account  $account
+     * @param AccountCreateDto $accountDto
+     * @param Account $account
      *
      * @return void
      */

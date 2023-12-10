@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
@@ -38,28 +37,20 @@ final class AccountAclDto
 {
     use ItemDataTrait;
 
-    /**
-     * @param  int  $accountId
-     * @param  int  $userId
-     * @param  ItemData[]  $usersId
-     * @param  int  $userGroupId
-     * @param  ItemData[]  $userGroupsId
-     * @param  int  $dateEdit
-     */
     public function __construct(
-        private int $accountId,
-        private int $userId,
-        private array $usersId,
-        private int $userGroupId,
-        private array $userGroupsId,
-        private int $dateEdit
+        private readonly int $accountId,
+        private readonly int $userId,
+        private array        $usersId,
+        private readonly int $userGroupId,
+        private array        $userGroupsId,
+        private readonly int $dateEdit
     ) {
         $this->usersId = self::buildFromItemData($usersId);
         $this->userGroupsId = self::buildFromItemData($userGroupsId);
     }
 
     /**
-     * @param  AccountEnrichedDto  $accountDetailsResponse
+     * @param AccountEnrichedDto $accountDetailsResponse
      *
      * @return AccountAclDto
      */
@@ -91,10 +82,10 @@ final class AccountAclDto
     }
 
     /**
-     * @param  AccountSearchView  $accountSearchView
+     * @param AccountSearchView $accountSearchView
      *
-     * @param  array  $users
-     * @param  array  $userGroups
+     * @param array $users
+     * @param array $userGroups
      *
      * @return AccountAclDto
      */

@@ -180,7 +180,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->userGroupRepository->getAll()->getDataAsArray();
     }

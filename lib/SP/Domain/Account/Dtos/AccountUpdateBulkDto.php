@@ -43,7 +43,7 @@ final class AccountUpdateBulkDto
     }
 
     /**
-     * @return \SP\Domain\Account\Dtos\AccountUpdateDto[]
+     * @return AccountUpdateDto[]
      */
     public function getAccountUpdateDto(): array
     {

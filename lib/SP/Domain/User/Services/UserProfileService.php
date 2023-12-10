@@ -167,7 +167,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array
+    public function getAll(): array
     {
         return $this->userProfileRepository->getAll()->getDataAsArray();
     }

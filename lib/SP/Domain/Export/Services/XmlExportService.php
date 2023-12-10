@@ -263,7 +263,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting categories')))
             );
 
-            $categories = $this->categoryService->getAllBasic();
+            $categories = $this->categoryService->getAll();
 
             // Crear el nodo de categorías
             $nodeCategories = $this->xml->createElement('Categories');
@@ -378,7 +378,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting clients')))
             );
 
-            $clients = $this->clientService->getAllBasic();
+            $clients = $this->clientService->getAll();
 
             // Crear el nodo de clientes
             $nodeClients = $this->xml->createElement('Clients');
@@ -423,7 +423,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
                 new Event($this, EventMessage::factory()->addDescription(__u('Exporting tags')))
             );
 
-            $tags = $this->tagService->getAllBasic();
+            $tags = $this->tagService->getAll();
 
             // Crear el nodo de etiquetas
             $nodeTags = $this->xml->createElement('Tags');

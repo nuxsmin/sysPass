@@ -85,7 +85,7 @@ interface UserGroupServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAllBasic(): array;
+    public function getAll(): array;
 
     /**
      * Returns the item for given name

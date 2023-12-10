@@ -29,11 +29,12 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\PublickLinkOldData;
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
 use SP\Domain\Account\Ports\UpgradePublicLinkServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Util\Util;
+
 use function SP\__u;
 use function SP\processException;
 
@@ -75,10 +76,10 @@ final class UpgradePublicLinkService extends Service implements UpgradePublicLin
                         $data = Util::unserialize(
                             PublickLinkOldData::class,
                             $item['data'],
-                            PublicLinkData::class
+                            PublicLink::class
                         );
 
-                        $itemData = new PublicLinkData([
+                        $itemData = new PublicLink([
                             'id'            => $item['id'],
                             'itemId'        => $data->getItemId(),
                             'hash'          => $data->getLinkHash(),

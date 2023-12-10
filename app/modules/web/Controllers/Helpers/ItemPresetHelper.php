@@ -149,9 +149,9 @@ final class ItemPresetHelper extends HelperBase
      */
     public function setCommon(ItemPreset $itemPresetData): void
     {
-        $this->users = SelectItemAdapter::factory($this->userService->getAllBasic());
-        $this->userGroups = SelectItemAdapter::factory($this->userGroupService->getAllBasic());
-        $userProfiles = SelectItemAdapter::factory($this->userProfileService->getAllBasic());
+        $this->users = SelectItemAdapter::factory($this->userService->getAll());
+        $this->userGroups = SelectItemAdapter::factory($this->userGroupService->getAll());
+        $userProfiles = SelectItemAdapter::factory($this->userProfileService->getAll());
 
         $this->view->assign(
             'users',

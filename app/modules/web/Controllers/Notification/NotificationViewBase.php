@@ -82,7 +82,7 @@ abstract class NotificationViewBase extends ControllerBase
         if ($this->userData->getIsAdminApp()) {
             $this->view->assign(
                 'users',
-                SelectItemAdapter::factory($this->userService->getAllBasic())
+                SelectItemAdapter::factory($this->userService->getAll())
                     ->getItemsFromModelSelected([$notification->userId])
             );
         }

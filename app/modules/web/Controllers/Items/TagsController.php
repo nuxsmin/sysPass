@@ -61,6 +61,6 @@ final class TagsController extends SimpleControllerBase
     public function tagsAction(): void
     {
         JsonResponse::factory($this->router->response())
-                    ->sendRaw(SelectItemAdapter::factory($this->tagService->getAllBasic())->getJsonItemsFromModel());
+            ->sendRaw(SelectItemAdapter::factory($this->tagService->getAll())->getJsonItemsFromModel());
     }
 }

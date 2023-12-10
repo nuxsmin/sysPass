@@ -62,7 +62,7 @@ final class CategoriesController extends SimpleControllerBase
     {
         JsonResponse::factory($this->router->response())
                     ->sendRaw(
-                        SelectItemAdapter::factory($this->categoryService->getAllBasic())->getJsonItemsFromModel()
+                        SelectItemAdapter::factory($this->categoryService->getAll())->getJsonItemsFromModel()
                     );
     }
 }

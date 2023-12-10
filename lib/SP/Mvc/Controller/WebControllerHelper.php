@@ -26,8 +26,8 @@ namespace SP\Mvc\Controller;
 
 
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -41,7 +41,7 @@ final class WebControllerHelper
 {
     private ThemeInterface       $theme;
     private Klein                $router;
-    private Acl                  $acl;
+    private AclInterface $acl;
     private RequestInterface     $request;
     private PhpExtensionChecker  $extensionChecker;
     private TemplateInterface    $template;
@@ -50,9 +50,9 @@ final class WebControllerHelper
 
     public function __construct(
         SimpleControllerHelper $simpleControllerHelper,
-        TemplateInterface $template,
+        TemplateInterface    $template,
         BrowserAuthInterface $browser,
-        LayoutHelper $layoutHelper
+        LayoutHelper         $layoutHelper
     ) {
         $this->theme = $simpleControllerHelper->getTheme();
         $this->router = $simpleControllerHelper->getRouter();
@@ -74,7 +74,7 @@ final class WebControllerHelper
         return $this->router;
     }
 
-    public function getAcl(): Acl
+    public function getAcl(): AclInterface
     {
         return $this->acl;
     }

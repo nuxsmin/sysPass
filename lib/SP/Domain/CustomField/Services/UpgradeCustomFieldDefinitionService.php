@@ -212,7 +212,7 @@ final class UpgradeCustomFieldDefinitionService extends Service
         try {
             $this->transactionAware(
                 function () {
-                    foreach ($this->customFieldDefService->getAllBasic() as $item) {
+                    foreach ($this->customFieldDefService->getAll() as $item) {
                         $itemData = clone $item;
                         $itemData->setModuleId($this->moduleMapper((int)$item->getModuleId()));
 

@@ -31,17 +31,20 @@ namespace SP\Domain\Account\Dtos;
  */
 class AccountCacheDto
 {
-    private int $time;
+    private readonly int $time;
 
     /**
      * AccountCacheDto constructor.
      *
-     * @param  int  $accountId
-     * @param  array  $users
-     * @param  array  $userGroups
+     * @param int $accountId
+     * @param array $users
+     * @param array $userGroups
      */
-    public function __construct(private int $accountId, private array $users, private array $userGroups)
-    {
+    public function __construct(
+        private readonly int   $accountId,
+        private readonly array $users,
+        private readonly array $userGroups
+    ) {
         $this->time = time();
     }
 

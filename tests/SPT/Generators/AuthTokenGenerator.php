@@ -26,7 +26,7 @@ namespace SPT\Generators;
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\AuthToken;
+use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Core\Exceptions\CryptException;
 
 /**
@@ -47,7 +47,7 @@ final class AuthTokenGenerator extends DataGenerator
             'token' => $this->faker->sha1(),
             'createdBy' => $this->faker->randomNumber(),
             'startDate' => $this->faker->unixTime(),
-            'actionId' => $this->faker->randomNumber(),
+            'actionId' => $this->faker->randomNumber(4),
             'hash' => $this->faker->sha1(),
             'vault' => serialize($this->getVault())
         ];
@@ -56,7 +56,7 @@ final class AuthTokenGenerator extends DataGenerator
     private function getVault(): ?Vault
     {
         try {
-            return Vault::factory(new Crypt())->saveData($this->faker->text(), $this->faker->text);
+            return Vault::factory(new Crypt())->saveData($this->faker->text(), $this->faker->sha1());
         } catch (CryptException) {
             return null;
         }

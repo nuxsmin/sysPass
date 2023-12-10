@@ -28,6 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridData;
@@ -52,7 +53,7 @@ abstract class GridBase extends HelperBase implements GridInterface
         Application $application,
         TemplateInterface $template,
         RequestInterface $request,
-        Acl         $acl
+        AclInterface $acl
     ) {
         parent::__construct($application, $template, $request);
 

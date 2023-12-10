@@ -33,6 +33,8 @@ use SP\Domain\Config\Ports\ConfigInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
+use SP\Domain\Core\Exceptions\CryptException;
+
 use function SP\__u;
 use function SP\logger;
 
@@ -58,6 +60,7 @@ abstract class Service
 
     /**
      * @throws ServiceException
+     * @throws CryptException
      */
     final protected function getMasterKeyFromContext(): string
     {
@@ -82,6 +85,7 @@ abstract class Service
 
     /**
      * @throws ServiceException
+     * @throws CryptException
      */
     final protected function setMasterKeyInContext(string $masterPass): void
     {

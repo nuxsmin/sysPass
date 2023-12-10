@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\PublicLinkData;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Services\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -36,13 +36,13 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class PublicLinkForm extends FormBase implements FormInterface
 {
-    protected ?PublicLinkData $publicLinkData = null;
+    protected ?PublicLink $publicLink = null;
 
     /**
      * Validar el formulario
      *
-     * @param  int  $action
-     * @param  int|null  $id
+     * @param int $action
+     * @param int|null $id
      *
      * @return PublicLinkForm
      * @throws ValidationException
@@ -71,11 +71,14 @@ final class PublicLinkForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->publicLinkData = new PublicLinkData();
-        $this->publicLinkData->setId($this->itemId);
-        $this->publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
-        $this->publicLinkData->setItemId($this->request->analyzeInt('accountId'));
-        $this->publicLinkData->setNotify($this->request->analyzeBool('notify', false));
+        $this->publicLink = new PublicLink(
+            [
+                'id' => $this->itemId,
+                'typeId' => PublicLinkService::TYPE_ACCOUNT,
+                'itemId' => $this->request->analyzeInt('accountId'),
+                'notify' => $this->request->analyzeBool('notify', false)
+            ]
+        );
     }
 
     /**
@@ -83,13 +86,13 @@ final class PublicLinkForm extends FormBase implements FormInterface
      */
     protected function checkCommon(): void
     {
-        if (!$this->publicLinkData->getItemId()) {
+        if (!$this->publicLink->getItemId()) {
             throw new ValidationException(__u('An account is needed'));
         }
     }
 
-    public function getItemData(): ?PublicLinkData
+    public function getItemData(): ?PublicLink
     {
-        return $this->publicLinkData;
+        return $this->publicLink;
     }
 }

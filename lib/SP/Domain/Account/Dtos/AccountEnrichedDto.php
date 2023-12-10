@@ -25,8 +25,7 @@
 namespace SP\Domain\Account\Dtos;
 
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Models\AccountDataView;
-use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
 /**
@@ -36,7 +35,7 @@ class AccountEnrichedDto
 {
     use ItemDataTrait;
 
-    private int $id;
+    private readonly int $id;
     /**
      * @var ItemData[] Los usuarios secundarios de la cuenta.
      */
@@ -53,9 +52,9 @@ class AccountEnrichedDto
     /**
      * AccountDetailsResponse constructor.
      *
-     * @param  \SP\Domain\Account\Models\AccountDataView  $accountDataView
+     * @param AccountView $accountDataView
      */
-    public function __construct(private AccountDataView $accountDataView)
+    public function __construct(private readonly AccountView $accountDataView)
     {
         $this->id = $accountDataView->getId();
     }
@@ -69,9 +68,9 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param  ItemData[]  $users
+     * @param ItemData[] $users
      *
-     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @return AccountEnrichedDto
      */
     public function withUsers(array $users): AccountEnrichedDto
     {
@@ -82,9 +81,9 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param  ItemData[]  $groups
+     * @param ItemData[] $groups
      *
-     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @return AccountEnrichedDto
      */
     public function withUserGroups(array $groups): AccountEnrichedDto
     {
@@ -95,9 +94,9 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param  ItemData[]  $tags
+     * @param ItemData[] $tags
      *
-     * @return \SP\Domain\Account\Dtos\AccountEnrichedDto
+     * @return AccountEnrichedDto
      */
     public function withTags(array $tags): AccountEnrichedDto
     {
@@ -131,7 +130,7 @@ class AccountEnrichedDto
         return $this->tags;
     }
 
-    public function getAccountDataView(): AccountDataView
+    public function getAccountDataView(): AccountView
     {
         return $this->accountDataView;
     }

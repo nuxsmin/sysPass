@@ -31,6 +31,7 @@ use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
@@ -50,7 +51,7 @@ abstract class ClientBase extends ControllerBase
         Application            $application,
         Klein                  $router,
         ApiServiceInterface    $apiService,
-        Acl                    $acl,
+        AclInterface $acl,
         ClientServiceInterface $clientService,
         ClientAdapterInterface $clientAdapter
     ) {

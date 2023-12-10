@@ -27,20 +27,20 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use Exception;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\PhpExtensionChecker;
 use SP\DataModel\ProfileData;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\PhpExtensionCheckerInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -63,21 +63,21 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected EventDispatcher         $eventDispatcher;
-    protected ConfigFileService       $config;
-    protected SessionContextInterface $session;
-    protected ThemeInterface          $theme;
-    protected Acl                     $acl;
-    protected ConfigDataInterface     $configData;
-    protected RequestInterface        $request;
-    protected PhpExtensionChecker     $extensionChecker;
-    protected TemplateInterface       $view;
-    protected ?UserLoginResponse      $userData        = null;
-    protected ?ProfileData            $userProfileData = null;
-    protected bool                    $isAjax;
-    protected LayoutHelper            $layoutHelper;
-    protected string                  $actionName;
-    private BrowserAuthInterface      $browser;
+    protected EventDispatcher              $eventDispatcher;
+    protected ConfigInterface              $config;
+    protected SessionContextInterface      $session;
+    protected ThemeInterface               $theme;
+    protected AclInterface                 $acl;
+    protected ConfigDataInterface          $configData;
+    protected RequestInterface             $request;
+    protected PhpExtensionCheckerInterface $extensionChecker;
+    protected TemplateInterface            $view;
+    protected ?UserLoginResponse           $userData        = null;
+    protected ?ProfileData                 $userProfileData = null;
+    protected bool                         $isAjax;
+    protected LayoutHelper                 $layoutHelper;
+    protected string                       $actionName;
+    private BrowserAuthInterface           $browser;
 
     public function __construct(
         Application $application,

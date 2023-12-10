@@ -34,6 +34,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -58,11 +59,11 @@ final class ImportController extends SimpleControllerBase
     private LdapImportServiceInterface $ldapImportService;
 
     public function __construct(
-        Application $application,
-        ThemeInterface $theme,
-        Klein $router,
-        Acl $acl,
-        RequestInterface $request,
+        Application         $application,
+        ThemeInterface      $theme,
+        Klein               $router,
+        AclInterface        $acl,
+        RequestInterface    $request,
         PhpExtensionChecker $extensionChecker,
         LdapImportServiceInterface $ldapImportService
     ) {

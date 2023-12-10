@@ -30,7 +30,7 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountDataView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Models\Simple;
 
@@ -48,9 +48,9 @@ final class AccountDataGenerator extends DataGenerator
         return $out->withUserGroups($this->buildItemData());
     }
 
-    public function buildAccountDataView(): AccountDataView
+    public function buildAccountDataView(): AccountView
     {
-        return new AccountDataView($this->getAccountProperties());
+        return new AccountView($this->getAccountProperties());
     }
 
     /**

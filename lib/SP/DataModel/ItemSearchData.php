@@ -28,20 +28,13 @@ use SP\Util\Filter;
 
 /**
  * Class ItemSearchData
- *
- * @package SP\DataModel
  */
 class ItemSearchData
 {
-    /**
-     * @param  string|null  $seachString
-     * @param  int|null  $limitStart
-     * @param  int|null  $limitCount
-     */
     public function __construct(
-        private ?string $seachString = null,
-        private ?int $limitStart = 0,
-        private ?int $limitCount = 0,
+        private ?string       $seachString = null,
+        private readonly ?int $limitStart = 0,
+        private readonly ?int $limitCount = 0,
     ) {
         if (!empty($seachString)) {
             $this->seachString = Filter::safeSearchString($seachString);
