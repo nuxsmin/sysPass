@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Infrastructure\Auth\Repositories;
+namespace SPT\Infrastructure\Auth\Repositories;
 
 use Aura\SqlQuery\Common\DeleteInterface;
 use Aura\SqlQuery\Common\InsertInterface;
@@ -298,29 +298,36 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
     public function testRefreshVaultByUserId()
     {
         $userId = self::$faker->randomNumber();
-        $token = self::$faker->sha1();
+        $vault = self::$faker->sha1();
+        $hash = self::$faker->sha1();
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($userId, $token) {
+            static function (QueryData $arg) use ($userId, $vault, $hash) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 2
+                return count($params) === 3
                        && $params['userId'] === $userId
-                       && $params['token'] === $token
+                       && $params['vault'] === $vault
+                       && $params['hash'] === $hash
                        && $arg->getOnErrorMessage() === 'Internal error'
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
             }
         );
 
+        $queryResult = new QueryResult([1]);
+        $queryResult->setAffectedNumRows(10);
+
         $this->database
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn(new QueryResult([1]));
+            ->willReturn($queryResult);
 
-        $this->authTokenRepository->refreshTokenByUserId($userId, $token);
+        $out = $this->authTokenRepository->refreshVaultByUserId($userId, $vault, $hash);
+
+        self::assertEquals(10, $out);
     }
 
     /**
