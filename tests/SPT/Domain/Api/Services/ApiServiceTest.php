@@ -32,7 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestInterface;
-use SP\Domain\Api\Services\ApiService;
+use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
@@ -68,7 +68,7 @@ class ApiServiceTest extends UnitaryTestCase
     private AuthTokenServiceInterface|MockObject   $authTokenService;
     private UserServiceInterface|MockObject        $userService;
     private MockObject|UserProfileServiceInterface $userProfileService;
-    private ApiService                             $apiService;
+    private Api $apiService;
     private TrackRequest                           $trackRequest;
 
     public static function getParamIntDataProvider(): array
@@ -200,7 +200,7 @@ class ApiServiceTest extends UnitaryTestCase
         $apiRequest->method('exists')->willReturn(false);
         $apiRequest->method('getMethod')->willReturn('account/view');
 
-        $apiService = new ApiService(
+        $apiService = new Api(
             $this->application,
             $this->trackService,
             $apiRequest,
@@ -307,7 +307,7 @@ class ApiServiceTest extends UnitaryTestCase
         $this->trackService->method('getTrackRequest')->willReturn($this->trackRequest);
         $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName);
 
-        $this->apiService = new ApiService(
+        $this->apiService = new Api(
             $this->application,
             $this->trackService,
             $this->apiRequest,

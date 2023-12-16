@@ -57,18 +57,14 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class ApiService
- *
- * @package SP\Domain\Common\Services\ApiService
+ * Class Api
  */
-final class ApiService extends Service implements ApiServiceInterface
+final class Api extends Service implements ApiServiceInterface
 {
-    private const STATUS_INITIALIZED  = 0;
-    private const STATUS_INITIALIZING = 1;
     private TrackRequest    $trackRequest;
     private ?AuthTokenModel $authToken = null;
     private ?string         $helpClass = null;
-    private ?int            $status    = null;
+    private ?ApiStatuses $status = null;
 
     /**
      * @throws InvalidArgumentException
@@ -95,7 +91,7 @@ final class ApiService extends Service implements ApiServiceInterface
      */
     public function setup(int $actionId): void
     {
-        $this->status = self::STATUS_INITIALIZING;
+        $this->status = ApiStatuses::INITIALIZING;
 
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
@@ -133,7 +129,7 @@ final class ApiService extends Service implements ApiServiceInterface
             $this->requireMasterPass();
         }
 
-        $this->status = self::STATUS_INITIALIZED;
+        $this->status = ApiStatuses::INITIALIZED;
     }
 
     /**
@@ -350,6 +346,8 @@ final class ApiService extends Service implements ApiServiceInterface
     }
 
     /**
+     * @return string
+     * @throws CryptException
      * @throws ServiceException
      */
     public function getMasterPass(): string

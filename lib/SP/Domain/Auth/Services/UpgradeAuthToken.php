@@ -34,29 +34,23 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 
+use function SP\__u;
+use function SP\processException;
+
 
 /**
  * Class UpgradeAuthToken
- *
- * @package SP\Domain\Upgrade\Services
  */
-final class UpgradeAuthTokenService extends Service
-    implements UpgradeAuthTokenServiceInterface
+final class UpgradeAuthToken extends Service implements UpgradeAuthTokenServiceInterface
 {
-    protected AuthTokenServiceInterface $authTokenService;
-    private DatabaseInterface           $database;
 
     public function __construct(
-        Application $application,
-        AuthTokenServiceInterface $authTokenService,
-        DatabaseInterface $database
+        Application                                  $application,
+        protected readonly AuthTokenServiceInterface $authTokenService,
+        private readonly DatabaseInterface           $database
     ) {
         parent::__construct($application);
-
-        $this->authTokenService = $authTokenService;
-        $this->database = $database;
     }
-
 
     /**
      * upgrade_300_18072901
@@ -79,7 +73,6 @@ final class UpgradeAuthTokenService extends Service
             $this->transactionAware(
                 function () {
                     foreach ($this->authTokenService->getAll() as $item) {
-
                         $itemData = clone $item;
                         $itemData->setActionId($this->actionMapper($item->getActionId()));
 
@@ -119,53 +112,30 @@ final class UpgradeAuthTokenService extends Service
 
     private function actionMapper(int $moduleId): int
     {
-        switch ($moduleId) {
-            case 1:
-                return AclActionsInterface::ACCOUNT_SEARCH;
-            case 100:
-                return AclActionsInterface::ACCOUNT_VIEW;
-            case 104:
-                return AclActionsInterface::ACCOUNT_VIEW_PASS;
-            case 103:
-                return AclActionsInterface::ACCOUNT_DELETE;
-            case 101:
-                return AclActionsInterface::ACCOUNT_CREATE;
-            case 615:
-                return AclActionsInterface::CATEGORY_SEARCH;
-            case 610:
-                return AclActionsInterface::CATEGORY_VIEW;
-            case 611:
-                return AclActionsInterface::CATEGORY_CREATE;
-            case 612:
-                return AclActionsInterface::CATEGORY_EDIT;
-            case 613:
-                return AclActionsInterface::CATEGORY_DELETE;
-            case 625:
-                return AclActionsInterface::CLIENT_SEARCH;
-            case 620:
-                return AclActionsInterface::CLIENT_VIEW;
-            case 621:
-                return AclActionsInterface::CLIENT_CREATE;
-            case 622:
-                return AclActionsInterface::CLIENT_EDIT;
-            case 623:
-                return AclActionsInterface::CLIENT_DELETE;
-            case 685:
-                return AclActionsInterface::TAG_SEARCH;
-            case 681:
-                return AclActionsInterface::TAG_VIEW;
-            case 680:
-                return AclActionsInterface::TAG_CREATE;
-            case 682:
-                return AclActionsInterface::TAG_EDIT;
-            case 683:
-                return AclActionsInterface::TAG_DELETE;
-            case 1041:
-                return AclActionsInterface::CONFIG_BACKUP_RUN;
-            case 1061:
-                return AclActionsInterface::CONFIG_EXPORT_RUN;
-        }
-
-        return $moduleId;
+        return match ($moduleId) {
+            1 => AclActionsInterface::ACCOUNT_SEARCH,
+            100 => AclActionsInterface::ACCOUNT_VIEW,
+            104 => AclActionsInterface::ACCOUNT_VIEW_PASS,
+            103 => AclActionsInterface::ACCOUNT_DELETE,
+            101 => AclActionsInterface::ACCOUNT_CREATE,
+            615 => AclActionsInterface::CATEGORY_SEARCH,
+            610 => AclActionsInterface::CATEGORY_VIEW,
+            611 => AclActionsInterface::CATEGORY_CREATE,
+            612 => AclActionsInterface::CATEGORY_EDIT,
+            613 => AclActionsInterface::CATEGORY_DELETE,
+            625 => AclActionsInterface::CLIENT_SEARCH,
+            620 => AclActionsInterface::CLIENT_VIEW,
+            621 => AclActionsInterface::CLIENT_CREATE,
+            622 => AclActionsInterface::CLIENT_EDIT,
+            623 => AclActionsInterface::CLIENT_DELETE,
+            685 => AclActionsInterface::TAG_SEARCH,
+            681 => AclActionsInterface::TAG_VIEW,
+            680 => AclActionsInterface::TAG_CREATE,
+            682 => AclActionsInterface::TAG_EDIT,
+            683 => AclActionsInterface::TAG_DELETE,
+            1041 => AclActionsInterface::CONFIG_BACKUP_RUN,
+            1061 => AclActionsInterface::CONFIG_EXPORT_RUN,
+            default => $moduleId,
+        };
     }
 }

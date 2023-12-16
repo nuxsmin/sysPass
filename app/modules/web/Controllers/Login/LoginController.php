@@ -25,12 +25,13 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use Exception;
+use JsonException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LoginServiceInterface;
-use SP\Domain\Auth\Services\LoginService;
+use SP\Domain\Auth\Services\Login;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,7 +46,7 @@ final class LoginController extends ControllerBase
 {
     use JsonTrait;
 
-    private LoginService $loginService;
+    private Login $loginService;
 
     public function __construct(
         Application $application,
@@ -61,7 +62,7 @@ final class LoginController extends ControllerBase
      * Login action
      *
      * @return bool
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function loginAction(): bool
     {

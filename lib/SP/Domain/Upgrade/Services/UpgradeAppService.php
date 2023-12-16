@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\UpgradePublicLinkServiceInterface;
 use SP\Domain\Account\Services\UpgradePublicLinkService;
 use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
-use SP\Domain\Auth\Services\UpgradeAuthTokenService;
+use SP\Domain\Auth\Services\UpgradeAuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -60,9 +60,9 @@ final class UpgradeAppService extends Service implements UpgradeAppServiceInterf
         '310.19042701',
     ];
     private UpgradeCustomFieldDefinitionService $upgradeCustomFieldDefinition;
-    private UpgradePublicLinkService            $upgradePublicLink;
-    private UpgradeAuthTokenService             $upgradeAuthToken;
-    private UpgradeCustomFieldDataService       $upgradeCustomFieldData;
+    private UpgradePublicLinkService      $upgradePublicLink;
+    private UpgradeAuthToken              $upgradeAuthToken;
+    private UpgradeCustomFieldDataService $upgradeCustomFieldData;
     private UpgradePluginService                $upgradePlugin;
 
     public function __construct(

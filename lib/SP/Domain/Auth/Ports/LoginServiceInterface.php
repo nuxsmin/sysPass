@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -50,9 +50,9 @@ interface LoginServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
-     * @uses LoginService::authBrowser()
-     * @uses LoginService::authDatabase()
-     * @uses LoginService::authLdap()
+     * @uses Login::authBrowser()
+     * @uses Login::authDatabase()
+     * @uses Login::authLdap()
      *
      */
     public function doLogin(): LoginResponse;

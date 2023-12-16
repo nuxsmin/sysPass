@@ -24,8 +24,6 @@
 
 namespace SP\Domain\Auth\Services;
 
-defined('APP_ROOT') || die();
-
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
@@ -43,7 +41,6 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
@@ -66,11 +63,9 @@ use SP\Util\PasswordUtil;
 use function SP\__u;
 
 /**
- * Class LoginService
- *
- * @package SP\Domain\Common\Services
+ * Class Login
  */
-final class LoginService extends Service implements LoginServiceInterface
+final class Login extends Service implements LoginServiceInterface
 {
     private const STATUS_INVALID_LOGIN         = 1;
     private const STATUS_INVALID_MASTER_PASS   = 2;
@@ -81,50 +76,28 @@ final class LoginService extends Service implements LoginServiceInterface
     private const STATUS_PASS                  = 0;
     private const STATUS_NONE                  = 100;
 
-    private AuthProviderInterface               $authProvider;
-    private UserLoginData                       $userLoginData;
-    private ConfigDataInterface                 $configData;
-    private ThemeInterface                      $theme;
-    private UserServiceInterface                $userService;
-    private LanguageInterface                   $language;
-    private TrackServiceInterface               $trackService;
-    private TrackRequest                        $trackRequest;
-    private RequestInterface                    $request;
-    private ?string                             $from = null;
-    private UserPassRecoverServiceInterface     $userPassRecoverService;
-    private TemporaryMasterPassServiceInterface $temporaryMasterPassService;
-    private UserPassServiceInterface            $userPassService;
-    private UserProfileServiceInterface         $userProfileService;
+    private UserLoginData       $userLoginData;
+    private ConfigDataInterface $configData;
+    private TrackRequest        $trackRequest;
+    private ?string             $from = null;
 
     /**
      * @throws InvalidArgumentException
-     * @throws AuthException
      */
     public function __construct(
-        Application                         $application,
-        AuthProviderInterface               $authProvider,
-        ThemeInterface                      $theme,
-        LanguageInterface                   $language,
-        TrackServiceInterface               $trackService,
-        RequestInterface                    $request,
-        UserServiceInterface                $userService,
-        UserPassRecoverServiceInterface     $userPassRecoverService,
-        TemporaryMasterPassServiceInterface $temporaryMasterPassService,
-        UserPassServiceInterface            $userPassService,
-        UserProfileServiceInterface         $userProfileService
+        Application                                          $application,
+        private readonly AuthProviderInterface               $authProvider,
+        private readonly LanguageInterface                   $language,
+        private readonly TrackServiceInterface               $trackService,
+        private readonly RequestInterface                    $request,
+        private readonly UserServiceInterface                $userService,
+        private readonly UserPassRecoverServiceInterface     $userPassRecoverService,
+        private readonly TemporaryMasterPassServiceInterface $temporaryMasterPassService,
+        private readonly UserPassServiceInterface            $userPassService,
+        private readonly UserProfileServiceInterface         $userProfileService
     ) {
         parent::__construct($application);
 
-        $this->authProvider = $authProvider;
-        $this->theme = $theme;
-        $this->language = $language;
-        $this->trackService = $trackService;
-        $this->request = $request;
-        $this->userService = $userService;
-        $this->userPassRecoverService = $userPassRecoverService;
-        $this->temporaryMasterPassService = $temporaryMasterPassService;
-        $this->userPassService = $userPassService;
-        $this->userProfileService = $userProfileService;
         $this->configData = $this->config->getConfigData();
         $this->userLoginData = new UserLoginData();
         $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
@@ -141,9 +114,9 @@ final class LoginService extends Service implements LoginServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
-     * @uses LoginService::authBrowser()
-     * @uses LoginService::authDatabase()
-     * @uses LoginService::authLdap()
+     * @uses Login::authBrowser()
+     * @uses Login::authDatabase()
+     * @uses Login::authLdap()
      *
      */
     public function doLogin(): LoginResponse

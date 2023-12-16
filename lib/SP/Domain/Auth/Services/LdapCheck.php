@@ -35,9 +35,9 @@ use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
- * Class LdapCheckService
+ * Class LdapCheck
  */
-final class LdapCheckService extends Service implements LdapCheckServiceInterface
+final class LdapCheck extends Service implements LdapCheckServiceInterface
 {
     public function __construct(
         Application $application,
