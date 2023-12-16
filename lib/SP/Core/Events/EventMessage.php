@@ -164,9 +164,9 @@ class EventMessage implements MessageInterface
 
     /**
      * @param string|class-string<T> $type
-     * @return array<T>|null
+     * @return array<T>|string|int|bool|null
      */
-    public function getExtra(string $type): ?array
+    public function getExtra(string $type): array|string|int|bool|null
     {
         return $this->extra[$type] ?? null;
     }
@@ -190,9 +190,9 @@ class EventMessage implements MessageInterface
      * Extra data are stored as an array of values per key, thus each key is unique
      *
      * @param class-string<T> $type
-     * @param array<T> $data
+     * @param array<T>|string|int|bool $data
      */
-    public function addExtra(string $type, array $data): EventMessage
+    public function addExtra(string $type, array|string|int|bool|null $data): EventMessage
     {
         if (!isset($this->extra[$type]) || !in_array($data, $this->extra[$type])) {
             $this->extra[$type][] = $data;
