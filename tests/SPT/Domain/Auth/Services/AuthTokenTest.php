@@ -26,7 +26,9 @@ namespace SPT\Domain\Auth\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Exception;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
@@ -53,9 +55,9 @@ use SPT\UnitaryTestCase;
 class AuthTokenTest extends UnitaryTestCase
 {
 
-    private AuthTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject $authTokenRepository;
-    private CryptInterface|\PHPUnit\Framework\MockObject\MockObject               $crypt;
-    private AuthToken                                                             $authToken;
+    private AuthTokenRepositoryInterface|MockObject $authTokenRepository;
+    private CryptInterface|MockObject               $crypt;
+    private AuthToken                               $authToken;
 
     public static function secureActionDataProvider(): array
     {
@@ -553,7 +555,7 @@ class AuthTokenTest extends UnitaryTestCase
 
     /**
      * @throws ContextException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRefreshAndUpdate()
     {
@@ -640,6 +642,4 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->authToken = new AuthToken($this->application, $this->authTokenRepository, $this->crypt);
     }
-
-
 }

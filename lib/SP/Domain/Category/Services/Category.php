@@ -43,21 +43,19 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class CategoryService
+ * Class Category
  *
  * @template T of CategoryModel
  */
-final class CategoryService extends Service implements CategoryServiceInterface
+final class Category extends Service implements CategoryServiceInterface
 {
     use ServiceItemTrait;
 
-    protected CategoryRepositoryInterface $categoryRepository;
-
-    public function __construct(Application $application, CategoryRepositoryInterface $categoryRepository)
-    {
+    public function __construct(
+        Application                                  $application,
+        private readonly CategoryRepositoryInterface $categoryRepository
+    ) {
         parent::__construct($application);
-
-        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -129,7 +127,7 @@ final class CategoryService extends Service implements CategoryServiceInterface
      */
     public function deleteByIdBatch(array $ids): void
     {
-        if ($this->categoryRepository->deleteByIdBatch($ids)->getAffectedNumRows()) {
+        if ($this->categoryRepository->deleteByIdBatch($ids)->getAffectedNumRows() === 0) {
             throw new ServiceException(__u('Error while deleting categories'), SPException::WARNING);
         }
     }
