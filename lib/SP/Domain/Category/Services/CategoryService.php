@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,10 @@
 
 namespace SP\Domain\Category\Services;
 
+use Exception;
 use SP\Core\Application;
-use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepositoryInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Common\Services\Service;
@@ -39,10 +40,12 @@ use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__u;
+
 /**
  * Class CategoryService
  *
- * @package SP\Domain\Category\Services
+ * @template T of CategoryModel
  */
 final class CategoryService extends Service implements CategoryServiceInterface
 {
@@ -58,8 +61,9 @@ final class CategoryService extends Service implements CategoryServiceInterface
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<T>
+     * @throws Exception
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -70,8 +74,9 @@ final class CategoryService extends Service implements CategoryServiceInterface
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
-    public function getById(int $id): CategoryData
+    public function getById(int $id): CategoryModel
     {
         $result = $this->categoryRepository->getById($id);
 
@@ -79,7 +84,7 @@ final class CategoryService extends Service implements CategoryServiceInterface
             throw new NoSuchItemException(__u('Category not found'), SPException::INFO);
         }
 
-        return $result->getData();
+        return $result->getData(CategoryModel::class);
     }
 
     /**
@@ -88,8 +93,9 @@ final class CategoryService extends Service implements CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
+     * @throws SPException
      */
-    public function getByName(string $name): ?CategoryData
+    public function getByName(string $name): ?CategoryModel
     {
         $result = $this->categoryRepository->getByName($name);
 
@@ -97,7 +103,7 @@ final class CategoryService extends Service implements CategoryServiceInterface
             throw new NoSuchItemException(__u('Category not found'), SPException::INFO);
         }
 
-        return $result->getData();
+        return $result->getData(CategoryModel::class);
     }
 
     /**
@@ -107,7 +113,7 @@ final class CategoryService extends Service implements CategoryServiceInterface
      */
     public function delete(int $id): CategoryServiceInterface
     {
-        if ($this->categoryRepository->delete($id) === 0) {
+        if ($this->categoryRepository->delete($id)->getAffectedNumRows() === 0) {
             throw new NoSuchItemException(__u('Category not found'), SPException::INFO);
         }
 
@@ -121,24 +127,20 @@ final class CategoryService extends Service implements CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int
+    public function deleteByIdBatch(array $ids): void
     {
-        $count = $this->categoryRepository->deleteByIdBatch($ids);
-
-        if ($count !== count($ids)) {
+        if ($this->categoryRepository->deleteByIdBatch($ids)->getAffectedNumRows()) {
             throw new ServiceException(__u('Error while deleting categories'), SPException::WARNING);
         }
-
-        return $count;
     }
 
     /**
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create(CategoryData $itemData): int
+    public function create(CategoryModel $category): int
     {
-        return $this->categoryRepository->create($itemData);
+        return $this->categoryRepository->create($category)->getLastId();
     }
 
     /**
@@ -146,20 +148,21 @@ final class CategoryService extends Service implements CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(CategoryData $itemData): int
+    public function update(CategoryModel $category): void
     {
-        return $this->categoryRepository->update($itemData);
+        $this->categoryRepository->update($category);
     }
 
     /**
      * Get all items from the service's repository
      *
-     * @return CategoryData[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getAll(): array
     {
-        return $this->categoryRepository->getAll()->getDataAsArray();
+        return $this->categoryRepository->getAll()->getDataAsArray(CategoryModel::class);
     }
 }

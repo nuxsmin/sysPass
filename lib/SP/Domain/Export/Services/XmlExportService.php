@@ -34,9 +34,9 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\PhpExtensionChecker;
-use SP\DataModel\CategoryData;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Ports\AccountToTagServiceInterface;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
@@ -275,7 +275,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
             }
 
             foreach ($categories as $category) {
-                /** @var $category CategoryData */
+                /** @var $category Category */
                 $categoryName = $this->xml->createElement('name', $this->escapeChars($category->getName()));
                 $categoryDescription = $this->xml->createElement(
                     'description',

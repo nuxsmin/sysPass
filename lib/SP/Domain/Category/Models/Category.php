@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,45 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Category\Models;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
-defined('APP_ROOT') || die();
-
 /**
- * Class CategoryData
- *
- * @package SP\DataModel
+ * Class Category
  */
-class CategoryData extends Model implements DataModelInterface
+class Category extends Model implements DataModelInterface
 {
-    public ?int $id = null;
-    public ?string $name = null;
-    public ?string $description = null;
-    public ?string $hash = null;
-
-    public function __construct(
-        ?int    $id = null,
-        ?string $name = null,
-        ?string $description = null
-    )
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-    }
+    protected ?int    $id          = null;
+    protected ?string $name        = null;
+    protected ?string $description = null;
+    protected ?string $hash        = null;
 
     public function getId(): int
     {
-        return (int)$this->id;
-    }
-
-    public function setId(int $id): CategoryData
-    {
-        $this->id = $id;
-        return $this;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -68,19 +47,9 @@ class CategoryData extends Model implements DataModelInterface
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function setDescription(?string $description): void
-    {
-        $this->description = $description;
     }
 
     public function getHash(): ?string

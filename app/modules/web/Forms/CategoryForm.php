@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\CategoryData;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class CategoryForm extends FormBase implements FormInterface
 {
-    protected ?CategoryData $categoryData = null;
+    protected ?Category $categoryData = null;
 
     /**
      * Validar el formulario
@@ -70,7 +70,7 @@ final class CategoryForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->categoryData = new CategoryData();
+        $this->categoryData = new Category();
         $this->categoryData->setId($this->itemId);
         $this->categoryData->setName($this->request->analyzeString('name'));
         $this->categoryData->setDescription($this->request->analyzeString('description'));
@@ -86,7 +86,7 @@ final class CategoryForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?CategoryData
+    public function getItemData(): ?Category
     {
         return $this->categoryData;
     }

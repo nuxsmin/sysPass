@@ -34,10 +34,10 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Services\XmlVerifyService;
 use SP\Util\VersionUtil;
@@ -229,7 +229,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Categories',
             'Category',
             function (DOMElement $category) {
-                $categoryData = new CategoryData();
+                $categoryData = new Category();
 
                 foreach ($category->childNodes as $node) {
                     if (isset($node->tagName)) {

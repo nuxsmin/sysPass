@@ -221,7 +221,7 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -301,7 +301,7 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**

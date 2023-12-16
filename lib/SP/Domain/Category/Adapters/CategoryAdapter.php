@@ -25,7 +25,7 @@
 namespace SP\Domain\Category\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\DataModel\CategoryData;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
@@ -66,7 +66,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(CategoryData $data): Collection
+    public function includeCustomFields(Category $data): Collection
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $this->customFieldService),
@@ -77,7 +77,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
     /**
      * @throws ActionNotFoundException
      */
-    public function transform(CategoryData $data): array
+    public function transform(Category $data): array
     {
         $actionRoute = $this->actions->getActionById(AclActionsInterface::CATEGORY_VIEW)->getRoute();
 

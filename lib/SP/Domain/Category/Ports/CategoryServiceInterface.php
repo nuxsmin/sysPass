@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,8 @@
 
 namespace SP\Domain\Category\Ports;
 
-
-use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -36,13 +35,15 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class CategoryService
+ * Interface CategoryServiceInterface
  *
- * @package SP\Domain\Category\Services
+ * @template T of Category
  */
 interface CategoryServiceInterface
 {
     /**
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -53,7 +54,7 @@ interface CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): CategoryData;
+    public function getById(int $id): Category;
 
     /**
      * Returns the item for given id
@@ -62,7 +63,7 @@ interface CategoryServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName(string $name): ?CategoryData;
+    public function getByName(string $name): ?Category;
 
     /**
      * @throws ConstraintException
@@ -78,25 +79,25 @@ interface CategoryServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int;
+    public function deleteByIdBatch(array $ids): void;
 
     /**
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create(CategoryData $itemData): int;
+    public function create(Category $category): int;
 
     /**
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(CategoryData $itemData): int;
+    public function update(Category $category): void;
 
     /**
      * Get all items from the service's repository
      *
-     * @return CategoryData[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      */

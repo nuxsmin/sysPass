@@ -298,7 +298,7 @@ final class AuthToken extends Service implements AuthTokenServiceInterface
     }
 
     /**
-     * @return AuthToken[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

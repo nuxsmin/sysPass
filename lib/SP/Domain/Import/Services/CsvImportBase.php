@@ -29,9 +29,9 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 
@@ -110,7 +110,7 @@ abstract class CsvImportBase
 
                 // Obtener los ids de cliente y categoría
                 $clientId = $this->addClient(new ClientData(null, $clientName));
-                $categoryId = $this->addCategory(new CategoryData(null, $categoryName));
+                $categoryId = $this->addCategory(new Category(null, $categoryName));
 
                 // Crear la nueva cuenta
                 $accountRequest = new AccountRequest();

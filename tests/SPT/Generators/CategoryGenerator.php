@@ -22,29 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Category\Ports;
+namespace SPT\Generators;
 
-use League\Fractal\Resource\Collection;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class CategoryAdapter
- *
- * @package SP\Adapters
+ * Class CategoryGenerator
  */
-interface CategoryAdapterInterface
+final class CategoryGenerator extends DataGenerator
 {
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
-     */
-    public function includeCustomFields(Category $data): Collection;
 
-    public function transform(Category $data): array;
+    public function buildCategory(): Category
+    {
+        return new Category($this->categoryProperties());
+    }
+
+    private function categoryProperties(): array
+    {
+        return [
+            'id' => $this->faker->randomNumber(),
+            'name' => $this->faker->colorName(),
+            'description' => $this->faker->text(),
+            'hash' => $this->faker->sha1()
+        ];
+    }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,11 @@ namespace SP\Domain\Import\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -117,13 +117,13 @@ trait ImportTrait
     /**
      * Añadir una categoría y devolver el Id
      *
-     * @param  CategoryData  $categoryData
+     * @param Category $categoryData
      *
      * @return int
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    protected function addCategory(CategoryData $categoryData): int
+    protected function addCategory(Category $categoryData): int
     {
         try {
             $categoryId = $this->getWorkingItem('category', $categoryData->getName());

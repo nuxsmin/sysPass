@@ -28,8 +28,8 @@ namespace SP\Modules\Api\Controllers\Category;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CategoryData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
@@ -69,12 +69,12 @@ final class EditController extends CategoryBase
     }
 
     /**
-     * @return CategoryData
+     * @return Category
      * @throws ServiceException
      */
-    private function buildCategoryData(): CategoryData
+    private function buildCategoryData(): Category
     {
-        $categoryData = new CategoryData();
+        $categoryData = new Category();
         $categoryData->setId($this->apiService->getParamInt('id', true));
         $categoryData->setName($this->apiService->getParamString('name', true));
         $categoryData->setDescription($this->apiService->getParamString('description'));

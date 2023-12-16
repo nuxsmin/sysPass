@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\CategoryData;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -80,7 +80,7 @@ abstract class CategoryViewBase extends ControllerBase
 
         $category = $categoryId
             ? $this->categoryService->getById($categoryId)
-            : new CategoryData();
+            : new Category();
 
         $this->view->assign('category', $category);
 

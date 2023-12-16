@@ -24,108 +24,115 @@
 
 namespace SP\Infrastructure\Category\Repositories;
 
-use RuntimeException;
-use SP\DataModel\CategoryData;
+use Exception;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryRepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__u;
+
 /**
  * Class CategoryRepository
  *
- * @package SP\Infrastructure\Common\Repositories\Category
+ * @template T of Category
  */
 final class CategoryRepository extends Repository implements CategoryRepositoryInterface
 {
     use RepositoryItemTrait;
 
+    public const TABLE = 'Category';
+
     /**
      * Creates an item
      *
-     * @param  CategoryData  $itemData
+     * @param Category $category
      *
-     * @return int
-     * @throws SPException
+     * @return QueryResult
+     * @throws ConstraintException
      * @throws DuplicatedItemException
+     * @throws QueryException
      */
-    public function create($itemData): int
+    public function create(Category $category): QueryResult
     {
-        if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated category'), SPException::WARNING);
+        if ($this->checkDuplicatedOnAdd($category)) {
+            throw new DuplicatedItemException(__u('Duplicated category'));
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO Category SET `name` = ?, description = ?, `hash` = ?');
-        $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getDescription(),
-                                  $this->makeItemHash($itemData->getName()),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while creating the category'));
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into(self::TABLE)
+            ->cols($category->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($category->getName()));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the category'));
+
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  CategoryData  $itemData
+     * @param Category $category
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData): bool
+    private function checkDuplicatedOnAdd(Category $category): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Category WHERE `hash` = ? OR `name` = ?');
-        $queryData->setParams([
-                                  $this->makeItemHash($itemData->getName()),
-            $itemData->getName(),
-        ]);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('hash = :hash')
+            ->orWhere('name = :name')
+            ->bindValues(
+                [
+                    'hash' => $category->getHash(),
+                    'name' => $category->getName()
+                ]
+            );
 
-        return $this->db->doQuery($queryData)->getNumRows() > 0;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
      * Updates an item
      *
-     * @param  CategoryData  $itemData
+     * @param Category $category
      *
      * @return int
      * @throws DuplicatedItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update($itemData): int
+    public function update(Category $category): int
     {
-        if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated category name'), SPException::WARNING);
+        if ($this->checkDuplicatedOnUpdate($category)) {
+            throw new DuplicatedItemException(__u('Duplicated category name'));
         }
 
-        $query = /** @lang SQL */
-            'UPDATE Category
-              SET `name` = ?,
-              description = ?,
-              `hash` = ?
-              WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->cols($category->toArray(null, ['id', 'hash']))
+            ->where('id = :id')
+            ->limit(1)
+            ->bindValues(
+                [
+                    'id' => $category->getId(),
+                    'hash' => $this->makeItemHash($category->getName())
+                ]
+            );
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getDescription(),
-                                  $this->makeItemHash($itemData->getName()),
-            $itemData->getId(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the category'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the category'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -133,40 +140,49 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  CategoryData  $itemData
+     * @param Category $category
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData): bool
+    private function checkDuplicatedOnUpdate(Category $category): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Category WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
-        $queryData->setParams([
-                                  $this->makeItemHash($itemData->getName()),
-            $itemData->getName(),
-            $itemData->getId(),
-        ]);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('(hash = :hash OR name = :name)')
+            ->where('id <> :id')
+            ->bindValues(
+                [
+                    'id' => $category->getId(),
+                    'hash' => $category->getHash(),
+                    'name' => $category->getName(),
+                ]
+            );
 
-        return $this->db->doQuery($queryData)->getNumRows() > 0;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param int $categoryId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
-    public function getById(int $id): QueryResult
+    public function getById(int $categoryId): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(CategoryData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Category::getCols())
+            ->where('id = :id')
+            ->bindValues(['id' => $categoryId])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, Category::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -174,21 +190,21 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Returns the item for given id
      *
-     * @param  string  $name
+     * @param string $name
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getByName(string $name): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(CategoryData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE `name` = ? OR `hash` = ? LIMIT 1');
-        $queryData->setParams([
-            $name,
-                                  $this->makeItemHash($name),
-        ]);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Category::getCols())
+            ->where('(name = :name OR hash = :hash)')
+            ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, Category::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -196,130 +212,92 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Returns all the items
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getAll(): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(CategoryData::class);
-        $queryData->setQuery('SELECT id, `name`, description, `hash` FROM Category ORDER BY `name`');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Category::getCols());
 
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        if (count($ids) === 0) {
-            return new QueryResult();
-        }
-
-        $query = /** @lang SQL */
-            'SELECT id, `name`, description FROM Category WHERE id IN ('.$this->buildParamsFromArray($ids).')';
-
-        $queryData = new QueryData();
-        $queryData->setMapClassName(CategoryData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($ids);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::buildWithMapper($query, Category::class));
     }
 
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $ids
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteByIdBatch(array $ids): int
-    {
-        if (count($ids) === 0) {
-            return 0;
-        }
-
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Category WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting the categories'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Deletes an item
-     *
-     * @param  int  $id
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function delete(int $id): int
-    {
-        $query = /** @lang SQL */
-            'DELETE FROM Category WHERE id = ? LIMIT 1';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the category'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
-    }
-
-    /**
-     * Searches for items by a given filter
-     *
-     * @param  ItemSearchData  $itemSearchData
+     * @param array $categoryIds
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function deleteByIdBatch(array $categoryIds): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setSelect('id, name, description');
-        $queryData->setFrom('Category');
-        $queryData->setOrder('name');
-
-        if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('name LIKE ? OR description LIKE ?');
-
-            $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+        if (count($categoryIds) === 0) {
+            return new QueryResult();
         }
 
-        $queryData->setLimit(
-            '?,?',
-            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
-        );
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id IN (:ids)', ['ids' => $categoryIds]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the categories'));
+
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the category'));
+
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     * @throws Exception
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Category::getCols(['hash']))
+            ->orderBy(['name'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
+
+        if (!empty($itemSearchData->getSeachString())) {
+            $query->where('name LIKE :name OR description LIKE :description');
+
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+
+            $query->bindValues(['name' => $search, 'description' => $search]);
+        }
+
+        $queryData = QueryData::build($query)->setMapClassName(Category::class);
 
         return $this->db->doSelect($queryData, true);
     }

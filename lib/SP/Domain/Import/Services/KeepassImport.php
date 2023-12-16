@@ -29,9 +29,9 @@ use DOMXPath;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Filter;
 
@@ -82,7 +82,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
         /** @var AccountRequest[] $group */
         foreach ($this->items as $group => $entry) {
             try {
-                $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
+                $categoryId = $this->addCategory(new Category(null, $group, 'KeePass'));
 
                 $this->eventDispatcher->notify(
                     'run.import.keepass.process.category',
