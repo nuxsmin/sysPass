@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,9 @@
 
 namespace SP\Infrastructure\Client\Repositories;
 
-use RuntimeException;
-use SP\DataModel\ClientData;
-use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -37,104 +36,102 @@ use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Mvc\Model\QueryCondition;
+
+use function SP\__u;
 
 /**
  * Class ClientRepository
  *
- * @package SP\Infrastructure\Common\Repositories\Client
+ * @template T of Client
  */
 final class ClientRepository extends Repository implements ClientRepositoryInterface
 {
     use RepositoryItemTrait;
 
+    public const TABLE = 'Client';
+
     /**
      * Creates an item
      *
-     * @param  ClientData  $itemData
+     * @param Client $client
      *
-     * @return int
+     * @return QueryResult
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    public function create($itemData): int
+    public function create(Client $client): QueryResult
     {
-        if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated client'), SPException::WARNING);
+        if ($this->checkDuplicatedOnAdd($client)) {
+            throw new DuplicatedItemException(__u('Duplicated client'));
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO Client
-            SET `name` = ?,
-            description = ?,
-            isGlobal = ?,
-            `hash` = ?';
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into(self::TABLE)
+            ->cols($client->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($client->getName()));
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getDescription(),
-            $itemData->getIsGlobal(),
-                                  $this->makeItemHash($itemData->getName()),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while creating the client'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the client'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  ClientData  $itemData
-     *
+     * @param Client $client
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnAdd($itemData): bool
+    private function checkDuplicatedOnAdd(Client $client): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? LIMIT 1');
-        $queryData->addParam($this->makeItemHash($itemData->getName()));
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('hash = :hash')
+            ->orWhere('name = :name')
+            ->bindValues(
+                [
+                    'hash' => $client->getHash(),
+                    'name' => $client->getName()
+                ]
+            );
 
-        return $this->db->doQuery($queryData)->getNumRows() > 0;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
      * Updates an item
      *
-     * @param  ClientData  $itemData
+     * @param Client $client
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update($itemData): int
+    public function update(Client $client): int
     {
-        if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated client'), SPException::WARNING);
+        if ($this->checkDuplicatedOnUpdate($client)) {
+            throw new DuplicatedItemException(__u('Duplicated client'));
         }
 
-        $query = /** @lang SQL */
-            'UPDATE Client
-            SET `name` = ?,
-            description = ?,
-            isGlobal = ?,
-            `hash` = ?
-            WHERE id = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->cols($client->toArray(null, ['id', 'hash']))
+            ->where('id = :id')
+            ->limit(1)
+            ->bindValues(
+                [
+                    'id' => $client->getId(),
+                    'hash' => $this->makeItemHash($client->getName())
+                ]
+            );
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getDescription(),
-            $itemData->getIsGlobal(),
-                                  $this->makeItemHash($itemData->getName()),
-            $itemData->getId(),
-        ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the client'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the client'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -142,40 +139,49 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  ClientData  $itemData
+     * @param Client $client
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkDuplicatedOnUpdate($itemData): bool
+    private function checkDuplicatedOnUpdate(Client $client): bool
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Client WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
-        $queryData->setParams([
-                                  $this->makeItemHash($itemData->getName()),
-            $itemData->getName(),
-            $itemData->getId(),
-        ]);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(self::TABLE)
+            ->where('(hash = :hash OR name = :name)')
+            ->where('id <> :id')
+            ->bindValues(
+                [
+                    'id' => $client->getId(),
+                    'hash' => $client->getHash(),
+                    'name' => $client->getName(),
+                ]
+            );
 
-        return $this->db->doQuery($queryData)->getNumRows() > 0;
+        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param int $clientId
      *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return QueryResult<T>
      */
-    public function getById(int $id): QueryResult
+    public function getById(int $clientId): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(ClientData::class);
-        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Client::getCols())
+            ->where('id = :id')
+            ->bindValues(['id' => $clientId])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, Client::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -183,23 +189,21 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Returns the item for given name
      *
-     * @param  string  $name
+     * @param string $name
      *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return QueryResult<T>
      */
     public function getByName(string $name): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(ClientData::class);
-        $queryData->setQuery(
-            'SELECT id, `name`, description, isGlobal FROM Client WHERE `name` = ? OR `hash` = ? LIMIT 1'
-        );
-        $queryData->setParams([
-            $name,
-                                  $this->makeItemHash($name),
-        ]);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Client::getCols())
+            ->where('(name = :name OR hash = :hash)')
+            ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, Client::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -207,162 +211,113 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Returns all the items
      *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return QueryResult<T>
      */
     public function getAll(): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client ORDER BY `name`');
-        $queryData->setMapClassName(ClientData::class);
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Client::getCols());
 
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns all the items for given ids
-     *
-     * @param  array  $ids
-     *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function getByIdBatch(array $ids): QueryResult
-    {
-        if (count($ids) === 0) {
-            return new QueryResult();
-        }
-
-        $query = /** @lang SQL */
-            'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN ('.$this->buildParamsFromArray($ids).')';
-
-        $queryData = new QueryData();
-        $queryData->setMapClassName(ClientData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($ids);
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::buildWithMapper($query, Client::class));
     }
 
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $ids
+     * @param array $clientIds
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int
+    public function deleteByIdBatch(array $clientIds): QueryResult
     {
-        if (count($ids) === 0) {
-            return 0;
+        if (count($clientIds) === 0) {
+            return new QueryResult();
         }
 
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Client WHERE id IN ('.$this->buildParamsFromArray($ids).')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting the clients'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id IN (:ids)', ['ids' => $clientIds]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the clients'));
+
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Deletes an item
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $id): int
+    public function delete(int $id): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Client WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the client'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the client'));
 
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     *
-     * @return void
-     */
-    public function checkInUse(int $id): bool
-    {
-        throw new RuntimeException('Not implemented');
+        return $this->db->doQuery($queryData);
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
+     * @return QueryResult<T>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(ClientData::class);
-        $queryData->setSelect('id, name, description, isGlobal');
-        $queryData->setFrom('Client');
-        $queryData->setOrder('name');
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(Client::getCols(['hash']))
+            ->orderBy(['name'])
+            ->limit($itemSearchData->getLimitCount())
+            ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('name LIKE ? OR description LIKE ?');
+            $query->where('name LIKE :name OR description LIKE :description');
 
-            $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+
+            $query->bindValues(['name' => $search, 'description' => $search]);
         }
 
-        $queryData->setLimit(
-            '?,?',
-            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
-        );
+        $queryData = QueryData::build($query)->setMapClassName(Client::class);
 
         return $this->db->doSelect($queryData, true);
     }
 
     /**
-     * Devolver los clientes visibles por el usuario
+     * Return the clients visible for the current user
      *
-     * @param  QueryCondition  $queryFilter
+     * @param AccountFilterUserInterface $accountFilterUser
      *
      * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
      */
-    public function getAllForFilter(QueryCondition $queryFilter): QueryResult
+    public function getAllForFilter(AccountFilterUserInterface $accountFilterUser): QueryResult
     {
-        if (!$queryFilter->hasFilters()) {
-            throw new QueryException(__u('Wrong filter'));
-        }
+        $query = $accountFilterUser
+            ->buildFilter()
+            ->cols(['Client.id', 'Client.name'])
+            ->join('right', 'Client', 'Account.clientId = Client.id')
+            ->where('Account.clientId IS NULL')
+            ->orWhere('Client.isGlobal = 1')
+            ->groupBy(['id'])
+            ->orderBy(['Client.name']);
 
-        $query = /** @lang SQL */
-            'SELECT Client.id, Client.name 
-            FROM Account
-            RIGHT JOIN Client ON Account.clientId = Client.id
-            WHERE Account.clientId IS NULL
-            OR Client.isGlobal = 1
-            OR '.$queryFilter->getFilters().'
-            GROUP BY id
-            ORDER BY Client.name';
-
-        $queryData = new QueryData();
-        $queryData->setMapClassName(ItemData::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($queryFilter->getParams());
-
-        return $this->db->doSelect($queryData);
+        return $this->db->doSelect(QueryData::build($query));
     }
 }

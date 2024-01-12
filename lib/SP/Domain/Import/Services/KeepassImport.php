@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,9 +29,9 @@ use DOMXPath;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\ClientData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Filter;
 
@@ -68,7 +68,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
      */
     private function process(): void
     {
-        $clientId = $this->addClient(new ClientData(null, 'KeePass'));
+        $clientId = $this->addClient(new Client(null, 'KeePass'));
 
         $this->eventDispatcher->notify(
             'run.import.keepass.process.client',

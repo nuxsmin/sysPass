@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,45 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Client\Models;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
-defined('APP_ROOT') || die();
-
 /**
- * Class ClientData
- *
- * @package SP\DataModel
+ * Class Client
  */
-class ClientData extends Model implements DataModelInterface
+class Client extends Model implements DataModelInterface
 {
-    public ?int $id = null;
-    public ?string $name = null;
-    public ?string $description = null;
-    public ?string $hash = null;
-    public ?int $isGlobal = null;
-
-    public function __construct(
-        ?int    $id = null,
-        ?string $name = null,
-        ?string $description = null
-    )
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-    }
+    public ?int       $isGlobal    = null;
+    protected ?int    $id          = null;
+    protected ?string $name        = null;
+    protected ?string $description = null;
+    protected ?string $hash        = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     public function getName(): ?string
@@ -68,19 +48,10 @@ class ClientData extends Model implements DataModelInterface
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
 
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function setDescription(?string $description): void
-    {
-        $this->description = $description;
     }
 
     public function getHash(): ?string
@@ -91,10 +62,5 @@ class ClientData extends Model implements DataModelInterface
     public function getIsGlobal(): ?int
     {
         return $this->isGlobal;
-    }
-
-    public function setIsGlobal(?int $isGlobal): void
-    {
-        $this->isGlobal = $isGlobal;
     }
 }

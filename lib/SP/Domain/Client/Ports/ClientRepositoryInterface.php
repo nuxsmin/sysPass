@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,39 +24,104 @@
 
 namespace SP\Domain\Client\Ports;
 
-
+use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Mvc\Model\QueryCondition;
 
 /**
  * Class ClientRepository
  *
- * @package SP\Infrastructure\Common\Repositories\Client
+ * @template T of Client
  */
 interface ClientRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Returns the item for given name
+     * Creates an item
      *
-     * @param  string  $name
+     * @param Client $client
      *
      * @return QueryResult
+     * @throws DuplicatedItemException
+     * @throws SPException
+     */
+    public function create(Client $client): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param Client $client
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function update(Client $client): int;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param int $clientId
+     *
+     * @return QueryResult<T>
+     */
+    public function getById(int $clientId): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $clientIds
+     *
+     * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $clientIds): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Returns the item for given name
+     *
+     * @param string $name
+     *
+     * @return QueryResult<T>
      * @throws QueryException
      * @throws ConstraintException
      */
     public function getByName(string $name): QueryResult;
 
     /**
-     * Devolver los clientes visibles por el usuario
+     * Return the clients visible for the current user
      *
-     * @param  QueryCondition  $queryFilter
-     *
-     * @return QueryResult
+     * @param AccountFilterUserInterface $accountFilterUser
+     * @return QueryResult<T>
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllForFilter(QueryCondition $queryFilter): QueryResult;
+    public function getAllForFilter(AccountFilterUserInterface $accountFilterUser): QueryResult;
 }

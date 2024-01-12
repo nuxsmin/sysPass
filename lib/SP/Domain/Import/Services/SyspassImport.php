@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,10 +34,10 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Services\XmlVerifyService;
 use SP\Util\VersionUtil;
@@ -279,7 +279,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Clients',
             'Client',
             function (DOMElement $client) {
-                $clientData = new ClientData();
+                $clientData = new Client();
 
                 foreach ($client->childNodes as $node) {
                     if (isset($node->tagName)) {
@@ -330,7 +330,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Customers',
             'Customer',
             function (DOMElement $client) {
-                $clientData = new ClientData();
+                $clientData = new Client();
 
                 foreach ($client->childNodes as $node) {
                     if (isset($node->tagName)) {

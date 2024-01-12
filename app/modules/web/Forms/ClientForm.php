@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\ClientData;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -35,13 +35,13 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class ClientForm extends FormBase implements FormInterface
 {
-    protected ?ClientData $clientData = null;
+    protected ?Client $clientData = null;
 
     /**
      * Validar el formulario
      *
-     * @param  int  $action
-     * @param  int|null  $id
+     * @param int $action
+     * @param int|null $id
      *
      * @return ClientForm|FormInterface
      * @throws ValidationException
@@ -70,11 +70,15 @@ final class ClientForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->clientData = new ClientData();
-        $this->clientData->setId($this->itemId);
-        $this->clientData->setName($this->request->analyzeString('name'));
-        $this->clientData->setDescription($this->request->analyzeString('description'));
-        $this->clientData->setIsGlobal($this->request->analyzeBool('isglobal', false));
+        $this->clientData = new Client(
+            [
+                'id' => $this->itemId,
+                'name' => $this->request->analyzeString('name'),
+                'description' => $this->request->analyzeString('description'),
+                'isglobal' => $this->request->analyzeBool('isglobal', false)
+
+            ]
+        );
     }
 
     /**
@@ -87,7 +91,7 @@ final class ClientForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?ClientData
+    public function getItemData(): ?Client
     {
         return $this->clientData;
     }

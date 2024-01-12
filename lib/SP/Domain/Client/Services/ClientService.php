@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,10 @@
 namespace SP\Domain\Client\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
@@ -78,7 +78,7 @@ final class ClientService extends Service implements ClientServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ClientData
+    public function getById(int $id): Client
     {
         $result = $this->clientRepository->getById($id);
 
@@ -96,7 +96,7 @@ final class ClientService extends Service implements ClientServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName(string $name): ?ClientData
+    public function getByName(string $name): ?Client
     {
         $result = $this->clientRepository->getByName($name);
 
@@ -153,11 +153,11 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @param  ClientData  $itemData
+     * @param Client $itemData
      *
      * @return int
      */
-    public function update(ClientData $itemData): int
+    public function update(Client $itemData): int
     {
         return $this->clientRepository->update($itemData);
     }
@@ -165,7 +165,7 @@ final class ClientService extends Service implements ClientServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return ClientData[]
+     * @return \SP\Domain\Client\Models\Client[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -183,6 +183,6 @@ final class ClientService extends Service implements ClientServiceInterface
      */
     public function getAllForUser(): array
     {
-        return $this->clientRepository->getAllForFilter($this->accountFilterUser->buildFilter())->getDataAsArray();
+        return $this->clientRepository->getAllForFilter($this->accountFilterUser)->getDataAsArray();
     }
 }

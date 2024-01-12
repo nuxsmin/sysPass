@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,9 +25,9 @@
 namespace SP\Domain\Client\Ports;
 
 
-use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,7 +54,7 @@ interface ClientServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ClientData;
+    public function getById(int $id): Client;
 
     /**
      * Returns the item for given name
@@ -63,7 +63,7 @@ interface ClientServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByName(string $name): ?ClientData;
+    public function getByName(string $name): ?Client;
 
     /**
      * @throws ConstraintException
@@ -88,19 +88,19 @@ interface ClientServiceInterface
     public function create($itemData): int;
 
     /**
-     * @param  ClientData  $itemData
+     * @param Client $itemData
      *
      * @return int
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(ClientData $itemData): int;
+    public function update(Client $itemData): int;
 
     /**
      * Get all items from the service's repository
      *
-     * @return ClientData[]
+     * @return Client[]
      * @throws ConstraintException
      * @throws QueryException
      */

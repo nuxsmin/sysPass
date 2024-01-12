@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Client;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\ClientData;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -81,7 +81,7 @@ abstract class ClientViewBase extends ControllerBase
 
         $client = $clientId
             ? $this->clientService->getById($clientId)
-            : new ClientData();
+            : new Client();
 
         $this->view->assign('client', $client);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Client\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\DataModel\ClientData;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
@@ -55,7 +55,7 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(ClientData $data, CustomFieldServiceInterface $customFieldService): Collection
+    public function includeCustomFields(Client $data, CustomFieldServiceInterface $customFieldService): Collection
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $data->id, $customFieldService),
@@ -63,7 +63,7 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
         );
     }
 
-    public function transform(ClientData $data): array
+    public function transform(Client $data): array
     {
         return [
             'id'           => $data->getId(),

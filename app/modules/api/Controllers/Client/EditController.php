@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,8 @@ namespace SP\Modules\Api\Controllers\Client;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\ClientData;
 use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
@@ -70,12 +70,12 @@ final class EditController extends ClientBase
     }
 
     /**
-     * @return ClientData
+     * @return Client
      * @throws ServiceException
      */
-    private function buildClientData(): ClientData
+    private function buildClientData(): Client
     {
-        $clientData = new ClientData();
+        $clientData = new Client();
         $clientData->setId($this->apiService->getParamInt('id', true));
         $clientData->setName($this->apiService->getParamString('name', true));
         $clientData->setDescription($this->apiService->getParamString('description'));

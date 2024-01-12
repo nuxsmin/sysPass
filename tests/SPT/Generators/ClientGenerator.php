@@ -22,30 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Ports;
+namespace SPT\Generators;
 
-use League\Fractal\Resource\Collection;
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 
 /**
- * Class ClientAdapter
- *
- * @package SP\Adapters
+ * Class ClientGenerator
  */
-interface ClientAdapterInterface
+final class ClientGenerator extends DataGenerator
 {
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
-     */
-    public function includeCustomFields(Client $data, CustomFieldServiceInterface $customFieldService): Collection;
 
-    public function transform(Client $data): array;
+    public function buildClient(): Client
+    {
+        return new Client($this->clientProperties());
+    }
+
+    private function clientProperties(): array
+    {
+        return [
+            'id' => $this->faker->randomNumber(),
+            'name' => $this->faker->colorName(),
+            'description' => $this->faker->text(),
+            'hash' => $this->faker->sha1(),
+            'isGlobal' => $this->faker->boolean()
+        ];
+    }
 }
