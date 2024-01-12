@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,7 +46,7 @@ trait AccountSearchTokenizerDataTrait
             sprintf('file:"%s"', $file),
             sprintf('owner:"%s"', $name),
             sprintf('maingroup:"%s"', $name),
-            sprintf('client:"%s"', $name),
+            sprintf('clientService:"%s"', $name),
             sprintf('category:"%s"', $name),
             sprintf('name_regex:"^%s$"', $name),
         ];

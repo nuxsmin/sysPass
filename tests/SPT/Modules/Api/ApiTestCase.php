@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -82,11 +82,11 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::CATEGORY_EDIT     => 'category/edit',
         AclActionsInterface::CATEGORY_DELETE   => 'category/delete',
         AclActionsInterface::CATEGORY_SEARCH   => 'category/search',
-        AclActionsInterface::CLIENT_VIEW       => 'client/view',
-        AclActionsInterface::CLIENT_CREATE     => 'client/create',
-        AclActionsInterface::CLIENT_EDIT       => 'client/edit',
-        AclActionsInterface::CLIENT_DELETE     => 'client/delete',
-        AclActionsInterface::CLIENT_SEARCH     => 'client/search',
+        AclActionsInterface::CLIENT_VIEW => 'clientService/view',
+        AclActionsInterface::CLIENT_CREATE => 'clientService/create',
+        AclActionsInterface::CLIENT_EDIT => 'clientService/edit',
+        AclActionsInterface::CLIENT_DELETE => 'clientService/delete',
+        AclActionsInterface::CLIENT_SEARCH => 'clientService/search',
         AclActionsInterface::TAG_VIEW          => 'tag/view',
         AclActionsInterface::TAG_CREATE        => 'tag/create',
         AclActionsInterface::TAG_EDIT          => 'tag/edit',

@@ -124,4 +124,11 @@ interface ClientRepositoryInterface extends RepositoryInterface
      * @throws ConstraintException
      */
     public function getAllForFilter(AccountFilterUserInterface $accountFilterUser): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
 }

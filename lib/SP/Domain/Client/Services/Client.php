@@ -25,42 +25,39 @@
 namespace SP\Domain\Client\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterUserInterface;
-use SP\Domain\Client\Models\Client;
+use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__u;
 
 /**
  * Class ClientService
  *
- * @package SP\Domain\Client\Services
+ * @template T of ClientModel
  */
-final class ClientService extends Service implements ClientServiceInterface
+final class Client extends Service implements ClientServiceInterface
 {
     use ServiceItemTrait;
 
-    private ClientRepositoryInterface  $clientRepository;
-    private AccountFilterUserInterface $accountFilterUser;
-
     public function __construct(
-        Application $application,
-        ClientRepositoryInterface $clientRepository,
-        AccountFilterUserInterface $accountFilterUser
+        Application                                 $application,
+        private readonly ClientRepositoryInterface  $clientRepository,
+        private readonly AccountFilterUserInterface $accountFilterUser
     ) {
         parent::__construct($application);
-
-        $this->clientRepository = $clientRepository;
-        $this->accountFilterUser = $accountFilterUser;
     }
 
     /**
@@ -74,11 +71,12 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
+     * @param int $id
+     * @return ClientModel
      * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws SPException
      */
-    public function getById(int $id): Client
+    public function getById(int $id): ClientModel
     {
         $result = $this->clientRepository->getById($id);
 
@@ -86,17 +84,20 @@ final class ClientService extends Service implements ClientServiceInterface
             throw new NoSuchItemException(__u('Client not found'), SPException::INFO);
         }
 
-        return $result->getData();
+        return $result->getData(ClientModel::class);
     }
 
     /**
      * Returns the item for given name
      *
+     * @param string $name
+     * @return ClientModel|null
      * @throws ConstraintException
-     * @throws QueryException
      * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws SPException
      */
-    public function getByName(string $name): ?Client
+    public function getByName(string $name): ?ClientModel
     {
         $result = $this->clientRepository->getByName($name);
 
@@ -104,18 +105,20 @@ final class ClientService extends Service implements ClientServiceInterface
             throw new NoSuchItemException(__u('Client not found'), SPException::INFO);
         }
 
-        return $result->getData();
+        return $result->getData(ClientModel::class);
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return ClientServiceInterface
+     * @throws ConstraintException
      * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function delete(int $id): ClientServiceInterface
     {
-        if ($this->clientRepository->delete($id) === 0) {
+        if ($this->clientRepository->delete($id)->getAffectedNumRows() === 0) {
             throw new NoSuchItemException(__u('Client not found'), SPException::INFO);
         }
 
@@ -123,63 +126,66 @@ final class ClientService extends Service implements ClientServiceInterface
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
-     * @return int
+     * @return void
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
-    public function deleteByIdBatch(array $ids): int
+    public function deleteByIdBatch(array $ids): void
     {
-        $count = $this->clientRepository->deleteByIdBatch($ids);
-
-        if ($count !== count($ids)) {
+        if ($this->clientRepository->deleteByIdBatch($ids)->getAffectedNumRows() === 0) {
             throw new ServiceException(
                 __u('Error while deleting the clients'),
                 SPException::WARNING
             );
         }
-
-        return $count;
     }
 
     /**
-     * @param $itemData
+     * @param ClientModel $client
      *
      * @return int
+     * @throws SPException
+     * @throws DuplicatedItemException
      */
-    public function create($itemData): int
+    public function create(ClientModel $client): int
     {
-        return $this->clientRepository->create($itemData);
+        return $this->clientRepository->create($client)->getLastId();
     }
 
     /**
-     * @param Client $itemData
+     * @param ClientModel $client
      *
-     * @return int
+     * @return void
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
-    public function update(Client $itemData): int
+    public function update(ClientModel $client): void
     {
-        return $this->clientRepository->update($itemData);
+        $this->clientRepository->update($client);
     }
 
     /**
      * Get all items from the service's repository
      *
-     * @return \SP\Domain\Client\Models\Client[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
+     * @throws SPException
      */
     public function getAll(): array
     {
-        return $this->clientRepository->getAll()->getDataAsArray();
+        return $this->clientRepository->getAll()->getDataAsArray(ClientModel::class);
     }
 
     /**
      * Returns all clients visible for a given user
      *
-     * @return ItemData[]
+     * @return Simple[]
      * @throws QueryException
      * @throws ConstraintException
+     * @throws SPException
      */
     public function getAllForUser(): array
     {

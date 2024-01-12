@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -92,7 +92,7 @@ class ClientControllerTest extends ApiTestCase
         $response = $this->createClient(['name' => 'Google']);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated client', $response->error->message);
+        $this->assertEquals('Duplicated clientService', $response->error->message);
     }
 
     /**
@@ -240,7 +240,7 @@ class ClientControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated client', $response->error->message);
+        $this->assertEquals('Duplicated clientService', $response->error->message);
     }
 
     /**

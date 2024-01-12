@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Client\Ports;
 
-
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Client\Models\Client;
@@ -37,9 +36,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class ClientService
- *
- * @package SP\Domain\Client\Services
+ * Interface ClientServiceInterface
  */
 interface ClientServiceInterface
 {
@@ -73,29 +70,29 @@ interface ClientServiceInterface
     public function delete(int $id): ClientServiceInterface;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int;
+    public function deleteByIdBatch(array $ids): void;
 
     /**
      * @throws SPException
      * @throws DuplicatedItemException
      */
-    public function create($itemData): int;
+    public function create(Client $client): int;
 
     /**
-     * @param Client $itemData
+     * @param Client $client
      *
-     * @return int
+     * @return void
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Client $itemData): int;
+    public function update(Client $client): void;
 
     /**
      * Get all items from the service's repository
