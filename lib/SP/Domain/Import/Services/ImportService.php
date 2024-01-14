@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Domain\Import\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -54,14 +54,14 @@ final class ImportService extends Service implements ImportServiceInterface
     private ?ImportParams          $importParams = null;
     private ?FileImportInterface   $fileImport   = null;
     private Application            $application;
-    private ImportHelper           $importHelper;
-    private ConfigServiceInterface $configService;
-    private DatabaseInterface      $database;
+    private ImportHelper      $importHelper;
+    private ConfigService     $configService;
+    private DatabaseInterface $database;
 
     public function __construct(
-        Application $application,
-        ImportHelper $importHelper,
-        ConfigServiceInterface $configService,
+        Application   $application,
+        ImportHelper  $importHelper,
+        ConfigService $configService,
         DatabaseInterface $database
     ) {
         parent::__construct($application);

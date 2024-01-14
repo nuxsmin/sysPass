@@ -33,7 +33,6 @@ use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -50,8 +49,6 @@ use function SP\__u;
  */
 final class Client extends Service implements ClientServiceInterface
 {
-    use ServiceItemTrait;
-
     public function __construct(
         Application                                 $application,
         private readonly ClientRepositoryInterface  $clientRepository,

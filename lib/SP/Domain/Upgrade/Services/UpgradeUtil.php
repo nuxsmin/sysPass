@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Upgrade\Services;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
 
@@ -55,7 +55,7 @@ final class UpgradeUtil
     /**
      * @throws FileException
      */
-    public static function fixAppUpgrade(ConfigDataInterface $configData, ConfigInterface $config): void
+    public static function fixAppUpgrade(ConfigDataInterface $configData, ConfigFileService $config): void
     {
         // Fixes bug in 3.0.X version where some updates weren't applied
         // when upgrading from v2

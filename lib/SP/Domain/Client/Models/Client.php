@@ -32,7 +32,7 @@ use SP\Domain\Common\Models\Model;
  */
 class Client extends Model implements DataModelInterface
 {
-    public ?int       $isGlobal    = null;
+    protected ?int $isGlobal = null;
     protected ?int    $id          = null;
     protected ?string $name        = null;
     protected ?string $description = null;

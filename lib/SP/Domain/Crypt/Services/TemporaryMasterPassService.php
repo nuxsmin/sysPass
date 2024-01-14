@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Core\Messages\MailMessage;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -67,14 +67,14 @@ final class TemporaryMasterPassService extends Service
     public const  PARAM_MAX_TIME = 'tempmaster_maxtime';
     public const  PARAM_ATTEMPTS = 'tempmaster_attempts';
 
-    private ConfigServiceInterface $configService;
-    private UserServiceInterface   $userService;
+    private ConfigService        $configService;
+    private UserServiceInterface $userService;
     private MailServiceInterface   $mailService;
     private ?int                   $maxTime = null;
 
     public function __construct(
-        Application $application,
-        ConfigServiceInterface $configService,
+        Application   $application,
+        ConfigService $configService,
         UserServiceInterface $userService,
         MailServiceInterface $mailService
     ) {

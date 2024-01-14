@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,31 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Config\Ports;
+namespace SPT\Generators;
 
-use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Config\Models\Config;
 
 /**
- * Class ConfigBackupService
- *
- * @package SP\Domain\Config\Services
+ * Class ConfigGenerator
  */
-interface ConfigBackupServiceInterface
+final class ConfigGenerator extends DataGenerator
 {
-    /**
-     * Backs up the config data into the database
-     */
-    public function backup(ConfigDataInterface $configData): void;
 
-    /**
-     * @throws FileException
-     * @throws ServiceException
-     */
-    public function restore(ConfigInterface $config): ConfigDataInterface;
+    public function buildConfig(): Config
+    {
+        return new Config($this->configProperties());
+    }
 
-    /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     */
-    public function getBackup(): string;
+    private function configProperties(): array
+    {
+        return [
+            'parameter' => $this->faker->colorName(),
+            'value' => $this->faker->text()
+        ];
+    }
 }

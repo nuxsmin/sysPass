@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -51,9 +51,9 @@ use SP\Domain\Auth\Ports\LdapActionsInterface;
 use SP\Domain\Auth\Ports\LdapAuthInterface;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Domain\Config\Services\ConfigBackupService;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Services\ConfigBackup;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\ContextInterface;
@@ -130,16 +130,16 @@ final class CoreDefinitions
             UriContextInterface::class => autowire(UriContext::class),
             ContextInterface::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
-            ConfigInterface::class => create(ConfigFileService::class)
+            ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlHandler::class)
                         ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
-                    create(FileCache::class)->constructor(ConfigFileService::CONFIG_CACHE_FILE),
+                    create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
                     get(ContextInterface::class),
-                    autowire(ConfigBackupService::class)
+                    autowire(ConfigBackup::class)
                 ),
             ConfigDataInterface::class =>
-                static fn(ConfigInterface $config) => $config->getConfigData(),
+                static fn(ConfigFileService $config) => $config->getConfigData(),
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
             DbStorageInterface::class => autowire(MysqlHandler::class),
             ActionsInterface::class =>

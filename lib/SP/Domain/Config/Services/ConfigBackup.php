@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,29 +27,27 @@ namespace SP\Domain\Config\Services;
 use Exception;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
+use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Util\Util;
 
+use function SP\__u;
 use function SP\processException;
 
 /**
- * Class ConfigBackupService
- *
- * @package SP\Domain\Config\Services
+ * Class ConfigBackup
  */
-class ConfigBackupService implements ConfigBackupServiceInterface
+class ConfigBackup implements ConfigBackupService
 {
-    private ConfigService $configService;
 
-    public function __construct(ConfigService $configService)
+    public function __construct(private readonly ConfigService $configService)
     {
-        $this->configService = $configService;
     }
 
     /**
@@ -82,9 +80,9 @@ class ConfigBackupService implements ConfigBackupServiceInterface
      * @throws FileException
      * @throws ServiceException
      */
-    public function restore(ConfigInterface $config): ConfigDataInterface
+    public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $config->saveConfig(
+        return $configFile->saveConfig(
             Util::unserialize(ConfigData::class, $this->getBackup())
         )->getConfigData();
     }

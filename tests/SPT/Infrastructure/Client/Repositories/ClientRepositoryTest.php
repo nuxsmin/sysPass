@@ -81,7 +81,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             }
         );
 
-        $callbackUpdate = new Callback(
+        $callbackCreate = new Callback(
             static function (QueryData $arg) use ($client) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
@@ -99,7 +99,7 @@ class ClientRepositoryTest extends UnitaryTestCase
         $this->database
             ->expects(self::exactly(2))
             ->method('doQuery')
-            ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
+            ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
         $this->clientRepository->create($client);

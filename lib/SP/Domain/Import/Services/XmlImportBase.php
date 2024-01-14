@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use DOMElement;
 use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
@@ -43,19 +43,19 @@ abstract class XmlImportBase
 
     protected XmlFileImportInterface $xmlFileImport;
     protected DOMDocument            $xmlDOM;
-    protected EventDispatcher        $eventDispatcher;
-    protected ConfigServiceInterface $configService;
-    protected ConfigDataInterface    $configData;
+    protected EventDispatcher     $eventDispatcher;
+    protected ConfigService       $configService;
+    protected ConfigDataInterface $configData;
 
     /**
      * ImportBase constructor.
      */
     public function __construct(
-        Application $application,
-        ImportHelper $importHelper,
-        ConfigServiceInterface $configService,
+        Application   $application,
+        ImportHelper  $importHelper,
+        ConfigService $configService,
         XmlFileImportInterface $xmlFileImport,
-        ImportParams $importParams
+        ImportParams  $importParams
     ) {
         $this->eventDispatcher = $application->getEventDispatcher();
         $this->xmlFileImport = $xmlFileImport;

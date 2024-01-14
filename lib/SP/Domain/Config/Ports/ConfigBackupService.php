@@ -22,20 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Services;
+namespace SP\Domain\Config\Ports;
+
+use SP\Domain\Common\Services\ServiceException;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Trait ServiceItemTrait
- *
- * @package SP\Domain\Common\Services
- * @deprecated
+ * Interface ConfigBackupService
  */
-trait ServiceItemTrait
+interface ConfigBackupService
 {
     /**
-     * Get all items from the service's repository
-     *
-     * @return mixed
+     * Backs up the config data into the database
      */
-    abstract public function getAll();
+    public function backup(ConfigDataInterface $configData): void;
+
+    /**
+     * @throws FileException
+     * @throws ServiceException
+     */
+    public function restore(ConfigFileService $configFile): ConfigDataInterface;
+
+    /**
+     * @throws ServiceException
+     */
+    public function getBackup(): string;
 }

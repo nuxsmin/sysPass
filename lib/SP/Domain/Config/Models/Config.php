@@ -22,20 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Services;
+namespace SP\Domain\Config\Models;
+
+use SP\Domain\Common\Models\Model;
 
 /**
- * Trait ServiceItemTrait
- *
- * @package SP\Domain\Common\Services
- * @deprecated
+ * Class Config
  */
-trait ServiceItemTrait
+class Config extends Model
 {
-    /**
-     * Get all items from the service's repository
-     *
-     * @return mixed
-     */
-    abstract public function getAll();
+    protected ?string $parameter = null;
+    protected ?string $value     = null;
+
+    public function getParameter(): ?string
+    {
+        return $this->parameter;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
 }

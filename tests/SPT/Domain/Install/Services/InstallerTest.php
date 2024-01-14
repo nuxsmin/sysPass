@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SPT\Domain\Install\Services;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
@@ -63,7 +63,7 @@ class InstallerTest extends UnitaryTestCase
      */
     private $request;
     /**
-     * @var MockObject|ConfigServiceInterface
+     * @var MockObject|ConfigService
      */
     private $configService;
     /**
@@ -440,7 +440,7 @@ class InstallerTest extends UnitaryTestCase
         $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
         $this->request = $this->createStub(RequestInterface::class);
-        $this->configService = $this->createMock(ConfigServiceInterface::class);
+        $this->configService = $this->createMock(ConfigService::class);
         $this->userGroupService = $this->createMock(UserGroupServiceInterface::class);
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
 

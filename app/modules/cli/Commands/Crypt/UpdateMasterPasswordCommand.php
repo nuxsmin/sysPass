@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,11 +29,14 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Account\Services\AccountService;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
-use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Config\Services\Config;
+use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
 use SP\Domain\Crypt\Services\MasterPassService;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
 use SP\Util\Util;
@@ -65,16 +68,16 @@ final class UpdateMasterPasswordCommand extends CommandBase
      * @var string
      */
     protected static                                          $defaultName = 'sp:crypt:update-master-password';
-    private \SP\Domain\Crypt\Ports\MasterPassServiceInterface $masterPassService;
-    private ConfigService                                     $configService;
+    private MasterPassServiceInterface $masterPassService;
+    private Config         $configService;
     private AccountService $accountService;
 
     public function __construct(
-        \SP\Domain\Crypt\Ports\MasterPassServiceInterface $masterPassService,
+        MasterPassServiceInterface $masterPassService,
         AccountServiceInterface $accountService,
-        ConfigServiceInterface $configService,
-        LoggerInterface $logger,
-        ConfigInterface $config
+        ConfigService           $configService,
+        LoggerInterface         $logger,
+        ConfigFileService       $config
     ) {
         $this->masterPassService = $masterPassService;
         $this->accountService = $accountService;
@@ -273,8 +276,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
-     * @throws \SP\Infrastructure\Common\Repositories\NoSuchItemException
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     private function checkMasterPassword(string $password): void
     {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,39 +26,40 @@ namespace SP\Domain\Config\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigRepositoryInterface;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Models\Config as ConfigModel;
+use SP\Domain\Config\Ports\ConfigRepository;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Config\Repositories\ConfigRepository;
+
+use function SP\__;
+use function SP\processException;
 
 /**
- * Class ConfigService
- *
- * @package SP\Domain\Config\Services
+ * Class Config
  */
-final class ConfigService extends Service implements ConfigServiceInterface
+final class Config extends Service implements ConfigService
 {
-    private ConfigRepository $configRepository;
 
-    public function __construct(Application $application, ConfigRepositoryInterface $configRepository)
+    public function __construct(Application $application, private readonly ConfigRepository $configRepository)
     {
         parent::__construct($application);
-
-        $this->configRepository = $configRepository;
     }
 
     /**
+     * @param string $param
+     * @param null $default
+     * @return string|null
      * @throws NoSuchItemException
+     * @throws SPException
      * @throws ServiceException
      */
-    public function getByParam(string $param, $default = null)
+    public function getByParam(string $param, $default = null): ?string
     {
         try {
             $result = $this->configRepository->getByParam($param);
@@ -73,20 +74,13 @@ final class ConfigService extends Service implements ConfigServiceInterface
         }
 
 
-        if ($result->getNumRows() === 0) {
-            if ($default === null) {
-                throw new NoSuchItemException(
-                    sprintf(__('Parameter not found (%s)'), $param)
-                );
-            }
-
-            return $default;
+        if ($result->getNumRows() === 0 && $default === null) {
+            throw new NoSuchItemException(
+                sprintf(__('Parameter not found (%s)'), $param)
+            );
         }
 
-        /** @var ConfigData $data */
-        $data = $result->getData();
-
-        return empty($data->value) ? $default : $data->value;
+        return $result->getData(ConfigModel::class)->getValue() ?? $default;
     }
 
     /**
@@ -97,12 +91,13 @@ final class ConfigService extends Service implements ConfigServiceInterface
     public function saveBatch(ConfigRequest $configRequest): void
     {
         try {
-            $this->transactionAware(
+            $this->configRepository->transactionAware(
                 function () use ($configRequest) {
                     foreach ($configRequest->getData() as $param => $value) {
                         $this->save($param, $value);
                     }
-                }
+                },
+                $this
             );
         } catch (Exception $e) {
             processException($e);
@@ -121,47 +116,23 @@ final class ConfigService extends Service implements ConfigServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function save(string $param, $value): bool
+    public function save(string $param, string $value): bool
     {
+        $config = new ConfigModel(['parameter' => $param, 'value' => $value]);
+
         if (!$this->configRepository->has($param)) {
-            return $this->configRepository->create(new ConfigData($param, $value));
+            return $this->configRepository->create($config)->getLastId() > 0;
         }
 
-        return $this->configRepository->update(new ConfigData($param, $value));
+        return $this->configRepository->update($config)->getAffectedNumRows() === 1;
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ConfigData $configData): int
+    public function create(ConfigModel $config): int
     {
-        return $this->configRepository->create($configData);
-    }
-
-    /**
-     * Obtener un array con la configuración almacenada en la BBDD.
-     *
-     * @return ConfigData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array
-    {
-        return $this->configRepository->getAll()->getDataAsArray();
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function deleteByParam(string $param): void
-    {
-        if ($this->configRepository->deleteByParam($param) === 0) {
-            throw new NoSuchItemException(
-                sprintf(__('Parameter not found (%s)'), $param)
-            );
-        }
+        return $this->configRepository->create($config)->getLastId();
     }
 }

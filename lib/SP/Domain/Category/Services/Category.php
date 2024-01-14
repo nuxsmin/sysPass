@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,6 @@ use SP\Domain\Category\Ports\CategoryRepositoryInterface;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -49,8 +48,6 @@ use function SP\__u;
  */
 final class Category extends Service implements CategoryServiceInterface
 {
-    use ServiceItemTrait;
-
     public function __construct(
         Application                                  $application,
         private readonly CategoryRepositoryInterface $categoryRepository

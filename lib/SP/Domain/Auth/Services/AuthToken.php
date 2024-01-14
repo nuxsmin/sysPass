@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,6 @@ use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
@@ -52,14 +51,12 @@ use SP\Util\PasswordUtil;
 use function SP\__u;
 
 /**
- * Class AuthTokenService
+ * Class AuthToken
  *
  * @template T of AuthTokenModel
  */
 final class AuthToken extends Service implements AuthTokenServiceInterface
 {
-    use ServiceItemTrait;
-
     private const SECURED_ACTIONS = [
         AclActionsInterface::ACCOUNT_VIEW_PASS,
         AclActionsInterface::ACCOUNT_EDIT_PASS,

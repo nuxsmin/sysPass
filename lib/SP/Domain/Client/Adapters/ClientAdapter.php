@@ -66,12 +66,12 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
     public function transform(Client $data): array
     {
         return [
-            'id'           => $data->getId(),
-            'name'         => $data->getName(),
-            'description'  => $data->getDescription(),
-            'isGlobal'     => $data->isGlobal,
+            'id' => $data->getId(),
+            'name' => $data->getName(),
+            'description' => $data->getDescription(),
+            'isGlobal' => $data->getIsGlobal(),
             'customFields' => null,
-            'links'        => [
+            'links' => [
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(

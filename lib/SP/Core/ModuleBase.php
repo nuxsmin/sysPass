@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -35,8 +35,8 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
  */
 abstract class ModuleBase implements ModuleInterface
 {
-    protected ConfigFileService      $config;
-    protected ConfigDataInterface    $configData;
+    protected ConfigFile          $config;
+    protected ConfigDataInterface $configData;
     protected ContextInterface       $context;
     private EventDispatcherInterface $eventDispatcher;
 

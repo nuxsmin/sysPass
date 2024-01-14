@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -80,12 +80,12 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     /**
      * @param array|null $only Include only these properties
-     * @param array|null $filter Filter out these properties
+     * @param array|null $exclude Filter out these properties
      * @param bool $includeOuter Whether to include non-class properties
      *
      * @return array
      */
-    final public function toArray(?array $only = null, ?array $filter = null, bool $includeOuter = false): array
+    final public function toArray(?array $only = null, ?array $exclude = null, bool $includeOuter = false): array
     {
         $fields = $this->getClassProperties();
 
@@ -97,8 +97,8 @@ abstract class Model implements JsonSerializable, ArrayAccess
             $fields = array_intersect_key($fields, array_flip($only));
         }
 
-        if (null !== $filter) {
-            $fields = array_diff_key($fields, array_flip($filter));
+        if (null !== $exclude) {
+            $fields = array_diff_key($fields, array_flip($exclude));
         }
 
         return $fields;
@@ -107,15 +107,15 @@ abstract class Model implements JsonSerializable, ArrayAccess
     /**
      * Get columns name for this model
      *
-     * @param array|null $filter
+     * @param array|null $exclude The columns to filter out from this model
      *
      * @return array
      */
-    final public static function getCols(?array $filter = null): array
+    final public static function getCols(?array $exclude = null): array
     {
         $self = new static();
 
-        return array_keys($self->toArray(null, $filter, false));
+        return array_keys($self->toArray(null, $exclude));
     }
 
     /**

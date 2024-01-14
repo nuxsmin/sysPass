@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Infrastructure\File\FileException;
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php
  */
-interface ConfigInterface
+interface ConfigFileService
 {
     /**
      * Cargar el archivo de configuración
@@ -45,18 +45,18 @@ interface ConfigInterface
      * @param ConfigDataInterface $configData
      * @param bool|null $backup
      *
-     * @return ConfigInterface
+     * @return ConfigFileService
      * @throws FileException
      */
     public function saveConfig(
         ConfigDataInterface $configData,
         ?bool               $backup = true
-    ): ConfigInterface;
+    ): ConfigFileService;
 
     /**
      * Commits a config data
      */
-    public function updateConfig(ConfigDataInterface $configData): ConfigInterface;
+    public function updateConfig(ConfigDataInterface $configData): ConfigFileService;
 
     /**
      * Cargar la configuración desde el contexto
@@ -74,5 +74,5 @@ interface ConfigInterface
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */
-    public function generateUpgradeKey(): ConfigInterface;
+    public function generateUpgradeKey(): ConfigFileService;
 }

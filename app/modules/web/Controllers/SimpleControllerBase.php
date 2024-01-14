@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -48,9 +48,9 @@ abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    protected EventDispatcher     $eventDispatcher;
-    protected ConfigFileService   $config;
-    protected ContextInterface    $session;
+    protected EventDispatcher  $eventDispatcher;
+    protected ConfigFile       $config;
+    protected ContextInterface $session;
     protected ThemeInterface      $theme;
     protected Acl                 $acl;
     protected Request             $request;

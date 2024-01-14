@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,8 +31,8 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Infrastructure\File\FileException;
 
 use function SPT\getResource;
@@ -85,11 +85,11 @@ class ConfigTest extends TestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function testLoadClass(): ConfigInterface
+    public function testLoadClass(): ConfigFileService
     {
-        $config = self::$dic->get(ConfigFileService::class);
+        $config = self::$dic->get(ConfigFile::class);
 
-        $this->assertInstanceOf(ConfigFileService::class, $config);
+        $this->assertInstanceOf(ConfigFile::class, $config);
         $this->assertFileExists(CONFIG_FILE);
 
         return $config;
@@ -100,11 +100,11 @@ class ConfigTest extends TestCase
      *
      * @depends testLoadClass
      *
-     * @param  ConfigInterface  $config
+     * @param ConfigFileService $config
      *
      * @throws FileException
      */
-    public function testSaveConfig(ConfigInterface $config)
+    public function testSaveConfig(ConfigFileService $config)
     {
         $config->saveConfig($config->getConfigData(), false);
 
@@ -117,9 +117,9 @@ class ConfigTest extends TestCase
      *
      * @depends testLoadClass
      *
-     * @param  ConfigInterface  $config
+     * @param ConfigFileService $config
      */
-    public function testLoadConfig(ConfigInterface $config)
+    public function testLoadConfig(ConfigFileService $config)
     {
         $this->assertInstanceOf(ConfigData::class, $config->loadConfig());
     }
@@ -129,13 +129,13 @@ class ConfigTest extends TestCase
      *
      * @depends testLoadClass
      *
-     * @param  ConfigInterface  $config
+     * @param ConfigFileService $config
      */
-    public function testUpdateConfig(ConfigInterface $config)
+    public function testUpdateConfig(ConfigFileService $config)
     {
         $config->updateConfig($config->getConfigData());
 
-        $this->assertEquals(ConfigFileService::getTimeUpdated(), $config->getConfigData()->getConfigDate());
+        $this->assertEquals(ConfigFile::getTimeUpdated(), $config->getConfigData()->getConfigDate());
     }
 
     /**
@@ -143,12 +143,12 @@ class ConfigTest extends TestCase
      *
      * @depends testLoadClass
      *
-     * @param  ConfigInterface  $config
+     * @param ConfigFileService $config
      *
      * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public function testGenerateUpgradeKey(ConfigInterface $config)
+    public function testGenerateUpgradeKey(ConfigFileService $config)
     {
         $config->generateUpgradeKey();
 

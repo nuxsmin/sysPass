@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -56,13 +56,13 @@ final class SaveController extends SimpleControllerBase
     use JsonTrait;
 
     private MasterPassServiceInterface $masterPassService;
-    private ConfigServiceInterface     $configService;
+    private ConfigService $configService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         MasterPassServiceInterface $masterPassService,
-        ConfigServiceInterface $configService
+        ConfigService $configService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

@@ -42,7 +42,7 @@ use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -166,7 +166,9 @@ abstract class ApiTestCase extends TestCase
                     },
                     DbStorageInterface::class => create(MysqlHandler::class)
                         ->constructor($databaseConnectionData),
-                    ConfigDataInterface::class => static function (ConfigInterface $config) use ($databaseConnectionData) {
+                    ConfigDataInterface::class => static function (ConfigFileService $config) use (
+                        $databaseConnectionData
+                    ) {
                         $configData = $config->getConfigData()
                             ->setDbHost($databaseConnectionData->getDbHost())
                             ->setDbName($databaseConnectionData->getDbName())

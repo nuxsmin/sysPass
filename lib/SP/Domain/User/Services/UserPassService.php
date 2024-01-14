@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,8 +31,8 @@ use SP\Core\Crypt\Hash;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -60,13 +60,13 @@ final class UserPassService extends Service implements UserPassServiceInterface
     public const MPASS_CHECKOLD = 4;
 
     private ConfigDataInterface    $configData;
-    private UserRepository         $userRepository;
-    private ConfigServiceInterface $configService;
+    private UserRepository $userRepository;
+    private ConfigService  $configService;
 
     public function __construct(
         Application $application,
         UserRepositoryInterface $userRepository,
-        ConfigServiceInterface $configService
+        ConfigService $configService
     ) {
         parent::__construct($application);
 
@@ -161,7 +161,7 @@ final class UserPassService extends Service implements UserPassServiceInterface
     public function makeKeyForUser(string $userLogin, string $userPass): string
     {
         // Use always the most recent config data
-        if (ConfigFileService::getTimeUpdated() > $this->configData->getConfigDate()) {
+        if (ConfigFile::getTimeUpdated() > $this->configData->getConfigDate()) {
             return trim($userPass.$userLogin.$this->config->getConfigData()->getPasswordSalt());
         }
 

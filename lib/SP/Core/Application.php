@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Core;
 
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -37,18 +37,18 @@ final class Application
     /**
      * Module constructor.
      *
-     * @param ConfigInterface $config
+     * @param ConfigFileService $config
      * @param EventDispatcherInterface $eventDispatcher
      * @param SessionContextInterface|ContextInterface $context
      */
     public function __construct(
-        private readonly ConfigInterface                          $config,
+        private readonly ConfigFileService $config,
         private readonly EventDispatcherInterface                 $eventDispatcher,
         private readonly SessionContextInterface|ContextInterface $context
     ) {
     }
 
-    public function getConfig(): ConfigInterface
+    public function getConfig(): ConfigFileService
     {
         return $this->config;
     }

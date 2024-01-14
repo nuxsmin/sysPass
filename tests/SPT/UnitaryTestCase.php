@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\DataModel\ProfileData;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -45,9 +45,9 @@ abstract class UnitaryTestCase extends TestCase
 {
     use PHPUnitHelper;
 
-    protected static Generator $faker;
-    protected ConfigInterface  $config;
-    protected Application      $application;
+    protected static Generator  $faker;
+    protected ConfigFileService $config;
+    protected Application       $application;
     protected ContextInterface $context;
 
     public static function setUpBeforeClass(): void
@@ -94,7 +94,7 @@ abstract class UnitaryTestCase extends TestCase
 
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 
-        $config = $this->createStub(ConfigInterface::class);
+        $config = $this->createStub(ConfigFileService::class);
         $config->method('getConfigData')->willReturn($configData);
 
         return new Application(

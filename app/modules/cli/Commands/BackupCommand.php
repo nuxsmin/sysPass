@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Export\Ports\FileBackupServiceInterface;
 use SP\Domain\Export\Services\FileBackupService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,8 +57,9 @@ final class BackupCommand extends CommandBase
 
     public function __construct(
         FileBackupServiceInterface $fileBackupService,
-                                LoggerInterface   $logger,
-                                ConfigInterface $config)
+        LoggerInterface   $logger,
+        ConfigFileService $config
+    )
     {
         $this->fileBackupService = $fileBackupService;
 

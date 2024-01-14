@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,8 @@ use SP\Core\Crypt\Hash;
 use SP\Domain\Account\Ports\AccountCryptServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
-use SP\Domain\Config\Services\ConfigService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Config\Services\Config;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
@@ -49,15 +49,15 @@ final class MasterPassService extends Service implements MasterPassServiceInterf
     public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
-    protected ConfigService                $configService;
+    protected Config $configService;
     protected AccountCryptServiceInterface $accountCryptService;
     protected CustomFieldCryptService      $customFieldCryptService;
 
     public function __construct(
-        Application $application,
-        ConfigServiceInterface $configService,
-        AccountCryptServiceInterface $accountCryptService,
-        CustomFieldCryptServiceInterface $customFieldCryptService
+        Application                           $application,
+        ConfigService $configService,
+        AccountCryptServiceInterface          $accountCryptService,
+        CustomFieldCryptServiceInterface      $customFieldCryptService
     ) {
         parent::__construct($application);
 

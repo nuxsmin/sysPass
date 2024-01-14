@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ use Exception;
 use JsonException;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Http\JsonMessage;
 use SP\Util\Util;
 
@@ -48,8 +48,8 @@ trait ConfigTrait
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
-        ConfigInterface $config,
-        callable $onSuccess = null
+        ConfigFileService $config,
+        callable          $onSuccess = null
     ): bool {
         try {
             if ($configData->isDemoEnabled()) {

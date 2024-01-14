@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SPT\Modules\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Modules\Cli\Commands\BackupCommand;
@@ -94,7 +94,7 @@ class BackupCommandTest extends CliTestCase
 
     private function checkBackupFilesAreCreated(): void
     {
-        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
 
         $this->assertFileExists(
             BackupFiles::getAppBackupFilename(

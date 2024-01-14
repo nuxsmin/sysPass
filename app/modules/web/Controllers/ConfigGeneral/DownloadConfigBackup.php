@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,8 @@ use RuntimeException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
-use SP\Domain\Config\Services\ConfigBackupService;
+use SP\Domain\Config\Ports\ConfigBackupService;
+use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -46,12 +46,12 @@ final class DownloadConfigBackup extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private ConfigBackupServiceInterface $configBackupService;
+    private ConfigBackupService $configBackupService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        ConfigBackupServiceInterface $configBackupService
+        ConfigBackupService $configBackupService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -76,7 +76,7 @@ final class DownloadConfigBackup extends SimpleControllerBase
             );
 
             if ($type === 'json') {
-                $data = ConfigBackupService::configToJson($this->configBackupService->getBackup());
+                $data = ConfigBackup::configToJson($this->configBackupService->getBackup());
             } else {
                 throw new RuntimeException('Not implemented');
             }

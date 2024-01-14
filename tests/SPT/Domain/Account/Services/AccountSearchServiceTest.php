@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -207,7 +207,7 @@ class AccountSearchServiceTest extends UnitaryTestCase
         $this->accountSearchService->getByFilter($accountSearchFilter);
     }
 
-    private function buildExpectationForCondition(string $condition)
+    private function buildExpectationForCondition(string $condition): void
     {
         switch ($condition) {
             case AccountSearchConstants::FILTER_IS_EXPIRED:
@@ -241,17 +241,21 @@ class AccountSearchServiceTest extends UnitaryTestCase
         $userService = $this->createMock(UserServiceInterface::class);
         $userService
             ->method('getByLogin')
-            ->willReturn(new UserData([
-                'id'          => self::$faker->randomNumber(),
-                'userGroupId' => self::$faker->randomNumber(),
-            ]));
+            ->willReturn(
+                new UserData([
+                                 'id' => self::$faker->randomNumber(),
+                                 'userGroupId' => self::$faker->randomNumber(),
+                             ])
+            );
 
         $userGroupService = $this->createMock(UserGroupServiceInterface::class);
         $userGroupService
             ->method('getByName')
-            ->willReturn(new UserGroupData([
-                'id' => self::$faker->randomNumber(),
-            ]));
+            ->willReturn(
+                new UserGroupData([
+                                      'id' => self::$faker->randomNumber(),
+                                  ])
+            );
 
         $this->accountSearchRepository = $this->createMock(AccountSearchRepositoryInterface::class);
         $this->accountSearchDataBuilder = $this->createMock(AccountSearchDataBuilderInterface::class);
@@ -264,5 +268,4 @@ class AccountSearchServiceTest extends UnitaryTestCase
             $this->accountSearchDataBuilder
         );
     }
-
 }

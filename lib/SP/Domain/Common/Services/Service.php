@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,10 +29,9 @@ use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-
 use SP\Domain\Core\Exceptions\CryptException;
 
 use function SP\__u;
@@ -47,8 +46,8 @@ abstract class Service
 {
     protected const STATUS_INTERNAL_ERROR = 1000;
 
-    protected ConfigInterface          $config;
-    protected ContextInterface         $context;
+    protected ConfigFileService $config;
+    protected ContextInterface  $context;
     protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(Application $application)

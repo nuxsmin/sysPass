@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Forms;
 
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Http\RequestInterface;
 
@@ -37,7 +37,7 @@ use SP\Domain\Http\RequestInterface;
  */
 abstract class FormBase
 {
-    protected ConfigFileService   $config;
+    protected ConfigFile $config;
     protected ConfigDataInterface $configData;
     protected ContextInterface    $context;
 

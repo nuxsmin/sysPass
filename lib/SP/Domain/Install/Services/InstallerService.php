@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,14 +27,14 @@ namespace SP\Domain\Install\Services;
 
 use Exception;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\ConfigData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
+use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -65,25 +65,25 @@ final class InstallerService implements InstallerServiceInterface
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private RequestInterface            $request;
-    private ConfigInterface             $config;
-    private UserServiceInterface        $userService;
-    private UserGroupServiceInterface   $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
-    private ConfigServiceInterface      $configService;
-    private DatabaseConnectionData      $databaseConnectionData;
-    private DatabaseSetupInterface      $databaseSetup;
-    private ?InstallData                $installData = null;
+    private RequestInterface                      $request;
+    private ConfigFileService                     $config;
+    private UserServiceInterface                  $userService;
+    private UserGroupServiceInterface             $userGroupService;
+    private UserProfileServiceInterface           $userProfileService;
+    private ConfigService $configService;
+    private DatabaseConnectionData                $databaseConnectionData;
+    private DatabaseSetupInterface                $databaseSetup;
+    private ?InstallData                          $installData = null;
 
     public function __construct(
-        RequestInterface $request,
-        ConfigInterface $config,
-        UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
-        UserProfileServiceInterface $userProfileService,
-        ConfigServiceInterface $configService,
-        DatabaseConnectionData $databaseConnectionData,
-        DatabaseSetupInterface $databaseSetup
+        RequestInterface                      $request,
+        ConfigFileService                     $config,
+        UserServiceInterface                  $userService,
+        UserGroupServiceInterface             $userGroupService,
+        UserProfileServiceInterface           $userProfileService,
+        ConfigService $configService,
+        DatabaseConnectionData                $databaseConnectionData,
+        DatabaseSetupInterface                $databaseSetup
     ) {
         $this->request = $request;
         $this->config = $config;
@@ -155,7 +155,8 @@ final class InstallerService implements InstallerServiceInterface
         }
 
         if (IS_TESTING
-            && empty($this->installData->getDbAdminPass())) {
+            && empty($this->installData->getDbAdminPass())
+        ) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database password'),
                 SPException::ERROR,
@@ -203,7 +204,12 @@ final class InstallerService implements InstallerServiceInterface
         $this->saveMasterPassword();
         $this->createAdminAccount();
 
-        $this->configService->create(new ConfigData('version', VersionUtil::getVersionStringNormalized()));
+        $this->configService->create(
+            new Config([
+                           'parameter' => 'version',
+                           'value' => VersionUtil::getVersionStringNormalized()
+                       ])
+        );
 
         $configData->setInstalled(true);
 
@@ -281,7 +287,7 @@ final class InstallerService implements InstallerServiceInterface
     }
 
     /**
-     * @param  ConfigDataInterface  $configData
+     * @param ConfigDataInterface $configData
      */
     private function setupDb(ConfigDataInterface $configData): void
     {
@@ -318,10 +324,15 @@ final class InstallerService implements InstallerServiceInterface
     {
         try {
             $this->configService->create(
-                new ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword()))
+                new Config(
+                    [
+                        'parameter' => 'masterPwd',
+                        'value' => Hash::hashKey($this->installData->getMasterPassword())
+                    ]
+                )
             );
             $this->configService->create(
-                new ConfigData('lastupdatempass', time())
+                new Config(['parameter' => 'lastupdatempass', 'value' => time()])
             );
         } catch (Exception $e) {
             processException($e);
@@ -345,12 +356,12 @@ final class InstallerService implements InstallerServiceInterface
             $userProfileData = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
 
             $userData = new UserData([
-                'userGroupId'   => $this->userGroupService->create($userGroupData),
-                'userProfileId' => $this->userProfileService->create($userProfileData),
-                'login'         => $this->installData->getAdminLogin(),
-                'name'          => 'sysPass Admin',
-                'isAdminApp'    => 1,
-            ]);
+                                         'userGroupId' => $this->userGroupService->create($userGroupData),
+                                         'userProfileId' => $this->userProfileService->create($userProfileData),
+                                         'login' => $this->installData->getAdminLogin(),
+                                         'name' => 'sysPass Admin',
+                                         'isAdminApp' => 1,
+                                     ]);
 
             $id = $this->userService->createWithMasterPass(
                 $userData,

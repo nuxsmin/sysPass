@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -44,7 +44,7 @@ use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Account\Services\AccountService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -70,7 +70,7 @@ class AccountServiceTest extends UnitaryTestCase
     private AccountToTagRepositoryInterface|MockObject       $accountToTagRepository;
     private ItemPresetServiceInterface|MockObject            $itemPresetService;
     private AccountHistoryServiceInterface|MockObject        $accountHistoryService;
-    private ConfigServiceInterface|MockObject                $configService;
+    private ConfigService|MockObject $configService;
     private AccountCryptServiceInterface|MockObject          $accountCryptService;
     private AccountPresetServiceInterface|MockObject         $accountPresetService;
     private AccountItemsServiceInterface|MockObject          $accountItemsService;
@@ -1332,7 +1332,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);
         $this->itemPresetService = $this->createMock(ItemPresetServiceInterface::class);
         $this->accountHistoryService = $this->createMock(AccountHistoryServiceInterface::class);
-        $this->configService = $this->createMock(ConfigServiceInterface::class);
+        $this->configService = $this->createMock(ConfigService::class);
         $this->accountCryptService = $this->createMock(AccountCryptServiceInterface::class);
         $this->accountItemsService = $this->createMock(AccountItemsServiceInterface::class);
         $this->accountPresetService = $this->createMock(AccountPresetServiceInterface::class);

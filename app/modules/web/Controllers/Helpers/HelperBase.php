@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
@@ -43,9 +43,9 @@ abstract class HelperBase
     protected TemplateInterface   $view;
     protected ConfigDataInterface $configData;
     protected ContextInterface    $context;
-    protected EventDispatcher   $eventDispatcher;
-    protected ConfigFileService $config;
-    protected Request           $request;
+    protected EventDispatcher $eventDispatcher;
+    protected ConfigFile      $config;
+    protected Request         $request;
 
     /**
      * Constructor

@@ -37,7 +37,7 @@ trait AccountSearchTokenizerDataTrait
         $faker = Factory::create();
         $id = $faker->numberBetween(1);
         $name = $faker->userName;
-        $file = sprintf('%s.%s', $faker->name(), $faker->fileExtension);
+        $file = sprintf('%s.%s', $faker->name(), $faker->fileExtension());
 
         $conditions = [
             sprintf('id:%d', $id),
@@ -46,7 +46,7 @@ trait AccountSearchTokenizerDataTrait
             sprintf('file:"%s"', $file),
             sprintf('owner:"%s"', $name),
             sprintf('maingroup:"%s"', $name),
-            sprintf('clientService:"%s"', $name),
+            sprintf('client:"%s"', $name),
             sprintf('category:"%s"', $name),
             sprintf('name_regex:"^%s$"', $name),
         ];
@@ -64,14 +64,14 @@ trait AccountSearchTokenizerDataTrait
             [
                 implode(' ', $conditions),
                 [
-                    AccountSearchConstants::FILTER_ACCOUNT_ID         => $id,
-                    AccountSearchConstants::FILTER_USER_NAME          => $name,
-                    AccountSearchConstants::FILTER_GROUP_NAME         => $name,
-                    AccountSearchConstants::FILTER_FILE_NAME          => $file,
-                    AccountSearchConstants::FILTER_OWNER              => $name,
-                    AccountSearchConstants::FILTER_MAIN_GROUP         => $name,
-                    AccountSearchConstants::FILTER_CLIENT_NAME        => $name,
-                    AccountSearchConstants::FILTER_CATEGORY_NAME      => $name,
+                    AccountSearchConstants::FILTER_ACCOUNT_ID => $id,
+                    AccountSearchConstants::FILTER_USER_NAME => $name,
+                    AccountSearchConstants::FILTER_GROUP_NAME => $name,
+                    AccountSearchConstants::FILTER_FILE_NAME => $file,
+                    AccountSearchConstants::FILTER_OWNER => $name,
+                    AccountSearchConstants::FILTER_MAIN_GROUP => $name,
+                    AccountSearchConstants::FILTER_CLIENT_NAME => $name,
+                    AccountSearchConstants::FILTER_CATEGORY_NAME => $name,
                     AccountSearchConstants::FILTER_ACCOUNT_NAME_REGEX => sprintf('^%s$', $name),
                 ],
             ],
@@ -97,8 +97,8 @@ trait AccountSearchTokenizerDataTrait
     {
         $conditions = [
             'test string' => null,
-            'op:and'      => 'and',
-            'op:or'       => 'or',
+            'op:and' => 'and',
+            'op:or' => 'or',
         ];
 
         return [
@@ -116,9 +116,9 @@ trait AccountSearchTokenizerDataTrait
             $faker->streetAddress,
             $faker->name,
             $faker->userName,
-            $faker->catchPhrase,
+            $faker->sentence,
             $faker->ipv4,
-            $faker->bankAccountNumber,
+            $faker->iban,
             $faker->companyEmail,
             $faker->domainName,
         ];

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,7 +34,7 @@ use SP\Core\Events\EventDispatcher;
 use SP\DataModel\ProfileData;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
@@ -63,9 +63,9 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected EventDispatcher              $eventDispatcher;
-    protected ConfigInterface              $config;
-    protected SessionContextInterface      $session;
+    protected EventDispatcher         $eventDispatcher;
+    protected ConfigFileService       $config;
+    protected SessionContextInterface $session;
     protected ThemeInterface               $theme;
     protected AclInterface                 $acl;
     protected ConfigDataInterface          $configData;

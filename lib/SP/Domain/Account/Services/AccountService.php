@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -49,7 +49,7 @@ use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -79,7 +79,7 @@ final class AccountService extends Service implements AccountServiceInterface
         private AccountHistoryServiceInterface   $accountHistoryService,
         private AccountItemsServiceInterface     $accountItemsService,
         private AccountPresetServiceInterface    $accountPresetService,
-        private ConfigServiceInterface           $configService,
+        private ConfigService                    $configService,
         private AccountCryptServiceInterface     $accountCryptService
     ) {
         parent::__construct($application);

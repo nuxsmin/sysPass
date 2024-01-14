@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Account\Ports\AccountServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -78,9 +78,9 @@ final class IndexController extends ControllerBase
     private UserGroupServiceInterface   $userGroupService;
     private UserProfileServiceInterface $userProfileService;
     private MimeTypesInterface          $mimeTypes;
-    private DatabaseUtil                $databaseUtil;
-    private ConfigServiceInterface      $configService;
-    private AccountServiceInterface     $accountService;
+    private DatabaseUtil            $databaseUtil;
+    private ConfigService           $configService;
+    private AccountServiceInterface $accountService;
     private PluginManager               $pluginManager;
 
     public function __construct(
@@ -92,7 +92,7 @@ final class IndexController extends ControllerBase
         UserProfileServiceInterface $userProfileService,
         MimeTypesInterface          $mimeTypes,
         DatabaseUtil                $databaseUtil,
-        ConfigServiceInterface      $configService,
+        ConfigService $configService,
         AccountServiceInterface     $accountService,
         PluginManager               $pluginManager
     ) {

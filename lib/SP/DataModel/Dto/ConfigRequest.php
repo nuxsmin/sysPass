@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,42 +24,24 @@
 
 namespace SP\DataModel\Dto;
 
-
 /**
  * Class ConfigRequest
- *
- * @package SP\DataModel\Dto
  */
 class ConfigRequest
 {
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
-    /**
-     * @param $param
-     * @param $value
-     */
-    public function add($param, $value)
+    public function add(string $param, string $value): void
     {
         $this->data[$param] = $value;
     }
 
-    /**
-     * @param $param
-     *
-     * @return mixed|null
-     */
-    public function get($param)
+    public function get(string $param): ?string
     {
         return $this->data[$param] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

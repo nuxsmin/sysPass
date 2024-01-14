@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Import\Services;
 
 use SP\Core\Application;
-use SP\Domain\Config\Ports\ConfigServiceInterface;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
@@ -40,19 +40,19 @@ final class XmlImport implements XmlImportInterface
 {
     private XmlFileImport          $xmlFileImport;
     private ImportParams           $importParams;
-    private ImportHelper           $importHelper;
-    private ConfigServiceInterface $configService;
-    private Application            $application;
+    private ImportHelper                          $importHelper;
+    private ConfigService $configService;
+    private Application                           $application;
 
     /**
      * XmlImport constructor.
      */
     public function __construct(
-        Application $application,
-        ImportHelper $importHelper,
-        ConfigServiceInterface $configService,
-        XmlFileImportInterface $xmlFileImport,
-        ImportParams $importParams
+        Application                           $application,
+        ImportHelper                          $importHelper,
+        ConfigService $configService,
+        XmlFileImportInterface                $xmlFileImport,
+        ImportParams                          $importParams
     ) {
         $this->application = $application;
         $this->importHelper = $importHelper;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SPT\Modules\Cli\Commands;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Domain\Config\Services\ConfigFileService;
+use SP\Domain\Config\Services\ConfigFile;
 use SP\Infrastructure\Database\DatabaseException;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SPT\DatabaseUtil;
@@ -188,7 +188,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
 
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
@@ -222,7 +222,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
 
         $this->assertEquals($configData->getSiteLang(), $inputData['--language']);
 
@@ -269,7 +269,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
 
         $this->assertEquals($configData->getDbUser(), $databaseUser);
         $this->assertEquals($configData->getDbPass(), $databasePassword);

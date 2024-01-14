@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,56 +24,51 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\DataModel\ConfigData;
-use SP\DataModel\Dto\ConfigRequest;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class ConfigService
+ * Interface ConfigRepository
  *
- * @package SP\Domain\Config\Services
+ * @template T of ConfigModel
  */
-interface ConfigServiceInterface
+interface ConfigRepository extends RepositoryInterface
 {
     /**
-     * @throws NoSuchItemException
-     * @throws ServiceException
-     */
-    public function getByParam(string $param, $default = null);
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function create(ConfigData $configData): int;
-
-    /**
-     * @throws ServiceException
-     */
-    public function saveBatch(ConfigRequest $configRequest): void;
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function save(string $param, $value): bool;
-
-    /**
-     * Obtener un array con la configuración almacenada en la BBDD.
+     * @param ConfigModel $config
      *
-     * @return ConfigData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAll(): array;
+    public function update(ConfigModel $config): QueryResult;
 
     /**
+     * @param ConfigModel $config
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
      */
-    public function deleteByParam(string $param): void;
+    public function create(ConfigModel $config): QueryResult;
+
+    /**
+     * @param string $param
+     *
+     * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByParam(string $param): QueryResult;
+
+    /**
+     * @param string $param
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function has(string $param): bool;
 }

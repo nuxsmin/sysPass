@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use SP\Core\Language;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InstallError;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
@@ -71,8 +71,8 @@ final class InstallCommand extends CommandBase
     private InstallerService $installer;
 
     public function __construct(
-        LoggerInterface $logger,
-        ConfigInterface $config,
+        LoggerInterface   $logger,
+        ConfigFileService $config,
         InstallerServiceInterface $installer
     ) {
         parent::__construct($logger, $config);

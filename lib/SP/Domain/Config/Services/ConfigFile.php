@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,9 +27,9 @@ namespace SP\Domain\Config\Services;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigBackupServiceInterface;
+use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\ConfigException;
@@ -45,31 +45,31 @@ use function SP\processException;
 defined('APP_ROOT') || die();
 
 /**
- * Esta clase es responsable de leer y escribir la configuración del archivo config.php
+ * Read and write the settings in the definex config file
  */
-class ConfigFileService implements ConfigInterface
+class ConfigFile implements ConfigFileService
 {
     /**
      * Cache file name
      */
-    public const CONFIG_CACHE_FILE = CACHE_PATH.DIRECTORY_SEPARATOR.'config.cache';
+    public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
 
-    private static int                   $timeUpdated;
-    private static ?ConfigDataInterface  $configData   = null;
-    private bool                         $configLoaded = false;
-    private ContextInterface             $context;
-    private XmlFileStorageInterface      $fileStorage;
-    private FileCacheInterface           $fileCache;
-    private ConfigBackupServiceInterface $configBackupService;
+    private static int                  $timeUpdated;
+    private static ?ConfigDataInterface $configData   = null;
+    private bool                        $configLoaded = false;
+    private ContextInterface            $context;
+    private XmlFileStorageInterface     $fileStorage;
+    private FileCacheInterface          $fileCache;
+    private ConfigBackupService         $configBackupService;
 
     /**
      * @throws ConfigException
      */
     public function __construct(
         XmlFileStorageInterface $fileStorage,
-        FileCacheInterface $fileCache,
-        ContextInterface $context,
-        ConfigBackupServiceInterface $configBackupService
+        FileCacheInterface  $fileCache,
+        ContextInterface    $context,
+        ConfigBackupService $configBackupService
     ) {
         $this->fileCache = $fileCache;
         $this->fileStorage = $fileStorage;
@@ -159,12 +159,11 @@ class ConfigFileService implements ConfigInterface
         $configData = new ConfigData();
 
         foreach ($items as $item => $value) {
-            $methodName = 'set'.ucfirst($item);
+            $methodName = 'set' . ucfirst($item);
 
             if (method_exists($configData, $methodName)) {
                 $configData->$methodName($value);
             }
-
         }
 
         return $configData;
@@ -174,12 +173,12 @@ class ConfigFileService implements ConfigInterface
      * Guardar la configuración
      *
      * @param ConfigDataInterface $configData
-     * @param  bool|null  $backup
+     * @param bool|null $backup
      *
-     * @return ConfigInterface
+     * @return ConfigFileService
      * @throws FileException
      */
-    public function saveConfig(ConfigDataInterface $configData, ?bool $backup = true): ConfigInterface
+    public function saveConfig(ConfigDataInterface $configData, ?bool $backup = true): ConfigFileService
     {
         if ($backup) {
             $this->configBackupService->backup($configData);
@@ -209,7 +208,7 @@ class ConfigFileService implements ConfigInterface
     /**
      * Commits a config data
      */
-    public function updateConfig(ConfigDataInterface $configData): ConfigInterface
+    public function updateConfig(ConfigDataInterface $configData): ConfigFileService
     {
         $configData->setConfigDate(time());
         $configData->setConfigSaver($this->context->getUserData()->getLogin());
@@ -262,7 +261,7 @@ class ConfigFileService implements ConfigInterface
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */
-    public function generateUpgradeKey(): ConfigInterface
+    public function generateUpgradeKey(): ConfigFileService
     {
         if (empty(self::$configData->getUpgradeKey())) {
             logger('Generating upgrade key');
