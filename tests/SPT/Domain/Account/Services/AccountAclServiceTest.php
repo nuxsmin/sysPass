@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,8 +35,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
 
@@ -676,7 +676,7 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
@@ -717,7 +717,7 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
@@ -762,7 +762,7 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(
@@ -798,7 +798,7 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAclService(

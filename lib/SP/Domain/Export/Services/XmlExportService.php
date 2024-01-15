@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -146,7 +146,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
         // Generar hash unico para evitar descargas no permitidas
         $hash = sha1(uniqid('sysPassExport', true));
         $this->configData->setExportHash($hash);
-        $this->config->saveConfig($this->configData);
+        $this->config->save($this->configData);
 
         return self::getExportFilename($this->exportPath, $hash);
     }

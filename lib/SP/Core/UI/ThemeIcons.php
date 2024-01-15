@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,9 +29,9 @@ use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\IconInterface;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Util\FileUtil;
 
@@ -53,8 +53,8 @@ final class ThemeIcons implements ThemeIconsInterface
     private array $icons = [];
 
     /**
-     * @param \SP\Domain\Core\Context\ContextInterface $context
-     * @param FileCacheInterface $cache
+     * @param ContextInterface $context
+     * @param FileCacheService $cache
      * @param ThemeContextInterface $themeContext
      * @return ThemeIconsInterface
      * @throws InvalidClassException
@@ -62,7 +62,7 @@ final class ThemeIcons implements ThemeIconsInterface
      */
     public static function loadIcons(
         ContextInterface      $context,
-        FileCacheInterface $cache,
+        FileCacheService $cache,
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface {
         try {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -75,7 +75,7 @@ final class UpgradeController extends ControllerBase
             $this->handleApplication();
 
             $this->configData->setUpgradeKey(null);
-            $this->config->saveConfig($this->configData, false);
+            $this->config->save($this->configData, false);
 
             return $this->returnJsonResponse(
                 JsonMessage::JSON_SUCCESS,

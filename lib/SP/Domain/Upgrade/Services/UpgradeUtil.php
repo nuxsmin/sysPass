@@ -64,7 +64,7 @@ final class UpgradeUtil
             && empty($configData->getAppVersion())
         ) {
             $configData->setAppVersion(VersionUtil::getVersionStringNormalized());
-            $config->saveConfig($configData, false);
+            $config->save($configData, false);
         }
     }
 }

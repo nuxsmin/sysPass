@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\RequestInterface;
@@ -77,6 +78,7 @@ final class Init extends HttpModuleBase
      * @throws ContextException
      * @throws InitializationException
      * @throws FileException
+     * @throws ConfigException
      */
     public function initialize(string $controller): void
     {
@@ -84,9 +86,6 @@ final class Init extends HttpModuleBase
 
         // Initialize context
         $this->context->initialize();
-
-        // Load config
-        $this->config->loadConfig();
 
         // Load language
         $this->language->setLanguage();

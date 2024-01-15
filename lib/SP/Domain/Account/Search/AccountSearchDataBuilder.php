@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,8 +39,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
@@ -76,13 +76,13 @@ final class AccountSearchDataBuilder extends Service implements AccountSearchDat
     private ?array $accountColor = null;
 
     public function __construct(
-        Application $application,
-        private AccountAclServiceInterface $accountAclService,
+        Application                             $application,
+        private AccountAclServiceInterface      $accountAclService,
         private AccountToTagRepositoryInterface $accountToTagRepository,
         private AccountToFavoriteServiceInterface $accountToFavoriteService,
-        private AccountCacheServiceInterface $accountCacheService,
-        private FileCacheInterface $fileCache,
-        private ConfigDataInterface $configData
+        private AccountCacheServiceInterface    $accountCacheService,
+        private FileCacheService                $fileCache,
+        private ConfigDataInterface             $configData
     ) {
         parent::__construct($application);
 

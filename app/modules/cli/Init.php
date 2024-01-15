@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Cli;
 
+use Exception;
 use SP\Core\Application;
+use SP\Core\Context\ContextException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\ProvidersHelper;
@@ -33,6 +35,8 @@ use SP\Util\VersionUtil;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function SP\logger;
 
 /**
  * Class Init
@@ -70,8 +74,8 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @throws \SP\Core\Context\ContextException
-     * @throws \Exception
+     * @throws ContextException
+     * @throws Exception
      */
     public function initialize(string $controller): void
     {
@@ -80,9 +84,6 @@ final class Init extends ModuleBase
         // Initialize context
         $this->context->initialize();
 
-        // Load config
-        $this->config->loadConfig();
-
         // Load language
         $this->language->setLanguage();
 
@@ -90,7 +91,7 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     private function initCli(): void
     {

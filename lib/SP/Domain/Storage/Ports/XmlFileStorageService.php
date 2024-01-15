@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,19 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Storage\Ports;
+
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
- * Interface StorageInterface
- *
- * @package SP\Storage
+ * Interface XmlFileStorageService
  */
-interface XmlFileStorageInterface
+interface XmlFileStorageService
 {
     /**
      * @throws FileException
      */
-    public function load(string $node = ''): XmlFileStorageInterface;
+    public function load(string $node = ''): XmlFileStorageService;
 
     /**
      * @param mixed $data Data to be saved
@@ -42,7 +43,7 @@ interface XmlFileStorageInterface
      *
      * @throws FileException
      */
-    public function save($data, string $node = ''): XmlFileStorageInterface;
+    public function save(mixed $data, string $node = ''): XmlFileStorageService;
 
     public function getItems(): mixed;
 

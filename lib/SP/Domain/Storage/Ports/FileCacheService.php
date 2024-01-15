@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,34 +22,37 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Storage\Ports;
+
+use SP\Infrastructure\File\FileException;
 
 /**
- * Interface FileStorageInterface
- *
- * @package SP\Infrastructure\File;
+ * Interface FileCacheService
  */
-interface FileCacheInterface
+interface FileCacheService
 {
     /**
-     * Load file data unserializing the data
-     *
-     * @param  string|null  $path  The path to the file
-     * @param  string|null  $class  The class to unserialize the data
-     *
-     * @return mixed
      * @throws FileException
      */
-    public function load(?string $path = null, ?string $class = null): mixed;
+    public function load(?string $path = null): mixed;
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $class
+     * @return T
+     * @throws FileException
+     */
+    public function loadWith(string $class): object;
 
     /**
      * Save file data serializing the data
      *
      * @throws FileException
      */
-    public function save(mixed $data, ?string $path = null): FileCacheInterface;
+    public function save(mixed $data, ?string $path = null): FileCacheService;
 
-    public function delete(): FileCacheInterface;
+    public function delete(): FileCacheService;
 
     /**
      * Returns whether the file is expired

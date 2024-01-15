@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ use SP\Core\UI\ThemeIcons;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
 
@@ -85,7 +85,7 @@ class ThemeIconsTest extends UnitaryTestCase
     public function testLoadIconsWithCache()
     {
         $context = $this->createMock(ContextInterface::class);
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
         $themeContext = $this->createMock(ThemeContextInterface::class);
 
         $context->expects(self::once())

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,7 +34,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
@@ -48,12 +48,12 @@ use function SP\processException;
 final class SecureSessionService extends Service implements SecureSessionServiceInterface
 {
     private const CACHE_EXPIRE_TIME = 86400;
-    private const CACHE_PATH        = CACHE_PATH.DIRECTORY_SEPARATOR.'secure_session';
+    private const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';
 
     public function __construct(
-        Application $application,
-        private readonly CryptInterface $crypt,
-        private readonly FileCacheInterface $fileCache,
+        Application                       $application,
+        private readonly CryptInterface   $crypt,
+        private readonly FileCacheService $fileCache,
         private readonly RequestBasedPasswordInterface $requestBasedPassword
     ) {
         parent::__construct($application);
@@ -72,7 +72,7 @@ final class SecureSessionService extends Service implements SecureSessionService
             throw new ServiceException('Unable to get UUID for filename');
         }
 
-        return self::CACHE_PATH.DIRECTORY_SEPARATOR.$uuid;
+        return self::CACHE_PATH . DIRECTORY_SEPARATOR . $uuid;
     }
 
     /**
@@ -90,7 +90,7 @@ final class SecureSessionService extends Service implements SecureSessionService
                 return $this->saveKey();
             }
 
-            $vault = $this->fileCache->load(null, Vault::class);
+            $vault = $this->fileCache->loadWith(Vault::class);
 
             return Key::loadFromAsciiSafeString($vault->getData($this->requestBasedPassword->build()));
         } catch (FileException) {

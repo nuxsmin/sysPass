@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use RuntimeException;
+use SP\Domain\Storage\Ports\FileCacheInterface;
 
 /**
  * Class FileCachePacked

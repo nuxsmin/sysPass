@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,9 +27,9 @@ namespace SP\Core\Acl;
 use SP\DataModel\ActionData;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\XmlFileStorageInterface;
 
 use function SP\__u;
 use function SP\logger;
@@ -56,14 +56,14 @@ class Actions implements ActionsInterface
     /**
      * Action constructor.
      *
-     * @param FileCacheInterface $fileCache
-     * @param XmlFileStorageInterface $xmlFileStorage
+     * @param FileCacheService $fileCache
+     * @param XmlFileStorageService $xmlFileStorage
      *
      * @throws FileException
      */
     public function __construct(
-        private readonly FileCacheInterface      $fileCache,
-        private readonly XmlFileStorageInterface $xmlFileStorage
+        private readonly FileCacheService      $fileCache,
+        private readonly XmlFileStorageService $xmlFileStorage
     ) {
         $this->loadCache();
     }

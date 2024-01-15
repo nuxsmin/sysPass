@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -118,7 +118,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
 
                 $configData->setDatabaseVersion($upgradeVersion);
 
-                $this->config->saveConfig($configData, false);
+                $this->config->save($configData, false);
             }
         }
 

@@ -73,6 +73,7 @@ use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
 use SP\Domain\Providers\MailerInterface;
 use SP\Domain\Providers\MailProviderInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Minify;
 use SP\Http\Client;
 use SP\Http\Request;
@@ -82,7 +83,6 @@ use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileCache;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
 use SP\Mvc\View\Template;
@@ -240,7 +240,7 @@ final class CoreDefinitions
             CryptPKIInterface::class => autowire(CryptPKI::class)
                 ->constructorParameter('publicKeyFile', new FileHandler(CryptPKI::PUBLIC_KEY_FILE))
                 ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
-            FileCacheInterface::class => create(FileCache::class),
+            FileCacheService::class => create(FileCache::class),
             Application::class => autowire(Application::class),
             UuidCookie::class => factory([UuidCookie::class, 'factory'])
                 ->parameter(

@@ -33,19 +33,16 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\ConfigException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\XmlFileStorageInterface;
 use SP\Util\PasswordUtil;
 
 use function SP\logger;
 use function SP\processException;
 
-defined('APP_ROOT') || die();
-
 /**
- * Read and write the settings in the definex config file
+ * Read and write the settings in the defined config file
  */
 class ConfigFile implements ConfigFileService
 {
@@ -54,101 +51,82 @@ class ConfigFile implements ConfigFileService
      */
     public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
 
-    private static int                  $timeUpdated;
-    private static ?ConfigDataInterface $configData   = null;
-    private bool                        $configLoaded = false;
-    private ContextInterface            $context;
-    private XmlFileStorageInterface     $fileStorage;
-    private FileCacheInterface          $fileCache;
-    private ConfigBackupService         $configBackupService;
-
     /**
      * @throws ConfigException
      */
     public function __construct(
-        XmlFileStorageInterface $fileStorage,
-        FileCacheInterface  $fileCache,
-        ContextInterface    $context,
-        ConfigBackupService $configBackupService
+        private readonly XmlFileStorageService $fileStorage,
+        private readonly FileCacheService      $fileCache,
+        private readonly ContextInterface      $context,
+        private readonly ConfigBackupService   $configBackupService,
+        private ?ConfigDataInterface           $configData = null
     ) {
-        $this->fileCache = $fileCache;
-        $this->fileStorage = $fileStorage;
-        $this->context = $context;
-        $this->configBackupService = $configBackupService;
-
-        $this->initialize();
+        $this->configData = $this->configData ?? $this->initialize();
     }
 
     /**
      * @throws ConfigException
      */
-    private function initialize(): void
+    private function initialize(): ConfigDataInterface
     {
-        if (!$this->configLoaded) {
-            try {
-                if ($this->fileCache->exists() && !$this->isCacheExpired()) {
-                    self::$configData = $this->fileCache->load();
+        try {
+            $configData = $this->loadFromCache() ?? $this->loadFromFile() ?? $this->generateNewConfig();
 
-                    if (self::$configData->count() === 0) {
-                        $this->fileCache->delete();
-                        $this->initialize();
+            logger('Config loaded');
 
-                        return;
-                    }
+            return $configData;
+        } catch (Exception $e) {
+            processException($e);
 
-                    logger('Config cache loaded');
-                } else {
-                    if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
-                        self::$configData = $this->loadConfigFromFile();
-                        $this->fileCache->save(self::$configData);
-                    } else {
-                        $configData = new ConfigData();
-
-                        // Generate a random salt that is used to add more seed to some passwords
-                        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes());
-
-                        $this->saveConfig($configData, false);
-
-                        logger('Config file created', 'INFO');
-                    }
-
-                    logger('Config loaded');
-                }
-
-                self::$timeUpdated = self::$configData->getConfigDate();
-
-                $this->configLoaded = true;
-            } catch (Exception $e) {
-                processException($e);
-
-                throw new ConfigException(
-                    $e->getMessage(),
-                    SPException::CRITICAL,
-                    null,
-                    $e->getCode(),
-                    $e
-                );
-            }
+            throw ConfigException::critical($e->getMessage(), null, $e->getCode(), $e);
         }
+    }
+
+    /**
+     * @throws FileException
+     */
+    private function loadFromCache(): ConfigDataInterface|null
+    {
+        if (!$this->fileCache->exists() || $this->isCacheExpired()) {
+            return null;
+        }
+
+        $configData = $this->fileCache->loadWith(ConfigData::class);
+
+        if ($configData->countAttributes() === 0) {
+            $this->fileCache->delete();
+
+            return null;
+        }
+
+        logger('Config cache loaded');
+
+        return $configData;
     }
 
     private function isCacheExpired(): bool
     {
         try {
             return $this->fileCache->isExpiredDate($this->fileStorage->getFileHandler()->getFileTime());
-        } catch (FileException $e) {
+        } catch (FileException) {
             return true;
         }
     }
 
-    /**
-     * Cargar el archivo de configuración
-     *
-     * @throws FileException
-     */
-    public function loadConfigFromFile(): ConfigDataInterface
+    private function loadFromFile(): ConfigData|null
     {
-        return $this->configMapper($this->fileStorage->load('config')->getItems());
+        try {
+            $this->fileStorage->getFileHandler()->checkIsReadable();
+
+            $configData = $this->configMapper($this->fileStorage->load('config')->getItems());
+            $this->fileCache->save($configData);
+
+            return $configData;
+        } catch (FileException $e) {
+            processException($e);
+        }
+
+        return null;
     }
 
     /**
@@ -159,10 +137,10 @@ class ConfigFile implements ConfigFileService
         $configData = new ConfigData();
 
         foreach ($items as $item => $value) {
-            $methodName = 'set' . ucfirst($item);
+            $methodName = sprintf("set%s", ucfirst($item));
 
             if (method_exists($configData, $methodName)) {
-                $configData->$methodName($value);
+                $configData->{$methodName}($value);
             }
         }
 
@@ -174,11 +152,11 @@ class ConfigFile implements ConfigFileService
      *
      * @param ConfigDataInterface $configData
      * @param bool|null $backup
-     *
+     * @param bool|null $commit
      * @return ConfigFileService
      * @throws FileException
      */
-    public function saveConfig(ConfigDataInterface $configData, ?bool $backup = true): ConfigFileService
+    public function save(ConfigDataInterface $configData, ?bool $backup = true, ?bool $commit = true): ConfigFileService
     {
         if ($backup) {
             $this->configBackupService->backup($configData);
@@ -190,61 +168,46 @@ class ConfigFile implements ConfigFileService
         $configData->setConfigSaver($configSaver);
         $configData->setConfigHash();
 
-        // Save only attributes to avoid a parent attributes node within the XML
-        $this->fileStorage->save($configData->getAttributes(), 'config');
-        // Save the class object (serialized)
-        $this->fileCache->save($configData);
+        if ($commit) {
+            // Save only attributes to avoid a parent attributes node within the XML
+            $this->fileStorage->save($configData->getAttributes(), 'config');
+            $this->fileCache->save($configData);
+        }
 
-        self::$configData = $configData;
+        $this->configData = $configData;
 
         return $this;
-    }
-
-    public static function getTimeUpdated(): int
-    {
-        return self::$timeUpdated;
     }
 
     /**
-     * Commits a config data
+     * @return ConfigData
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
-    public function updateConfig(ConfigDataInterface $configData): ConfigFileService
+    private function generateNewConfig(): ConfigData
     {
-        $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->context->getUserData()->getLogin());
-        $configData->setConfigHash();
+        $configData = new ConfigData();
 
-        self::$configData = $configData;
+        // Generate a random salt that is used to add more seed to some passwords
+        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes());
 
-        self::$timeUpdated = $configData->getConfigDate();
+        $this->save($configData, false);
 
-        return $this;
+        logger('Config file created', 'INFO');
+
+        return $configData;
     }
 
     /**
      * Cargar la configuración desde el contexto
+     *
+     * @throws ConfigException
      */
-    public function loadConfig(?bool $reload = false): ConfigDataInterface
+    public function reload(): ConfigDataInterface
     {
-        try {
-            $configData = $this->fileCache->load();
+        $this->initialize();
 
-            if ($reload === true
-                || $configData === null
-                || $this->isCacheExpired()
-            ) {
-                self::$configData = $this->loadConfigFromFile();
-                $this->fileCache->save(self::$configData);
-
-                return self::$configData;
-            }
-
-            return $configData;
-        } catch (FileException $e) {
-            processException($e);
-        }
-
-        return self::$configData;
+        return clone $this->configData;
     }
 
     /**
@@ -254,7 +217,7 @@ class ConfigFile implements ConfigFileService
      */
     public function getConfigData(): ConfigDataInterface
     {
-        return clone self::$configData;
+        return clone $this->configData;
     }
 
     /**
@@ -263,10 +226,10 @@ class ConfigFile implements ConfigFileService
      */
     public function generateUpgradeKey(): ConfigFileService
     {
-        if (empty(self::$configData->getUpgradeKey())) {
+        if (empty($this->configData->getUpgradeKey())) {
             logger('Generating upgrade key');
 
-            return $this->saveConfig(self::$configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
+            return $this->save($this->configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
         }
 
         return $this;

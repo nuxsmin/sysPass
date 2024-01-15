@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,8 +33,8 @@ use SP\Domain\Account\Search\AccountSearchDataBuilder;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 use SPT\Generators\AccountDataGenerator;
 use SPT\UnitaryTestCase;
@@ -55,7 +55,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
     private AccountCacheServiceInterface|MockObject      $accountCacheService;
     private AccountToTagRepositoryInterface|MockObject   $accountToTagRepository;
     private AccountToFavoriteServiceInterface|MockObject $accountToFavoriteService;
-    private MockObject|FileCacheInterface                $fileCache;
+    private MockObject|FileCacheService $fileCache;
 
     /**
      * @throws QueryException
@@ -136,7 +136,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
 
     public function testInitializeWithException(): void
     {
-        $fileCache = $this->createMock(FileCacheInterface::class);
+        $fileCache = $this->createMock(FileCacheService::class);
 
         $fileCache
             ->expects(once())
@@ -162,7 +162,7 @@ class AccountSearchDataBuilderTest extends UnitaryTestCase
         $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);
         $this->accountToFavoriteService = $this->createMock(AccountToFavoriteServiceInterface::class);
         $this->accountCacheService = $this->createMock(AccountCacheServiceInterface::class);
-        $this->fileCache = $this->createMock(FileCacheInterface::class);
+        $this->fileCache = $this->createMock(FileCacheService::class);
         $this->fileCache
             ->expects(self::once())
             ->method('load');

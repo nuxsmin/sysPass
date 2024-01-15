@@ -86,7 +86,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $configFile = $this->createMock(ConfigFileService::class);
 
         $configFile->expects(self::once())
-                   ->method('saveConfig')
+            ->method('save')
                    ->with($configData)
                    ->willReturn($configFile);
 
@@ -116,7 +116,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $configFile = $this->createMock(ConfigFileService::class);
 
         $configFile->expects(self::never())
-                   ->method('saveConfig');
+            ->method('save');
 
         $this->configService->expects(self::once())
                             ->method('getByParam')
@@ -142,7 +142,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $configFile = $this->createMock(ConfigFileService::class);
 
         $configFile->expects(self::never())
-                   ->method('saveConfig');
+            ->method('save');
 
         $this->configService->expects(self::once())
                             ->method('getByParam')

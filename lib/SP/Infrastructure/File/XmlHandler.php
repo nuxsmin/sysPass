@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,7 @@ use DOMNodeList;
 use DOMXPath;
 use ReflectionObject;
 use RuntimeException;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 
 use function SP\__u;
 
@@ -40,7 +41,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\File;
  */
-final class XmlHandler implements XmlFileStorageInterface
+final class XmlHandler implements XmlFileStorageService
 {
     protected mixed      $items;
     private ?DOMDocument $document = null;
@@ -67,11 +68,11 @@ final class XmlHandler implements XmlFileStorageInterface
      *
      * @param $data
      * @param string $node
-     * @return XmlFileStorageInterface
+     * @return XmlFileStorageService
      * @throws FileException
      * @throws DOMException
      */
-    public function save($data, string $node = 'root'): XmlFileStorageInterface
+    public function save($data, string $node = 'root'): XmlFileStorageService
     {
         $this->fileHandler->checkIsWritable();
 
@@ -224,7 +225,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
-    public function load(string $node = 'root'): XmlFileStorageInterface
+    public function load(string $node = 'root'): XmlFileStorageService
     {
         $this->fileHandler->checkIsReadable();
         $this->fileHandler->getFileSize(true);

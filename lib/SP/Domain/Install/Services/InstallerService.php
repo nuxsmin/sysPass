@@ -46,6 +46,7 @@ use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
 
 use function SP\__u;
@@ -65,25 +66,25 @@ final class InstallerService implements InstallerServiceInterface
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private RequestInterface                      $request;
-    private ConfigFileService                     $config;
-    private UserServiceInterface                  $userService;
-    private UserGroupServiceInterface             $userGroupService;
-    private UserProfileServiceInterface           $userProfileService;
-    private ConfigService $configService;
-    private DatabaseConnectionData                $databaseConnectionData;
-    private DatabaseSetupInterface                $databaseSetup;
-    private ?InstallData                          $installData = null;
+    private RequestInterface            $request;
+    private ConfigFileService           $config;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+    private ConfigService               $configService;
+    private DatabaseConnectionData      $databaseConnectionData;
+    private DatabaseSetupInterface      $databaseSetup;
+    private ?InstallData                $installData = null;
 
     public function __construct(
-        RequestInterface                      $request,
-        ConfigFileService                     $config,
-        UserServiceInterface                  $userService,
-        UserGroupServiceInterface             $userGroupService,
-        UserProfileServiceInterface           $userProfileService,
-        ConfigService $configService,
-        DatabaseConnectionData                $databaseConnectionData,
-        DatabaseSetupInterface                $databaseSetup
+        RequestInterface            $request,
+        ConfigFileService           $config,
+        UserServiceInterface        $userService,
+        UserGroupServiceInterface   $userGroupService,
+        UserProfileServiceInterface $userProfileService,
+        ConfigService               $configService,
+        DatabaseConnectionData      $databaseConnectionData,
+        DatabaseSetupInterface      $databaseSetup
     ) {
         $this->request = $request;
         $this->config = $config;
@@ -213,7 +214,7 @@ final class InstallerService implements InstallerServiceInterface
 
         $configData->setInstalled(true);
 
-        $this->config->saveConfig($configData, false);
+        $this->config->save($configData, false);
     }
 
     /**
@@ -267,6 +268,7 @@ final class InstallerService implements InstallerServiceInterface
 
     /**
      * Setup sysPass config data
+     * @throws FileException
      */
     private function setupConfig(): ConfigDataInterface
     {
@@ -281,13 +283,14 @@ final class InstallerService implements InstallerServiceInterface
                                    ->setDbName($this->installData->getDbName())
                                    ->setSiteLang($this->installData->getSiteLang());
 
-        $this->config->updateConfig($configData);
+        $this->config->save($configData, false, false);
 
         return $configData;
     }
 
     /**
      * @param ConfigDataInterface $configData
+     * @throws FileException
      */
     private function setupDb(ConfigDataInterface $configData): void
     {
@@ -306,7 +309,7 @@ final class InstallerService implements InstallerServiceInterface
             $configData->setDbPass($pass);
         }
 
-        $this->config->updateConfig($configData);
+        $this->config->save($configData, false, false);
 
         $this->databaseSetup->createDatabase($user);
         $this->databaseSetup->createDBStructure();

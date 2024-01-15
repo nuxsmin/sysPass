@@ -177,7 +177,7 @@ abstract class ApiTestCase extends TestCase
                             ->setInstalled(true);
 
                         // Update ConfigData instance
-                        $config->updateConfig($configData);
+                        $config->update($configData);
 
                         return $configData;
                     },

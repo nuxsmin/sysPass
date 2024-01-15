@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,5 +27,4 @@ namespace PHPSTORM_META {
     override(\Psr\Container\ContainerInterface::get(0), type(0));
     override(\SP\Infrastructure\Database\QueryResult::getData(0), type(0));
     override(\SP\Util\Util::unserialize(0), type(0));
-    override(\SP\Infrastructure\File\FileCacheInterface::load(0, 1), type(1));
 }

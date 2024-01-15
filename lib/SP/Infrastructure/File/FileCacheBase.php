@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\Storage\Ports\FileCacheService;
+
 use function SP\__;
 
 /**
@@ -31,7 +33,7 @@ use function SP\__;
  *
  * @package SP\Infrastructure\File
  */
-abstract class FileCacheBase implements FileCacheInterface
+abstract class FileCacheBase implements FileCacheService
 {
     protected ?FileHandler $path = null;
 
@@ -89,7 +91,7 @@ abstract class FileCacheBase implements FileCacheInterface
     /**
      * @throws FileException
      */
-    public function delete(): FileCacheInterface
+    public function delete(): FileCacheService
     {
         $this->path->delete();
 

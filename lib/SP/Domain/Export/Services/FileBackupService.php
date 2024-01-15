@@ -98,7 +98,7 @@ final class FileBackupService implements FileBackupServiceInterface
             $this->backupApp($applicationPath);
 
             $this->configData->setBackupHash($this->backupFiles->getHash());
-            $this->config->saveConfig($this->configData);
+            $this->config->save($this->configData);
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -122,7 +122,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
             $configData->setSiteTheme('material-blue');
             $configData->setConfigVersion($version);
 
-            $this->config->saveConfig($configData, false);
+            $this->config->save($configData, false);
 
             rename($oldConfigFile, $oldFile);
 
@@ -255,7 +255,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
         $this->configData->setSiteTheme('material-blue');
         $this->configData->setConfigVersion($version);
 
-        $this->config->saveConfig($this->configData, false);
+        $this->config->save($this->configData, false);
 
         $this->eventDispatcher->notify(
             'upgrade.config.process',
@@ -313,7 +313,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
         $this->configData->setFilesAllowedMime($configMimeTypes);
         $this->configData->setConfigVersion($version);
 
-        $this->config->saveConfig($this->configData, false);
+        $this->config->save($this->configData, false);
 
         $this->eventDispatcher->notify(
             'upgrade.config.process',
@@ -340,7 +340,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $this->configData->setConfigVersion($version);
 
-            $this->config->saveConfig($this->configData, false);
+            $this->config->save($this->configData, false);
 
             $this->eventDispatcher->notify(
                 'upgrade.config.process',
@@ -366,7 +366,7 @@ final class UpgradeConfigService extends Service implements UpgradeConfigService
 
             $this->configData->setConfigVersion($version);
 
-            $this->config->saveConfig($this->configData, false);
+            $this->config->save($this->configData, false);
 
             $this->eventDispatcher->notify(
                 'upgrade.config.process',

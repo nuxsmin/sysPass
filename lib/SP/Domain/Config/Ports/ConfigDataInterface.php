@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,12 @@
 
 namespace SP\Domain\Config\Ports;
 
+use JsonSerializable;
+
 /**
  * Interface ConfigDataInterface
  */
-interface ConfigDataInterface
+interface ConfigDataInterface extends JsonSerializable
 {
     public const LOG_EVENTS                    = 'logEvents';
     public const DOKUWIKI_ENABLED              = 'dokuwikiEnabled';
@@ -127,6 +129,8 @@ interface ConfigDataInterface
     public const LDAP_DATABASE_ENABLED         = 'ldapDatabaseEnabled';
 
     public function getAttributes(): array;
+
+    public function countAttributes(): int;
 
     public function getLogEvents(): array;
 

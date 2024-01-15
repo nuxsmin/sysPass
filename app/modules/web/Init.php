@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -207,8 +207,7 @@ final class Init extends HttpModuleBase
 
             $this->context->setAppStatus(ContextBase::APP_STATUS_RELOADED);
 
-            // Cargar la configuración
-            $this->config->loadConfig(true);
+            $this->config->reload();
         }
 
         // Setup language

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,10 +30,10 @@ use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextException;
 use SP\DataModel\ActionData;
 use SP\Domain\Core\Acl\ActionNotFoundException;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
-use SP\Infrastructure\File\XmlFileStorageInterface;
 use SPT\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;
@@ -46,9 +46,9 @@ use function PHPUnit\Framework\once;
 class ActionsTest extends UnitaryTestCase
 {
 
-    private FileCacheInterface|MockObject      $fileCache;
-    private XmlFileStorageInterface|MockObject $xmlFileStorage;
-    private Actions                            $actions;
+    private FileCacheService|MockObject      $fileCache;
+    private XmlFileStorageService|MockObject $xmlFileStorage;
+    private Actions                          $actions;
 
     public static function expirationDataProvider(): array
     {
@@ -328,8 +328,8 @@ class ActionsTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->fileCache = $this->createMock(FileCacheInterface::class);
-        $this->xmlFileStorage = $this->createMock(XmlFileStorageInterface::class);
+        $this->fileCache = $this->createMock(FileCacheService::class);
+        $this->xmlFileStorage = $this->createMock(XmlFileStorageService::class);
 
         $this->actions = new Actions($this->fileCache, $this->xmlFileStorage);
     }

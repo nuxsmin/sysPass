@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,9 +26,10 @@ namespace SP\Core;
 
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesInterface;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\XmlFileStorageInterface;
 
 use function SP\logger;
 use function SP\processException;
@@ -60,8 +61,8 @@ final class MimeTypes implements MimeTypesInterface
      * @throws FileException
      */
     public function __construct(
-        private readonly FileCacheInterface      $fileCache,
-        private readonly XmlFileStorageInterface $xmlFileStorage
+        private readonly FileCacheService      $fileCache,
+        private readonly XmlFileStorageService $xmlFileStorage
     ) {
         $this->loadCache();
     }

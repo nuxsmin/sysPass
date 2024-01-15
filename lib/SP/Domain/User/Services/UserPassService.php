@@ -32,7 +32,6 @@ use SP\DataModel\UserLoginData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -59,12 +58,12 @@ final class UserPassService extends Service implements UserPassServiceInterface
     // Comprobar la clave maestra con la clave del usuario anterior
     public const MPASS_CHECKOLD = 4;
 
-    private ConfigDataInterface    $configData;
-    private UserRepository $userRepository;
-    private ConfigService  $configService;
+    private ConfigDataInterface $configData;
+    private UserRepository      $userRepository;
+    private ConfigService       $configService;
 
     public function __construct(
-        Application $application,
+        Application   $application,
         UserRepositoryInterface $userRepository,
         ConfigService $configService
     ) {
@@ -160,16 +159,7 @@ final class UserPassService extends Service implements UserPassServiceInterface
      */
     public function makeKeyForUser(string $userLogin, string $userPass): string
     {
-        // Use always the most recent config data
-        if (ConfigFile::getTimeUpdated() > $this->configData->getConfigDate()) {
-            return trim($userPass.$userLogin.$this->config->getConfigData()->getPasswordSalt());
-        }
-
-        return trim(
-            $userPass.
-            $userLogin.
-            $this->configData->getPasswordSalt()
-        );
+        return trim($userPass . $userLogin . $this->config->getConfigData()->getPasswordSalt());
     }
 
     /**

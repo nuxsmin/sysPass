@@ -106,7 +106,7 @@ class ConfigTest extends TestCase
      */
     public function testSaveConfig(ConfigFileService $config)
     {
-        $config->saveConfig($config->getConfigData(), false);
+        $config->save($config->getConfigData(), false);
 
         $this->assertFileExists(CONFIG_FILE);
     }
@@ -121,7 +121,7 @@ class ConfigTest extends TestCase
      */
     public function testLoadConfig(ConfigFileService $config)
     {
-        $this->assertInstanceOf(ConfigData::class, $config->loadConfig());
+        $this->assertInstanceOf(ConfigData::class, $config->reload());
     }
 
     /**
@@ -133,7 +133,7 @@ class ConfigTest extends TestCase
      */
     public function testUpdateConfig(ConfigFileService $config)
     {
-        $config->updateConfig($config->getConfigData());
+        $config->update($config->getConfigData());
 
         $this->assertEquals(ConfigFile::getTimeUpdated(), $config->getConfigData()->getConfigDate());
     }

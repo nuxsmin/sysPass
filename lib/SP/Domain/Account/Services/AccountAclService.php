@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,9 +36,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
-use SP\Infrastructure\File\FileCacheInterface;
 use SP\Infrastructure\File\FileException;
 
 use function SP\processException;
@@ -58,7 +58,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
     private ?AccountAclDto                  $accountAclDto = null;
     private ?AccountAcl                     $accountAcl    = null;
     private Acl                             $acl;
-    private ?FileCacheInterface             $fileCache;
+    private ?FileCacheService $fileCache;
     private UserToUserGroupServiceInterface $userToUserGroupService;
     private UserLoginResponse               $userData;
 
@@ -66,7 +66,7 @@ final class AccountAclService extends Service implements AccountAclServiceInterf
         Application         $application,
         AclInterface        $acl,
         UserToUserGroupServiceInterface $userGroupService,
-        ?FileCacheInterface $fileCache = null
+        ?FileCacheService $fileCache = null
     ) {
         parent::__construct($application);
 

@@ -56,7 +56,7 @@ trait ConfigTrait
                 return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
-            $config->saveConfig($configData);
+            $config->save($configData);
 
             if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
                 Util::unlockApp();

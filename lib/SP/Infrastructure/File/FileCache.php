@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Storage\Ports\FileCacheService;
 
 use function SP\__u;
 
@@ -37,28 +38,18 @@ class FileCache extends FileCacheBase
 {
     /**
      * @throws FileException
-     * @throws InvalidClassException
      */
-    public function load(?string $path = null, ?string $class = null): mixed
+    public function load(?string $path = null): mixed
     {
         $this->checkOrInitializePath($path);
 
-        /** @noinspection UnserializeExploitsInspection */
-        $data = unserialize($this->path->checkIsReadable()->readToString());
-
-        if ($class && (!class_exists($class) || !($data instanceof $class))) {
-            throw new InvalidClassException(
-                sprintf(__u('Either class does not exist or file data cannot unserialized into: %s'), $class)
-            );
-        }
-
-        return $data;
+        return unserialize($this->path->checkIsReadable()->readToString(), ['allowed_classes' => false]);
     }
 
     /**
      * @throws FileException
      */
-    public function save(mixed $data, ?string $path = null): FileCacheInterface
+    public function save(mixed $data, ?string $path = null): FileCacheService
     {
         $this->checkOrInitializePath($path);
         $this->createPath();
@@ -67,5 +58,22 @@ class FileCache extends FileCacheBase
         $this->path->write(serialize($data))->close();
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws InvalidClassException
+     */
+    public function loadWith(string $class): object
+    {
+        $data = unserialize($this->path->checkIsReadable()->readToString(), ['allowed_classes' => [$class]]);
+
+        if (!class_exists($class) || !($data instanceof $class)) {
+            throw new InvalidClassException(
+                sprintf(__u('Either class does not exist or file data cannot unserialized into: %s'), $class)
+            );
+        }
+
+        return $data;
     }
 }

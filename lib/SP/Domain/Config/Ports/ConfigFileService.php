@@ -33,35 +33,24 @@ use SP\Infrastructure\File\FileException;
 interface ConfigFileService
 {
     /**
-     * Cargar el archivo de configuración
-     *
-     * @throws FileException
-     */
-    public function loadConfigFromFile(): ConfigDataInterface;
-
-    /**
      * Guardar la configuración
      *
      * @param ConfigDataInterface $configData
-     * @param bool|null $backup
-     *
+     * @param bool|null $backup Whether to back up the configuration
+     * @param bool|null $commit Whether to save the configuration into the file
      * @return ConfigFileService
      * @throws FileException
      */
-    public function saveConfig(
+    public function save(
         ConfigDataInterface $configData,
-        ?bool               $backup = true
+        ?bool $backup = true,
+        ?bool $commit = true
     ): ConfigFileService;
 
     /**
-     * Commits a config data
+     * Reload the configuration
      */
-    public function updateConfig(ConfigDataInterface $configData): ConfigFileService;
-
-    /**
-     * Cargar la configuración desde el contexto
-     */
-    public function loadConfig(?bool $reload = false): ConfigDataInterface;
+    public function reload(): ConfigDataInterface;
 
     /**
      * Returns a clone of the configuration data

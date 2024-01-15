@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,10 +29,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Core\MimeTypes;
 use SP\Domain\Core\File\MimeType;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
-use SP\Infrastructure\File\XmlFileStorageInterface;
 use SPT\UnitaryTestCase;
 
 /**
@@ -43,9 +43,9 @@ use SPT\UnitaryTestCase;
 class MimeTypesTest extends UnitaryTestCase
 {
 
-    private FileCacheInterface|MockObject      $fileCache;
-    private XmlFileStorageInterface|MockObject $xmlFileStorage;
-    private MimeTypes                          $mimeTypes;
+    private FileCacheService|MockObject      $fileCache;
+    private XmlFileStorageService|MockObject $xmlFileStorage;
+    private MimeTypes                        $mimeTypes;
 
     /**
      * @throws FileException
@@ -268,11 +268,11 @@ class MimeTypesTest extends UnitaryTestCase
             static fn() => new MimeType(self::$faker->mimeType(), self::$faker->text, self::$faker->fileExtension()),
             range(0, 9)
         );
-        $this->fileCache = $this->createMock(FileCacheInterface::class);
+        $this->fileCache = $this->createMock(FileCacheService::class);
         $this->fileCache
             ->expects(self::any())
             ->method('load')
             ->willReturn($mimeTypes);
-        $this->xmlFileStorage = $this->createMock(XmlFileStorageInterface::class);
+        $this->xmlFileStorage = $this->createMock(XmlFileStorageService::class);
     }
 }

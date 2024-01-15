@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Config\Adapters;
 
-use JsonSerializable;
 use SP\Core\DataCollection;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Util\VersionUtil;
@@ -32,7 +31,7 @@ use SP\Util\VersionUtil;
 /**
  * Class configData
  */
-final class ConfigData extends DataCollection implements JsonSerializable, ConfigDataInterface
+final class ConfigData extends DataCollection implements ConfigDataInterface
 {
     private const DEFAULT_PUBLIC_LINK_MAX_VIEWS = 3;
     private const DEFAULT_PUBLIC_LINK_MAX_TIME  = 600;
@@ -49,6 +48,11 @@ final class ConfigData extends DataCollection implements JsonSerializable, Confi
     public function getAttributes(): array
     {
         return $this->getArrayCopy();
+    }
+
+    public function countAttributes(): int
+    {
+        return $this->count();
     }
 
     public function getLogEvents(): array

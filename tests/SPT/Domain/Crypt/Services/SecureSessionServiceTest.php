@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Services\SecureSessionService;
-use SP\Infrastructure\File\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
 
@@ -51,7 +51,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     private SecureSessionService                     $secureSessionService;
     private RequestBasedPasswordInterface|MockObject $requestBasedPassword;
     private CryptInterface|MockObject                $crypt;
-    private FileCacheInterface|MockObject            $fileCache;
+    private FileCacheService|MockObject $fileCache;
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
@@ -65,7 +65,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $vault = Vault::factory($this->crypt)->saveData($securedKey->saveToAsciiSafeString(), $key);
 
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
-        $this->fileCache->expects(self::once())->method('load')->willReturn($vault);
+        $this->fileCache->expects(self::once())->method('loadWith')->willReturn($vault);
         $this->requestBasedPassword->expects(self::once())->method('build')->willReturn($key);
 
         $this->assertInstanceOf(Key::class, $this->secureSessionService->getKey());
@@ -101,7 +101,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     public function testGetKeyFileErrorLoading()
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
-        $this->fileCache->expects(self::once())->method('load')->willThrowException(new FileException('test'));
+        $this->fileCache->expects(self::once())->method('loadWith')->willThrowException(new FileException('test'));
         $this->fileCache->expects(self::once())->method('save');
         $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password);
 
@@ -131,7 +131,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $vault = Vault::factory($this->crypt)->saveData($securedKey->saveToAsciiSafeString(), $key);
 
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
-        $this->fileCache->expects(self::once())->method('load')->willReturn($vault);
+        $this->fileCache->expects(self::once())->method('loadWith')->willReturn($vault);
         $this->requestBasedPassword->expects(self::once())->method('build')->willThrowException(new Exception());
 
         $this->assertFalse($this->secureSessionService->getKey());
@@ -196,7 +196,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
 
         $this->crypt = new Crypt();
         $this->requestBasedPassword = $this->createMock(RequestBasedPasswordInterface::class);
-        $this->fileCache = $this->createMock(FileCacheInterface::class);
+        $this->fileCache = $this->createMock(FileCacheService::class);
 
         $this->secureSessionService = new SecureSessionService(
             $this->application,

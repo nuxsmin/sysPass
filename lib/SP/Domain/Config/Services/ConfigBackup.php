@@ -82,7 +82,7 @@ class ConfigBackup implements ConfigBackupService
      */
     public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $configFile->saveConfig(
+        return $configFile->save(
             Util::unserialize(ConfigData::class, $this->getBackup())
         )->getConfigData();
     }
