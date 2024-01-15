@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,16 +32,9 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 class Event
 {
-    /**
-     * Event constructor.
-     *
-     * @param object $source
-     * @param EventMessage|null $eventMessage
-     *
-     */
     public function __construct(
-        readonly object        $source,
-        readonly ?EventMessage $eventMessage = null
+        private readonly object        $source,
+        private readonly ?EventMessage $eventMessage = null
     ) {
     }
 
@@ -68,4 +61,5 @@ class Event
     {
         return $this->eventMessage;
     }
+
 }

@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
+use SP\Domain\Persistence\Ports\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeException;
@@ -48,14 +48,14 @@ final class UpgradeController extends ControllerBase
 {
     use JsonTrait;
 
-    private UpgradeDatabaseServiceInterface $upgradeDatabaseService;
-    private UpgradeAppService               $upgradeAppService;
+    private UpgradeDatabaseService $upgradeDatabaseService;
+    private UpgradeAppService      $upgradeAppService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        UpgradeDatabaseServiceInterface $upgradeDatabaseService,
-        UpgradeAppService $upgradeAppService
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        UpgradeDatabaseService $upgradeDatabaseService,
+        UpgradeAppService      $upgradeAppService
     ) {
         parent::__construct($application, $webControllerHelper);
 

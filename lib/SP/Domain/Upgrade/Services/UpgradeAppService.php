@@ -40,7 +40,7 @@ use SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionServiceInterface;
 use SP\Domain\CustomField\Services\UpgradeCustomFieldDataService;
 use SP\Domain\CustomField\Services\UpgradeCustomFieldDefinitionService;
 use SP\Domain\Plugin\Ports\UpgradePluginServiceInterface;
-use SP\Domain\Upgrade\Ports\UpgradeAppServiceInterface;
+use SP\Domain\Upgrade\Ports\UpgradeAppService;
 use SP\Infrastructure\File\FileException;
 use SP\Providers\Log\FileLogHandler;
 use SP\Util\VersionUtil;
@@ -50,7 +50,7 @@ use SP\Util\VersionUtil;
  *
  * @package SP\Domain\Upgrade\Services
  */
-final class UpgradeAppService extends Service implements UpgradeAppServiceInterface
+final class UpgradeAppService extends Service implements UpgradeAppService
 {
     private const UPGRADES = [
         '300.18010101',

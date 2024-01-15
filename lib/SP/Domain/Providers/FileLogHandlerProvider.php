@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,24 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Upgrade\Services;
+namespace SP\Domain\Providers;
 
-use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Events\EventReceiver;
 
 /**
- * Interface UpgradeInterface
- *
- * @package SP\Domain\Upgrade\Services
+ * Interface FileLogHandlerProvider
  */
-interface UpgradeInterface
+interface FileLogHandlerProvider extends EventReceiver
 {
-    /**
-     * Check if it needs to be upgraded
-     */
-    public static function needsUpgrade(string $version): bool;
 
-    /**
-     * Performs the upgrading process
-     */
-    public function upgrade(string $version, ConfigDataInterface $configData);
 }

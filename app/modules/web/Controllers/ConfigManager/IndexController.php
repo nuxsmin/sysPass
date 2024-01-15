@@ -43,7 +43,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeType;
-use SP\Domain\Core\File\MimeTypesInterface;
+use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Crypt\Services\TemporaryMasterPassService;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Domain\Export\Services\XmlExportService;
@@ -77,8 +77,8 @@ final class IndexController extends ControllerBase
     private UserServiceInterface        $userService;
     private UserGroupServiceInterface   $userGroupService;
     private UserProfileServiceInterface $userProfileService;
-    private MimeTypesInterface          $mimeTypes;
-    private DatabaseUtil            $databaseUtil;
+    private MimeTypesService $mimeTypes;
+    private DatabaseUtil     $databaseUtil;
     private ConfigService           $configService;
     private AccountServiceInterface $accountService;
     private PluginManager               $pluginManager;
@@ -90,9 +90,9 @@ final class IndexController extends ControllerBase
         UserServiceInterface        $userService,
         UserGroupServiceInterface   $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        MimeTypesInterface          $mimeTypes,
+        MimeTypesService $mimeTypes,
         DatabaseUtil                $databaseUtil,
-        ConfigService $configService,
+        ConfigService    $configService,
         AccountServiceInterface     $accountService,
         PluginManager               $pluginManager
     ) {

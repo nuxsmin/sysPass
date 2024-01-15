@@ -22,35 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Log;
+namespace SP\Domain\Core\File;
 
-use Monolog\Handler\StreamHandler;
-use SP\Domain\Providers\FileLogHandlerProvider;
-use SP\Providers\EventsTrait;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class FileLogHandler
- *
- * @package SP\Providers\Log
+ * Interface MimeTypesService
  */
-final class FileLogHandler extends LoggerBase implements FileLogHandlerProvider
+interface MimeTypesService
 {
-    use EventsTrait;
+    /**
+     * @throws FileException
+     */
+    public function reset(): void;
 
     /**
-     * Devuelve los eventos que implementa el observador en formato cadena
-     *
-     * @return string
+     * @return MimeType[]
      */
-    public function getEventsString(): string
-    {
-        return $this->events;
-    }
-
-    public function initialize(): void
-    {
-        $this->logger->pushHandler(new StreamHandler(LOG_FILE));
-
-        parent::initialize();
-    }
+    public function getMimeTypes(): array;
 }

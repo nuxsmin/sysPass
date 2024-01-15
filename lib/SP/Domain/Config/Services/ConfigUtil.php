@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,9 @@ use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Checks;
 
+use function SP\__;
+use function SP\__u;
+
 /**
  * Class ConfigUtil
  *
@@ -35,23 +38,6 @@ use SP\Util\Checks;
  */
 final class ConfigUtil
 {
-    /**
-     * Adaptador para convertir una cadena de extensiones a un array
-     */
-    public static function filesExtsAdapter(string $filesAllowedExts): array
-    {
-        if (empty($filesAllowedExts)) {
-            return [];
-        }
-
-        return array_map(static function ($value) {
-            if (preg_match('/[^a-z0-9_-]+/i', $value)) {
-                return null;
-            }
-
-            return strtoupper($value);
-        }, explode(',', $filesAllowedExts));
-    }
 
     /**
      * Adaptador para convertir una cadena de direcciones de email a un array

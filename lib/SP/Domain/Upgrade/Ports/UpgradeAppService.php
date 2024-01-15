@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Persistence\Ports;
-
-use SP\Domain\Upgrade\Services\UpgradeInterface;
+namespace SP\Domain\Upgrade\Ports;
 
 /**
- * Class UpgradeDatabaseService
+ * Class UpgradeAppService
  *
  * @package SP\Domain\Upgrade\Services
  */
-interface UpgradeDatabaseServiceInterface extends UpgradeInterface
+interface UpgradeAppService extends Upgrade
 {
 }

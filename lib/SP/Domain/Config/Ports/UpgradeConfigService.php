@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,19 +24,11 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\Domain\Upgrade\Services\UpgradeInterface;
+use SP\Domain\Upgrade\Ports\Upgrade;
 
 /**
- * Class UpgradeService
- *
- * @package SP\Domain\Upgrade\Services
+ * Interface UpgradeConfigService
  */
-interface UpgradeConfigServiceInterface extends UpgradeInterface
+interface UpgradeConfigService extends Upgrade
 {
-    /**
-     * Actualizar el archivo de configuración a formato XML
-     *
-     * @throws \SP\Domain\Upgrade\Services\UpgradeException
-     */
-    public function upgradeOldConfigFile(string $version): void;
 }

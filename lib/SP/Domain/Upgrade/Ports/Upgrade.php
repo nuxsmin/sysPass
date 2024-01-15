@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +24,20 @@
 
 namespace SP\Domain\Upgrade\Ports;
 
-use SP\Domain\Upgrade\Services\UpgradeInterface;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
- * Class UpgradeAppService
- *
- * @package SP\Domain\Upgrade\Services
+ * Interface Upgrade
  */
-interface UpgradeAppServiceInterface extends UpgradeInterface
+interface Upgrade
 {
+    /**
+     * Check if it needs to be upgraded
+     */
+    public static function needsUpgrade(string $version): bool;
+
+    /**
+     * Performs the upgrading process
+     */
+    public function upgrade(string $version, ConfigDataInterface $configData);
 }

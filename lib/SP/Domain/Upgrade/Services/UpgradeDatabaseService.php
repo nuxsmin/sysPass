@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Persistence\Ports\UpgradeDatabaseServiceInterface;
+use SP\Domain\Persistence\Ports\UpgradeDatabaseService;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
@@ -44,7 +44,7 @@ use SP\Util\VersionUtil;
  *
  * @package SP\Domain\Upgrade\Services
  */
-final class UpgradeDatabaseService extends Service implements UpgradeDatabaseServiceInterface
+final class UpgradeDatabaseService extends Service implements UpgradeDatabaseService
 {
     /**
      * @var array Versiones actualizables

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,25 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Core\File;
+namespace SP\Domain\Persistence\Ports;
 
-
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Upgrade\Ports\Upgrade;
 
 /**
- * Class Mime
+ * Class UpgradeDatabaseService
  *
- * @package SP\Core
+ * @package SP\Domain\Upgrade\Services
  */
-interface MimeTypesInterface
+interface UpgradeDatabaseService extends Upgrade
 {
-    /**
-     * @throws FileException
-     */
-    public function reset(): void;
-
-    /**
-     * @return MimeType[]
-     */
-    public function getMimeTypes(): array;
 }

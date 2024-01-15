@@ -61,7 +61,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\File\MimeTypesInterface;
+use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -147,7 +147,7 @@ final class CoreDefinitions
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
                     new XmlHandler(new FileHandler(ACTIONS_FILE))
                 ),
-            MimeTypesInterface::class =>
+            MimeTypesService::class =>
                 static fn() => new MimeTypes(
                     new FileCache(MimeTypes::MIME_CACHE_FILE),
                     new XmlHandler(new FileHandler(MIMETYPES_FILE))

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,21 +26,20 @@ namespace SP\Core\Bootstrap;
 
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\UpgradeConfigServiceInterface;
-use SP\Domain\Config\Services\UpgradeConfigService;
-use SP\Domain\Upgrade\Services\UpgradeException;
+use SP\Domain\Config\Ports\UpgradeConfigService;
+use SP\Domain\Config\Services\UpgradeConfig;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
-use SP\Util\VersionUtil;
+use SP\Infrastructure\File\FileException;
 
 /**
  * Upgrade the config whenever is needed
  */
 class UpgradeConfigChecker
 {
-    private UpgradeConfigService $upgradeConfigService;
-    private ConfigDataInterface  $configData;
+    private UpgradeConfig       $upgradeConfigService;
+    private ConfigDataInterface $configData;
 
-    public function __construct(UpgradeConfigServiceInterface $upgradeConfigService, ConfigDataInterface $configData)
+    public function __construct(UpgradeConfigService $upgradeConfigService, ConfigDataInterface $configData)
     {
         $this->upgradeConfigService = $upgradeConfigService;
         $this->configData = $configData;
@@ -49,24 +48,14 @@ class UpgradeConfigChecker
     /**
      * Comprobar la versión de configuración y actualizarla
      *
-     * @throws UpgradeException
+     * @throws FileException
      */
     public function checkConfigVersion(): void
     {
-        // TODO: remove
-        // Do not check config version when testing
-        if (IS_TESTING) {
-            return;
-        }
-
-        if (file_exists(CONFIG_PATH . DS . 'config.php')) {
-            $this->upgradeConfigService->upgradeOldConfigFile(VersionUtil::getVersionStringNormalized());
-        }
-
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());
 
         if ($this->configData->isInstalled()
-            && UpgradeConfigService::needsUpgrade($configVersion)
+            && UpgradeConfig::needsUpgrade($configVersion)
         ) {
             $this->upgradeConfigService->upgrade($configVersion, $this->configData);
         }

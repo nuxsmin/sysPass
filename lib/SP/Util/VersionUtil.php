@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,14 +38,14 @@ final class VersionUtil
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', InstallerService::VERSION).'.'.InstallerService::BUILD;
+        return implode('', InstallerService::VERSION) . '.' . InstallerService::BUILD;
     }
 
     /**
      * Compare versions
      *
-     * @param  string  $currentVersion
-     * @param  array|string  $upgradeableVersion
+     * @param string $currentVersion
+     * @param array|string $upgradeableVersion
      *
      * @return bool True if $currentVersion is lower than $upgradeableVersion
      */
@@ -66,19 +66,19 @@ final class VersionUtil
             return version_compare($currentVersion, $upgradeableVersion) === -1;
         }
 
-        [$currentVersion, $build] = explode('.', $currentVersion, 2);
+        [$currentVersion, $currentBuild] = explode('.', $currentVersion, 2);
         [$upgradeVersion, $upgradeBuild] = explode('.', $upgradeableVersion, 2);
 
-        $versionRes = (int)$currentVersion < (int)$upgradeVersion;
+        $versionResult = (int)$currentVersion < (int)$upgradeVersion;
 
-        return (($versionRes && (int)$upgradeBuild === 0)
-                || ($versionRes && (int)$build < (int)$upgradeBuild));
+        return (($versionResult && (int)$upgradeBuild === 0)
+                || ($versionResult && (int)$currentBuild < (int)$upgradeBuild));
     }
 
     /**
      * Return a normalized version string to be compared
      *
-     * @param  array|string  $versionIn
+     * @param array|string $versionIn
      *
      * @return string
      */
@@ -100,14 +100,14 @@ final class VersionUtil
                 $nomalizedVersion += (int)$value * (10 ** (3 - $key));
             }
 
-            return $nomalizedVersion.'.'.$build;
+            return $nomalizedVersion . '.' . $build;
         }
 
         return '';
     }
 
     /**
-     * @param  string  $version
+     * @param string $version
      *
      * @return float|int
      */
@@ -127,7 +127,7 @@ final class VersionUtil
     /**
      * Devuelve la versión de sysPass.
      *
-     * @param  bool  $retBuild  devolver el número de compilación
+     * @param bool $retBuild devolver el número de compilación
      *
      * @return array con el número de versión
      */
