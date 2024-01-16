@@ -26,7 +26,7 @@ namespace SP\Domain\Client\Ports;
 
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
-use SP\Domain\Client\Models\Client;
+use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -37,32 +37,32 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class ClientRepository
  *
- * @template T of Client
+ * @template T of ClientModel
  */
-interface ClientRepositoryInterface extends RepositoryInterface
+interface ClientRepository extends RepositoryInterface
 {
     /**
      * Creates an item
      *
-     * @param Client $client
+     * @param ClientModel $client
      *
      * @return QueryResult
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    public function create(Client $client): QueryResult;
+    public function create(ClientModel $client): QueryResult;
 
     /**
      * Updates an item
      *
-     * @param Client $client
+     * @param ClientModel $client
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update(Client $client): int;
+    public function update(ClientModel $client): int;
 
     /**
      * Returns the item for given id

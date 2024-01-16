@@ -34,12 +34,12 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
-use SP\Domain\Client\Models\Client;
+use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Client\Repositories\ClientRepository;
+use SP\Infrastructure\Client\Repositories\Client;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -52,10 +52,10 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class ClientRepositoryTest extends UnitaryTestCase
+class ClientTest extends UnitaryTestCase
 {
 
-    private ClientRepository             $clientRepository;
+    private Client $client;
     private DatabaseInterface|MockObject $database;
 
     /**
@@ -102,7 +102,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->clientRepository->create($client);
+        $this->client->create($client);
     }
 
     /**
@@ -135,7 +135,7 @@ class ClientRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Duplicated client');
 
-        $this->clientRepository->create($client);
+        $this->client->create($client);
     }
 
     /**
@@ -158,7 +158,7 @@ class ClientRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->clientRepository->delete($id);
+        $this->client->delete($id);
     }
 
     /**
@@ -189,7 +189,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doQuery')
             ->with($callback);
 
-        $this->clientRepository->deleteByIdBatch($ids);
+        $this->client->deleteByIdBatch($ids);
     }
 
     /**
@@ -202,7 +202,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('doQuery');
 
-        $this->clientRepository->deleteByIdBatch([]);
+        $this->client->deleteByIdBatch([]);
     }
 
     public function testGetById()
@@ -216,7 +216,7 @@ class ClientRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === $id
-                       && $arg->getMapClassName() === Client::class
+                       && $arg->getMapClassName() === ClientModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -227,7 +227,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->clientRepository->getById($id);
+        $this->client->getById($id);
     }
 
     /**
@@ -246,7 +246,7 @@ class ClientRepositoryTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
                        && $params['description'] === $searchStringLike
-                       && $arg->getMapClassName() === Client::class
+                       && $arg->getMapClassName() === ClientModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -257,7 +257,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->clientRepository->search($item);
+        $this->client->search($item);
     }
 
     /**
@@ -269,7 +269,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === Client::class
+                       && $arg->getMapClassName() === ClientModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -280,7 +280,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->clientRepository->search(new ItemSearchData());
+        $this->client->search(new ItemSearchData());
     }
 
     public function testGetAll()
@@ -288,7 +288,7 @@ class ClientRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
-                return $arg->getMapClassName() === Client::class
+                return $arg->getMapClassName() === ClientModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -299,7 +299,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->clientRepository->getAll();
+        $this->client->getAll();
     }
 
     /**
@@ -328,7 +328,7 @@ class ClientRepositoryTest extends UnitaryTestCase
                           ->method('buildFilter')
                           ->willReturn($select);
 
-        $this->clientRepository->getAllForFilter($accountFilterUser);
+        $this->client->getAllForFilter($accountFilterUser);
     }
 
     /**
@@ -376,7 +376,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->clientRepository->update($client);
+        $this->client->update($client);
     }
 
     /**
@@ -410,7 +410,7 @@ class ClientRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Duplicated client');
 
-        $this->clientRepository->update($client);
+        $this->client->update($client);
     }
 
     public function testGetByName()
@@ -425,7 +425,7 @@ class ClientRepositoryTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $name
                        && !empty($params['hash'])
-                       && $arg->getMapClassName() === Client::class
+                       && $arg->getMapClassName() === ClientModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -436,7 +436,7 @@ class ClientRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->clientRepository->getByName($name);
+        $this->client->getByName($name);
     }
 
     protected function setUp(): void
@@ -446,7 +446,7 @@ class ClientRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->clientRepository = new ClientRepository(
+        $this->client = new Client(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

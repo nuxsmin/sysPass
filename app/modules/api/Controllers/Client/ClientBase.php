@@ -29,7 +29,7 @@ use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\ControllerBase;
@@ -40,7 +40,7 @@ use SP\Modules\Api\Controllers\Help\ClientHelp;
  */
 abstract class ClientBase extends ControllerBase
 {
-    protected ClientServiceInterface $clientService;
+    protected ClientService $clientService;
     protected ClientAdapterInterface $clientAdapter;
 
     /**
@@ -49,9 +49,9 @@ abstract class ClientBase extends ControllerBase
     public function __construct(
         Application            $application,
         Klein                  $router,
-        ApiService   $apiService,
-        AclInterface $acl,
-        ClientServiceInterface $clientService,
+        ApiService    $apiService,
+        AclInterface  $acl,
+        ClientService $clientService,
         ClientAdapterInterface $clientAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);

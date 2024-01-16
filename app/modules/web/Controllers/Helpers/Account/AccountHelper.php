@@ -39,7 +39,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -79,8 +79,8 @@ final class AccountHelper extends AccountHelperBase
     private ItemPresetServiceInterface  $itemPresetService;
     private MasterPassServiceInterface  $masterPassService;
     private AccountAclService      $accountAclService;
-    private CategoryService        $categoryService;
-    private ClientServiceInterface $clientService;
+    private CategoryService $categoryService;
+    private ClientService   $clientService;
     private CustomFieldServiceInterface $customFieldService;
     private ?AccountPermission          $accountAcl = null;
     private ?int                        $accountId  = null;
@@ -101,7 +101,7 @@ final class AccountHelper extends AccountHelperBase
         AccountActionsHelper        $accountActionsHelper,
         AccountAclService         $accountAclService,
         CategoryService           $categoryService,
-        ClientServiceInterface      $clientService,
+        ClientService             $clientService,
         CustomFieldServiceInterface $customFieldService,
         UserServiceInterface      $userService,
         UserGroupServiceInterface $userGroupService,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Client;
 
 
 use SP\Core\Application;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ClientForm;
@@ -37,14 +37,14 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ClientSaveBase extends ControllerBase
 {
-    protected \SP\Domain\Client\Ports\ClientServiceInterface $clientService;
-    protected CustomFieldServiceInterface                    $customFieldService;
+    protected ClientService               $clientService;
+    protected CustomFieldServiceInterface $customFieldService;
     protected ClientForm                                     $form;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        ClientServiceInterface $clientService,
+        ClientService       $clientService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

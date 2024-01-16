@@ -33,7 +33,7 @@ use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
@@ -62,19 +62,19 @@ final class BulkEditController extends ControllerBase
     private AccountHistoryService $accountHistoryService;
     private AccountGrid           $accountGrid;
     private CustomFieldServiceInterface $customFieldService;
-    private CategoryService             $categoryService;
-    private ClientServiceInterface      $clientService;
-    private TagServiceInterface            $tagService;
+    private CategoryService     $categoryService;
+    private ClientService       $clientService;
+    private TagServiceInterface $tagService;
     private UserServiceInterface           $userService;
     private UserGroupServiceInterface      $userGroupService;
 
     public function __construct(
-        Application            $application,
-        WebControllerHelper    $webControllerHelper,
-        CategoryService        $categoryService,
-        ClientServiceInterface $clientService,
-        TagServiceInterface    $tagService,
-        UserServiceInterface   $userService,
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        CategoryService      $categoryService,
+        ClientService        $clientService,
+        TagServiceInterface  $tagService,
+        UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService
     ) {
         parent::__construct($application, $webControllerHelper);

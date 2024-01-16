@@ -32,7 +32,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -55,9 +55,9 @@ trait ImportTrait
     protected int                    $counter        = 0;
     protected ImportParams           $importParams;
     private AccountService         $accountService;
-    private CategoryService        $categoryService;
-    private ClientServiceInterface $clientService;
-    private TagServiceInterface      $tagService;
+    private CategoryService     $categoryService;
+    private ClientService       $clientService;
+    private TagServiceInterface $tagService;
     private array                    $items;
 
     /**

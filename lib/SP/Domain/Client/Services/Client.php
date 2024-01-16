@@ -28,8 +28,8 @@ use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
-use SP\Domain\Client\Ports\ClientRepositoryInterface;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientRepository;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -47,11 +47,11 @@ use function SP\__u;
  *
  * @template T of ClientModel
  */
-final class Client extends Service implements ClientServiceInterface
+final class Client extends Service implements ClientService
 {
     public function __construct(
-        Application                                 $application,
-        private readonly ClientRepositoryInterface  $clientRepository,
+        Application                       $application,
+        private readonly ClientRepository $clientRepository,
         private readonly AccountFilterBuilder $accountFilterUser
     ) {
         parent::__construct($application);
@@ -108,12 +108,12 @@ final class Client extends Service implements ClientServiceInterface
     /**
      * @param int $id
      *
-     * @return ClientServiceInterface
+     * @return ClientService
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function delete(int $id): ClientServiceInterface
+    public function delete(int $id): ClientService
     {
         if ($this->clientRepository->delete($id)->getAffectedNumRows() === 0) {
             throw new NoSuchItemException(__u('Client not found'), SPException::INFO);

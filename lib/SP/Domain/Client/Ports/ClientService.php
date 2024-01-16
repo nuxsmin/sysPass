@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Interface ClientServiceInterface
  */
-interface ClientServiceInterface
+interface ClientService
 {
     /**
      * @throws ConstraintException
@@ -67,7 +67,7 @@ interface ClientServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): ClientServiceInterface;
+    public function delete(int $id): ClientService;
 
     /**
      * @param int[] $ids

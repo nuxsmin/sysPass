@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Client;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -47,13 +47,13 @@ abstract class ClientViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private ClientServiceInterface      $clientService;
+    private ClientService $clientService;
     private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        ClientServiceInterface $clientService,
+        ClientService       $clientService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

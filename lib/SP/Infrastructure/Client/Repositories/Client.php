@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Client\Repositories;
 
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
-use SP\Domain\Client\Models\Client;
-use SP\Domain\Client\Ports\ClientRepositoryInterface;
+use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -42,9 +42,9 @@ use function SP\__u;
 /**
  * Class ClientRepository
  *
- * @template T of Client
+ * @template T of ClientModel
  */
-final class ClientRepository extends Repository implements ClientRepositoryInterface
+final class Client extends Repository implements ClientRepository
 {
     use RepositoryItemTrait;
 
@@ -53,13 +53,13 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Creates an item
      *
-     * @param Client $client
+     * @param ClientModel $client
      *
      * @return QueryResult
      * @throws DuplicatedItemException
      * @throws SPException
      */
-    public function create(Client $client): QueryResult
+    public function create(ClientModel $client): QueryResult
     {
         if ($this->checkDuplicatedOnAdd($client)) {
             throw new DuplicatedItemException(__u('Duplicated client'));
@@ -79,12 +79,12 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param Client $client
+     * @param ClientModel $client
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnAdd(Client $client): bool
+    private function checkDuplicatedOnAdd(ClientModel $client): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -105,14 +105,14 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Updates an item
      *
-     * @param Client $client
+     * @param ClientModel $client
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function update(Client $client): int
+    public function update(ClientModel $client): int
     {
         if ($this->checkDuplicatedOnUpdate($client)) {
             throw new DuplicatedItemException(__u('Duplicated client'));
@@ -139,13 +139,13 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param Client $client
+     * @param ClientModel $client
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnUpdate(Client $client): bool
+    private function checkDuplicatedOnUpdate(ClientModel $client): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -176,12 +176,12 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Client::getCols())
+            ->cols(ClientModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $clientId])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, Client::class);
+        $queryData = QueryData::buildWithMapper($query, ClientModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -198,12 +198,12 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Client::getCols())
+            ->cols(ClientModel::getCols())
             ->where('(name = :name OR hash = :hash)')
             ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, Client::class);
+        $queryData = QueryData::buildWithMapper($query, ClientModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -218,9 +218,9 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Client::getCols());
+            ->cols(ClientModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, Client::class));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, ClientModel::class));
     }
 
     /**
@@ -282,7 +282,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Client::getCols(['hash']))
+            ->cols(ClientModel::getCols(['hash']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -295,7 +295,7 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
             $query->bindValues(['name' => $search, 'description' => $search]);
         }
 
-        $queryData = QueryData::build($query)->setMapClassName(Client::class);
+        $queryData = QueryData::build($query)->setMapClassName(ClientModel::class);
 
         return $this->db->doSelect($queryData, true);
     }

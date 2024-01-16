@@ -32,7 +32,7 @@ use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -64,7 +64,7 @@ final class IndexController extends ControllerBase
     private TabsGridHelper      $tabsGridHelper;
     private CategoryService     $categoryService;
     private TagServiceInterface $tagService;
-    private ClientServiceInterface         $clientService;
+    private ClientService       $clientService;
     private CustomFieldDefServiceInterface $customFieldDefService;
     private AccountFileService         $accountFileService;
     private AccountService             $accountService;
@@ -85,7 +85,7 @@ final class IndexController extends ControllerBase
         Helpers\TabsGridHelper         $tabsGridHelper,
         CategoryService $categoryService,
         TagServiceInterface            $tagService,
-        ClientServiceInterface         $clientService,
+        ClientService   $clientService,
         CustomFieldDefServiceInterface $customFieldDefService,
         AccountFileService             $accountFileService,
         AccountService                 $accountService,

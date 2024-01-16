@@ -33,7 +33,7 @@ use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Account\Ports\AccountToUserService;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclInterface;
@@ -68,7 +68,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         private AccountHistoryService     $accountHistoryService,
         private AccountAclService         $accountAclService,
         private CategoryService $categoryService,
-        private ClientServiceInterface    $clientService,
+        private ClientService   $clientService,
         private AccountToUserService      $accountToUserService,
         private AccountToUserGroupService $accountToUserGroupService
     ) {

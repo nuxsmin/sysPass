@@ -38,7 +38,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -62,9 +62,9 @@ defined('APP_ROOT') || die();
 final class XmlExportService extends Service implements XmlExportServiceInterface
 {
     private ConfigDataInterface          $configData;
-    private PhpExtensionChecker          $extensionChecker;
-    private ClientServiceInterface       $clientService;
-    private AccountService           $accountService;
+    private PhpExtensionChecker $extensionChecker;
+    private ClientService       $clientService;
+    private AccountService      $accountService;
     private AccountToTagService $accountToTagService;
     private CategoryService     $categoryService;
     private TagServiceInterface $tagService;
@@ -76,13 +76,13 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private ?string                      $exportFile = null;
 
     public function __construct(
-        Application            $application,
-        PhpExtensionChecker    $extensionChecker,
-        ClientServiceInterface $clientService,
-        AccountService         $accountService,
-        AccountToTagService    $accountToTagService,
-        CategoryService $categoryService,
-        TagServiceInterface    $tagService
+        Application         $application,
+        PhpExtensionChecker $extensionChecker,
+        ClientService       $clientService,
+        AccountService      $accountService,
+        AccountToTagService $accountToTagService,
+        CategoryService     $categoryService,
+        TagServiceInterface $tagService
 
     ) {
         parent::__construct($application);

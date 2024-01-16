@@ -35,7 +35,7 @@ use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Client\Ports\ClientServiceInterface;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -68,21 +68,21 @@ final class AccountSearchHelper extends HelperBase
     private int                           $queryTimeStart;
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
-    private ClientServiceInterface  $clientService;
+    private ClientService $clientService;
     private AccountSearchService    $accountSearchService;
     private AccountActionsHelper $accountActionsHelper;
     private CategoryService      $categoryService;
     private TagServiceInterface  $tagService;
 
     public function __construct(
-        Application            $application,
-        TemplateInterface      $template,
-        RequestInterface       $request,
-        ClientServiceInterface $clientService,
-        CategoryService        $categoryService,
-        TagServiceInterface    $tagService,
-        AccountSearchService   $accountSearchService,
-        AccountActionsHelper   $accountActionsHelper
+        Application          $application,
+        TemplateInterface    $template,
+        RequestInterface     $request,
+        ClientService        $clientService,
+        CategoryService      $categoryService,
+        TagServiceInterface  $tagService,
+        AccountSearchService $accountSearchService,
+        AccountActionsHelper $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);
 

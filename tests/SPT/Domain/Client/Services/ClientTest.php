@@ -29,7 +29,7 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
-use SP\Domain\Client\Ports\ClientRepositoryInterface;
+use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Client\Services\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -50,9 +50,9 @@ use SPT\UnitaryTestCase;
 class ClientTest extends UnitaryTestCase
 {
 
-    private ClientRepositoryInterface|MockObject $clientRepository;
-    private Client                    $clientService;
-    private AccountFilterBuilder|Stub $accountFilterUser;
+    private ClientRepository|MockObject $clientRepository;
+    private Client                      $client;
+    private AccountFilterBuilder|Stub   $accountFilterUser;
 
     /**
      * @throws NoSuchItemException
@@ -72,7 +72,7 @@ class ClientTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult([$client]));
 
-        $out = $this->clientService->getById($id);
+        $out = $this->client->getById($id);
 
         $this->assertEquals($client, $out);
     }
@@ -96,7 +96,7 @@ class ClientTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Client not found');
 
-        $this->clientService->getById($id);
+        $this->client->getById($id);
     }
 
     /**
@@ -111,7 +111,7 @@ class ClientTest extends UnitaryTestCase
             ->method('search')
             ->with($itemSearch);
 
-        $this->clientService->search($itemSearch);
+        $this->client->search($itemSearch);
     }
 
     /**
@@ -132,7 +132,7 @@ class ClientTest extends UnitaryTestCase
             ->with($id)
             ->willReturn($queryResult);
 
-        $this->clientService->delete($id);
+        $this->client->delete($id);
     }
 
     /**
@@ -152,7 +152,7 @@ class ClientTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Client not found');
 
-        $this->clientService->delete($id);
+        $this->client->delete($id);
     }
 
     /**
@@ -172,7 +172,7 @@ class ClientTest extends UnitaryTestCase
             ->with($client)
             ->willReturn($queryResult);
 
-        $out = $this->clientService->create($client);
+        $out = $this->client->create($client);
 
         $this->assertEquals($queryResult->getLastId(), $out);
     }
@@ -195,7 +195,7 @@ class ClientTest extends UnitaryTestCase
             ->with($client)
             ->willReturn(1);
 
-        $this->clientService->update($client);
+        $this->client->update($client);
     }
 
     /**
@@ -216,7 +216,7 @@ class ClientTest extends UnitaryTestCase
             ->with($name)
             ->willReturn(new QueryResult([$client]));
 
-        $out = $this->clientService->getByName($name);
+        $out = $this->client->getByName($name);
 
         $this->assertEquals($client, $out);
     }
@@ -240,7 +240,7 @@ class ClientTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Client not found');
 
-        $this->clientService->getByName($name);
+        $this->client->getByName($name);
     }
 
     /**
@@ -261,7 +261,7 @@ class ClientTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn($queryResult);
 
-        $this->clientService->deleteByIdBatch($ids);
+        $this->client->deleteByIdBatch($ids);
     }
 
     /**
@@ -284,7 +284,7 @@ class ClientTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the clients');
 
-        $this->clientService->deleteByIdBatch($ids);
+        $this->client->deleteByIdBatch($ids);
     }
 
     /**
@@ -301,7 +301,7 @@ class ClientTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn(new QueryResult([$client]));
 
-        $out = $this->clientService->getAll();
+        $out = $this->client->getAll();
 
         $this->assertEquals([$client], $out);
     }
@@ -321,7 +321,7 @@ class ClientTest extends UnitaryTestCase
             ->with($this->accountFilterUser)
             ->willReturn(new QueryResult([$client]));
 
-        $out = $this->clientService->getAllForUser();
+        $out = $this->client->getAllForUser();
 
         $this->assertEquals([$client], $out);
     }
@@ -330,7 +330,7 @@ class ClientTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->clientRepository = $this->createMock(ClientRepositoryInterface::class);
+        $this->clientRepository = $this->createMock(ClientRepository::class);
 
         $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
 
@@ -338,6 +338,6 @@ class ClientTest extends UnitaryTestCase
         $this->accountFilterUser->method('buildFilter')
                                 ->willReturn($select);
 
-        $this->clientService = new Client($this->application, $this->clientRepository, $this->accountFilterUser);
+        $this->client = new Client($this->application, $this->clientRepository, $this->accountFilterUser);
     }
 }
