@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,7 +39,7 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class UpgradePublicLinkServiceTest extends UnitaryTestCase
+class UpgradePublicLinkTest extends UnitaryTestCase
 {
 
     private PublicLinkRepository|MockObject $publicLinkRepository;

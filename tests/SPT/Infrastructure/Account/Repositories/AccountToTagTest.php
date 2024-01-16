@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,27 +26,29 @@ namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountToFavorite;
+use SP\Infrastructure\Account\Repositories\AccountToTag;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\UnitaryTestCase;
 
 /**
- * Class AccountToFavoriteRepositoryTest
+ * Class AccountToTagRepositoryTest
  *
  * @group unitary
  */
-class AccountToFavoriteRepositoryTest extends UnitaryTestCase
+class AccountToTagTest extends UnitaryTestCase
 {
     private MockObject|DatabaseInterface $database;
-    private AccountToFavorite $accountToFavorite;
+    private AccountToTag $accountToTag;
 
-    public function testGetForUserId()
+    public function testGetTagsByAccountId(): void
     {
         $id = self::$faker->randomNumber();
 
@@ -54,35 +56,38 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) use ($id) {
                 $query = $arg->getQuery();
 
-                return $query->getBindValues()['userId'] === $id
+                return $query->getBindValues()['accountId'] === $id
                        && $arg->getMapClassName() === Simple::class
                        && !empty($query->getStatement());
             }
         );
 
-        $this->database->expects(self::once())
+        $this->database
+            ->expects(self::once())
             ->method('doSelect')
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountToFavorite->getForUserId($id);
+        $this->accountToTag->getTagsByAccountId($id);
     }
 
-    public function testDelete()
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function testDeleteByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
-        $userId = self::$faker->randomNumber();
 
         $expected = new QueryResult();
         $expected->setAffectedNumRows(1);
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($accountId, $userId) {
+            static function (QueryData $arg) use ($accountId) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
                 return $params['accountId'] === $accountId
-                       && $params['userId'] === $userId
                        && !empty($query->getStatement());
             }
         );
@@ -93,40 +98,48 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToFavorite->delete($accountId, $userId));
+        $this->assertTrue($this->accountToTag->deleteByAccountId($accountId));
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function testAdd()
+    public function testAdd(): void
     {
-        $accountId = self::$faker->randomNumber();
-        $userId = self::$faker->randomNumber();
+        $id = self::$faker->randomNumber();
+        $tags = self::getRandomNumbers(10);
 
-        $expected = new QueryResult();
-        $expected->setLastId(1);
+        $callbacks = array_map(
+            static function ($tag) use ($id) {
+                return [
+                    new Callback(
+                        static function (QueryData $arg) use ($id, $tag) {
+                            $query = $arg->getQuery();
+                            $params = $query->getBindValues();
 
-        $callback = new Callback(
-            static function (QueryData $arg) use ($accountId, $userId) {
-                $query = $arg->getQuery();
-                $params = $query->getBindValues();
-
-                return $params['accountId'] === $accountId
-                       && $params['userId'] === $userId
-                       && !empty($query->getStatement());
-            }
+                            return $params['accountId'] === $id
+                                   && $params['tagId'] === $tag
+                                   && !empty($query->getStatement());
+                        }
+                    ),
+                ];
+            },
+            $tags
         );
 
-        $this->database->expects(self::once())
+        $this->database
+            ->expects(self::exactly(count($tags)))
             ->method('doQuery')
-            ->with($callback)
-            ->willReturn($expected);
+            ->with(...self::withConsecutive(...$callbacks));
 
-        $this->assertEquals($expected->getLastId(), $this->accountToFavorite->add($accountId, $userId));
+        $this->accountToTag->add($id, $tags);
     }
 
+    /**
+     * @throws ContextException
+     * @throws Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -134,7 +147,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountToFavorite = new AccountToFavorite(
+        $this->accountToTag = new AccountToTag(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

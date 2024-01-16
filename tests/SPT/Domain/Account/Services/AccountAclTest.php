@@ -45,7 +45,7 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class AccountAclServiceTest extends UnitaryTestCase
+class AccountAclTest extends UnitaryTestCase
 {
     private const ACTIONS = [
         AclActionsInterface::ACCOUNT_SEARCH,

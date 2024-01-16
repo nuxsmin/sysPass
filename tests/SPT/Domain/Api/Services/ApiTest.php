@@ -60,7 +60,7 @@ use function PHPUnit\Framework\onConsecutiveCalls;
  *
  * @group unitary
  */
-class ApiServiceTest extends UnitaryTestCase
+class ApiTest extends UnitaryTestCase
 {
 
     private TrackServiceInterface|MockObject     $trackService;

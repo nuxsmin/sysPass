@@ -62,7 +62,7 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class AccountServiceTest extends UnitaryTestCase
+class AccountTest extends UnitaryTestCase
 {
     private AccountRepository|MockObject            $accountRepository;
     private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;

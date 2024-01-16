@@ -48,7 +48,7 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class AccountSearchServiceTest extends UnitaryTestCase
+class AccountSearchTest extends UnitaryTestCase
 {
     use AccountSearchTokenizerDataTrait;
 
