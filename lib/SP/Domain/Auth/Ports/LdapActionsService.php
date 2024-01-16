@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Auth\Ports;
 
-
 use SP\Providers\Auth\Ldap\AttributeCollection;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
@@ -34,7 +33,7 @@ use SP\Providers\Auth\Ldap\LdapParams;
  *
  * @package SP\Providers\Auth\Ldap
  */
-interface LdapActionsInterface
+interface LdapActionsService
 {
     /**
      * Obtener el RDN del grupo.
@@ -70,5 +69,5 @@ interface LdapActionsInterface
         ?string $searchBase = null
     ): array;
 
-    public function mutate(LdapParams $ldapParams): LdapActionsInterface;
+    public function mutate(LdapParams $ldapParams): LdapActionsService;
 }

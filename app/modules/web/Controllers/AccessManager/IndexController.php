@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\PublicLinkService;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -63,23 +63,23 @@ final class IndexController extends ControllerBase
     private UserServiceInterface        $userService;
     private UserGroupServiceInterface   $userGroupService;
     private UserProfileServiceInterface $userProfileService;
-    private AuthTokenServiceInterface $authTokenService;
-    private PublicLinkService         $publicLinkService;
+    private AuthTokenService  $authTokenService;
+    private PublicLinkService $publicLinkService;
 
     public function __construct(
         Application $application,
-        WebControllerHelper $webControllerHelper,
-        TabsGridHelper $tabsGridHelper,
-        UserGrid $userGrid,
-        UserGroupGrid $userGroupGrid,
-        UserProfileGrid $userProfileGrid,
-        AuthTokenGrid $authTokenGrid,
-        PublicLinkGrid $publicLinkGrid,
-        UserServiceInterface $userService,
+        WebControllerHelper       $webControllerHelper,
+        TabsGridHelper            $tabsGridHelper,
+        UserGrid                  $userGrid,
+        UserGroupGrid             $userGroupGrid,
+        UserProfileGrid           $userProfileGrid,
+        AuthTokenGrid             $authTokenGrid,
+        PublicLinkGrid            $publicLinkGrid,
+        UserServiceInterface      $userService,
         UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        AuthTokenServiceInterface $authTokenService,
-        PublicLinkService $publicLinkService
+        AuthTokenService          $authTokenService,
+        PublicLinkService         $publicLinkService
     ) {
         parent::__construct($application, $webControllerHelper);
 

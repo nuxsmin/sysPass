@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,10 @@
 namespace SP\Domain\Auth\Services;
 
 use SP\Core\Application;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
-use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
+use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
-use SP\Domain\Auth\Ports\LdapInterface;
+use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Common\Services\Service;
 use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
@@ -37,12 +37,12 @@ use SP\Providers\Auth\Ldap\LdapParams;
 /**
  * Class LdapCheck
  */
-final class LdapCheck extends Service implements LdapCheckServiceInterface
+final class LdapCheck extends Service implements LdapCheckService
 {
     public function __construct(
         Application $application,
         private readonly LdapConnectionInterface $ldapConnection,
-        private readonly LdapActionsInterface $ldapActions
+        private readonly LdapActionsService $ldapActions
     ) {
         parent::__construct($application);
     }
@@ -72,10 +72,10 @@ final class LdapCheck extends Service implements LdapCheckServiceInterface
     /**
      * @param LdapParams $ldapParams
      *
-     * @return LdapInterface
+     * @return LdapService
      * @throws LdapException
      */
-    private function getLdap(LdapParams $ldapParams): LdapInterface
+    private function getLdap(LdapParams $ldapParams): LdapService
     {
         return LdapBase::factory(
             $this->eventDispatcher,

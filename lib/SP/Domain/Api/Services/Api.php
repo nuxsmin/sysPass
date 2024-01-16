@@ -33,7 +33,7 @@ use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -73,7 +73,7 @@ final class Api extends Service implements ApiService
         Application                                  $application,
         private readonly TrackServiceInterface       $trackService,
         private readonly ApiRequestService $apiRequest,
-        private readonly AuthTokenServiceInterface   $authTokenService,
+        private readonly AuthTokenService  $authTokenService,
         private readonly UserServiceInterface        $userService,
         private readonly UserProfileServiceInterface $userProfileService
     ) {

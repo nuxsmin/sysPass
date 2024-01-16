@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\UpgradePublicLinkService;
 use SP\Domain\Account\Services\UpgradePublicLink;
-use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\UpgradeAuthTokenService;
 use SP\Domain\Auth\Services\UpgradeAuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -70,7 +70,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
         FileLogHandler                         $fileLogHandler,
         UpgradeCustomFieldDefinitionServiceInterface $upgradeCustomFieldDefinition,
         UpgradePublicLinkService               $upgradePublicLink,
-        UpgradeAuthTokenServiceInterface       $upgradeAuthToken,
+        UpgradeAuthTokenService                $upgradeAuthToken,
         UpgradeCustomFieldDataServiceInterface $upgradeCustomFieldData,
         UpgradePluginServiceInterface          $upgradePlugin
     ) {
@@ -147,7 +147,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
                     return true;
                 case '300.18072901':
                     $this->upgradeCustomFieldDefinition->upgrade_300_18072901();
-                    $this->upgradeAuthToken->upgrade_300_18072901();
+                    $this->upgradeAuthToken->upgradeV300B18072901();
 
                     return true;
                 case '300.18072902':

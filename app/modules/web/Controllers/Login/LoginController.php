@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Ports\LoginServiceInterface;
+use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Auth\Services\Login;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -51,7 +51,7 @@ final class LoginController extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        LoginServiceInterface $loginService
+        LoginService $loginService
     ) {
         parent::__construct($application, $webControllerHelper);
 

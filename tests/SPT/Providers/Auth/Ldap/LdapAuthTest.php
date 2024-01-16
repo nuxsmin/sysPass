@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use SP\DataModel\UserLoginData;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
-use SP\Domain\Auth\Ports\LdapInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
+use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -47,7 +47,7 @@ use SPT\UnitaryTestCase;
 class LdapAuthTest extends UnitaryTestCase
 {
 
-    private LdapInterface|MockObject            $ldap;
+    private LdapService|MockObject $ldap;
     private EventDispatcherInterface|MockObject $eventDispatcher;
     private ConfigDataInterface|MockObject      $configData;
     private LdapAuth                            $ldapAuth;
@@ -61,7 +61,7 @@ class LdapAuthTest extends UnitaryTestCase
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
-        $ldapActions = $this->createMock(LdapActionsInterface::class);
+        $ldapActions = $this->createMock(LdapActionsService::class);
 
         $connectCounter = new InvokedCount(2);
 
@@ -143,7 +143,7 @@ class LdapAuthTest extends UnitaryTestCase
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
-        $ldapActions = $this->createMock(LdapActionsInterface::class);
+        $ldapActions = $this->createMock(LdapActionsService::class);
 
         $this->ldap
             ->expects(self::once())
@@ -191,7 +191,7 @@ class LdapAuthTest extends UnitaryTestCase
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
-        $ldapActions = $this->createMock(LdapActionsInterface::class);
+        $ldapActions = $this->createMock(LdapActionsService::class);
 
         $this->ldap
             ->expects(self::once())
@@ -239,7 +239,7 @@ class LdapAuthTest extends UnitaryTestCase
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
-        $ldapActions = $this->createMock(LdapActionsInterface::class);
+        $ldapActions = $this->createMock(LdapActionsService::class);
 
         $this->ldap
             ->expects(self::once())
@@ -291,7 +291,7 @@ class LdapAuthTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->ldap = $this->createMock(LdapInterface::class);
+        $this->ldap = $this->createMock(LdapService::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->configData = $this->createMock(ConfigDataInterface::class);
 

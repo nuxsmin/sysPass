@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
-use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Auth\Ports\UpgradeAuthTokenService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -41,13 +41,13 @@ use function SP\processException;
 /**
  * Class UpgradeAuthToken
  */
-final class UpgradeAuthToken extends Service implements UpgradeAuthTokenServiceInterface
+final class UpgradeAuthToken extends Service implements UpgradeAuthTokenService
 {
 
     public function __construct(
-        Application                                  $application,
-        protected readonly AuthTokenServiceInterface $authTokenService,
-        private readonly DatabaseInterface           $database
+        Application                         $application,
+        protected readonly AuthTokenService $authTokenService,
+        private readonly DatabaseInterface  $database
     ) {
         parent::__construct($application);
     }
@@ -57,7 +57,7 @@ final class UpgradeAuthToken extends Service implements UpgradeAuthTokenServiceI
      *
      * @throws Exception
      */
-    public function upgrade_300_18072901(): void
+    public function upgradeV300B18072901(): void
     {
         $this->eventDispatcher->notify(
             'upgrade.authToken.start',

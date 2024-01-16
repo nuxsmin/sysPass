@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserLoginData;
-use SP\Domain\Auth\Ports\LdapAuthInterface;
-use SP\Domain\Auth\Ports\LdapInterface;
+use SP\Domain\Auth\Ports\LdapAuthService;
+use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
@@ -39,19 +39,19 @@ use function SP\processException;
 /**
  * Class LdapBase
  *
- * @implements LdapInterface<LdapAuthData>
+ * @implements LdapService<LdapAuthData>
  */
-final class LdapAuth implements LdapAuthInterface
+final class LdapAuth implements LdapAuthService
 {
     /**
      * LdapBase constructor.
      *
-     * @param LdapInterface $ldap
+     * @param LdapService $ldap
      * @param EventDispatcher $eventDispatcher
      * @param ConfigDataInterface $configData
      */
     public function __construct(
-        private readonly LdapInterface            $ldap,
+        private readonly LdapService $ldap,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ConfigDataInterface      $configData
     ) {
@@ -76,11 +76,11 @@ final class LdapAuth implements LdapAuthInterface
 
             // Comprobamos si la cuenta está bloqueada o expirada
             if ($ldapAuthData->getExpire() > 0) {
-                $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_EXPIRED);
+                $ldapAuthData->setStatusCode(LdapAuthService::ACCOUNT_EXPIRED);
 
                 return $ldapAuthData->fail();
             } elseif (!$ldapAuthData->isInGroup()) {
-                $ldapAuthData->setStatusCode(LdapAuthInterface::ACCOUNT_NO_GROUPS);
+                $ldapAuthData->setStatusCode(LdapAuthService::ACCOUNT_NO_GROUPS);
 
                 return $ldapAuthData->fail();
             }

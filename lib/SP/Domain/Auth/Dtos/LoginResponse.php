@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,22 +22,37 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Ports;
-
-
-use Exception;
+namespace SP\Domain\Auth\Dtos;
 
 /**
- * Class UpgradeAuthToken
+ * Class LoginResponse
  *
- * @package SP\Domain\Upgrade\Services
+ * @package SP\Domain\Auth\Services
  */
-interface UpgradeAuthTokenServiceInterface
+final class LoginResponse
 {
+    private int     $status;
+    private ?string $redirect;
+
     /**
-     * upgrade_300_18072901
+     * LoginResponse constructor.
      *
-     * @throws Exception
+     * @param  int  $status
+     * @param  string|null  $redirect
      */
-    public function upgrade_300_18072901(): void;
+    public function __construct(int $status, ?string $redirect = null)
+    {
+        $this->status = $status;
+        $this->redirect = $redirect;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    public function getRedirect(): ?string
+    {
+        return $this->redirect;
+    }
 }

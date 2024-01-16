@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
 use Laminas\Ldap\Ldap as LaminasLdap;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__u;
@@ -39,7 +39,7 @@ use function SP\__u;
  *
  * @package SP\Providers\Auth\Ldap
  */
-final class LdapActions implements LdapActionsInterface
+final class LdapActions implements LdapActionsService
 {
     public const USER_ATTRIBUTES = [
         'dn',
@@ -249,7 +249,7 @@ final class LdapActions implements LdapActionsInterface
                     ->toArray();
     }
 
-    public function mutate(LdapParams $ldapParams): LdapActionsInterface
+    public function mutate(LdapParams $ldapParams): LdapActionsService
     {
         return new self($this->ldap, $ldapParams, $this->eventDispatcher);
     }

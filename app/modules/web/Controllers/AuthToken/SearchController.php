@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 use JsonException;
 use SP\Core\Application;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,14 +49,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AuthTokenServiceInterface $authTokenService;
-    private AuthTokenGrid             $authTokenGrid;
+    private AuthTokenService $authTokenService;
+    private AuthTokenGrid    $authTokenGrid;
 
     public function __construct(
-        Application $application,
+        Application      $application,
         WebControllerHelper $webControllerHelper,
-        AuthTokenServiceInterface $authTokenService,
-        AuthTokenGrid $authTokenGrid
+        AuthTokenService $authTokenService,
+        AuthTokenGrid    $authTokenGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 

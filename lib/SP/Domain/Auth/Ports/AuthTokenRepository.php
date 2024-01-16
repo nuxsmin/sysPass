@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\Auth\Ports;
 
 use Exception;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\Models\AuthToken;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -36,9 +36,9 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class AuthTokenRepository
  *
- * @template T of AuthToken
+ * @template T of AuthTokenModel
  */
-interface AuthTokenRepositoryInterface extends RepositoryInterface
+interface AuthTokenRepository extends RepositoryInterface
 {
     /**
      * @param int $id
@@ -90,14 +90,14 @@ interface AuthTokenRepositoryInterface extends RepositoryInterface
     /**
      * Creates an item
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function create(AuthToken $authToken): QueryResult;
+    public function create(AuthTokenModel $authToken): QueryResult;
 
     /**
      * Obtener el token de la API de un usuario
@@ -110,13 +110,13 @@ interface AuthTokenRepositoryInterface extends RepositoryInterface
     /**
      * Updates an item
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      * @return bool
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function update(AuthToken $authToken): bool;
+    public function update(AuthTokenModel $authToken): bool;
 
     /**
      * Regenerar el hash de los tokens de un usuario

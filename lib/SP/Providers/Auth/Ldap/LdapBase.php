@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,9 +26,9 @@ namespace SP\Providers\Auth\Ldap;
 
 use Exception;
 use SP\Core\Events\EventDispatcher;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
-use SP\Domain\Auth\Ports\LdapInterface;
+use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__u;
@@ -38,7 +38,7 @@ use function SP\__u;
  *
  * @package SP\Providers\Auth\Ldap
  */
-abstract class LdapBase implements LdapInterface
+abstract class LdapBase implements LdapService
 {
     protected string $server;
 
@@ -46,13 +46,13 @@ abstract class LdapBase implements LdapInterface
      * LdapBase constructor.
      *
      * @param LdapConnectionInterface $ldapConnection
-     * @param LdapActionsInterface $ldapActions
+     * @param LdapActionsService $ldapActions
      * @param LdapParams $ldapParams
      * @param EventDispatcher $eventDispatcher
      */
     public function __construct(
         protected readonly LdapConnectionInterface  $ldapConnection,
-        protected readonly LdapActionsInterface     $ldapActions,
+        protected readonly LdapActionsService $ldapActions,
         protected readonly LdapParams               $ldapParams,
         protected readonly EventDispatcherInterface $eventDispatcher
     ) {
@@ -64,18 +64,18 @@ abstract class LdapBase implements LdapInterface
     /**
      * @param EventDispatcher $eventDispatcher
      * @param LdapConnectionInterface $ldapConnection
-     * @param LdapActionsInterface $ldapActions
+     * @param LdapActionsService $ldapActions
      * @param LdapParams|null $ldapParams
-     * @return LdapInterface
+     * @return LdapService
      * @throws LdapException
      * @throws Exception
      */
     public static function factory(
         EventDispatcherInterface $eventDispatcher,
         LdapConnectionInterface  $ldapConnection,
-        LdapActionsInterface     $ldapActions,
+        LdapActionsService $ldapActions,
         ?LdapParams              $ldapParams = null
-    ): LdapInterface {
+    ): LdapService {
         if (null !== $ldapParams) {
             $ldapConnection = $ldapConnection->mutate($ldapParams);
             $ldapActions = $ldapActions->mutate($ldapParams);
@@ -95,7 +95,7 @@ abstract class LdapBase implements LdapInterface
         throw LdapException::error(__u('LDAP type not set'));
     }
 
-    public function actions(): LdapActionsInterface
+    public function actions(): LdapActionsService
     {
         return $this->ldapActions;
     }

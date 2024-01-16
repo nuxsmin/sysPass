@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 use SP\Core\Application;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenActionInterface;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -61,7 +61,7 @@ abstract class AuthTokenViewBase extends ControllerBase
         WebControllerHelper                          $webControllerHelper,
         private readonly CustomFieldServiceInterface $customFieldService,
         private readonly UserServiceInterface        $userService,
-        private readonly AuthTokenServiceInterface   $authTokenService,
+        private readonly AuthTokenService $authTokenService,
         private readonly AuthTokenActionInterface    $authTokenAction,
     ) {
         parent::__construct($application, $webControllerHelper);

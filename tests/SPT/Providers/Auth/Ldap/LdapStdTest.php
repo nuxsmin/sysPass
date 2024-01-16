@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SPT\Providers\Auth\Ldap;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -45,7 +45,7 @@ class LdapStdTest extends UnitaryTestCase
 {
 
     private LdapConnectionInterface|MockObject  $ldapConnection;
-    private LdapActionsInterface|MockObject     $ldapActions;
+    private LdapActionsService|MockObject $ldapActions;
     private EventDispatcherInterface|MockObject $eventDispatcher;
     private LdapStd                             $ldap;
     private LdapParams                          $ldapParams;
@@ -367,7 +367,7 @@ class LdapStdTest extends UnitaryTestCase
         parent::setUp();
 
         $this->ldapConnection = $this->createMock(LdapConnectionInterface::class);
-        $this->ldapActions = $this->createMock(LdapActionsInterface::class);
+        $this->ldapActions = $this->createMock(LdapActionsService::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->ldapParams = new LdapParams(

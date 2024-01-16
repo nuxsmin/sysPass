@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,8 +32,9 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\Auth\Ports\LdapAuthInterface;
-use SP\Domain\Auth\Ports\LoginServiceInterface;
+use SP\Domain\Auth\Dtos\LoginResponse;
+use SP\Domain\Auth\Ports\LdapAuthService;
+use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -65,7 +66,7 @@ use function SP\__u;
 /**
  * Class Login
  */
-final class Login extends Service implements LoginServiceInterface
+final class Login extends Service implements LoginService
 {
     private const STATUS_INVALID_LOGIN         = 1;
     private const STATUS_INVALID_MASTER_PASS   = 2;
@@ -468,7 +469,7 @@ final class Login extends Service implements LoginServiceInterface
                 );
             }
 
-            if ($authData->getStatusCode() === LdapAuthInterface::ACCOUNT_EXPIRED) {
+            if ($authData->getStatusCode() === LdapAuthService::ACCOUNT_EXPIRED) {
                 $eventMessage->addDescription(__u('Account expired'));
 
                 $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
@@ -481,7 +482,7 @@ final class Login extends Service implements LoginServiceInterface
                 );
             }
 
-            if ($authData->getStatusCode() === LdapAuthInterface::ACCOUNT_NO_GROUPS) {
+            if ($authData->getStatusCode() === LdapAuthService::ACCOUNT_NO_GROUPS) {
                 $eventMessage->addDescription(__u('User has no associated groups'));
 
                 $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));

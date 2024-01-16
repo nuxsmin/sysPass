@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,37 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Services;
+namespace SP\Domain\Auth\Ports;
+
+
+use SP\Providers\Auth\Ldap\LdapException;
 
 /**
- * Class LoginResponse
+ * Class LdapCheckService
  *
- * @package SP\Domain\Auth\Services
+ * @package SP\Domain\Import\Services
  */
-final class LoginResponse
+interface LdapCheckService
 {
-    private int     $status;
-    private ?string $redirect;
+    /**
+     * @throws LdapException
+     */
+    public function getObjects(bool $includeGroups = true): array;
 
     /**
-     * LoginResponse constructor.
-     *
-     * @param  int  $status
-     * @param  string|null  $redirect
+     * @throws LdapException
      */
-    public function __construct(int $status, ?string $redirect = null)
-    {
-        $this->status = $status;
-        $this->redirect = $redirect;
-    }
-
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    public function getRedirect(): ?string
-    {
-        return $this->redirect;
-    }
+    public function getObjectsByFilter(string $filter): array;
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use Exception;
 use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Auth\Ports\LdapCheckServiceInterface;
+use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -54,10 +54,10 @@ final class CheckImportController extends SimpleControllerBase
     use ConfigLdapTrait;
 
     public function __construct(
-        Application                                $application,
-        SimpleControllerHelper                     $simpleControllerHelper,
-        private readonly LdapCheckServiceInterface $ldapCheckService,
-        private readonly TemplateInterface         $template
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        private readonly LdapCheckService  $ldapCheckService,
+        private readonly TemplateInterface $template
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }

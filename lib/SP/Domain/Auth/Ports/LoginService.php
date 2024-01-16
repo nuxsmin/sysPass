@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,10 @@
 
 namespace SP\Domain\Auth\Ports;
 
-
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use SP\Domain\Auth\Dtos\LoginResponse;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Auth\Services\LoginResponse;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -38,7 +37,7 @@ use SP\Domain\Core\Exceptions\SPException;
  *
  * @package SP\Domain\Common\Services
  */
-interface LoginServiceInterface
+interface LoginService
 {
     /**
      * Ejecutar las acciones de login
@@ -58,7 +57,7 @@ interface LoginServiceInterface
     public function doLogin(): LoginResponse;
 
     /**
-     * @param  string|null  $from
+     * @param string|null $from
      */
     public function setFrom(?string $from): void;
 }

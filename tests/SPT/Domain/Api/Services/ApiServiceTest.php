@@ -34,7 +34,7 @@ use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\ContextInterface;
@@ -64,9 +64,9 @@ class ApiServiceTest extends UnitaryTestCase
 {
 
     private TrackServiceInterface|MockObject     $trackService;
-    private ApiRequestService|MockObject         $apiRequest;
-    private AuthTokenServiceInterface|MockObject $authTokenService;
-    private UserServiceInterface|MockObject        $userService;
+    private ApiRequestService|MockObject    $apiRequest;
+    private AuthTokenService|MockObject     $authTokenService;
+    private UserServiceInterface|MockObject $userService;
     private MockObject|UserProfileServiceInterface $userProfileService;
     private Api $apiService;
     private TrackRequest                           $trackRequest;
@@ -299,7 +299,7 @@ class ApiServiceTest extends UnitaryTestCase
 
         $this->trackService = $this->createMock(TrackServiceInterface::class);
         $this->apiRequest = $this->createMock(ApiRequestService::class);
-        $this->authTokenService = $this->createMock(AuthTokenServiceInterface::class);
+        $this->authTokenService = $this->createMock(AuthTokenService::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
 

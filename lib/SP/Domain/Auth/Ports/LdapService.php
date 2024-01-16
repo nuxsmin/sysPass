@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Providers\Auth\Ldap\LdapException;
  *
  * @package SP\Providers\Auth\Ldap
  */
-interface LdapInterface
+interface LdapService
 {
     /**
      * Obtener el filtro para buscar el usuario
@@ -86,9 +86,9 @@ interface LdapInterface
     public function connect(?string $bindDn = null, ?string $bindPass = null): void;
 
     /**
-     * @return LdapActionsInterface
+     * @return LdapActionsService
      */
-    public function actions(): LdapActionsInterface;
+    public function actions(): LdapActionsService;
 
     /**
      * @return string

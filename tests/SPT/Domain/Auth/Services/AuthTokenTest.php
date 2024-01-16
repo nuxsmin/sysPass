@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
-use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
+use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -55,8 +55,8 @@ use SPT\UnitaryTestCase;
 class AuthTokenTest extends UnitaryTestCase
 {
 
-    private AuthTokenRepositoryInterface|MockObject $authTokenRepository;
-    private CryptInterface|MockObject               $crypt;
+    private AuthTokenRepository|MockObject $authTokenRepository;
+    private CryptInterface|MockObject      $crypt;
     private AuthToken                               $authToken;
 
     public static function secureActionDataProvider(): array
@@ -637,7 +637,7 @@ class AuthTokenTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->authTokenRepository = $this->createMock(AuthTokenRepositoryInterface::class);
+        $this->authTokenRepository = $this->createMock(AuthTokenRepository::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->authToken = new AuthToken($this->application, $this->authTokenRepository, $this->crypt);

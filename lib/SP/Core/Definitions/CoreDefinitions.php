@@ -47,8 +47,8 @@ use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
 use SP\Core\UI\ThemeIcons;
-use SP\Domain\Auth\Ports\LdapActionsInterface;
-use SP\Domain\Auth\Ports\LdapAuthInterface;
+use SP\Domain\Auth\Ports\LdapActionsService;
+use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -170,8 +170,8 @@ final class CoreDefinitions
             BrowserAuthInterface::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'getFrom']),
             LdapConnectionInterface::class => autowire(LdapConnection::class),
-            LdapActionsInterface::class => autowire(LdapActions::class),
-            LdapAuthInterface::class => autowire(LdapAuth::class)
+            LdapActionsService::class => autowire(LdapActions::class),
+            LdapAuthService::class => autowire(LdapAuth::class)
                 ->constructorParameter(
                     'ldap',
                     factory([LdapBase::class, 'factory'])
@@ -180,7 +180,7 @@ final class CoreDefinitions
                 static function (
                     AuthProvider          $authProvider,
                     ConfigDataInterface   $configData,
-                    LdapAuthInterface     $ldapAuth,
+                    LdapAuthService $ldapAuth,
                     BrowserAuthInterface  $browserAuth,
                     DatabaseAuthInterface $databaseAuth,
                 ) {

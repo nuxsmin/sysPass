@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Auth\Repositories;
 
 use Exception;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -41,9 +41,9 @@ use function SP\__u;
 /**
  * Class AuthTokenRepository
  *
- * @template T of AuthToken
+ * @template T of AuthTokenModel
  */
-final class AuthTokenRepository extends Repository implements AuthTokenRepositoryInterface
+final class AuthToken extends Repository implements AuthTokenRepository
 {
     use RepositoryItemTrait;
 
@@ -80,12 +80,12 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthToken::getCols())
+            ->cols(AuthTokenModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $authTokenId])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, AuthToken::class);
+        $queryData = QueryData::buildWithMapper($query, AuthTokenModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -100,9 +100,9 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthToken::getCols());
+            ->cols(AuthTokenModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthToken::class));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthTokenModel::class));
     }
 
     /**
@@ -172,14 +172,14 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
     /**
      * Creates an item
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function create(AuthToken $authToken): QueryResult
+    public function create(AuthTokenModel $authToken): QueryResult
     {
         if ($this->checkDuplicatedOnAdd($authToken)) {
             throw new DuplicatedItemException(__u('Authorization already exist'));
@@ -199,12 +199,12 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnAdd(AuthToken $authToken): bool
+    private function checkDuplicatedOnAdd(AuthTokenModel $authToken): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -235,13 +235,13 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthToken::getCols())
+            ->cols(AuthTokenModel::getCols())
             ->where('userId = :userId')
             ->where('token <> \'\'')
             ->bindValues(['userId' => $userId])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, AuthToken::class);
+        $queryData = QueryData::buildWithMapper($query, AuthTokenModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -249,13 +249,13 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
     /**
      * Updates an item
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      * @return bool
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function update(AuthToken $authToken): bool
+    public function update(AuthTokenModel $authToken): bool
     {
         if ($this->checkDuplicatedOnUpdate($authToken)) {
             throw new DuplicatedItemException(__u('Authorization already exist'));
@@ -278,12 +278,12 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param AuthToken $authToken
+     * @param AuthTokenModel $authToken
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnUpdate(AuthToken $authToken): bool
+    private function checkDuplicatedOnUpdate(AuthTokenModel $authToken): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -370,12 +370,12 @@ final class AuthTokenRepository extends Repository implements AuthTokenRepositor
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthToken::getCols())
+            ->cols(AuthTokenModel::getCols())
             ->where('actionId = :actionId')
             ->where('token = :token')
             ->bindValues(['actionId' => $actionId, 'token' => $token])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthToken::class));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthTokenModel::class));
     }
 }

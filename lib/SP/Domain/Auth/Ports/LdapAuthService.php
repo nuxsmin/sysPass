@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Providers\Auth\Ldap\LdapAuthData;
  *
  * @extends AuthInterface<LdapAuthData>
  */
-interface LdapAuthInterface extends AuthInterface
+interface LdapAuthService extends AuthInterface
 {
     public const ACCOUNT_NO_GROUPS = 702;
     public const ACCOUNT_EXPIRED   = 701;

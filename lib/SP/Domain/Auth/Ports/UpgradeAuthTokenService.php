@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,23 +24,19 @@
 
 namespace SP\Domain\Auth\Ports;
 
-
-use SP\Providers\Auth\Ldap\LdapException;
+use Exception;
 
 /**
- * Class LdapCheckService
+ * Class UpgradeAuthToken
  *
- * @package SP\Domain\Import\Services
+ * @package SP\Domain\Upgrade\Services
  */
-interface LdapCheckServiceInterface
+interface UpgradeAuthTokenService
 {
     /**
-     * @throws LdapException
+     * upgrade_300_18072901
+     *
+     * @throws Exception
      */
-    public function getObjects(bool $includeGroups = true): array;
-
-    /**
-     * @throws LdapException
-     */
-    public function getObjectsByFilter(string $filter): array;
+    public function upgradeV300B18072901(): void;
 }

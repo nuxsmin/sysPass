@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 
 use SP\Core\Application;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -39,16 +39,17 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class AuthTokenSaveBase extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     protected CustomFieldServiceInterface $customFieldService;
-    protected AuthTokenServiceInterface   $authTokenService;
+    protected AuthTokenService $authTokenService;
     protected AuthTokenForm               $form;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        AuthTokenServiceInterface $authTokenService,
+        AuthTokenService    $authTokenService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

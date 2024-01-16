@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,11 +32,11 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Auth\Models\AuthToken;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Auth\Repositories\AuthTokenRepository;
+use SP\Infrastructure\Auth\Repositories\AuthToken;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -49,10 +49,10 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class AuthTokenRepositoryTest extends UnitaryTestCase
+class AuthTokenTest extends UnitaryTestCase
 {
 
-    private AuthTokenRepository          $authTokenRepository;
+    private AuthToken $authToken;
     private MockObject|DatabaseInterface $database;
 
     /**
@@ -83,7 +83,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->authTokenRepository->search($item);
+        $this->authToken->search($item);
     }
 
     /**
@@ -107,7 +107,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->authTokenRepository->search(new ItemSearchData());
+        $this->authToken->search(new ItemSearchData());
     }
 
     /**
@@ -138,7 +138,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doQuery')
             ->with($callback);
 
-        $this->authTokenRepository->deleteByIdBatch($ids);
+        $this->authToken->deleteByIdBatch($ids);
     }
 
     /**
@@ -151,7 +151,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('doQuery');
 
-        $this->authTokenRepository->deleteByIdBatch([]);
+        $this->authToken->deleteByIdBatch([]);
     }
 
     public function testGetTokenByUserId()
@@ -165,7 +165,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['userId'] === $id
-                       && $arg->getMapClassName() === AuthToken::class
+                       && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -176,7 +176,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->authTokenRepository->getTokenByUserId($id);
+        $this->authToken->getTokenByUserId($id);
     }
 
     public function testGetById()
@@ -190,7 +190,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === $id
-                       && $arg->getMapClassName() === AuthToken::class
+                       && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -201,7 +201,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->authTokenRepository->getById($id);
+        $this->authToken->getById($id);
     }
 
     /**
@@ -252,7 +252,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->authTokenRepository->update($authToken);
+        $this->authToken->update($authToken);
     }
 
     /**
@@ -288,7 +288,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Authorization already exist');
 
-        $this->authTokenRepository->update($authToken);
+        $this->authToken->update($authToken);
     }
 
     /**
@@ -325,7 +325,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($queryResult);
 
-        $out = $this->authTokenRepository->refreshVaultByUserId($userId, $vault, $hash);
+        $out = $this->authToken->refreshVaultByUserId($userId, $vault, $hash);
 
         self::assertEquals(10, $out);
     }
@@ -350,7 +350,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->authTokenRepository->delete($id);
+        $this->authToken->delete($id);
     }
 
     public function testGetAll()
@@ -358,7 +358,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
-                return $arg->getMapClassName() === AuthToken::class
+                return $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -369,7 +369,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->authTokenRepository->getAll();
+        $this->authToken->getAll();
     }
 
     /**
@@ -401,7 +401,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 
-        $this->authTokenRepository->refreshTokenByUserId($userId, $token);
+        $this->authToken->refreshTokenByUserId($userId, $token);
     }
 
     public function testGetTokenByToken()
@@ -417,7 +417,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['actionId'] === $actionId
                        && $params['token'] === $token
-                       && $arg->getMapClassName() === AuthToken::class
+                       && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -428,7 +428,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->authTokenRepository->getTokenByToken($actionId, $token);
+        $this->authToken->getTokenByToken($actionId, $token);
     }
 
     /**
@@ -477,7 +477,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->authTokenRepository->create($authToken);
+        $this->authToken->create($authToken);
     }
 
     /**
@@ -512,7 +512,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Authorization already exist');
 
-        $this->authTokenRepository->create($authToken);
+        $this->authToken->create($authToken);
     }
 
     protected function setUp(): void
@@ -522,7 +522,7 @@ class AuthTokenRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->authTokenRepository = new AuthTokenRepository(
+        $this->authToken = new AuthToken(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

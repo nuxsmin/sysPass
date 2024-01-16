@@ -32,8 +32,8 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
-use SP\Domain\Auth\Ports\AuthTokenRepositoryInterface;
-use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
+use SP\Domain\Auth\Ports\AuthTokenRepository;
+use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -55,7 +55,7 @@ use function SP\__u;
  *
  * @template T of AuthTokenModel
  */
-final class AuthToken extends Service implements AuthTokenServiceInterface
+final class AuthToken extends Service implements AuthTokenService
 {
     private const SECURED_ACTIONS = [
         AclActionsInterface::ACCOUNT_VIEW_PASS,
@@ -71,13 +71,13 @@ final class AuthToken extends Service implements AuthTokenServiceInterface
 
     /**
      * @param Application $application
-     * @param AuthTokenRepositoryInterface<AuthToken> $authTokenRepository
+     * @param AuthTokenRepository<AuthToken> $authTokenRepository
      * @param CryptInterface $crypt
      */
     public function __construct(
-        Application                                   $application,
-        private readonly AuthTokenRepositoryInterface $authTokenRepository,
-        private readonly CryptInterface               $crypt
+        Application                          $application,
+        private readonly AuthTokenRepository $authTokenRepository,
+        private readonly CryptInterface      $crypt
     ) {
         parent::__construct($application);
     }
