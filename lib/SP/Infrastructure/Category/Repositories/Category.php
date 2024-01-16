@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Category\Repositories;
 
 use Exception;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Category\Models\Category;
-use SP\Domain\Category\Ports\CategoryRepositoryInterface;
+use SP\Domain\Category\Models\Category as CategoryModel;
+use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -41,9 +41,9 @@ use function SP\__u;
 /**
  * Class CategoryRepository
  *
- * @template T of Category
+ * @template T of CategoryModel
  */
-final class CategoryRepository extends Repository implements CategoryRepositoryInterface
+final class Category extends Repository implements CategoryRepository
 {
     use RepositoryItemTrait;
 
@@ -52,14 +52,14 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Creates an item
      *
-     * @param Category $category
+     * @param CategoryModel $category
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
      */
-    public function create(Category $category): QueryResult
+    public function create(CategoryModel $category): QueryResult
     {
         if ($this->checkDuplicatedOnAdd($category)) {
             throw new DuplicatedItemException(__u('Duplicated category'));
@@ -79,13 +79,13 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param Category $category
+     * @param CategoryModel $category
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnAdd(Category $category): bool
+    private function checkDuplicatedOnAdd(CategoryModel $category): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -106,14 +106,14 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Updates an item
      *
-     * @param Category $category
+     * @param CategoryModel $category
      *
      * @return int
      * @throws DuplicatedItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Category $category): int
+    public function update(CategoryModel $category): int
     {
         if ($this->checkDuplicatedOnUpdate($category)) {
             throw new DuplicatedItemException(__u('Duplicated category name'));
@@ -140,13 +140,13 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param Category $category
+     * @param CategoryModel $category
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkDuplicatedOnUpdate(Category $category): bool
+    private function checkDuplicatedOnUpdate(CategoryModel $category): bool
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -177,12 +177,12 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Category::getCols())
+            ->cols(CategoryModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $categoryId])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, Category::class);
+        $queryData = QueryData::buildWithMapper($query, CategoryModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -199,12 +199,12 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Category::getCols())
+            ->cols(CategoryModel::getCols())
             ->where('(name = :name OR hash = :hash)')
             ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
             ->limit(1);
 
-        $queryData = QueryData::buildWithMapper($query, Category::class);
+        $queryData = QueryData::buildWithMapper($query, CategoryModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -219,9 +219,9 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Category::getCols());
+            ->cols(CategoryModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, Category::class));
+        return $this->db->doSelect(QueryData::buildWithMapper($query, CategoryModel::class));
     }
 
     /**
@@ -284,7 +284,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(Category::getCols(['hash']))
+            ->cols(CategoryModel::getCols(['hash']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -297,7 +297,7 @@ final class CategoryRepository extends Repository implements CategoryRepositoryI
             $query->bindValues(['name' => $search, 'description' => $search]);
         }
 
-        $queryData = QueryData::build($query)->setMapClassName(Category::class);
+        $queryData = QueryData::build($query)->setMapClassName(CategoryModel::class);
 
         return $this->db->doSelect($queryData, true);
     }

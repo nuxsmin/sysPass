@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\Import\Services;
 
 
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 
@@ -35,14 +35,14 @@ use SP\Domain\Tag\Ports\TagServiceInterface;
  */
 final class ImportHelper
 {
-    private AccountService $accountService;
-    private CategoryServiceInterface $categoryService;
-    private ClientServiceInterface   $clientService;
+    private AccountService         $accountService;
+    private CategoryService        $categoryService;
+    private ClientServiceInterface $clientService;
     private TagServiceInterface      $tagService;
 
     public function __construct(
         AccountService         $accountService,
-        CategoryServiceInterface $categoryService,
+        CategoryService $categoryService,
         ClientServiceInterface $clientService,
         TagServiceInterface    $tagService
     ) {
@@ -57,7 +57,7 @@ final class ImportHelper
         return $this->accountService;
     }
 
-    public function getCategoryService(): CategoryServiceInterface
+    public function getCategoryService(): CategoryService
     {
         return $this->categoryService;
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Category;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -46,13 +46,13 @@ abstract class CategoryViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private CategoryServiceInterface    $categoryService;
+    private CategoryService $categoryService;
     private CustomFieldServiceInterface $customFieldService;
 
     public function __construct(
         Application                 $application,
         WebControllerHelper         $webControllerHelper,
-        CategoryServiceInterface    $categoryService,
+        CategoryService $categoryService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

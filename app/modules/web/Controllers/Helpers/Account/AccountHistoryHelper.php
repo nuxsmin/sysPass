@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Account\Ports\AccountToUserService;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
@@ -67,7 +67,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         MasterPassServiceInterface        $masterPassService,
         private AccountHistoryService     $accountHistoryService,
         private AccountAclService         $accountAclService,
-        private CategoryServiceInterface  $categoryService,
+        private CategoryService $categoryService,
         private ClientServiceInterface    $clientService,
         private AccountToUserService      $accountToUserService,
         private AccountToUserGroupService $accountToUserGroupService

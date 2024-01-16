@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Application;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -38,16 +38,17 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class CategorySaveBase extends ControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
-    protected CategoryServiceInterface    $categoryService;
+    protected CategoryService $categoryService;
     protected CustomFieldServiceInterface $customFieldService;
     protected CategoryForm                $form;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        CategoryServiceInterface $categoryService,
+        CategoryService     $categoryService,
         CustomFieldServiceInterface $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,7 +34,7 @@ use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -70,19 +70,19 @@ final class AccountSearchHelper extends HelperBase
     private ?AccountSearchFilterDto $accountSearchFilter = null;
     private ClientServiceInterface  $clientService;
     private AccountSearchService    $accountSearchService;
-    private AccountActionsHelper    $accountActionsHelper;
-    private CategoryServiceInterface      $categoryService;
-    private TagServiceInterface           $tagService;
+    private AccountActionsHelper $accountActionsHelper;
+    private CategoryService      $categoryService;
+    private TagServiceInterface  $tagService;
 
     public function __construct(
-        Application              $application,
-        TemplateInterface        $template,
-        RequestInterface         $request,
-        ClientServiceInterface   $clientService,
-        CategoryServiceInterface $categoryService,
-        TagServiceInterface      $tagService,
-        AccountSearchService     $accountSearchService,
-        AccountActionsHelper     $accountActionsHelper
+        Application            $application,
+        TemplateInterface      $template,
+        RequestInterface       $request,
+        ClientServiceInterface $clientService,
+        CategoryService        $categoryService,
+        TagServiceInterface    $tagService,
+        AccountSearchService   $accountSearchService,
+        AccountActionsHelper   $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);
 

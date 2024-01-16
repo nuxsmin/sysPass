@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Models\Category as CategoryModel;
-use SP\Domain\Category\Ports\CategoryRepositoryInterface;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryRepository;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -46,11 +46,11 @@ use function SP\__u;
  *
  * @template T of CategoryModel
  */
-final class Category extends Service implements CategoryServiceInterface
+final class Category extends Service implements CategoryService
 {
     public function __construct(
         Application                                  $application,
-        private readonly CategoryRepositoryInterface $categoryRepository
+        private readonly CategoryRepository $categoryRepository
     ) {
         parent::__construct($application);
     }
@@ -106,7 +106,7 @@ final class Category extends Service implements CategoryServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): CategoryServiceInterface
+    public function delete(int $id): CategoryService
     {
         if ($this->categoryRepository->delete($id)->getAffectedNumRows() === 0) {
             throw new NoSuchItemException(__u('Category not found'), SPException::INFO);

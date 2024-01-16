@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SPT\Domain\Category\Services;
 
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Category\Ports\CategoryRepositoryInterface;
+use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Category\Services\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -47,8 +47,8 @@ use SPT\UnitaryTestCase;
 class CategoryTest extends UnitaryTestCase
 {
 
-    private CategoryRepositoryInterface|MockObject $categoryRepository;
-    private Category                               $categoryService;
+    private CategoryRepository|MockObject $categoryRepository;
+    private Category                      $category;
 
     /**
      * @throws NoSuchItemException
@@ -68,7 +68,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult([$category]));
 
-        $out = $this->categoryService->getById($id);
+        $out = $this->category->getById($id);
 
         $this->assertEquals($category, $out);
     }
@@ -94,7 +94,7 @@ class CategoryTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Category not found');
 
-        $this->categoryService->getById($id);
+        $this->category->getById($id);
     }
 
     /**
@@ -109,7 +109,7 @@ class CategoryTest extends UnitaryTestCase
             ->method('search')
             ->with($itemSearch);
 
-        $this->categoryService->search($itemSearch);
+        $this->category->search($itemSearch);
     }
 
     /**
@@ -130,7 +130,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($id)
             ->willReturn($queryResult);
 
-        $this->categoryService->delete($id);
+        $this->category->delete($id);
     }
 
     /**
@@ -150,7 +150,7 @@ class CategoryTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Category not found');
 
-        $this->categoryService->delete($id);
+        $this->category->delete($id);
     }
 
     /**
@@ -170,7 +170,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($category)
             ->willReturn($queryResult);
 
-        $out = $this->categoryService->create($category);
+        $out = $this->category->create($category);
 
         $this->assertEquals($queryResult->getLastId(), $out);
     }
@@ -193,7 +193,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($category)
             ->willReturn(1);
 
-        $this->categoryService->update($category);
+        $this->category->update($category);
     }
 
     /**
@@ -214,7 +214,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($name)
             ->willReturn(new QueryResult([$category]));
 
-        $out = $this->categoryService->getByName($name);
+        $out = $this->category->getByName($name);
 
         $this->assertEquals($category, $out);
     }
@@ -238,7 +238,7 @@ class CategoryTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Category not found');
 
-        $this->categoryService->getByName($name);
+        $this->category->getByName($name);
     }
 
     /**
@@ -259,7 +259,7 @@ class CategoryTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn($queryResult);
 
-        $this->categoryService->deleteByIdBatch($ids);
+        $this->category->deleteByIdBatch($ids);
     }
 
     /**
@@ -282,7 +282,7 @@ class CategoryTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting categories');
 
-        $this->categoryService->deleteByIdBatch($ids);
+        $this->category->deleteByIdBatch($ids);
     }
 
     /**
@@ -299,7 +299,7 @@ class CategoryTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn(new QueryResult([$category]));
 
-        $out = $this->categoryService->getAll();
+        $out = $this->category->getAll();
 
         $this->assertEquals([$category], $out);
     }
@@ -308,7 +308,7 @@ class CategoryTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->categoryRepository = $this->createMock(CategoryRepositoryInterface::class);
-        $this->categoryService = new Category($this->application, $this->categoryRepository);
+        $this->categoryRepository = $this->createMock(CategoryRepository::class);
+        $this->category = new Category($this->application, $this->categoryRepository);
     }
 }

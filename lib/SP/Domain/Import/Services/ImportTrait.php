@@ -30,7 +30,7 @@ use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,9 +54,9 @@ trait ImportTrait
     protected bool                   $mPassValidHash = false;
     protected int                    $counter        = 0;
     protected ImportParams           $importParams;
-    private AccountService $accountService;
-    private CategoryServiceInterface $categoryService;
-    private ClientServiceInterface   $clientService;
+    private AccountService         $accountService;
+    private CategoryService        $categoryService;
+    private ClientServiceInterface $clientService;
     private TagServiceInterface      $tagService;
     private array                    $items;
 

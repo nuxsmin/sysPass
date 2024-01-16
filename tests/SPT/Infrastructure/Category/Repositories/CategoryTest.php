@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,11 +33,11 @@ use Exception;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Category\Models\Category;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Category\Repositories\CategoryRepository;
+use SP\Infrastructure\Category\Repositories\Category;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -50,10 +50,10 @@ use SPT\UnitaryTestCase;
  *
  * @group unitary
  */
-class CategoryRepositoryTest extends UnitaryTestCase
+class CategoryTest extends UnitaryTestCase
 {
 
-    private CategoryRepository           $categoryRepository;
+    private Category $category;
     private DatabaseInterface|MockObject $database;
 
     /**
@@ -98,7 +98,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->categoryRepository->create($category);
+        $this->category->create($category);
     }
 
     /**
@@ -132,7 +132,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Duplicated category');
 
-        $this->categoryRepository->create($category);
+        $this->category->create($category);
     }
 
     /**
@@ -155,7 +155,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->categoryRepository->delete($id);
+        $this->category->delete($id);
     }
 
     /**
@@ -186,7 +186,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doQuery')
             ->with($callback);
 
-        $this->categoryRepository->deleteByIdBatch($ids);
+        $this->category->deleteByIdBatch($ids);
     }
 
     /**
@@ -199,7 +199,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('doQuery');
 
-        $this->categoryRepository->deleteByIdBatch([]);
+        $this->category->deleteByIdBatch([]);
     }
 
     public function testGetById()
@@ -213,7 +213,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === $id
-                       && $arg->getMapClassName() === Category::class
+                       && $arg->getMapClassName() === CategoryModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -224,7 +224,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->categoryRepository->getById($id);
+        $this->category->getById($id);
     }
 
     /**
@@ -243,7 +243,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
                        && $params['description'] === $searchStringLike
-                       && $arg->getMapClassName() === Category::class
+                       && $arg->getMapClassName() === CategoryModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -254,7 +254,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->categoryRepository->search($item);
+        $this->category->search($item);
     }
 
     /**
@@ -266,7 +266,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === Category::class
+                       && $arg->getMapClassName() === CategoryModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -277,7 +277,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback, true);
 
-        $this->categoryRepository->search(new ItemSearchData());
+        $this->category->search(new ItemSearchData());
     }
 
     public function testGetAll()
@@ -285,7 +285,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
-                return $arg->getMapClassName() === Category::class
+                return $arg->getMapClassName() === CategoryModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -296,7 +296,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->categoryRepository->getAll();
+        $this->category->getAll();
     }
 
     /**
@@ -343,7 +343,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
-        $this->categoryRepository->update($category);
+        $this->category->update($category);
     }
 
     /**
@@ -377,7 +377,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Duplicated category name');
 
-        $this->categoryRepository->update($category);
+        $this->category->update($category);
     }
 
     public function testGetByName()
@@ -392,7 +392,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $name
                        && !empty($params['hash'])
-                       && $arg->getMapClassName() === Category::class
+                       && $arg->getMapClassName() === CategoryModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -403,7 +403,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
             ->method('doSelect')
             ->with($callback);
 
-        $this->categoryRepository->getByName($name);
+        $this->category->getByName($name);
     }
 
     protected function setUp(): void
@@ -413,7 +413,7 @@ class CategoryRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->categoryRepository = new CategoryRepository(
+        $this->category = new Category(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

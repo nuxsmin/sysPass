@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Services\PublicLink;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
@@ -78,9 +78,9 @@ final class AccountHelper extends AccountHelperBase
     private PublicLinkService           $publicLinkService;
     private ItemPresetServiceInterface  $itemPresetService;
     private MasterPassServiceInterface  $masterPassService;
-    private AccountAclService           $accountAclService;
-    private CategoryServiceInterface    $categoryService;
-    private ClientServiceInterface         $clientService;
+    private AccountAclService      $accountAclService;
+    private CategoryService        $categoryService;
+    private ClientServiceInterface $clientService;
     private CustomFieldServiceInterface $customFieldService;
     private ?AccountPermission          $accountAcl = null;
     private ?int                        $accountId  = null;
@@ -100,7 +100,7 @@ final class AccountHelper extends AccountHelperBase
         MasterPassServiceInterface  $masterPassService,
         AccountActionsHelper        $accountActionsHelper,
         AccountAclService         $accountAclService,
-        CategoryServiceInterface    $categoryService,
+        CategoryService           $categoryService,
         ClientServiceInterface      $clientService,
         CustomFieldServiceInterface $customFieldService,
         UserServiceInterface      $userService,

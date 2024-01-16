@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
@@ -61,20 +61,20 @@ final class BulkEditController extends ControllerBase
     private AccountSearchService  $accountSearchService;
     private AccountHistoryService $accountHistoryService;
     private AccountGrid           $accountGrid;
-    private CustomFieldServiceInterface    $customFieldService;
-    private CategoryServiceInterface       $categoryService;
-    private ClientServiceInterface         $clientService;
+    private CustomFieldServiceInterface $customFieldService;
+    private CategoryService             $categoryService;
+    private ClientServiceInterface      $clientService;
     private TagServiceInterface            $tagService;
     private UserServiceInterface           $userService;
     private UserGroupServiceInterface      $userGroupService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        CategoryServiceInterface $categoryService,
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        CategoryService        $categoryService,
         ClientServiceInterface $clientService,
-        TagServiceInterface $tagService,
-        UserServiceInterface $userService,
+        TagServiceInterface    $tagService,
+        UserServiceInterface   $userService,
         UserGroupServiceInterface $userGroupService
     ) {
         parent::__construct($application, $webControllerHelper);

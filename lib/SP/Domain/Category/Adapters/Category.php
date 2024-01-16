@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SP\Domain\Category\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Domain\Category\Models\Category;
-use SP\Domain\Category\Ports\CategoryAdapterInterface;
+use SP\Domain\Category\Models\Category as CategoryModel;
+use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -46,7 +46,7 @@ use SP\Util\Link;
  *
  * @package SP\Adapters
  */
-final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
+final class Category extends Adapter implements CategoryAdapter
 {
     use ItemTrait;
 
@@ -66,7 +66,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(Category $data): Collection
+    public function includeCustomFields(CategoryModel $data): Collection
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $this->customFieldService),
@@ -77,7 +77,7 @@ final class CategoryAdapter extends Adapter implements CategoryAdapterInterface
     /**
      * @throws ActionNotFoundException
      */
-    public function transform(Category $data): array
+    public function transform(CategoryModel $data): array
     {
         $actionRoute = $this->actions->getActionById(AclActionsInterface::CATEGORY_VIEW)->getRoute();
 

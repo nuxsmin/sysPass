@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -61,9 +61,9 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class IndexController extends ControllerBase
 {
     protected ?ItemSearchData              $itemSearchData = null;
-    private TabsGridHelper                 $tabsGridHelper;
-    private CategoryServiceInterface       $categoryService;
-    private TagServiceInterface            $tagService;
+    private TabsGridHelper      $tabsGridHelper;
+    private CategoryService     $categoryService;
+    private TagServiceInterface $tagService;
     private ClientServiceInterface         $clientService;
     private CustomFieldDefServiceInterface $customFieldDefService;
     private AccountFileService         $accountFileService;
@@ -83,7 +83,7 @@ final class IndexController extends ControllerBase
         Application                    $application,
         WebControllerHelper            $webControllerHelper,
         Helpers\TabsGridHelper         $tabsGridHelper,
-        CategoryServiceInterface       $categoryService,
+        CategoryService $categoryService,
         TagServiceInterface            $tagService,
         ClientServiceInterface         $clientService,
         CustomFieldDefServiceInterface $customFieldDefService,

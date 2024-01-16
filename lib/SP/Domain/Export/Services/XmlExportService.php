@@ -37,7 +37,7 @@ use SP\Core\PhpExtensionChecker;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -65,9 +65,9 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private PhpExtensionChecker          $extensionChecker;
     private ClientServiceInterface       $clientService;
     private AccountService           $accountService;
-    private AccountToTagService      $accountToTagService;
-    private CategoryServiceInterface $categoryService;
-    private TagServiceInterface          $tagService;
+    private AccountToTagService $accountToTagService;
+    private CategoryService     $categoryService;
+    private TagServiceInterface $tagService;
     private ?DOMDocument                 $xml        = null;
     private ?DOMElement                  $root       = null;
     private ?string                      $exportPass = null;
@@ -81,7 +81,7 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
         ClientServiceInterface $clientService,
         AccountService         $accountService,
         AccountToTagService    $accountToTagService,
-        CategoryServiceInterface $categoryService,
+        CategoryService $categoryService,
         TagServiceInterface    $tagService
 
     ) {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of Category
  */
-interface CategoryRepositoryInterface extends RepositoryInterface
+interface CategoryRepository extends RepositoryInterface
 {
     /**
      * Creates an item

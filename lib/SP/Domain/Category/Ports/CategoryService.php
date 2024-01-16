@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,7 +39,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of Category
  */
-interface CategoryServiceInterface
+interface CategoryService
 {
     /**
      * @param ItemSearchData $itemSearchData
@@ -70,7 +70,7 @@ interface CategoryServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): CategoryServiceInterface;
+    public function delete(int $id): CategoryService;
 
     /**
      * Deletes all the items for given ids

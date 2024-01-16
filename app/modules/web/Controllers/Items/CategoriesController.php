@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\Domain\Category\Ports\CategoryServiceInterface;
+use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -39,12 +39,12 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 final class CategoriesController extends SimpleControllerBase
 {
-    private CategoryServiceInterface $categoryService;
+    private CategoryService $categoryService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        CategoryServiceInterface $categoryService
+        CategoryService $categoryService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
