@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use Closure;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -46,24 +46,21 @@ use function SP\logger;
  *
  * @package SP\Infrastructure\Common\Repositories
  */
-abstract class Repository implements RepositoryInterface
+abstract class BaseRepository implements Repository
 {
     public function __construct(
-        protected DatabaseInterface $db,
-        protected ContextInterface $context,
-        protected EventDispatcherInterface $eventDispatcher,
-        protected QueryFactory $queryFactory
+        protected readonly DatabaseInterface        $db,
+        protected readonly ContextInterface         $context,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly QueryFactory             $queryFactory
     ) {
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
     }
 
     /**
      * Bubbles a Closure in a database transaction
      *
      * @param Closure $closure
-     * @param  object  $newThis
+     * @param object $newThis
      *
      * @return mixed
      * @throws ServiceException
@@ -98,15 +95,15 @@ abstract class Repository implements RepositoryInterface
     /**
      * Run a SQL select query to get any data from any table
      *
-     * @param  array  $columns
-     * @param  string  $from
-     * @param  string|null  $where
-     * @param  array|null  $bindValues
+     * @param array $columns
+     * @param string $from
+     * @param string|null $where
+     * @param array|null $bindValues
      *
      * @return QueryResult
      */
     final public function getAny(
-        array $columns,
+        array  $columns,
         string $from,
         ?string $where = null,
         ?array $bindValues = null

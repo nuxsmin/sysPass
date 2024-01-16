@@ -33,8 +33,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Config\Services\Config;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
-use SP\Domain\Crypt\Services\MasterPassService;
+use SP\Domain\Crypt\Ports\MasterPassService;
+use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
@@ -67,13 +67,13 @@ final class UpdateMasterPasswordCommand extends CommandBase
     /**
      * @var string
      */
-    protected static                                          $defaultName = 'sp:crypt:update-master-password';
-    private MasterPassServiceInterface $masterPassService;
-    private Config  $configService;
+    protected static          $defaultName = 'sp:crypt:update-master-password';
+    private MasterPassService $masterPassService;
+    private Config            $configService;
     private Account $accountService;
 
     public function __construct(
-        MasterPassServiceInterface $masterPassService,
+        MasterPassService $masterPassService,
         AccountService    $accountService,
         ConfigService     $configService,
         LoggerInterface   $logger,
@@ -141,7 +141,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $request = new UpdateMasterPassRequest(
                 $currentMasterPassword,
                 $masterPassword,
-                $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH)
+                $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH)
             );
 
             if (!$this->getUpdate($input, $style)) {

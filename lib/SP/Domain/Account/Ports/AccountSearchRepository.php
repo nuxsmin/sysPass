@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,13 +26,13 @@ namespace SP\Domain\Account\Ports;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class AccountSearchRepository
  */
-interface AccountSearchRepository extends RepositoryInterface
+interface AccountSearchRepository extends Repository
 {
     /**
      * Obtener las cuentas de una búsqueda.

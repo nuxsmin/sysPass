@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -35,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of ConfigModel
  */
-interface ConfigRepository extends RepositoryInterface
+interface ConfigRepository extends Repository
 {
     /**
      * @param ConfigModel $config

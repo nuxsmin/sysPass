@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,14 @@
 
 namespace SP\Domain\CustomField\Ports;
 
+use SP\Domain\Common\Ports\Repository;
+
 /**
  * Class CustomFieldDefRepository
  *
  * @package SP\Infrastructure\CustomField\Repositories
  */
-interface CustomFieldDefRepositoryInterface extends \SP\Domain\Common\Ports\RepositoryInterface
+interface CustomFieldDefRepository extends Repository
 {
     /**
      * Resets the custom fields collection cache

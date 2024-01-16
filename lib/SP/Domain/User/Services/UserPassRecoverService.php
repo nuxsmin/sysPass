@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassRecoverRepositoryInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Html\Html;
-use SP\Infrastructure\User\Repositories\UserPassRecoverRepository;
+use SP\Infrastructure\User\Repositories\UserPassRecoverBaseRepository;
 use SP\Util\PasswordUtil;
 
 /**
@@ -55,7 +55,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
      */
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
-    protected UserPassRecoverRepository $userPassRecoverRepository;
+    protected UserPassRecoverBaseRepository $userPassRecoverRepository;
 
     public function __construct(Application $application, UserPassRecoverRepositoryInterface $userPassRecoverRepository)
     {

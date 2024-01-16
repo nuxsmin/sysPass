@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Account\Repositories;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -39,7 +39,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-final class AccountToTag extends Repository implements AccountToTagRepository
+final class AccountToTag extends BaseRepository implements AccountToTagRepository
 {
     use RepositoryItemTrait;
 

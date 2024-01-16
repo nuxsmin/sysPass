@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,28 +25,27 @@
 namespace SP\Domain\Crypt\Ports;
 
 use Exception;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
  * Class MasterPassService
  *
  * @package SP\Domain\Crypt\Services
  */
-interface MasterPassServiceInterface
+interface MasterPassService
 {
     /**
-     * @throws ServiceException
-     * @throws NoSuchItemException
+     * Check whether the user's master password was updated
+     *
+     * @param int $userMPassTime
+     * @return bool false if it needs to be updated, false otherwise
      */
     public function checkUserUpdateMPass(int $userMPassTime): bool;
 
     /**
-     * @throws ServiceException
-     * @throws NoSuchItemException
+     * Check whether the provided master paswword matches with the current one
      */
     public function checkMasterPassword(string $masterPassword): bool;
 

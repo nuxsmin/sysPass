@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Ports\EventlogRepositoryInterface;
 use SP\Domain\Security\Ports\EventlogServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\EventlogRepository;
+use SP\Infrastructure\Security\Repositories\EventlogBaseRepository;
 
 /**
  * Class EventlogService
@@ -44,8 +44,8 @@ use SP\Infrastructure\Security\Repositories\EventlogRepository;
  */
 final class EventlogService extends Service implements EventlogServiceInterface
 {
-    protected EventlogRepository $eventLogRepository;
-    protected RequestInterface   $request;
+    protected EventlogBaseRepository $eventLogRepository;
+    protected RequestInterface       $request;
 
     public function __construct(
         Application $application,

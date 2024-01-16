@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\CustomField\Ports;
 
 use SP\DataModel\CustomFieldData;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
@@ -35,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\Common\Services
  */
-interface CustomFieldRepositoryInterface extends RepositoryInterface
+interface CustomFieldRepository extends Repository
 {
     /**
      * Comprueba si el elemento tiene campos personalizados con datos

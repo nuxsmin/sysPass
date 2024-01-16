@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogRepositoryInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Security\Repositories
  */
-final class EventlogRepository extends Repository implements EventlogRepositoryInterface
+final class EventlogBaseRepository extends BaseRepository implements EventlogRepositoryInterface
 {
     /**
      * Clears the event log

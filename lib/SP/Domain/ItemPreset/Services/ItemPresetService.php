@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,11 +32,11 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\ItemPreset\Repositories\ItemPresetRepository;
+use SP\Infrastructure\ItemPreset\Repositories\ItemPresetBaseRepository;
 
 /**
  * Class ItemPresetService
@@ -45,9 +45,9 @@ use SP\Infrastructure\ItemPreset\Repositories\ItemPresetRepository;
  */
 final class ItemPresetService extends Service implements ItemPresetServiceInterface
 {
-    private ItemPresetRepository $itemPresetRepository;
+    private ItemPresetBaseRepository $itemPresetRepository;
 
-    public function __construct(Application $application, ItemPresetRepositoryInterface $itemPresetRepository)
+    public function __construct(Application $application, ItemPresetRepository $itemPresetRepository)
     {
         parent::__construct($application);
 

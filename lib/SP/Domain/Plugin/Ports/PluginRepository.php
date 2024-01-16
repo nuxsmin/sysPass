@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
@@ -34,7 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Plugin\Repositories
  */
-interface PluginRepositoryInterface extends RepositoryInterface
+interface PluginRepository extends Repository
 {
     /**
      * Devuelve los datos de un plugin por su nombre

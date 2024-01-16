@@ -28,64 +28,65 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Account\Ports\AccountCryptService;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Config\Services\Config;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
-use SP\Domain\CustomField\Services\CustomFieldCryptService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
+use function SP\processException;
+
 /**
- * Class MasterPassService
- *
- * @package SP\Domain\Crypt\Services
+ * Class MasterPass
  */
-final class MasterPassService extends Service implements MasterPassServiceInterface
+final class MasterPass extends Service implements MasterPassService
 {
     public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
-    protected Config                  $configService;
-    protected AccountCryptService     $accountCryptService;
-    protected CustomFieldCryptService $customFieldCryptService;
-
     public function __construct(
-        Application                      $application,
-        ConfigService                    $configService,
-        AccountCryptService              $accountCryptService,
-        CustomFieldCryptServiceInterface $customFieldCryptService
+        Application                                       $application,
+        private readonly ConfigService                    $configService,
+        private readonly AccountCryptService              $accountCryptService,
+        private readonly CustomFieldCryptServiceInterface $customFieldCryptService,
+        private readonly Repository                       $repository
     ) {
         parent::__construct($application);
-
-        $this->configService = $configService;
-        $this->accountCryptService = $accountCryptService;
-        $this->customFieldCryptService = $customFieldCryptService;
     }
 
     /**
-     * @throws ServiceException
-     * @throws NoSuchItemException
+     * @inheritDoc
      */
     public function checkUserUpdateMPass(int $userMPassTime): bool
     {
-        return $userMPassTime >= $this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, 0);
+        try {
+            return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, 0);
+        } catch (ServiceException|NoSuchItemException $e) {
+            processException($e);
+        }
 
+        return true;
     }
 
     /**
-     * @throws ServiceException
-     * @throws NoSuchItemException
+     * @inheritDoc
      */
     public function checkMasterPassword(string $masterPassword): bool
     {
-        return Hash::checkHashKey(
-            $masterPassword,
-            $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
-        );
+        try {
+            return Hash::checkHashKey(
+                $masterPassword,
+                $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
+            );
+        } catch (ServiceException|NoSuchItemException $e) {
+            processException($e);
+        }
+
+        return false;
     }
 
     /**
@@ -93,17 +94,16 @@ final class MasterPassService extends Service implements MasterPassServiceInterf
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request): void
     {
-        $this->transactionAware(
+        $this->repository->transactionAware(
             function () use ($request) {
                 $this->accountCryptService->updateMasterPassword($request);
-
                 $this->accountCryptService->updateHistoryMasterPassword($request);
-
                 $this->customFieldCryptService->updateMasterPassword($request);
-
-                $this->updateConfig($request->getHash());
-            }
+            },
+            $this
         );
+
+        $this->updateConfig($request->getHash());
     }
 
     /**

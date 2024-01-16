@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\User\Repositories\UserToUserGroupRepository;
+use SP\Infrastructure\User\Repositories\UserToUserGroupBaseRepository;
 
 /**
  * Class UserToUserGroupService
@@ -42,7 +42,7 @@ use SP\Infrastructure\User\Repositories\UserToUserGroupRepository;
  */
 final class UserToUserGroupService extends Service implements UserToUserGroupServiceInterface
 {
-    protected UserToUserGroupRepository $userToUserGroupRepository;
+    protected UserToUserGroupBaseRepository $userToUserGroupRepository;
 
     public function __construct(Application $application, UserToUserGroupRepositoryInterface $userToUserGroupRepository)
     {

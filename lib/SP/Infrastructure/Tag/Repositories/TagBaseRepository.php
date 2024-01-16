@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,9 +28,9 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Tag\Ports\TagRepositoryInterface;
+use SP\Domain\Tag\Ports\TagRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -40,7 +40,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Common\Repositories\Tag
  */
-final class TagRepository extends Repository implements TagRepositoryInterface
+final class TagBaseRepository extends BaseRepository implements TagRepository
 {
     use RepositoryItemTrait;
 

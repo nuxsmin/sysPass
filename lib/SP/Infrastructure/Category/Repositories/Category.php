@@ -30,8 +30,8 @@ use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -43,7 +43,7 @@ use function SP\__u;
  *
  * @template T of CategoryModel
  */
-final class Category extends Repository implements CategoryRepository
+final class Category extends BaseRepository implements CategoryRepository
 {
     use RepositoryItemTrait;
 

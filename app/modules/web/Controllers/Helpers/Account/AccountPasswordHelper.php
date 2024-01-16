@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
@@ -54,8 +54,8 @@ use SP\Util\ImageUtilInterface;
 final class AccountPasswordHelper extends HelperBase
 {
     private Acl                        $acl;
-    private ImageUtil                  $imageUtil;
-    private MasterPassServiceInterface $masterPassService;
+    private ImageUtil         $imageUtil;
+    private MasterPassService $masterPassService;
 
     public function __construct(
         Application        $application,
@@ -63,7 +63,7 @@ final class AccountPasswordHelper extends HelperBase
         RequestInterface   $request,
         AclInterface       $acl,
         ImageUtilInterface $imageUtil,
-        MasterPassServiceInterface $masterPassService
+        MasterPassService $masterPassService
     ) {
         parent::__construct($application, $template, $request);
 

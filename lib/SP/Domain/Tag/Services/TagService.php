@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,12 +33,12 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Tag\Ports\TagRepositoryInterface;
+use SP\Domain\Tag\Ports\TagRepository;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Tag\Repositories\TagRepository;
+use SP\Infrastructure\Tag\Repositories\TagBaseRepository;
 
 /**
  * Class TagService
@@ -49,9 +49,9 @@ final class TagService extends Service implements TagServiceInterface
 {
     use ServiceItemTrait;
 
-    private TagRepository $tagRepository;
+    private TagBaseRepository $tagRepository;
 
-    public function __construct(Application $application, TagRepositoryInterface $tagRepository)
+    public function __construct(Application $application, TagRepository $tagRepository)
     {
         parent::__construct($application);
 

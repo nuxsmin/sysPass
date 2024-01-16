@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Notification\Ports\NotificationRepositoryInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Domain\Notification\Ports\NotificationRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Mvc\Model\QueryCondition;
  *
  * @package SP\Infrastructure\Notification\Repositories
  */
-final class NotificationRepository extends Repository implements NotificationRepositoryInterface
+final class NotificationBaseRepository extends BaseRepository implements NotificationRepository
 {
     use RepositoryItemTrait;
 

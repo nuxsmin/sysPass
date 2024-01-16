@@ -27,7 +27,7 @@ namespace SP\Domain\Client\Ports;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -39,7 +39,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of ClientModel
  */
-interface ClientRepository extends RepositoryInterface
+interface ClientRepository extends Repository
 {
     /**
      * Creates an item

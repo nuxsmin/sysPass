@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
@@ -34,7 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\User\Repositories
  */
-interface UserGroupRepositoryInterface extends RepositoryInterface
+interface UserGroupRepository extends Repository
 {
     /**
      * Returns the items that are using the given group id

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -41,7 +41,7 @@ use function SP\__u;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-final class AccountFile extends Repository implements AccountFileRepository
+final class AccountFile extends BaseRepository implements AccountFileRepository
 {
     use RepositoryItemTrait;
 

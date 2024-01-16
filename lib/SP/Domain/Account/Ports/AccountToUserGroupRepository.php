@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
@@ -34,7 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-interface AccountToUserGroupRepository extends RepositoryInterface
+interface AccountToUserGroupRepository extends Repository
 {
     /**
      * Obtiene el listado con el nombre de los grupos de una cuenta.

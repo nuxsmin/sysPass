@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\Account\Ports;
 
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Common\Repositories\PublicLink
  */
-interface PublicLinkRepository extends RepositoryInterface
+interface PublicLinkRepository extends Repository
 {
     /**
      * Deletes an item

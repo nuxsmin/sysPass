@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Notification\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
@@ -35,7 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Notification\Repositories
  */
-interface NotificationRepositoryInterface extends RepositoryInterface
+interface NotificationRepository extends Repository
 {
     /**
      * Deletes an item

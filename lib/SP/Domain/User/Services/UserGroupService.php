@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,13 +34,13 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupRepositoryInterface;
+use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserGroupRepository;
+use SP\Infrastructure\User\Repositories\UserGroupBaseRepository;
 
 /**
  * Class UserGroupService
@@ -51,15 +51,15 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
 {
     use ServiceItemTrait;
 
-    protected UserGroupRepository             $userGroupRepository;
+    protected UserGroupBaseRepository $userGroupRepository;
     protected UserToUserGroupServiceInterface $userToUserGroupService;
     private DatabaseInterface                 $database;
 
     public function __construct(
-        Application $application,
-        UserGroupRepositoryInterface $userGroupRepository,
+        Application         $application,
+        UserGroupRepository $userGroupRepository,
         UserToUserGroupServiceInterface $userToUserGroupService,
-        DatabaseInterface $database
+        DatabaseInterface   $database
     ) {
         parent::__construct($application);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -40,7 +40,7 @@ use SP\Domain\Security\Ports\TrackRepositoryInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\TrackRepository;
+use SP\Infrastructure\Security\Repositories\TrackBaseRepository;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
 
 /**
@@ -57,8 +57,8 @@ final class TrackService extends Service implements TrackServiceInterface
     public const TIME_TRACKING_MAX_ATTEMPTS = 10;
     public const TIME_SLEEP                 = 0.5;
 
-    private TrackRepository  $trackRepository;
-    private RequestInterface $request;
+    private TrackBaseRepository $trackRepository;
+    private RequestInterface    $request;
 
     public function __construct(
         Application $application,

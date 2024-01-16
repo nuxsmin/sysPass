@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,8 +33,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldDefRepositoryInterface;
-use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefRepository;
+use SP\Domain\CustomField\Ports\CustomFieldRepository;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -45,13 +45,13 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
  */
 final class CustomFieldService extends Service implements CustomFieldServiceInterface
 {
-    protected CustomFieldRepositoryInterface    $customFieldRepository;
-    protected CustomFieldDefRepositoryInterface $customFieldDefRepository;
+    protected CustomFieldRepository    $customFieldRepository;
+    protected CustomFieldDefRepository $customFieldDefRepository;
 
     public function __construct(
-        Application $application,
-        CustomFieldRepositoryInterface $customFieldRepository,
-        CustomFieldDefRepositoryInterface $customFieldDefRepository
+        Application              $application,
+        CustomFieldRepository    $customFieldRepository,
+        CustomFieldDefRepository $customFieldDefRepository
     ) {
         parent::__construct($application);
 

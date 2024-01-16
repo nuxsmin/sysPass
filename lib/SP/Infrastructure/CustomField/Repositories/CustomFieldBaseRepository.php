@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\CustomField\Ports\CustomFieldRepositoryInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Domain\CustomField\Ports\CustomFieldRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -40,7 +40,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\Common\Services
  */
-final class CustomFieldRepository extends Repository implements CustomFieldRepositoryInterface
+final class CustomFieldBaseRepository extends BaseRepository implements CustomFieldRepository
 {
     use RepositoryItemTrait;
 

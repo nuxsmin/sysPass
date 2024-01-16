@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,12 +37,12 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassServiceInterface;
-use SP\Domain\User\Ports\UserRepositoryInterface;
+use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserRepository;
+use SP\Infrastructure\User\Repositories\UserBaseRepository;
 use SP\Util\Util;
 
 /**
@@ -54,12 +54,12 @@ final class UserService extends Service implements UserServiceInterface
 {
     use ServiceItemTrait;
 
-    private UserRepository  $userRepository;
-    private UserPassService $userPassService;
+    private UserBaseRepository $userRepository;
+    private UserPassService    $userPassService;
 
     public function __construct(
-        Application $application,
-        UserRepositoryInterface $userRepository,
+        Application    $application,
+        UserRepository $userRepository,
         UserPassServiceInterface $userPassService
     ) {
         parent::__construct($application);

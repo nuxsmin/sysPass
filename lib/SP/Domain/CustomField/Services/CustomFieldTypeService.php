@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,10 +30,10 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\CustomField\Ports\CustomFieldTypeRepositoryInterface;
+use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\CustomField\Repositories\CustomFieldTypeRepository;
+use SP\Infrastructure\CustomField\Repositories\CustomFieldTypeBaseRepository;
 
 /**
  * Class CustomFieldTypeService
@@ -44,9 +44,9 @@ final class CustomFieldTypeService extends Service implements CustomFieldTypeSer
 {
     use ServiceItemTrait;
 
-    private CustomFieldTypeRepository $customFieldTypeRepository;
+    private CustomFieldTypeBaseRepository $customFieldTypeRepository;
 
-    public function __construct(Application $application, CustomFieldTypeRepositoryInterface $customFieldTypeRepository)
+    public function __construct(Application $application, CustomFieldTypeRepository $customFieldTypeRepository)
     {
         parent::__construct($application);
 

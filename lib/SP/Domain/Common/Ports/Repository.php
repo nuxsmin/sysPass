@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,17 +30,15 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Interface RepositoryItemInterface
- *
- * @package SP\Domain\Common\Ports
+ * Interface Repository
  */
-interface RepositoryInterface
+interface Repository
 {
     /**
      * Bubbles a Closure in a database transaction
      *
      * @param Closure $closure
-     * @param  object  $newThis
+     * @param object $newThis
      *
      * @return mixed
      * @throws ServiceException
@@ -51,15 +49,15 @@ interface RepositoryInterface
     /**
      * Run a SQL select query to get any data from any table
      *
-     * @param  array  $columns
-     * @param  string  $from
-     * @param  string|null  $where
-     * @param  array|null  $bindValues
+     * @param array $columns
+     * @param string $from
+     * @param string|null $where
+     * @param array|null $bindValues
      *
      * @return QueryResult
      */
     public function getAny(
-        array $columns,
+        array  $columns,
         string $from,
         ?string $where = null,
         ?array $bindValues = null

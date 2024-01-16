@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,25 +25,42 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\UserProfileData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupRepositoryInterface;
+use SP\Domain\User\Ports\UserProfileRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class UserGroupRepository
+ * Class UserProfileRepository
  *
  * @package SP\Infrastructure\User\Repositories
  */
-final class UserGroupRepository extends Repository implements UserGroupRepositoryInterface
+final class UserProfileBaseRepository extends BaseRepository implements UserProfileRepository
 {
     use RepositoryItemTrait;
+
+    /**
+     * Obtener el nombre de los usuarios que usan un perfil.
+     *
+     * @param $id int El id del perfil
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getUsersForProfile(int $id): QueryResult
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, login FROM User WHERE userProfileId = ?');
+        $queryData->addParam($id);
+
+        return $this->db->doSelect($queryData);
+    }
 
     /**
      * Deletes an item
@@ -57,9 +74,9 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function delete(int $id): int
     {
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM UserGroup WHERE id = ? LIMIT 1');
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting the group'));
+        $queryData->setOnErrorMessage(__u('Error while removing the profile'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -75,84 +92,11 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
      */
     public function checkInUse(int $id): bool
     {
-        $query = /** @lang SQL */
-            'SELECT userGroupId
-            FROM User WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId
-            FROM Account WHERE userGroupId = ?';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([$id, $id]);
+        $queryData->setQuery('SELECT userProfileId FROM User WHERE userProfileId = ?');
+        $queryData->addParam($id);
 
         return $this->db->doSelect($queryData)->getNumRows() > 0;
-    }
-
-    /**
-     * Returns the items that are using the given group id
-     *
-     * @param $id int
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getUsage(int $id): QueryResult
-    {
-        $query = /** @lang SQL */
-            'SELECT userGroupId, "User" AS ref
-            FROM User WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId, "UserGroup" AS ref
-            FROM UserToUserGroup WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId, "AccountToUserGroup" AS ref
-            FROM AccountToUserGroup WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId, "Account" AS ref
-            FROM Account WHERE userGroupId = ?';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParams(array_fill(0, 4, (int)$id));
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns the users that are using the given group id
-     *
-     * @param $id int
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getUsageByUsers(int $id): QueryResult
-    {
-        $query = /** @lang SQL */
-            'SELECT U.id, login, `name`, ref
-              FROM (
-               SELECT
-                 id,
-                 "User" AS ref
-               FROM User U
-               WHERE U.userGroupId = ?
-               UNION ALL
-               SELECT
-                 userId AS id,
-                 "UserGroup" AS ref
-               FROM
-                 UserToUserGroup UUG
-               WHERE userGroupId = ?) Users
-          INNER JOIN User U ON U.id = Users.id';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParams([$id, $id]);
-
-        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -167,28 +111,9 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE id = ? LIMIT 1');
+        $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Returns the item for given name
-     *
-     * @param  string  $name
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByName(string $name): QueryResult
-    {
-        $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE name = ? LIMIT 1');
-        $queryData->addParam($name);
 
         return $this->db->doSelect($queryData);
     }
@@ -203,8 +128,8 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function getAll(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setQuery('SELECT id, `name`, description FROM UserGroup ORDER BY name');
+        $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
 
         return $this->db->doSelect($queryData);
     }
@@ -225,10 +150,10 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
         }
 
         $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup WHERE id IN ('.$this->buildParamsFromArray($ids).')';
+            'SELECT id, `name` FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserProfileData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -251,8 +176,9 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM UserGroup WHERE id IN ('.$this->buildParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')');
         $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error while removing the profiles'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -269,16 +195,14 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
-        $queryData->setSelect('id, name, description');
-        $queryData->setFrom('UserGroup');
+        $queryData->setSelect('id, name');
+        $queryData->setFrom('UserProfile');
         $queryData->setOrder('name');
 
         if (!empty($itemSearchData->getSeachString())) {
-            $queryData->setWhere('name LIKE ? OR description LIKE ?');
+            $queryData->setWhere('name LIKE ?');
 
             $search = '%'.$itemSearchData->getSeachString().'%';
-            $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
@@ -293,26 +217,26 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     /**
      * Creates an item
      *
-     * @param  UserGroupData  $itemData
+     * @param  UserProfileData  $itemData
      *
      * @return int
-     * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function create($itemData): int
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated group name'));
+            throw new DuplicatedItemException(__u('Duplicated profile name'));
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO UserGroup SET `name` = ?, description = ?';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([$itemData->getName(), $itemData->getDescription()]);
-        $queryData->setOnErrorMessage(__u('Error while creating the group'));
+        $queryData->setQuery('INSERT INTO UserProfile SET `name` = ?, `profile` = ?');
+        $queryData->setParams([
+            $itemData->getName(),
+            serialize($itemData->getProfile()),
+        ]);
+        $queryData->setOnErrorMessage(__u('Error while creating the profile'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -320,7 +244,7 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  UserGroupData  $itemData
+     * @param  UserProfileData  $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -329,16 +253,16 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function checkDuplicatedOnAdd($itemData): bool
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?)');
+        $queryData->setQuery('SELECT `name` FROM UserProfile WHERE UPPER(`name`) = ?');
         $queryData->addParam($itemData->getName());
 
-        return $this->db->doSelect($queryData)->getNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
      * Updates an item
      *
-     * @param  UserGroupData  $itemData
+     * @param  UserProfileData  $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -348,17 +272,20 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     public function update($itemData): int
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Duplicated group name'));
+            throw new DuplicatedItemException(__u('Duplicated profile name'));
         }
 
+        $query = /** @lang SQL */
+            'UPDATE UserProfile SET `name` = ?, `profile` = ? WHERE id = ? LIMIT 1';
+
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE UserGroup SET `name` = ?, description = ? WHERE id = ? LIMIT 1');
+        $queryData->setQuery($query);
         $queryData->setParams([
             $itemData->getName(),
-            $itemData->getDescription(),
+            serialize($itemData->getProfile()),
             $itemData->getId(),
         ]);
-        $queryData->setOnErrorMessage(__u('Error while updating the group'));
+        $queryData->setOnErrorMessage(__u('Error while updating the profile'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -366,7 +293,7 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  UserGroupData  $itemData
+     * @param  UserProfileData  $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -374,9 +301,18 @@ final class UserGroupRepository extends Repository implements UserGroupRepositor
      */
     public function checkDuplicatedOnUpdate($itemData): bool
     {
+        $query = /** @lang SQL */
+            'SELECT `name`
+            FROM UserProfile
+            WHERE UPPER(`name`) = ?
+            AND id <> ?';
+
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?) AND id <> ?');
-        $queryData->setParams([$itemData->getName(), $itemData->getId()]);
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getId(),
+        ]);
+        $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData)->getNumRows() > 0;
     }

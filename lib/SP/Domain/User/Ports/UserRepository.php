@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\User\Ports;
 
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Services\UpdatePassRequest;
@@ -37,7 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\User\Repositories
  */
-interface UserRepositoryInterface extends RepositoryInterface
+interface UserRepository extends Repository
 {
     /**
      * Updates an user's pass

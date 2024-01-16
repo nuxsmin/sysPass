@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,12 +34,12 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserProfileRepositoryInterface;
+use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserProfileRepository;
+use SP\Infrastructure\User\Repositories\UserProfileBaseRepository;
 use SP\Util\Util;
 
 use function SP\__u;
@@ -53,9 +53,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
 {
     use ServiceItemTrait;
 
-    protected UserProfileRepository $userProfileRepository;
+    protected UserProfileBaseRepository $userProfileRepository;
 
-    public function __construct(Application $application, UserProfileRepositoryInterface $userProfileRepository)
+    public function __construct(Application $application, UserProfileRepository $userProfileRepository)
     {
         parent::__construct($application);
 

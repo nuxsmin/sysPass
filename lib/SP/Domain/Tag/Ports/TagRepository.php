@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,28 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\User\Ports;
+namespace SP\Domain\Tag\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class UserProfileRepository
+ * Class TagRepository
  *
- * @package SP\Infrastructure\User\Repositories
+ * @package SP\Infrastructure\Common\Repositories\Tag
  */
-interface UserProfileRepositoryInterface extends RepositoryInterface
+interface TagRepository extends Repository
 {
     /**
-     * Obtener el nombre de los usuarios que usan un perfil.
+     * Returns the item for given id
      *
-     * @param $id int El id del perfil
+     * @param  string  $name
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsersForProfile(int $id): QueryResult;
+    public function getByName(string $name): QueryResult;
 }

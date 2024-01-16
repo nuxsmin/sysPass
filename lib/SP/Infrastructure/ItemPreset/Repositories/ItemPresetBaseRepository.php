@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,11 +27,11 @@ namespace SP\Infrastructure\ItemPreset\Repositories;
 use RuntimeException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\ItemPreset;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\ItemPreset\Ports\ItemPresetRepositoryInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -41,7 +41,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Account\Repositories
  */
-class ItemPresetRepository extends Repository implements RepositoryInterface, ItemPresetRepositoryInterface
+class ItemPresetBaseRepository extends BaseRepository implements Repository, ItemPresetRepository
 {
     use RepositoryItemTrait;
 

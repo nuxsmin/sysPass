@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,11 +32,11 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Notification\Ports\NotificationRepositoryInterface;
+use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Notification\Repositories\NotificationRepository;
+use SP\Infrastructure\Notification\Repositories\NotificationBaseRepository;
 
 /**
  * Class NotificationService
@@ -45,9 +45,9 @@ use SP\Infrastructure\Notification\Repositories\NotificationRepository;
  */
 final class NotificationService extends Service implements NotificationServiceInterface
 {
-    protected NotificationRepository $notificationRepository;
+    protected NotificationBaseRepository $notificationRepository;
 
-    public function __construct(Application $application, NotificationRepositoryInterface $notificationRepository)
+    public function __construct(Application $application, NotificationRepository $notificationRepository)
     {
         parent::__construct($application);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -46,8 +46,8 @@ abstract class AccountHelperBase extends HelperBase
     protected ?int                     $actionId = null;
     protected AccountActionsHelper     $accountActionsHelper;
     protected bool                     $isView   = false;
-    protected Acl                      $acl;
-    private MasterPassServiceInterface $masterPassService;
+    protected Acl             $acl;
+    private MasterPassService $masterPassService;
 
     public function __construct(
         Application          $application,
@@ -55,7 +55,7 @@ abstract class AccountHelperBase extends HelperBase
         RequestInterface     $request,
         AclInterface         $acl,
         AccountActionsHelper $accountActionsHelper,
-        MasterPassServiceInterface $masterPassService
+        MasterPassService $masterPassService
     ) {
         parent::__construct($application, $template, $request);
 

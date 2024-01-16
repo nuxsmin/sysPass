@@ -35,8 +35,8 @@ use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
-use SP\Domain\Crypt\Services\MasterPassService;
+use SP\Domain\Crypt\Ports\MasterPassService;
+use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\Task;
@@ -55,14 +55,14 @@ final class SaveController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private MasterPassServiceInterface $masterPassService;
-    private ConfigService $configService;
+    private MasterPassService $masterPassService;
+    private ConfigService     $configService;
 
     public function __construct(
-        Application $application,
+        Application       $application,
         SimpleControllerHelper $simpleControllerHelper,
-        MasterPassServiceInterface $masterPassService,
-        ConfigService $configService
+        MasterPassService $masterPassService,
+        ConfigService     $configService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -150,7 +150,7 @@ final class SaveController extends SimpleControllerBase
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
                     $newMasterPass,
-                    $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH),
+                    $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH),
                     $task
                 );
 

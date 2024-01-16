@@ -30,8 +30,8 @@ use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -43,7 +43,7 @@ use function SP\__u;
  *
  * @template T of AuthTokenModel
  */
-final class AuthToken extends Repository implements AuthTokenRepository
+final class AuthToken extends BaseRepository implements AuthTokenRepository
 {
     use RepositoryItemTrait;
 

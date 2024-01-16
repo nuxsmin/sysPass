@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -49,7 +49,7 @@ use function SP\__u;
  *
  * @package Services
  */
-final class Account extends Repository implements AccountRepository
+final class Account extends BaseRepository implements AccountRepository
 {
     use RepositoryItemTrait;
 

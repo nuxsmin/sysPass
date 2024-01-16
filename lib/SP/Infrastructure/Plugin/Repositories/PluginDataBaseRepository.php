@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Plugin\Repositories;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -37,7 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Infrastructure\Plugin\Repositories
  */
-final class PluginDataRepository extends Repository implements PluginDataRepositoryInterface
+final class PluginDataBaseRepository extends BaseRepository implements PluginDataRepositoryInterface
 {
     use RepositoryItemTrait;
 

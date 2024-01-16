@@ -41,7 +41,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -64,7 +64,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         RequestInterface                  $request,
         AclInterface                      $acl,
         AccountActionsHelper              $accountActionsHelper,
-        MasterPassServiceInterface        $masterPassService,
+        MasterPassService       $masterPassService,
         private AccountHistoryService     $accountHistoryService,
         private AccountAclService         $accountAclService,
         private CategoryService $categoryService,

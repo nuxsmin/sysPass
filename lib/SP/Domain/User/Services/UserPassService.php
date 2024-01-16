@@ -36,9 +36,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassServiceInterface;
-use SP\Domain\User\Ports\UserRepositoryInterface;
+use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\User\Repositories\UserRepository;
+use SP\Infrastructure\User\Repositories\UserBaseRepository;
 
 /**
  * Class UserPassService
@@ -59,13 +59,13 @@ final class UserPassService extends Service implements UserPassServiceInterface
     public const MPASS_CHECKOLD = 4;
 
     private ConfigDataInterface $configData;
-    private UserRepository      $userRepository;
+    private UserBaseRepository $userRepository;
     private ConfigService       $configService;
 
     public function __construct(
-        Application   $application,
-        UserRepositoryInterface $userRepository,
-        ConfigService $configService
+        Application    $application,
+        UserRepository $userRepository,
+        ConfigService  $configService
     ) {
         parent::__construct($application);
 

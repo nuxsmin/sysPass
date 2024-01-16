@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,28 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Tag\Ports;
+namespace SP\Domain\CustomField\Ports;
 
-use SP\Domain\Common\Ports\RepositoryInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Ports\Repository;
 
 /**
- * Class TagRepository
+ * Class CustomFieldTypeRepository
  *
- * @package SP\Infrastructure\Common\Repositories\Tag
+ * @package SP\Infrastructure\CustomField\Repositories
  */
-interface TagRepositoryInterface extends RepositoryInterface
+interface CustomFieldTypeRepository extends Repository
 {
-    /**
-     * Returns the item for given id
-     *
-     * @param  string  $name
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getByName(string $name): QueryResult;
 }

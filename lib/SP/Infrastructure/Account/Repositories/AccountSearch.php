@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchRepository;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -42,7 +42,7 @@ use SP\Util\Filter;
 /**
  * Class AccountSearchRepository
  */
-final class AccountSearch extends Repository implements AccountSearchRepository
+final class AccountSearch extends BaseRepository implements AccountSearchRepository
 {
     private readonly SelectInterface $query;
 
@@ -98,7 +98,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      *
      * @return QueryResult
      */
@@ -124,7 +124,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     }
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
     private function filterByText(AccountSearchFilterDto $accountSearchFilter): void
@@ -149,7 +149,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     }
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
     private function filterByCategory(AccountSearchFilterDto $accountSearchFilter): void
@@ -166,7 +166,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     }
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
     private function filterByClient(AccountSearchFilterDto $accountSearchFilter): void
@@ -183,7 +183,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     }
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
     private function filterByFavorite(AccountSearchFilterDto $accountSearchFilter): void
@@ -202,7 +202,7 @@ final class AccountSearch extends Repository implements AccountSearchRepository
     }
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $accountSearchFilter
+     * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
     private function filterByTags(AccountSearchFilterDto $accountSearchFilter): void

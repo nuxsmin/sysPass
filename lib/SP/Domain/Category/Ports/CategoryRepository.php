@@ -27,7 +27,7 @@ namespace SP\Domain\Category\Ports;
 use Exception;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Common\Ports\RepositoryInterface;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of Category
  */
-interface CategoryRepository extends RepositoryInterface
+interface CategoryRepository extends Repository
 {
     /**
      * Creates an item

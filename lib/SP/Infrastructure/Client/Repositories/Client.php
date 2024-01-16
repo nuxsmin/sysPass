@@ -31,8 +31,8 @@ use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\Repository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -44,7 +44,7 @@ use function SP\__u;
  *
  * @template T of ClientModel
  */
-final class Client extends Repository implements ClientRepository
+final class Client extends BaseRepository implements ClientRepository
 {
     use RepositoryItemTrait;
 

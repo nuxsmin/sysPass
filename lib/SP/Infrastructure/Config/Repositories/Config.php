@@ -28,7 +28,7 @@ use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Config\Ports\ConfigRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\Repository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -37,7 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of ConfigModel
  */
-final class Config extends Repository implements ConfigRepository
+final class Config extends BaseRepository implements ConfigRepository
 {
     public const TABLE = 'Config';
 

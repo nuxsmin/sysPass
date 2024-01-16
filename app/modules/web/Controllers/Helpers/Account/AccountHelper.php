@@ -49,7 +49,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Ports\MasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -76,9 +76,9 @@ final class AccountHelper extends AccountHelperBase
     private AccountService              $accountService;
     private AccountHistoryService       $accountHistoryService;
     private PublicLinkService           $publicLinkService;
-    private ItemPresetServiceInterface  $itemPresetService;
-    private MasterPassServiceInterface  $masterPassService;
-    private AccountAclService      $accountAclService;
+    private ItemPresetServiceInterface $itemPresetService;
+    private MasterPassService          $masterPassService;
+    private AccountAclService          $accountAclService;
     private CategoryService $categoryService;
     private ClientService   $clientService;
     private CustomFieldServiceInterface $customFieldService;
@@ -97,7 +97,7 @@ final class AccountHelper extends AccountHelperBase
         AccountHistoryService     $accountHistoryService,
         PublicLinkService         $publicLinkService,
         ItemPresetServiceInterface  $itemPresetService,
-        MasterPassServiceInterface  $masterPassService,
+        MasterPassService         $masterPassService,
         AccountActionsHelper        $accountActionsHelper,
         AccountAclService         $accountAclService,
         CategoryService           $categoryService,
