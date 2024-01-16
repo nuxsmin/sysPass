@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Api\Ports\ApiRequestInterface;
+use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -73,7 +73,7 @@ final class Bootstrap extends BootstrapBase
             try {
                 logger('API route');
 
-                $apiRequest = $this->createObjectFor(ApiRequestInterface::class);
+                $apiRequest = $this->createObjectFor(ApiRequestService::class);
 
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,12 +26,11 @@ namespace SP\Modules\Api\Controllers\Account;
 
 
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountAdapterInterface;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
@@ -54,7 +53,7 @@ abstract class AccountBase extends ControllerBase
     public function __construct(
         Application                 $application,
         Klein                       $router,
-        ApiServiceInterface         $apiService,
+        ApiService           $apiService,
         AclInterface                $acl,
         AccountPresetService $accountPresetService,
         AccountService       $accountService,

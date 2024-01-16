@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use ReflectionClass;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
-use SP\Domain\Api\Ports\ApiRequestInterface;
+use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
@@ -63,9 +63,9 @@ use function PHPUnit\Framework\onConsecutiveCalls;
 class ApiServiceTest extends UnitaryTestCase
 {
 
-    private TrackServiceInterface|MockObject       $trackService;
-    private ApiRequestInterface|MockObject         $apiRequest;
-    private AuthTokenServiceInterface|MockObject   $authTokenService;
+    private TrackServiceInterface|MockObject     $trackService;
+    private ApiRequestService|MockObject         $apiRequest;
+    private AuthTokenServiceInterface|MockObject $authTokenService;
     private UserServiceInterface|MockObject        $userService;
     private MockObject|UserProfileServiceInterface $userProfileService;
     private Api $apiService;
@@ -196,7 +196,7 @@ class ApiServiceTest extends UnitaryTestCase
      */
     public function testGetParamWithHelp()
     {
-        $apiRequest = $this->createMock(ApiRequestInterface::class);
+        $apiRequest = $this->createMock(ApiRequestService::class);
         $apiRequest->method('exists')->willReturn(false);
         $apiRequest->method('getMethod')->willReturn('account/view');
 
@@ -298,7 +298,7 @@ class ApiServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->trackService = $this->createMock(TrackServiceInterface::class);
-        $this->apiRequest = $this->createMock(ApiRequestInterface::class);
+        $this->apiRequest = $this->createMock(ApiRequestService::class);
         $this->authTokenService = $this->createMock(AuthTokenServiceInterface::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
  *
  * @package SP\Domain\Common\Services\ApiService
  */
-interface ApiServiceInterface
+interface ApiService
 {
     /**
      * Sets up API

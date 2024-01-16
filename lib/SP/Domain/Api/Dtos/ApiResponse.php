@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Api\Services;
+namespace SP\Domain\Api\Dtos;
 
 /**
  * Class ApiResponse
@@ -37,36 +37,37 @@ final class ApiResponse
     /**
      * ApiResponse constructor.
      *
-     * @param  mixed  $result
-     * @param  int  $resultCode
-     * @param  string|null  $resultMessage
-     * @param  int|null  $itemId
+     * @param mixed $result
+     * @param int $resultCode
+     * @param string|null $resultMessage
+     * @param int|null $itemId
      */
     public function __construct(
-        private mixed $result,
-        private int $resultCode,
-        private ?string $resultMessage = null,
-        private ?int $itemId = null
-    ) {}
+        private readonly mixed   $result,
+        private readonly int     $resultCode,
+        private readonly ?string $resultMessage = null,
+        private readonly ?int    $itemId = null
+    ) {
+    }
 
     /**
-     * @param  mixed  $result
-     * @param  int|null  $itemId
-     * @param  string|null  $message
+     * @param mixed $result
+     * @param int|null $itemId
+     * @param string|null $message
      *
      * @return ApiResponse
      */
     public static function makeSuccess(
         mixed $result,
         string $message = null,
-        ?int $itemId = null,
+        ?int  $itemId = null,
     ): ApiResponse {
         return new self($result, self::RESULT_SUCCESS, $message, $itemId);
     }
 
     /**
-     * @param  mixed  $result
-     * @param  string|null  $message
+     * @param mixed $result
+     * @param string|null $message
      *
      * @return ApiResponse
      */
@@ -83,11 +84,11 @@ final class ApiResponse
     public function getResponse(): array
     {
         return [
-            'itemId'        => $this->itemId,
-            'result'        => $this->result,
-            'resultCode'    => $this->resultCode,
+            'itemId' => $this->itemId,
+            'result' => $this->result,
+            'resultCode' => $this->resultCode,
             'resultMessage' => $this->resultMessage,
-            'count'         => is_array($this->result) ? count($this->result) : null,
+            'count' => is_array($this->result) ? count($this->result) : null,
         ];
     }
 }

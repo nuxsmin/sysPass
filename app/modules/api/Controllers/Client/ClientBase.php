@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,9 +26,8 @@ namespace SP\Modules\Api\Controllers\Client;
 
 
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Client\Ports\ClientAdapterInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -50,7 +49,7 @@ abstract class ClientBase extends ControllerBase
     public function __construct(
         Application            $application,
         Klein                  $router,
-        ApiServiceInterface    $apiService,
+        ApiService   $apiService,
         AclInterface $acl,
         ClientServiceInterface $clientService,
         ClientAdapterInterface $clientAdapter

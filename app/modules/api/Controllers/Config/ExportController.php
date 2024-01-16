@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,12 +27,11 @@ namespace SP\Modules\Api\Controllers\Config;
 
 use Exception;
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Ports\ApiServiceInterface;
-use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -51,10 +50,10 @@ final class ExportController extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application         $application,
-        Klein               $router,
-        ApiServiceInterface $apiService,
-        AclInterface        $acl,
+        Application  $application,
+        Klein        $router,
+        ApiService   $apiService,
+        AclInterface $acl,
         XmlExportServiceInterface $xmlExportService
     ) {
         parent::__construct($application, $router, $apiService, $acl);

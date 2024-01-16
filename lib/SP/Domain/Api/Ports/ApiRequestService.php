@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,14 @@
 
 namespace SP\Domain\Api\Ports;
 
+use SP\Domain\Api\Services\ApiRequestException;
+
 /**
  * Class ApiRequest
  *
  * @package SP\Domain\Api\Services
  */
-interface ApiRequestInterface
+interface ApiRequestService
 {
     public const PHP_REQUEST_STREAM = 'php://input';
 
@@ -38,23 +40,23 @@ interface ApiRequestInterface
      *
      * It will read the 'php://input' strean and get the contents into a JSON format
      *
-     * @param  string  $stream
+     * @param string $stream
      *
-     * @return ApiRequestInterface
-     * @throws \SP\Domain\Api\Services\ApiRequestException
+     * @return ApiRequestService
+     * @throws ApiRequestException
      */
-    public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestInterface;
+    public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestService;
 
     /**
-     * @param  string  $key
-     * @param  mixed|null  $default
+     * @param string $key
+     * @param mixed|null $default
      *
      * @return mixed
      */
     public function get(string $key, mixed $default = null): mixed;
 
     /**
-     * @param  string  $key
+     * @param string $key
      *
      * @return bool
      */

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,8 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
-use SP\Domain\Api\Ports\ApiRequestInterface;
-use SP\Domain\Api\Ports\ApiServiceInterface;
+use SP\Domain\Api\Ports\ApiRequestService;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Auth\Services\AuthToken;
@@ -59,7 +59,7 @@ use function SP\processException;
 /**
  * Class Api
  */
-final class Api extends Service implements ApiServiceInterface
+final class Api extends Service implements ApiService
 {
     private TrackRequest    $trackRequest;
     private ?AuthTokenModel $authToken = null;
@@ -72,7 +72,7 @@ final class Api extends Service implements ApiServiceInterface
     public function __construct(
         Application                                  $application,
         private readonly TrackServiceInterface       $trackService,
-        private readonly ApiRequestInterface         $apiRequest,
+        private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenServiceInterface   $authTokenService,
         private readonly UserServiceInterface        $userService,
         private readonly UserProfileServiceInterface $userProfileService

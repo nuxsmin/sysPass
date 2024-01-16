@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Domain\Api\Services;
 
 use Exception;
+use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 
@@ -43,8 +44,8 @@ final class JsonRpcResponse
     public const SERVER_ERROR     = -32000;
 
     /**
-     * @param  ApiResponse  $apiResponse
-     * @param  int  $id
+     * @param ApiResponse $apiResponse
+     * @param int $id
      *
      * @return string
      * @throws SPException
@@ -54,9 +55,9 @@ final class JsonRpcResponse
         int $id
     ): string {
         return JsonResponse::buildJsonFrom([
-            'jsonrpc' => '2.0',
-            'result'  => $apiResponse->getResponse(),
-            'id'      => $id,
+                                               'jsonrpc' => '2.0',
+                                               'result' => $apiResponse->getResponse(),
+                                               'id' => $id,
                                            ], JSON_UNESCAPED_SLASHES);
     }
 
@@ -68,27 +69,27 @@ final class JsonRpcResponse
     }
 
     /**
-     * @param  string  $message
-     * @param  int  $code
-     * @param  int  $id
-     * @param  mixed|null  $data
+     * @param string $message
+     * @param int $code
+     * @param int $id
+     * @param mixed|null $data
      *
      * @return string
      */
     public static function getResponseError(
         string $message,
-        int $code,
-        int $id,
-        $data = null
+        int   $code,
+        int   $id,
+        mixed $data = null
     ): string {
         return json_encode([
-            'jsonrpc' => '2.0',
-            'error'   => [
-                'message' => __($message),
-                'code'    => $code,
-                'data'    => $data,
-            ],
-            'id'      => $id,
-        ], JSON_PARTIAL_OUTPUT_ON_ERROR);
+                               'jsonrpc' => '2.0',
+                               'error' => [
+                                   'message' => __($message),
+                                   'code' => $code,
+                                   'data' => $data,
+                               ],
+                               'id' => $id,
+                           ], JSON_PARTIAL_OUTPUT_ON_ERROR);
     }
 }

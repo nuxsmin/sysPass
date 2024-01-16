@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,8 +31,8 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\EventDispatcher;
-use SP\Domain\Api\Ports\ApiServiceInterface;
-use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -52,9 +52,9 @@ abstract class ControllerBase
 
     protected string              $controllerName;
     protected ContextInterface    $context;
-    protected EventDispatcher     $eventDispatcher;
-    protected ApiServiceInterface $apiService;
-    protected Klein               $router;
+    protected EventDispatcher $eventDispatcher;
+    protected ApiService      $apiService;
+    protected Klein           $router;
     protected ConfigDataInterface $configData;
     protected Manager             $fractal;
     protected Acl                 $acl;
@@ -63,8 +63,8 @@ abstract class ControllerBase
 
     public function __construct(
         Application $application,
-        Klein $router,
-        ApiServiceInterface $apiService,
+        Klein       $router,
+        ApiService  $apiService,
         AclInterface $acl
     ) {
         $this->context = $application->getContext();

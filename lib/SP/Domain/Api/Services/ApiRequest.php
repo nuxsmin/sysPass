@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,8 @@
 namespace SP\Domain\Api\Services;
 
 use JsonException;
-use SP\Domain\Api\Ports\ApiRequestInterface;
+use SP\Domain\Api\Dtos\ApiRequestData;
+use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
@@ -35,25 +36,27 @@ use function SP\__u;
  *
  * @package SP\Domain\Api\Services
  */
-final class ApiRequest implements ApiRequestInterface
+final class ApiRequest implements ApiRequestService
 {
     protected ?string         $method = null;
     protected ?int            $id     = null;
     protected ?ApiRequestData $data   = null;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Build the ApiRequest from the request itself.
      *
      * It will read the 'php://input' strean and get the contents into a JSON format
      *
-     * @param  string  $stream
+     * @param string $stream
      *
-     * @return ApiRequestInterface
+     * @return ApiRequestService
      * @throws ApiRequestException
      */
-    public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestInterface
+    public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestService
     {
         $content = file_get_contents($stream);
 
@@ -72,12 +75,12 @@ final class ApiRequest implements ApiRequestInterface
     /**
      * Build the ApiRequest from a JSON data structure.
      *
-     * @param  string  $json
+     * @param string $json
      *
-     * @return ApiRequestInterface
+     * @return ApiRequestService
      * @throws ApiRequestException
      */
-    private static function buildFromJson(string $json): ApiRequestInterface
+    private static function buildFromJson(string $json): ApiRequestService
     {
         try {
             $data = json_decode(
@@ -119,8 +122,8 @@ final class ApiRequest implements ApiRequestInterface
     }
 
     /**
-     * @param  string  $key
-     * @param  mixed|null  $default
+     * @param string $key
+     * @param mixed|null $default
      *
      * @return mixed
      */
@@ -130,7 +133,7 @@ final class ApiRequest implements ApiRequestInterface
     }
 
     /**
-     * @param  string  $key
+     * @param string $key
      *
      * @return bool
      */

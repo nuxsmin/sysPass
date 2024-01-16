@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Client;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;

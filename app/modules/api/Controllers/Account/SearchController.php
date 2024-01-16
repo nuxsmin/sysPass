@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,8 @@ use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Api\Ports\ApiServiceInterface;
-use SP\Domain\Api\Services\ApiResponse;
+use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -45,10 +45,10 @@ final class SearchController extends ControllerBase
     private AccountSearchService $accountSearchService;
 
     public function __construct(
-        Application         $application,
-        Klein               $router,
-        ApiServiceInterface $apiService,
-        AclInterface        $acl,
+        Application  $application,
+        Klein        $router,
+        ApiService   $apiService,
+        AclInterface $acl,
         AccountSearchService $accountSearchService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
@@ -79,7 +79,7 @@ final class SearchController extends ControllerBase
     }
 
     /**
-     * @return \SP\Domain\Account\Dtos\AccountSearchFilterDto
+     * @return AccountSearchFilterDto
      * @throws ServiceException
      */
     private function buildAccountSearchFilter(): AccountSearchFilterDto

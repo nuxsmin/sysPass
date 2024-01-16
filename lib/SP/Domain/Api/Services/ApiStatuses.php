@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,9 @@
 
 namespace SP\Domain\Api\Services;
 
+/**
+ * Class ApiStatuses
+ */
 enum ApiStatuses: int
 {
     case INITIALIZED  = 0;

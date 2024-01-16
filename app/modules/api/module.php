@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Domain\Api\Ports\ApiRequestInterface;
+use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -36,7 +36,7 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
-    ApiRequestInterface::class => factory([ApiRequest::class, 'buildFromRequest']),
+    ApiRequestService::class => factory([ApiRequest::class, 'buildFromRequest']),
     BootstrapInterface::class => autowire(Bootstrap::class),
     ModuleInterface::class => autowire(Init::class)
 ];
