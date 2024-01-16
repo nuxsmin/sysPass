@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Client\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -303,11 +303,11 @@ final class ClientRepository extends Repository implements ClientRepositoryInter
     /**
      * Return the clients visible for the current user
      *
-     * @param AccountFilterUserInterface $accountFilterUser
+     * @param AccountFilterBuilder $accountFilterUser
      *
      * @return QueryResult
      */
-    public function getAllForFilter(AccountFilterUserInterface $accountFilterUser): QueryResult
+    public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult
     {
         $query = $accountFilterUser
             ->buildFilter()

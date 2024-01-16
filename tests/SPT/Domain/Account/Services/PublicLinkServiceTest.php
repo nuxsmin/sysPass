@@ -29,10 +29,10 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
-use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkRepository;
+use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\ContextInterface;
@@ -54,11 +54,10 @@ use SPT\UnitaryTestCase;
 class PublicLinkServiceTest extends UnitaryTestCase
 {
 
-    private PublicLinkRepositoryInterface|MockObject $publicLinkRepository;
-    private RequestInterface|MockObject              $request;
-    private MockObject|PublicLinkService             $publicLinkService;
-    private CryptInterface|MockObject                $crypt;
-    private MockObject|AccountServiceInterface       $accountService;
+    private PublicLinkRepository|MockObject $publicLinkRepository;
+    private PublicLink                      $publicLink;
+    private CryptInterface|MockObject       $crypt;
+    private MockObject|AccountService       $accountService;
 
     /**
      * @throws QueryException
@@ -67,20 +66,20 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testAddLinkView()
     {
-        $publicLink = new PublicLink(['hash' => self::$faker->sha1]);
+        $publicLink = new PublicLinkModel(['hash' => self::$faker->sha1]);
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('addLinkView')
             ->with(
-                new Callback(function (PublicLink $publicLinkData) {
+                new Callback(function (PublicLinkModel $publicLinkData) {
                     $useInfo = unserialize($publicLinkData->getUseInfo(), ['allowed_classes' => false]);
 
                     return is_array($useInfo) && count($useInfo) === 1;
                 })
             );
 
-        $this->publicLinkService->addLinkView($publicLink);
+        $this->publicLink->addLinkView($publicLink);
     }
 
     /**
@@ -90,12 +89,12 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testAddLinkViewWithoutHash()
     {
-        $publicLinkData = new PublicLink();
+        $publicLinkData = new PublicLinkModel();
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Public link hash not set');
 
-        $this->publicLinkService->addLinkView($publicLinkData);
+        $this->publicLink->addLinkView($publicLinkData);
     }
 
     /**
@@ -119,20 +118,20 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ),
             'hash' => self::$faker->sha1
         ];
-        $publicLink = new PublicLink($properties);
+        $publicLink = new PublicLinkModel($properties);
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('addLinkView')
             ->with(
-                new Callback(function (PublicLink $publicLinkData) {
+                new Callback(function (PublicLinkModel $publicLinkData) {
                     $useInfo = unserialize($publicLinkData->getUseInfo(), ['allowed_classes' => false]);
 
                     return is_array($useInfo) && count($useInfo) === 2;
                 })
             );
 
-        $this->publicLinkService->addLinkView($publicLink);
+        $this->publicLink->addLinkView($publicLink);
     }
 
     /**
@@ -150,7 +149,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->with($hash)
             ->willReturn($result);
 
-        $actual = $this->publicLinkService->getByHash($hash);
+        $actual = $this->publicLink->getByHash($hash);
 
         $this->assertEquals($publicLink, $actual);
     }
@@ -171,7 +170,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Link not found');
 
-        $this->publicLinkService->getByHash($hash);
+        $this->publicLink->getByHash($hash);
     }
 
     /**
@@ -189,7 +188,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn(10);
 
-        $actual = $this->publicLinkService->deleteByIdBatch($ids);
+        $actual = $this->publicLink->deleteByIdBatch($ids);
 
         $this->assertEquals(count($ids), $actual);
     }
@@ -212,12 +211,12 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while removing the links');
 
-        $this->publicLinkService->deleteByIdBatch($ids);
+        $this->publicLink->deleteByIdBatch($ids);
     }
 
     public function testCreateLinkHash()
     {
-        $this->assertNotEmpty(PublicLinkService::createLinkHash());
+        $this->assertNotEmpty(PublicLink::createLinkHash());
     }
 
     /**
@@ -234,7 +233,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->method('update')
             ->with($publicLinkList);
 
-        $this->publicLinkService->update($publicLinkList);
+        $this->publicLink->update($publicLinkList);
     }
 
     /**
@@ -250,7 +249,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->method('delete')
             ->with($id);
 
-        $this->publicLinkService->delete($id);
+        $this->publicLink->delete($id);
     }
 
     public function testSearch()
@@ -262,7 +261,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->method('search')
             ->with($itemSearchData);
 
-        $this->publicLinkService->search($itemSearchData);
+        $this->publicLink->search($itemSearchData);
     }
 
     /**
@@ -280,7 +279,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->with($itemId)
             ->willReturn(new QueryResult([new Simple($publicLinkData->toArray())]));
 
-        $actual = $this->publicLinkService->getHashForItem($itemId);
+        $actual = $this->publicLink->getHashForItem($itemId);
 
         $this->assertEquals($publicLinkData, $actual);
     }
@@ -302,7 +301,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Link not found');
 
-        $this->publicLinkService->getHashForItem($itemId);
+        $this->publicLink->getHashForItem($itemId);
     }
 
     /**
@@ -329,7 +328,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('refresh')
             ->with(
-                new Callback(function (PublicLink $actual) use ($publicLinkData) {
+                new Callback(function (PublicLinkModel $actual) use ($publicLinkData) {
                     $filter = ['hash', 'dateExpire', 'maxCountViews', 'data'];
 
                     return $actual->toArray(null, $filter) === $publicLinkData->toArray(null, $filter)
@@ -359,7 +358,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             )
             ->willReturn(self::$faker->password);
 
-        $actual = $this->publicLinkService->refresh($id);
+        $actual = $this->publicLink->refresh($id);
 
         $this->assertTrue($actual);
     }
@@ -386,7 +385,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Link not found');
 
-        $this->publicLinkService->refresh($id);
+        $this->publicLink->refresh($id);
     }
 
     /**
@@ -397,7 +396,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
     {
         $hash = self::$faker->sha1;
 
-        $actual = $this->publicLinkService->getPublicLinkKey($hash);
+        $actual = $this->publicLink->getPublicLinkKey($hash);
 
         $this->assertEquals($hash, $actual->getHash());
         $this->assertNotEmpty($actual->getKey());
@@ -409,7 +408,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
      */
     public function testGetPublicLinkKeyWithoutHash()
     {
-        $actual = $this->publicLinkService->getPublicLinkKey();
+        $actual = $this->publicLink->getPublicLinkKey();
 
         $this->assertNotEmpty($actual->getHash());
         $this->assertNotEmpty($actual->getKey());
@@ -431,7 +430,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->with($itemId)
             ->willReturn(new QueryResult([new Simple($builPublicLinkList->toArray())]));
 
-        $actual = $this->publicLinkService->getById($itemId);
+        $actual = $this->publicLink->getById($itemId);
 
         $this->assertEquals($builPublicLinkList->toArray(null, ['clientName']), $actual->toArray());
     }
@@ -454,7 +453,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Link not found');
 
-        $this->publicLinkService->getById($itemId);
+        $this->publicLink->getById($itemId);
     }
 
     /**
@@ -465,7 +464,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Not implemented');
 
-        $this->publicLinkService->getAll();
+        $this->publicLink->getAll();
     }
 
     public function testGetUseInfo()
@@ -490,7 +489,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
                 ->method('isHttps')
                 ->willReturn(true);
 
-        $actual = PublicLinkService::getUseInfo($hash, $request);
+        $actual = PublicLink::getUseInfo($hash, $request);
 
         $this->assertArrayHasKey('who', $actual);
         $this->assertArrayHasKey('time', $actual);
@@ -520,7 +519,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('create')
             ->with(
-                new Callback(function (PublicLink $actual) use ($publicLinkData) {
+                new Callback(function (PublicLinkModel $actual) use ($publicLinkData) {
                     $filter = ['hash', 'dateExpire', 'maxCountViews', 'data'];
 
                     return $actual->toArray(null, $filter) === $publicLinkData->toArray(null, $filter)
@@ -550,7 +549,7 @@ class PublicLinkServiceTest extends UnitaryTestCase
             )
             ->willReturn(self::$faker->password);
 
-        $actual = $this->publicLinkService->create($publicLinkData);
+        $actual = $this->publicLink->create($publicLinkData);
 
         $this->assertEquals($result->getLastId(), $actual);
     }
@@ -559,32 +558,32 @@ class PublicLinkServiceTest extends UnitaryTestCase
     {
         $expireDate = time() + $this->config->getConfigData()->getPublinksMaxTime();
 
-        $this->assertEqualsWithDelta($expireDate, PublicLinkService::calcDateExpire($this->config), 2);
+        $this->assertEqualsWithDelta($expireDate, PublicLink::calcDateExpire($this->config), 2);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->publicLinkRepository = $this->createMock(PublicLinkRepositoryInterface::class);
-        $this->request = $this->createMock(RequestInterface::class);
-        $this->request->method('getClientAddress')
-                      ->willReturn(self::$faker->ipv4);
-        $this->request->method('getHeader')
-                      ->willReturn(self::$faker->userAgent);
-        $this->request->method('isHttps')
-                      ->willReturn(self::$faker->boolean);
+        $this->publicLinkRepository = $this->createMock(PublicLinkRepository::class);
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('getClientAddress')
+                ->willReturn(self::$faker->ipv4);
+        $request->method('getHeader')
+                ->willReturn(self::$faker->userAgent);
+        $request->method('isHttps')
+                ->willReturn(self::$faker->boolean);
 
-        $this->accountService = $this->createMock(AccountServiceInterface::class);
+        $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, self::$faker->password);
 
-        $this->publicLinkService =
-            new PublicLinkService(
+        $this->publicLink =
+            new PublicLink(
                 $this->application,
                 $this->publicLinkRepository,
-                $this->request,
+                $request,
                 $this->accountService,
                 $this->crypt
             );

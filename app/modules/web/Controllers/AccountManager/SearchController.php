@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountSearchServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Ports\AccountSearchService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -53,18 +53,18 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountServiceInterface       $accountService;
-    private AccountSearchServiceInterface $accountSearchService;
-    private AccountGrid                   $accountGrid;
+    private AccountService       $accountService;
+    private AccountSearchService $accountSearchService;
+    private AccountGrid          $accountGrid;
 
     /**
      * @throws SessionTimeout
      * @throws AuthException
      */
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountSearchServiceInterface $accountSearchService,
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        AccountSearchService $accountSearchService,
         Helpers\Grid\AccountGrid $accountGrid
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -109,9 +109,9 @@ final class SearchController extends ControllerBase
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        $filter = AccountSearchFilter::build($itemSearchData->getSeachString())
-            ->setLimitCount($itemSearchData->getLimitCount())
-            ->setLimitStart($itemSearchData->getLimitStart());
+        $filter = AccountSearchFilterDto::build($itemSearchData->getSeachString())
+                                        ->setLimitCount($itemSearchData->getLimitCount())
+                                        ->setLimitStart($itemSearchData->getLimitStart());
 
         return $this->accountGrid->updatePager(
             $this->accountGrid->getGrid($this->accountSearchService->getByFilter($filter)),

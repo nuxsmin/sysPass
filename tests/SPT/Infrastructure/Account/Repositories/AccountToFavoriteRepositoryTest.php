@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountToFavoriteRepository;
+use SP\Infrastructure\Account\Repositories\AccountToFavorite;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -44,7 +44,7 @@ use SPT\UnitaryTestCase;
 class AccountToFavoriteRepositoryTest extends UnitaryTestCase
 {
     private MockObject|DatabaseInterface $database;
-    private AccountToFavoriteRepository  $accountToFavoriteRepository;
+    private AccountToFavorite $accountToFavorite;
 
     public function testGetForUserId()
     {
@@ -65,7 +65,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountToFavoriteRepository->getForUserId($id);
+        $this->accountToFavorite->getForUserId($id);
     }
 
     public function testDelete()
@@ -93,7 +93,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToFavoriteRepository->delete($accountId, $userId));
+        $this->assertTrue($this->accountToFavorite->delete($accountId, $userId));
     }
 
     /**
@@ -124,7 +124,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertEquals($expected->getLastId(), $this->accountToFavoriteRepository->add($accountId, $userId));
+        $this->assertEquals($expected->getLastId(), $this->accountToFavorite->add($accountId, $userId));
     }
 
     protected function setUp(): void
@@ -134,7 +134,7 @@ class AccountToFavoriteRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountToFavoriteRepository = new AccountToFavoriteRepository(
+        $this->accountToFavorite = new AccountToFavorite(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

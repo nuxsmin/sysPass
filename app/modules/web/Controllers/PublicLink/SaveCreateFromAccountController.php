@@ -28,7 +28,7 @@ use Exception;
 use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -62,7 +62,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $publicLinkData = new PublicLink(
                 [
-                    'id' => PublicLinkService::TYPE_ACCOUNT,
+                    'id' => PublicLink::TYPE_ACCOUNT,
                     'itemId' => $accountId,
                     'notify' => (bool)$notify,
                     'hash' => PasswordUtil::generateRandomBytes()

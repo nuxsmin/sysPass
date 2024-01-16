@@ -28,7 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -63,8 +63,8 @@ final class IndexController extends ControllerBase
     private UserServiceInterface        $userService;
     private UserGroupServiceInterface   $userGroupService;
     private UserProfileServiceInterface $userProfileService;
-    private AuthTokenServiceInterface   $authTokenService;
-    private PublicLinkServiceInterface  $publicLinkService;
+    private AuthTokenServiceInterface $authTokenService;
+    private PublicLinkService         $publicLinkService;
 
     public function __construct(
         Application $application,
@@ -79,7 +79,7 @@ final class IndexController extends ControllerBase
         UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
         AuthTokenServiceInterface $authTokenService,
-        PublicLinkServiceInterface $publicLinkService
+        PublicLinkService $publicLinkService
     ) {
         parent::__construct($application, $webControllerHelper);
 

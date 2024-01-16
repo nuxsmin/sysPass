@@ -30,7 +30,7 @@
  * @var DataGrid $data
  */
 
-use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\DataGrid;

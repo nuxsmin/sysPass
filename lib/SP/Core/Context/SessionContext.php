@@ -26,7 +26,7 @@ namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\User\Services\UserLoginResponse;
@@ -166,12 +166,12 @@ class SessionContext extends ContextBase implements SessionContextInterface
         $this->setContextKey('userProfile', $profileData);
     }
 
-    public function getSearchFilters(): ?AccountSearchFilter
+    public function getSearchFilters(): ?AccountSearchFilterDto
     {
         return $this->getContextKey('searchFilters');
     }
 
-    public function setSearchFilters(AccountSearchFilter $searchFilters): void
+    public function setSearchFilters(AccountSearchFilterDto $searchFilters): void
     {
         $this->setContextKey('searchFilters', $searchFilters);
     }

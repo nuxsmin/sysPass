@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -74,7 +74,7 @@ final class PublicLinkForm extends FormBase implements FormInterface
         $this->publicLink = new PublicLink(
             [
                 'id' => $this->itemId,
-                'typeId' => PublicLinkService::TYPE_ACCOUNT,
+                'typeId' => PublicLink::TYPE_ACCOUNT,
                 'itemId' => $this->request->analyzeInt('accountId'),
                 'notify' => $this->request->analyzeBool('notify', false)
             ]

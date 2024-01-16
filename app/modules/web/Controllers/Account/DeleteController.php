@@ -28,7 +28,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -40,14 +40,14 @@ use SP\Util\ErrorUtil;
 final class DeleteController extends AccountControllerBase
 {
     private AccountHelper                                    $accountHelper;
-    private ThemeIcons                                       $icons;
-    private AccountServiceInterface $accountService;
+    private ThemeIcons     $icons;
+    private AccountService $accountService;
 
     public function __construct(
         Application             $application,
         WebControllerHelper     $webControllerHelper,
         AccountHelper           $accountHelper,
-        AccountServiceInterface $accountService
+        AccountService $accountService
     ) {
         parent::__construct(
             $application,

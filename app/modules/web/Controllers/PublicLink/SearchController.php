@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 use JsonException;
 use SP\Core\Application;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -47,14 +47,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private PublicLinkServiceInterface $publicLinkService;
-    private PublicLinkGrid             $publicLinkGrid;
+    private PublicLinkService $publicLinkService;
+    private PublicLinkGrid    $publicLinkGrid;
 
     public function __construct(
-        Application $application,
+        Application       $application,
         WebControllerHelper $webControllerHelper,
-        PublicLinkServiceInterface $publicLinkService,
-        PublicLinkGrid $publicLinkGrid
+        PublicLinkService $publicLinkService,
+        PublicLinkGrid    $publicLinkGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 

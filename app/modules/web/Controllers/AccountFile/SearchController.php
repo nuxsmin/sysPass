@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 
 use JsonException;
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountFileServiceInterface;
+use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,14 +48,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountFileServiceInterface $accountFileService;
-    private FileGrid                    $fileGrid;
+    private AccountFileService $accountFileService;
+    private FileGrid           $fileGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         FileGrid $fileGrid,
-        AccountFileServiceInterface $accountFileService
+        AccountFileService $accountFileService
     ) {
         parent::__construct($application, $webControllerHelper);
 

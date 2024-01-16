@@ -33,7 +33,7 @@ use SP\Core\Application;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -79,9 +79,9 @@ final class IndexController extends ControllerBase
     private UserProfileServiceInterface $userProfileService;
     private MimeTypesService $mimeTypes;
     private DatabaseUtil     $databaseUtil;
-    private ConfigService           $configService;
-    private AccountServiceInterface $accountService;
-    private PluginManager               $pluginManager;
+    private ConfigService  $configService;
+    private AccountService $accountService;
+    private PluginManager  $pluginManager;
 
     public function __construct(
         Application                 $application,
@@ -93,7 +93,7 @@ final class IndexController extends ControllerBase
         MimeTypesService $mimeTypes,
         DatabaseUtil                $databaseUtil,
         ConfigService    $configService,
-        AccountServiceInterface     $accountService,
+        AccountService   $accountService,
         PluginManager               $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);

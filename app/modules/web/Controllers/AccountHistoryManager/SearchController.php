@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
 use JsonException;
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,13 +49,13 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountHistoryGrid             $accountHistoryGrid;
+    private AccountHistoryService $accountHistoryService;
+    private AccountHistoryGrid    $accountHistoryGrid;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHistoryServiceInterface $accountHistoryService,
+        Application           $application,
+        WebControllerHelper   $webControllerHelper,
+        AccountHistoryService $accountHistoryService,
         Helpers\Grid\AccountHistoryGrid $accountHistoryGrid
     ) {
         $this->accountHistoryService = $accountHistoryService;

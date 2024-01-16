@@ -24,15 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Models\AccountHistory;
-use SP\Domain\Account\Ports\AccountAclServiceInterface;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountToUserGroupServiceInterface;
-use SP\Domain\Account\Ports\AccountToUserServiceInterface;
-use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountToUserGroupService;
+use SP\Domain\Account\Ports\AccountToUserService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
@@ -56,22 +55,22 @@ use SP\Mvc\View\TemplateInterface;
  */
 final class AccountHistoryHelper extends AccountHelperBase
 {
-    private ?int        $accountId  = null;
-    private ?AccountAcl $accountAcl = null;
+    private ?int               $accountId  = null;
+    private ?AccountPermission $accountAcl = null;
 
     public function __construct(
-        Application                            $application,
-        TemplateInterface                      $template,
-        RequestInterface                       $request,
-        AclInterface                           $acl,
-        AccountActionsHelper                   $accountActionsHelper,
-        MasterPassServiceInterface             $masterPassService,
-        private AccountHistoryServiceInterface $accountHistoryService,
-        private AccountAclServiceInterface     $accountAclService,
-        private CategoryServiceInterface       $categoryService,
-        private ClientServiceInterface         $clientService,
-        private AccountToUserServiceInterface  $accountToUserService,
-        private AccountToUserGroupServiceInterface $accountToUserGroupService
+        Application                       $application,
+        TemplateInterface                 $template,
+        RequestInterface                  $request,
+        AclInterface                      $acl,
+        AccountActionsHelper              $accountActionsHelper,
+        MasterPassServiceInterface        $masterPassService,
+        private AccountHistoryService     $accountHistoryService,
+        private AccountAclService         $accountAclService,
+        private CategoryServiceInterface  $categoryService,
+        private ClientServiceInterface    $clientService,
+        private AccountToUserService      $accountToUserService,
+        private AccountToUserGroupService $accountToUserGroupService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
     }

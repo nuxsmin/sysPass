@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -40,12 +40,12 @@ use stdClass;
  */
 final class AccountsUserController extends SimpleControllerBase
 {
-    private AccountServiceInterface $accountService;
+    private AccountService $accountService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        AccountServiceInterface $accountService
+        AccountService $accountService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

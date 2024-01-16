@@ -27,8 +27,8 @@ namespace SPT\Domain\Account\Services;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
-use SP\Domain\Account\Ports\AccountFileRepositoryInterface;
-use SP\Domain\Account\Services\AccountFileService;
+use SP\Domain\Account\Ports\AccountFileRepository;
+use SP\Domain\Account\Services\AccountFile;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidImageException;
@@ -48,9 +48,9 @@ use SPT\UnitaryTestCase;
 class AccountFileServiceTest extends UnitaryTestCase
 {
 
-    private MockObject|AccountFileRepositoryInterface $accountFileRepository;
-    private ImageUtilInterface|MockObject             $imageUtil;
-    private AccountFileService                        $accountFileService;
+    private MockObject|AccountFileRepository $accountFileRepository;
+    private ImageUtilInterface|MockObject    $imageUtil;
+    private AccountFile                      $accountFile;
 
     /**
      * @throws InvalidImageException
@@ -73,7 +73,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->method('create')
             ->with($fileData);
 
-        $this->accountFileService->create($fileData);
+        $this->accountFile->create($fileData);
     }
 
     /**
@@ -96,7 +96,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($fileData->getContent())
             ->willReturn(self::$faker->paragraph());
 
-        $this->accountFileService->create($fileData);
+        $this->accountFile->create($fileData);
     }
 
     public function testGetById(): void
@@ -111,7 +111,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($fileData->getId())
             ->willReturn($queryResult);
 
-        $out = $this->accountFileService->getById($fileData->getId());
+        $out = $this->accountFile->getById($fileData->getId());
 
         $this->assertEquals($fileData, $out);
     }
@@ -131,7 +131,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn(count($ids));
 
-        $out = $this->accountFileService->deleteByIdBatch($ids);
+        $out = $this->accountFile->deleteByIdBatch($ids);
 
         $this->assertEquals(count($ids), $out);
     }
@@ -154,7 +154,7 @@ class AccountFileServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the files');
 
-        $this->accountFileService->deleteByIdBatch($ids);
+        $this->accountFile->deleteByIdBatch($ids);
     }
 
     /**
@@ -172,7 +172,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(true);
 
-        $this->accountFileService->delete($id);
+        $this->accountFile->delete($id);
     }
 
     /**
@@ -193,7 +193,7 @@ class AccountFileServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('File not found');
 
-        $this->accountFileService->delete($id);
+        $this->accountFile->delete($id);
     }
 
     public function testSearch(): void
@@ -210,7 +210,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($itemSearchData)
             ->willReturn(new QueryResult($files));
 
-        $out = $this->accountFileService->search($itemSearchData);
+        $out = $this->accountFile->search($itemSearchData);
 
         $this->assertEquals($files, $out->getDataAsArray());
     }
@@ -231,7 +231,7 @@ class AccountFileServiceTest extends UnitaryTestCase
             ->with($fileData->getId())
             ->willReturn($queryResult);
 
-        $out = $this->accountFileService->getByAccountId($fileData->getId());
+        $out = $this->accountFile->getByAccountId($fileData->getId());
 
         $this->assertEquals([$fileData], $out);
     }
@@ -240,10 +240,10 @@ class AccountFileServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountFileRepository = $this->createMock(AccountFileRepositoryInterface::class);
+        $this->accountFileRepository = $this->createMock(AccountFileRepository::class);
         $this->imageUtil = $this->createMock(ImageUtilInterface::class);
 
-        $this->accountFileService =
-            new AccountFileService($this->application, $this->accountFileRepository, $this->imageUtil);
+        $this->accountFile =
+            new AccountFile($this->application, $this->accountFileRepository, $this->imageUtil);
     }
 }

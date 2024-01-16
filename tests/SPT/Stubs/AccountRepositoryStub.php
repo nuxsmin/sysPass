@@ -25,12 +25,12 @@
 namespace SPT\Stubs;
 
 use Closure;
-use SP\Domain\Account\Ports\AccountRepositoryInterface;
+use SP\Domain\Account\Ports\AccountRepository;
 
 /**
  * Class AccountRepositoryStub
  */
-abstract class AccountRepositoryStub implements AccountRepositoryInterface
+abstract class AccountRepositoryStub implements AccountRepository
 {
     public function transactionAware(Closure $closure, object $newThis): mixed
     {

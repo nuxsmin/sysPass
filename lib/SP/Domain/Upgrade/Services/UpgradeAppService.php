@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\UpgradePublicLinkServiceInterface;
-use SP\Domain\Account\Services\UpgradePublicLinkService;
+use SP\Domain\Account\Ports\UpgradePublicLinkService;
+use SP\Domain\Account\Services\UpgradePublicLink;
 use SP\Domain\Auth\Ports\UpgradeAuthTokenServiceInterface;
 use SP\Domain\Auth\Services\UpgradeAuthToken;
 use SP\Domain\Common\Services\Service;
@@ -60,19 +60,19 @@ final class UpgradeAppService extends Service implements UpgradeAppService
         '310.19042701',
     ];
     private UpgradeCustomFieldDefinitionService $upgradeCustomFieldDefinition;
-    private UpgradePublicLinkService      $upgradePublicLink;
-    private UpgradeAuthToken              $upgradeAuthToken;
+    private UpgradePublicLink $upgradePublicLink;
+    private UpgradeAuthToken  $upgradeAuthToken;
     private UpgradeCustomFieldDataService $upgradeCustomFieldData;
     private UpgradePluginService                $upgradePlugin;
 
     public function __construct(
-        Application $application,
-        FileLogHandler $fileLogHandler,
+        Application                            $application,
+        FileLogHandler                         $fileLogHandler,
         UpgradeCustomFieldDefinitionServiceInterface $upgradeCustomFieldDefinition,
-        UpgradePublicLinkServiceInterface $upgradePublicLink,
-        UpgradeAuthTokenServiceInterface $upgradeAuthToken,
+        UpgradePublicLinkService               $upgradePublicLink,
+        UpgradeAuthTokenServiceInterface       $upgradeAuthToken,
         UpgradeCustomFieldDataServiceInterface $upgradeCustomFieldData,
-        UpgradePluginServiceInterface $upgradePlugin
+        UpgradePluginServiceInterface          $upgradePlugin
     ) {
         parent::__construct($application);
 
@@ -142,7 +142,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
             switch ($version) {
                 case '300.18010101':
                     $this->upgradeCustomFieldDefinition->upgrade_300_18010101();
-                    $this->upgradePublicLink->upgrade_300_18010101();
+                    $this->upgradePublicLink->upgradeV300B18010101();
 
                     return true;
                 case '300.18072901':

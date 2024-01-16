@@ -25,7 +25,7 @@
 namespace SP\Domain\Client\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Ports\RepositoryInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -118,12 +118,12 @@ interface ClientRepositoryInterface extends RepositoryInterface
     /**
      * Return the clients visible for the current user
      *
-     * @param AccountFilterUserInterface $accountFilterUser
+     * @param AccountFilterBuilder $accountFilterUser
      * @return QueryResult<T>
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getAllForFilter(AccountFilterUserInterface $accountFilterUser): QueryResult;
+    public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult;
 
     /**
      * Returns all the items

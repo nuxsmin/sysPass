@@ -30,10 +30,10 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
-use SP\Domain\Account\Ports\AccountSearchServiceInterface;
-use SP\Domain\Account\Search\AccountSearchConstants;
-use SP\Domain\Account\Search\AccountSearchFilter;
-use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Account\Adapters\AccountSearchItem;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Ports\AccountSearchConstants;
+use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -66,23 +66,23 @@ final class AccountSearchHelper extends HelperBase
     private bool                          $filterOn            = false;
     private bool                          $isAjax              = false;
     private int                           $queryTimeStart;
-    private bool                          $isIndex;
-    private ?AccountSearchFilter          $accountSearchFilter = null;
-    private ClientServiceInterface                                 $clientService;
-    private AccountSearchServiceInterface $accountSearchService;
-    private AccountActionsHelper                                   $accountActionsHelper;
+    private bool                    $isIndex;
+    private ?AccountSearchFilterDto $accountSearchFilter = null;
+    private ClientServiceInterface  $clientService;
+    private AccountSearchService    $accountSearchService;
+    private AccountActionsHelper    $accountActionsHelper;
     private CategoryServiceInterface      $categoryService;
     private TagServiceInterface           $tagService;
 
     public function __construct(
-        Application                   $application,
-        TemplateInterface             $template,
-        RequestInterface              $request,
-        ClientServiceInterface        $clientService,
-        CategoryServiceInterface      $categoryService,
-        TagServiceInterface           $tagService,
-        AccountSearchServiceInterface $accountSearchService,
-        AccountActionsHelper          $accountActionsHelper
+        Application              $application,
+        TemplateInterface        $template,
+        RequestInterface         $request,
+        ClientServiceInterface   $clientService,
+        CategoryServiceInterface $categoryService,
+        TagServiceInterface      $tagService,
+        AccountSearchService     $accountSearchService,
+        AccountActionsHelper     $accountActionsHelper
     ) {
         parent::__construct($application, $template, $request);
 
@@ -130,9 +130,9 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Set search filters
      *
-     * @return AccountSearchFilter
+     * @return AccountSearchFilterDto
      */
-    private function getFilters(): AccountSearchFilter
+    private function getFilters(): AccountSearchFilterDto
     {
         $accountSearchFilter = $this->context->getSearchFilters();
 
@@ -146,7 +146,7 @@ final class AccountSearchHelper extends HelperBase
             ? $userPreferences->getResultsPerPage()
             : $this->configData->getAccountCount();
 
-        $accountSearchFilter = new AccountSearchFilter();
+        $accountSearchFilter = new AccountSearchFilterDto();
         $accountSearchFilter->setSortKey($this->request->analyzeInt('skey', 0));
         $accountSearchFilter->setSortOrder($this->request->analyzeInt('sorder', 0));
         $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));

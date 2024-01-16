@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
@@ -55,7 +55,7 @@ final class AccountRequestHelper extends AccountHelperBase
     ): bool {
         $this->accountId = $accountDetailsResponse->getAccountDataView()->getId();
         $this->actionId = $actionId;
-        $this->accountAcl = new AccountAcl($actionId);
+        $this->accountAcl = new AccountPermission($actionId);
 
         $this->checkActionAccess();
 

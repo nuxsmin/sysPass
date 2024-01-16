@@ -26,8 +26,8 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
-use SP\Domain\Account\Services\AccountToUserService;
+use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Services\AccountToUser;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -42,8 +42,8 @@ use SPT\UnitaryTestCase;
 class AccountToUserServiceTest extends UnitaryTestCase
 {
 
-    private AccountToUserRepositoryInterface|MockObject $accountToUserRepository;
-    private AccountToUserService                        $accountToUserService;
+    private AccountToUserRepository|MockObject $accountToUserRepository;
+    private AccountToUser                      $accountToUser;
 
     /**
      * @throws ConstraintException
@@ -59,10 +59,10 @@ class AccountToUserServiceTest extends UnitaryTestCase
                 [
                     new ItemData(
                         [
-                            'id'     => self::$faker->randomNumber(),
-                            'name'   => self::$faker->colorName,
+                            'id' => self::$faker->randomNumber(),
+                            'name' => self::$faker->colorName,
                             'isEdit' => self::$faker->boolean,
-                            'login'  => self::$faker->colorName,
+                            'login' => self::$faker->colorName,
                         ]
                     ),
                 ]
@@ -74,7 +74,7 @@ class AccountToUserServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserService->getUsersByAccountId($accountId);
+        $actual = $this->accountToUser->getUsersByAccountId($accountId);
         $expected = $result->getData(ItemData::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof ItemData);
@@ -98,7 +98,7 @@ class AccountToUserServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserService->getUsersByAccountId($accountId);
+        $actual = $this->accountToUser->getUsersByAccountId($accountId);
 
         $this->assertEmpty($actual);
     }
@@ -107,9 +107,9 @@ class AccountToUserServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
 
-        $this->accountToUserService =
-            new AccountToUserService($this->application, $this->accountToUserRepository);
+        $this->accountToUser =
+            new AccountToUser($this->application, $this->accountToUserRepository);
     }
 }

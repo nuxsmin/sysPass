@@ -25,11 +25,12 @@
 namespace SP\Domain\Account\Adapters;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\Model;
 
 /**
  * Class AccountPassData
  */
-class AccountPassData extends \SP\Domain\Common\Models\Model implements DataModelInterface
+class AccountPassData extends Model implements DataModelInterface
 {
     protected ?int    $id        = null;
     protected ?string $name      = null;

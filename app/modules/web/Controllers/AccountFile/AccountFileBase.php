@@ -26,18 +26,18 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountFileServiceInterface;
+use SP\Domain\Account\Ports\AccountFileService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
 abstract class AccountFileBase extends ControllerBase
 {
-    protected AccountFileServiceInterface $accountFileService;
+    protected AccountFileService $accountFileService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountFileServiceInterface $accountFileService
+        AccountFileService $accountFileService
     ) {
         parent::__construct($application, $webControllerHelper);
 

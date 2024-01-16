@@ -26,8 +26,8 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
-use SP\Domain\Account\Services\AccountToTagService;
+use SP\Domain\Account\Ports\AccountToTagRepository;
+use SP\Domain\Account\Services\AccountToTag;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -43,8 +43,8 @@ use SPT\UnitaryTestCase;
 class AccountToTagServiceTest extends UnitaryTestCase
 {
 
-    private AccountToTagService                        $accountToTagService;
-    private AccountToTagRepositoryInterface|MockObject $accountToTagRepository;
+    private AccountToTag                      $accountToTag;
+    private AccountToTagRepository|MockObject $accountToTagRepository;
 
     /**
      * @throws ConstraintException
@@ -64,7 +64,7 @@ class AccountToTagServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToTagService->getTagsByAccountId($accountId);
+        $actual = $this->accountToTag->getTagsByAccountId($accountId);
         $expected = $result->getData(Simple::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof ItemData);
@@ -88,7 +88,7 @@ class AccountToTagServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToTagService->getTagsByAccountId($accountId);
+        $actual = $this->accountToTag->getTagsByAccountId($accountId);
 
         $this->assertEmpty($actual);
     }
@@ -97,9 +97,9 @@ class AccountToTagServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);
+        $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);
 
-        $this->accountToTagService =
-            new AccountToTagService($this->application, $this->accountToTagRepository);
+        $this->accountToTag =
+            new AccountToTag($this->application, $this->accountToTagRepository);
     }
 }

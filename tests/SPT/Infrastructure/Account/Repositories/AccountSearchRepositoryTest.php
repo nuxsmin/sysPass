@@ -28,10 +28,10 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\AccountSearchVData;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
-use SP\Domain\Account\Search\AccountSearchConstants;
-use SP\Domain\Account\Search\AccountSearchFilter;
-use SP\Infrastructure\Account\Repositories\AccountSearchRepository;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
+use SP\Domain\Account\Ports\AccountSearchConstants;
+use SP\Infrastructure\Account\Repositories\AccountSearch;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SPT\UnitaryTestCase;
@@ -44,13 +44,13 @@ use SPT\UnitaryTestCase;
 class AccountSearchRepositoryTest extends UnitaryTestCase
 {
 
-    private MockObject|DatabaseInterface          $database;
-    private AccountFilterUserInterface|MockObject $accountFilterUser;
-    private AccountSearchRepository               $accountSearchRepository;
+    private MockObject|DatabaseInterface    $database;
+    private AccountFilterBuilder|MockObject $accountFilterUser;
+    private AccountSearch                   $accountSearch;
 
     public function testWithFilterForOwner()
     {
-        $out = $this->accountSearchRepository->withFilterForOwner('test_owner');
+        $out = $this->accountSearch->withFilterForOwner('test_owner');
 
         $bind = [
             'userLogin' => '%test_owner%',
@@ -74,7 +74,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForAccountNameRegex()
     {
-        $out = $this->accountSearchRepository->withFilterForAccountNameRegex('test_account');
+        $out = $this->accountSearch->withFilterForAccountNameRegex('test_account');
 
         $bind = ['name' => 'test_account'];
         $query = '`Account`.`name` REGEXP :name';
@@ -85,7 +85,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForIsPrivate()
     {
-        $out = $this->accountSearchRepository->withFilterForIsPrivate(123, 456);
+        $out = $this->accountSearch->withFilterForIsPrivate(123, 456);
 
         $bind = ['userId' => 123, 'userGroupId' => 456];
         $query = '(`Account`.`isPrivate` = 1 AND `Account`.`userId` = :userId) OR (`Account`.`isPrivateGroup` = 1 AND `Account`.`userGroupId` = :userGroupId)';
@@ -96,7 +96,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForIsNotExpired()
     {
-        $out = $this->accountSearchRepository->withFilterForIsNotExpired();
+        $out = $this->accountSearch->withFilterForIsNotExpired();
 
         $query = '(`Account`.`passDateChange` = 0 OR `Account`.`passDateChange` IS NULL OR UNIX_TIMESTAMP() < `Account`.`passDateChange`)';
 
@@ -105,7 +105,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForGroup()
     {
-        $out = $this->accountSearchRepository->withFilterForGroup(123);
+        $out = $this->accountSearch->withFilterForGroup(123);
 
         $bind = ['userGroupId' => 123];
         $query = '`Account`.`userGroupId` = :userGroupId OR (`Account`.`id` IN (SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = id AND `AccountToUserGroup`.`userGroupId` = :userGroupId))';
@@ -116,7 +116,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForFile()
     {
-        $out = $this->accountSearchRepository->withFilterForFile('test_file');
+        $out = $this->accountSearch->withFilterForFile('test_file');
 
         $bind = ['fileName' => '%test_file%'];
         $query = '(`Account`.`id` IN (SELECT `AccountFile`.`accountId` FROM AccountFile WHERE `AccountFile`.`name` LIKE :fileName))';
@@ -127,7 +127,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForMainGroup()
     {
-        $out = $this->accountSearchRepository->withFilterForMainGroup('test_group');
+        $out = $this->accountSearch->withFilterForMainGroup('test_group');
 
         $bind = ['userGroupName' => '%test_group%'];
         $query = '`Account`.`userGroupName` LIKE :userGroupName';
@@ -138,7 +138,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForCategory()
     {
-        $out = $this->accountSearchRepository->withFilterForCategory('test_category');
+        $out = $this->accountSearch->withFilterForCategory('test_category');
 
         $bind = ['categoryName' => '%test_category%'];
         $query = '`Account`.`categoryName` LIKE :categoryName';
@@ -149,7 +149,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForUser()
     {
-        $out = $this->accountSearchRepository->withFilterForUser(123, 456);
+        $out = $this->accountSearch->withFilterForUser(123, 456);
 
         $bind = ['userId' => 123, 'userGroupId' => 456];
         $query = '(`Account`.`userId` = :userId or `Account`.`userGroupId` = :userGroupId or `Account`.`id` IN (SELECT `AccountToUser`.`accountId` FROM AccountToUser WHERE `AccountToUser`.`accountId` = `Account`.`id` AND `AccountToUser`.`userId` = :userId UNION SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = `Account`.`id` AND `AccountToUserGroup`.`userGroupId` = :userGroupId))';
@@ -160,7 +160,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForClient()
     {
-        $out = $this->accountSearchRepository->withFilterForClient('test_client');
+        $out = $this->accountSearch->withFilterForClient('test_client');
 
         $bind = ['clientName' => '%test_client%'];
         $query = '`Account`.`clientName` LIKE :clientName';
@@ -171,7 +171,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testGetByFilter()
     {
-        $accountSearchFilter = AccountSearchFilter::build('test');
+        $accountSearchFilter = AccountSearchFilterDto::build('test');
         $accountSearchFilter->setCleanTxtSearch('test');
         $accountSearchFilter->setGlobalSearch(true);
         $accountSearchFilter->setSearchFavorites(true);
@@ -197,12 +197,12 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
                            true
                        );
 
-        $this->accountSearchRepository->getByFilter($accountSearchFilter);
+        $this->accountSearch->getByFilter($accountSearchFilter);
     }
 
     public function testGetByFilterWithSortViews()
     {
-        $accountSearchFilter = AccountSearchFilter::build('test');
+        $accountSearchFilter = AccountSearchFilterDto::build('test');
         $accountSearchFilter->setSortViews(true);
 
         $this->accountFilterUser->expects(self::once())
@@ -218,12 +218,12 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
                            true
                        );
 
-        $this->accountSearchRepository->getByFilter($accountSearchFilter);
+        $this->accountSearch->getByFilter($accountSearchFilter);
     }
 
     public function testWithFilterForAccountId()
     {
-        $out = $this->accountSearchRepository->withFilterForAccountId(123);
+        $out = $this->accountSearch->withFilterForAccountId(123);
 
         $bind = ['accountId' => 123];
         $query = '`Account`.`id` = :accountId';
@@ -234,7 +234,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForIsNotPrivate()
     {
-        $out = $this->accountSearchRepository->withFilterForIsNotPrivate();
+        $out = $this->accountSearch->withFilterForIsNotPrivate();
 
         $query = '(`Account`.`isPrivate` = 0 OR `Account`.`isPrivate` IS NULL) AND (`Account`.`isPrivateGroup` = 0 OR `Account`.`isPrivateGroup` IS NULL)';
 
@@ -243,7 +243,7 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
 
     public function testWithFilterForIsExpired()
     {
-        $out = $this->accountSearchRepository->withFilterForIsExpired();
+        $out = $this->accountSearch->withFilterForIsExpired();
 
         $query = '(`Account`.`passDateChange` > 0 AND UNIX_TIMESTAMP() > `Account`.`passDateChange`)';
 
@@ -255,10 +255,10 @@ class AccountSearchRepositoryTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->accountFilterUser = $this->createMock(AccountFilterUserInterface::class);
+        $this->accountFilterUser = $this->createMock(AccountFilterBuilder::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountSearchRepository = new AccountSearchRepository(
+        $this->accountSearch = new AccountSearch(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

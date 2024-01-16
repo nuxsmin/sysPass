@@ -242,6 +242,7 @@ final class InstallerService implements InstallerServiceInterface
             && strpos($this->installData->getDbHost(), '127.0.0.1') === false
         ) {
             // Use real IP address when unitary testing, because no HTTP request is performed
+            // FIXME
             if (defined('SELF_IP_ADDRESS')) {
                 $address = SELF_IP_ADDRESS;
             } else {

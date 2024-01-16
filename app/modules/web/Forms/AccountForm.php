@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
-use SP\Domain\Account\Ports\AccountPresetServiceInterface;
+use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\RequestInterface;
@@ -41,14 +41,14 @@ use function SP\__u;
  */
 final class AccountForm extends FormBase implements FormInterface
 {
-    private AccountPresetServiceInterface          $accountPresetService;
+    private AccountPresetService $accountPresetService;
     private null|AccountCreateDto|AccountUpdateDto $accountDto = null;
 
     public function __construct(
-        Application $application,
-        RequestInterface $request,
-        AccountPresetServiceInterface $accountPresetService,
-        ?int $itemId = null
+        Application          $application,
+        RequestInterface     $request,
+        AccountPresetService $accountPresetService,
+        ?int                 $itemId = null
     ) {
         parent::__construct($application, $request, $itemId);
 

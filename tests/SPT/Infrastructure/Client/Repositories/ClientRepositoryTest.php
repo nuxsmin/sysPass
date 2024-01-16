@@ -33,7 +33,7 @@ use Exception;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -323,7 +323,7 @@ class ClientRepositoryTest extends UnitaryTestCase
 
         $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
 
-        $accountFilterUser = $this->createMock(AccountFilterUserInterface::class);
+        $accountFilterUser = $this->createMock(AccountFilterBuilder::class);
         $accountFilterUser->expects(self::once())
                           ->method('buildFilter')
                           ->willReturn($select);

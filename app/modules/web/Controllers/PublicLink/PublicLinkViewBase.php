@@ -29,9 +29,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapWeb;
 use SP\DataModel\PublicLinkList;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
-use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkService;
+use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,14 +45,14 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 abstract class PublicLinkViewBase extends ControllerBase
 {
-    private PublicLinkServiceInterface $publicLinkService;
-    private AccountServiceInterface    $accountService;
+    private PublicLinkService $publicLinkService;
+    private AccountService    $accountService;
 
     public function __construct(
-        Application $application,
+        Application       $application,
         WebControllerHelper $webControllerHelper,
-        PublicLinkServiceInterface $publicLinkService,
-        AccountServiceInterface $accountService
+        PublicLinkService $publicLinkService,
+        AccountService    $accountService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -92,7 +92,7 @@ abstract class PublicLinkViewBase extends ControllerBase
         if ($this->view->isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
 
-            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($baseUrl, $publicLink->getHash()));
+            $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

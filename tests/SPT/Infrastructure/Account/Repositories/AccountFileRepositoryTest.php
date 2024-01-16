@@ -32,7 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountFileRepository;
+use SP\Infrastructure\Account\Repositories\AccountFile;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -47,7 +47,7 @@ use SPT\UnitaryTestCase;
 class AccountFileRepositoryTest extends UnitaryTestCase
 {
     private DatabaseInterface|MockObject $database;
-    private AccountFileRepository        $accountFileRepository;
+    private AccountFile $accountFile;
 
     /**
      * @throws ConstraintException
@@ -74,7 +74,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountFileRepository->deleteByIdBatch($ids);
+        $this->accountFile->deleteByIdBatch($ids);
     }
 
     /**
@@ -86,7 +86,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->database->expects(self::never())
             ->method('doQuery');
 
-        $this->assertEquals(0, $this->accountFileRepository->deleteByIdBatch([]));
+        $this->assertEquals(0, $this->accountFile->deleteByIdBatch([]));
     }
 
     /**
@@ -121,9 +121,13 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertEquals($expected->getLastId(), $this->accountFileRepository->create($fileData));
+        $this->assertEquals($expected->getLastId(), $this->accountFile->create($fileData));
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
     public function testGetByAccountId(): void
     {
         $id = self::$faker->randomNumber();
@@ -143,7 +147,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountFileRepository->getByAccountId($id);
+        $this->accountFile->getByAccountId($id);
     }
 
     /**
@@ -171,7 +175,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountFileRepository->delete($id));
+        $this->assertTrue($this->accountFile->delete($id));
     }
 
     public function testGetById(): void
@@ -193,7 +197,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountFileRepository->getById($id);
+        $this->accountFile->getById($id);
     }
 
     public function testSearch(): void
@@ -203,7 +207,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->getSeachString().'%';
+                $searchStringLike = '%' . $item->getSeachString() . '%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
@@ -220,7 +224,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountFileRepository->search($item);
+        $this->accountFile->search($item);
     }
 
     protected function setUp(): void
@@ -230,7 +234,7 @@ class AccountFileRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountFileRepository = new AccountFileRepository(
+        $this->accountFile = new AccountFile(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

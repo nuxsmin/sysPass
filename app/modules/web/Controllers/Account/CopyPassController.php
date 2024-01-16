@@ -33,7 +33,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -50,13 +50,13 @@ final class CopyPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface $accountService;
-    private AccountPasswordHelper                            $accountPasswordHelper;
+    private AccountService        $accountService;
+    private AccountPasswordHelper $accountPasswordHelper;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
+        AccountService      $accountService,
         AccountPasswordHelper $accountPasswordHelper
     ) {
         parent::__construct(

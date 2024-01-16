@@ -32,7 +32,7 @@ final class AccountUpdateBulkDto
     /**
      * AccountBulkRequest constructor.
      *
-     * @param  AccountUpdateDto[]  $accountUpdateDto
+     * @param AccountUpdateDto[] $accountUpdateDto
      */
     public function __construct(array $accountsId, private array $accountUpdateDto)
     {

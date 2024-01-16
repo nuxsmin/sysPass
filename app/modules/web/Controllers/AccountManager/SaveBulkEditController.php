@@ -29,9 +29,9 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountPresetServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonMessage;
@@ -54,16 +54,16 @@ final class SaveBulkEditController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountServiceInterface        $accountService;
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountForm                    $accountForm;
+    private AccountService        $accountService;
+    private AccountHistoryService $accountHistoryService;
+    private AccountForm           $accountForm;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
-        AccountHistoryServiceInterface $accountHistoryService,
-        AccountPresetServiceInterface $accountPresetService
+        Application           $application,
+        WebControllerHelper   $webControllerHelper,
+        AccountService        $accountService,
+        AccountHistoryService $accountHistoryService,
+        AccountPresetService  $accountPresetService
     ) {
         parent::__construct($application, $webControllerHelper);
 

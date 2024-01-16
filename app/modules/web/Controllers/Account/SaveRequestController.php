@@ -32,7 +32,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -50,14 +50,14 @@ final class SaveRequestController extends AccountControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountServiceInterface $accountService;
-    private UserServiceInterface                       $userService;
+    private AccountService       $accountService;
+    private UserServiceInterface $userService;
 
     public function __construct(
-        Application             $application,
-        WebControllerHelper     $webControllerHelper,
-        AccountServiceInterface $accountService,
-        UserServiceInterface    $userService
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        AccountService       $accountService,
+        UserServiceInterface $userService
     ) {
         parent::__construct(
             $application,

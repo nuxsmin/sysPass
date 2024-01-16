@@ -28,9 +28,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\AccountFileServiceInterface;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountFileService;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -66,10 +66,10 @@ final class IndexController extends ControllerBase
     private TagServiceInterface            $tagService;
     private ClientServiceInterface         $clientService;
     private CustomFieldDefServiceInterface $customFieldDefService;
-    private AccountFileServiceInterface    $accountFileService;
-    private AccountServiceInterface        $accountService;
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private ItemPresetServiceInterface     $itemPresetService;
+    private AccountFileService         $accountFileService;
+    private AccountService             $accountService;
+    private AccountHistoryService      $accountHistoryService;
+    private ItemPresetServiceInterface $itemPresetService;
     private CategoryGrid                   $categoryGrid;
     private TagGrid                        $tagGrid;
     private ClientGrid                     $clientGrid;
@@ -80,25 +80,25 @@ final class IndexController extends ControllerBase
     private ItemPresetGrid                 $itemPresetGrid;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        Helpers\TabsGridHelper $tabsGridHelper,
-        CategoryServiceInterface $categoryService,
-        TagServiceInterface $tagService,
-        ClientServiceInterface $clientService,
+        Application                    $application,
+        WebControllerHelper            $webControllerHelper,
+        Helpers\TabsGridHelper         $tabsGridHelper,
+        CategoryServiceInterface       $categoryService,
+        TagServiceInterface            $tagService,
+        ClientServiceInterface         $clientService,
         CustomFieldDefServiceInterface $customFieldDefService,
-        AccountFileServiceInterface $accountFileService,
-        AccountServiceInterface $accountService,
-        AccountHistoryServiceInterface $accountHistoryService,
-        ItemPresetServiceInterface $itemPresetService,
-        Helpers\Grid\CategoryGrid $categoryGrid,
-        Helpers\Grid\TagGrid $tagGrid,
-        Helpers\Grid\ClientGrid $clientGrid,
-        Helpers\Grid\CustomFieldGrid $customFieldGrid,
-        Helpers\Grid\FileGrid $fileGrid,
-        Helpers\Grid\AccountGrid $accountGrid,
+        AccountFileService             $accountFileService,
+        AccountService                 $accountService,
+        AccountHistoryService          $accountHistoryService,
+        ItemPresetServiceInterface     $itemPresetService,
+        Helpers\Grid\CategoryGrid      $categoryGrid,
+        Helpers\Grid\TagGrid           $tagGrid,
+        Helpers\Grid\ClientGrid        $clientGrid,
+        Helpers\Grid\CustomFieldGrid   $customFieldGrid,
+        Helpers\Grid\FileGrid          $fileGrid,
+        Helpers\Grid\AccountGrid       $accountGrid,
         Helpers\Grid\AccountHistoryGrid $accountHistoryGrid,
-        Helpers\Grid\ItemPresetGrid $itemPresetGrid
+        Helpers\Grid\ItemPresetGrid    $itemPresetGrid
     ) {
         $this->tabsGridHelper = $tabsGridHelper;
         $this->categoryService = $categoryService;

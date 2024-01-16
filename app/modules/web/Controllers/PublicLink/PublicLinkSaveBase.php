@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
+use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\PublicLinkForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -36,13 +36,13 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class PublicLinkSaveBase extends ControllerBase
 {
-    protected PublicLinkServiceInterface $publicLinkService;
-    protected PublicLinkForm             $form;
+    protected PublicLinkService $publicLinkService;
+    protected PublicLinkForm    $form;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        PublicLinkServiceInterface $publicLinkService
+        PublicLinkService $publicLinkService
     ) {
         parent::__construct($application, $webControllerHelper);
 

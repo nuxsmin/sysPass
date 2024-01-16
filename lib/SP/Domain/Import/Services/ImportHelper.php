@@ -25,7 +25,7 @@
 namespace SP\Domain\Import\Services;
 
 
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
@@ -35,16 +35,16 @@ use SP\Domain\Tag\Ports\TagServiceInterface;
  */
 final class ImportHelper
 {
-    private AccountServiceInterface  $accountService;
+    private AccountService $accountService;
     private CategoryServiceInterface $categoryService;
     private ClientServiceInterface   $clientService;
     private TagServiceInterface      $tagService;
 
     public function __construct(
-        AccountServiceInterface $accountService,
+        AccountService         $accountService,
         CategoryServiceInterface $categoryService,
         ClientServiceInterface $clientService,
-        TagServiceInterface $tagService
+        TagServiceInterface    $tagService
     ) {
         $this->accountService = $accountService;
         $this->categoryService = $categoryService;
@@ -52,7 +52,7 @@ final class ImportHelper
         $this->tagService = $tagService;
     }
 
-    public function getAccountService(): AccountServiceInterface
+    public function getAccountService(): AccountService
     {
         return $this->accountService;
     }

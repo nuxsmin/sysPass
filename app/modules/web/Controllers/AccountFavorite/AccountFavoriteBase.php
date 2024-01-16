@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\AccountFavorite;
 
 
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountToFavoriteServiceInterface;
+use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
@@ -35,12 +35,12 @@ use SP\Mvc\Controller\SimpleControllerHelper;
  */
 abstract class AccountFavoriteBase extends SimpleControllerBase
 {
-    protected AccountToFavoriteServiceInterface $accountToFavoriteService;
+    protected AccountToFavoriteService $accountToFavoriteService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        AccountToFavoriteServiceInterface $accountToFavoriteService
+        AccountToFavoriteService $accountToFavoriteService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

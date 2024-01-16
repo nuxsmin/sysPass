@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountToUserGroupRepository;
+use SP\Infrastructure\Account\Repositories\AccountToUserGroup;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -44,7 +44,7 @@ use SPT\UnitaryTestCase;
 class AccountToUserGroupRepositoryTest extends UnitaryTestCase
 {
     private MockObject|DatabaseInterface $database;
-    private AccountToUserGroupRepository $accountToUserGroupRepository;
+    private AccountToUserGroup $accountToUserGroup;
 
     /**
      * @throws QueryException
@@ -73,7 +73,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToUserGroupRepository->deleteByAccountId($accountId));
+        $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }
 
     public function testGetUserGroupsByAccountId(): void
@@ -96,7 +96,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountToUserGroupRepository->getUserGroupsByAccountId($id);
+        $this->accountToUserGroup->getUserGroupsByAccountId($id);
     }
 
     /**
@@ -105,7 +105,6 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
      */
     public function testDeleteByUserGroupId(): void
     {
-
         $userGroupId = self::$faker->randomNumber();
 
         $expected = new QueryResult();
@@ -127,7 +126,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToUserGroupRepository->deleteByUserGroupId($userGroupId));
+        $this->assertTrue($this->accountToUserGroup->deleteByUserGroupId($userGroupId));
     }
 
     /**
@@ -147,7 +146,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->method('doQuery')
             ->with($callback);
 
-        $this->accountToUserGroupRepository->addByType(
+        $this->accountToUserGroup->addByType(
             self::$faker->randomNumber(),
             $userGroups,
             self::$faker->boolean
@@ -181,7 +180,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToUserGroupRepository->deleteByAccountId($accountId));
+        $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }
 
     public function testGetUserGroupsByUserGroupId(): void
@@ -204,7 +203,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountToUserGroupRepository->getUserGroupsByUserGroupId($id);
+        $this->accountToUserGroup->getUserGroupsByUserGroupId($id);
     }
 
     protected function setUp(): void
@@ -214,7 +213,7 @@ class AccountToUserGroupRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountToUserGroupRepository = new AccountToUserGroupRepository(
+        $this->accountToUserGroup = new AccountToUserGroup(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

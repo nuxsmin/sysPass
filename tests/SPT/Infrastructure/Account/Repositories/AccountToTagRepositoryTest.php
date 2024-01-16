@@ -32,7 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountToTagRepository;
+use SP\Infrastructure\Account\Repositories\AccountToTag;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -46,7 +46,7 @@ use SPT\UnitaryTestCase;
 class AccountToTagRepositoryTest extends UnitaryTestCase
 {
     private MockObject|DatabaseInterface $database;
-    private AccountToTagRepository       $accountToTagRepository;
+    private AccountToTag $accountToTag;
 
     public function testGetTagsByAccountId(): void
     {
@@ -68,7 +68,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountToTagRepository->getTagsByAccountId($id);
+        $this->accountToTag->getTagsByAccountId($id);
     }
 
     /**
@@ -98,7 +98,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn($expected);
 
-        $this->assertTrue($this->accountToTagRepository->deleteByAccountId($accountId));
+        $this->assertTrue($this->accountToTag->deleteByAccountId($accountId));
     }
 
     /**
@@ -133,7 +133,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
             ->method('doQuery')
             ->with(...self::withConsecutive(...$callbacks));
 
-        $this->accountToTagRepository->add($id, $tags);
+        $this->accountToTag->add($id, $tags);
     }
 
     /**
@@ -147,7 +147,7 @@ class AccountToTagRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->accountToTagRepository = new AccountToTagRepository(
+        $this->accountToTag = new AccountToTag(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

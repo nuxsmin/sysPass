@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Context;
 
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Crypt\VaultInterface;
 
 /**
@@ -47,14 +47,14 @@ interface SessionContextInterface extends ContextInterface
     public function setTheme(string $theme);
 
     /**
-     * @return AccountSearchFilter|null
+     * @return AccountSearchFilterDto|null
      */
-    public function getSearchFilters(): ?AccountSearchFilter;
+    public function getSearchFilters(): ?AccountSearchFilterDto;
 
     /**
-     * @param AccountSearchFilter $searchFilters
+     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $searchFilters
      */
-    public function setSearchFilters(AccountSearchFilter $searchFilters): void;
+    public function setSearchFilters(AccountSearchFilterDto $searchFilters): void;
 
     public function resetAccountAcl();
 

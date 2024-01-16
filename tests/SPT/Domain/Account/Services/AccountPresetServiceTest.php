@@ -26,9 +26,9 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
-use SP\Domain\Account\Services\AccountPresetService;
+use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Services\AccountPreset;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,7 +49,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
 {
 
     private ItemPresetServiceInterface|MockObject $itemPresetService;
-    private AccountPresetService                  $accountPresetService;
+    private AccountPreset $accountPreset;
     private ValidatorInterface|MockObject         $passwordValidator;
 
     /**
@@ -76,7 +76,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
             ->method('validate')
             ->with(self::callback(static fn($password) => $password instanceof Password));
 
-        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
+        $this->accountPreset->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -106,7 +106,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
 
         $this->expectException(ValidationException::class);
 
-        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
+        $this->accountPreset->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -130,7 +130,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('validate');
 
-        $this->accountPresetService->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
+        $this->accountPreset->checkPasswordPreset(AccountDataGenerator::factory()->buildAccountCreateDto());
     }
 
     /**
@@ -158,7 +158,7 @@ class AccountPresetServiceTest extends UnitaryTestCase
         $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
         $accountDto = $accountDto->set('passDateChange', 0);
 
-        $out = $this->accountPresetService->checkPasswordPreset($accountDto);
+        $out = $this->accountPreset->checkPasswordPreset($accountDto);
 
         $this->assertGreaterThan(0, $out->getPassDateChange());
     }
@@ -172,11 +172,11 @@ class AccountPresetServiceTest extends UnitaryTestCase
 
         $this->itemPresetService = $this->createMock(ItemPresetServiceInterface::class);
         $this->passwordValidator = $this->createMock(ValidatorInterface::class);
-        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
-        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
 
-        $this->accountPresetService =
-            new AccountPresetService(
+        $this->accountPreset =
+            new AccountPreset(
                 $this->application,
                 $this->itemPresetService,
                 $this->accountToUserGroupRepository,

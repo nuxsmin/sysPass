@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -35,15 +35,15 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class AccountViewBase extends AccountControllerBase
 {
-    protected AccountServiceInterface $accountService;
-    protected AccountHelper           $accountHelper;
+    protected AccountService $accountService;
+    protected AccountHelper  $accountHelper;
     protected ThemeIcons              $icons;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountServiceInterface $accountService,
-        AccountHelper $accountHelper
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
+        \SP\Domain\Account\Ports\AccountService $accountService,
+        AccountHelper                           $accountHelper
     ) {
         parent::__construct($application, $webControllerHelper);
 

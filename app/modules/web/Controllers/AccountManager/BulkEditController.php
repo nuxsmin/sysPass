@@ -29,9 +29,9 @@ use JsonException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountSearchServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountSearchService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -57,10 +57,10 @@ final class BulkEditController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountServiceInterface        $accountService;
-    private AccountSearchServiceInterface  $accountSearchService;
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountGrid                    $accountGrid;
+    private AccountService        $accountService;
+    private AccountSearchService  $accountSearchService;
+    private AccountHistoryService $accountHistoryService;
+    private AccountGrid           $accountGrid;
     private CustomFieldServiceInterface    $customFieldService;
     private CategoryServiceInterface       $categoryService;
     private ClientServiceInterface         $clientService;

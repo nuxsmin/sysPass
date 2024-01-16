@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,412 +24,366 @@
 
 namespace SP\Domain\Account\Services;
 
+use SP\Core\Acl\Acl;
+use SP\Core\Application;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
+use SP\DataModel\ProfileData;
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
+use SP\Domain\User\Services\UserLoginResponse;
+use SP\Infrastructure\File\FileException;
+
+use function SP\processException;
 
 /**
- * Class AccountAcl
+ * Class AccountAclService
  *
  * @package SP\Domain\Account\Services
  */
-class AccountAcl
+final class AccountAcl extends Service implements AccountAclService
 {
-    private const ACTIONS_VIEW = [
-        AclActionsInterface::ACCOUNT_VIEW,
-        AclActionsInterface::ACCOUNT_SEARCH,
-        AclActionsInterface::ACCOUNT_VIEW_PASS,
-        AclActionsInterface::ACCOUNT_HISTORY_VIEW,
-        AclActionsInterface::ACCOUNT_COPY,
-    ];
+    /**
+     * ACL's file base path
+     */
+    public const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
 
-    private const ACTIONS_EDIT = [
-        AclActionsInterface::ACCOUNT_EDIT,
-        AclActionsInterface::ACCOUNT_DELETE,
-        AclActionsInterface::ACCOUNT_EDIT_PASS,
-        AclActionsInterface::ACCOUNT_EDIT_RESTORE,
-    ];
-    private bool $userInGroups          = false;
-    private bool $userInUsers           = false;
-    private bool $resultView            = false;
-    private bool $resultEdit            = false;
-    private bool $modified              = false;
-    private bool $showView              = false;
-    private bool $showHistory           = false;
-    private bool $showDetails           = false;
-    private bool $showPass              = false;
-    private bool $showFiles             = false;
-    private bool $showViewPass          = false;
-    private bool $showSave              = false;
-    private bool $showEdit              = false;
-    private bool $showEditPass          = false;
-    private bool $showDelete            = false;
-    private bool $showRestore           = false;
-    private bool $showLink              = false;
-    private bool $showCopy              = false;
-    private bool $showPermission        = false;
-    private bool $compiledAccountAccess = false;
-    private bool $compiledShowAccess    = false;
-    private ?int $accountId             = null;
-    private int  $actionId;
-    private int  $time                  = 0;
-    private bool $isHistory;
+    private ?AccountAclDto                  $accountAclDto = null;
+    private ?AccountPermission              $accountAcl    = null;
+    private Acl                             $acl;
+    private ?FileCacheService               $fileCache;
+    private UserToUserGroupServiceInterface $userToUserGroupService;
+    private UserLoginResponse               $userData;
 
-    public function __construct(int $actionId, bool $isHistory = false)
-    {
-        $this->actionId = $actionId;
-        $this->isHistory = $isHistory;
-    }
+    public function __construct(
+        Application                     $application,
+        AclInterface                    $acl,
+        UserToUserGroupServiceInterface $userGroupService,
+        ?FileCacheService               $fileCache = null
+    ) {
+        parent::__construct($application);
 
-    public function isUserInGroups(): bool
-    {
-        return $this->userInGroups;
-    }
-
-    public function setUserInGroups(bool $userInGroups): AccountAcl
-    {
-        $this->userInGroups = $userInGroups;
-
-        return $this;
-    }
-
-    public function isUserInUsers(): bool
-    {
-        return $this->userInUsers;
-    }
-
-    public function setUserInUsers(bool $userInUsers): AccountAcl
-    {
-        $this->userInUsers = $userInUsers;
-
-        return $this;
-    }
-
-    public function isResultView(): bool
-    {
-        return $this->resultView;
-    }
-
-    public function setResultView(bool $resultView): AccountAcl
-    {
-        $this->resultView = $resultView;
-
-        return $this;
-    }
-
-    public function isResultEdit(): bool
-    {
-        return $this->resultEdit;
-    }
-
-    public function setResultEdit(bool $resultEdit): AccountAcl
-    {
-        $this->resultEdit = $resultEdit;
-
-        return $this;
-    }
-
-    public function isShowDetails(): bool
-    {
-        return $this->resultView
-               && ($this->actionId === AclActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_DELETE);
+        $this->acl = $acl;
+        $this->userToUserGroupService = $userGroupService;
+        $this->userData = $this->context->getUserData();
+        $this->fileCache = $fileCache;
     }
 
     /**
-     * @param  bool  $showDetails
+     * Obtener la ACL de una cuenta
      *
-     * @return AccountAcl
-     */
-    public function setShowDetails(bool $showDetails): AccountAcl
-    {
-        $this->showDetails = $showDetails;
-
-        return $this;
-    }
-
-    public function isShowPass(): bool
-    {
-        return ($this->actionId === AclActionsInterface::ACCOUNT_CREATE
-                || $this->actionId === AclActionsInterface::ACCOUNT_COPY);
-    }
-
-    /**
-     * @param  bool  $showPass
+     * @param int $actionId
+     * @param AccountAclDto $accountAclDto
+     * @param bool $isHistory
      *
-     * @return AccountAcl
+     * @return AccountPermission
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function setShowPass(bool $showPass): AccountAcl
+    public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission
     {
-        $this->showPass = $showPass;
+        $this->accountAcl = new AccountPermission($actionId, $isHistory);
+        $this->accountAcl->setShowPermission(
+            self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
+        );
 
-        return $this;
-    }
+        $this->accountAclDto = $accountAclDto;
 
-    public function isShowFiles(): bool
-    {
-        return $this->showFiles
-               && ($this->actionId === AclActionsInterface::ACCOUNT_EDIT
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW);
-    }
+        if (null !== $this->fileCache) {
+            $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
-    public function setShowFiles(bool $showFiles): AccountAcl
-    {
-        $this->showFiles = $this->resultView && $showFiles;
+            if (null !== $accountAcl) {
+                $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
+                              || $this->userData->getLastUpdate() > $accountAcl->getTime();
 
-        return $this;
-    }
+                if (!$isModified) {
+                    $this->eventDispatcher->notify(
+                        'get.acl',
+                        new Event($this, EventMessage::factory()->addDescription('Account ACL HIT'))
+                    );
 
-    public function isShowViewPass(): bool
-    {
-        return $this->showViewPass
-               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW_PASS
-                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
-    }
+                    return $accountAcl;
+                }
 
-    public function setShowViewPass(bool $showViewPass): AccountAcl
-    {
-        $this->showViewPass = $this->resultView && $showViewPass;
-
-        return $this;
-    }
-
-    public function isShowSave(): bool
-    {
-        return $this->actionId === AclActionsInterface::ACCOUNT_EDIT
-               || $this->actionId === AclActionsInterface::ACCOUNT_CREATE
-               || $this->actionId === AclActionsInterface::ACCOUNT_COPY;
-    }
-
-    /**
-     * @param  bool  $showSave
-     *
-     * @return AccountAcl
-     */
-    public function setShowSave(bool $showSave): AccountAcl
-    {
-        $this->showSave = $showSave;
-
-        return $this;
-    }
-
-    public function isShowEdit(): bool
-    {
-        return $this->showEdit
-               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW);
-    }
-
-    public function setShowEdit(bool $showEdit): AccountAcl
-    {
-        $this->showEdit = $this->resultEdit && $showEdit && !$this->isHistory;
-
-        return $this;
-    }
-
-    public function isShowEditPass(): bool
-    {
-        return $this->showEditPass
-               && ($this->actionId === AclActionsInterface::ACCOUNT_EDIT
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW);
-    }
-
-    public function setShowEditPass(bool $showEditPass): AccountAcl
-    {
-        $this->showEditPass = $this->resultEdit && $showEditPass && !$this->isHistory;
-
-        return $this;
-    }
-
-    public function isShowDelete(): bool
-    {
-        return $this->showDelete
-               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === AclActionsInterface::ACCOUNT_DELETE
-                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
-    }
-
-    public function setShowDelete(bool $showDelete): AccountAcl
-    {
-        $this->showDelete = $this->resultEdit && $showDelete;
-
-        return $this;
-    }
-
-    public function isShowRestore(): bool
-    {
-        return $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW && $this->showRestore;
-    }
-
-    public function setShowRestore(bool $showRestore): AccountAcl
-    {
-        $this->showRestore = $this->resultEdit && $showRestore;
-
-        return $this;
-    }
-
-    public function isShowLink(): bool
-    {
-        return $this->showLink;
-    }
-
-    public function setShowLink(bool $showLink): AccountAcl
-    {
-        $this->showLink = $showLink;
-
-        return $this;
-    }
-
-    public function isShowHistory(): bool
-    {
-        return $this->showHistory
-               && ($this->actionId === AclActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_HISTORY_VIEW);
-    }
-
-    public function setShowHistory(bool $showHistory): AccountAcl
-    {
-        $this->showHistory = $showHistory;
-
-        return $this;
-    }
-
-    public function isShow(): bool
-    {
-        return ($this->showView || $this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete);
-    }
-
-    public function getActionId(): int
-    {
-        return $this->actionId;
-    }
-
-    public function setActionId(int $actionId): AccountAcl
-    {
-        $this->actionId = $actionId;
-
-        return $this;
-    }
-
-    public function getTime(): int
-    {
-        return $this->time;
-    }
-
-    public function setTime(int $time): AccountAcl
-    {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    /**
-     * Comprueba los permisos de acceso a una cuenta.
-     */
-    public function checkAccountAccess(int $actionId): bool
-    {
-        if ($this->compiledAccountAccess === false) {
-            return false;
+                $this->accountAcl->setModified(true);
+            }
         }
 
-        if (in_array($actionId, self::ACTIONS_VIEW, true)) {
-            return $this->resultView;
+        $this->eventDispatcher->notify(
+            'get.acl',
+            new Event($this, EventMessage::factory()->addDescription('Account ACL MISS'))
+        );
+
+        $this->accountAcl->setAccountId($accountAclDto->getAccountId());
+
+        return $this->buildAcl();
+    }
+
+    /**
+     * Sets grants which don't need the account's data
+     *
+     * @param UserLoginResponse $userData
+     * @param ProfileData $profileData
+     *
+     * @return bool
+     */
+    public static function getShowPermission(UserLoginResponse $userData, ProfileData $profileData): bool
+    {
+        return $userData->getIsAdminApp()
+               || $userData->getIsAdminAcc()
+               || $profileData->isAccPermission();
+    }
+
+    /**
+     * Resturns an stored ACL
+     *
+     * @param int $accountId
+     * @param int $actionId
+     *
+     * @return AccountPermission|null
+     */
+    public function getAclFromCache(int $accountId, int $actionId): ?AccountPermission
+    {
+        try {
+            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
+
+            if ($acl instanceof AccountPermission) {
+                return $acl;
+            }
+        } catch (FileException $e) {
+            processException($e);
         }
 
-        if (in_array($actionId, self::ACTIONS_EDIT, true)) {
-            return $this->resultEdit;
+        return null;
+    }
+
+    /**
+     * @param int $accountId
+     * @param int $actionId
+     *
+     * @return string
+     */
+    private function getCacheFileForAcl(int $accountId, int $actionId): string
+    {
+        $userId = $this->context->getUserData()->getId();
+
+        return self::ACL_PATH
+               . $userId
+               . DIRECTORY_SEPARATOR
+               . $accountId
+               . DIRECTORY_SEPARATOR
+               . md5($userId . $accountId . $actionId)
+               . '.cache';
+    }
+
+    /**
+     * Crear la ACL de una cuenta
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function buildAcl(): AccountPermission
+    {
+        $this->compileAccountAccess();
+        $this->accountAcl->setCompiledAccountAccess(true);
+
+        $this->compileShowAccess();
+        $this->accountAcl->setCompiledShowAccess(true);
+
+        $this->accountAcl->setTime(time());
+
+        $this->saveAclInCache($this->accountAcl);
+
+        return $this->accountAcl;
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function compileAccountAccess(): void
+    {
+        $this->accountAcl->setResultView(false);
+        $this->accountAcl->setResultEdit(false);
+
+        // Check out if user is admin or owner/maingroup
+        if ($this->userData->getIsAdminApp()
+            || $this->userData->getIsAdminAcc()
+            || $this->userData->getId() === $this->accountAclDto->getUserId()
+            || $this->userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
+        ) {
+            $this->accountAcl->setResultView(true);
+            $this->accountAcl->setResultEdit(true);
+
+            return;
         }
 
-        return false;
+        // Check out if user is listed in secondary users of the account
+        $userInUsers = $this->getUserInSecondaryUsers($this->userData->getId());
+        $this->accountAcl->setUserInUsers(count($userInUsers) > 0);
+
+        if ($this->accountAcl->isUserInUsers()) {
+            $this->accountAcl->setResultView(true);
+            $this->accountAcl->setResultEdit((int)$userInUsers[0]['isEdit'] === 1);
+
+            return;
+        }
+
+        // Analyze user's groups
+        // Groups in which the user is listed in
+        $userGroups = array_map(
+            static fn($value) => (int)$value->userGroupId,
+            $this->userToUserGroupService->getGroupsForUser($this->userData->getId())
+        );
+
+        // Check out if user groups match with account's main group
+        if ($this->getUserGroupsInMainGroup($userGroups)) {
+            $this->accountAcl->setUserInGroups(true);
+            $this->accountAcl->setResultView(true);
+            $this->accountAcl->setResultEdit(true);
+
+            return;
+        }
+
+        // Check out if user groups match with account's secondary groups
+        $userGroupsInSecondaryUserGroups =
+            $this->getUserGroupsInSecondaryGroups(
+                $userGroups,
+                $this->userData->getUserGroupId()
+            );
+
+        $this->accountAcl->setUserInGroups(count($userGroupsInSecondaryUserGroups) > 0);
+
+        if ($this->accountAcl->isUserInGroups()) {
+            $this->accountAcl->setResultView(true);
+            $this->accountAcl->setResultEdit((int)$userGroupsInSecondaryUserGroups[0]['isEdit'] === 1);
+        }
     }
 
-    public function isModified(): bool
+    /**
+     * Checks if the user is listed in the account users
+     *
+     * @param int $userId
+     *
+     * @return array
+     */
+    private function getUserInSecondaryUsers(int $userId): array
     {
-        return $this->modified;
+        return array_values(
+            array_filter(
+                $this->accountAclDto->getUsersId(),
+                static function ($value) use ($userId) {
+                    return (int)$value->getId() === $userId;
+                }
+            )
+        );
     }
 
-    public function setModified(bool $modified): AccountAcl
+    /**
+     * Comprobar si los grupos del usuario está vinculado desde el grupo principal de la cuenta
+     *
+     * @param array $userGroups
+     *
+     * @return bool
+     */
+    private function getUserGroupsInMainGroup(array $userGroups): bool
     {
-        $this->modified = $modified;
-
-        return $this;
+        // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
+        return in_array($this->accountAclDto->getUserGroupId(), $userGroups, true);
     }
 
-    public function isShowView(): bool
+    /**
+     * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
+     * cuenta.
+     *
+     * @param array $userGroups
+     * @param int $userGroupId
+     *
+     * @return array
+     */
+    private function getUserGroupsInSecondaryGroups(array $userGroups, int $userGroupId): array
     {
-        return $this->showView;
+        $isAccountFullGroupAccess = $this->config->getConfigData()->isAccountFullGroupAccess();
+
+        // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
+        return array_values(
+            array_filter(
+                $this->accountAclDto->getUserGroupsId(),
+                static function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
+                    return (int)$value->getId() === $userGroupId
+                           // o... permitir los grupos que no sean el principal del usuario?
+                           || ($isAccountFullGroupAccess
+                               // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
+                               && in_array((int)$value->getId(), $userGroups, true));
+                }
+            )
+        );
     }
 
-    public function setShowView(bool $showView): AccountAcl
+    /**
+     * compileShowAccess
+     */
+    private function compileShowAccess(): void
     {
-        $this->showView = $this->resultView && $showView;
+        // Mostrar historial
+        $this->accountAcl->setShowHistory($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW));
 
-        return $this;
+        // Mostrar lista archivos
+        $this->accountAcl->setShowFiles($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE));
+
+        // Mostrar acción de ver clave
+        $this->accountAcl->setShowViewPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW_PASS));
+
+        // Mostrar acción de editar
+        $this->accountAcl->setShowEdit($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
+
+        // Mostrar acción de editar clave
+        $this->accountAcl->setShowEditPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS));
+
+        // Mostrar acción de eliminar
+        $this->accountAcl->setShowDelete($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE));
+
+        // Mostrar acción de restaurar
+        $this->accountAcl->setShowRestore($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
+
+        // Mostrar acción de enlace público
+        $this->accountAcl->setShowLink($this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE));
+
+        // Mostrar acción de ver cuenta
+        $this->accountAcl->setShowView($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW));
+
+        // Mostrar acción de copiar cuenta
+        $this->accountAcl->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
     }
 
-    public function isShowCopy(): bool
+    /**
+     * Saves the ACL
+     *
+     * @param AccountPermission $accountAcl
+     *
+     * @return void
+     */
+    private function saveAclInCache(AccountPermission $accountAcl): void
     {
-        return $this->showCopy
-               && ($this->actionId === AclActionsInterface::ACCOUNT_SEARCH
-                   || $this->actionId === AclActionsInterface::ACCOUNT_VIEW
-                   || $this->actionId === AclActionsInterface::ACCOUNT_EDIT);
-    }
+        if (null === $this->fileCache) {
+            return;
+        }
 
-    public function setShowCopy(bool $showCopy): AccountAcl
-    {
-        $this->showCopy = $this->resultView && $showCopy;
-
-        return $this;
-    }
-
-    public function isShowPermission(): bool
-    {
-        return $this->showPermission;
-    }
-
-    public function setShowPermission(bool $showPermission): AccountAcl
-    {
-        $this->showPermission = $showPermission;
-
-        return $this;
-    }
-
-    public function getAccountId(): ?int
-    {
-        return $this->accountId;
-    }
-
-    public function setAccountId(int $accountId): AccountAcl
-    {
-        $this->accountId = $accountId;
-
-        return $this;
-    }
-
-    public function isCompiledShowAccess(): bool
-    {
-        return $this->compiledShowAccess;
-    }
-
-    public function setCompiledShowAccess(bool $compiledShowAccess): AccountAcl
-    {
-        $this->compiledShowAccess = $compiledShowAccess;
-
-        return $this;
-    }
-
-    public function isCompiledAccountAccess(): bool
-    {
-        return $this->compiledAccountAccess;
-    }
-
-    public function setCompiledAccountAccess(bool $compiledAccountAccess): AccountAcl
-    {
-        $this->compiledAccountAccess = $compiledAccountAccess;
-
-        return $this;
+        try {
+            $this->fileCache->save(
+                $accountAcl,
+                $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
+            );
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 }

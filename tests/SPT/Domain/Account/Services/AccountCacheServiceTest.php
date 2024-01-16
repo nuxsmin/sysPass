@@ -26,12 +26,13 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountCacheDto;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
-use SP\Domain\Account\Services\AccountCacheService;
+use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Services\AccountCache;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Account\Repositories\AccountToUserGroup;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\UnitaryTestCase;
 
@@ -43,9 +44,9 @@ use SPT\UnitaryTestCase;
 class AccountCacheServiceTest extends UnitaryTestCase
 {
 
-    private AccountToUserRepositoryInterface|MockObject      $accountToUserRepository;
-    private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
-    private AccountCacheService                              $accountCacheService;
+    private AccountToUserRepository|MockObject $accountToUserRepository;
+    private AccountToUserGroup|MockObject      $accountToUserGroupRepository;
+    private AccountCache                       $accountCache;
 
     /**
      * @throws QueryException
@@ -71,7 +72,7 @@ class AccountCacheServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn(new QueryResult([1, 2, 3]));
 
-        $out = $this->accountCacheService->getCacheForAccount($accountId, $dateEdit);
+        $out = $this->accountCache->getCacheForAccount($accountId, $dateEdit);
 
         $this->assertEquals($accountCacheDto, $out);
     }
@@ -97,7 +98,7 @@ class AccountCacheServiceTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('getUserGroupsByAccountId');
 
-        $out = $this->accountCacheService->getCacheForAccount($accountId, $accountCacheDto->getTime());
+        $out = $this->accountCache->getCacheForAccount($accountId, $accountCacheDto->getTime());
 
         $this->assertEquals($accountCacheDto, $out);
     }
@@ -106,10 +107,10 @@ class AccountCacheServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
-        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
 
-        $this->accountCacheService = new AccountCacheService(
+        $this->accountCache = new AccountCache(
             $this->application,
             $this->accountToUserRepository,
             $this->accountToUserGroupRepository

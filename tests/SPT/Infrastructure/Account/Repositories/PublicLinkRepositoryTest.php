@@ -28,12 +28,12 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Account\Repositories\PublicLinkRepository;
+use SP\Infrastructure\Account\Repositories\PublicLink;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -48,7 +48,7 @@ use SPT\UnitaryTestCase;
 class PublicLinkRepositoryTest extends UnitaryTestCase
 {
 
-    private PublicLinkRepository         $publicLinkRepository;
+    private PublicLink $publicLink;
     private MockObject|DatabaseInterface $database;
 
     /**
@@ -73,7 +73,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->publicLinkRepository->delete($id);
+        $this->publicLink->delete($id);
     }
 
     public function testSearch(): void
@@ -83,7 +83,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->getSeachString().'%';
+                $searchStringLike = '%' . $item->getSeachString() . '%';
 
                 return $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
@@ -99,7 +99,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->search($item);
+        $this->publicLink->search($item);
     }
 
     public function testGetHashForItem(): void
@@ -119,7 +119,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->getHashForItem($itemId);
+        $this->publicLink->getHashForItem($itemId);
     }
 
     public function testGetById(): void
@@ -139,7 +139,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->getById($id);
+        $this->publicLink->getById($id);
     }
 
     /**
@@ -169,29 +169,29 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->assertTrue($this->publicLinkRepository->addLinkView($publicLinkData));
+        $this->assertTrue($this->publicLink->addLinkView($publicLinkData));
     }
 
-    private function buildPublicLinkData(): PublicLink
+    private function buildPublicLinkData(): PublicLinkModel
     {
         $data = [
-            'id'              => self::$faker->randomNumber(),
-            'itemId'          => self::$faker->randomNumber(),
-            'hash'            => self::$faker->sha1,
-            'userId'          => self::$faker->randomNumber(),
-            'typeId'          => self::$faker->randomNumber(),
-            'notify'          => self::$faker->boolean,
-            'dateAdd'         => self::$faker->unixTime,
-            'dateUpdate'      => self::$faker->unixTime,
-            'dateExpire'      => self::$faker->unixTime,
-            'countViews'      => self::$faker->randomNumber(),
+            'id' => self::$faker->randomNumber(),
+            'itemId' => self::$faker->randomNumber(),
+            'hash' => self::$faker->sha1,
+            'userId' => self::$faker->randomNumber(),
+            'typeId' => self::$faker->randomNumber(),
+            'notify' => self::$faker->boolean,
+            'dateAdd' => self::$faker->unixTime,
+            'dateUpdate' => self::$faker->unixTime,
+            'dateExpire' => self::$faker->unixTime,
+            'countViews' => self::$faker->randomNumber(),
             'totalCountViews' => self::$faker->randomNumber(),
-            'maxCountViews'   => self::$faker->randomNumber(),
-            'useInfo'         => self::$faker->text(),
-            'data'            => self::$faker->text(),
+            'maxCountViews' => self::$faker->randomNumber(),
+            'useInfo' => self::$faker->text(),
+            'data' => self::$faker->text(),
         ];
 
-        return new PublicLink($data);
+        return new PublicLinkModel($data);
     }
 
     /**
@@ -233,7 +233,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with(...self::withConsecutive([$callbackCheckDuplicate], [$callbackCreate]))
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->create($publicLinkData);
+        $this->publicLink->create($publicLinkData);
     }
 
     /**
@@ -262,7 +262,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $this->expectException(DuplicatedItemException::class);
         $this->expectExceptionMessage('Link already created');
 
-        $this->publicLinkRepository->create($publicLinkData);
+        $this->publicLink->create($publicLinkData);
     }
 
     public function testGetAll(): void
@@ -280,7 +280,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->getAll();
+        $this->publicLink->getAll();
     }
 
     /**
@@ -311,7 +311,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->refresh($publicLinkData);
+        $this->publicLink->refresh($publicLinkData);
     }
 
     /**
@@ -339,7 +339,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->deleteByIdBatch($ids);
+        $this->publicLink->deleteByIdBatch($ids);
     }
 
     /**
@@ -351,7 +351,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $this->database->expects(self::never())
                        ->method('doQuery');
 
-        $this->assertEquals(0, $this->publicLinkRepository->deleteByIdBatch([]));
+        $this->assertEquals(0, $this->publicLink->deleteByIdBatch([]));
     }
 
     public function testGetByHash(): void
@@ -371,7 +371,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->getByHash($hash);
+        $this->publicLink->getByHash($hash);
     }
 
     /**
@@ -405,7 +405,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->update($publicLinkData);
+        $this->publicLink->update($publicLinkData);
     }
 
     public function testSearchWithoutString(): void
@@ -426,7 +426,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->publicLinkRepository->search(new ItemSearchData());
+        $this->publicLink->search(new ItemSearchData());
     }
 
     protected function setUp(): void
@@ -436,7 +436,7 @@ class PublicLinkRepositoryTest extends UnitaryTestCase
         $this->database = $this->createMock(DatabaseInterface::class);
         $queryFactory = new QueryFactory('mysql');
 
-        $this->publicLinkRepository = new PublicLinkRepository(
+        $this->publicLink = new PublicLink(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

@@ -25,8 +25,8 @@
 namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Account\Ports\AccountToFavoriteRepositoryInterface;
-use SP\Domain\Account\Services\AccountToFavoriteService;
+use SP\Domain\Account\Ports\AccountToFavoriteRepository;
+use SP\Domain\Account\Services\AccountToFavorite;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -41,8 +41,8 @@ use SPT\UnitaryTestCase;
 class AccountToFavoriteServiceTest extends UnitaryTestCase
 {
 
-    private AccountToFavoriteRepositoryInterface|MockObject $accountToFavoriteRepository;
-    private AccountToFavoriteService                        $accountToFavoriteService;
+    private AccountToFavoriteRepository|MockObject $accountToFavoriteRepository;
+    private AccountToFavorite                      $accountToFavorite;
 
     /**
      * @throws QueryException
@@ -60,7 +60,7 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
             ->with($userId)
             ->willReturn($result);
 
-        $actual = $this->accountToFavoriteService->getForUserId($userId);
+        $actual = $this->accountToFavorite->getForUserId($userId);
 
         $this->assertEquals($result->getDataAsArray(), $actual);
     }
@@ -80,7 +80,7 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
                                           ->with($accountId, $userId)
                                           ->willReturn($out);
 
-        $actual = $this->accountToFavoriteService->delete($accountId, $userId);
+        $actual = $this->accountToFavorite->delete($accountId, $userId);
 
         $this->assertEquals($out, $actual);
     }
@@ -100,7 +100,7 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
                                           ->with($accountId, $userId)
                                           ->willReturn($out);
 
-        $actual = $this->accountToFavoriteService->add($accountId, $userId);
+        $actual = $this->accountToFavorite->add($accountId, $userId);
 
         $this->assertEquals($out, $actual);
     }
@@ -109,10 +109,10 @@ class AccountToFavoriteServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToFavoriteRepository = $this->createMock(AccountToFavoriteRepositoryInterface::class);
+        $this->accountToFavoriteRepository = $this->createMock(AccountToFavoriteRepository::class);
 
-        $this->accountToFavoriteService =
-            new AccountToFavoriteService($this->application, $this->accountToFavoriteRepository);
+        $this->accountToFavorite =
+            new AccountToFavorite($this->application, $this->accountToFavoriteRepository);
     }
 
 }

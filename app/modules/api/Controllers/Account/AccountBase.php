@@ -29,8 +29,8 @@ use Klein\Klein;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountAdapterInterface;
-use SP\Domain\Account\Ports\AccountPresetServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -43,9 +43,9 @@ use SP\Modules\Api\Controllers\Help\AccountHelp;
  */
 abstract class AccountBase extends ControllerBase
 {
-    protected AccountPresetServiceInterface $accountPresetService;
-    protected AccountServiceInterface       $accountService;
-    protected CustomFieldServiceInterface   $customFieldService;
+    protected AccountPresetService        $accountPresetService;
+    protected AccountService              $accountService;
+    protected CustomFieldServiceInterface $customFieldService;
     protected AccountAdapterInterface       $accountAdapter;
 
     /**
@@ -56,8 +56,8 @@ abstract class AccountBase extends ControllerBase
         Klein                       $router,
         ApiServiceInterface         $apiService,
         AclInterface                $acl,
-        AccountPresetServiceInterface $accountPresetService,
-        AccountServiceInterface     $accountService,
+        AccountPresetService $accountPresetService,
+        AccountService       $accountService,
         CustomFieldServiceInterface $customFieldService,
         AccountAdapterInterface     $accountAdapter
     ) {

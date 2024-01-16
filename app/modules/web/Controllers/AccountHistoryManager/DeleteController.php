@@ -29,8 +29,8 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -47,13 +47,13 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private AccountServiceInterface        $accountService;
+    private AccountHistoryService $accountHistoryService;
+    private AccountService        $accountService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountHistoryServiceInterface $accountHistoryService
+        AccountHistoryService $accountHistoryService
     ) {
         $this->accountHistoryService = $accountHistoryService;
 

@@ -31,7 +31,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -44,12 +44,12 @@ final class SaveEditRestoreController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface $accountService;
+    private AccountService $accountService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService
+        AccountService $accountService
     ) {
         parent::__construct(
             $application,

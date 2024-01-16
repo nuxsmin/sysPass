@@ -26,8 +26,8 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\PublickLinkOldData;
-use SP\Domain\Account\Ports\PublicLinkRepositoryInterface;
-use SP\Domain\Account\Services\UpgradePublicLinkService;
+use SP\Domain\Account\Ports\PublicLinkRepository;
+use SP\Domain\Account\Services\UpgradePublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\PublicLinkDataGenerator;
@@ -42,10 +42,10 @@ use SPT\UnitaryTestCase;
 class UpgradePublicLinkServiceTest extends UnitaryTestCase
 {
 
-    private PublicLinkRepositoryInterface|MockObject $publicLinkRepository;
-    private UpgradePublicLinkService                 $upgradePublicLinkService;
+    private PublicLinkRepository|MockObject $publicLinkRepository;
+    private UpgradePublicLink               $upgradePublicLinkService;
 
-    public function testUpgrade_300_18010101()
+    public function testUpgradeV300B18010101()
     {
         $publicLink = PublicLinkDataGenerator::factory()->buildPublicLink();
 
@@ -75,7 +75,7 @@ class UpgradePublicLinkServiceTest extends UnitaryTestCase
             ->method('update')
             ->with($publicLink->mutate(['dateUpdate' => null, 'totalCountViews' => null]));
 
-        $this->upgradePublicLinkService->upgrade_300_18010101();
+        $this->upgradePublicLinkService->upgradeV300B18010101();
     }
 
     protected function setUp(): void
@@ -85,6 +85,6 @@ class UpgradePublicLinkServiceTest extends UnitaryTestCase
         $this->publicLinkRepository =
             $this->getMockForAbstractClass(PublicLinkRepositoryStub::class);
 
-        $this->upgradePublicLinkService = new UpgradePublicLinkService($this->application, $this->publicLinkRepository);
+        $this->upgradePublicLinkService = new UpgradePublicLink($this->application, $this->publicLinkRepository);
     }
 }

@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
-use SP\Domain\Account\Services\AccountAcl;
-use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -75,13 +75,13 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl $accountAcl
+     * @param \SP\Domain\Account\Adapters\AccountPermission $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
     public function getActionsForAccount(
-        AccountAcl $accountAcl,
+        AccountPermission $accountAcl,
         AccountActionsDto $accountActionsDto
     ): array {
         $actions = [];
@@ -247,13 +247,13 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl $accountAcl
+     * @param \SP\Domain\Account\Adapters\AccountPermission $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
     public function getActionsGrouppedForAccount(
-        AccountAcl $accountAcl,
+        AccountPermission $accountAcl,
         AccountActionsDto $accountActionsDto
     ): array {
         $userData = $this->context->getUserData();

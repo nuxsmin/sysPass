@@ -26,14 +26,14 @@
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
- * @var AccountSearchItem $account
+ * @var \SP\Domain\Account\Adapters\AccountSearchItem $account
  * @var DataGridTab $data
  * @var DataGridActionBase $actionMenu
  * @var DataGridActionBase $action
  * @var AccountSearchItem $accountSearchItem
  */
 
-use SP\Domain\Account\Services\AccountSearchItem;
+use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;

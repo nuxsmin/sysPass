@@ -27,7 +27,7 @@ namespace SP\Providers\Acl;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\Services\AccountAclService;
+use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -132,8 +132,8 @@ final class AclHandler extends Provider implements EventReceiver
         logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
-            if (FileUtil::rmdirRecursive(AccountAclService::ACL_PATH . $userId) === false) {
-                logger(sprintf('Unable to delete %s directory', AccountAclService::ACL_PATH . $userId));
+            if (FileUtil::rmdirRecursive(AccountAcl::ACL_PATH . $userId) === false) {
+                logger(sprintf('Unable to delete %s directory', AccountAcl::ACL_PATH . $userId));
 
                 return false;
             }

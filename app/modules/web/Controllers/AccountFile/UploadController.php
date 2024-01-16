@@ -30,8 +30,8 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\FileData;
-use SP\Domain\Account\Ports\AccountFileServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountFileService;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
@@ -49,14 +49,14 @@ final class UploadController extends ControllerBase
 {
     use JsonTrait;
 
-    private AccountFileServiceInterface $accountFileService;
-    private AccountServiceInterface     $accountService;
+    private AccountFileService $accountFileService;
+    private AccountService     $accountService;
 
     public function __construct(
         Application             $application,
         WebControllerHelper     $webControllerHelper,
-        AccountFileServiceInterface $accountFileService,
-        AccountServiceInterface $accountService
+        AccountFileService $accountFileService,
+        AccountService     $accountService
     ) {
         parent::__construct($application, $webControllerHelper);
 

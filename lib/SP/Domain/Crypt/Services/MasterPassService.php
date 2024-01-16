@@ -27,7 +27,7 @@ namespace SP\Domain\Crypt\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Domain\Account\Ports\AccountCryptServiceInterface;
+use SP\Domain\Account\Ports\AccountCryptService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
@@ -49,15 +49,15 @@ final class MasterPassService extends Service implements MasterPassServiceInterf
     public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
-    protected Config $configService;
-    protected AccountCryptServiceInterface $accountCryptService;
-    protected CustomFieldCryptService      $customFieldCryptService;
+    protected Config                  $configService;
+    protected AccountCryptService     $accountCryptService;
+    protected CustomFieldCryptService $customFieldCryptService;
 
     public function __construct(
-        Application                           $application,
-        ConfigService $configService,
-        AccountCryptServiceInterface          $accountCryptService,
-        CustomFieldCryptServiceInterface      $customFieldCryptService
+        Application                      $application,
+        ConfigService                    $configService,
+        AccountCryptService              $accountCryptService,
+        CustomFieldCryptServiceInterface $customFieldCryptService
     ) {
         parent::__construct($application);
 

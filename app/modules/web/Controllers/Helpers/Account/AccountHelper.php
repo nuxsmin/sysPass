@@ -30,14 +30,14 @@ use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ProfileData;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Account\Ports\AccountAclServiceInterface;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Ports\PublicLinkServiceInterface;
-use SP\Domain\Account\Services\AccountAcl;
-use SP\Domain\Account\Services\PublicLinkService;
+use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkService;
+use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
 use SP\Domain\Common\Services\ServiceException;
@@ -73,17 +73,17 @@ final class AccountHelper extends AccountHelperBase
 {
     use ItemTrait;
 
-    private AccountServiceInterface        $accountService;
-    private AccountHistoryServiceInterface $accountHistoryService;
-    private PublicLinkServiceInterface     $publicLinkService;
-    private ItemPresetServiceInterface     $itemPresetService;
-    private MasterPassServiceInterface     $masterPassService;
-    private AccountAclServiceInterface     $accountAclService;
-    private CategoryServiceInterface       $categoryService;
+    private AccountService              $accountService;
+    private AccountHistoryService       $accountHistoryService;
+    private PublicLinkService           $publicLinkService;
+    private ItemPresetServiceInterface  $itemPresetService;
+    private MasterPassServiceInterface  $masterPassService;
+    private AccountAclService           $accountAclService;
+    private CategoryServiceInterface    $categoryService;
     private ClientServiceInterface         $clientService;
-    private CustomFieldServiceInterface    $customFieldService;
-    private ?AccountAcl                    $accountAcl = null;
-    private ?int                           $accountId  = null;
+    private CustomFieldServiceInterface $customFieldService;
+    private ?AccountPermission          $accountAcl = null;
+    private ?int                        $accountId  = null;
     private UserServiceInterface           $userService;
     private UserGroupServiceInterface      $userGroupService;
     private TagServiceInterface            $tagService;
@@ -93,19 +93,19 @@ final class AccountHelper extends AccountHelperBase
         TemplateInterface           $template,
         RequestInterface            $request,
         AclInterface                $acl,
-        AccountServiceInterface     $accountService,
-        AccountHistoryServiceInterface $accountHistoryService,
-        PublicLinkServiceInterface  $publicLinkService,
+        AccountService            $accountService,
+        AccountHistoryService     $accountHistoryService,
+        PublicLinkService         $publicLinkService,
         ItemPresetServiceInterface  $itemPresetService,
         MasterPassServiceInterface  $masterPassService,
         AccountActionsHelper        $accountActionsHelper,
-        AccountAclServiceInterface  $accountAclService,
+        AccountAclService         $accountAclService,
         CategoryServiceInterface    $categoryService,
         ClientServiceInterface      $clientService,
         CustomFieldServiceInterface $customFieldService,
-        UserServiceInterface $userService,
+        UserServiceInterface      $userService,
         UserGroupServiceInterface $userGroupService,
-        TagServiceInterface $tagService
+        TagServiceInterface       $tagService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 
@@ -222,7 +222,7 @@ final class AccountHelper extends AccountHelperBase
 
                 $this->view->assign(
                     'publicLinkUrl',
-                    PublicLinkService::getLinkForHash(
+                    PublicLink::getLinkForHash(
                         $baseUrl,
                         $publicLinkData->getHash()
                     )
@@ -294,12 +294,12 @@ final class AccountHelper extends AccountHelperBase
      *
      * @param AccountEnrichedDto $accountDetailsResponse
      *
-     * @return AccountAcl
+     * @return AccountPermission
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function checkAccess(AccountEnrichedDto $accountDetailsResponse): AccountAcl
+    protected function checkAccess(AccountEnrichedDto $accountDetailsResponse): AccountPermission
     {
         $accountAcl = $this->accountAclService->getAcl(
             $this->actionId,
@@ -396,7 +396,7 @@ final class AccountHelper extends AccountHelperBase
     public function setViewForBlank(int $actionId): void
     {
         $this->actionId = $actionId;
-        $this->accountAcl = new AccountAcl($actionId);
+        $this->accountAcl = new AccountPermission($actionId);
 
         $this->checkActionAccess();
 

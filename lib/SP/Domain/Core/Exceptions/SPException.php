@@ -26,8 +26,6 @@ namespace SP\Domain\Core\Exceptions;
 
 use Exception;
 
-defined('APP_ROOT') || die();
-
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */

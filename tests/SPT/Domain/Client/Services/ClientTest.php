@@ -28,7 +28,7 @@ use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Client\Services\Client;
 use SP\Domain\Common\Services\ServiceException;
@@ -51,8 +51,8 @@ class ClientTest extends UnitaryTestCase
 {
 
     private ClientRepositoryInterface|MockObject $clientRepository;
-    private Client                               $clientService;
-    private AccountFilterUserInterface|Stub      $accountFilterUser;
+    private Client                    $clientService;
+    private AccountFilterBuilder|Stub $accountFilterUser;
 
     /**
      * @throws NoSuchItemException
@@ -334,7 +334,7 @@ class ClientTest extends UnitaryTestCase
 
         $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
 
-        $this->accountFilterUser = $this->createStub(AccountFilterUserInterface::class);
+        $this->accountFilterUser = $this->createStub(AccountFilterBuilder::class);
         $this->accountFilterUser->method('buildFilter')
                                 ->willReturn($select);
 

@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Models\Client;
@@ -54,7 +54,7 @@ trait ImportTrait
     protected bool                   $mPassValidHash = false;
     protected int                    $counter        = 0;
     protected ImportParams           $importParams;
-    private AccountServiceInterface  $accountService;
+    private AccountService $accountService;
     private CategoryServiceInterface $categoryService;
     private ClientServiceInterface   $clientService;
     private TagServiceInterface      $tagService;

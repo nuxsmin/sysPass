@@ -34,8 +34,8 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\PhpExtensionChecker;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Ports\AccountToTagServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryServiceInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
@@ -64,9 +64,9 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private ConfigDataInterface          $configData;
     private PhpExtensionChecker          $extensionChecker;
     private ClientServiceInterface       $clientService;
-    private AccountServiceInterface      $accountService;
-    private AccountToTagServiceInterface $accountToTagService;
-    private CategoryServiceInterface     $categoryService;
+    private AccountService           $accountService;
+    private AccountToTagService      $accountToTagService;
+    private CategoryServiceInterface $categoryService;
     private TagServiceInterface          $tagService;
     private ?DOMDocument                 $xml        = null;
     private ?DOMElement                  $root       = null;
@@ -76,13 +76,13 @@ final class XmlExportService extends Service implements XmlExportServiceInterfac
     private ?string                      $exportFile = null;
 
     public function __construct(
-        Application $application,
-        PhpExtensionChecker $extensionChecker,
+        Application            $application,
+        PhpExtensionChecker    $extensionChecker,
         ClientServiceInterface $clientService,
-        AccountServiceInterface $accountService,
-        AccountToTagServiceInterface $accountToTagService,
+        AccountService         $accountService,
+        AccountToTagService    $accountToTagService,
         CategoryServiceInterface $categoryService,
-        TagServiceInterface $tagService
+        TagServiceInterface    $tagService
 
     ) {
         parent::__construct($application);

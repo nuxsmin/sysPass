@@ -26,7 +26,7 @@ namespace SP\Domain\Client\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepositoryInterface;
 use SP\Domain\Client\Ports\ClientServiceInterface;
@@ -52,7 +52,7 @@ final class Client extends Service implements ClientServiceInterface
     public function __construct(
         Application                                 $application,
         private readonly ClientRepositoryInterface  $clientRepository,
-        private readonly AccountFilterUserInterface $accountFilterUser
+        private readonly AccountFilterBuilder $accountFilterUser
     ) {
         parent::__construct($application);
     }

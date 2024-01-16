@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\Ports\AccountServiceInterface;
+use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,14 +48,14 @@ final class ViewPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountServiceInterface    $accountService;
-    private AccountPasswordHelper      $accountPasswordHelper;
+    private AccountService        $accountService;
+    private AccountPasswordHelper $accountPasswordHelper;
     private ItemPresetServiceInterface $itemPresetService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountServiceInterface $accountService,
+        Application           $application,
+        WebControllerHelper   $webControllerHelper,
+        AccountService        $accountService,
         AccountPasswordHelper $accountPasswordHelper,
         ItemPresetServiceInterface $itemPresetService
     ) {

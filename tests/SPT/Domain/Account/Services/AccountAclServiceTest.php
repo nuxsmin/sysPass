@@ -27,9 +27,9 @@ namespace SPT\Domain\Account\Services;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Acl\Acl;
 use SP\DataModel\ItemData;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
-use SP\Domain\Account\Services\AccountAclService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
@@ -60,8 +60,8 @@ class AccountAclServiceTest extends UnitaryTestCase
         AclActionsInterface::ACCOUNT_COPY_PASS,
         AclActionsInterface::ACCOUNT_DELETE,
     ];
-    private static array      $accounts;
-    private AccountAclService $accountAclService;
+    private static array $accounts;
+    private AccountAcl   $accountAcl;
 
     public static function setUpBeforeClass(): void
     {
@@ -200,17 +200,19 @@ class AccountAclServiceTest extends UnitaryTestCase
 
     /**
      * @param AccountAclDto $accountAclDto The ACL dto to compile the ACL for the user
-     * @param AccountAcl $example An example ACL to test against the compiled ACL
+     * @param AccountPermission $example An example ACL to test against the compiled ACL
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function checkForUserByExample(AccountAclDto $accountAclDto, AccountAcl $example): void
-    {
+    private function checkForUserByExample(
+        AccountAclDto     $accountAclDto,
+        AccountPermission $example
+    ): void {
         foreach (self::ACTIONS as $action) {
             $example->setActionId($action);
 
-            $aclUnderTest = $this->accountAclService->getAcl($action, $accountAclDto);
+            $aclUnderTest = $this->accountAcl->getAcl($action, $accountAclDto);
 
             $this->assertTrue($aclUnderTest->isCompiledAccountAccess());
             $this->assertTrue($aclUnderTest->isCompiledShowAccess());
@@ -338,11 +340,11 @@ class AccountAclServiceTest extends UnitaryTestCase
     /**
      * @group acl:admin
      *
-     * @return AccountAcl
+     * @return AccountPermission
      */
-    private function getExampleAclForAdmin(): AccountAcl
+    private function getExampleAclForAdmin(): AccountPermission
     {
-        return (new AccountAcl(0))
+        return (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView(true)
@@ -424,7 +426,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccViewPass($shouldView);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -460,7 +462,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccDelete($shouldView);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -496,7 +498,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccEditPass($shouldEdit);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -532,7 +534,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccEdit($shouldEdit);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -569,7 +571,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccPermission($shouldEdit);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -605,7 +607,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->getUserProfile()
             ->setAccFiles($shouldEdit);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -642,7 +644,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->setAccView($shouldViewOrEdit)
             ->setAccEdit($shouldEdit);
 
-        $example = (new AccountAcl(0))
+        $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($shouldViewOrEdit)
@@ -652,7 +654,7 @@ class AccountAclServiceTest extends UnitaryTestCase
             ->setShowRestore($shouldEdit)
             ->setShowDetails($shouldViewOrEdit)
             ->setShowPermission(
-                AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
+                AccountAcl::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
             );
 
         $this->checkForUserByExample($this->setUpAccountEnvironment($accountId, $userId, $groupId), $example);
@@ -679,7 +681,7 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
-        $accountAclService = new AccountAclService(
+        $accountAclService = new AccountAcl(
             $this->application,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
@@ -688,7 +690,7 @@ class AccountAclServiceTest extends UnitaryTestCase
 
         $this->context->getUserData()->setLastUpdate($dto->getDateEdit() + 10);
 
-        $acl = new AccountAcl(self::$faker->randomNumber());
+        $acl = new AccountPermission(self::$faker->randomNumber());
         $acl->setTime($dto->getDateEdit() + 10);
 
         $fileCache->expects(self::once())
@@ -720,14 +722,14 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
-        $accountAclService = new AccountAclService(
+        $accountAclService = new AccountAcl(
             $this->application,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
 
-        $acl = new AccountAcl(self::$faker->randomNumber());
+        $acl = new AccountPermission(self::$faker->randomNumber());
 
         $fileCache->expects(self::once())
                   ->method('load')
@@ -737,7 +739,9 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache->expects(self::once())
                   ->method('save')
                   ->with(
-                      self::callback((static fn($acl) => $acl instanceof AccountAcl)),
+                      self::callback(
+                          (static fn($acl) => $acl instanceof AccountPermission)
+                      ),
                       self::callback((static fn($path) => is_string($path)))
                   );
 
@@ -765,7 +769,7 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
-        $accountAclService = new AccountAclService(
+        $accountAclService = new AccountAcl(
             $this->application,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
@@ -801,7 +805,7 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
-        $accountAclService = new AccountAclService(
+        $accountAclService = new AccountAcl(
             $this->application,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
@@ -811,7 +815,9 @@ class AccountAclServiceTest extends UnitaryTestCase
         $fileCache->expects(self::once())
                   ->method('save')
                   ->with(
-                      self::callback((static fn($acl) => $acl instanceof AccountAcl)),
+                      self::callback(
+                          (static fn($acl) => $acl instanceof AccountPermission)
+                      ),
                       self::callback((static fn($path) => is_string($path)))
                   )
                   ->willThrowException(new FileException('test'));
@@ -835,7 +841,7 @@ class AccountAclServiceTest extends UnitaryTestCase
                                                    [4, []],
                                                ]);
 
-        $this->accountAclService = new AccountAclService(
+        $this->accountAcl = new AccountAcl(
             $this->application,
             $acl,
             $userToUserGroupService

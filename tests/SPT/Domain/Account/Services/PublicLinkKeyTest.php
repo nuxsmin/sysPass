@@ -25,7 +25,7 @@
 namespace SPT\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Domain\Account\Services\PublicLinkKey;
+use SP\Domain\Account\Dtos\PublicLinkKey;
 use SPT\UnitaryTestCase;
 
 /**

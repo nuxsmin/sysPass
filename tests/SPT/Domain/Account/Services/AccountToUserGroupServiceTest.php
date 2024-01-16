@@ -26,8 +26,8 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemData;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Services\AccountToUserGroupService;
+use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Services\AccountToUserGroup;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -42,8 +42,8 @@ use SPT\UnitaryTestCase;
 class AccountToUserGroupServiceTest extends UnitaryTestCase
 {
 
-    private AccountToUserGroupService                        $accountToUserGroupService;
-    private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
+    private AccountToUserGroup                      $accountToUserGroup;
+    private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;
 
     /**
      * @throws QueryException
@@ -59,8 +59,8 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
                 [
                     new ItemData(
                         [
-                            'id'     => self::$faker->randomNumber(),
-                            'name'   => self::$faker->colorName,
+                            'id' => self::$faker->randomNumber(),
+                            'name' => self::$faker->colorName,
                             'isEdit' => self::$faker->boolean,
                         ]
                     ),
@@ -73,7 +73,7 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
+        $actual = $this->accountToUserGroup->getUserGroupsByAccountId($accountId);
         $expected = $result->getData(ItemData::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof ItemData);
@@ -97,7 +97,7 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
             ->with($accountId)
             ->willReturn($result);
 
-        $actual = $this->accountToUserGroupService->getUserGroupsByAccountId($accountId);
+        $actual = $this->accountToUserGroup->getUserGroupsByAccountId($accountId);
 
         $this->assertEmpty($actual);
     }
@@ -106,9 +106,9 @@ class AccountToUserGroupServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
 
-        $this->accountToUserGroupService =
-            new AccountToUserGroupService($this->application, $this->accountToUserGroupRepository);
+        $this->accountToUserGroup =
+            new AccountToUserGroup($this->application, $this->accountToUserGroupRepository);
     }
 }

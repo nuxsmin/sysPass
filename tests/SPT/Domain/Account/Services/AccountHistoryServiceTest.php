@@ -28,9 +28,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Account\Models\AccountHistory;
-use SP\Domain\Account\Ports\AccountHistoryRepositoryInterface;
-use SP\Domain\Account\Services\AccountHistoryService;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
+use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Account\Services\AccountHistory;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -46,8 +46,8 @@ use SPT\UnitaryTestCase;
 class AccountHistoryServiceTest extends UnitaryTestCase
 {
 
-    private AccountHistoryService                        $accountHistoryService;
-    private MockObject|AccountHistoryRepositoryInterface $accountHistoryRepository;
+    private AccountHistory                      $accountHistory;
+    private MockObject|AccountHistoryRepository $accountHistoryRepository;
 
     public function testCreate()
     {
@@ -61,7 +61,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('create')->with($dto);
 
-        $this->accountHistoryService->create($dto);
+        $this->accountHistory->create($dto);
     }
 
     public function testDeleteByAccountIdBatch()
@@ -70,7 +70,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('deleteByAccountIdBatch')->with($ids);
 
-        $this->accountHistoryService->deleteByAccountIdBatch($ids);
+        $this->accountHistory->deleteByAccountIdBatch($ids);
     }
 
     /**
@@ -82,7 +82,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('getHistoryForAccount')->with($id);
 
-        $this->accountHistoryService->getHistoryForAccount($id);
+        $this->accountHistory->getHistoryForAccount($id);
     }
 
     /**
@@ -92,7 +92,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
     {
         $this->accountHistoryRepository->expects(self::once())->method('getAccountsPassData');
 
-        $this->accountHistoryService->getAccountsPassData();
+        $this->accountHistory->getAccountsPassData();
     }
 
     /**
@@ -104,7 +104,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('delete')->with($id)->willReturn(true);
 
-        $this->accountHistoryService->delete($id);
+        $this->accountHistory->delete($id);
     }
 
     /**
@@ -119,26 +119,28 @@ class AccountHistoryServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the account');
 
-        $this->accountHistoryService->delete($id);
+        $this->accountHistory->delete($id);
     }
 
     /**
      * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
         $accountHistoryData =
-            AccountHistory::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
+            AccountHistoryModel::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccountHistoryData());
         $queryResult = new QueryResult([$accountHistoryData]);
 
         $this->accountHistoryRepository->expects(self::once())->method('getById')->with($id)->willReturn($queryResult);
 
-        $this->assertEquals($accountHistoryData, $this->accountHistoryService->getById($id));
+        $this->assertEquals($accountHistoryData, $this->accountHistory->getById($id));
     }
 
     /**
      * @throws NoSuchItemException
+     * @throws SPException
      */
     public function testGetByIdError()
     {
@@ -150,7 +152,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Error while retrieving account\'s data');
 
-        $this->accountHistoryService->getById($id);
+        $this->accountHistory->getById($id);
     }
 
     public function testDeleteByIdBatch()
@@ -159,7 +161,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('deleteByIdBatch')->with($ids);
 
-        $this->accountHistoryService->deleteByIdBatch($ids);
+        $this->accountHistory->deleteByIdBatch($ids);
     }
 
     public function testSearch()
@@ -169,7 +171,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('search')->with($itemSearchData);
 
-        $this->accountHistoryService->search($itemSearchData);
+        $this->accountHistory->search($itemSearchData);
     }
 
     /**
@@ -185,7 +187,7 @@ class AccountHistoryServiceTest extends UnitaryTestCase
                                        ->with($id, $encryptedPassword)
                                        ->willReturn(true);
 
-        $this->accountHistoryService->updatePasswordMasterPass($id, $encryptedPassword);
+        $this->accountHistory->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     /**
@@ -204,16 +206,16 @@ class AccountHistoryServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the password');
 
-        $this->accountHistoryService->updatePasswordMasterPass($id, $encryptedPassword);
+        $this->accountHistory->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->accountHistoryRepository = $this->createMock(AccountHistoryRepositoryInterface::class);
+        $this->accountHistoryRepository = $this->createMock(AccountHistoryRepository::class);
 
-        $this->accountHistoryService = new AccountHistoryService(
+        $this->accountHistory = new AccountHistory(
             $this->application,
             $this->accountHistoryRepository
         );

@@ -33,7 +33,7 @@ use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Account\Repositories\AccountHistoryRepository;
+use SP\Infrastructure\Account\Repositories\AccountHistory;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -48,7 +48,7 @@ use SPT\UnitaryTestCase;
 class AccountHistoryRepositoryTest extends UnitaryTestCase
 {
     private DatabaseInterface|MockObject $database;
-    private AccountHistoryRepository     $accountHistoryRepository;
+    private AccountHistory $accountHistory;
 
     public function testGetById(): void
     {
@@ -67,7 +67,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->getById($id);
+        $this->accountHistory->getById($id);
     }
 
     public function testGetHistoryForAccount(): void
@@ -87,7 +87,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->getHistoryForAccount($id);
+        $this->accountHistory->getHistoryForAccount($id);
     }
 
     /**
@@ -115,7 +115,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->deleteByIdBatch($ids);
+        $this->accountHistory->deleteByIdBatch($ids);
     }
 
     /**
@@ -127,7 +127,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $this->database->expects(self::never())
                        ->method('doQuery');
 
-        $this->accountHistoryRepository->deleteByIdBatch([]);
+        $this->accountHistory->deleteByIdBatch([]);
     }
 
     /**
@@ -159,7 +159,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->assertTrue($this->accountHistoryRepository->updatePassword($id, $encryptedPassword));
+        $this->assertTrue($this->accountHistory->updatePassword($id, $encryptedPassword));
     }
 
     public function testSearch(): void
@@ -169,7 +169,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%'.$item->getSeachString().'%';
+                $searchStringLike = '%' . $item->getSeachString() . '%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
@@ -184,7 +184,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->search($item);
+        $this->accountHistory->search($item);
     }
 
     public function testSearchWithoutString(): void
@@ -203,7 +203,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->search(new ItemSearchData());
+        $this->accountHistory->search(new ItemSearchData());
     }
 
     public function testGetAccountsPassData(): void
@@ -221,7 +221,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->getAccountsPassData();
+        $this->accountHistory->getAccountsPassData();
     }
 
     /**
@@ -275,7 +275,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->assertEquals($expected->getLastId(), $this->accountHistoryRepository->create($dto));
+        $this->assertEquals($expected->getLastId(), $this->accountHistory->create($dto));
     }
 
     private function buildAccountHistoryCreateDto(): AccountHistoryCreateDto
@@ -310,7 +310,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->assertTrue($this->accountHistoryRepository->delete($id));
+        $this->assertTrue($this->accountHistory->delete($id));
     }
 
     /**
@@ -335,7 +335,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn($expected);
 
-        $this->assertFalse($this->accountHistoryRepository->delete($id));
+        $this->assertFalse($this->accountHistory->delete($id));
     }
 
     public function testGetAll(): void
@@ -353,7 +353,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->getAll();
+        $this->accountHistory->getAll();
     }
 
     /**
@@ -381,7 +381,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
-        $this->accountHistoryRepository->deleteByAccountIdBatch($ids);
+        $this->accountHistory->deleteByAccountIdBatch($ids);
     }
 
     /**
@@ -393,7 +393,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
         $this->database->expects(self::never())
                        ->method('doQuery');
 
-        $this->accountHistoryRepository->deleteByAccountIdBatch([]);
+        $this->accountHistory->deleteByAccountIdBatch([]);
     }
 
     protected function setUp(): void
@@ -402,7 +402,7 @@ class AccountHistoryRepositoryTest extends UnitaryTestCase
 
         $this->database = $this->createMock(DatabaseInterface::class);
 
-        $this->accountHistoryRepository = new AccountHistoryRepository(
+        $this->accountHistory = new AccountHistory(
             $this->database,
             $this->context,
             $this->application->getEventDispatcher(),

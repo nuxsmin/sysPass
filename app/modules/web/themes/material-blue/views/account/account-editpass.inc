@@ -26,18 +26,18 @@
  * @var callable $_getvar
  * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
  * @var AccountExtData $accountData
- * @var AccountAcl $accountAcl
+ * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
 
 use SP\DataModel\AccountExtData;
-use SP\Domain\Account\Services\AccountAcl;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /** @var AccountExtData $accountData */
 $accountData = $_getvar('accountData');
 
-/** @var AccountAcl $accountAcl */
+/** @var AccountPermission $accountAcl */
 $accountAcl = $_getvar('accountAcl');
 ?>
 

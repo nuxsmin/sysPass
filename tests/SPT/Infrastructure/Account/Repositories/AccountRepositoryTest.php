@@ -29,15 +29,15 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountSearchView;
-use SP\Domain\Account\Ports\AccountFilterUserInterface;
+use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Account\Repositories\AccountRepository;
+use SP\Infrastructure\Account\Repositories\Account;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SPT\Generators\AccountDataGenerator;
@@ -50,9 +50,9 @@ use SPT\UnitaryTestCase;
  */
 class AccountRepositoryTest extends UnitaryTestCase
 {
-    private DatabaseInterface|MockObject          $database;
-    private AccountRepository                     $accountRepository;
-    private AccountFilterUserInterface|MockObject $accountFilterUser;
+    private DatabaseInterface|MockObject    $database;
+    private Account                         $account;
+    private AccountFilterBuilder|MockObject $accountFilterUser;
 
     public function testGetTotalNumAccounts(): void
     {
@@ -64,7 +64,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
-        $this->accountRepository->getTotalNumAccounts();
+        $this->account->getTotalNumAccounts();
     }
 
     public function testGetPasswordForId(): void
@@ -76,7 +76,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === 1
-                       && $arg->getMapClassName() === Account::class
+                       && $arg->getMapClassName() === AccountModel::class
                        && !empty($query->getStatement());
             }
         );
@@ -87,7 +87,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
-        $this->accountRepository->getPasswordForId(1);
+        $this->account->getPasswordForId(1);
     }
 
     public function testGetPasswordHistoryForId(): void
@@ -110,7 +110,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback, false);
 
-        $this->accountRepository->getPasswordHistoryForId(1);
+        $this->account->getPasswordHistoryForId(1);
     }
 
     /**
@@ -133,7 +133,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->incrementDecryptCounter($id);
+        $this->account->incrementDecryptCounter($id);
     }
 
     /**
@@ -156,7 +156,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->incrementDecryptCounter($id);
+        $this->account->incrementDecryptCounter($id);
     }
 
     /**
@@ -196,7 +196,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->create($account);
+        $this->account->create($account);
     }
 
     /**
@@ -223,7 +223,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->editPassword($account->getId(), $account);
+        $this->account->editPassword($account->getId(), $account);
     }
 
     /**
@@ -249,7 +249,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->updatePassword($id, $encryptedPassword);
+        $this->account->updatePassword($id, $encryptedPassword);
     }
 
     /**
@@ -289,7 +289,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->restoreModified($account->getId(), $account);
+        $this->account->restoreModified($account->getId(), $account);
     }
 
     /**
@@ -309,7 +309,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->delete($id);
+        $this->account->delete($id);
     }
 
     /**
@@ -332,7 +332,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->delete($id);
+        $this->account->delete($id);
     }
 
     /**
@@ -369,7 +369,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->update($account->getId(), $account, true, true);
+        $this->account->update($account->getId(), $account, true, true);
     }
 
     /**
@@ -406,7 +406,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->update($account->getId(), $account, true, false);
+        $this->account->update($account->getId(), $account, true, false);
     }
 
     /**
@@ -443,7 +443,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->update($account->getId(), $account, false, true);
+        $this->account->update($account->getId(), $account, false, true);
     }
 
     /**
@@ -473,7 +473,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        ->method('doQuery')
                        ->with($callback);
 
-        $this->accountRepository->updateBulk($account->getId(), $account, true, true);
+        $this->account->updateBulk($account->getId(), $account, true, true);
     }
 
     /**
@@ -503,7 +503,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        ->method('doQuery')
                        ->with($callback);
 
-        $this->accountRepository->updateBulk($account->getId(), $account, false, true);
+        $this->account->updateBulk($account->getId(), $account, false, true);
 
         $this->assertTrue(true);
     }
@@ -535,7 +535,7 @@ class AccountRepositoryTest extends UnitaryTestCase
                        ->method('doQuery')
                        ->with($callback);
 
-        $this->accountRepository->updateBulk($account->getId(), $account, true, false);
+        $this->account->updateBulk($account->getId(), $account, true, false);
     }
 
     /**
@@ -545,7 +545,7 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $this->database->expects(self::never())->method('doQuery');
 
-        $this->accountRepository->updateBulk(0, new Account(), false, false);
+        $this->account->updateBulk(0, new AccountModel(), false, false);
     }
 
     public function testGetById(): void
@@ -558,14 +558,14 @@ class AccountRepositoryTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === $id
-                       && $arg->getMapClassName() === Account::class
+                       && $arg->getMapClassName() === AccountModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getById($id);
+        $this->account->getById($id);
     }
 
     public function testGetByIdEnriched(): void
@@ -585,21 +585,21 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getByIdEnriched($id);
+        $this->account->getByIdEnriched($id);
     }
 
     public function testGetAll(): void
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === Account::class
+                return $arg->getMapClassName() === AccountModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getAll();
+        $this->account->getAll();
     }
 
     /**
@@ -625,7 +625,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->deleteByIdBatch($ids);
+        $this->account->deleteByIdBatch($ids);
     }
 
     /**
@@ -636,7 +636,7 @@ class AccountRepositoryTest extends UnitaryTestCase
     {
         $this->database->expects(self::never())->method('doQuery');
 
-        $this->accountRepository->deleteByIdBatch([]);
+        $this->account->deleteByIdBatch([]);
     }
 
     public function testSearch(): void
@@ -661,7 +661,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback, true);
 
-        $this->accountRepository->search($item);
+        $this->account->search($item);
     }
 
     public function testSearchWithoutString(): void
@@ -676,7 +676,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback, true);
 
-        $this->accountRepository->search(new ItemSearchData());
+        $this->account->search(new ItemSearchData());
     }
 
     /**
@@ -700,7 +700,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->incrementViewCounter($id);
+        $this->account->incrementViewCounter($id);
     }
 
     /**
@@ -724,7 +724,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doQuery')->with($callback);
 
-        $this->accountRepository->incrementViewCounter($id);
+        $this->account->incrementViewCounter($id);
     }
 
     public function testGetDataForLink(): void
@@ -744,7 +744,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getDataForLink($id);
+        $this->account->getDataForLink($id);
     }
 
     public function testGetForUser(): void
@@ -766,7 +766,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getForUser($id);
+        $this->account->getForUser($id);
     }
 
     public function testGetForUserWithoutAccount(): void
@@ -785,7 +785,7 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getForUser();
+        $this->account->getForUser();
     }
 
     public function testGetLinked(): void
@@ -807,21 +807,21 @@ class AccountRepositoryTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getLinked($id);
+        $this->account->getLinked($id);
     }
 
     public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === Account::class
+                return $arg->getMapClassName() === AccountModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())->method('doSelect')->with($callback);
 
-        $this->accountRepository->getAccountsPassData();
+        $this->account->getAccountsPassData();
     }
 
     protected function setUp(): void
@@ -832,11 +832,11 @@ class AccountRepositoryTest extends UnitaryTestCase
         $queryFactory = new QueryFactory('mysql');
 
         $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
-        $this->accountFilterUser = $this->createMock(AccountFilterUserInterface::class);
+        $this->accountFilterUser = $this->createMock(AccountFilterBuilder::class);
         $this->accountFilterUser->method('buildFilter')->willReturn($select);
         $this->accountFilterUser->method('buildFilterHistory')->willReturn($select);
 
-        $this->accountRepository = new AccountRepository(
+        $this->account = new Account(
             $this->database,
             $this->context,
             $queryFactory,

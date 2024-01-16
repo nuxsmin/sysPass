@@ -31,17 +31,17 @@ use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\ItemPreset;
-use SP\Domain\Account\Ports\AccountCryptServiceInterface;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountItemsServiceInterface;
-use SP\Domain\Account\Ports\AccountPresetServiceInterface;
-use SP\Domain\Account\Ports\AccountRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToTagRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserGroupRepositoryInterface;
-use SP\Domain\Account\Ports\AccountToUserRepositoryInterface;
-use SP\Domain\Account\Services\AccountService;
+use SP\Domain\Account\Ports\AccountCryptService;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountItemsService;
+use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\AccountRepository;
+use SP\Domain\Account\Ports\AccountToTagRepository;
+use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Services\Account;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
@@ -64,17 +64,17 @@ use SPT\UnitaryTestCase;
  */
 class AccountServiceTest extends UnitaryTestCase
 {
-    private AccountRepositoryInterface|MockObject            $accountRepository;
-    private AccountToUserGroupRepositoryInterface|MockObject $accountToUserGroupRepository;
-    private AccountToUserRepositoryInterface|MockObject      $accountToUserRepository;
-    private AccountToTagRepositoryInterface|MockObject       $accountToTagRepository;
-    private ItemPresetServiceInterface|MockObject            $itemPresetService;
-    private AccountHistoryServiceInterface|MockObject        $accountHistoryService;
-    private ConfigService|MockObject $configService;
-    private AccountCryptServiceInterface|MockObject          $accountCryptService;
-    private AccountPresetServiceInterface|MockObject         $accountPresetService;
-    private AccountItemsServiceInterface|MockObject          $accountItemsService;
-    private AccountService                                   $accountService;
+    private AccountRepository|MockObject            $accountRepository;
+    private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;
+    private AccountToUserRepository|MockObject      $accountToUserRepository;
+    private AccountToTagRepository|MockObject       $accountToTagRepository;
+    private ItemPresetServiceInterface|MockObject   $itemPresetService;
+    private AccountHistoryService|MockObject        $accountHistoryService;
+    private ConfigService|MockObject                $configService;
+    private AccountCryptService|MockObject          $accountCryptService;
+    private AccountPresetService|MockObject         $accountPresetService;
+    private AccountItemsService|MockObject          $accountItemsService;
+    private Account                                 $account;
 
     /**
      * @throws ServiceException
@@ -97,12 +97,12 @@ class AccountServiceTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-                                ->with($id, Account::update($accountUpdateDto), true, true);
+            ->with($id, AccountModel::update($accountUpdateDto), true, true);
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -126,12 +126,12 @@ class AccountServiceTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-                                ->with($id, Account::update($accountUpdateDto), false, false);
+            ->with($id, AccountModel::update($accountUpdateDto), false, false);
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(false, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -157,12 +157,12 @@ class AccountServiceTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-                                ->with($id, Account::update($accountUpdateDto), true, true);
+            ->with($id, AccountModel::update($accountUpdateDto), true, true);
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -188,12 +188,12 @@ class AccountServiceTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-                                ->with($id, Account::update($accountUpdateDto), false, false);
+            ->with($id, AccountModel::update($accountUpdateDto), false, false);
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -205,15 +205,15 @@ class AccountServiceTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
         $itemPreset = new ItemPreset([
-            'id'            => self::$faker->randomNumber(),
-            'type'          => self::$faker->colorName,
-            'userId'        => self::$faker->randomNumber(),
-            'userGroupId'   => self::$faker->randomNumber(),
-            'userProfileId' => self::$faker->randomNumber(),
-            'fixed'         => 1,
-            'priority'      => self::$faker->randomNumber(),
-            'data'          => serialize(new AccountPrivate(true, true)),
-        ]);
+                                         'id' => self::$faker->randomNumber(),
+                                         'type' => self::$faker->colorName,
+                                         'userId' => self::$faker->randomNumber(),
+                                         'userGroupId' => self::$faker->randomNumber(),
+                                         'userProfileId' => self::$faker->randomNumber(),
+                                         'fixed' => 1,
+                                         'priority' => self::$faker->randomNumber(),
+                                         'data' => serialize(new AccountPrivate(true, true)),
+                                     ]);
 
         $userData = $this->context->getUserData();
         $userData->setIsAdminApp(true);
@@ -226,9 +226,9 @@ class AccountServiceTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn($itemPreset);
-        $account = new Account(
+        $account = new AccountModel(
             [
-                'userId'      => $accountUpdateDto->getUserId(),
+                'userId' => $accountUpdateDto->getUserId(),
                 'userGroupId' => self::$faker->randomNumber(),
             ]
         );
@@ -243,7 +243,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('update')
                                 ->with(
                                     $id,
-                                    new Callback(function (Account $account) {
+                                    new Callback(function (AccountModel $account) {
                                         return $account->getIsPrivate() === 1 && $account->getIsPrivateGroup() === 0;
                                     }),
                                     true,
@@ -260,7 +260,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -272,15 +272,15 @@ class AccountServiceTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
         $itemPreset = new ItemPreset([
-            'id'            => self::$faker->randomNumber(),
-            'type'          => self::$faker->colorName,
-            'userId'        => self::$faker->randomNumber(),
-            'userGroupId'   => self::$faker->randomNumber(),
-            'userProfileId' => self::$faker->randomNumber(),
-            'fixed'         => 1,
-            'priority'      => self::$faker->randomNumber(),
-            'data'          => serialize(new AccountPrivate(true, true)),
-        ]);
+                                         'id' => self::$faker->randomNumber(),
+                                         'type' => self::$faker->colorName,
+                                         'userId' => self::$faker->randomNumber(),
+                                         'userGroupId' => self::$faker->randomNumber(),
+                                         'userProfileId' => self::$faker->randomNumber(),
+                                         'fixed' => 1,
+                                         'priority' => self::$faker->randomNumber(),
+                                         'data' => serialize(new AccountPrivate(true, true)),
+                                     ]);
 
         $userData = $this->context->getUserData();
         $userData->setIsAdminApp(true);
@@ -293,9 +293,9 @@ class AccountServiceTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn($itemPreset);
-        $account = new Account(
+        $account = new AccountModel(
             [
-                'userId'      => self::$faker->randomNumber(),
+                'userId' => self::$faker->randomNumber(),
                 'userGroupId' => $accountUpdateDto->getUserGroupId(),
             ]
         );
@@ -310,7 +310,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('update')
                                 ->with(
                                     $id,
-                                    new Callback(function (Account $account) {
+                                    new Callback(function (AccountModel $account) {
                                         return $account->getIsPrivate() === 0 && $account->getIsPrivateGroup() === 1;
                                     }),
                                     true,
@@ -327,7 +327,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->update($id, $accountUpdateDto);
+        $this->account->update($id, $accountUpdateDto);
     }
 
     /**
@@ -341,7 +341,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('getLinked')->with($id);
 
-        $this->accountService->getLinked($id);
+        $this->account->getLinked($id);
     }
 
     /**
@@ -355,7 +355,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('getForUser')->with($id);
 
-        $this->accountService->getForUser($id);
+        $this->account->getForUser($id);
     }
 
     /**
@@ -371,7 +371,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getPasswordForId')
                                 ->with($account->getId())->willReturn(new QueryResult([$account]));
 
-        $this->assertEquals($account, $this->accountService->getPasswordForId($account->getId()));
+        $this->assertEquals($account, $this->account->getPasswordForId($account->getId()));
     }
 
     /**
@@ -390,7 +390,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Account not found');
 
-        $this->accountService->getPasswordForId($account->getId());
+        $this->account->getPasswordForId($account->getId());
     }
 
     /**
@@ -411,7 +411,7 @@ class AccountServiceTest extends UnitaryTestCase
                                 ->with($id, $encryptedPassword)
                                 ->willReturn($result);
 
-        $this->accountService->updatePasswordMasterPass($id, $encryptedPassword);
+        $this->account->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     /**
@@ -435,7 +435,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the password');
 
-        $this->accountService->updatePasswordMasterPass($id, $encryptedPassword);
+        $this->account->updatePasswordMasterPass($id, $encryptedPassword);
     }
 
     /**
@@ -451,7 +451,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)->willReturn($result);
 
-        $this->assertEquals($account, $this->accountService->getById($id));
+        $this->assertEquals($account, $this->account->getById($id));
     }
 
     /**
@@ -469,7 +469,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('The account doesn\'t exist');
 
-        $this->accountService->getById($id);
+        $this->account->getById($id);
     }
 
     /**
@@ -485,7 +485,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getByIdEnriched')
                                 ->with($id)->willReturn($result);
 
-        $this->assertEquals($accountDataView, $this->accountService->getByIdEnriched($id));
+        $this->assertEquals($accountDataView, $this->account->getByIdEnriched($id));
     }
 
     /**
@@ -503,7 +503,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('The account doesn\'t exist');
 
-        $this->accountService->getByIdEnriched($id);
+        $this->account->getByIdEnriched($id);
     }
 
     /**
@@ -535,7 +535,7 @@ class AccountServiceTest extends UnitaryTestCase
                                       )
                                   );
 
-        $this->accountService->updateBulk($accountUpdateBulkDto);
+        $this->account->updateBulk($accountUpdateBulkDto);
     }
 
     /**
@@ -564,7 +564,7 @@ class AccountServiceTest extends UnitaryTestCase
                                       )
                                   );
 
-        $this->accountService->updateBulk($accountUpdateBulkDto);
+        $this->account->updateBulk($accountUpdateBulkDto);
     }
 
     /**
@@ -598,7 +598,7 @@ class AccountServiceTest extends UnitaryTestCase
                                       )
                                   );
 
-        $this->accountService->updateBulk($accountUpdateBulkDto);
+        $this->account->updateBulk($accountUpdateBulkDto);
     }
 
     /**
@@ -627,11 +627,11 @@ class AccountServiceTest extends UnitaryTestCase
                                   ->with(
                                       ...self::withConsecutive(
                                       ...array_map(fn($v) => [$v, true, $accounts[$v]],
-                                      $accountsId)
+                                             $accountsId)
                                   )
                                   );
 
-        $this->accountService->updateBulk($accountUpdateBulkDto);
+        $this->account->updateBulk($accountUpdateBulkDto);
     }
 
     /**
@@ -649,7 +649,7 @@ class AccountServiceTest extends UnitaryTestCase
                                       ->with($accountEnrichedDto->getId())
                                       ->willReturn(new QueryResult($users));
 
-        $out = $this->accountService->withUsers($accountEnrichedDto);
+        $out = $this->account->withUsers($accountEnrichedDto);
 
         $this->assertEquals($users, $out->getUsers());
     }
@@ -678,7 +678,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('delete')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->accountService->delete($id);
+        $this->account->delete($id);
     }
 
     /**
@@ -708,7 +708,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Account not found');
 
-        $this->accountService->delete($id);
+        $this->account->delete($id);
     }
 
     /**
@@ -725,7 +725,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('incrementViewCounter')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->assertTrue($this->accountService->incrementViewCounter($id));
+        $this->assertTrue($this->account->incrementViewCounter($id));
     }
 
     /**
@@ -742,7 +742,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('incrementViewCounter')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->assertFalse($this->accountService->incrementViewCounter($id));
+        $this->assertFalse($this->account->incrementViewCounter($id));
     }
 
     /**
@@ -752,7 +752,7 @@ class AccountServiceTest extends UnitaryTestCase
     {
         $this->accountRepository->expects(self::once())->method('getAll');
 
-        $this->accountService->getAllBasic();
+        $this->account->getAllBasic();
     }
 
     /**
@@ -770,7 +770,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getDataForLink')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->accountService->getDataForLink($id);
+        $this->account->getDataForLink($id);
     }
 
     /**
@@ -791,7 +791,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('The account doesn\'t exist');
 
-        $this->accountService->getDataForLink($id);
+        $this->account->getDataForLink($id);
     }
 
     /**
@@ -808,11 +808,14 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('createRemoved')
                                 ->with(
-                                    Account::restoreRemoved($accountHistoryDto, $this->context->getUserData()->getId())
+                                    AccountModel::restoreRemoved(
+                                        $accountHistoryDto,
+                                        $this->context->getUserData()->getId()
+                                    )
                                 )
                                 ->willReturn($queryResult);
 
-        $this->accountService->restoreRemoved($accountHistoryDto);
+        $this->account->restoreRemoved($accountHistoryDto);
     }
 
     /**
@@ -828,14 +831,17 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('createRemoved')
                                 ->with(
-                                    Account::restoreRemoved($accountHistoryDto, $this->context->getUserData()->getId())
+                                    AccountModel::restoreRemoved(
+                                        $accountHistoryDto,
+                                        $this->context->getUserData()->getId()
+                                    )
                                 )
                                 ->willReturn($queryResult);
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error on restoring the account');
 
-        $this->accountService->restoreRemoved($accountHistoryDto);
+        $this->account->restoreRemoved($accountHistoryDto);
     }
 
     /**
@@ -867,9 +873,9 @@ class AccountServiceTest extends UnitaryTestCase
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
-                                ->with($id, Account::updatePassword($accountUpdateDto));
+            ->with($id, AccountModel::updatePassword($accountUpdateDto));
 
-        $this->accountService->editPassword($id, $accountUpdateDto);
+        $this->account->editPassword($id, $accountUpdateDto);
     }
 
     /**
@@ -901,11 +907,14 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->getAccountId(),
-                                    Account::restoreModified($accountHistoryDto, $this->context->getUserData()->getId())
+                                    AccountModel::restoreModified(
+                                        $accountHistoryDto,
+                                        $this->context->getUserData()->getId()
+                                    )
                                 )
                                 ->willReturn($queryResult);
 
-        $this->accountService->restoreModified($accountHistoryDto);
+        $this->account->restoreModified($accountHistoryDto);
     }
 
     /**
@@ -937,14 +946,17 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->getAccountId(),
-                                    Account::restoreModified($accountHistoryDto, $this->context->getUserData()->getId())
+                                    AccountModel::restoreModified(
+                                        $accountHistoryDto,
+                                        $this->context->getUserData()->getId()
+                                    )
                                 )
                                 ->willReturn($queryResult);
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error on restoring the account');
 
-        $this->accountService->restoreModified($accountHistoryDto);
+        $this->account->restoreModified($accountHistoryDto);
     }
 
     public function testSearch()
@@ -953,7 +965,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('search')->with($itemSearch);
 
-        $this->accountService->search($itemSearch);
+        $this->account->search($itemSearch);
     }
 
     /**
@@ -971,7 +983,7 @@ class AccountServiceTest extends UnitaryTestCase
                                      ->with($accountEnrichedDto->getId())
                                      ->willReturn(new QueryResult($tags));
 
-        $out = $this->accountService->withTags($accountEnrichedDto);
+        $out = $this->account->withTags($accountEnrichedDto);
 
         $this->assertEquals($tags, $out->getTags());
     }
@@ -1001,7 +1013,7 @@ class AccountServiceTest extends UnitaryTestCase
         $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
-                                ->with(Account::create($accountCreateDto))
+            ->with(AccountModel::create($accountCreateDto))
                                 ->willReturn($queryResult);
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1009,7 +1021,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->create($accountCreateDto);
+        $this->account->create($accountCreateDto);
     }
 
     /**
@@ -1039,7 +1051,7 @@ class AccountServiceTest extends UnitaryTestCase
         $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
-                                ->with(Account::create($accountCreateDto))
+            ->with(AccountModel::create($accountCreateDto))
                                 ->willReturn($queryResult);
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1047,7 +1059,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->create($accountCreateDto);
+        $this->account->create($accountCreateDto);
     }
 
     /**
@@ -1059,15 +1071,15 @@ class AccountServiceTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
         $itemPreset = new ItemPreset([
-            'id'            => self::$faker->randomNumber(),
-            'type'          => self::$faker->colorName,
-            'userId'        => self::$faker->randomNumber(),
-            'userGroupId'   => self::$faker->randomNumber(),
-            'userProfileId' => self::$faker->randomNumber(),
-            'fixed'         => 1,
-            'priority'      => self::$faker->randomNumber(),
-            'data'          => serialize(new AccountPrivate(true, true)),
-        ]);
+                                         'id' => self::$faker->randomNumber(),
+                                         'type' => self::$faker->colorName,
+                                         'userId' => self::$faker->randomNumber(),
+                                         'userGroupId' => self::$faker->randomNumber(),
+                                         'userProfileId' => self::$faker->randomNumber(),
+                                         'fixed' => 1,
+                                         'priority' => self::$faker->randomNumber(),
+                                         'data' => serialize(new AccountPrivate(true, true)),
+                                     ]);
 
         $userData = $this->context->getUserData();
         $userData->setIsAdminApp(true);
@@ -1088,7 +1100,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('create')
                                 ->with(
-                                    new Callback(function (Account $account) {
+                                    new Callback(function (AccountModel $account) {
                                         return $account->getIsPrivate() === 1 && $account->getIsPrivateGroup() === 0;
                                     }),
                                 )
@@ -1105,7 +1117,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->create($accountCreateDto);
+        $this->account->create($accountCreateDto);
     }
 
     /**
@@ -1117,15 +1129,15 @@ class AccountServiceTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
         $itemPreset = new ItemPreset([
-            'id'            => self::$faker->randomNumber(),
-            'type'          => self::$faker->colorName,
-            'userId'        => self::$faker->randomNumber(),
-            'userGroupId'   => self::$faker->randomNumber(),
-            'userProfileId' => self::$faker->randomNumber(),
-            'fixed'         => 1,
-            'priority'      => self::$faker->randomNumber(),
-            'data'          => serialize(new AccountPrivate(true, true)),
-        ]);
+                                         'id' => self::$faker->randomNumber(),
+                                         'type' => self::$faker->colorName,
+                                         'userId' => self::$faker->randomNumber(),
+                                         'userGroupId' => self::$faker->randomNumber(),
+                                         'userProfileId' => self::$faker->randomNumber(),
+                                         'fixed' => 1,
+                                         'priority' => self::$faker->randomNumber(),
+                                         'data' => serialize(new AccountPrivate(true, true)),
+                                     ]);
 
         $userData = $this->context->getUserData();
         $userData->setIsAdminApp(true);
@@ -1146,7 +1158,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('create')
                                 ->with(
-                                    new Callback(function (Account $account) {
+                                    new Callback(function (AccountModel $account) {
                                         return $account->getIsPrivate() === 0 && $account->getIsPrivateGroup() === 1;
                                     }),
                                 )
@@ -1163,7 +1175,7 @@ class AccountServiceTest extends UnitaryTestCase
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
-        $this->accountService->create($accountCreateDto);
+        $this->account->create($accountCreateDto);
     }
 
     /**
@@ -1180,7 +1192,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getTotalNumAccounts')
                                 ->willReturn($queryResult);
 
-        $this->assertEquals($num, $this->accountService->getTotalNumAccounts());
+        $this->assertEquals($num, $this->account->getTotalNumAccounts());
     }
 
     /**
@@ -1196,7 +1208,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getPasswordHistoryForId')
                                 ->with($id)->willReturn(new QueryResult([new Simple()]));
 
-        $this->accountService->getPasswordHistoryForId($id);
+        $this->account->getPasswordHistoryForId($id);
     }
 
     /**
@@ -1215,7 +1227,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('The account doesn\'t exist');
 
-        $this->accountService->getPasswordHistoryForId($id);
+        $this->account->getPasswordHistoryForId($id);
     }
 
     /**
@@ -1228,7 +1240,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('getAccountsPassData')
                                 ->willReturn(new QueryResult([new Simple()]));
 
-        $this->accountService->getAccountsPassData();
+        $this->account->getAccountsPassData();
     }
 
     /**
@@ -1245,7 +1257,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
                                 ->with($ids)->willReturn($queryResult);
 
-        $this->accountService->deleteByIdBatch($ids);
+        $this->account->deleteByIdBatch($ids);
     }
 
     /**
@@ -1265,7 +1277,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the accounts');
 
-        $this->accountService->deleteByIdBatch($ids);
+        $this->account->deleteByIdBatch($ids);
     }
 
     /**
@@ -1283,7 +1295,7 @@ class AccountServiceTest extends UnitaryTestCase
                                            ->with($accountEnrichedDto->getId())
                                            ->willReturn(new QueryResult($userGroups));
 
-        $out = $this->accountService->withUserGroups($accountEnrichedDto);
+        $out = $this->account->withUserGroups($accountEnrichedDto);
 
         $this->assertEquals($userGroups, $out->getUserGroups());
     }
@@ -1302,7 +1314,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('incrementDecryptCounter')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->assertTrue($this->accountService->incrementDecryptCounter($id));
+        $this->assertTrue($this->account->incrementDecryptCounter($id));
     }
 
     /**
@@ -1319,7 +1331,7 @@ class AccountServiceTest extends UnitaryTestCase
         $this->accountRepository->expects(self::once())->method('incrementDecryptCounter')
                                 ->with($id)->willReturn($queryResult);
 
-        $this->assertFalse($this->accountService->incrementDecryptCounter($id));
+        $this->assertFalse($this->account->incrementDecryptCounter($id));
     }
 
     protected function setUp(): void
@@ -1327,17 +1339,17 @@ class AccountServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->accountRepository = $this->getMockForAbstractClass(AccountRepositoryStub::class);
-        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepositoryInterface::class);
-        $this->accountToUserRepository = $this->createMock(AccountToUserRepositoryInterface::class);
-        $this->accountToTagRepository = $this->createMock(AccountToTagRepositoryInterface::class);
+        $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
+        $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
+        $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);
         $this->itemPresetService = $this->createMock(ItemPresetServiceInterface::class);
-        $this->accountHistoryService = $this->createMock(AccountHistoryServiceInterface::class);
+        $this->accountHistoryService = $this->createMock(AccountHistoryService::class);
         $this->configService = $this->createMock(ConfigService::class);
-        $this->accountCryptService = $this->createMock(AccountCryptServiceInterface::class);
-        $this->accountItemsService = $this->createMock(AccountItemsServiceInterface::class);
-        $this->accountPresetService = $this->createMock(AccountPresetServiceInterface::class);
+        $this->accountCryptService = $this->createMock(AccountCryptService::class);
+        $this->accountItemsService = $this->createMock(AccountItemsService::class);
+        $this->accountPresetService = $this->createMock(AccountPresetService::class);
 
-        $this->accountService = new AccountService(
+        $this->account = new Account(
             $this->application,
             $this->accountRepository,
             $this->accountToUserGroupRepository,

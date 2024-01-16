@@ -28,8 +28,8 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
-use SP\Domain\Account\Ports\AccountSearchDataBuilderInterface;
-use SP\Domain\Account\Search\AccountSearchDataBuilder;
+use SP\Domain\Account\Ports\AccountSearchDataBuilder;
+use SP\Domain\Account\Services\Builders\AccountSearchData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
@@ -52,7 +52,7 @@ final class DomainDefinitions
             'SP\Domain\Account\Ports\*RepositoryInterface'      => autowire(
                 'SP\Infrastructure\Account\Repositories\*Repository'
             ),
-            AccountSearchDataBuilderInterface::class            => autowire(AccountSearchDataBuilder::class),
+            AccountSearchDataBuilder::class => autowire(AccountSearchData::class),
             'SP\Domain\Category\Ports\*ServiceInterface'        => autowire('SP\Domain\Category\Services\*Service'),
             'SP\Domain\Category\Adapters\*AdapterInterface'     => autowire('SP\Domain\Category\Out\*Adapter'),
             'SP\Domain\Category\Ports\*RepositoryInterface'     => autowire(

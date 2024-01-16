@@ -26,11 +26,10 @@ namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Account\Ports\AccountSearchServiceInterface;
-use SP\Domain\Account\Search\AccountSearchConstants;
-use SP\Domain\Account\Search\AccountSearchFilter;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Ports\AccountSearchConstants;
+use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Api\Ports\ApiServiceInterface;
 use SP\Domain\Api\Services\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
@@ -43,14 +42,14 @@ use SP\Modules\Api\Controllers\ControllerBase;
  */
 final class SearchController extends ControllerBase
 {
-    private AccountSearchServiceInterface $accountSearchService;
+    private AccountSearchService $accountSearchService;
 
     public function __construct(
         Application         $application,
         Klein               $router,
         ApiServiceInterface $apiService,
         AclInterface        $acl,
-        AccountSearchServiceInterface $accountSearchService
+        AccountSearchService $accountSearchService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
@@ -80,17 +79,19 @@ final class SearchController extends ControllerBase
     }
 
     /**
-     * @return AccountSearchFilter
+     * @return \SP\Domain\Account\Dtos\AccountSearchFilterDto
      * @throws ServiceException
      */
-    private function buildAccountSearchFilter(): AccountSearchFilter
+    private function buildAccountSearchFilter(): AccountSearchFilterDto
     {
-        $filter = AccountSearchFilter::build($this->apiService->getParamString('text'))
-            ->setCategoryId($this->apiService->getParamInt('categoryId'))
-            ->setClientId($this->apiService->getParamInt('clientId'))
-            ->setTagsId(array_map('intval', $this->apiService->getParamArray('tagsId', false, [])))
-            ->setLimitCount($this->apiService->getParamInt('count', false, 50))
-            ->setSortOrder(
+        $filter = AccountSearchFilterDto::build($this->apiService->getParamString('text'))
+                                        ->setCategoryId($this->apiService->getParamInt('categoryId'))
+                                        ->setClientId($this->apiService->getParamInt('clientId'))
+                                        ->setTagsId(
+                                            array_map('intval', $this->apiService->getParamArray('tagsId', false, []))
+                                        )
+                                        ->setLimitCount($this->apiService->getParamInt('count', false, 50))
+                                        ->setSortOrder(
                 $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
             );
 

@@ -72,7 +72,7 @@
             <directory suffix=".php">../lib/SP/DataModel</directory>
             <directory suffix=".php">../lib/SP/Html/Assets</directory>
             <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
-            <file>../lib/SP/Config/ConfigData.php</file>
+            <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
         </exclude>
     </source>
 </phpunit>

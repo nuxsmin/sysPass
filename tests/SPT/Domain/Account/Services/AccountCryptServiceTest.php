@@ -28,9 +28,9 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Context\ContextException;
-use SP\Domain\Account\Ports\AccountHistoryServiceInterface;
-use SP\Domain\Account\Ports\AccountServiceInterface;
-use SP\Domain\Account\Services\AccountCryptService;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Services\AccountCrypt;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -49,10 +49,10 @@ use SPT\UnitaryTestCase;
 class AccountCryptServiceTest extends UnitaryTestCase
 {
 
-    private MockObject|AccountServiceInterface        $accountService;
-    private MockObject|AccountHistoryServiceInterface $accountHistoryService;
-    private AccountCryptService                       $accountCryptService;
-    private MockObject|CryptInterface                 $crypt;
+    private MockObject|AccountService        $account;
+    private MockObject|AccountHistoryService $accountHistory;
+    private AccountCrypt                     $accountCrypt;
+    private MockObject|CryptInterface        $crypt;
 
     /**
      * @throws ServiceException
@@ -78,11 +78,11 @@ class AccountCryptServiceTest extends UnitaryTestCase
             );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
-        $this->accountService->expects(self::once())
-                             ->method('getAccountsPassData')
-                             ->willReturn($accountData);
-        $this->accountService->expects(self::exactly(10))
-                             ->method('updatePasswordMasterPass');
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willReturn($accountData);
+        $this->account->expects(self::exactly(10))
+                      ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt');
         $this->crypt->expects(self::exactly(10))
@@ -94,7 +94,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $task->expects(self::exactly(2))
              ->method('writeJsonStatusAndFlush');
 
-        $this->accountCryptService->updateMasterPassword($request);
+        $this->accountCrypt->updateMasterPassword($request);
     }
 
     /**
@@ -109,11 +109,11 @@ class AccountCryptServiceTest extends UnitaryTestCase
                 self::$faker->sha1
             );
 
-        $this->accountService->expects(self::once())
-                             ->method('getAccountsPassData')
-                             ->willReturn([]);
-        $this->accountService->expects(self::never())
-                             ->method('updatePasswordMasterPass');
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willReturn([]);
+        $this->account->expects(self::never())
+                      ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::never())
                     ->method('decrypt');
         $this->crypt->expects(self::never())
@@ -121,7 +121,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->crypt->expects(self::never())
                     ->method('encrypt');
 
-        $this->accountCryptService->updateMasterPassword($request);
+        $this->accountCrypt->updateMasterPassword($request);
     }
 
     /**
@@ -132,14 +132,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
-        $this->accountService->expects(self::once())
-                             ->method('getAccountsPassData')
-                             ->willReturn($accountData);
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willReturn($accountData);
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
 
-        $this->accountCryptService->updateMasterPassword($request);
+        $this->accountCrypt->updateMasterPassword($request);
     }
 
     /**
@@ -149,14 +149,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
-        $this->accountService->expects(self::once())
-                             ->method('getAccountsPassData')
-                             ->willThrowException(new RuntimeException('test'));
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords');
 
-        $this->accountCryptService->updateMasterPassword($request);
+        $this->accountCrypt->updateMasterPassword($request);
     }
 
     /**
@@ -181,17 +181,17 @@ class AccountCryptServiceTest extends UnitaryTestCase
         );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
-        $this->accountHistoryService->expects(self::once())
-                                    ->method('getAccountsPassData')
-                                    ->willReturn($accountData);
-        $this->accountHistoryService->expects(self::exactly(10))
-                                    ->method('updatePasswordMasterPass');
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willReturn($accountData);
+        $this->accountHistory->expects(self::exactly(10))
+                             ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt');
         $task->expects(self::exactly(2))
              ->method('writeJsonStatusAndFlush');
 
-        $this->accountCryptService->updateHistoryMasterPassword($request);
+        $this->accountCrypt->updateHistoryMasterPassword($request);
     }
 
     /**
@@ -206,11 +206,11 @@ class AccountCryptServiceTest extends UnitaryTestCase
                 self::$faker->sha1
             );
 
-        $this->accountHistoryService->expects(self::once())
-                                    ->method('getAccountsPassData')
-                                    ->willReturn([]);
-        $this->accountHistoryService->expects(self::never())
-                                    ->method('updatePasswordMasterPass');
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willReturn([]);
+        $this->accountHistory->expects(self::never())
+                             ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::never())
                     ->method('decrypt');
         $this->crypt->expects(self::never())
@@ -218,7 +218,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->crypt->expects(self::never())
                     ->method('encrypt');
 
-        $this->accountCryptService->updateHistoryMasterPassword($request);
+        $this->accountCrypt->updateHistoryMasterPassword($request);
     }
 
     /**
@@ -228,14 +228,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
-        $this->accountHistoryService->expects(self::once())
-                                    ->method('getAccountsPassData')
-                                    ->willThrowException(new RuntimeException('test'));
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while updating the accounts\' passwords in history');
 
-        $this->accountCryptService->updateHistoryMasterPassword($request);
+        $this->accountCrypt->updateHistoryMasterPassword($request);
     }
 
     /**
@@ -246,14 +246,14 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
-        $this->accountHistoryService->expects(self::once())
-                                    ->method('getAccountsPassData')
-                                    ->willReturn($accountData);
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willReturn($accountData);
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
 
-        $this->accountCryptService->updateHistoryMasterPassword($request);
+        $this->accountCrypt->updateHistoryMasterPassword($request);
     }
 
     /**
@@ -275,7 +275,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
                     ->with($pass)
                     ->willReturn($pass);
 
-        $out = $this->accountCryptService->getPasswordEncrypted($pass, $masterPass);
+        $out = $this->accountCrypt->getPasswordEncrypted($pass, $masterPass);
 
         $this->assertEquals($pass, $out->getPass());
         $this->assertEquals($key, $out->getKey());
@@ -298,7 +298,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while retrieving master password from context');
 
-        $this->accountCryptService->getPasswordEncrypted(self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password);
     }
 
     /**
@@ -315,7 +315,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Master password not set');
 
-        $this->accountCryptService->getPasswordEncrypted(self::$faker->password, '');
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, '');
     }
 
     /**
@@ -334,7 +334,7 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->accountCryptService->getPasswordEncrypted(self::$faker->password, self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, self::$faker->password);
     }
 
     /**
@@ -353,22 +353,22 @@ class AccountCryptServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->accountCryptService->getPasswordEncrypted(self::$faker->password, self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, self::$faker->password);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->accountService = $this->createMock(AccountServiceInterface::class);
-        $this->accountHistoryService = $this->createMock(AccountHistoryServiceInterface::class);
+        $this->account = $this->createMock(AccountService::class);
+        $this->accountHistory = $this->createMock(AccountHistoryService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->accountCryptService =
-            new AccountCryptService(
+        $this->accountCrypt =
+            new AccountCrypt(
                 $this->application,
-                $this->accountService,
-                $this->accountHistoryService,
+                $this->account,
+                $this->accountHistory,
                 $this->crypt
             );
     }
