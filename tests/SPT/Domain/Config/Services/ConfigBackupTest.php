@@ -45,7 +45,7 @@ class ConfigBackupTest extends UnitaryTestCase
 {
 
     private ConfigService|MockObject $configService;
-    private ConfigBackup             $configBackupService;
+    private ConfigBackup $configBackup;
 
     public function testBackup()
     {
@@ -60,7 +60,7 @@ class ConfigBackupTest extends UnitaryTestCase
                 )
             );
 
-        $this->configBackupService->backup($this->config->getConfigData());
+        $this->configBackup->backup($this->config->getConfigData());
     }
 
     public function testBackupError()
@@ -71,7 +71,7 @@ class ConfigBackupTest extends UnitaryTestCase
             ->with('config_backup', self::anything())
             ->willThrowException(new SPException('test'));
 
-        $this->configBackupService->backup($this->config->getConfigData());
+        $this->configBackup->backup($this->config->getConfigData());
     }
 
     /**
@@ -101,7 +101,7 @@ class ConfigBackupTest extends UnitaryTestCase
                    ->method('getConfigData')
                    ->willReturn($configData);
 
-        $out = $this->configBackupService->restore($configFile);
+        $out = $this->configBackup->restore($configFile);
 
         $this->assertEquals($configData, $out);
     }
@@ -129,7 +129,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to restore the configuration');
 
-        $this->configBackupService->restore($configFile);
+        $this->configBackup->restore($configFile);
     }
 
     /**
@@ -154,7 +154,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to restore the configuration');
 
-        $this->configBackupService->restore($configFile);
+        $this->configBackup->restore($configFile);
     }
 
     /**
@@ -179,7 +179,7 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->with('config_backup')
                             ->willReturn($hexConfigData);
 
-        $out = unserialize($this->configBackupService->getBackup());
+        $out = unserialize($this->configBackup->getBackup());
 
         $this->assertEquals($configData, $out);
     }
@@ -194,7 +194,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to restore the configuration');
 
-        $this->configBackupService->getBackup();
+        $this->configBackup->getBackup();
     }
 
     public function testGetBackupWithMissingParam()
@@ -206,7 +206,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to restore the configuration');
 
-        $this->configBackupService->getBackup();
+        $this->configBackup->getBackup();
     }
 
     protected function setUp(): void
@@ -215,7 +215,7 @@ class ConfigBackupTest extends UnitaryTestCase
 
         $this->configService = $this->createMock(ConfigService::class);
 
-        $this->configBackupService = new ConfigBackup($this->configService);
+        $this->configBackup = new ConfigBackup($this->configService);
     }
 
 
