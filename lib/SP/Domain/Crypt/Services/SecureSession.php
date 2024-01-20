@@ -33,7 +33,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
-use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
+use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
 
@@ -45,7 +45,7 @@ use function SP\processException;
  *
  * @package SP\Domain\Crypt\Services
  */
-final class SecureSessionService extends Service implements SecureSessionServiceInterface
+final class SecureSession extends Service implements SecureSessionService
 {
     private const CACHE_EXPIRE_TIME = 86400;
     private const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';

@@ -24,10 +24,8 @@
 
 namespace SP\Domain\Crypt\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
 use Exception;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -37,21 +35,26 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\PasswordUtil;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class TemporaryMasterPassService
  *
  * @package SP\Domain\Crypt\Services
  */
-final class TemporaryMasterPassService extends Service
-    implements TemporaryMasterPassServiceInterface
+final class TemporaryMasterPass extends Service implements TemporaryMasterPassService
 {
     /**
      * Número máximo de intentos
@@ -67,29 +70,23 @@ final class TemporaryMasterPassService extends Service
     public const  PARAM_MAX_TIME = 'tempmaster_maxtime';
     public const  PARAM_ATTEMPTS = 'tempmaster_attempts';
 
-    private ConfigService        $configService;
-    private UserServiceInterface $userService;
-    private MailServiceInterface   $mailService;
-    private ?int                   $maxTime = null;
+    private ?int $maxTime = null;
 
     public function __construct(
-        Application   $application,
-        ConfigService $configService,
-        UserServiceInterface $userService,
-        MailServiceInterface $mailService
+        Application                           $application,
+        private readonly ConfigService        $configService,
+        private readonly UserServiceInterface $userService,
+        private readonly MailServiceInterface $mailService,
+        private readonly CryptInterface       $crypt,
     ) {
         parent::__construct($application);
-
-        $this->configService = $configService;
-        $this->userService = $userService;
-        $this->mailService = $mailService;
     }
 
 
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
-     * @param  int  $maxTime  El tiempo máximo de validez de la clave
+     * @param int $maxTime El tiempo máximo de validez de la clave
      *
      * @return string
      * @throws ServiceException
@@ -101,12 +98,12 @@ final class TemporaryMasterPassService extends Service
 
             // Encriptar la clave maestra con hash aleatorio generado
             $randomKey = PasswordUtil::generateRandomBytes(32);
-            $secureKey = Crypt::makeSecuredKey($randomKey);
+            $secureKey = $this->crypt->makeSecuredKey($randomKey);
 
             $configRequest = new ConfigRequest();
             $configRequest->add(
                 self::PARAM_PASS,
-                Crypt::encrypt($this->getMasterKeyFromContext(), $secureKey, $randomKey)
+                $this->crypt->encrypt($this->getMasterKeyFromContext(), $secureKey, $randomKey)
             );
             $configRequest->add(self::PARAM_KEY, $secureKey);
             $configRequest->add(self::PARAM_HASH, Hash::hashKey($randomKey));
@@ -122,8 +119,8 @@ final class TemporaryMasterPassService extends Service
             $this->eventDispatcher->notify(
                 'create.tempMasterPassword',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Generate temporary password'))
+                    $this,
+                    EventMessage::factory()->addDescription(__u('Generate temporary password'))
                 )
             );
 
@@ -138,7 +135,7 @@ final class TemporaryMasterPassService extends Service
     /**
      * Comprueba si la clave temporal es válida
      *
-     * @param  string  $pass  clave a comprobar
+     * @param string $pass clave a comprobar
      *
      * @return bool
      * @throws ServiceException
@@ -186,7 +183,7 @@ final class TemporaryMasterPassService extends Service
             }
 
             return $isValid;
-        } catch (NoSuchItemException $e) {
+        } catch (NoSuchItemException) {
             return false;
         } catch (Exception $e) {
             processException($e);
@@ -213,8 +210,8 @@ final class TemporaryMasterPassService extends Service
         $this->eventDispatcher->notify(
             'expire.tempMasterPassword',
             new Event(
-                $this, EventMessage::factory()
-                ->addDescription(__u('Temporary password expired'))
+                $this,
+                EventMessage::factory()->addDescription(__u('Temporary password expired'))
             )
         );
     }
@@ -283,11 +280,11 @@ final class TemporaryMasterPassService extends Service
      * @return string con la clave maestra desencriptada
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws CryptoException
+     * @throws CryptException
      */
     public function getUsingKey(string $key): string
     {
-        return Crypt::decrypt(
+        return $this->crypt->decrypt(
             $this->configService->getByParam(self::PARAM_PASS),
             $this->configService->getByParam(self::PARAM_KEY),
             $key

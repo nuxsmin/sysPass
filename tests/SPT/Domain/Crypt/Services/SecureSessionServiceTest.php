@@ -36,7 +36,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Crypt\Services\SecureSessionService;
+use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
@@ -48,7 +48,7 @@ use SPT\UnitaryTestCase;
  */
 class SecureSessionServiceTest extends UnitaryTestCase
 {
-    private SecureSessionService                     $secureSessionService;
+    private SecureSession $secureSessionService;
     private RequestBasedPasswordInterface|MockObject $requestBasedPassword;
     private CryptInterface|MockObject                $crypt;
     private FileCacheService|MockObject $fileCache;
@@ -150,7 +150,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $uuidCookie->method('create')
                    ->willReturn(uniqid('', true));
 
-        $this->assertNotEmpty(SecureSessionService::getFileNameFrom($uuidCookie, self::$faker->password));
+        $this->assertNotEmpty(SecureSession::getFileNameFrom($uuidCookie, self::$faker->password));
     }
 
     /**
@@ -166,7 +166,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSessionService::getFileNameFrom($uuidCookie, self::$faker->password);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password);
     }
 
     /**
@@ -182,7 +182,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSessionService::getFileNameFrom($uuidCookie, self::$faker->password);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password);
     }
 
     /**
@@ -198,7 +198,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->requestBasedPassword = $this->createMock(RequestBasedPasswordInterface::class);
         $this->fileCache = $this->createMock(FileCacheService::class);
 
-        $this->secureSessionService = new SecureSessionService(
+        $this->secureSessionService = new SecureSession(
             $this->application,
             $this->crypt,
             $this->fileCache,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,8 +32,8 @@ use SP\Domain\Account\Ports\AccountSearchDataBuilder;
 use SP\Domain\Account\Services\Builders\AccountSearchData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
-use SP\Domain\Crypt\Services\SecureSessionService;
+use SP\Domain\Crypt\Ports\SecureSessionService;
+use SP\Domain\Crypt\Services\SecureSession;
 use SP\Infrastructure\File\FileCache;
 
 use function DI\autowire;
@@ -103,16 +103,16 @@ final class DomainDefinitions
             'SP\Domain\Plugin\Ports\*RepositoryInterface'       => autowire(
                 'SP\Infrastructure\Plugin\Repositories\*Repository'
             ),
-            SecureSessionServiceInterface::class => factory(
+            SecureSessionService::class => factory(
                 static function (ContainerInterface $c) {
                     $fileCache = new FileCache(
-                        SecureSessionService::getFileNameFrom(
+                        SecureSession::getFileNameFrom(
                             $c->get(UuidCookie::class),
                             $c->get(ConfigDataInterface::class)->getPasswordSalt()
                         )
                     );
 
-                    return new SecureSessionService(
+                    return new SecureSession(
                         $c->get(Application::class),
                         $c->get(CryptInterface::class),
                         $fileCache,

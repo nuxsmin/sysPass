@@ -44,7 +44,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
-use SP\Domain\Crypt\Services\TemporaryMasterPassService;
+use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Services\BackupFiles;
 use SP\Domain\Export\Services\XmlExportService;
 use SP\Domain\Task\Services\Task;
@@ -425,17 +425,17 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'tempMasterPassTime',
-            $this->configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_TIME, 0)
         );
         $template->assign(
             'tempMasterMaxTime',
-            $this->configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_MAX_TIME, 0)
         );
 
         $tempMasterAttempts = sprintf(
             '%d/%d',
-            $this->configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
-            TemporaryMasterPassService::MAX_ATTEMPTS
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_ATTEMPTS, 0),
+            TemporaryMasterPass::MAX_ATTEMPTS
         );
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);

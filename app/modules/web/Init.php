@@ -49,8 +49,8 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Crypt\Ports\SecureSessionServiceInterface;
-use SP\Domain\Crypt\Services\SecureSessionService;
+use SP\Domain\Crypt\Ports\SecureSessionService;
+use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetService;
@@ -137,9 +137,9 @@ final class Init extends HttpModuleBase
 
 
     private Csrf $csrf;
-    private Language             $language;
-    private SecureSessionService $secureSessionService;
-    private PluginManager        $pluginManager;
+    private Language      $language;
+    private SecureSession $secureSessionService;
+    private PluginManager $pluginManager;
     private ItemPresetService    $itemPresetService;
     private DatabaseUtil         $databaseUtil;
     private UserProfileService   $userProfileService;
@@ -152,7 +152,7 @@ final class Init extends HttpModuleBase
         Klein                                $router,
         CsrfInterface                        $csrf,
         LanguageInterface                    $language,
-        SecureSessionServiceInterface        $secureSessionService,
+        SecureSessionService $secureSessionService,
         PluginManager                        $pluginManager,
         ItemPresetService                    $itemPresetService,
         DatabaseUtil                         $databaseUtil,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
  *
  * @package SP\Domain\Crypt\Services
  */
-interface TemporaryMasterPassServiceInterface
+interface TemporaryMasterPassService
 {
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.

@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
@@ -86,16 +86,16 @@ final class Login extends Service implements LoginService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                                          $application,
-        private readonly AuthProviderInterface               $authProvider,
-        private readonly LanguageInterface                   $language,
-        private readonly TrackServiceInterface               $trackService,
-        private readonly RequestInterface                    $request,
-        private readonly UserServiceInterface                $userService,
-        private readonly UserPassRecoverServiceInterface     $userPassRecoverService,
-        private readonly TemporaryMasterPassServiceInterface $temporaryMasterPassService,
-        private readonly UserPassServiceInterface            $userPassService,
-        private readonly UserProfileServiceInterface         $userProfileService
+        Application                                      $application,
+        private readonly AuthProviderInterface           $authProvider,
+        private readonly LanguageInterface               $language,
+        private readonly TrackServiceInterface           $trackService,
+        private readonly RequestInterface                $request,
+        private readonly UserServiceInterface            $userService,
+        private readonly UserPassRecoverServiceInterface $userPassRecoverService,
+        private readonly TemporaryMasterPassService      $temporaryMasterPassService,
+        private readonly UserPassServiceInterface        $userPassService,
+        private readonly UserProfileServiceInterface     $userProfileService
     ) {
         parent::__construct($application);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Crypt\Ports\TemporaryMasterPassServiceInterface;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -46,12 +46,12 @@ final class SaveTempController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private TemporaryMasterPassServiceInterface $temporaryMasterPassService;
+    private TemporaryMasterPassService $temporaryMasterPassService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        TemporaryMasterPassServiceInterface $temporaryMasterPassService
+        TemporaryMasterPassService $temporaryMasterPassService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
