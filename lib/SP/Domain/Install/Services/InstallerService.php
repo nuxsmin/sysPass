@@ -52,8 +52,6 @@ use SP\Util\VersionUtil;
 use function SP\__u;
 use function SP\processException;
 
-defined('APP_ROOT') || die();
-
 /**
  * Installer class
  */

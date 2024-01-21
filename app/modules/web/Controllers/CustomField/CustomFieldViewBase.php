@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,10 +27,10 @@ namespace SP\Modules\Web\Controllers\CustomField;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
@@ -73,7 +73,7 @@ abstract class CustomFieldViewBase extends ControllerBase
 
         $customField = $customFieldId
             ? $this->customFieldDefService->getById($customFieldId)
-            : new CustomFieldDefinitionData();
+            : new CustomFieldDefinition();
 
         $this->view->assign('field', $customField);
         $this->view->assign(

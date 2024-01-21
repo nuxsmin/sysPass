@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,15 +23,16 @@
  */
 
 /**
- * @var CustomFieldDefinitionData $field
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var CustomFieldDefinition $field
+ * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
@@ -149,7 +150,7 @@ $field = $_getvar('field');
                         <input type="checkbox" id="encrypted"
                                class="mdl-switch__input mdl-color-text--indigo-400"
                                name="encrypted" <?php
-                        echo $field->getisEncrypted() ? 'checked' : ''; ?>/>
+                        echo $field->getIsEncrypted() ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Encrypted'); ?></span>
                     </label>

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,9 @@
 
 namespace SP\Domain\CustomField\Ports;
 
-use SP\DataModel\CustomFieldTypeData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\CustomField\Models\CustomFieldType;
 
 /**
  * Class CustomFieldTypeService
@@ -39,25 +38,9 @@ interface CustomFieldTypeServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return CustomFieldTypeData[]
+     * @return CustomFieldType[]
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getAll(): array;
-
-    /**
-     * Returns all the items
-     *
-     * @return CustomFieldTypeData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array;
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function getById(int $id);
 }

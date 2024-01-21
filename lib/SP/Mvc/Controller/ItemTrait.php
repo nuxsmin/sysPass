@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,12 +25,12 @@
 namespace SP\Mvc\Controller;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Models\CustomFieldData;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\CustomField\Services\CustomFieldService;

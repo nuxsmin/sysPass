@@ -25,15 +25,13 @@
 namespace SP\Domain\CustomField\Services;
 
 use SP\Core\Application;
-use SP\DataModel\CustomFieldTypeData;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\CustomField\Repositories\CustomFieldTypeBaseRepository;
+use SP\Infrastructure\CustomField\Repositories\CustomFieldType as CustomFieldTypeModel;
 
 /**
  * Class CustomFieldTypeService
@@ -42,54 +40,24 @@ use SP\Infrastructure\CustomField\Repositories\CustomFieldTypeBaseRepository;
  */
 final class CustomFieldTypeService extends Service implements CustomFieldTypeServiceInterface
 {
-    use ServiceItemTrait;
 
-    private CustomFieldTypeBaseRepository $customFieldTypeRepository;
-
-    public function __construct(Application $application, CustomFieldTypeRepository $customFieldTypeRepository)
-    {
+    public function __construct(
+        Application                                $application,
+        private readonly CustomFieldTypeRepository $customFieldTypeRepository
+    ) {
         parent::__construct($application);
-
-        $this->customFieldTypeRepository = $customFieldTypeRepository;
-    }
-
-    /**
-     * Get all items from the service's repository
-     *
-     * @return CustomFieldTypeData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array
-    {
-        return $this->getAll();
     }
 
     /**
      * Returns all the items
      *
-     * @return CustomFieldTypeData[]
+     * @return CustomFieldTypeModel[]
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function getAll(): array
     {
         return $this->customFieldTypeRepository->getAll()->getDataAsArray();
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function getById(int $id)
-    {
-        $result = $this->customFieldTypeRepository->getById($id);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Field type not found'));
-        }
-
-        return $result->getData();
     }
 }

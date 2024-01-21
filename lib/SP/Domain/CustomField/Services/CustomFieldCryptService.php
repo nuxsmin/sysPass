@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,13 +31,13 @@ use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CustomFieldData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\CustomField\Models\CustomFieldData;
 use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
 use SP\Domain\Task\Services\TaskFactory;

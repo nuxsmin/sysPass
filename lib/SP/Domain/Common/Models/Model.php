@@ -104,6 +104,11 @@ abstract class Model implements JsonSerializable, ArrayAccess
         return $fields;
     }
 
+    final public static function getColsWithPreffix(string $preffix, ?array $exclude = null): array
+    {
+        return array_map(static fn(string $name) => sprintf('%s.%s', $preffix, $name), self::getCols($exclude));
+    }
+
     /**
      * Get columns name for this model
      *

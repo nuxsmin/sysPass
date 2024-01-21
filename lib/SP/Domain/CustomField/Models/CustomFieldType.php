@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,76 +22,32 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
-
+namespace SP\Domain\CustomField\Models;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class CustomFieldTypeData
- *
- * @package SP\DataModel
+ * Class CustomFieldType
  */
-class CustomFieldTypeData extends Model implements DataModelInterface
+class CustomFieldType extends Model implements DataModelInterface
 {
-    /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var string
-     */
-    public $text;
+    protected ?int    $id   = null;
+    protected ?string $name = null;
+    protected ?string $text = null;
 
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = (int)$id;
-    }
-
-    /**
-     * @return string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText(): ?string
     {
         return $this->text;
     }
-
-    /**
-     * @param string $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-
 }

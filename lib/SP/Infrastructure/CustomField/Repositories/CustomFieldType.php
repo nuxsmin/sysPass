@@ -22,12 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\CustomField\Ports;
+namespace SP\Infrastructure\CustomField\Repositories;
 
-use SP\Domain\Common\Ports\Repository;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
+use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
+use SP\Infrastructure\Common\Repositories\BaseRepository;
+use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
+use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -35,14 +36,25 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @template T of CustomFieldTypeModel
  */
-interface CustomFieldTypeRepository extends Repository
+final class CustomFieldType extends BaseRepository implements CustomFieldTypeRepository
 {
+    use RepositoryItemTrait;
+
+    public const TABLE = 'CustomFieldType';
+
     /**
      * Returns all the items
      *
      * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function getAll(): QueryResult;
+    public function getAll(): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(CustomFieldTypeModel::getCols())
+            ->orderBy(['name ASC']);
+
+        return $this->db->doSelect(QueryData::buildWithMapper($query, CustomFieldTypeModel::class));
+    }
 }

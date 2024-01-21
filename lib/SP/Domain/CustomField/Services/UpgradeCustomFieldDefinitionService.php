@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,9 +29,9 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CustomFieldDefDataOld;
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionServiceInterface;
@@ -103,7 +103,7 @@ final class UpgradeCustomFieldDefinitionService extends Service
                             'SP\DataModel\CustomFieldDefData'
                         );
 
-                        $itemData = new CustomFieldDefinitionData();
+                        $itemData = new CustomFieldDefinition();
                         $itemData->setId($item->id);
                         $itemData->setModuleId($this->moduleMapper((int)$item->moduleId));
                         $itemData->setName($data->getName());

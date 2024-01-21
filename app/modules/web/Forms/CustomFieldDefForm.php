@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 
 /**
  * Class CustomFieldDefForm
@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class CustomFieldDefForm extends FormBase implements FormInterface
 {
-    protected ?CustomFieldDefinitionData $customFieldDefData;
+    protected ?CustomFieldDefinition $customFieldDefData;
 
     /**
      * Validar el formulario
@@ -70,7 +70,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->customFieldDefData = new CustomFieldDefinitionData();
+        $this->customFieldDefData = new CustomFieldDefinition();
         $this->customFieldDefData->setId($this->itemId);
         $this->customFieldDefData->setName($this->request->analyzeString('name'));
         $this->customFieldDefData->setTypeId($this->request->analyzeInt('type'));
@@ -98,7 +98,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?CustomFieldDefinitionData
+    public function getItemData(): ?CustomFieldDefinition
     {
         return $this->customFieldDefData;
     }

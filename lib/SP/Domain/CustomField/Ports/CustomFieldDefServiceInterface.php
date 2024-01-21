@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,11 @@
 
 namespace SP\Domain\CustomField\Ports;
 
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Services\CustomFieldDefService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -61,37 +61,37 @@ interface CustomFieldDefServiceInterface
     public function deleteByIdBatch(array $ids): void;
 
     /**
-     * @param CustomFieldDefinitionData $itemData
+     * @param CustomFieldDefinition $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(CustomFieldDefinitionData $itemData): int;
+    public function create(CustomFieldDefinition $itemData): int;
 
     /**
      * @throws ServiceException
      */
-    public function update(CustomFieldDefinitionData $itemData);
+    public function update(CustomFieldDefinition $itemData);
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): CustomFieldDefinitionData;
+    public function getById(int $id): CustomFieldDefinition;
 
     /**
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(CustomFieldDefinitionData $itemData): void;
+    public function updateRaw(CustomFieldDefinition $itemData): void;
 
     /**
      * Get all items from the service's repository
      *
-     * @return CustomFieldDefinitionData[]
+     * @return CustomFieldDefinition[]
      * @throws ConstraintException
      * @throws QueryException
      */

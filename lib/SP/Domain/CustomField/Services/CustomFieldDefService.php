@@ -25,7 +25,6 @@
 namespace SP\Domain\CustomField\Services;
 
 use SP\Core\Application;
-use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -34,9 +33,10 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldDefRepository;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
+use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
+use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
-use SP\Domain\CustomField\Ports\CustomFieldRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -50,15 +50,15 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
 {
     use ServiceItemTrait;
 
-    protected CustomFieldDefRepository $customFieldDefRepository;
-    protected CustomFieldRepository    $customFieldRepository;
-    private DatabaseInterface          $database;
+    protected CustomFieldDefinitionRepository $customFieldDefRepository;
+    protected CustomFieldDataRepository       $customFieldRepository;
+    private DatabaseInterface                 $database;
 
     public function __construct(
-        Application              $application,
-        CustomFieldDefRepository $customFieldDefRepository,
-        CustomFieldRepository    $customFieldRepository,
-        DatabaseInterface        $database
+        Application                     $application,
+        CustomFieldDefinitionRepository $customFieldDefRepository,
+        CustomFieldDataRepository       $customFieldRepository,
+        DatabaseInterface               $database
     ) {
         parent::__construct($application);
 
@@ -110,8 +110,6 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     {
         $this->transactionAware(
             function () use ($id) {
-                $this->customFieldRepository->deleteCustomFieldDefinitionData($id);
-
                 if ($this->customFieldDefRepository->delete($id) === 0) {
                     throw new NoSuchItemException(__u('Field not found'), SPException::INFO);
                 }
@@ -133,8 +131,6 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     {
         $this->transactionAware(
             function () use ($ids) {
-                $this->customFieldRepository->deleteCustomFieldDefinitionDataBatch($ids);
-
                 if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
                     throw new ServiceException(
                         __u('Error while deleting the fields'),
@@ -147,13 +143,13 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     }
 
     /**
-     * @param CustomFieldDefinitionData $itemData
+     * @param CustomFieldDefinition $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(CustomFieldDefinitionData $itemData): int
+    public function create(CustomFieldDefinition $itemData): int
     {
         return $this->customFieldDefRepository->create($itemData);
     }
@@ -163,7 +159,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(CustomFieldDefinitionData $itemData): void
+    public function updateRaw(CustomFieldDefinition $itemData): void
     {
         if ($this->customFieldDefRepository->update($itemData) !== 1) {
             throw new ServiceException(__u('Error while updating the custom field'));
@@ -173,7 +169,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     /**
      * @throws ServiceException
      */
-    public function update(CustomFieldDefinitionData $itemData)
+    public function update(CustomFieldDefinition $itemData)
     {
         return $this->transactionAware(
             function () use ($itemData) {
@@ -181,7 +177,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
 
                 // Delete the data used by the items using the previous definition
                 if ($customFieldDefinitionData->getModuleId() !== $itemData->moduleId) {
-                    $this->customFieldRepository->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
+                    $this->customFieldRepository->deleteByDefinition($customFieldDefinitionData->getId());
                 }
 
                 if ($this->customFieldDefRepository->update($itemData) !== 1) {
@@ -197,7 +193,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): CustomFieldDefinitionData
+    public function getById(int $id): CustomFieldDefinition
     {
         return $this->customFieldDefRepository->getById($id);
     }
@@ -205,7 +201,7 @@ final class CustomFieldDefService extends Service implements CustomFieldDefServi
     /**
      * Get all items from the service's repository
      *
-     * @return CustomFieldDefinitionData[]
+     * @return CustomFieldDefinition[]
      * @throws ConstraintException
      * @throws QueryException
      */
