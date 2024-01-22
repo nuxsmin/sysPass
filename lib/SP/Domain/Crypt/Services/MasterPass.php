@@ -34,8 +34,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\processException;
@@ -49,11 +50,11 @@ final class MasterPass extends Service implements MasterPassService
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
     public function __construct(
-        Application                                       $application,
-        private readonly ConfigService                    $configService,
-        private readonly AccountCryptService              $accountCryptService,
-        private readonly CustomFieldCryptServiceInterface $customFieldCryptService,
-        private readonly Repository                       $repository
+        Application                              $application,
+        private readonly ConfigService           $configService,
+        private readonly AccountCryptService     $accountCryptService,
+        private readonly CustomFieldCryptService $customFieldCryptService,
+        private readonly Repository              $repository
     ) {
         parent::__construct($application);
     }

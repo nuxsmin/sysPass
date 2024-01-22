@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\CustomField\Ports\UpgradeCustomFieldDataServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -44,13 +44,13 @@ use SP\Infrastructure\Database\QueryData;
 final class UpgradeCustomFieldDataService extends Service
     implements UpgradeCustomFieldDataServiceInterface
 {
-    private CustomFieldServiceInterface $customFieldService;
-    private DatabaseInterface           $database;
+    private CustomFieldService $customFieldService;
+    private DatabaseInterface  $database;
 
     public function __construct(
-        Application $application,
-        CustomFieldServiceInterface $customFieldService,
-        DatabaseInterface $database
+        Application        $application,
+        CustomFieldService $customFieldService,
+        DatabaseInterface  $database
     ) {
         parent::__construct($application);
 

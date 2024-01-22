@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 
 use SP\Core\Application;
 use SP\Domain\Auth\Ports\AuthTokenService;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;
@@ -42,15 +42,15 @@ abstract class AuthTokenSaveBase extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    protected CustomFieldServiceInterface $customFieldService;
-    protected AuthTokenService $authTokenService;
+    protected CustomFieldService $customFieldService;
+    protected AuthTokenService   $authTokenService;
     protected AuthTokenForm               $form;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         AuthTokenService    $authTokenService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\TagForm;
@@ -38,14 +38,14 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class TagSaveBase extends ControllerBase
 {
     protected TagServiceInterface         $tagService;
-    protected TagForm                     $form;
-    protected CustomFieldServiceInterface $customFieldService;
+    protected TagForm            $form;
+    protected CustomFieldService $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         TagServiceInterface $tagService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

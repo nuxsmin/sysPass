@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -49,16 +49,16 @@ abstract class UserGroupViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private UserGroupServiceInterface   $userGroupService;
-    private CustomFieldServiceInterface $customFieldService;
-    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface $userGroupService;
+    private CustomFieldService        $customFieldService;
+    private UserServiceInterface      $userService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         UserGroupServiceInterface $userGroupService,
         UserServiceInterface $userService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -30,12 +30,13 @@ use SP\Core\Crypt\Crypt;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData;
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
@@ -43,7 +44,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
  *
  * @package SP\Domain\CustomField\Services
  */
-final class CustomFieldService extends Service implements CustomFieldServiceInterface
+final class CustomField extends Service implements CustomFieldService
 {
 
     public function __construct(
@@ -65,8 +66,11 @@ final class CustomFieldService extends Service implements CustomFieldServiceInte
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @throws CryptoException
+     * @param string $data
+     * @param string $key
+     * @return string
      * @throws ServiceException
+     * @throws CryptException
      */
     public function decryptData(string $data, string $key): string
     {

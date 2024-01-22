@@ -30,7 +30,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 
 /**
  * Class ClientAdapter
@@ -45,7 +45,7 @@ interface ClientAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(Client $data, CustomFieldServiceInterface $customFieldService): Collection;
+    public function includeCustomFields(Client $data, CustomFieldService $customFieldService): Collection;
 
     public function transform(Client $data): array;
 }

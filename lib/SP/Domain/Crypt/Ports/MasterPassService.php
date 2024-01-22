@@ -27,7 +27,7 @@ namespace SP\Domain\Crypt\Ports;
 use Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
 /**
  * Class MasterPassService

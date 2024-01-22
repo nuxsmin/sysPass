@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\DataModel\UserData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\Notification\Ports\MailServiceInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -46,17 +46,17 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserSaveBase extends ControllerBase
 {
-    protected UserServiceInterface          $userService;
-    protected CustomFieldServiceInterface   $customFieldService;
-    protected UserForm                      $form;
+    protected UserServiceInterface $userService;
+    protected CustomFieldService   $customFieldService;
+    protected UserForm             $form;
     private MailServiceInterface            $mailService;
     private UserPassRecoverServiceInterface $userPassRecoverService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
         UserServiceInterface $userService,
-        CustomFieldServiceInterface $customFieldService,
+        CustomFieldService   $customFieldService,
         MailServiceInterface $mailService,
         UserPassRecoverServiceInterface $userPassRecoverService
     ) {

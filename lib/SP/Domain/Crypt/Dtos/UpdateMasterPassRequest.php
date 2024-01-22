@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,33 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Crypt\Services;
+namespace SP\Domain\Crypt\Dtos;
 
 use SP\Core\Crypt\Hash;
 use SP\Domain\Task\Ports\TaskInterface;
 
 /**
  * Class UpdateMasterPassRequest
- *
- * @package SP\Domain\Crypt\Services
  */
 final class UpdateMasterPassRequest
 {
     private string $hash;
 
-    /**
-     * UpdateMasterPassRequest constructor.
-     *
-     * @param  string  $currentMasterPass
-     * @param  string  $newMasterPass
-     * @param  string  $currentHash
-     * @param  TaskInterface|null  $task
-     */
     public function __construct(
-        private string $currentMasterPass,
-        private string $newMasterPass,
-        private string $currentHash,
-        private ?TaskInterface $task = null
+        private readonly string         $currentMasterPass,
+        private readonly string         $newMasterPass,
+        private readonly string         $currentHash,
+        private readonly ?TaskInterface $task = null
     ) {
         $this->hash = Hash::hashKey($newMasterPass);
     }

@@ -33,7 +33,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 
@@ -43,22 +43,22 @@ use SP\Modules\Api\Controllers\Help\AccountHelp;
 abstract class AccountBase extends ControllerBase
 {
     protected AccountPresetService        $accountPresetService;
-    protected AccountService              $accountService;
-    protected CustomFieldServiceInterface $customFieldService;
-    protected AccountAdapterInterface       $accountAdapter;
+    protected AccountService          $accountService;
+    protected CustomFieldService      $customFieldService;
+    protected AccountAdapterInterface $accountAdapter;
 
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application                 $application,
-        Klein                       $router,
-        ApiService           $apiService,
-        AclInterface                $acl,
-        AccountPresetService $accountPresetService,
-        AccountService       $accountService,
-        CustomFieldServiceInterface $customFieldService,
-        AccountAdapterInterface     $accountAdapter
+        Application             $application,
+        Klein                   $router,
+        ApiService              $apiService,
+        AclInterface            $acl,
+        AccountPresetService    $accountPresetService,
+        AccountService          $accountService,
+        CustomFieldService      $customFieldService,
+        AccountAdapterInterface $accountAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 

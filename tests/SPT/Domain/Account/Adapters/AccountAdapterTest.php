@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Account\Adapters\AccountAdapter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SPT\Generators\AccountDataGenerator;
 use SPT\Generators\CustomFieldGenerator;
@@ -67,7 +67,7 @@ class AccountAdapterTest extends UnitaryTestCase
 
         $adapter = new AccountAdapter(
             $this->config->getConfigData(),
-            $this->createStub(CustomFieldServiceInterface::class),
+            $this->createStub(CustomFieldService::class),
             $actions
         );
         $accountData = $dataGenerator->buildAccountEnrichedDto();
@@ -130,7 +130,7 @@ class AccountAdapterTest extends UnitaryTestCase
     public function testIncludeCustomFields(): void
     {
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();
-        $customFieldsService = $this->createStub(CustomFieldServiceInterface::class);
+        $customFieldsService = $this->createStub(CustomFieldService::class);
         $customFieldsService->expects(self::once())
                             ->method('getForModuleAndItemId')
                             ->willReturn([$customFieldData]);

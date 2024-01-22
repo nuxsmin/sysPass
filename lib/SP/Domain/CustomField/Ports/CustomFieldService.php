@@ -37,7 +37,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
  *
  * @package SP\Domain\CustomField\Services
  */
-interface CustomFieldServiceInterface
+interface CustomFieldService
 {
     /**
      * Desencriptar y formatear los datos del campo

@@ -34,7 +34,7 @@ use SP\Domain\Account\Services\AccountCrypt;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Infrastructure\File\FileException;

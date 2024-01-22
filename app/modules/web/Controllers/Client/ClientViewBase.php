@@ -34,7 +34,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -47,14 +47,14 @@ abstract class ClientViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private ClientService $clientService;
-    private CustomFieldServiceInterface $customFieldService;
+    private ClientService      $clientService;
+    private CustomFieldService $customFieldService;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         ClientService       $clientService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

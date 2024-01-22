@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,19 +25,19 @@
 namespace SP\Domain\CustomField\Ports;
 
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
 /**
  * Class CustomFieldCryptService
  *
  * @package SP\Mgmt\CustomFields
  */
-interface CustomFieldCryptServiceInterface
+interface CustomFieldCryptService
 {
     /**
      * Actualizar los datos encriptados con una nueva clave
      *
-     * @param  UpdateMasterPassRequest  $request
+     * @param UpdateMasterPassRequest $request
      *
      * @throws ServiceException
      */

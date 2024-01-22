@@ -24,68 +24,61 @@
 
 namespace SP\Domain\CustomField\Services;
 
-defined('APP_ROOT') || die();
-
 use Exception;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Domain\CustomField\Models\CustomFieldData;
-use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
+use SP\Domain\CustomField\Ports\CustomFieldCryptService;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\Task\Services\TaskFactory;
 
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
+
 /**
- * Class CustomFieldCryptService
- *
- * @package SP\Mgmt\CustomFields
+ * Class CustomFieldCrypt
  */
-final class CustomFieldCryptService extends Service implements CustomFieldCryptServiceInterface
+final class CustomFieldCrypt extends Service implements CustomFieldCryptService
 {
-    private CustomFieldService       $customFieldService;
-    private ?UpdateMasterPassRequest $request = null;
-
-    public function __construct(Application $application, CustomFieldServiceInterface $customFieldService)
-    {
+    public function __construct(
+        Application                         $application,
+        private readonly CustomFieldService $customFieldService,
+        private readonly CryptInterface     $crypt
+    ) {
         parent::__construct($application);
-
-        $this->customFieldService = $customFieldService;
     }
 
     /**
      * Actualizar los datos encriptados con una nueva clave
-     *
-     * @param  UpdateMasterPassRequest  $request
      *
      * @throws ServiceException
      */
     public function updateMasterPassword(UpdateMasterPassRequest $request): void
     {
         try {
-            $this->request = $request;
-
             $this->processUpdateMasterPassword(
-                function (CustomFieldData $customFieldData) {
-                    return Crypt::decrypt(
+                $request,
+                function (CustomFieldDataModel $customFieldData) use ($request) {
+                    return $this->crypt->decrypt(
                         $customFieldData->getData(),
                         $customFieldData->getKey(),
-                        $this->request->getCurrentMasterPass()
+                        $request->getCurrentMasterPass()
                     );
                 }
             );
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            throw new ServiceException(
+            throw ServiceException::error(
                 __u('Error while updating the custom fields data'),
-                SPException::ERROR,
                 null,
                 $e->getCode(),
                 $e
@@ -97,17 +90,18 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function processUpdateMasterPassword(callable $decryptor): void
+    private function processUpdateMasterPassword(UpdateMasterPassRequest $request, callable $decryptor): void
     {
-        $customFields = $this->customFieldService->getAllEncrypted();
+        $customFieldsData = $this->customFieldService->getAllEncrypted();
 
-        if (count($customFields) === 0) {
+        if (count($customFieldsData) === 0) {
             $this->eventDispatcher->notify(
-                'update.masterPassword.customFields',
+                'update.masterPassword.customFieldsData',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Update Master Password'))
-                    ->addDescription(__u('There aren\'t any data from custom fields'))
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Update Master Password'))
+                                ->addDescription(__u('There aren\'t any data from custom fields'))
                 )
             );
 
@@ -115,16 +109,17 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
         }
 
         $this->eventDispatcher->notify(
-            'update.masterPassword.customFields.start',
+            'update.masterPassword.customFieldsData.start',
             new Event(
-                $this, EventMessage::factory()
-                ->addDescription(__u('Update Master Password'))
-                ->addDescription(__u('Updating encrypted data'))
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('Update Master Password'))
+                            ->addDescription(__u('Updating encrypted data'))
             )
         );
 
-        if ($this->request->useTask()) {
-            $task = $this->request->getTask();
+        if ($request->useTask()) {
+            $task = $request->getTask();
 
             TaskFactory::update(
                 $task,
@@ -138,32 +133,31 @@ final class CustomFieldCryptService extends Service implements CustomFieldCryptS
         $errors = [];
         $success = [];
 
-        foreach ($customFields as $customField) {
+        foreach ($customFieldsData as $customFieldData) {
             try {
-                $customField->setData($decryptor($customField));
-
                 $this->customFieldService->updateMasterPass(
-                    $customField,
-                    $this->request->getNewMasterPass()
+                    $customFieldData->mutate(['data' => $decryptor($customFieldData)]),
+                    $request->getNewMasterPass()
                 );
 
-                $success[] = $customField->getId();
+                $success[] = $customFieldData->getId();
             } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notify('exception', new Event($e));
 
-                $errors[] = $customField->getId();
+                $errors[] = $customFieldData->getId();
             }
         }
 
         $this->eventDispatcher->notify(
-            'update.masterPassword.customFields.end',
+            'update.masterPassword.customFieldsData.end',
             new Event(
-                $this, EventMessage::factory()
-                ->addDescription(__u('Update Master Password'))
-                ->addDetail(__u('Records updated'), implode(',', $success))
-                ->addDetail(__u('Records not updated'), implode(',', $errors))
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('Update Master Password'))
+                            ->addDetail(__u('Records updated'), implode(',', $success))
+                            ->addDetail(__u('Records not updated'), implode(',', $errors))
             )
         );
     }

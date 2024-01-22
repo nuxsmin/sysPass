@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -48,14 +48,14 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService $accountService;
-    private CustomFieldServiceInterface $customFieldService;
+    private AccountService     $accountService;
+    private CustomFieldService $customFieldService;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         AccountService      $accountService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

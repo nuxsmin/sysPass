@@ -31,9 +31,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Services\CustomField;
 use SP\Domain\CustomField\Services\CustomFieldItem;
-use SP\Domain\CustomField\Services\CustomFieldService;
 use SP\Domain\Http\RequestInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\Filter;
@@ -56,7 +56,7 @@ trait ItemTrait
     protected function getCustomFieldsForItem(
         int $moduleId,
         ?int $itemId,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ): array {
         $customFields = [];
 
@@ -72,7 +72,7 @@ trait ItemTrait
                 $customField->typeName = $item['typeName'];
                 $customField->typeText = $item['typeText'];
                 $customField->moduleId = (int)$item['moduleId'];
-                $customField->formId = CustomFieldService::getFormIdForName($item['definitionName']);
+                $customField->formId = CustomField::getFormIdForName($item['definitionName']);
                 $customField->isEncrypted = (int)$item['isEncrypted'];
 
                 if (!empty($item['data']) && !empty($item['key'])) {
@@ -98,7 +98,7 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param RequestInterface $request
-     * @param CustomFieldServiceInterface $customFieldService
+     * @param CustomFieldService $customFieldService
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -110,7 +110,7 @@ trait ItemTrait
         int $moduleId,
         int|array $itemId,
         RequestInterface $request,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
 
@@ -149,7 +149,7 @@ trait ItemTrait
      *
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
-     * @param CustomFieldServiceInterface $customFieldService
+     * @param CustomFieldService $customFieldService
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -158,7 +158,7 @@ trait ItemTrait
     protected function deleteCustomFieldsForItem(
         int $moduleId,
         array|int $itemId,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ): void {
         if (is_array($itemId)) {
             $customFieldService->deleteCustomFieldDataBatch($itemId, $moduleId);
@@ -173,7 +173,7 @@ trait ItemTrait
      * @param  int  $moduleId
      * @param  int|int[]  $itemId
      * @param RequestInterface $request
-     * @param CustomFieldServiceInterface $customFieldService
+     * @param CustomFieldService $customFieldService
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -183,7 +183,7 @@ trait ItemTrait
         int $moduleId,
         int|array $itemId,
         RequestInterface $request,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
 

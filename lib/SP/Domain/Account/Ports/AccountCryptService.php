@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
 /**
  * Class AccountCryptService

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Util\Util;
 
@@ -119,7 +119,7 @@ final class AccountCrypt extends Service implements AccountCryptService
     /**
      * @param Account[] $accounts
      * @param callable $passUpdater
-     * @param UpdateMasterPassRequest $updateMasterPassRequest
+     * @param \SP\Domain\Crypt\Dtos\UpdateMasterPassRequest $updateMasterPassRequest
      *
      * @return EventMessage
      */

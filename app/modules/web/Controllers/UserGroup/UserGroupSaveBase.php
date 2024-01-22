@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserGroupForm;
@@ -37,15 +37,15 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserGroupSaveBase extends ControllerBase
 {
-    protected UserGroupServiceInterface   $userGroupService;
-    protected CustomFieldServiceInterface $customFieldService;
-    protected UserGroupForm               $form;
+    protected UserGroupServiceInterface $userGroupService;
+    protected CustomFieldService        $customFieldService;
+    protected UserGroupForm             $form;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         UserGroupServiceInterface $userGroupService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

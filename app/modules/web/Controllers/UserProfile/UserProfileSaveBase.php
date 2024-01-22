@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserProfileForm;
@@ -38,14 +38,14 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class UserProfileSaveBase extends ControllerBase
 {
     protected UserProfileServiceInterface $userProfileService;
-    protected CustomFieldServiceInterface $customFieldService;
+    protected CustomFieldService $customFieldService;
     protected UserProfileForm             $form;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         UserProfileServiceInterface $userProfileService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

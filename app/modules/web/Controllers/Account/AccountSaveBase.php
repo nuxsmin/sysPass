@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Account;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\CustomField\Ports\CustomFieldServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldService;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
@@ -39,18 +39,19 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class AccountSaveBase extends AccountControllerBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     protected AccountService $accountService;
-    protected AccountForm    $accountForm;
-    protected CustomFieldServiceInterface $customFieldService;
+    protected AccountForm        $accountForm;
+    protected CustomFieldService $customFieldService;
 
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,
         AccountService       $accountService,
         AccountPresetService $accountPresetService,
-        CustomFieldServiceInterface $customFieldService
+        CustomFieldService $customFieldService
     ) {
         parent::__construct(
             $application,

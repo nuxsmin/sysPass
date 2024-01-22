@@ -34,9 +34,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Services\MasterPass;
-use SP\Domain\Crypt\Services\UpdateMasterPassRequest;
-use SP\Domain\CustomField\Ports\CustomFieldCryptServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SPT\UnitaryTestCase;
 
@@ -49,9 +49,9 @@ class MasterPassTest extends UnitaryTestCase
 {
 
     private ConfigService|MockObject                    $configService;
-    private AccountCryptService|MockObject              $accountCryptService;
-    private CustomFieldCryptServiceInterface|MockObject $customFieldCryptService;
-    private MockObject|RepositoryInterface              $repository;
+    private AccountCryptService|MockObject     $accountCryptService;
+    private CustomFieldCryptService|MockObject $customFieldCryptService;
+    private MockObject|RepositoryInterface     $repository;
     private MasterPass                                  $masterPass;
 
     public function testCheckUserUpdateMPassWithFutureTime()
@@ -224,7 +224,7 @@ class MasterPassTest extends UnitaryTestCase
 
         $this->configService = $this->createMock(ConfigService::class);
         $this->accountCryptService = $this->createMock(AccountCryptService::class);
-        $this->customFieldCryptService = $this->createMock(CustomFieldCryptServiceInterface::class);
+        $this->customFieldCryptService = $this->createMock(CustomFieldCryptService::class);
         $this->repository = $this->createMock(Repository::class);
 
         $this->masterPass = new MasterPass(
