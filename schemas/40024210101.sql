@@ -1,4 +1,3 @@
-<?php
 /*
  * sysPass
  *
@@ -22,30 +21,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Ports;
+alter table CustomFieldData
+    drop column id;
 
-use League\Fractal\Resource\Collection;
-use SP\Domain\Client\Models\Client;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
-
-/**
- * Class ClientAdapter
- *
- * @package SP\Adapters
- */
-interface ClientAdapterInterface
-{
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
-     */
-    public function includeCustomFields(Client $data, CustomFieldDataService $customFieldService): Collection;
-
-    public function transform(Client $data): array;
-}
+alter table CustomFieldData
+    add primary key (moduleId, itemId, definitionId);

@@ -122,13 +122,12 @@ class CategoryTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
 
         $queryResult = new QueryResult([1]);
-        $queryResult->setAffectedNumRows(1);
 
         $this->categoryRepository
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn($queryResult);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->category->delete($id);
     }
@@ -251,13 +250,12 @@ class CategoryTest extends UnitaryTestCase
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->categoryRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->category->deleteByIdBatch($ids);
     }

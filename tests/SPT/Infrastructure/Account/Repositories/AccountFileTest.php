@@ -157,8 +157,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testDelete(): void
     {
         $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
@@ -173,7 +172,7 @@ class AccountFileTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountFile->delete($id));
     }

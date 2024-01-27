@@ -150,8 +150,7 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $publicLinkData = $this->buildPublicLinkData();
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($publicLinkData) {
@@ -167,7 +166,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->database->expects(self::once())
                        ->method('doQuery')
                        ->with($callback)
-                       ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->publicLink->addLinkView($publicLinkData));
     }

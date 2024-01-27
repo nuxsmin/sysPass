@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -59,7 +59,7 @@ abstract class AuthTokenViewBase extends ControllerBase
     public function __construct(
         Application                               $application,
         WebControllerHelper                       $webControllerHelper,
-        private readonly CustomFieldService       $customFieldService,
+        private readonly CustomFieldDataService $customFieldService,
         private readonly UserServiceInterface     $userService,
         private readonly AuthTokenService         $authTokenService,
         private readonly AuthTokenActionInterface $authTokenAction,

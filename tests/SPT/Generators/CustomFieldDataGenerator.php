@@ -45,7 +45,6 @@ final class CustomFieldDataGenerator extends DataGenerator
         }
 
         return [
-            'id' => $this->faker->randomNumber(),
             'moduleId' => $this->faker->randomNumber(),
             'itemId' => $this->faker->randomNumber(),
             'definitionId' => $this->faker->randomNumber(),

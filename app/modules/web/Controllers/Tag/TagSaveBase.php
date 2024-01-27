@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\TagForm;
@@ -38,14 +38,14 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class TagSaveBase extends ControllerBase
 {
     protected TagServiceInterface         $tagService;
-    protected TagForm            $form;
-    protected CustomFieldService $customFieldService;
+    protected TagForm                $form;
+    protected CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
         TagServiceInterface $tagService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

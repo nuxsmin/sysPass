@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,7 @@
 namespace SP\Domain\Core\Exceptions;
 
 use Exception;
+use Throwable;
 
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
@@ -36,9 +37,6 @@ class SPException extends Exception
     public const ERROR    = 3;
     public const INFO     = 4;
 
-    protected int     $type;
-    protected ?string $hint;
-
     /**
      * SPException constructor.
      *
@@ -49,16 +47,18 @@ class SPException extends Exception
      * @param Exception|null $previous
      */
     public function __construct(
-        string    $message,
-        int       $type = self::ERROR,
-        ?string   $hint = null,
-        int       $code = 0,
-        Exception $previous = null
+        string            $message,
+        protected int     $type = self::ERROR,
+        protected ?string $hint = null,
+        int               $code = 0,
+        Exception         $previous = null
     ) {
-        $this->type = $type;
-        $this->hint = $hint;
-
         parent::__construct($message, $code, $previous);
+    }
+
+    public static function from(Throwable $throwable, Type $type = Type::ERROR): static
+    {
+        return new static($throwable->getMessage(), $type->value, null, $throwable->getCode(), $throwable);
     }
 
     public static function error(

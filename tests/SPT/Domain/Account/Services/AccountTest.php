@@ -405,11 +405,10 @@ class AccountTest extends UnitaryTestCase
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $result = new QueryResult();
-        $result->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('updatePassword')
                                 ->with($id, $encryptedPassword)
-                                ->willReturn($result);
+            ->willReturn($result->setAffectedNumRows(1));
 
         $this->account->updatePasswordMasterPass($id, $encryptedPassword);
     }
@@ -673,10 +672,9 @@ class AccountTest extends UnitaryTestCase
                                     ->with($accountHistoryCreateDto);
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('delete')
-                                ->with($id)->willReturn($queryResult);
+            ->with($id)->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->account->delete($id);
     }
@@ -720,10 +718,9 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('incrementViewCounter')
-                                ->with($id)->willReturn($queryResult);
+            ->with($id)->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->account->incrementViewCounter($id));
     }
@@ -804,7 +801,6 @@ class AccountTest extends UnitaryTestCase
         $accountHistoryDto = AccountDataGenerator::factory()->buildAccountHistoryDto();
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('createRemoved')
                                 ->with(
@@ -813,7 +809,7 @@ class AccountTest extends UnitaryTestCase
                                         $this->context->getUserData()->getId()
                                     )
                                 )
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->account->restoreRemoved($accountHistoryDto);
     }
@@ -902,7 +898,6 @@ class AccountTest extends UnitaryTestCase
                                     ->with($accountHistoryCreateDto);
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
@@ -912,7 +907,7 @@ class AccountTest extends UnitaryTestCase
                                         $this->context->getUserData()->getId()
                                     )
                                 )
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->account->restoreModified($accountHistoryDto);
     }
@@ -1010,11 +1005,10 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $queryResult = new QueryResult();
-        $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
             ->with(AccountModel::create($accountCreateDto))
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setLastId($id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
                                   ->with(true, $id, $accountCreateDto->withEncryptedPassword($encryptedPassword));
@@ -1048,11 +1042,10 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $queryResult = new QueryResult();
-        $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
             ->with(AccountModel::create($accountCreateDto))
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setLastId($id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
                                   ->with(false, $id, $accountCreateDto->withEncryptedPassword($encryptedPassword));
@@ -1096,7 +1089,6 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
 
         $queryResult = new QueryResult();
-        $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
                                 ->with(
@@ -1104,7 +1096,7 @@ class AccountTest extends UnitaryTestCase
                                         return $account->getIsPrivate() === 1 && $account->getIsPrivateGroup() === 0;
                                     }),
                                 )
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setLastId($id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
                                   ->with(
@@ -1154,7 +1146,6 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
 
         $queryResult = new QueryResult();
-        $queryResult->setLastId($id);
 
         $this->accountRepository->expects(self::once())->method('create')
                                 ->with(
@@ -1162,7 +1153,7 @@ class AccountTest extends UnitaryTestCase
                                         return $account->getIsPrivate() === 0 && $account->getIsPrivateGroup() === 1;
                                     }),
                                 )
-                                ->willReturn($queryResult);
+            ->willReturn($queryResult->setLastId($id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
                                   ->with(
@@ -1252,10 +1243,9 @@ class AccountTest extends UnitaryTestCase
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
-                                ->with($ids)->willReturn($queryResult);
+            ->with($ids)->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->account->deleteByIdBatch($ids);
     }
@@ -1269,10 +1259,9 @@ class AccountTest extends UnitaryTestCase
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(0);
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
-                                ->with($ids)->willReturn($queryResult);
+            ->with($ids)->willReturn($queryResult->setAffectedNumRows(0));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the accounts');
@@ -1309,10 +1298,9 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(1);
 
         $this->accountRepository->expects(self::once())->method('incrementDecryptCounter')
-                                ->with($id)->willReturn($queryResult);
+            ->with($id)->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->account->incrementDecryptCounter($id));
     }
@@ -1326,10 +1314,9 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
 
         $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(0);
 
         $this->accountRepository->expects(self::once())->method('incrementDecryptCounter')
-                                ->with($id)->willReturn($queryResult);
+            ->with($id)->willReturn($queryResult->setAffectedNumRows(0));
 
         $this->assertFalse($this->account->incrementDecryptCounter($id));
     }

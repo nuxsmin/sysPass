@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Application;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CategoryForm;
@@ -41,15 +41,15 @@ abstract class CategorySaveBase extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    protected CategoryService    $categoryService;
-    protected CustomFieldService $customFieldService;
-    protected CategoryForm       $form;
+    protected CategoryService        $categoryService;
+    protected CustomFieldDataService $customFieldService;
+    protected CategoryForm           $form;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         CategoryService     $categoryService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

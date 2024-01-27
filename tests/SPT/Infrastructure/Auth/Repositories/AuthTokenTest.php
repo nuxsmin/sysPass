@@ -317,13 +317,12 @@ class AuthTokenTest extends UnitaryTestCase
         );
 
         $queryResult = new QueryResult([1]);
-        $queryResult->setAffectedNumRows(10);
 
         $this->database
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn($queryResult);
+            ->willReturn($queryResult->setAffectedNumRows(10));
 
         $out = $this->authToken->refreshVaultByUserId($userId, $vault, $hash);
 

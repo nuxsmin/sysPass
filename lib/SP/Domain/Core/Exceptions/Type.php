@@ -22,30 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Ports;
-
-use League\Fractal\Resource\Collection;
-use SP\Domain\Client\Models\Client;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
+namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class ClientAdapter
- *
- * @package SP\Adapters
+ * Enum Type
  */
-interface ClientAdapterInterface
+enum Type: int
 {
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws ServiceException
-     */
-    public function includeCustomFields(Client $data, CustomFieldDataService $customFieldService): Collection;
-
-    public function transform(Client $data): array;
+    case CRITICAL = 1;
+    case WARNING  = 2;
+    case ERROR    = 3;
+    case INFO     = 4;
 }

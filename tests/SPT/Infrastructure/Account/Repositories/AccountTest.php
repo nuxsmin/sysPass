@@ -570,7 +570,7 @@ class AccountTest extends UnitaryTestCase
 
     public function testGetByIdEnriched(): void
     {
-        $id = self::$faker->randomNumber();
+        $id = self::$faker->randomNumber(2);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
@@ -608,7 +608,7 @@ class AccountTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatch(): void
     {
-        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
+        $ids = [self::$faker->randomNumber(2), self::$faker->randomNumber(2), self::$faker->randomNumber(2)];
 
         $callback = new Callback(
             static function (QueryData $arg) use ($ids) {
@@ -749,7 +749,7 @@ class AccountTest extends UnitaryTestCase
 
     public function testGetForUser(): void
     {
-        $id = self::$faker->randomNumber();
+        $id = self::$faker->randomNumber(2);
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {

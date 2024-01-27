@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,8 @@
 namespace SP\Infrastructure\Database;
 
 use SP\Domain\Common\Models\Model;
-use SP\Domain\Core\Exceptions\SPException;
+use SplFixedArray;
+use TypeError;
 
 use function SP\__u;
 
@@ -36,16 +37,12 @@ use function SP\__u;
  */
 class QueryResult
 {
-    private ?array $data = null;
-    /**
-     * @var class-string<T>|null $dataType
-     */
-    private ?string $dataType        = null;
-    private int     $numRows         = 0;
-    private int     $totalNumRows    = 0;
-    private int     $affectedNumRows = 0;
-    private int     $statusCode      = 0;
-    private int     $lastId          = 0;
+    private readonly SplFixedArray $data;
+    private readonly int           $numRows;
+    private int                    $totalNumRows    = 0;
+    private int                    $affectedNumRows = 0;
+    private int                    $statusCode      = 0;
+    private int                    $lastId          = 0;
 
     /**
      * QueryResult constructor.
@@ -55,12 +52,11 @@ class QueryResult
     public function __construct(?array $data = null)
     {
         if (null !== $data) {
-            $this->data = $data;
-            $this->numRows = count($data);
-
-            if ($this->numRows > 0 && is_object($data[0])) {
-                $this->dataType = get_class($data[0]);
-            }
+            $this->data = SplFixedArray::fromArray($data);
+            $this->numRows = $this->data->count();
+        } else {
+            $this->data = new SplFixedArray();
+            $this->numRows = 0;
         }
     }
 
@@ -77,24 +73,29 @@ class QueryResult
     /**
      * @param class-string<T>|null $dataType
      * @return T
-     * @throws SPException
      */
     public function getData(?string $dataType = null): ?Model
     {
-        $this->checkDataType($dataType);
+        if ($dataType) {
+            $this->checkDataType($dataType);
+        }
 
-        return $this->numRows === 1 ? $this->data[0] : null;
+        return $this->numRows === 1 ? $this->data->offsetGet(0) : null;
     }
 
     /**
-     * @param string|null $dataType
+     * @param string $dataType
      * @return void
-     * @throws SPException
      */
-    private function checkDataType(?string $dataType = null): void
+    private function checkDataType(string $dataType): void
     {
-        if (null !== $dataType && $this->dataType !== null && $dataType !== $this->dataType) {
-            throw new SPException(sprintf(__u('Invalid data\'s type: %s - Current: %s'), $dataType, $this->dataType));
+        if ($this->numRows > 0
+            && (!is_object($this->data->offsetGet(0))
+                || !is_a($this->data->offsetGet(0), $dataType))
+        ) {
+            throw new TypeError(
+                sprintf(__u('Invalid data\'s type. Expected: %s'), $dataType)
+            );
         }
     }
 
@@ -102,13 +103,14 @@ class QueryResult
      * @param class-string<T>|null $dataType
      *
      * @return T[]
-     * @throws SPException
      */
     public function getDataAsArray(?string $dataType = null): array
     {
-        $this->checkDataType($dataType);
+        if ($dataType) {
+            $this->checkDataType($dataType);
+        }
 
-        return $this->data ?? [];
+        return $this->data->toArray();
     }
 
     public function getNumRows(): int
@@ -123,9 +125,10 @@ class QueryResult
 
     public function setTotalNumRows(int $totalNumRows): QueryResult
     {
-        $this->totalNumRows = $totalNumRows;
+        $self = clone $this;
+        $self->totalNumRows = $totalNumRows;
 
-        return $this;
+        return $self;
     }
 
     public function getStatusCode(): int
@@ -140,9 +143,10 @@ class QueryResult
 
     public function setAffectedNumRows(int $affectedNumRows): QueryResult
     {
-        $this->affectedNumRows = $affectedNumRows;
+        $self = clone $this;
+        $self->affectedNumRows = $affectedNumRows;
 
-        return $this;
+        return $self;
     }
 
     public function getLastId(): int
@@ -152,8 +156,9 @@ class QueryResult
 
     public function setLastId(int $lastId): QueryResult
     {
-        $this->lastId = $lastId;
+        $self = clone $this;
+        $self->lastId = $lastId;
 
-        return $this;
+        return $self;
     }
 }

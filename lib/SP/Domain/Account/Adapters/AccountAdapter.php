@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Link;
@@ -51,9 +51,9 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
     protected array $availableIncludes = ['customFields'];
 
     public function __construct(
-        ConfigDataInterface                 $configData,
-        private readonly CustomFieldService $customFieldService,
-        private readonly ActionsInterface   $actions
+        ConfigDataInterface                     $configData,
+        private readonly CustomFieldDataService $customFieldService,
+        private readonly ActionsInterface       $actions
     ) {
         parent::__construct($configData);
     }

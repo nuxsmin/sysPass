@@ -139,8 +139,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id, $encryptedPassword) {
@@ -157,7 +156,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->database->expects(self::once())
                        ->method('doQuery')
                        ->with($callback)
-                       ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountHistory->updatePassword($id, $encryptedPassword));
     }
@@ -295,8 +294,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testDelete(): void
     {
         $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
@@ -308,7 +306,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->database->expects(self::once())
                        ->method('doQuery')
                        ->with($callback)
-                       ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountHistory->delete($id));
     }

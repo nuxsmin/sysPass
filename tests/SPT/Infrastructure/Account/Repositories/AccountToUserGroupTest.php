@@ -54,8 +54,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
@@ -71,7 +70,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }
@@ -107,8 +106,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
     {
         $userGroupId = self::$faker->randomNumber();
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($userGroupId) {
@@ -124,7 +122,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountToUserGroup->deleteByUserGroupId($userGroupId));
     }
@@ -161,8 +159,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
+        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
@@ -178,7 +175,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('doQuery')
             ->with($callback)
-            ->willReturn($expected);
+            ->willReturn($queryResult->setAffectedNumRows(1));
 
         $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }

@@ -50,7 +50,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
@@ -80,9 +80,9 @@ final class AccountHelper extends AccountHelperBase
     private MasterPassService          $masterPassService;
     private AccountAclService          $accountAclService;
     private CategoryService $categoryService;
-    private ClientService      $clientService;
-    private CustomFieldService $customFieldService;
-    private ?AccountPermission $accountAcl = null;
+    private ClientService          $clientService;
+    private CustomFieldDataService $customFieldService;
+    private ?AccountPermission     $accountAcl = null;
     private ?int                        $accountId  = null;
     private UserServiceInterface           $userService;
     private UserGroupServiceInterface      $userGroupService;
@@ -102,7 +102,7 @@ final class AccountHelper extends AccountHelperBase
         AccountAclService          $accountAclService,
         CategoryService            $categoryService,
         ClientService              $clientService,
-        CustomFieldService         $customFieldService,
+        CustomFieldDataService $customFieldService,
         UserServiceInterface       $userService,
         UserGroupServiceInterface  $userGroupService,
         TagServiceInterface        $tagService

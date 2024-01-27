@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -48,14 +48,14 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService     $accountService;
-    private CustomFieldService $customFieldService;
+    private AccountService         $accountService;
+    private CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         AccountService      $accountService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -52,7 +52,7 @@ abstract class UserViewBase extends ControllerBase
     protected UserServiceInterface                          $userService;
     private UserGroupServiceInterface $userGroupService;
     private UserProfileServiceInterface $userProfileService;
-    private CustomFieldService          $customFieldService;
+    private CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application $application,
@@ -60,7 +60,7 @@ abstract class UserViewBase extends ControllerBase
         UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

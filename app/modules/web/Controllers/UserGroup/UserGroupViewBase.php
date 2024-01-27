@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -50,7 +50,7 @@ abstract class UserGroupViewBase extends ControllerBase
     use ItemTrait;
 
     private UserGroupServiceInterface $userGroupService;
-    private CustomFieldService        $customFieldService;
+    private CustomFieldDataService $customFieldService;
     private UserServiceInterface      $userService;
 
     public function __construct(
@@ -58,7 +58,7 @@ abstract class UserGroupViewBase extends ControllerBase
         WebControllerHelper $webControllerHelper,
         UserGroupServiceInterface $userGroupService,
         UserServiceInterface $userService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

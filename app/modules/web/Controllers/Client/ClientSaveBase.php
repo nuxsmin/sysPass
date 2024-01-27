@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Client;
 
 use SP\Core\Application;
 use SP\Domain\Client\Ports\ClientService;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ClientForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -37,15 +37,15 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ClientSaveBase extends ControllerBase
 {
-    protected ClientService      $clientService;
-    protected CustomFieldService $customFieldService;
-    protected ClientForm         $form;
+    protected ClientService          $clientService;
+    protected CustomFieldDataService $customFieldService;
+    protected ClientForm             $form;
 
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,
         ClientService       $clientService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

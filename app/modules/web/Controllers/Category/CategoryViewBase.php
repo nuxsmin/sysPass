@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -46,14 +46,14 @@ abstract class CategoryViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private CategoryService    $categoryService;
-    private CustomFieldService $customFieldService;
+    private CategoryService        $categoryService;
+    private CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application                 $application,
         WebControllerHelper         $webControllerHelper,
         CategoryService $categoryService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 

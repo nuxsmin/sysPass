@@ -24,21 +24,14 @@
 
 namespace SP\Mvc\Controller;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Models\CustomFieldData;
-use SP\Domain\CustomField\Ports\CustomFieldService;
-use SP\Domain\CustomField\Services\CustomField;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\Http\RequestInterface;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\Filter;
-
-use function SP\__u;
 
 /**
  * Trait ItemTrait
@@ -48,85 +41,103 @@ trait ItemTrait
     /**
      * Obtener la lista de campos personalizados y sus valores
      *
-     * @throws ConstraintException
-     * @throws QueryException
      * @throws SPException
      * @throws ServiceException
      */
     protected function getCustomFieldsForItem(
-        int $moduleId,
-        ?int $itemId,
-        CustomFieldService $customFieldService
+        int                    $moduleId,
+        ?int                   $itemId,
+        CustomFieldDataService $customFieldDataService
     ): array {
         $customFields = [];
 
-        foreach ($customFieldService->getForModuleAndItemId($moduleId, $itemId) as $item) {
-            try {
-                $customField = new CustomFieldItem();
-                $customField->required = (bool)$item['required'];
-                $customField->showInList = (bool)$item['showInList'];
-                $customField->help = $item['help'];
-                $customField->definitionId = (int)$item['definitionId'];
-                $customField->definitionName = $item['definitionName'];
-                $customField->typeId = (int)$item['typeId'];
-                $customField->typeName = $item['typeName'];
-                $customField->typeText = $item['typeText'];
-                $customField->moduleId = (int)$item['moduleId'];
-                $customField->formId = CustomField::getFormIdForName($item['definitionName']);
-                $customField->isEncrypted = (int)$item['isEncrypted'];
+        foreach ($customFieldDataService->getBy($moduleId, $itemId) as $item) {
+            $customField = new CustomFieldItem();
+            $customField->required = (bool)$item['required'];
+            $customField->showInList = (bool)$item['showInList'];
+            $customField->help = $item['help'];
+            $customField->definitionId = (int)$item['definitionId'];
+            $customField->definitionName = $item['definitionName'];
+            $customField->typeId = (int)$item['typeId'];
+            $customField->typeName = $item['typeName'];
+            $customField->typeText = $item['typeText'];
+            $customField->moduleId = (int)$item['moduleId'];
+            $customField->formId = self::getFormIdForName($item['definitionName']);
+            $customField->isEncrypted = (int)$item['isEncrypted'];
 
-                if (!empty($item['data']) && !empty($item['key'])) {
-                    $customField->isValueEncrypted = true;
-                    $customField->value = $customFieldService->decryptData($item['data'], $item['key']);
-                } else {
-                    $customField->isValueEncrypted = false;
-                    $customField->value = $item['data'];
-                }
-
-                $customFields[] = $customField;
-            } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
+            if (!empty($item['data']) && !empty($item['key'])) {
+                $customField->isValueEncrypted = true;
+                $customField->value = self::formatValue(
+                    $customFieldDataService->decrypt($item['data'], $item['key']) ?? ''
+                );
+            } else {
+                $customField->isValueEncrypted = false;
+                $customField->value = $item['data'];
             }
+
+            $customFields[] = $customField;
         }
 
         return $customFields;
     }
 
     /**
+     * Returns the form Id for a given name
+     */
+    private static function getFormIdForName(string $name): string
+    {
+        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name)));
+    }
+
+    /**
+     * Formatear el valor del campo
+     *
+     * @param $value string El valor del campo
+     *
+     * @return string
+     */
+    private static function formatValue(string $value): string
+    {
+        if (preg_match('#https?://#', $value)) {
+            return sprintf('<a href="%s" target="_blank">%s</a>', $value, $value);
+        }
+
+        return $value;
+    }
+
+    /**
      * Añadir los campos personalizados del elemento
      *
-     * @param  int  $moduleId
-     * @param  int|int[]  $itemId
+     * @param int $moduleId
+     * @param int|int[] $itemId
      * @param RequestInterface $request
-     * @param CustomFieldService $customFieldService
+     * @param CustomFieldDataService $customFieldDataService
      *
-     * @throws ConstraintException
-     * @throws QueryException
      * @throws SPException
      * @throws ServiceException
-     * @throws NoSuchItemException
      */
     protected function addCustomFieldsForItem(
-        int $moduleId,
-        int|array $itemId,
-        RequestInterface $request,
-        CustomFieldService $customFieldService
+        int                    $moduleId,
+        int|array              $itemId,
+        RequestInterface       $request,
+        CustomFieldDataService $customFieldDataService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
-            try {
-                foreach ($customFields as $id => $value) {
-                    $customFieldData = new CustomFieldData();
-                    $customFieldData->setItemId($itemId);
-                    $customFieldData->setModuleId($moduleId);
-                    $customFieldData->setDefinitionId($id);
-                    $customFieldData->setData($value);
+            foreach ($customFields as $id => $value) {
+                $customFieldData = new CustomFieldDataModel(
+                    [
+                        'itemId' => $itemId,
+                        'moduleId' => $moduleId,
+                        'definitionId' => $id,
+                        'data' => $value
+                    ]
+                );
 
-                    $customFieldService->create($customFieldData);
+                if (!empty($customFieldData->getData())) {
+                    $customFieldDataService->create($customFieldData);
                 }
-            } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
             }
         }
     }
@@ -140,68 +151,62 @@ trait ItemTrait
     {
         return $request->analyzeArray(
             'customfield',
-            fn($values) => array_map(static fn($value) => Filter::getString($value), $values)
+            static fn($values) => array_map(static fn($value) => Filter::getString($value), $values)
         );
     }
 
     /**
      * Eliminar los campos personalizados del elemento
      *
-     * @param  int  $moduleId
-     * @param  int|int[]  $itemId
-     * @param CustomFieldService $customFieldService
+     * @param int $moduleId
+     * @param int|int[] $itemId
+     * @param CustomFieldDataService $customFieldService
      *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @throws ServiceException
      */
     protected function deleteCustomFieldsForItem(
-        int $moduleId,
-        array|int $itemId,
-        CustomFieldService $customFieldService
+        int                    $moduleId,
+        array|int              $itemId,
+        CustomFieldDataService $customFieldService
     ): void {
-        if (is_array($itemId)) {
-            $customFieldService->deleteCustomFieldDataBatch($itemId, $moduleId);
-        } else {
-            $customFieldService->deleteCustomFieldData($itemId, $moduleId);
-        }
+        $customFieldService->delete($itemId, $moduleId);
     }
 
     /**
      * Actualizar los campos personalizados del elemento
      *
-     * @param  int  $moduleId
-     * @param  int|int[]  $itemId
+     * @param int $moduleId
+     * @param int|int[] $itemId
      * @param RequestInterface $request
-     * @param CustomFieldService $customFieldService
+     * @param CustomFieldDataService $customFieldDataService
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @throws ServiceException
      * @throws SPException
      */
     protected function updateCustomFieldsForItem(
-        int $moduleId,
-        int|array $itemId,
-        RequestInterface $request,
-        CustomFieldService $customFieldService
+        int                    $moduleId,
+        int|array              $itemId,
+        RequestInterface       $request,
+        CustomFieldDataService $customFieldDataService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
 
         if (!empty($customFields)) {
-            try {
-                foreach ($customFields as $id => $value) {
-                    $customFieldData = new CustomFieldData();
-                    $customFieldData->setItemId($itemId);
-                    $customFieldData->setModuleId($moduleId);
-                    $customFieldData->setDefinitionId($id);
-                    $customFieldData->setData($value);
+            foreach ($customFields as $id => $value) {
+                $customFieldData = new CustomFieldDataModel(
+                    [
+                        'itemId' => $itemId,
+                        'moduleId' => $moduleId,
+                        'definitionId' => $id,
+                        'data' => $value
+                    ]
+                );
 
-                    if ($customFieldService->updateOrCreateData($customFieldData) === false) {
-                        throw new SPException(__u('Error while updating custom field\'s data'));
-                    }
+                if (empty($customFieldData->getData())) {
+                    $customFieldDataService->delete([$itemId], $moduleId);
+                } else {
+                    $customFieldDataService->updateOrCreate($customFieldData);
                 }
-            } catch (CryptoException $e) {
-                throw new SPException(__u('Internal error'), SPException::ERROR, null, 0, $e);
             }
         }
     }
@@ -221,5 +226,9 @@ trait ItemTrait
     protected function getItemsIdFromRequest(RequestInterface $request): ?array
     {
         return $request->analyzeArray('items');
+    }
+
+    private function processCustomFields(callable $action)
+    {
     }
 }

@@ -32,7 +32,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldCrypt;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\TaskFactory;
@@ -48,8 +48,8 @@ use SPT\UnitaryTestCase;
 class CustomFieldCryptTest extends UnitaryTestCase
 {
 
-    private CustomFieldService|MockObject $customFieldService;
-    private CryptInterface|MockObject     $crypt;
+    private CustomFieldDataService|MockObject $customFieldService;
+    private CryptInterface|MockObject         $crypt;
     private CustomFieldCrypt              $customFieldCrypt;
 
     /**
@@ -211,7 +211,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->customFieldService = $this->createMock(CustomFieldService::class);
+        $this->customFieldService = $this->createMock(CustomFieldDataService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->customFieldCrypt = new CustomFieldCrypt($this->application, $this->customFieldService, $this->crypt);

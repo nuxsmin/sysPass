@@ -32,7 +32,7 @@ use SP\Domain\Account\Adapters\AccountAdapter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SPT\Generators\AccountDataGenerator;
 use SPT\Generators\CustomFieldGenerator;
@@ -67,7 +67,7 @@ class AccountAdapterTest extends UnitaryTestCase
 
         $adapter = new AccountAdapter(
             $this->config->getConfigData(),
-            $this->createStub(CustomFieldService::class),
+            $this->createStub(CustomFieldDataService::class),
             $actions
         );
         $accountData = $dataGenerator->buildAccountEnrichedDto();
@@ -130,9 +130,9 @@ class AccountAdapterTest extends UnitaryTestCase
     public function testIncludeCustomFields(): void
     {
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();
-        $customFieldsService = $this->createStub(CustomFieldService::class);
+        $customFieldsService = $this->createStub(CustomFieldDataService::class);
         $customFieldsService->expects(self::once())
-                            ->method('getForModuleAndItemId')
+            ->method('getBy')
                             ->willReturn([$customFieldData]);
 
         $actions = $this->createMock(ActionsInterface::class);

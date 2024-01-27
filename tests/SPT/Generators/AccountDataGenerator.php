@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,8 +30,8 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Models\Simple;
 
 /**
@@ -59,18 +59,18 @@ final class AccountDataGenerator extends DataGenerator
     private function getAccountProperties(): array
     {
         return [
-            'id'                 => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(2),
             'name'               => $this->faker->name,
-            'clientId'           => $this->faker->randomNumber(),
+            'clientId' => $this->faker->randomNumber(2),
             'clientName'         => $this->faker->name,
-            'categoryId'         => $this->faker->randomNumber(),
+            'categoryId' => $this->faker->randomNumber(2),
             'categoryName'       => $this->faker->name,
-            'userId'             => $this->faker->randomNumber(),
+            'userId' => $this->faker->randomNumber(2),
             'userName'           => $this->faker->userName,
             'userLogin'          => $this->faker->name,
-            'userGroupId'        => $this->faker->randomNumber(),
+            'userGroupId' => $this->faker->randomNumber(2),
             'userGroupName'      => $this->faker->name,
-            'userEditId'         => $this->faker->randomNumber(),
+            'userEditId' => $this->faker->randomNumber(2),
             'userEditName'       => $this->faker->userName,
             'userEditLogin'      => $this->faker->name,
             'login'              => $this->faker->name,
@@ -80,13 +80,13 @@ final class AccountDataGenerator extends DataGenerator
             'otherUserGroupEdit' => $this->faker->boolean,
             'dateAdd'            => $this->faker->unixTime,
             'dateEdit'           => $this->faker->unixTime,
-            'countView'          => $this->faker->randomNumber(),
-            'countDecrypt'       => $this->faker->randomNumber(),
+            'countView' => $this->faker->randomNumber(2),
+            'countDecrypt' => $this->faker->randomNumber(2),
             'isPrivate'          => $this->faker->boolean,
             'isPrivateGroup'     => $this->faker->boolean,
             'passDate'           => $this->faker->unixTime,
             'passDateChange'     => $this->faker->unixTime,
-            'parentId'           => $this->faker->randomNumber(),
+            'parentId' => $this->faker->randomNumber(2),
             'publicLinkHash'     => $this->faker->sha1,
             'pass'               => $this->faker->password,
             'key'                => $this->faker->sha1,
@@ -99,7 +99,7 @@ final class AccountDataGenerator extends DataGenerator
     public function buildItemData(): array
     {
         return array_map(
-            fn() => new ItemData(['id' => $this->faker->randomNumber(), 'name' => $this->faker->name]),
+            fn() => new ItemData(['id' => $this->faker->randomNumber(2), 'name' => $this->faker->name]),
             range(0, 9)
         );
     }
@@ -109,9 +109,9 @@ final class AccountDataGenerator extends DataGenerator
         return new AccountSearchView(
             array_merge(
                 [
-                    'num_files'                 => $this->faker->randomNumber(),
+                    'num_files' => $this->faker->randomNumber(2),
                     'publicLinkDateExpire'      => $this->faker->unixTime,
-                    'publicLinkTotalCountViews' => $this->faker->randomNumber(),
+                    'publicLinkTotalCountViews' => $this->faker->randomNumber(2),
                 ],
                 $this->getAccountProperties()
             )
@@ -126,21 +126,21 @@ final class AccountDataGenerator extends DataGenerator
     public function buildAccountHistoryData(): Simple
     {
         return new Simple([
-            'id'             => $this->faker->randomNumber(),
-            'accountId'      => $this->faker->randomNumber(),
+                              'id' => $this->faker->randomNumber(2),
+                              'accountId' => $this->faker->randomNumber(2),
             'name'           => $this->faker->name,
             'login'          => $this->faker->userName,
             'url'            => $this->faker->url,
             'notes'          => $this->faker->text,
-            'userEditId'     => $this->faker->randomNumber(),
+                              'userEditId' => $this->faker->randomNumber(2),
             'passDateChange' => $this->faker->unixTime,
-            'clientId'       => $this->faker->randomNumber(),
-            'categoryId'     => $this->faker->randomNumber(),
+                              'clientId' => $this->faker->randomNumber(2),
+                              'categoryId' => $this->faker->randomNumber(2),
             'isPrivate'      => $this->faker->numberBetween(0, 1),
             'isPrivateGroup' => $this->faker->numberBetween(0, 1),
-            'parentId'       => $this->faker->randomNumber(),
-            'userId'         => $this->faker->randomNumber(),
-            'userGroupId'    => $this->faker->randomNumber(),
+                              'parentId' => $this->faker->randomNumber(2),
+                              'userId' => $this->faker->randomNumber(2),
+                              'userGroupId' => $this->faker->randomNumber(2),
             'key'            => $this->faker->text,
             'pass'           => $this->faker->text,
         ]);
@@ -151,26 +151,26 @@ final class AccountDataGenerator extends DataGenerator
         return new AccountUpdateDto(
             name              : $this->faker->name,
             login             : $this->faker->userName,
-            clientId          : $this->faker->randomNumber(),
-            categoryId        : $this->faker->randomNumber(),
+            clientId:           $this->faker->randomNumber(2),
+            categoryId:         $this->faker->randomNumber(2),
             pass              : $this->faker->password,
-            userId            : $this->faker->randomNumber(),
+            userId:             $this->faker->randomNumber(2),
             key               : $this->faker->password,
             url               : $this->faker->url,
             notes             : $this->faker->text,
-            userEditId        : $this->faker->randomNumber(),
+            userEditId:         $this->faker->randomNumber(2),
             isPrivate         : $this->faker->boolean,
             isPrivateGroup    : $this->faker->boolean,
             passDateChange    : $this->faker->unixTime,
-            parentId          : $this->faker->randomNumber(),
-            userGroupId       : $this->faker->randomNumber(),
+            parentId:           $this->faker->randomNumber(2),
+            userGroupId:        $this->faker->randomNumber(2),
             otherUserEdit     : $this->faker->boolean,
             otherUserGroupEdit: $this->faker->boolean,
-            usersView         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            usersEdit         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            userGroupsView    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            userGroupsEdit    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            tags              : array_map(fn() => $this->faker->randomNumber(), range(0, 4))
+            usersView:          array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            usersEdit:          array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            userGroupsView:     array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            userGroupsEdit:     array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            tags:               array_map(fn() => $this->faker->randomNumber(2), range(0, 4))
         );
     }
 
@@ -179,54 +179,54 @@ final class AccountDataGenerator extends DataGenerator
         return new AccountCreateDto(
             name              : $this->faker->name,
             login             : $this->faker->userName,
-            clientId          : $this->faker->randomNumber(),
-            categoryId        : $this->faker->randomNumber(),
+            clientId:           $this->faker->randomNumber(2),
+            categoryId:         $this->faker->randomNumber(2),
             pass              : $this->faker->password,
-            userId            : $this->faker->randomNumber(),
+            userId:             $this->faker->randomNumber(2),
             url               : $this->faker->url,
             notes             : $this->faker->text,
-            userEditId        : $this->faker->randomNumber(),
+            userEditId:         $this->faker->randomNumber(2),
             isPrivate         : $this->faker->boolean,
             isPrivateGroup    : $this->faker->boolean,
             passDateChange    : $this->faker->unixTime,
-            parentId          : $this->faker->randomNumber(),
-            userGroupId       : $this->faker->randomNumber(),
+            parentId:           $this->faker->randomNumber(2),
+            userGroupId:        $this->faker->randomNumber(2),
             otherUserEdit     : $this->faker->boolean,
             otherUserGroupEdit: $this->faker->boolean,
-            usersView         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            usersEdit         : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            userGroupsView    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            userGroupsEdit    : array_map(fn() => $this->faker->randomNumber(), range(0, 4)),
-            tags              : array_map(fn() => $this->faker->randomNumber(), range(0, 4))
+            usersView:          array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            usersEdit:          array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            userGroupsView:     array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            userGroupsEdit:     array_map(fn() => $this->faker->randomNumber(2), range(0, 4)),
+            tags:               array_map(fn() => $this->faker->randomNumber(2), range(0, 4))
         );
     }
 
     public function buildAccountHistoryDto(): AccountHistoryDto
     {
         return new AccountHistoryDto(
-            accountId         : $this->faker->randomNumber(),
+            accountId:          $this->faker->randomNumber(2),
             isDelete          : $this->faker->boolean,
             isModify          : $this->faker->boolean,
             dateAdd           : $this->faker->unixTime,
             dateEdit          : $this->faker->unixTime,
             passDate          : $this->faker->unixTime,
-            countView         : $this->faker->randomNumber(),
-            countDecrypt      : $this->faker->randomNumber(),
+            countView:          $this->faker->randomNumber(2),
+            countDecrypt:       $this->faker->randomNumber(2),
             name              : $this->faker->name,
             login             : $this->faker->userName,
-            clientId          : $this->faker->randomNumber(),
-            categoryId        : $this->faker->randomNumber(),
+            clientId:           $this->faker->randomNumber(2),
+            categoryId:         $this->faker->randomNumber(2),
             pass              : $this->faker->password,
-            userId            : $this->faker->randomNumber(),
+            userId:             $this->faker->randomNumber(2),
             key               : $this->faker->password,
             url               : $this->faker->url,
             notes             : $this->faker->text,
-            userEditId        : $this->faker->randomNumber(),
+            userEditId:         $this->faker->randomNumber(2),
             isPrivate         : $this->faker->boolean,
             isPrivateGroup    : $this->faker->boolean,
             passDateChange    : $this->faker->unixTime,
-            parentId          : $this->faker->randomNumber(),
-            userGroupId       : $this->faker->randomNumber(),
+            parentId:           $this->faker->randomNumber(2),
+            userGroupId:        $this->faker->randomNumber(2),
             otherUserEdit     : $this->faker->boolean,
             otherUserGroupEdit: $this->faker->boolean,
         );

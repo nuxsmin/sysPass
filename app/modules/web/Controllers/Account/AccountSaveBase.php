@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Account;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
@@ -43,15 +43,15 @@ abstract class AccountSaveBase extends AccountControllerBase
     use JsonTrait;
 
     protected AccountService $accountService;
-    protected AccountForm        $accountForm;
-    protected CustomFieldService $customFieldService;
+    protected AccountForm            $accountForm;
+    protected CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,
         AccountService       $accountService,
         AccountPresetService $accountPresetService,
-        CustomFieldService $customFieldService
+        CustomFieldDataService $customFieldService
     ) {
         parent::__construct(
             $application,

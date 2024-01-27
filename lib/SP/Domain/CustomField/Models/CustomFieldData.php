@@ -31,17 +31,11 @@ use SP\Domain\Common\Models\Model;
  */
 class CustomFieldData extends Model
 {
-    protected ?int    $id           = null;
     protected ?int    $moduleId     = null;
     protected ?int    $itemId       = null;
     protected ?int    $definitionId = null;
     protected ?string $data         = null;
     protected ?string $key          = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getModuleId(): ?int
     {

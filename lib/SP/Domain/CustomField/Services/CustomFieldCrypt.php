@@ -31,12 +31,10 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldCryptService;
-use SP\Domain\CustomField\Ports\CustomFieldService;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Task\Services\TaskFactory;
 
 use function SP\__;
@@ -49,9 +47,9 @@ use function SP\processException;
 final class CustomFieldCrypt extends Service implements CustomFieldCryptService
 {
     public function __construct(
-        Application                         $application,
-        private readonly CustomFieldService $customFieldService,
-        private readonly CryptInterface     $crypt
+        Application                             $application,
+        private readonly CustomFieldDataService $customFieldService,
+        private readonly CryptInterface         $crypt
     ) {
         parent::__construct($application);
     }
@@ -87,8 +85,9 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param UpdateMasterPassRequest $request
+     * @param callable $decryptor
+     * @throws ServiceException
      */
     private function processUpdateMasterPassword(UpdateMasterPassRequest $request, callable $decryptor): void
     {
@@ -140,13 +139,13 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                     $request->getNewMasterPass()
                 );
 
-                $success[] = $customFieldData->getId();
+                $success[] = $customFieldData->getItemId();
             } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notify('exception', new Event($e));
 
-                $errors[] = $customFieldData->getId();
+                $errors[] = $customFieldData->getItemId();
             }
         }
 
