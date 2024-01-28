@@ -33,7 +33,7 @@ use SP\Domain\CustomField\Models\CustomFieldType;
  *
  * @package SP\Domain\CustomField\Services
  */
-interface CustomFieldTypeServiceInterface
+interface CustomFieldTypeService
 {
     /**
      * Get all items from the service's repository

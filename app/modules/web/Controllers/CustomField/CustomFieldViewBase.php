@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
-use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldTypeService;
 use SP\Domain\CustomField\Services\CustomFieldDefinition;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -41,14 +41,14 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 
 abstract class CustomFieldViewBase extends ControllerBase
 {
-    private CustomFieldDefinitionService    $customFieldDefService;
-    private CustomFieldTypeServiceInterface $customFieldTypeService;
+    private CustomFieldDefinitionService $customFieldDefService;
+    private CustomFieldTypeService       $customFieldTypeService;
 
     public function __construct(
         Application                  $application,
         WebControllerHelper          $webControllerHelper,
         CustomFieldDefinitionService $customFieldDefService,
-        CustomFieldTypeServiceInterface $customFieldTypeService
+        CustomFieldTypeService $customFieldTypeService
     ) {
         parent::__construct($application, $webControllerHelper);
 

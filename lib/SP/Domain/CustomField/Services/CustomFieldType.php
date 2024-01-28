@@ -29,16 +29,14 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
 use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
-use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
-use SP\Infrastructure\CustomField\Repositories\CustomFieldType as CustomFieldTypeModel;
+use SP\Domain\CustomField\Ports\CustomFieldTypeService;
 
 /**
- * Class CustomFieldTypeService
- *
- * @package SP\Domain\CustomField\Services
+ * Class CustomFieldType
  */
-final class CustomFieldTypeService extends Service implements CustomFieldTypeServiceInterface
+final class CustomFieldType extends Service implements CustomFieldTypeService
 {
 
     public function __construct(
@@ -51,13 +49,15 @@ final class CustomFieldTypeService extends Service implements CustomFieldTypeSer
     /**
      * Returns all the items
      *
-     * @return CustomFieldTypeModel[]
+     * @template T of CustomFieldTypeModel
+     *
+     * @return T[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
     public function getAll(): array
     {
-        return $this->customFieldTypeRepository->getAll()->getDataAsArray();
+        return $this->customFieldTypeRepository->getAll()->getDataAsArray(CustomFieldTypeModel::class);
     }
 }
