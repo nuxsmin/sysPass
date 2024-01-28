@@ -31,9 +31,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
-use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
-use SP\Domain\CustomField\Services\CustomFieldDefService;
+use SP\Domain\CustomField\Services\CustomFieldDefinition;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -41,13 +41,13 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 
 abstract class CustomFieldViewBase extends ControllerBase
 {
-    private CustomFieldDefServiceInterface $customFieldDefService;
-    private CustomFieldTypeServiceInterface                             $customFieldTypeService;
+    private CustomFieldDefinitionService    $customFieldDefService;
+    private CustomFieldTypeServiceInterface $customFieldTypeService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        CustomFieldDefServiceInterface $customFieldDefService,
+        Application                  $application,
+        WebControllerHelper          $webControllerHelper,
+        CustomFieldDefinitionService $customFieldDefService,
         CustomFieldTypeServiceInterface $customFieldTypeService
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -83,7 +83,7 @@ abstract class CustomFieldViewBase extends ControllerBase
         );
         $this->view->assign(
             'modules',
-            SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())
+            SelectItemAdapter::factory(CustomFieldDefinition::getFieldModules())
                 ->getItemsFromArraySelected([$customField->getModuleId()])
         );
 

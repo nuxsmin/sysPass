@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\CustomField;
 
 
 use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\CustomFieldDefForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -36,13 +36,13 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class CustomFieldSaveBase extends ControllerBase
 {
-    protected CustomFieldDefServiceInterface $customFieldDefService;
-    protected CustomFieldDefForm             $form;
+    protected CustomFieldDefinitionService $customFieldDefService;
+    protected CustomFieldDefForm           $form;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        \SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface $customFieldDefService
+        CustomFieldDefinitionService $customFieldDefService
     ) {
         parent::__construct($application, $webControllerHelper);
 

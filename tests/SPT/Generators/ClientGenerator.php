@@ -40,7 +40,7 @@ final class ClientGenerator extends DataGenerator
     private function clientProperties(): array
     {
         return [
-            'id' => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->colorName(),
             'description' => $this->faker->text(),
             'hash' => $this->faker->sha1(),

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -44,14 +44,14 @@ final class FileDataGenerator extends DataGenerator
     public function buildFileData(): Simple
     {
         return new Simple([
-                              'id' => $this->faker->randomNumber(),
-                              'accountId' => $this->faker->randomNumber(),
+                              'id' => $this->faker->randomNumber(3),
+                              'accountId' => $this->faker->randomNumber(3),
                               'name' => $this->faker->colorName(),
                               'type' => 'image/jpeg',
                               'content' => $this->faker->imageUrl(32, 32),
                               'extension' => $this->faker->fileExtension(),
                               'thumb' => $this->faker->imageUrl(32, 32),
-                              'size' => $this->faker->randomNumber(),
+                              'size' => $this->faker->randomNumber(3),
                           ]);
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -42,12 +42,12 @@ final class AuthTokenGenerator extends DataGenerator
     private function authTokenProperties(): array
     {
         return [
-            'id' => $this->faker->randomNumber(),
-            'userId' => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
+            'userId' => $this->faker->randomNumber(3),
             'token' => $this->faker->sha1(),
-            'createdBy' => $this->faker->randomNumber(),
+            'createdBy' => $this->faker->randomNumber(3),
             'startDate' => $this->faker->unixTime(),
-            'actionId' => $this->faker->randomNumber(4),
+            'actionId' => $this->faker->randomNumber(3),
             'hash' => $this->faker->sha1(),
             'vault' => serialize($this->getVault())
         ];

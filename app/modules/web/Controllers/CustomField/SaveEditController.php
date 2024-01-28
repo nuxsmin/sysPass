@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +24,11 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -44,10 +43,10 @@ final class SaveEditController extends CustomFieldSaveBase
     /**
      * Saves edit action
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function saveEditAction(int $id): bool
     {
@@ -63,7 +62,13 @@ final class SaveEditController extends CustomFieldSaveBase
 
             $itemData = $this->form->getItemData();
 
-            $this->customFieldDefService->update($itemData);
+            $customFieldDefinition = $this->customFieldDefService->getById($itemData->getId());
+
+            if ($customFieldDefinition->getModuleId() !== $itemData->getModuleId()) {
+                $this->customFieldDefService->changeModule($customFieldDefinition);
+            } else {
+                $this->customFieldDefService->update($itemData);
+            }
 
             $this->eventDispatcher->notify(
                 'edit.customField',

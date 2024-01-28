@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -45,13 +45,13 @@ final class CustomFieldGenerator extends DataGenerator
             'required'       => $this->faker->boolean,
             'showInList'     => $this->faker->boolean,
             'help'           => $this->faker->text,
-            'definitionId'   => $this->faker->randomNumber(),
+                              'definitionId' => $this->faker->randomNumber(3),
             'definitionName' => $this->faker->name,
-            'typeId'         => $this->faker->randomNumber(),
+                              'typeId' => $this->faker->randomNumber(3),
             'typeName'       => $this->faker->name,
             'typeText'       => $this->faker->text,
-            'moduleId'       => $this->faker->randomNumber(),
-            'formId'         => $this->faker->randomNumber(),
+                              'moduleId' => $this->faker->randomNumber(3),
+                              'formId' => $this->faker->randomNumber(3),
             'isEncrypted'    => $this->faker->boolean,
             'data'           => $data,
             'key'            => $key,

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -40,18 +40,18 @@ final class PublicLinkDataGenerator extends DataGenerator
     private function getPublicLinkProperties(): array
     {
         return [
-            'id'              => $this->faker->randomNumber(),
-            'itemId'          => $this->faker->randomNumber(),
-            'hash'            => $this->faker->randomNumber(),
-            'userId'          => $this->faker->randomNumber(),
-            'typeId'          => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
+            'itemId' => $this->faker->randomNumber(3),
+            'hash' => $this->faker->randomNumber(3),
+            'userId' => $this->faker->randomNumber(3),
+            'typeId' => $this->faker->randomNumber(3),
             'notify'          => $this->faker->boolean,
             'dateAdd'         => $this->faker->unixTime(),
             'dateUpdate'      => $this->faker->unixTime(),
             'dateExpire'      => $this->faker->unixTime(),
-            'countViews'      => $this->faker->randomNumber(),
-            'totalCountViews' => $this->faker->randomNumber(),
-            'maxCountViews'   => $this->faker->randomNumber(),
+            'countViews' => $this->faker->randomNumber(3),
+            'totalCountViews' => $this->faker->randomNumber(3),
+            'maxCountViews' => $this->faker->randomNumber(3),
             'useInfo'         => serialize($this->getUseInfo()),
             'data'            => $this->faker->text,
         ];

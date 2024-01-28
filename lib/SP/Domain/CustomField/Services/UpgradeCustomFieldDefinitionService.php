@@ -32,7 +32,7 @@ use SP\DataModel\CustomFieldDefDataOld;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
-use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\Ports\CustomFieldTypeServiceInterface;
 use SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -47,15 +47,15 @@ use SP\Util\Util;
 final class UpgradeCustomFieldDefinitionService extends Service
     implements UpgradeCustomFieldDefinitionServiceInterface
 {
-    protected CustomFieldDefServiceInterface $customFieldDefService;
-    protected DatabaseInterface              $database;
+    protected CustomFieldDefinitionService $customFieldDefService;
+    protected DatabaseInterface            $database;
     private CustomFieldTypeServiceInterface  $customFieldTypeService;
 
     public function __construct(
-        Application $application,
+        Application                  $application,
         CustomFieldTypeServiceInterface $customFieldTypeService,
-        CustomFieldDefServiceInterface $customFieldDefService,
-        DatabaseInterface $database
+        CustomFieldDefinitionService $customFieldDefService,
+        DatabaseInterface            $database
     ) {
         parent::__construct($application);
 

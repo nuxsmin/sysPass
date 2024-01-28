@@ -36,7 +36,7 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\CustomField\Ports\CustomFieldDefServiceInterface;
+use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
@@ -64,9 +64,9 @@ final class IndexController extends ControllerBase
     private TabsGridHelper      $tabsGridHelper;
     private CategoryService     $categoryService;
     private TagServiceInterface $tagService;
-    private ClientService       $clientService;
-    private CustomFieldDefServiceInterface $customFieldDefService;
-    private AccountFileService         $accountFileService;
+    private ClientService                $clientService;
+    private CustomFieldDefinitionService $customFieldDefService;
+    private AccountFileService           $accountFileService;
     private AccountService             $accountService;
     private AccountHistoryService      $accountHistoryService;
     private ItemPresetServiceInterface $itemPresetService;
@@ -80,23 +80,23 @@ final class IndexController extends ControllerBase
     private ItemPresetGrid                 $itemPresetGrid;
 
     public function __construct(
-        Application                    $application,
-        WebControllerHelper            $webControllerHelper,
-        Helpers\TabsGridHelper         $tabsGridHelper,
-        CategoryService $categoryService,
-        TagServiceInterface            $tagService,
-        ClientService   $clientService,
-        CustomFieldDefServiceInterface $customFieldDefService,
-        AccountFileService             $accountFileService,
-        AccountService                 $accountService,
-        AccountHistoryService          $accountHistoryService,
-        ItemPresetServiceInterface     $itemPresetService,
-        Helpers\Grid\CategoryGrid      $categoryGrid,
-        Helpers\Grid\TagGrid           $tagGrid,
-        Helpers\Grid\ClientGrid        $clientGrid,
-        Helpers\Grid\CustomFieldGrid   $customFieldGrid,
-        Helpers\Grid\FileGrid          $fileGrid,
-        Helpers\Grid\AccountGrid       $accountGrid,
+        Application                  $application,
+        WebControllerHelper          $webControllerHelper,
+        Helpers\TabsGridHelper       $tabsGridHelper,
+        CategoryService              $categoryService,
+        TagServiceInterface          $tagService,
+        ClientService                $clientService,
+        CustomFieldDefinitionService $customFieldDefService,
+        AccountFileService           $accountFileService,
+        AccountService               $accountService,
+        AccountHistoryService        $accountHistoryService,
+        ItemPresetServiceInterface   $itemPresetService,
+        Helpers\Grid\CategoryGrid    $categoryGrid,
+        Helpers\Grid\TagGrid         $tagGrid,
+        Helpers\Grid\ClientGrid      $clientGrid,
+        Helpers\Grid\CustomFieldGrid $customFieldGrid,
+        Helpers\Grid\FileGrid        $fileGrid,
+        Helpers\Grid\AccountGrid     $accountGrid,
         Helpers\Grid\AccountHistoryGrid $accountHistoryGrid,
         Helpers\Grid\ItemPresetGrid    $itemPresetGrid
     ) {

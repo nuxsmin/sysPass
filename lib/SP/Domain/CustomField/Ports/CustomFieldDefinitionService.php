@@ -29,7 +29,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
-use SP\Domain\CustomField\Services\CustomFieldDefService;
+use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\CustomField\Services
  */
-interface CustomFieldDefServiceInterface
+interface CustomFieldDefinitionService
 {
     /**
      * @throws ConstraintException
@@ -47,46 +47,47 @@ interface CustomFieldDefServiceInterface
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
     /**
-     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
-    public function delete(int $id): CustomFieldDefService;
+    public function delete(int $id): void;
 
     /**
      * Deletes all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): void;
 
     /**
-     * @param CustomFieldDefinition $itemData
-     *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(CustomFieldDefinition $itemData): int;
+    public function create(CustomFieldDefinitionModel $customFieldDefinition): int;
 
     /**
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
-    public function update(CustomFieldDefinition $itemData);
+    public function update(CustomFieldDefinitionModel $customFieldDefinition): void;
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $id
+     * @return CustomFieldDefinitionModel
      * @throws NoSuchItemException
      */
-    public function getById(int $id): CustomFieldDefinition;
+    public function getById(int $id): CustomFieldDefinitionModel;
 
     /**
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateRaw(CustomFieldDefinition $itemData): void;
+    public function updateRaw(CustomFieldDefinitionModel $customFieldDefinition): void;
 
     /**
      * Get all items from the service's repository
@@ -96,4 +97,9 @@ interface CustomFieldDefServiceInterface
      * @throws QueryException
      */
     public function getAll(): array;
+
+    /**
+     * @throws ServiceException
+     */
+    public function changeModule(CustomFieldDefinitionModel $customFieldDefinition): int;
 }

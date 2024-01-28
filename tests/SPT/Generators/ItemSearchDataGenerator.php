@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,8 +35,8 @@ final class ItemSearchDataGenerator extends DataGenerator
     {
         return new ItemSearchData(
             $this->faker->name,
-            $this->faker->randomNumber(),
-            $this->faker->randomNumber()
+            $this->faker->randomNumber(3),
+            $this->faker->randomNumber(3)
         );
     }
 }

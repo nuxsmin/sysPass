@@ -67,8 +67,6 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             ->where('definitionId = :definitionId')
             ->bindValues(
                 [
-                    'data' => $customFieldData->getData(),
-                    'key' => $customFieldData->getKey(),
                     'moduleId' => $customFieldData->getModuleId(),
                     'itemId' => $customFieldData->getItemId(),
                     'definitionId' => $customFieldData->getDefinitionId(),

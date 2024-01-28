@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\CustomField\Services\CustomFieldDefService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -125,7 +124,7 @@ final class CustomFieldGrid extends GridBase
             'moduleId',
             false,
             function ($value) {
-                return CustomFieldDefService::getFieldModuleById($value);
+                return self::getFieldModuleById($value);
             }
         );
         $gridData->addDataRowSource('typeName');
@@ -136,6 +135,27 @@ final class CustomFieldGrid extends GridBase
         $gridData->setData($this->queryResult);
 
         return $gridData;
+    }
+
+    private static function getFieldModuleById(int $id): int|string
+    {
+        $modules = self::getFieldModules();
+
+        return $modules[$id] ?? $id;
+    }
+
+    /**
+     * Devuelve los módulos disponibles para los campos personalizados
+     */
+    private static function getFieldModules(): array
+    {
+        return [
+            AclActionsInterface::ACCOUNT => __('Accounts'),
+            AclActionsInterface::CATEGORY => __('Categories'),
+            AclActionsInterface::CLIENT => __('Clients'),
+            AclActionsInterface::USER => __('Users'),
+            AclActionsInterface::GROUP => __('Groups'),
+        ];
     }
 
     /**

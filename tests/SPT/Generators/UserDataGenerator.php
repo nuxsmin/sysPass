@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -44,15 +44,15 @@ final class UserDataGenerator extends DataGenerator
     private function getUserProperties(): array
     {
         return [
-            'id'            => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
             'name'          => $this->faker->name,
-            'email'         => $this->faker->randomNumber(),
+            'email' => $this->faker->randomNumber(3),
             'login'         => $this->faker->name,
             'ssoLogin'      => $this->faker->userName,
             'notes'         => $this->faker->text,
-            'userGroupId'   => $this->faker->randomNumber(),
+            'userGroupId' => $this->faker->randomNumber(3),
             'userGroupName' => $this->faker->name,
-            'userProfileId' => $this->faker->randomNumber(),
+            'userProfileId' => $this->faker->randomNumber(3),
             'isAdminApp'    => $this->faker->boolean,
             'isAdminAcc'    => $this->faker->boolean,
             'isDisabled'    => $this->faker->boolean,
@@ -60,7 +60,7 @@ final class UserDataGenerator extends DataGenerator
             'isChangedPass' => $this->faker->boolean,
             'isLdap'        => $this->faker->boolean,
             'isMigrate'     => $this->faker->boolean,
-            'loginCount'    => $this->faker->randomNumber(),
+            'loginCount' => $this->faker->randomNumber(3),
             'lastLogin'     => $this->faker->unixTime,
             'lastUpdate'    => $this->faker->unixTime,
             'preferences'   => serialize($this->buildUserPreferencesData()),
@@ -77,7 +77,7 @@ final class UserDataGenerator extends DataGenerator
         return [
             'lang'                     => $this->faker->languageCode,
             'theme'                    => $this->faker->colorName,
-            'resultsPerPage'           => $this->faker->randomNumber(),
+            'resultsPerPage' => $this->faker->randomNumber(3),
             'accountLink'              => $this->faker->boolean,
             'sortViews'                => $this->faker->boolean,
             'topNavbar'                => $this->faker->boolean,
@@ -85,7 +85,7 @@ final class UserDataGenerator extends DataGenerator
             'resultsAsCards'           => $this->faker->boolean,
             'checkNotifications'       => $this->faker->boolean,
             'showAccountSearchFilters' => $this->faker->boolean,
-            'user_id'                  => $this->faker->randomNumber(),
+            'user_id' => $this->faker->randomNumber(3),
         ];
     }
 
@@ -95,7 +95,7 @@ final class UserDataGenerator extends DataGenerator
     private function getUserPassProperties(): array
     {
         return [
-            'id'              => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
             'pass'            => $this->faker->password,
             'hashSalt'        => $this->faker->sha1,
             'mPass'           => $this->faker->sha1,

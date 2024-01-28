@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -40,7 +40,7 @@ final class CategoryGenerator extends DataGenerator
     private function categoryProperties(): array
     {
         return [
-            'id' => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->colorName(),
             'description' => $this->faker->text(),
             'hash' => $this->faker->sha1()

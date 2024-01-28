@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,13 +36,13 @@ final class ItemPresetDataGenerator extends DataGenerator
     public function buildItemPresetData(object $data): ItemPreset
     {
         return new ItemPreset([
-            'id'            => $this->faker->randomNumber(),
+                                  'id' => $this->faker->randomNumber(3),
             'type'          => $this->faker->colorName,
-            'userId'        => $this->faker->randomNumber(),
-            'userGroupId'   => $this->faker->randomNumber(),
-            'userProfileId' => $this->faker->randomNumber(),
+                                  'userId' => $this->faker->randomNumber(3),
+                                  'userGroupId' => $this->faker->randomNumber(3),
+                                  'userProfileId' => $this->faker->randomNumber(3),
             'fixed'         => (int)$this->faker->boolean,
-            'priority'      => $this->faker->randomNumber(),
+                                  'priority' => $this->faker->randomNumber(3),
             'data'          => serialize($data),
         ]);
     }
@@ -58,7 +58,7 @@ final class ItemPresetDataGenerator extends DataGenerator
             $this->faker->boolean,
             $this->faker->boolean,
             $this->faker->unixTime,
-            $this->faker->randomNumber(),
+            $this->faker->randomNumber(3),
             $this->faker->regexify('abc123')
         );
     }

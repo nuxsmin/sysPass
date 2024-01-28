@@ -92,20 +92,9 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
         $query = $this->queryFactory
             ->newUpdate()
             ->table(self::TABLE)
-            ->cols($customFieldDefinition->toArray())
+            ->cols($customFieldDefinition->toArray(null, ['id', 'moduleId']))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'name' => $customFieldDefinition->getName(),
-                    'moduleId' => $customFieldDefinition->getModuleId(),
-                    'required' => $customFieldDefinition->getRequired(),
-                    'help' => $customFieldDefinition->getHelp(),
-                    'showInList' => $customFieldDefinition->getShowInList(),
-                    'typeId' => $customFieldDefinition->getTypeId(),
-                    'isEncrypted' => $customFieldDefinition->getIsEncrypted(),
-                    'id' => $customFieldDefinition->getId()
-                ]
-            );
+            ->bindValues(['id' => $customFieldDefinition->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the custom field'));
         return $this->db->doQuery($queryData)->getAffectedNumRows();

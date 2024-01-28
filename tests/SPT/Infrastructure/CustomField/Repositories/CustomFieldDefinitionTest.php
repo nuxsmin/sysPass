@@ -120,10 +120,9 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 8
+                return count($params) === 7
                        && $params['id'] === $customFieldDefinition->getId()
                        && $params['name'] === $customFieldDefinition->getName()
-                       && $params['moduleId'] === $customFieldDefinition->getModuleId()
                        && $params['required'] === $customFieldDefinition->getRequired()
                        && $params['help'] === $customFieldDefinition->getHelp()
                        && $params['showInList'] === $customFieldDefinition->getShowInList()

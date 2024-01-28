@@ -39,13 +39,13 @@ final class CustomFieldDefinitionGenerator extends DataGenerator
     private function customFieldDefinitionProperties(): array
     {
         return [
-            'id' => $this->faker->randomNumber(),
+            'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->colorName(),
-            'moduleId' => $this->faker->randomNumber(),
+            'moduleId' => $this->faker->randomNumber(3),
             'required' => $this->faker->boolean(),
             'help' => $this->faker->text(),
             'showInList' => $this->faker->boolean(),
-            'typeId' => $this->faker->randomNumber(),
+            'typeId' => $this->faker->randomNumber(3),
             'isEncrypted' => $this->faker->boolean(),
         ];
     }
