@@ -35,9 +35,9 @@ use SP\Domain\Auth\Services\UpgradeAuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\UpgradeCustomFieldDataServiceInterface;
+use SP\Domain\CustomField\Ports\UpgradeCustomFieldDataService;
 use SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionServiceInterface;
-use SP\Domain\CustomField\Services\UpgradeCustomFieldDataService;
+use SP\Domain\CustomField\Services\UpgradeCustomFieldData;
 use SP\Domain\CustomField\Services\UpgradeCustomFieldDefinitionService;
 use SP\Domain\Plugin\Ports\UpgradePluginServiceInterface;
 use SP\Domain\Upgrade\Ports\UpgradeAppService;
@@ -61,18 +61,18 @@ final class UpgradeAppService extends Service implements UpgradeAppService
     ];
     private UpgradeCustomFieldDefinitionService $upgradeCustomFieldDefinition;
     private UpgradePublicLink $upgradePublicLink;
-    private UpgradeAuthToken  $upgradeAuthToken;
-    private UpgradeCustomFieldDataService $upgradeCustomFieldData;
-    private UpgradePluginService                $upgradePlugin;
+    private UpgradeAuthToken       $upgradeAuthToken;
+    private UpgradeCustomFieldData $upgradeCustomFieldData;
+    private UpgradePluginService   $upgradePlugin;
 
     public function __construct(
-        Application                            $application,
-        FileLogHandler                         $fileLogHandler,
+        Application                   $application,
+        FileLogHandler                $fileLogHandler,
         UpgradeCustomFieldDefinitionServiceInterface $upgradeCustomFieldDefinition,
-        UpgradePublicLinkService               $upgradePublicLink,
-        UpgradeAuthTokenService                $upgradeAuthToken,
-        UpgradeCustomFieldDataServiceInterface $upgradeCustomFieldData,
-        UpgradePluginServiceInterface          $upgradePlugin
+        UpgradePublicLinkService      $upgradePublicLink,
+        UpgradeAuthTokenService       $upgradeAuthToken,
+        UpgradeCustomFieldDataService $upgradeCustomFieldData,
+        UpgradePluginServiceInterface $upgradePlugin
     ) {
         parent::__construct($application);
 
@@ -151,7 +151,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
 
                     return true;
                 case '300.18072902':
-                    $this->upgradeCustomFieldData->upgrade_300_18072902();
+                    $this->upgradeCustomFieldData->upgradeV300B18072902();
 
                     return true;
                 case '310.19012201':

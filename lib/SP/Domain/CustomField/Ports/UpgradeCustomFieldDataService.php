@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,12 +31,12 @@ use Exception;
  *
  * @package SP\Domain\Upgrade\Services
  */
-interface UpgradeCustomFieldDataServiceInterface
+interface UpgradeCustomFieldDataService
 {
     /**
      * upgrade_300_18072902
      *
      * @throws Exception
      */
-    public function upgrade_300_18072902(): void;
+    public function upgradeV300B18072902(): void;
 }
