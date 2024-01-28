@@ -83,13 +83,6 @@ interface CustomFieldDefinitionService
     public function getById(int $id): CustomFieldDefinitionModel;
 
     /**
-     * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function updateRaw(CustomFieldDefinitionModel $customFieldDefinition): void;
-
-    /**
      * Get all items from the service's repository
      *
      * @return CustomFieldDefinition[]

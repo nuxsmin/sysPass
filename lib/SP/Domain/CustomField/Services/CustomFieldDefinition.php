@@ -75,7 +75,7 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
             function () use ($ids) {
                 $affectedNumRows = $this->customFieldDefinitionRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
-                if ($affectedNumRows !== count($ids)) {
+                if ($affectedNumRows === 0) {
                     throw ServiceException::warning(__u('Error while deleting the fields'));
                 }
             },
@@ -84,27 +84,13 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
     }
 
     /**
-     * @throws ServiceException
+     * @param CustomFieldDefinitionModel $customFieldDefinition
      * @throws ConstraintException
      * @throws QueryException
-     */
-    public function updateRaw(CustomFieldDefinitionModel $customFieldDefinition): void
-    {
-        if ($this->customFieldDefinitionRepository->update($customFieldDefinition) !== 1) {
-            throw ServiceException::error(__u('Error while updating the custom field'));
-        }
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws ServiceException
      */
     public function update(CustomFieldDefinitionModel $customFieldDefinition): void
     {
-        if ($this->customFieldDefinitionRepository->update($customFieldDefinition) !== 1) {
-            throw ServiceException::error(__u('Error while updating the custom field'));
-        }
+        $this->customFieldDefinitionRepository->update($customFieldDefinition);
     }
 
     /**
