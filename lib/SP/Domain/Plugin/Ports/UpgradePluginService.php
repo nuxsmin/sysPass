@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,35 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\CustomField\Ports;
+namespace SP\Domain\Plugin\Ports;
 
 use Exception;
 
 /**
- * Class UpgradeCustomField
+ * Class UpgradePlugin
  *
  * @package SP\Domain\Upgrade\Services
  */
-interface UpgradeCustomFieldDefinitionServiceInterface
+interface UpgradePluginService
 {
     /**
      * upgrade_300_18010101
      *
      * @throws Exception
      */
-    public function upgrade_300_18010101(): void;
-
-    /**
-     * upgrade_300_18072901
-     *
-     * @throws Exception
-     */
-    public function upgrade_300_18072901(): void;
-
-    /**
-     * upgrade_300_19042701
-     *
-     * @throws Exception
-     */
-    public function upgrade_310_19042701(): void;
+    public function upgrade_310_19012201(): void;
 }

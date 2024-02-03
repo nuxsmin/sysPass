@@ -28,29 +28,22 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Ports\UpgradePublicLinkService;
-use SP\Domain\Account\Services\UpgradePublicLink;
-use SP\Domain\Auth\Ports\UpgradeAuthTokenService;
-use SP\Domain\Auth\Services\UpgradeAuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\UpgradeCustomFieldDataService;
-use SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionServiceInterface;
-use SP\Domain\CustomField\Services\UpgradeCustomFieldData;
-use SP\Domain\CustomField\Services\UpgradeCustomFieldDefinitionService;
-use SP\Domain\Plugin\Ports\UpgradePluginServiceInterface;
 use SP\Domain\Upgrade\Ports\UpgradeAppService;
 use SP\Infrastructure\File\FileException;
 use SP\Providers\Log\FileLogHandler;
 use SP\Util\VersionUtil;
 
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
+
 /**
- * Class UpgradeAppService
- *
- * @package SP\Domain\Upgrade\Services
+ * Class UpgradeApp
  */
-final class UpgradeAppService extends Service implements UpgradeAppService
+final class UpgradeApp extends Service implements UpgradeAppService
 {
     private const UPGRADES = [
         '300.18010101',
@@ -59,30 +52,14 @@ final class UpgradeAppService extends Service implements UpgradeAppService
         '310.19012201',
         '310.19042701',
     ];
-    private UpgradeCustomFieldDefinitionService $upgradeCustomFieldDefinition;
-    private UpgradePublicLink $upgradePublicLink;
-    private UpgradeAuthToken       $upgradeAuthToken;
-    private UpgradeCustomFieldData $upgradeCustomFieldData;
-    private UpgradePluginService   $upgradePlugin;
 
     public function __construct(
-        Application                   $application,
-        FileLogHandler                $fileLogHandler,
-        UpgradeCustomFieldDefinitionServiceInterface $upgradeCustomFieldDefinition,
-        UpgradePublicLinkService      $upgradePublicLink,
-        UpgradeAuthTokenService       $upgradeAuthToken,
-        UpgradeCustomFieldDataService $upgradeCustomFieldData,
-        UpgradePluginServiceInterface $upgradePlugin
+        Application    $application,
+        FileLogHandler $fileLogHandler,
     ) {
         parent::__construct($application);
 
         $this->eventDispatcher->attach($fileLogHandler);
-
-        $this->upgradeCustomFieldDefinition = $upgradeCustomFieldDefinition;
-        $this->upgradePublicLink = $upgradePublicLink;
-        $this->upgradeAuthToken = $upgradeAuthToken;
-        $this->upgradeCustomFieldData = $upgradeCustomFieldData;
-        $this->upgradePlugin = $upgradePlugin;
     }
 
     public static function needsUpgrade(string $version): bool
@@ -116,7 +93,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
                     );
                 }
 
-                logger('APP Upgrade: '.$appVersion);
+                logger('APP Upgrade: ' . $appVersion);
 
                 $configData->setAppVersion($appVersion);
 
@@ -139,30 +116,7 @@ final class UpgradeAppService extends Service implements UpgradeAppService
     private function applyUpgrade(string $version): bool
     {
         try {
-            switch ($version) {
-                case '300.18010101':
-                    $this->upgradeCustomFieldDefinition->upgrade_300_18010101();
-                    $this->upgradePublicLink->upgradeV300B18010101();
-
-                    return true;
-                case '300.18072901':
-                    $this->upgradeCustomFieldDefinition->upgrade_300_18072901();
-                    $this->upgradeAuthToken->upgradeV300B18072901();
-
-                    return true;
-                case '300.18072902':
-                    $this->upgradeCustomFieldData->upgradeV300B18072902();
-
-                    return true;
-                case '310.19012201':
-                    $this->upgradePlugin->upgrade_310_19012201();
-
-                    return true;
-                case '310.19042701':
-                    $this->upgradeCustomFieldDefinition->upgrade_310_19042701();
-
-                    return true;
-            }
+            return true;
         } catch (Exception $e) {
             processException($e);
         }

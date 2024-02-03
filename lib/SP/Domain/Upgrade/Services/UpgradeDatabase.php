@@ -40,11 +40,9 @@ use SP\Providers\Log\FileLogHandler;
 use SP\Util\VersionUtil;
 
 /**
- * Class UpgradeDatabaseService
- *
- * @package SP\Domain\Upgrade\Services
+ * Class UpgradeDatabase
  */
-final class UpgradeDatabaseService extends Service implements UpgradeDatabaseService
+final class UpgradeDatabase extends Service implements UpgradeDatabaseService
 {
     /**
      * @var array Versiones actualizables
@@ -114,7 +112,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
                     );
                 }
 
-                logger('DB Upgrade: '.$upgradeVersion);
+                logger('DB Upgrade: ' . $upgradeVersion);
 
                 $configData->setDatabaseVersion($upgradeVersion);
 
@@ -165,7 +163,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
             } catch (Exception $e) {
                 processException($e);
 
-                logger('SQL: '.$query);
+                logger('SQL: ' . $query);
 
                 $this->eventDispatcher->notify(
                     'exception',
@@ -199,9 +197,9 @@ final class UpgradeDatabaseService extends Service implements UpgradeDatabaseSer
      */
     private function getQueriesFromFile(string $filename): array
     {
-        $fileName = SQL_PATH.
-                    DIRECTORY_SEPARATOR.
-                    str_replace('.', '', $filename).
+        $fileName = SQL_PATH .
+                    DIRECTORY_SEPARATOR .
+                    str_replace('.', '', $filename) .
                     '.sql';
 
         try {
