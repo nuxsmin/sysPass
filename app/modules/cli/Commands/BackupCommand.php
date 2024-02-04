@@ -28,8 +28,8 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Export\Ports\FileBackupServiceInterface;
-use SP\Domain\Export\Services\FileBackupService;
+use SP\Domain\Export\Ports\BackupFileService;
+use SP\Domain\Export\Services\BackupFile;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,11 +52,11 @@ final class BackupCommand extends CommandBase
     /**
      * @var string
      */
-    protected static $defaultName = 'sp:backup';
-    private FileBackupService $fileBackupService;
+    protected static   $defaultName = 'sp:backup';
+    private BackupFile $fileBackupService;
 
     public function __construct(
-        FileBackupServiceInterface $fileBackupService,
+        BackupFileService $fileBackupService,
         LoggerInterface   $logger,
         ConfigFileService $config
     )

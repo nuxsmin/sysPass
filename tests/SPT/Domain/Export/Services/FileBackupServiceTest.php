@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,8 +33,8 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Ports\BackupFilesInterface;
-use SP\Domain\Export\Services\FileBackupService;
+use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Domain\Export\Services\BackupFile;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageInterface;
@@ -52,9 +52,9 @@ use SPT\UnitaryTestCase;
  */
 class FileBackupServiceTest extends UnitaryTestCase
 {
-    private FileBackupService               $fileBackupService;
-    private BackupFilesInterface|MockObject $backupFiles;
-    private DatabaseInterface|MockObject    $database;
+    private BackupFile                         $fileBackupService;
+    private BackupFileHelperService|MockObject $backupFiles;
+    private DatabaseInterface|MockObject       $database;
 
     /**
      * @throws ServiceException
@@ -125,7 +125,7 @@ class FileBackupServiceTest extends UnitaryTestCase
                        ->method('compressDirectory')
                        ->with(
                            APP_ROOT,
-                           FileBackupService::BACKUP_INCLUDE_REGEX
+                           BackupFile::BACKUP_INCLUDE_REGEX
                        );
 
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -224,9 +224,9 @@ class FileBackupServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->backupFiles = $this->createMock(BackupFilesInterface::class);
+        $this->backupFiles = $this->createMock(BackupFileHelperService::class);
 
-        $this->fileBackupService = new FileBackupService(
+        $this->fileBackupService = new BackupFile(
             $this->application,
             $this->database,
             $this->createStub(DatabaseUtil::class),

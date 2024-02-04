@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -58,7 +58,7 @@ final class DownloadBackupDbController extends SimpleControllerBase
         try {
             SessionContext::close();
 
-            $filePath = BackupFiles::getDbBackupFilename(
+            $filePath = BackupFileHelper::getDbBackupFilename(
                 BACKUP_PATH,
                 $this->configData->getBackupHash(),
                 true

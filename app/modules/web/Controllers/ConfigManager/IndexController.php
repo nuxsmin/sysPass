@@ -45,7 +45,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
-use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Export\Services\XmlExportService;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
@@ -465,14 +465,14 @@ final class IndexController extends ControllerBase
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
         $backupAppFile = new FileHandler(
-            BackupFiles::getAppBackupFilename(
+            BackupFileHelper::getAppBackupFilename(
                 BACKUP_PATH,
                 $this->configData->getBackupHash() ?: '',
                 true
             )
         );
         $backupDbFile = new FileHandler(
-            BackupFiles::getDbBackupFilename(
+            BackupFileHelper::getDbBackupFilename(
                 BACKUP_PATH,
                 $this->configData->getBackupHash() ?: '',
                 true

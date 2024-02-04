@@ -34,8 +34,8 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Export\Ports\FileBackupServiceInterface;
-use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Ports\BackupFileService;
+use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
@@ -46,7 +46,7 @@ use SP\Modules\Api\Controllers\Help\ConfigHelp;
  */
 final class BackupController extends ControllerBase
 {
-    private FileBackupServiceInterface $fileBackupService;
+    private BackupFileService $fileBackupService;
 
     /**
      * @throws InvalidClassException
@@ -56,7 +56,7 @@ final class BackupController extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        FileBackupServiceInterface $fileBackupService
+        BackupFileService $fileBackupService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
@@ -106,12 +106,12 @@ final class BackupController extends ControllerBase
     {
         return [
             'files' => [
-                'app' => BackupFiles::getAppBackupFilename(
+                'app' => BackupFileHelper::getAppBackupFilename(
                     $path,
                     $this->fileBackupService->getHash(),
                     true
                 ),
-                'db'  => BackupFiles::getDbBackupFilename(
+                'db' => BackupFileHelper::getDbBackupFilename(
                     $path,
                     $this->fileBackupService->getHash(),
                     true

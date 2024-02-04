@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Core;
 
 use RuntimeException;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Domain\Core\PhpExtensionCheckerInterface;
+use SP\Domain\Core\PhpExtensionCheckerService;
 
 use function SP\__u;
 use function SP\logger;
@@ -34,7 +34,7 @@ use function SP\logger;
 /**
  * Class PhpExtensionChecker
  */
-final class PhpExtensionChecker implements PhpExtensionCheckerInterface
+final class PhpExtensionChecker implements PhpExtensionCheckerService
 {
     /**
      * Array of extensions needed by sysPass.

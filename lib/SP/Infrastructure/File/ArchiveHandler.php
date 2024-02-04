@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,16 +24,12 @@
 
 namespace SP\Infrastructure\File;
 
-
 use Phar;
 use PharData;
-use SP\Core\PhpExtensionChecker;
-use SP\Domain\Core\Exceptions\CheckException;
+use SP\Domain\Core\PhpExtensionCheckerService;
 
 /**
  * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
  */
 final class ArchiveHandler implements ArchiveHandlerInterface
 {
@@ -41,12 +37,9 @@ final class ArchiveHandler implements ArchiveHandlerInterface
 
     private PharData $archive;
 
-    /**
-     * @throws CheckException
-     */
-    public function __construct(string $archive, PhpExtensionChecker $extensionChecker)
+    public function __construct(string $archive, PhpExtensionCheckerService $phpExtensionCheckerService)
     {
-        $extensionChecker->checkPhar(true);
+        $phpExtensionCheckerService->checkPhar(true);
 
         $this->archive = new PharData(self::makeArchiveName($archive));
     }
@@ -64,10 +57,10 @@ final class ArchiveHandler implements ArchiveHandlerInterface
                        $archive,
                        0,
                        strrpos($archive, '.') ?: strlen($archive)
-                   ).$archiveExtension;
+                   ) . $archiveExtension;
         }
 
-        return $archive.$archiveExtension;
+        return $archive . $archiveExtension;
     }
 
     /**

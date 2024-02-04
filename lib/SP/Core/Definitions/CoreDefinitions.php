@@ -66,6 +66,8 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Html\MinifyInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallDataFactory;
@@ -82,6 +84,7 @@ use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\File\DirectoryHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\XmlHandler;
@@ -248,7 +251,9 @@ final class CoreDefinitions
                     get(RequestInterface::class)
                 ),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
-            MinifyInterface::class => autowire(Minify::class)
+            MinifyInterface::class => autowire(Minify::class),
+            BackupFileHelperService::class => autowire(BackupFileHelper::class)
+                ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH))
         ];
     }
 }

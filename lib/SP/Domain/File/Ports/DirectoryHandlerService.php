@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,21 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
+namespace SP\Domain\File\Ports;
 
-use SP\Domain\Common\Services\ServiceException;
+use Directory;
+use SP\Domain\Core\Exceptions\CheckException;
 
 /**
- * Esta clase es la encargada de realizar la copia de sysPass.
+ * Interface DirectoryHandlerService
  */
-interface FileBackupServiceInterface
+interface DirectoryHandlerService
 {
     /**
-     * Realizar backup de la BBDD y aplicación.
-     *
-     * @throws ServiceException
+     * @throws CheckException
      */
-    public function doBackup(string $backupPath = BACKUP_PATH, string $applicationPath = APP_ROOT): void;
+    public function checkOrCreate(): void;
 
-    public function getHash(): string;
+    public function isDir(): bool;
+
+    public function create(int $permissions = 0750): bool;
+
+    public function isWritable(): bool;
+
+    /**
+     * @throws CheckException
+     */
+    public function getDir(): Directory;
+
+    public function getPath(): string;
 }

@@ -28,7 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Export\Services\BackupFiles;
+use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Modules\Cli\Commands\BackupCommand;
 use SPT\Modules\Cli\CliTestCase;
 
@@ -97,14 +97,14 @@ class BackupCommandTest extends CliTestCase
         $configData = self::$dic->get(ConfigFile::class)->getConfigData();
 
         $this->assertFileExists(
-            BackupFiles::getAppBackupFilename(
+            BackupFileHelper::getAppBackupFilename(
                 TMP_PATH,
                 $configData->getBackupHash(),
                 true
             )
         );
         $this->assertFileExists(
-            BackupFiles::getDbBackupFilename(
+            BackupFileHelper::getDbBackupFilename(
                 TMP_PATH,
                 $configData->getBackupHash(),
                 true

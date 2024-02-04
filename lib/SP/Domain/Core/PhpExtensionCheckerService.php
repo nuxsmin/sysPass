@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,41 +22,38 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
+namespace SP\Domain\Core;
 
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Infrastructure\File\ArchiveHandlerInterface;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
- * BackupFiles
+ * Class PhpExtensionCheckerInterface
+ *
+ * @method bool checkCurl(bool $exception = false)
+ * @method bool checkLdap(bool $exception = false)
+ * @method bool checkPhar(bool $exception = false)
+ * @method bool checkGd(bool $exception = false)
  */
-interface BackupFilesInterface
+interface PhpExtensionCheckerService
 {
     /**
-     * @return FileHandlerInterface
-     */
-    public function getAppBackupFileHandler(): FileHandlerInterface;
-
-    /**
-     * @return FileHandlerInterface
-     */
-    public function getDbBackupFileHandler(): FileHandlerInterface;
-
-    /**
-     * @return ArchiveHandlerInterface
+     * Checks if the extension is installed
+     *
+     * @param string $extension
+     * @param bool $exception Throws an exception if the extension is not available
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function getDbBackupArchiveHandler(): ArchiveHandlerInterface;
+    public function checkIsAvailable(string $extension, bool $exception = false): bool;
 
     /**
-     * @return ArchiveHandlerInterface
      * @throws CheckException
      */
-    public function getAppBackupArchiveHandler(): ArchiveHandlerInterface;
+    public function checkMandatory(): void;
 
     /**
-     * @return string
+     * Returns missing extensions
      */
-    public function getHash(): string;
+    public function getMissing(): array;
 }

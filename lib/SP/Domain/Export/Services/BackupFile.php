@@ -39,8 +39,8 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Ports\BackupFilesInterface;
-use SP\Domain\Export\Ports\FileBackupServiceInterface;
+use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Domain\Export\Ports\BackupFileService;
 use SP\Infrastructure\Common\Repositories\Query;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -53,7 +53,7 @@ use function SP\__u;
 /**
  * Esta clase es la encargada de realizar la copia de sysPass.
  */
-final class FileBackupService implements FileBackupServiceInterface
+final class BackupFile implements BackupFileService
 {
     public const BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
@@ -64,10 +64,10 @@ final class FileBackupService implements FileBackupServiceInterface
     private ?string                  $backupPath = null;
 
     public function __construct(
-        Application                           $application,
-        private readonly DatabaseInterface    $database,
-        private readonly DatabaseUtil         $databaseUtil,
-        private readonly BackupFilesInterface $backupFiles
+        Application                              $application,
+        private readonly DatabaseInterface       $database,
+        private readonly DatabaseUtil            $databaseUtil,
+        private readonly BackupFileHelperService $backupFileHelperService
     ) {
         $this->config = $application->getConfig();
         $this->eventDispatcher = $application->getEventDispatcher();
@@ -94,10 +94,10 @@ final class FileBackupService implements FileBackupServiceInterface
                 new Event($this, EventMessage::factory()->addDescription(__u('Make Backup')))
             );
 
-            $this->backupTables($this->backupFiles->getDbBackupFileHandler());
+            $this->backupTables($this->backupFileHelperService->getDbBackupFileHandler());
             $this->backupApp($applicationPath);
 
-            $this->configData->setBackupHash($this->backupFiles->getHash());
+            $this->configData->setBackupHash($this->backupFileHelperService->getHash());
             $this->config->save($this->configData);
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
@@ -255,7 +255,7 @@ final class FileBackupService implements FileBackupServiceInterface
         $fileHandler->write(implode(PHP_EOL, $sqlOut));
         $fileHandler->close();
 
-        $this->backupFiles->getDbBackupArchiveHandler()->compressFile($fileHandler->getFile());
+        $this->backupFileHelperService->getDbBackupArchiveHandler()->compressFile($fileHandler->getFile());
 
         $fileHandler->delete();
     }
@@ -289,11 +289,14 @@ final class FileBackupService implements FileBackupServiceInterface
             new Event($this, EventMessage::factory()->addDescription(__u('Copying application')))
         );
 
-        $this->backupFiles->getAppBackupArchiveHandler()->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
+        $this->backupFileHelperService->getAppBackupArchiveHandler()->compressDirectory(
+            $directory,
+            self::BACKUP_INCLUDE_REGEX
+        );
     }
 
     public function getHash(): string
     {
-        return $this->backupFiles->getHash();
+        return $this->backupFileHelperService->getHash();
     }
 }
