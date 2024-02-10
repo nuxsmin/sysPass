@@ -29,22 +29,22 @@ use DOMNodeList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Domain\Category\Ports\CategoryService;
+use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Services\XmlCategoryExport;
-use SPT\Generators\CategoryGenerator;
+use SP\Domain\Export\Services\XmlClientExport;
+use SPT\Generators\ClientGenerator;
 use SPT\UnitaryTestCase;
 
 /**
- * Class XmlCategoryExportTest
+ * Class XmlClientExportTest
  *
  * @group unitary
  */
-class XmlCategoryExportTest extends UnitaryTestCase
+class XmlClientExportTest extends UnitaryTestCase
 {
 
-    private CategoryService|MockObject $categoryService;
-    private XmlCategoryExport          $xmlCategoryExport;
+    private ClientService|MockObject $clientService;
+    private XmlClientExport          $xmlClientExport;
 
     /**
      * @throws Exception
@@ -52,25 +52,25 @@ class XmlCategoryExportTest extends UnitaryTestCase
      */
     public function testExport()
     {
-        $category = CategoryGenerator::factory()->buildCategory();
+        $client = ClientGenerator::factory()->buildClient();
 
         $document = new DOMDocument();
 
-        $this->categoryService
+        $this->clientService
             ->expects(self::once())
             ->method('getAll')
-            ->willReturn([$category]);
+            ->willReturn([$client]);
 
-        $out = $this->xmlCategoryExport->export($document);
+        $out = $this->xmlClientExport->export($document);
 
-        $this->assertEquals('Categories', $out->nodeName);
-        $this->assertEquals('Category', $out->firstChild->nodeName);
-        $this->assertEquals($category->getId(), $out->firstChild->attributes->getNamedItem('id')->nodeValue);
+        $this->assertEquals('Clients', $out->nodeName);
+        $this->assertEquals('Client', $out->firstChild->nodeName);
+        $this->assertEquals($client->getId(), $out->firstChild->attributes->getNamedItem('id')->nodeValue);
         $this->assertEquals(2, $out->firstChild->childNodes->count());
 
         $nodes = [
-            'name' => $category->getName(),
-            'description' => $category->getDescription()
+            'name' => $client->getName(),
+            'description' => $client->getDescription()
         ];
 
         $this->checkNodes($out->firstChild->childNodes, $nodes);
@@ -95,14 +95,14 @@ class XmlCategoryExportTest extends UnitaryTestCase
     {
         $document = new DOMDocument();
 
-        $this->categoryService
+        $this->clientService
             ->expects(self::once())
             ->method('getAll')
             ->willReturn([]);
 
-        $out = $this->xmlCategoryExport->export($document);
+        $out = $this->xmlClientExport->export($document);
 
-        $this->assertEquals('Categories', $out->nodeName);
+        $this->assertEquals('Clients', $out->nodeName);
         $this->assertEquals(0, $out->childNodes->count());
     }
 
@@ -114,25 +114,25 @@ class XmlCategoryExportTest extends UnitaryTestCase
     {
         $document = new DOMDocument();
 
-        $this->categoryService
+        $this->clientService
             ->expects(self::once())
             ->method('getAll')
             ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('test');
-        $this->xmlCategoryExport->export($document);
+        $this->xmlClientExport->export($document);
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->categoryService = $this->createMock(CategoryService::class);
+        $this->clientService = $this->createMock(ClientService::class);
 
-        $this->xmlCategoryExport = new XmlCategoryExport(
+        $this->xmlClientExport = new XmlClientExport(
             $this->application,
-            $this->categoryService
+            $this->clientService
         );
     }
 }
