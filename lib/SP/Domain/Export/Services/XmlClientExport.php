@@ -78,13 +78,18 @@ final class XmlClientExport extends Service implements XmlClientExportService
 
             foreach ($clients as $client) {
                 $nodeClient = $document->createElement('Client');
-                $nodeClient->setAttribute('id', $client->getId());
-                $nodeClient->appendChild($document->createElement('name', XmlUtil::escapeChars($client->getName())));
-                $nodeClient->appendChild(
-                    $document->createElement('description', XmlUtil::escapeChars($client->getDescription()))
-                );
-
                 $nodeClients->appendChild($nodeClient);
+
+                $nodeClient->setAttribute('id', $client->getId());
+                $nodeClient->appendChild(
+                    $document->createElement('name', $document->createTextNode($client->getName())->nodeValue)
+                );
+                $nodeClient->appendChild(
+                    $document->createElement(
+                        'description',
+                        $document->createTextNode($client->getDescription())->nodeValue
+                    )
+                );
             }
 
             return $nodeClients;

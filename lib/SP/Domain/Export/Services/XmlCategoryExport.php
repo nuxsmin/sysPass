@@ -77,18 +77,18 @@ final class XmlCategoryExport extends Service implements XmlCategoryExportServic
 
             foreach ($categories as $category) {
                 $nodeCategory = $document->createElement('Category');
+                $nodeCategories->appendChild($nodeCategory);
+
                 $nodeCategory->setAttribute('id', $category->getId());
                 $nodeCategory->appendChild(
-                    $document->createElement('name', XmlUtil::escapeChars($category->getName()))
+                    $document->createElement('name', $document->createTextNode($category->getName())->nodeValue)
                 );
                 $nodeCategory->appendChild(
                     $document->createElement(
                         'description',
-                        XmlUtil::escapeChars($category->getDescription())
+                        $document->createTextNode($category->getDescription())->nodeValue
                     )
                 );
-
-                $nodeCategories->appendChild($nodeCategory);
             }
 
             return $nodeCategories;

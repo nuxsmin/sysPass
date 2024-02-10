@@ -32,7 +32,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Services\XmlUtil;
 use SP\Domain\Tag\Services\TagService;
 
 use function SP\__u;
@@ -43,7 +42,7 @@ use function SP\__u;
 final class XmlTagExport extends Service implements XmlTagExportService
 {
     public function __construct(
-        Application                 $application,
+        Application $application,
         private readonly TagService $tagService,
 
     ) {
@@ -77,10 +76,12 @@ final class XmlTagExport extends Service implements XmlTagExportService
 
             foreach ($tags as $tag) {
                 $nodeTag = $document->createElement('Tag');
-                $nodeTag->setAttribute('id', $tag->getId());
-                $nodeTag->appendChild($document->createElement('name', XmlUtil::escapeChars($tag->getName())));
-
                 $nodeTags->appendChild($nodeTag);
+
+                $nodeTag->setAttribute('id', $tag->getId());
+                $nodeTag->appendChild(
+                    $document->createElement('name', $document->createTextNode($tag->getName())->nodeValue)
+                );
             }
 
             return $nodeTags;
