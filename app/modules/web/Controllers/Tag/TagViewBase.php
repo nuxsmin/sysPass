@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,10 +27,10 @@ namespace SP\Modules\Web\Controllers\Tag;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\TagData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -70,7 +70,7 @@ abstract class TagViewBase extends ControllerBase
 
         $tag = $tagId
             ? $this->tagService->getById($tagId)
-            : new TagData();
+            : new Tag();
 
         $this->view->assign('tag', $tag);
 

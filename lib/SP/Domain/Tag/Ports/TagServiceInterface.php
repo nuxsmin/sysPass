@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,10 @@
 namespace SP\Domain\Tag\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TagData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\Models\Tag;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -51,14 +51,14 @@ interface TagServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): TagData;
+    public function getById(int $id): Tag;
 
     /**
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): ?TagData;
+    public function getByName(string $name): ?Tag;
 
     /**
      * @throws ConstraintException
@@ -79,19 +79,19 @@ interface TagServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(TagData $itemData): int;
+    public function create(Tag $itemData): int;
 
     /**
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(TagData $itemData): int;
+    public function update(Tag $itemData): int;
 
     /**
      * Get all items from the service's repository
      *
-     * @return TagData[]
+     * @return \SP\Domain\Tag\Models\Tag[]
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -28,10 +28,10 @@ namespace SP\Modules\Api\Controllers\Tag;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\TagData;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Tag\Models\Tag;
 
 /**
  * Class EditController
@@ -70,12 +70,12 @@ final class EditController extends TagBase
     }
 
     /**
-     * @return TagData
+     * @return Tag
      * @throws ServiceException
      */
-    private function buildTagData(): TagData
+    private function buildTagData(): Tag
     {
-        $tagData = new TagData();
+        $tagData = new Tag();
         $tagData->setId($this->apiService->getParamInt('id', true));
         $tagData->setName($this->apiService->getParamString('name', true));
 

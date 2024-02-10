@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\TagData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Tag\Models\Tag;
 
 /**
  * Class TagForm
@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class TagForm extends FormBase implements FormInterface
 {
-    protected ?TagData $tagData = null;
+    protected ?Tag $tagData = null;
 
     /**
      * Validar el formulario
@@ -70,7 +70,7 @@ final class TagForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->tagData = new TagData();
+        $this->tagData = new Tag();
         $this->tagData->setId($this->itemId);
         $this->tagData->setName($this->request->analyzeString('name'));
     }
@@ -85,7 +85,7 @@ final class TagForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?TagData
+    public function getItemData(): ?Tag
     {
         return $this->tagData;
     }

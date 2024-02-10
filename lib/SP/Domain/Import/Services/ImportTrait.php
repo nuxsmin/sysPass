@@ -26,7 +26,6 @@ namespace SP\Domain\Import\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -37,6 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 
@@ -202,12 +202,12 @@ trait ImportTrait
     /**
      * Añadir una etiqueta y devolver el Id
      *
-     * @param  TagData  $tagData
+     * @param Tag $tagData
      *
      * @return int
      * @throws SPException
      */
-    protected function addTag(TagData $tagData): int
+    protected function addTag(Tag $tagData): int
     {
         try {
             $tagId = $this->getWorkingItem('tag', $tagData->getName());

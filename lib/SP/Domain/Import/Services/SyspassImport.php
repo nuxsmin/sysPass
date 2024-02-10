@@ -34,12 +34,12 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\TagData;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Services\XmlVerifyService;
+use SP\Domain\Tag\Models\Tag;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
@@ -379,7 +379,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             'Tags',
             'Tag',
             function (DOMElement $tag) {
-                $tagData = new TagData();
+                $tagData = new Tag();
 
                 foreach ($tag->childNodes as $node) {
                     if (isset($node->tagName) && $node->tagName === 'name') {

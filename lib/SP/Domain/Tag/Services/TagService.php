@@ -26,13 +26,13 @@ namespace SP\Domain\Tag\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TagData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -72,7 +72,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): TagData
+    public function getById(int $id): Tag
     {
         $result = $this->tagRepository->getById($id);
 
@@ -88,7 +88,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): ?TagData
+    public function getByName(string $name): ?Tag
     {
         $result = $this->tagRepository->getByName($name);
 
@@ -132,7 +132,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(TagData $itemData): int
+    public function create(Tag $itemData): int
     {
         return $this->tagRepository->create($itemData);
     }
@@ -142,7 +142,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(TagData $itemData): int
+    public function update(Tag $itemData): int
     {
         return $this->tagRepository->update($itemData);
     }
@@ -150,7 +150,7 @@ final class TagService extends Service implements TagServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return TagData[]
+     * @return Tag[]
      * @throws ConstraintException
      * @throws QueryException
      */

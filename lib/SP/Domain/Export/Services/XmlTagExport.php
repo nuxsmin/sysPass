@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
+namespace SP\Domain\Export\Services;
 
 use DOMDocument;
 use DOMElement;
@@ -32,7 +32,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Tag\Services\TagService;
+use SP\Domain\Export\Ports\XmlTagExportService;
+use SP\Domain\Tag\Ports\TagServiceInterface;
 
 use function SP\__u;
 
@@ -42,8 +43,8 @@ use function SP\__u;
 final class XmlTagExport extends Service implements XmlTagExportService
 {
     public function __construct(
-        Application $application,
-        private readonly TagService $tagService,
+        Application                          $application,
+        private readonly TagServiceInterface $tagService,
 
     ) {
         parent::__construct($application);

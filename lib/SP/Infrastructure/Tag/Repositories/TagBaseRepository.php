@@ -25,9 +25,9 @@
 namespace SP\Infrastructure\Tag\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TagData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -47,7 +47,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     /**
      * Creates an item
      *
-     * @param  TagData  $itemData
+     * @param Tag $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -74,7 +74,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  TagData  $itemData
+     * @param Tag $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -95,7 +95,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     /**
      * Updates an item
      *
-     * @param  TagData  $itemData
+     * @param Tag $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -123,7 +123,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  TagData  $itemData
+     * @param Tag $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -154,7 +154,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(TagData::class);
+        $queryData->setMapClassName(Tag::class);
         $queryData->setQuery('SELECT id, `name` FROM Tag WHERE id = ?  ORDER BY  `name` LIMIT 1');
         $queryData->addParam($id);
 
@@ -173,7 +173,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(TagData::class);
+        $queryData->setMapClassName(Tag::class);
         $queryData->setQuery('SELECT id, `name` FROM Tag WHERE `hash` = ? OR `name` = ? ORDER BY  `name` LIMIT 1');
         $queryData->setParams([$this->makeItemHash($name), $name]);
 
@@ -183,14 +183,14 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
     /**
      * Returns all the items
      *
-     * @return TagData[]
+     * @return Tag[]
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getAll(): array
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(TagData::class);
+        $queryData->setMapClassName(Tag::class);
         $queryData->setQuery('SELECT id, `name`, `hash` FROM Tag ORDER BY `name`');
 
         return $this->db->doSelect($queryData)->getDataAsArray();
@@ -215,7 +215,7 @@ final class TagBaseRepository extends BaseRepository implements TagRepository
             'SELECT id, `name` FROM Tag WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(TagData::class);
+        $queryData->setMapClassName(Tag::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
