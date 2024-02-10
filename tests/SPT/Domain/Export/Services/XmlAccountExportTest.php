@@ -74,6 +74,8 @@ class XmlAccountExportTest extends UnitaryTestCase
         $out = $this->xmlAccountExport->export($document);
 
         $this->assertEquals('Accounts', $out->nodeName);
+        $this->assertEquals('Account', $out->firstChild->nodeName);
+        $this->assertEquals($account->getId(), $out->firstChild->attributes->getNamedItem('id')->nodeValue);
         $this->assertEquals(9, $out->firstChild->childNodes->count());
 
         $nodes = [
