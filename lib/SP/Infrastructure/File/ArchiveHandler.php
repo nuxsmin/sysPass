@@ -82,12 +82,14 @@ final class ArchiveHandler implements ArchiveHandlerInterface
      *
      * @throws FileException
      */
-    public function compressFile(string $file): void
+    public function compressFile(string $file): string
     {
         $this->archive->addFile($file, basename($file));
         $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
         (new FileHandler($this->archive->getPath()))->delete();
+
+        return $this->archive->getFileInfo()->getPathname();
     }
 }

@@ -22,28 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Export\Ports;
 
+use DOMDocument;
+use DOMElement;
+use SP\Domain\Common\Services\ServiceException;
 
 /**
- * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
+ * Interface XmlCategoryExportService
  */
-interface ArchiveHandlerInterface
+interface XmlCategoryExportService
 {
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Build the node with categories
      *
-     * @throws FileException
+     * @throws ServiceException
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
-
-    /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @return string The path to the file
-     * @throws FileException
-     */
-    public function compressFile(string $file): string;
+    public function export(DOMDocument $document): DOMElement;
 }

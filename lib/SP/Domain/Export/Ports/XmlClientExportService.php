@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,35 +24,20 @@
 
 namespace SP\Domain\Export\Ports;
 
+use DOMDocument;
+use DOMElement;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\CheckException;
-use SP\Infrastructure\File\FileException;
 
 /**
- * Clase XmlExport para realizar la exportación de las cuentas de sysPass a formato XML
- *
- * @package SP
+ * Interface XmlClientExportService
  */
-interface XmlExportServiceInterface
+interface XmlClientExportService
 {
     /**
-     * Realiza la exportación de las cuentas a XML
-     *
-     * @param  string  $exportPath
-     * @param  string|null  $pass  La clave de exportación
+     * Build the node with clients
      *
      * @throws ServiceException
-     * @throws FileException
+     * @throws ServiceException
      */
-    public function doExport(string $exportPath, ?string $pass = null): void;
-
-    /**
-     * @throws CheckException
-     * @throws FileException
-     */
-    public function createArchive(): void;
-
-    public function getExportFile(): string;
-
-    public function isEncrypted(): bool;
+    public function export(DOMDocument $document): DOMElement;
 }

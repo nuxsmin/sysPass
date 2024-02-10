@@ -46,7 +46,7 @@ use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Services\BackupFileHelper;
-use SP\Domain\Export\Services\XmlExportService;
+use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
@@ -479,7 +479,7 @@ final class IndexController extends ControllerBase
             )
         );
         $exportFile = new FileHandler(
-            XmlExportService::getExportFilename(
+            XmlExport::buildFilename(
                 BACKUP_PATH,
                 $this->configData->getExportHash() ?: '',
                 true

@@ -22,28 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
-
+namespace SP\Domain\Export\Services;
 
 /**
- * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
+ * Class XmlUtil
  */
-interface ArchiveHandlerInterface
+final class XmlUtil
 {
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Escapar carácteres no válidos en XML
      *
-     * @throws FileException
+     * @param $data string Los datos a escapar
+     *
+     * @return string
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
+    public static function escapeChars(string $data): string
+    {
+        $arrStrFrom = ['&', '<', '>', '"', '\''];
+        $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
 
-    /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @return string The path to the file
-     * @throws FileException
-     */
-    public function compressFile(string $file): string;
+        return str_replace($arrStrFrom, $arrStrTo, $data);
+    }
 }

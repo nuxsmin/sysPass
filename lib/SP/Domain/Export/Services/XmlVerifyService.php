@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -49,6 +49,8 @@ use SP\Util\VersionUtil;
  */
 final class XmlVerifyService extends Service implements XmlVerifyServiceInterface
 {
+    use XmlTrait;
+
     private const NODES           = ['Category', 'Client', 'Tag', 'Account'];
     private const XML_MIN_VERSION = [2, 1, 0, 0];
     private ?DOMDocument $xml      = null;
@@ -58,7 +60,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
     /**
      * @throws FileException
      * @throws ImportException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function verify(string $xmlFile): VerifyResult
     {
@@ -91,7 +93,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public static function validateSchema(DOMDocument $document): void
     {
@@ -109,7 +111,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public static function checkVersion(string $version): void
     {
@@ -142,7 +144,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
             );
         }
 
-        return (string)$hash === XmlExportService::generateHashFromNodes($document);
+        return (string)$hash === self::generateHashFromNodes($document);
     }
 
     /**
@@ -191,7 +193,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
     }
 
     /**
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function checkPassword(): void
     {
@@ -216,7 +218,7 @@ final class XmlVerifyService extends Service implements XmlVerifyServiceInterfac
     /**
      * Process the encrypted data and then build the unencrypted DOM
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     private function processEncrypted(): DOMDocument
     {

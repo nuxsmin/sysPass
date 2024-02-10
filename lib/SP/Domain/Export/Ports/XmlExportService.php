@@ -22,28 +22,34 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Export\Ports;
 
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\CheckException;
+use SP\Domain\File\Ports\DirectoryHandlerService;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
+ * Interface XmlExportServiceInterface
  */
-interface ArchiveHandlerInterface
+interface XmlExportService
 {
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Export the accounts and related objects into a XML file
      *
+     * @param DirectoryHandlerService $exportPath The path where to store the exported file
+     * @param string|null $password The password to encrypt the exported data
+     *
+     * @return string The exported file
+     * @throws ServiceException
      * @throws FileException
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
+    public function export(DirectoryHandlerService $exportPath, ?string $password = null): string;
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @return string The path to the file
+     * @return string The path to the archive file
+     * @throws CheckException
      * @throws FileException
      */
-    public function compressFile(string $file): string;
+    public function createArchiveFor(string $file): string;
 }

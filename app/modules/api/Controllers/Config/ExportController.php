@@ -35,7 +35,8 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Export\Ports\XmlExportServiceInterface;
+use SP\Domain\Export\Ports\XmlExportService;
+use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
@@ -44,17 +45,17 @@ use SP\Modules\Api\Controllers\Help\ConfigHelp;
  */
 final class ExportController extends ControllerBase
 {
-    private XmlExportServiceInterface $xmlExportService;
+    private XmlExportService $xmlExportService;
 
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application  $application,
-        Klein        $router,
-        ApiService   $apiService,
-        AclInterface $acl,
-        XmlExportServiceInterface $xmlExportService
+        Application      $application,
+        Klein            $router,
+        ApiService       $apiService,
+        AclInterface     $acl,
+        XmlExportService $xmlExportService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
@@ -84,7 +85,7 @@ final class ExportController extends ControllerBase
                 )
             );
 
-            $this->xmlExportService->doExport($path, $password);
+            $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
 
 
             $this->eventDispatcher->notify(
@@ -92,7 +93,7 @@ final class ExportController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
             );
 
-            $exportFiles = ['files' => ['xml' => $this->xmlExportService->getExportFile()]];
+            $exportFiles = ['files' => ['xml' => $file]];
 
             $this->returnResponse(ApiResponse::makeSuccess($exportFiles, null, __('Export process finished')));
         } catch (Exception $e) {

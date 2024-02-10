@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,9 +33,10 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Ports\XmlExportServiceInterface;
+use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
 use SP\Http\JsonMessage;
+use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -47,13 +48,13 @@ final class XmlExportController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private XmlExportServiceInterface $xmlExportService;
+    private XmlExportService $xmlExportService;
     private XmlVerifyServiceInterface $xmlVerifyService;
 
     public function __construct(
-        Application $application,
+        Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
-        XmlExportServiceInterface $xmlExportService,
+        XmlExportService       $xmlExportService,
         XmlVerifyServiceInterface $xmlVerifyService
     ) {
         parent::__construct($application, $simpleControllerHelper);
@@ -83,21 +84,21 @@ final class XmlExportController extends SimpleControllerBase
 
             SessionContext::close();
 
-            $this->xmlExportService->doExport(BACKUP_PATH, $exportPassword);
+            $file = $this->xmlExportService->export(new DirectoryHandler(BACKUP_PATH), $exportPassword);
 
             $this->eventDispatcher->notify(
                 'run.export.end',
                 new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
             );
 
-            if ($this->xmlExportService->isEncrypted()) {
+            if (!empty($exportPassword)) {
                 $verifyResult =
                     $this->xmlVerifyService->verifyEncrypted(
-                        $this->xmlExportService->getExportFile(),
+                        $file,
                         $exportPassword
                     );
             } else {
-                $verifyResult = $this->xmlVerifyService->verify($this->xmlExportService->getExportFile());
+                $verifyResult = $this->xmlVerifyService->verify($file);
             }
 
             $nodes = $verifyResult->getNodes();
@@ -118,7 +119,7 @@ final class XmlExportController extends SimpleControllerBase
             );
 
             // Create the XML archive after verifying the export integrity
-            $this->xmlExportService->createArchive();
+            $this->xmlExportService->createArchiveFor($file);
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Export process finished'));
         } catch (Exception $e) {

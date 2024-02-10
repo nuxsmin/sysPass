@@ -22,28 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Export\Services;
 
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
 
 /**
- * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
+ * Trait XmlTrait
  */
-interface ArchiveHandlerInterface
+trait XmlTrait
 {
-    /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @throws FileException
-     */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
-
-    /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @return string The path to the file
-     * @throws FileException
-     */
-    public function compressFile(string $file): string;
+    private static function generateHashFromNodes(DOMDocument $document): string
+    {
+        return sha1(
+            array_reduce(
+                (new DOMXPath($document))->query('/Root/*[not(self::Meta)]'),
+                static fn(string $carry, DOMNode $node) => $carry . $document->saveXML($node)
+            )
+        );
+    }
 }
