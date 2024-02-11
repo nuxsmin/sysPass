@@ -24,28 +24,24 @@
 
 namespace SP\Domain\Export\Services;
 
-use DOMDocument;
 use DOMElement;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Ports\XmlCategoryExportService;
 
 use function SP\__u;
 
 /**
  * Class XmlCategoryExport
  */
-final class XmlCategoryExport extends Service implements XmlCategoryExportService
+final class XmlCategoryExport extends XmlExportEntityBase
 {
     public function __construct(
         Application                      $application,
-        private readonly CategoryService $categoryService,
-
+        private readonly CategoryService $categoryService
     ) {
         parent::__construct($application);
     }
@@ -55,7 +51,7 @@ final class XmlCategoryExport extends Service implements XmlCategoryExportServic
      *
      * @throws ServiceException
      */
-    public function export(DOMDocument $document): DOMElement
+    public function export(): DOMElement
     {
         try {
             $this->eventDispatcher->notify(
@@ -65,7 +61,7 @@ final class XmlCategoryExport extends Service implements XmlCategoryExportServic
 
             $categories = $this->categoryService->getAll();
 
-            $nodeCategories = $document->createElement('Categories');
+            $nodeCategories = $this->document->createElement('Categories');
 
             if ($nodeCategories === false) {
                 throw ServiceException::error(__u('Unable to create node'));
@@ -76,17 +72,20 @@ final class XmlCategoryExport extends Service implements XmlCategoryExportServic
             }
 
             foreach ($categories as $category) {
-                $nodeCategory = $document->createElement('Category');
+                $nodeCategory = $this->document->createElement('Category');
                 $nodeCategories->appendChild($nodeCategory);
 
                 $nodeCategory->setAttribute('id', $category->getId());
                 $nodeCategory->appendChild(
-                    $document->createElement('name', $document->createTextNode($category->getName())->nodeValue)
+                    $this->document->createElement(
+                        'name',
+                        $this->document->createTextNode($category->getName())->nodeValue
+                    )
                 );
                 $nodeCategory->appendChild(
-                    $document->createElement(
+                    $this->document->createElement(
                         'description',
-                        $document->createTextNode($category->getDescription())->nodeValue
+                        $this->document->createTextNode($category->getDescription())->nodeValue
                     )
                 );
             }

@@ -25,7 +25,6 @@
 namespace SPT\Domain\Export\Services;
 
 use DOMDocument;
-use DOMNodeList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -42,6 +41,7 @@ use SPT\UnitaryTestCase;
  */
 class XmlClientExportTest extends UnitaryTestCase
 {
+    use XmlTrait;
 
     private ClientService|MockObject $clientService;
     private XmlClientExport          $xmlClientExport;
@@ -61,7 +61,7 @@ class XmlClientExportTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn([$client]);
 
-        $out = $this->xmlClientExport->export($document);
+        $out = $this->xmlClientExport->export();
 
         $this->assertEquals('Clients', $out->nodeName);
         $this->assertEquals('Client', $out->firstChild->nodeName);
@@ -74,17 +74,6 @@ class XmlClientExportTest extends UnitaryTestCase
         ];
 
         $this->checkNodes($out->firstChild->childNodes, $nodes);
-    }
-
-    private function checkNodes(DOMNodeList $nodeList, array $nodes): void
-    {
-        $names = array_keys($nodes);
-        $values = array_values($nodes);
-
-        foreach ($names as $key => $nodeName) {
-            $this->assertEquals($nodeName, $nodeList->item($key)->nodeName);
-            $this->assertEquals($values[$key], $nodeList->item($key)->nodeValue);
-        }
     }
 
     /**
@@ -100,7 +89,7 @@ class XmlClientExportTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn([]);
 
-        $out = $this->xmlClientExport->export($document);
+        $out = $this->xmlClientExport->export();
 
         $this->assertEquals('Clients', $out->nodeName);
         $this->assertEquals(0, $out->childNodes->count());
@@ -121,7 +110,7 @@ class XmlClientExportTest extends UnitaryTestCase
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('test');
-        $this->xmlClientExport->export($document);
+        $this->xmlClientExport->export();
     }
 
     protected function setUp(): void

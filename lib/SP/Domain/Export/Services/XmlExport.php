@@ -26,6 +26,8 @@ namespace SP\Domain\Export\Services;
 
 use DOMDocument;
 use DOMElement;
+use DOMException;
+use DOMNode;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
@@ -57,8 +59,7 @@ final class XmlExport extends Service implements XmlExportService
     use XmlTrait;
 
     private ConfigDataInterface $configData;
-    private DOMDocument         $xml;
-    private DOMElement          $root;
+    private DOMDocument $document;
 
     /**
      * @throws ServiceException
@@ -76,19 +77,20 @@ final class XmlExport extends Service implements XmlExportService
 
         $this->configData = $this->config->getConfigData();
 
-        $this->createRoot();
+        $this->createDocument();
     }
 
     /**
      * @throws ServiceException
      */
-    private function createRoot(): void
+    private function createDocument(): void
     {
         try {
-            $this->xml = new DOMDocument('1.0', 'UTF-8');
-            $this->xml->formatOutput = true;
-            $this->xml->preserveWhiteSpace = false;
-            $this->root = $this->xml->appendChild($this->xml->createElement('Root'));
+            $this->document = new DOMDocument('1.0', 'UTF-8');
+            $this->document->formatOutput = true;
+            $this->document->preserveWhiteSpace = false;
+
+            $this->document->appendChild($this->document->createElement('Root'));
         } catch (Exception $e) {
             throw ServiceException::error($e->getMessage(), __FUNCTION__);
         }
@@ -152,13 +154,13 @@ final class XmlExport extends Service implements XmlExportService
     {
         try {
             $this->appendMeta();
-            $this->appendNode($this->xmlCategoryExportService->export($this->xml), $password);
-            $this->appendNode($this->xmlClientExportService->export($this->xml), $password);
-            $this->appendNode($this->xmlTagExportService->export($this->xml), $password);
-            $this->appendNode($this->xmlAccountExportService->export($this->xml), $password);
+            $this->appendNode($this->xmlCategoryExportService->export(), $password);
+            $this->appendNode($this->xmlClientExportService->export(), $password);
+            $this->appendNode($this->xmlTagExportService->export(), $password);
+            $this->appendNode($this->xmlAccountExportService->export(), $password);
             $this->appendHash($password);
 
-            if (!$this->xml->save($file)) {
+            if (!$this->document->save($file)) {
                 throw ServiceException::error(__u('Error while creating the XML file'));
             }
         } catch (ServiceException $e) {
@@ -181,15 +183,22 @@ final class XmlExport extends Service implements XmlExportService
         try {
             $userData = $this->context->getUserData();
 
-            $nodeMeta = $this->xml->createElement('Meta');
+            $nodeMeta = $this->document->createElement('Meta');
+            $nodeMeta->append(
+                $this->document->createElement('Generator', 'sysPass'),
+                $this->document->createElement('Version', VersionUtil::getVersionStringNormalized()),
+                $this->document->createElement('Time', time()),
+                $this->document->createElement(
+                    'User',
+                    $this->document->createTextNode($userData->getLogin())->nodeValue
+                ),
+                $this->document->createElement(
+                    'Group',
+                    $this->document->createTextNode($userData->getUserGroupName())->nodeValue
+                )
+            );
 
-            $nodeMeta->appendChild($this->xml->createElement('Generator', 'sysPass'));
-            $nodeMeta->appendChild($this->xml->createElement('Version', VersionUtil::getVersionStringNormalized()));
-            $nodeMeta->appendChild($this->xml->createElement('Time', time()));
-            $nodeMeta->appendChild($this->xml->createElement('User', $userData->getLogin()));
-            $nodeMeta->appendChild($this->xml->createElement('Group', $userData->getUserGroupName()));
-
-            $this->root->appendChild($nodeMeta);
+            $this->document->documentElement->appendChild($nodeMeta);
         } catch (Exception $e) {
             throw ServiceException::error($e->getMessage(), __FUNCTION__);
         }
@@ -201,36 +210,48 @@ final class XmlExport extends Service implements XmlExportService
     private function appendNode(DOMElement $node, ?string $password = null): void
     {
         try {
+            $selfNode = $this->document->importNode($node, true);
+
             if (!empty($password)) {
                 $securedKey = $this->crypt->makeSecuredKey($password, false);
-                $encrypted = $this->crypt->encrypt($this->xml->saveXML($node), $securedKey->unlockKey($password));
+                $encrypted = $this->crypt->encrypt(
+                    $this->document->saveXML($selfNode),
+                    $securedKey->unlockKey($password)
+                );
 
-                $encryptedData = $this->xml->createElement('Data', $encrypted);
+                $encryptedData = $this->document->createElement('Data', $encrypted);
+                $encryptedData->setAttribute('key', $securedKey->saveToAsciiSafeString());
 
-                $encryptedDataKey = $this->xml->createAttribute('key');
-                $encryptedDataKey->value = $securedKey->saveToAsciiSafeString();
-
-                $encryptedData->appendChild($encryptedDataKey);
-
-                $encryptedNode = $this->root->getElementsByTagName('Encrypted');
-
-                if ($encryptedNode->length === 0) {
-                    $newNode = $this->xml->createElement('Encrypted');
-                    $newNode->setAttribute('hash', Hash::hashKey($password));
-                } else {
-                    $newNode = $encryptedNode->item(0);
-                }
+                $newNode = $this->getEncryptedNode($password);
 
                 $newNode->appendChild($encryptedData);
 
-                // Añadir el nodo encriptado
-                $this->root->appendChild($newNode);
+                $this->document->documentElement->appendChild($newNode);
             } else {
-                $this->root->appendChild($node);
+                $this->document->documentElement->appendChild($selfNode);
             }
         } catch (Exception $e) {
             throw ServiceException::error($e->getMessage(), __FUNCTION__);
         }
+    }
+
+    /**
+     * @param string $password
+     * @return DOMElement|DOMNode|false|null
+     * @throws DOMException
+     */
+    private function getEncryptedNode(string $password): DOMElement|null|false|DOMNode
+    {
+        $encryptedNode = $this->document->documentElement->getElementsByTagName('Encrypted');
+
+        if ($encryptedNode->length === 0) {
+            $node = $this->document->createElement('Encrypted');
+            $node->setAttribute('hash', Hash::hashKey($password));
+
+            return $node;
+        }
+
+        return $encryptedNode->item(0);
     }
 
     /**
@@ -239,30 +260,19 @@ final class XmlExport extends Service implements XmlExportService
     private function appendHash(?string $password = null): void
     {
         try {
-            $hash = self::generateHashFromNodes($this->xml);
-
-            $hashNode = $this->xml->createElement('Hash', $hash);
-            $hashNode->appendChild($this->xml->createAttribute('sign'));
-
+            $hash = self::generateHashFromNodes($this->document);
             $key = $password ?: sha1($this->configData->getPasswordSalt());
 
+            $hashNode = $this->document->createElement('Hash', $hash);
             $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));
 
-            $this->root
+            $this->document
+                ->documentElement
                 ->getElementsByTagName('Meta')
                 ->item(0)
                 ->appendChild($hashNode);
         } catch (Exception $e) {
             throw ServiceException::error($e->getMessage(), __FUNCTION__);
         }
-    }
-
-    /**
-     * @throws FileException
-     */
-    public function createArchiveFor(string $file): string
-    {
-        $archive = new ArchiveHandler($file, $this->extensionChecker);
-        return $archive->compressFile($file);
     }
 }

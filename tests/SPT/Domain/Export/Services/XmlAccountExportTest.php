@@ -25,7 +25,6 @@
 namespace SPT\Domain\Export\Services;
 
 use DOMDocument;
-use DOMNodeList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -44,6 +43,7 @@ use SPT\UnitaryTestCase;
  */
 class XmlAccountExportTest extends UnitaryTestCase
 {
+    use XmlTrait;
 
     private AccountService|MockObject      $accountService;
     private AccountToTagService|MockObject $accountToTagService;
@@ -71,7 +71,7 @@ class XmlAccountExportTest extends UnitaryTestCase
             ->with($account->getId())
             ->willReturn([$tag]);
 
-        $out = $this->xmlAccountExport->export($document);
+        $out = $this->xmlAccountExport->export();
 
         $this->assertEquals('Accounts', $out->nodeName);
         $this->assertEquals('Account', $out->firstChild->nodeName);
@@ -101,17 +101,6 @@ class XmlAccountExportTest extends UnitaryTestCase
         );
     }
 
-    private function checkNodes(DOMNodeList $nodeList, array $nodes): void
-    {
-        $names = array_keys($nodes);
-        $values = array_values($nodes);
-
-        foreach ($names as $key => $nodeName) {
-            $this->assertEquals($nodeName, $nodeList->item($key)->nodeName);
-            $this->assertEquals($values[$key], $nodeList->item($key)->nodeValue);
-        }
-    }
-
     /**
      * @throws Exception
      * @throws ServiceException
@@ -129,7 +118,7 @@ class XmlAccountExportTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('getTagsByAccountId');
 
-        $out = $this->xmlAccountExport->export($document);
+        $out = $this->xmlAccountExport->export();
 
         $this->assertEquals('Accounts', $out->nodeName);
         $this->assertEquals(0, $out->childNodes->count());
@@ -154,7 +143,7 @@ class XmlAccountExportTest extends UnitaryTestCase
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('test');
-        $this->xmlAccountExport->export($document);
+        $this->xmlAccountExport->export();
     }
 
     protected function setUp(): void

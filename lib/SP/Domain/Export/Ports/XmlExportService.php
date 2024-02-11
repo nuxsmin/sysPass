@@ -25,12 +25,11 @@
 namespace SP\Domain\Export\Ports;
 
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Infrastructure\File\FileException;
 
 /**
- * Interface XmlExportServiceInterface
+ * Interface XmlExportService
  */
 interface XmlExportService
 {
@@ -45,11 +44,4 @@ interface XmlExportService
      * @throws FileException
      */
     public function export(DirectoryHandlerService $exportPath, ?string $password = null): string;
-
-    /**
-     * @return string The path to the archive file
-     * @throws CheckException
-     * @throws FileException
-     */
-    public function createArchiveFor(string $file): string;
 }

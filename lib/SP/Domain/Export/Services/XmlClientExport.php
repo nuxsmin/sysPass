@@ -24,28 +24,24 @@
 
 namespace SP\Domain\Export\Services;
 
-use DOMDocument;
 use DOMElement;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Client\Ports\ClientService;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Ports\XmlClientExportService;
 
 use function SP\__u;
 
 /**
  * Class XmlClientExport
  */
-final class XmlClientExport extends Service implements XmlClientExportService
+final class XmlClientExport extends XmlExportEntityBase
 {
     public function __construct(
         Application                    $application,
-        private readonly ClientService $clientService,
-
+        private readonly ClientService $clientService
     ) {
         parent::__construct($application);
     }
@@ -56,7 +52,7 @@ final class XmlClientExport extends Service implements XmlClientExportService
      * @throws ServiceException
      * @throws ServiceException
      */
-    public function export(DOMDocument $document): DOMElement
+    public function export(): DOMElement
     {
         try {
             $this->eventDispatcher->notify(
@@ -66,7 +62,7 @@ final class XmlClientExport extends Service implements XmlClientExportService
 
             $clients = $this->clientService->getAll();
 
-            $nodeClients = $document->createElement('Clients');
+            $nodeClients = $this->document->createElement('Clients');
 
             if ($nodeClients === false) {
                 throw ServiceException::error(__u('Unable to create node'));
@@ -77,17 +73,20 @@ final class XmlClientExport extends Service implements XmlClientExportService
             }
 
             foreach ($clients as $client) {
-                $nodeClient = $document->createElement('Client');
+                $nodeClient = $this->document->createElement('Client');
                 $nodeClients->appendChild($nodeClient);
 
                 $nodeClient->setAttribute('id', $client->getId());
                 $nodeClient->appendChild(
-                    $document->createElement('name', $document->createTextNode($client->getName())->nodeValue)
+                    $this->document->createElement(
+                        'name',
+                        $this->document->createTextNode($client->getName())->nodeValue
+                    )
                 );
                 $nodeClient->appendChild(
-                    $document->createElement(
+                    $this->document->createElement(
                         'description',
-                        $document->createTextNode($client->getDescription())->nodeValue
+                        $this->document->createTextNode($client->getDescription())->nodeValue
                     )
                 );
             }

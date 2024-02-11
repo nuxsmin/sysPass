@@ -25,7 +25,6 @@
 namespace SPT\Domain\Export\Services;
 
 use DOMDocument;
-use DOMNodeList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -42,6 +41,7 @@ use SPT\UnitaryTestCase;
  */
 class XmlTagExportTest extends UnitaryTestCase
 {
+    use XmlTrait;
 
     private TagServiceInterface|MockObject $tagService;
     private XmlTagExport                   $xmlTagExport;
@@ -61,7 +61,7 @@ class XmlTagExportTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn([$tag]);
 
-        $out = $this->xmlTagExport->export($document);
+        $out = $this->xmlTagExport->export();
 
         $this->assertEquals('Tags', $out->nodeName);
         $this->assertEquals('Tag', $out->firstChild->nodeName);
@@ -71,17 +71,6 @@ class XmlTagExportTest extends UnitaryTestCase
         $nodes = ['name' => $tag->getName()];
 
         $this->checkNodes($out->firstChild->childNodes, $nodes);
-    }
-
-    private function checkNodes(DOMNodeList $nodeList, array $nodes): void
-    {
-        $names = array_keys($nodes);
-        $values = array_values($nodes);
-
-        foreach ($names as $key => $nodeName) {
-            $this->assertEquals($nodeName, $nodeList->item($key)->nodeName);
-            $this->assertEquals($values[$key], $nodeList->item($key)->nodeValue);
-        }
     }
 
     /**
@@ -97,7 +86,7 @@ class XmlTagExportTest extends UnitaryTestCase
             ->method('getAll')
             ->willReturn([]);
 
-        $out = $this->xmlTagExport->export($document);
+        $out = $this->xmlTagExport->export();
 
         $this->assertEquals('Tags', $out->nodeName);
         $this->assertEquals(0, $out->childNodes->count());
@@ -118,7 +107,7 @@ class XmlTagExportTest extends UnitaryTestCase
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('test');
-        $this->xmlTagExport->export($document);
+        $this->xmlTagExport->export();
     }
 
     protected function setUp(): void

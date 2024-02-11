@@ -24,20 +24,9 @@
 
 namespace SP\Domain\Export\Ports;
 
-use DOMDocument;
-use DOMElement;
-use SP\Domain\Common\Services\ServiceException;
-
 /**
  * Interface XmlClientExportService
  */
-interface XmlClientExportService
+interface XmlClientExportService extends XmlExportEntityService
 {
-    /**
-     * Build the node with clients
-     *
-     * @throws ServiceException
-     * @throws ServiceException
-     */
-    public function export(DOMDocument $document): DOMElement;
 }

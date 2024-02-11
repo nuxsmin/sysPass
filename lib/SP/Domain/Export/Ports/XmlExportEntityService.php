@@ -24,9 +24,19 @@
 
 namespace SP\Domain\Export\Ports;
 
+use DOMElement;
+use SP\Domain\Common\Services\ServiceException;
+
 /**
- * Interface XmlTagExportService
+ * Interface XmlExportEntityService
  */
-interface XmlTagExportService extends XmlExportEntityService
+interface XmlExportEntityService
 {
+    /**
+     * Build the node with entities
+     *
+     * @throws ServiceException
+     * @throws ServiceException
+     */
+    public function export(): DOMElement;
 }

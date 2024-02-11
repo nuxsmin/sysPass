@@ -36,6 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
 use SP\Http\JsonMessage;
+use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -119,7 +120,8 @@ final class XmlExportController extends SimpleControllerBase
             );
 
             // Create the XML archive after verifying the export integrity
-            $this->xmlExportService->createArchiveFor($file);
+            $archive = new ArchiveHandler($file, $this->extensionChecker);
+            $archive->compressFile($file);
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Export process finished'));
         } catch (Exception $e) {

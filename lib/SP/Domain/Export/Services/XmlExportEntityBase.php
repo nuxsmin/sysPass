@@ -22,11 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
+namespace SP\Domain\Export\Services;
+
+use DOMDocument;
+use SP\Core\Application;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Export\Ports\XmlExportEntityService;
 
 /**
- * Interface XmlTagExportService
+ * Class XmlExportEntityBase
  */
-interface XmlTagExportService extends XmlExportEntityService
+abstract class XmlExportEntityBase extends Service implements XmlExportEntityService
 {
+    protected readonly DOMDocument $document;
+
+    public function __construct(
+        Application $application
+    ) {
+        parent::__construct($application);
+
+        $this->document = new DOMDocument('1.0', 'UTF-8');
+    }
 }

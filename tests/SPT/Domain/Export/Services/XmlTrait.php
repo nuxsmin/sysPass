@@ -22,11 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
+namespace SPT\Domain\Export\Services;
+
+use DOMNodeList;
 
 /**
- * Interface XmlTagExportService
+ * Trait XmlTrait
+ *
+ * @method assertEquals(mixed $expected, mixed $current)
  */
-interface XmlTagExportService extends XmlExportEntityService
+trait XmlTrait
 {
+    private function checkNodes(DOMNodeList $nodeList, array $nodes): void
+    {
+        $names = array_keys($nodes);
+        $values = array_values($nodes);
+
+        foreach ($names as $key => $nodeName) {
+            $this->assertEquals($nodeName, $nodeList->item($key)->nodeName);
+
+            if (is_callable($values[$key])) {
+                $values[$key]($nodeList->item($key)->nodeValue);
+            } else {
+                $this->assertEquals($values[$key], $nodeList->item($key)->nodeValue);
+            }
+        }
+    }
 }

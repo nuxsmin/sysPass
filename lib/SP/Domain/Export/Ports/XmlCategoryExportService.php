@@ -24,19 +24,9 @@
 
 namespace SP\Domain\Export\Ports;
 
-use DOMDocument;
-use DOMElement;
-use SP\Domain\Common\Services\ServiceException;
-
 /**
  * Interface XmlCategoryExportService
  */
-interface XmlCategoryExportService
+interface XmlCategoryExportService extends XmlExportEntityService
 {
-    /**
-     * Build the node with categories
-     *
-     * @throws ServiceException
-     */
-    public function export(DOMDocument $document): DOMElement;
 }

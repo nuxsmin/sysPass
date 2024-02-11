@@ -24,15 +24,12 @@
 
 namespace SP\Domain\Export\Services;
 
-use DOMDocument;
 use DOMElement;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 
 use function SP\__u;
@@ -40,12 +37,11 @@ use function SP\__u;
 /**
  * Class XmlTagExport
  */
-final class XmlTagExport extends Service implements XmlTagExportService
+final class XmlTagExport extends XmlExportEntityBase
 {
     public function __construct(
         Application                          $application,
-        private readonly TagServiceInterface $tagService,
-
+        private readonly TagServiceInterface $tagService
     ) {
         parent::__construct($application);
     }
@@ -55,7 +51,7 @@ final class XmlTagExport extends Service implements XmlTagExportService
      *
      * @throws ServiceException
      */
-    public function export(DOMDocument $document): DOMElement
+    public function export(): DOMElement
     {
         try {
             $this->eventDispatcher->notify(
@@ -65,7 +61,7 @@ final class XmlTagExport extends Service implements XmlTagExportService
 
             $tags = $this->tagService->getAll();
 
-            $nodeTags = $document->createElement('Tags');
+            $nodeTags = $this->document->createElement('Tags');
 
             if ($nodeTags === false) {
                 throw ServiceException::error(__u('Unable to create node'));
@@ -76,12 +72,12 @@ final class XmlTagExport extends Service implements XmlTagExportService
             }
 
             foreach ($tags as $tag) {
-                $nodeTag = $document->createElement('Tag');
+                $nodeTag = $this->document->createElement('Tag');
                 $nodeTags->appendChild($nodeTag);
 
                 $nodeTag->setAttribute('id', $tag->getId());
                 $nodeTag->appendChild(
-                    $document->createElement('name', $document->createTextNode($tag->getName())->nodeValue)
+                    $this->document->createElement('name', $this->document->createTextNode($tag->getName())->nodeValue)
                 );
             }
 

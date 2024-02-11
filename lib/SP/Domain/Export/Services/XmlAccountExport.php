@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Export\Services;
 
-use DOMDocument;
 use DOMElement;
 use Exception;
 use SP\Core\Application;
@@ -32,22 +31,20 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Export\Ports\XmlAccountExportService;
 
 use function SP\__u;
 
 /**
  * Class XmlAccountExport
  */
-final class XmlAccountExport extends Service implements XmlAccountExportService
+final class XmlAccountExport extends XmlExportEntityBase
 {
+
     public function __construct(
         Application                          $application,
         private readonly AccountService      $accountService,
-        private readonly AccountToTagService $accountToTagService,
-
+        private readonly AccountToTagService $accountToTagService
     ) {
         parent::__construct($application);
     }
@@ -57,7 +54,7 @@ final class XmlAccountExport extends Service implements XmlAccountExportService
      *
      * @throws ServiceException
      */
-    public function export(DOMDocument $document): DOMElement
+    public function export(): DOMElement
     {
         try {
             $this->eventDispatcher->notify(
@@ -68,7 +65,7 @@ final class XmlAccountExport extends Service implements XmlAccountExportService
             $accounts = $this->accountService->getAllBasic();
 
             // Crear el nodo de cuentas
-            $nodeAccounts = $document->createElement('Accounts');
+            $nodeAccounts = $this->document->createElement('Accounts');
 
             if ($nodeAccounts === false) {
                 throw ServiceException::error(__u('Unable to create node'));
@@ -79,37 +76,45 @@ final class XmlAccountExport extends Service implements XmlAccountExportService
             }
 
             foreach ($accounts as $account) {
-                $accountName = $document->createElement(
+                $accountName = $this->document->createElement(
                     'name',
-                    $document->createTextNode($account->getName())->nodeValue
+                    $this->document->createTextNode($account->getName())->nodeValue
                 );
-                $accountCustomerId = $document->createElement('clientId', $account->getClientId());
-                $accountCategoryId = $document->createElement('categoryId', $account->getCategoryId());
-                $accountLogin = $document->createElement(
+                $accountCustomerId = $this->document->createElement('clientId', $account->getClientId());
+                $accountCategoryId = $this->document->createElement('categoryId', $account->getCategoryId());
+                $accountLogin = $this->document->createElement(
                     'login',
-                    $document->createTextNode($account->getLogin())->nodeValue
+                    $this->document->createTextNode($account->getLogin())->nodeValue
                 );
-                $accountUrl = $document->createElement('url', $document->createTextNode($account->getUrl())->nodeValue);
-                $accountNotes = $document->createElement(
+                $accountUrl = $this->document->createElement(
+                    'url',
+                    $this->document->createTextNode(
+                        $account->getUrl()
+                    )->nodeValue
+                );
+                $accountNotes = $this->document->createElement(
                     'notes',
-                    $document->createTextNode($account->getNotes())->nodeValue
+                    $this->document->createTextNode($account->getNotes())->nodeValue
                 );
-                $accountPass = $document->createElement(
+                $accountPass = $this->document->createElement(
                     'pass',
-                    $document->createTextNode($account->getPass())->nodeValue
+                    $this->document->createTextNode($account->getPass())->nodeValue
                 );
-                $accountIV = $document->createElement('key', $document->createTextNode($account->getKey())->nodeValue);
-                $tags = $document->createElement('tags');
+                $accountIV = $this->document->createElement(
+                    'key',
+                    $this->document->createTextNode($account->getKey())->nodeValue
+                );
+                $tags = $this->document->createElement('tags');
 
                 foreach ($this->accountToTagService->getTagsByAccountId($account->getId()) as $itemData) {
-                    $tag = $document->createElement('tag');
+                    $tag = $this->document->createElement('tag');
                     $tags->appendChild($tag);
 
                     $tag->setAttribute('id', $itemData->getId());
                 }
 
                 // Crear el nodo de cuenta
-                $nodeAccount = $document->createElement('Account');
+                $nodeAccount = $this->document->createElement('Account');
                 $nodeAccount->setAttribute('id', $account->getId());
                 $nodeAccount->appendChild($accountName);
                 $nodeAccount->appendChild($accountCustomerId);
