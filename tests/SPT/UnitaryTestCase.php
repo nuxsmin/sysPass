@@ -45,10 +45,10 @@ abstract class UnitaryTestCase extends TestCase
 {
     use PHPUnitHelper;
 
-    protected static Generator  $faker;
-    protected ConfigFileService $config;
-    protected Application       $application;
-    protected ContextInterface $context;
+    protected static Generator           $faker;
+    protected readonly ConfigFileService $config;
+    protected readonly Application       $application;
+    protected readonly ContextInterface  $context;
 
     public static function setUpBeforeClass(): void
     {
@@ -92,15 +92,23 @@ abstract class UnitaryTestCase extends TestCase
         $this->context->setUserData($userLogin);
         $this->context->setUserProfile(new ProfileData());
 
+        return new Application(
+            $this->getConfig(),
+            $this->createStub(EventDispatcherInterface::class),
+            $this->context
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getConfig(): ConfigFileService
+    {
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 
         $config = $this->createStub(ConfigFileService::class);
         $config->method('getConfigData')->willReturn($configData);
 
-        return new Application(
-            $config,
-            $this->createStub(EventDispatcherInterface::class),
-            $this->context
-        );
+        return $config;
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,19 +36,12 @@ use SP\Infrastructure\File\FileException;
  *
  * @package SP\Domain\Export\Services
  */
-interface XmlVerifyServiceInterface
+interface XmlVerifyService
 {
     /**
      * @throws FileException
      * @throws ImportException
      * @throws ServiceException
      */
-    public function verify(string $xmlFile): VerifyResult;
-
-    /**
-     * @throws FileException
-     * @throws ImportException
-     * @throws \SP\Domain\Common\Services\ServiceException
-     */
-    public function verifyEncrypted(string $xmlFile, string $password): VerifyResult;
+    public function verify(string $xmlFile, ?string $password = null): VerifyResult;
 }

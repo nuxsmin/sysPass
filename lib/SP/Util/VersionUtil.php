@@ -45,7 +45,7 @@ final class VersionUtil
      * Compare versions
      *
      * @param string $currentVersion
-     * @param array|string $upgradeableVersion
+     * @param array|string $upgradeableVersion A list of upgradeable versions
      *
      * @return bool True if $currentVersion is lower than $upgradeableVersion
      */

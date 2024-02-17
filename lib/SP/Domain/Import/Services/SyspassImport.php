@@ -38,7 +38,7 @@ use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Services\XmlVerifyService;
+use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Tag\Models\Tag;
 use SP\Util\VersionUtil;
 
@@ -201,7 +201,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     {
         $key = $this->importParams->getImportPwd() ?: sha1($this->configData->getPasswordSalt());
 
-        if (!XmlVerifyService::checkXmlHash($this->xmlDOM, $key)) {
+        if (!XmlVerify::checkXmlHash($this->xmlDOM, $key)) {
             $this->eventDispatcher->notify(
                 'run.import.syspass.process.verify',
                 new Event(

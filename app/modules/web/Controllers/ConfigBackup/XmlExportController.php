@@ -34,7 +34,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportService;
-use SP\Domain\Export\Ports\XmlVerifyServiceInterface;
+use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Http\JsonMessage;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\DirectoryHandler;
@@ -50,13 +50,13 @@ final class XmlExportController extends SimpleControllerBase
     use JsonTrait;
 
     private XmlExportService $xmlExportService;
-    private XmlVerifyServiceInterface $xmlVerifyService;
+    private XmlVerifyService $xmlVerifyService;
 
     public function __construct(
         Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
         XmlExportService       $xmlExportService,
-        XmlVerifyServiceInterface $xmlVerifyService
+        XmlVerifyService $xmlVerifyService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -94,10 +94,7 @@ final class XmlExportController extends SimpleControllerBase
 
             if (!empty($exportPassword)) {
                 $verifyResult =
-                    $this->xmlVerifyService->verifyEncrypted(
-                        $file,
-                        $exportPassword
-                    );
+                    $this->xmlVerifyService->verify($file, $exportPassword);
             } else {
                 $verifyResult = $this->xmlVerifyService->verify($file);
             }

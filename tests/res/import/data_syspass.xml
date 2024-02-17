@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ sysPass
+  ~
+  ~ @author nuxsmin
+  ~ @link https://syspass.org
+  ~ @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+  ~
+  ~ This file is part of sysPass.
+  ~
+  ~ sysPass is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ sysPass is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <Root>
   <Meta>
     <Generator>sysPass</Generator>
@@ -6,7 +29,9 @@
     <Time>1531870108</Time>
     <User id="1">admin</User>
     <Group id="1">admin</Group>
-    <Hash sign="defedb24fb4aa485a09d998a5bdbda55e3d3998735b549e3c74feeb29d5cb0bb">e633ecaaa0a76d06ab220d8eaed0784138916ba5</Hash>
+      <Hash sign="3e65f34c33deb68d8735cfb6c6bb14380b52dddc96ead77a60c81f6a676c74a8">
+          da39a3ee5e6b4b0d3255bfef95601890afd80709
+      </Hash>
   </Meta>
   <Categories>
     <Category id="4">

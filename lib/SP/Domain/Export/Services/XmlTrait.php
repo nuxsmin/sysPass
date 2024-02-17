@@ -37,8 +37,9 @@ trait XmlTrait
     {
         return sha1(
             array_reduce(
-                (array)(new DOMXPath($document))->query('/Root/*[not(self::Meta)]'),
-                static fn(string $carry, DOMNode $node) => $carry . $document->saveXML($node)
+                iterator_to_array((new DOMXPath($document))->query('/Root/*[not(self::Meta)]')->getIterator()),
+                static fn(string $carry, DOMNode $node) => $carry . $document->saveXML($node),
+                ''
             )
         );
     }
