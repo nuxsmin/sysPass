@@ -22,14 +22,18 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Domain\Import\Ports;
 
 /**
- * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
- * según el tipo de archivo XML detectado.
- *
- * @package SP
+ * Class ImportParamsDto
  */
-interface XmlImportInterface extends Import
+interface ImportParams
 {
+    public function getPassword(): ?string;
+
+    public function getDefaultGroup(): int;
+
+    public function getMasterPassword(): ?string;
+
+    public function getDefaultUser(): int;
 }

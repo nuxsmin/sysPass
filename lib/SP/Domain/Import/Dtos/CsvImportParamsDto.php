@@ -22,14 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Domain\Import\Dtos;
 
 /**
- * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
- * según el tipo de archivo XML detectado.
- *
- * @package SP
+ * Class CsvImportParamsDto
  */
-interface XmlImportInterface extends Import
+class CsvImportParamsDto extends ImportParamsDto
 {
+    public function __construct(
+        int                     $defaultUser,
+        int                     $defaultGroup,
+        private readonly string $delimiter = ';'
+    ) {
+        parent::__construct($defaultUser, $defaultGroup);
+    }
+
+    public function getDelimiter(): string
+    {
+        return $this->delimiter;
+    }
 }

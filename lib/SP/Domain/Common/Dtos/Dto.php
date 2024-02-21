@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,7 +34,7 @@ abstract class Dto
     /**
      * Expose any property. This allows to get any property from dynamic calls.
      *
-     * @param  string  $property
+     * @param string $property
      *
      * @return mixed
      */
@@ -50,10 +50,10 @@ abstract class Dto
     /**
      * Set any property. This allows to set any property from dynamic calls.
      *
-     * @param  string  $property
-     * @param  mixed  $value
+     * @param string $property
+     * @param mixed $value
      *
-     * @return \SP\Domain\Common\Dtos\Dto|null Returns a new instance with the property set.
+     * @return Dto|null Returns a new instance with the property set.
      */
     public function set(string $property, mixed $value): static|null
     {

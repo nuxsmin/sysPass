@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,19 +24,20 @@
 
 namespace SP\Domain\Import\Services;
 
+use SP\Domain\Import\Ports\ImportParams;
+
 /**
  * Interface ImportInterface
  *
  * @package Import
  */
-interface ImportInterface
+interface Import
 {
     /**
-     * Iniciar la importación
-     *
-     * @return ImportInterface
+     * @param ImportParams $importParamsDto
+     * @return Import
      */
-    public function doImport(): ImportInterface;
+    public function doImport(ImportParams $importParamsDto): Import;
 
     /**
      * Devolver el contador de objetos importados

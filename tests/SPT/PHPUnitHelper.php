@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,8 +39,8 @@ use PHPUnit\Framework\Constraint\Constraint;
 trait PHPUnitHelper
 {
     /**
-     * @param  array  $firstCallArguments
-     * @param  array  ...$consecutiveCallsArguments
+     * @param array $firstCallArguments
+     * @param array ...$consecutiveCallsArguments
      *
      * @return iterable
      */
@@ -88,5 +88,20 @@ trait PHPUnitHelper
                 },
             );
         }
+    }
+
+    /**
+     * Return a Callback that implements a generator function
+     *
+     * @param array $values
+     * @return Callback
+     */
+    public static function withGenerator(array $values): Callback
+    {
+        return new Callback(function () use ($values) {
+            foreach ($values as $value) {
+                yield $value;
+            }
+        });
     }
 }

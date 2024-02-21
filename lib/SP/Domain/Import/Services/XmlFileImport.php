@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -41,12 +41,12 @@ final class XmlFileImport implements XmlFileImportInterface
     /**
      * XmlFileImport constructor.
      *
-     * @param FileImportInterface $fileImport
+     * @param FileImportService $fileImport
      *
      * @throws ImportException
      * @throws FileException
      */
-    public function __construct(FileImportInterface $fileImport)
+    public function __construct(FileImportService $fileImport)
     {
         $this->fileImport = $fileImport;
 

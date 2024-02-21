@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;

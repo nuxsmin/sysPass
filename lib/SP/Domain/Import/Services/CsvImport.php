@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,38 +24,139 @@
 
 namespace SP\Domain\Import\Services;
 
+use Exception;
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Import\Dtos\CsvImportParamsDto;
+use SP\Domain\Import\Ports\ImportParams;
 use SP\Infrastructure\File\FileException;
 
-defined('APP_ROOT') || die();
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
- * Class CsvImport para importar cuentas desde archivos CSV
- *
- * @package SP
+ * Class CsvImport
  */
-final class CsvImport extends CsvImportBase implements ImportInterface
+final class CsvImport extends ImportBase
 {
+    private const NUM_FIELDS = 7;
+    protected array $categories = [];
+    protected array $clients    = [];
+
+    public function __construct(
+        Application                        $application,
+        ImportHelper                       $importHelper,
+        CryptInterface                     $crypt,
+        private readonly FileImportService $fileImport
+    ) {
+        parent::__construct($application, $importHelper, $crypt);
+    }
+
     /**
-     * Iniciar la importación desde CSV
+     * Import the data from a CSV file
      *
-     * @return $this|ImportInterface
-     * @throws ImportException
+     * @param CsvImportParamsDto|ImportParams $importParamsDto
+     * @return Import
      * @throws FileException
+     * @throws ImportException
      */
-    public function doImport(): ImportInterface
+    public function doImport(CsvImportParamsDto|ImportParams $importParamsDto): Import
     {
         $this->eventDispatcher->notify(
             'run.import.csv',
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
+                EventMessage::factory()
+                            ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
             )
         );
 
-        $this->processAccounts();
+        $this->processAccounts($importParamsDto);
 
         return $this;
+    }
+
+    /**
+     * @throws ImportException
+     * @throws FileException
+     */
+    private function processAccounts(CsvImportParamsDto $importParamsDto): void
+    {
+        $line = 0;
+
+        foreach ($this->fileImport->readFileToArrayFromCsv($importParamsDto->getDelimiter()) as $fields) {
+            $line++;
+            $numfields = count($fields);
+
+            if ($numfields !== self::NUM_FIELDS) {
+                throw ImportException::error(
+                    sprintf(__('Wrong number of fields (%d)'), $numfields),
+                    sprintf(__('Please, check the CSV file format in line %s'), $line)
+                );
+            }
+
+            [
+                $accountName,
+                $clientName,
+                $categoryName,
+                $url,
+                $login,
+                $password,
+                $notes,
+            ] = $fields;
+
+            try {
+                if (empty($clientName) || empty($categoryName)) {
+                    throw ImportException::error('Either client or category name not set');
+                }
+
+                $clientId = $this->addClient(new Client(['name' => $clientName]));
+                $categoryId = $this->addCategory(new Category(['name' => $categoryName]));
+
+                $accountCreateDto = new AccountCreateDto(
+                    name:       $accountName,
+                    login:      $login,
+                    clientId:   $clientId,
+                    categoryId: $categoryId,
+                    pass:       $password,
+                    url:        $url,
+                    notes:      $notes
+                );
+
+                $this->addAccount($accountCreateDto, $importParamsDto);
+
+                $this->eventDispatcher->notify(
+                    'run.import.csv.process.account',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                                    ->addDetail(__u('Account imported'), $accountName)
+                                    ->addDetail(__u('Client'), $clientName)
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify(
+                    'exception',
+                    new Event(
+                        $e,
+                        EventMessage::factory()
+                                    ->addDetail(__u('Error while importing the account'), $accountName)
+                                    ->addDetail(__u('Error while processing line'), $line)
+                    )
+                );
+            }
+        }
+
+        if ($line === 0) {
+            throw ImportException::error(__('No lines read from the file'));
+        }
     }
 }

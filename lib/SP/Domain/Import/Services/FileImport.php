@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,21 +31,22 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die();
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Clase FileImport encargada el leer archivos para su importación
  *
  * @package SP
  */
-final class FileImport implements FileImportInterface
+final class FileImport implements FileImportService
 {
     private FileHandler $fileHandler;
 
     /**
      * FileImport constructor.
      *
-     * @param  FileHandlerInterface  $fileHandler  Datos del archivo a importar
+     * @param FileHandlerInterface $fileHandler Datos del archivo a importar
      */
     private function __construct(FileHandlerInterface $fileHandler)
     {
@@ -56,7 +57,7 @@ final class FileImport implements FileImportInterface
      * @throws FileException
      * @throws SPException
      */
-    public static function fromRequest(string $filename, RequestInterface $request): FileImportInterface
+    public static function fromRequest(string $filename, RequestInterface $request): FileImportService
     {
         return new self(self::checkFile($request->getFile($filename)));
     }
@@ -64,7 +65,7 @@ final class FileImport implements FileImportInterface
     /**
      * Leer los datos del archivo.
      *
-     * @param  array|null  $file  con los datos del archivo
+     * @param array|null $file con los datos del archivo
      *
      * @return FileHandlerInterface
      * @throws ImportException
@@ -114,7 +115,7 @@ final class FileImport implements FileImportInterface
         return $this->fileHandler->getFileType();
     }
 
-    public static function fromFilesystem(string $path): FileImportInterface
+    public static function fromFilesystem(string $path): FileImportService
     {
         return new self(new FileHandler($path));
     }
@@ -142,6 +143,24 @@ final class FileImport implements FileImportInterface
     protected function autodetectEOL(): void
     {
         ini_set('auto_detect_line_endings', true);
+    }
+
+    /**
+     * Read a CSV file
+     *
+     * @throws FileException
+     */
+    public function readFileToArrayFromCsv(string $delimiter): iterable
+    {
+        $this->autodetectEOL();
+
+        $handler = $this->fileHandler->open();
+
+        while (($fields = fgetcsv($handler, 0, $delimiter)) !== false) {
+            yield $fields;
+        }
+
+        $this->fileHandler->close();
     }
 
     /**

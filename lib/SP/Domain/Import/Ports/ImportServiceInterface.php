@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,7 @@
 namespace SP\Domain\Import\Ports;
 
 use Exception;
-use SP\Domain\Import\Services\FileImportInterface;
-use SP\Domain\Import\Services\ImportParams;
+use SP\Domain\Import\Services\FileImportService;
 
 /**
  * Esta clase es la encargada de importar cuentas.
@@ -39,5 +38,5 @@ interface ImportServiceInterface
      * @return int Returns the total number of imported items
      * @throws Exception
      */
-    public function doImport(ImportParams $importParams, FileImportInterface $fileImport): int;
+    public function doImport(ImportParams $importParams, FileImportService $fileImport): int;
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,11 +28,9 @@ use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
- * Clase FileImport encargada el leer archivos para su importación
- *
- * @package SP
+ * Interface FileImportService
  */
-interface FileImportInterface
+interface FileImportService
 {
     public function getFilePath(): string;
 
@@ -56,4 +54,11 @@ interface FileImportInterface
     public function readFileToString(): string;
 
     public function getFileHandler(): FileHandlerInterface;
+
+    /**
+     * Read a CSV file
+     *
+     * @throws FileException
+     */
+    public function readFileToArrayFromCsv(string $delimiter): iterable;
 }

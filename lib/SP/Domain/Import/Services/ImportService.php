@@ -30,6 +30,8 @@ use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportParams;
 use SP\Domain\Import\Ports\ImportServiceInterface;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\File\FileException;
@@ -51,9 +53,9 @@ final class ImportService extends Service implements ImportServiceInterface
         'text/xml',
     ];
 
-    private ?ImportParams          $importParams = null;
-    private ?FileImportInterface   $fileImport   = null;
-    private Application            $application;
+    private ?ImportParamsDto   $importParams = null;
+    private ?FileImportService $fileImport   = null;
+    private Application        $application;
     private ImportHelper      $importHelper;
     private ConfigService     $configService;
     private DatabaseInterface $database;
@@ -81,7 +83,7 @@ final class ImportService extends Service implements ImportServiceInterface
      * @return int Returns the total number of imported items
      * @throws Exception
      */
-    public function doImport(ImportParams $importParams, FileImportInterface $fileImport): int
+    public function doImport(ImportParams $importParams, FileImportService $fileImport): int
     {
         $this->importParams = $importParams;
         $this->fileImport = $fileImport;
@@ -96,7 +98,7 @@ final class ImportService extends Service implements ImportServiceInterface
      * @throws ImportException
      * @throws FileException
      */
-    protected function selectImportType(): ImportInterface
+    protected function selectImportType(): Import
     {
         $fileType = $this->fileImport->getFileType();
 

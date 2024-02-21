@@ -27,45 +27,36 @@ namespace SP\Domain\Import\Services;
 use DOMDocument;
 use DOMElement;
 use SP\Core\Application;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Ports\ImportParams;
 
 /**
  * Class XmlImportBase
  *
  * @package SP\Domain\Import\Services
  */
-abstract class XmlImportBase
+abstract class XmlImportBase extends ImportBase
 {
-    use ImportTrait;
-
-    protected XmlFileImportInterface $xmlFileImport;
-    protected DOMDocument            $xmlDOM;
-    protected EventDispatcher     $eventDispatcher;
-    protected ConfigService       $configService;
-    protected ConfigDataInterface $configData;
+    protected readonly XmlFileImportInterface $xmlFileImport;
+    protected readonly DOMDocument            $xmlDOM;
+    protected readonly ConfigDataInterface    $configData;
+    protected readonly ImportParams           $importParams;
 
     /**
      * ImportBase constructor.
      */
     public function __construct(
-        Application   $application,
-        ImportHelper  $importHelper,
-        ConfigService $configService,
+        Application    $application,
+        ImportHelper   $importHelper,
+        CryptInterface $crypt,
         XmlFileImportInterface $xmlFileImport,
-        ImportParams  $importParams
+        ImportParams   $importParams
     ) {
-        $this->eventDispatcher = $application->getEventDispatcher();
+        parent::__construct($application, $importHelper, $crypt);
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;
-        $this->accountService = $importHelper->getAccountService();
-        $this->categoryService = $importHelper->getCategoryService();
-        $this->clientService = $importHelper->getClientService();
-        $this->tagService = $importHelper->getTagService();
-        $this->configService = $configService;
-
         $this->configData = $application->getConfig()->getConfigData();
         $this->xmlDOM = $xmlFileImport->getXmlDOM();
     }
@@ -73,10 +64,10 @@ abstract class XmlImportBase
     /**
      * Obtener los datos de los nodos
      *
-     * @param  string  $nodeName  Nombre del nodo principal
-     * @param  string  $childNodeName  Nombre de los nodos hijos
-     * @param  callable  $callback  Método a ejecutar
-     * @param  bool  $required  Indica si el nodo es requerido
+     * @param string $nodeName Nombre del nodo principal
+     * @param string $childNodeName Nombre de los nodos hijos
+     * @param callable $callback Método a ejecutar
+     * @param bool $required Indica si el nodo es requerido
      *
      * @throws ImportException
      */
@@ -84,7 +75,7 @@ abstract class XmlImportBase
         string $nodeName,
         string $childNodeName,
         callable $callback,
-        bool $required = true
+        bool   $required = true
     ): void {
         $nodeList = $this->xmlDOM->getElementsByTagName($nodeName);
 

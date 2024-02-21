@@ -47,14 +47,14 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde sysPass
  */
-final class SyspassImport extends XmlImportBase implements ImportInterface
+final class SyspassImport extends XmlImportBase implements Import
 {
     /**
      * Iniciar la importación desde sysPass.
      *
      * @throws ImportException
      */
-    public function doImport(): ImportInterface
+    public function doImport(): Import
     {
         try {
             $this->eventDispatcher->notify(
@@ -62,9 +62,9 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                 new Event($this, EventMessage::factory()->addDescription(__u('sysPass XML Import')))
             );
 
-            if (!empty($this->importParams->getImportMasterPwd())) {
+            if (!empty($this->importParams->getMasterPassword())) {
                 $this->mPassValidHash = Hash::checkHashKey(
-                    $this->importParams->getImportMasterPwd(),
+                    $this->importParams->getMasterPassword(),
                     $this->configService->getByParam('masterPwd')
                 );
             }
@@ -72,7 +72,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             $this->version = $this->getXmlVersion();
 
             if ($this->detectEncrypted()) {
-                if ($this->importParams->getImportPwd() === '') {
+                if ($this->importParams->getPassword() === '') {
                     throw new ImportException(__u('Encryption password not set'), SPException::INFO);
                 }
 
@@ -135,7 +135,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             ->getAttribute('hash');
 
         if (!empty($hash)
-            && !Hash::checkHashKey($this->importParams->getImportPwd(), $hash)
+            && !Hash::checkHashKey($this->importParams->getPassword(), $hash)
         ) {
             throw new ImportException(__u('Wrong encryption password'));
         }
@@ -147,14 +147,14 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                     $xmlDecrypted = Crypt::decrypt(
                         base64_decode($node->nodeValue),
                         $node->getAttribute('key'),
-                        $this->importParams->getImportPwd()
+                        $this->importParams->getPassword()
                     );
                 } else {
                     if ($this->version >= 320) {
                         $xmlDecrypted = Crypt::decrypt(
                             $node->nodeValue,
                             $node->getAttribute('key'),
-                            $this->importParams->getImportPwd()
+                            $this->importParams->getPassword()
                         );
                     } else {
                         throw new ImportException(__u('The file was exported with an old sysPass version (<= 2.10).'));
@@ -199,7 +199,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
      */
     protected function checkIntegrity(): void
     {
-        $key = $this->importParams->getImportPwd() ?: sha1($this->configData->getPasswordSalt());
+        $key = $this->importParams->getPassword() ?: sha1($this->configData->getPasswordSalt());
 
         if (!XmlVerify::checkXmlHash($this->xmlDOM, $key)) {
             $this->eventDispatcher->notify(

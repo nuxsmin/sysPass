@@ -40,7 +40,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde KeePass
  */
-final class KeepassImport extends XmlImportBase implements ImportInterface
+final class KeepassImport extends XmlImportBase implements Import
 {
     private array $items = [];
 
@@ -49,7 +49,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
      *
      * @throws SPException
      */
-    public function doImport(): ImportInterface
+    public function doImport(): Import
     {
         $this->eventDispatcher->notify(
             'run.import.keepass',

@@ -27,6 +27,8 @@ namespace SP\Domain\Import\Services;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportParams;
 
 defined('APP_ROOT') || die();
 
@@ -38,9 +40,9 @@ defined('APP_ROOT') || die();
  */
 final class XmlImport implements XmlImportInterface
 {
-    private XmlFileImport          $xmlFileImport;
-    private ImportParams           $importParams;
-    private ImportHelper                          $importHelper;
+    private XmlFileImport   $xmlFileImport;
+    private ImportParamsDto $importParams;
+    private ImportHelper    $importHelper;
     private ConfigService $configService;
     private Application                           $application;
 
@@ -52,7 +54,7 @@ final class XmlImport implements XmlImportInterface
         ImportHelper                          $importHelper,
         ConfigService $configService,
         XmlFileImportInterface                $xmlFileImport,
-        ImportParams                          $importParams
+        ImportParams $importParams
     ) {
         $this->application = $application;
         $this->importHelper = $importHelper;
@@ -67,7 +69,7 @@ final class XmlImport implements XmlImportInterface
      * @throws ImportException
      * @throws SPException
      */
-    public function doImport(): ImportInterface
+    public function doImport(): Import
     {
         $format = $this->xmlFileImport->detectXMLFormat();
 
