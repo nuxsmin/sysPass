@@ -33,7 +33,9 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Import\Dtos\CsvImportParamsDto;
+use SP\Domain\Import\Ports\FileImportService;
 use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\ImportService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\__;
@@ -46,8 +48,6 @@ use function SP\processException;
 final class CsvImport extends ImportBase
 {
     private const NUM_FIELDS = 7;
-    protected array $categories = [];
-    protected array $clients    = [];
 
     public function __construct(
         Application                        $application,
@@ -61,12 +61,12 @@ final class CsvImport extends ImportBase
     /**
      * Import the data from a CSV file
      *
-     * @param CsvImportParamsDto|ImportParams $importParamsDto
-     * @return Import
+     * @param CsvImportParamsDto|ImportParams $importParams
+     * @return ImportService
      * @throws FileException
      * @throws ImportException
      */
-    public function doImport(CsvImportParamsDto|ImportParams $importParamsDto): Import
+    public function doImport(CsvImportParamsDto|ImportParams $importParams): ImportService
     {
         $this->eventDispatcher->notify(
             'run.import.csv',
@@ -77,7 +77,7 @@ final class CsvImport extends ImportBase
             )
         );
 
-        $this->processAccounts($importParamsDto);
+        $this->processAccounts($importParams);
 
         return $this;
     }

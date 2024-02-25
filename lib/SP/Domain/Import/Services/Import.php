@@ -1,4 +1,5 @@
 <?php
+
 /*
  * sysPass
  *
@@ -24,25 +25,90 @@
 
 namespace SP\Domain\Import\Services;
 
+use Exception;
+use SP\Core\Application;
+use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Import\Ports\FileImportService;
 use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\ImportService;
+use SP\Infrastructure\File\FileException;
+
+use function SP\__;
+use function SP\__u;
 
 /**
- * Interface ImportInterface
- *
- * @package Import
+ * Esta clase es la encargada de importar cuentas.
  */
-interface Import
+final class Import extends Service implements ImportService
 {
-    /**
-     * @param ImportParams $importParamsDto
-     * @return Import
-     */
-    public function doImport(ImportParams $importParamsDto): Import;
+    public const ALLOWED_MIME = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'text/plain',
+        'text/csv',
+        'text/x-csv',
+        'application/xml',
+        'text/xml',
+    ];
+
+    public function __construct(
+        private readonly Application       $application,
+        private readonly ImportHelper      $importHelper,
+        private readonly FileImportService $fileImport,
+        private readonly CryptInterface    $crypt,
+        private readonly Repository        $repository
+    ) {
+        parent::__construct($application);
+    }
+
 
     /**
-     * Devolver el contador de objetos importados
+     * Iniciar la importación de cuentas.
      *
-     * @return int
+     * @return ImportService Returns the total number of imported items
+     * @throws Exception
      */
-    public function getCounter(): int;
+    public function doImport(ImportParams $importParams): ImportService
+    {
+        set_time_limit(0);
+
+        return $this->repository->transactionAware(fn() => $this->factory()->doImport($importParams), $this);
+    }
+
+    /**
+     * @throws ImportException
+     * @throws FileException
+     */
+    protected function factory(): ImportService
+    {
+        $fileType = $this->fileImport->getFileType();
+
+        switch ($fileType) {
+            case 'text/plain':
+                return new CsvImport($this->application, $this->importHelper, $this->crypt, $this->fileImport);
+            case 'text/xml':
+            case 'application/xml':
+                return new XmlImport(
+                    $this->application,
+                    $this->importHelper,
+                    new XmlFile($this->fileImport->getFileHandler()),
+                    $this->crypt
+                );
+        }
+
+        throw ImportException::error(
+            sprintf(__('Mime type not supported ("%s")'), $fileType),
+            __u('Please, check the file format')
+        );
+    }
+
+    /**
+     * @throws ImportException
+     */
+    public function getCounter(): int
+    {
+        throw ImportException::info(__u('Not implemented'));
+    }
 }

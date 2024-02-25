@@ -27,13 +27,13 @@ namespace SP\Domain\User\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserGroupData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
@@ -82,7 +82,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserGroupData
+    public function getById(int $id): UserGroup
     {
         $result = $this->userGroupRepository->getById($id);
 
@@ -136,7 +136,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * @throws ServiceException
      */
-    public function create(UserGroupData $itemData): int
+    public function create(UserGroup $itemData): int
     {
         return $this->transactionAware(
             function () use ($itemData) {
@@ -157,7 +157,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * @throws ServiceException
      */
-    public function update(UserGroupData $itemData): void
+    public function update(UserGroup $itemData): void
     {
         $this->transactionAware(
             function () use ($itemData) {
@@ -176,7 +176,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * Get all items from the service's repository
      *
-     * @return UserGroupData[]
+     * @return UserGroup[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -192,7 +192,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): UserGroupData
+    public function getByName(string $name): UserGroup
     {
         $result = $this->userGroupRepository->getByName($name);
 

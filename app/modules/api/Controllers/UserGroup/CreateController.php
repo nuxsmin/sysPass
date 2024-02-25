@@ -28,10 +28,10 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\UserGroupData;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\User\Models\UserGroup;
 
 /**
  * Class CreateController
@@ -71,12 +71,12 @@ final class CreateController extends UserGroupBase
     }
 
     /**
-     * @return UserGroupData
+     * @return UserGroup
      * @throws ServiceException
      */
-    private function buildUserGroupData(): UserGroupData
+    private function buildUserGroupData(): UserGroup
     {
-        $userGroupData = new UserGroupData();
+        $userGroupData = new UserGroup();
         $userGroupData->setName($this->apiService->getParamString('name', true));
         $userGroupData->setDescription($this->apiService->getParamString('description'));
         $userGroupData->setUsers($this->apiService->getParamArray('usersId'));

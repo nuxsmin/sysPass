@@ -26,11 +26,13 @@ namespace SP\Domain\Import\Services;
 
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Import\Ports\FileImportService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
 
+use function SP\__;
 use function SP\__u;
 use function SP\logger;
 
@@ -41,16 +43,13 @@ use function SP\logger;
  */
 final class FileImport implements FileImportService
 {
-    private FileHandler $fileHandler;
-
     /**
      * FileImport constructor.
      *
      * @param FileHandlerInterface $fileHandler Datos del archivo a importar
      */
-    private function __construct(FileHandlerInterface $fileHandler)
+    private function __construct(private readonly FileHandlerInterface $fileHandler)
     {
-        $this->fileHandler = $fileHandler;
     }
 
     /**
@@ -74,9 +73,8 @@ final class FileImport implements FileImportService
     private static function checkFile(?array $file): FileHandlerInterface
     {
         if (!is_array($file)) {
-            throw new FileException(
+            throw FileException::error(
                 __u('File successfully uploaded'),
-                SPException::ERROR,
                 __u('Please check the web server user permissions')
             );
         }
@@ -85,10 +83,9 @@ final class FileImport implements FileImportService
             $fileHandler = new FileHandler($file['tmp_name']);
             $fileHandler->checkFileExists();
 
-            if (!in_array($fileHandler->getFileType(), ImportService::ALLOWED_MIME)) {
-                throw new ImportException(
+            if (!in_array($fileHandler->getFileType(), Import::ALLOWED_MIME)) {
+                throw ImportException::error(
                     __u('File type not allowed'),
-                    SPException::ERROR,
                     sprintf(__('MIME type: %s'), $fileHandler->getFileType())
                 );
             }
@@ -97,9 +94,8 @@ final class FileImport implements FileImportService
         } catch (FileException $e) {
             logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
 
-            throw new FileException(
+            throw FileException::error(
                 __u('Internal error while reading the file'),
-                SPException::ERROR,
                 __u('Please, check PHP configuration for upload files'),
                 $e->getCode(),
                 $e
@@ -113,11 +109,6 @@ final class FileImport implements FileImportService
     public function getFileType(): string
     {
         return $this->fileHandler->getFileType();
-    }
-
-    public static function fromFilesystem(string $path): FileImportService
-    {
-        return new self(new FileHandler($path));
     }
 
     public function getFilePath(): string

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,6 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 use Exception;
 use JsonException;
 use Klein\Klein;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -42,7 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Import\Ports\LdapImportServiceInterface;
+use SP\Domain\Import\Ports\LdapImportService;
 use SP\Domain\Import\Services\LdapImportParams;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -56,7 +55,7 @@ final class ImportController extends SimpleControllerBase
     use ConfigLdapTrait;
     use JsonTrait;
 
-    private LdapImportServiceInterface $ldapImportService;
+    private LdapImportService $ldapImportService;
 
     public function __construct(
         Application         $application,
@@ -65,7 +64,7 @@ final class ImportController extends SimpleControllerBase
         AclInterface        $acl,
         RequestInterface    $request,
         PhpExtensionChecker $extensionChecker,
-        LdapImportServiceInterface $ldapImportService
+        LdapImportService $ldapImportService
     ) {
         parent::__construct($application, $theme);
 

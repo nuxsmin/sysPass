@@ -33,6 +33,7 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -41,34 +42,37 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\__u;
 
 /**
  * Class ImportBase
  */
-abstract class ImportBase extends Service implements Import
+abstract class ImportBase extends Service implements ImportService
 {
+    protected const ITEM_CATEGORY         = 'category';
+    protected const ITEM_CLIENT           = 'client';
+    protected const ITEM_TAG              = 'tag';
+    protected const ITEM_MASTER_PASS_HASH = 'masterpasshash';
     protected int $version = 0;
-    /**
-     * @var bool Indica si el hash de la clave suministrada es igual a la actual
-     */
-    protected bool                         $mPassValidHash = false;
-    protected int                          $counter        = 0;
+    protected int $counter = 0;
     protected readonly AccountService      $accountService;
     protected readonly CategoryService     $categoryService;
     protected readonly ClientService       $clientService;
     protected readonly TagServiceInterface $tagService;
     protected readonly ConfigService       $configService;
     private array                          $items;
+    private array $cache;
 
     public function __construct(
-        Application                     $application,
-        ImportHelper                    $importHelper,
-        private readonly CryptInterface $crypt
+        Application                       $application,
+        ImportHelper                      $importHelper,
+        protected readonly CryptInterface $crypt
     ) {
         parent::__construct($application);
 
@@ -77,6 +81,7 @@ abstract class ImportBase extends Service implements Import
         $this->clientService = $importHelper->getClientService();
         $this->tagService = $importHelper->getTagService();
         $this->configService = $importHelper->getConfigService();
+        $this->cache = [];
     }
 
 
@@ -89,10 +94,6 @@ abstract class ImportBase extends Service implements Import
     }
 
     /**
-     * Añadir una cuenta desde un archivo importado.
-     *
-     * @param AccountCreateDto $accountCreateDto
-     * @param ImportParams $importParams
      * @throws ConstraintException
      * @throws ImportException
      * @throws NoSuchPropertyException
@@ -100,7 +101,7 @@ abstract class ImportBase extends Service implements Import
      * @throws SPException
      * @throws CryptException
      */
-    protected function addAccount(AccountCreateDto $accountCreateDto, ImportParams $importParams): void
+    final protected function addAccount(AccountCreateDto $accountCreateDto, ImportParams $importParams): void
     {
         if (empty($accountCreateDto->getCategoryId())) {
             throw new ImportException(__u('Category Id not set. Unable to import account.'));
@@ -110,7 +111,11 @@ abstract class ImportBase extends Service implements Import
             throw new ImportException(__u('Client Id not set. Unable to import account.'));
         }
 
-        $hasValidHash = $this->validateHash($importParams);
+        $hasValidHash = $this->getOrSetCache(
+            self::ITEM_MASTER_PASS_HASH,
+            '',
+            fn() => $this->validateHash($importParams)
+        );
 
         $dto = $accountCreateDto
             ->set('userId', $importParams->getDefaultUser())
@@ -131,133 +136,85 @@ abstract class ImportBase extends Service implements Import
         }
 
         $this->accountService->create($dto);
-
         $this->counter++;
     }
 
+    final protected function getOrSetCache(string $type, int|string $key, callable $value = null): mixed
+    {
+        $hash = sha1($type . $key);
+
+        if (isset($this->cache[$hash])) {
+            return $this->cache[$hash];
+        }
+
+        if (null !== $value) {
+            $this->cache[$hash] = $value();
+
+            return $this->cache[$hash];
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws ServiceException
+     */
     private function validateHash(ImportParams $importParams): bool
     {
         if (!empty($importParams->getMasterPassword())) {
-            return Hash::checkHashKey(
-                $importParams->getMasterPassword(),
-                $this->configService->getByParam('masterPwd')
-            );
+            try {
+                return Hash::checkHashKey(
+                    $importParams->getMasterPassword(),
+                    $this->configService->getByParam('masterPwd')
+                );
+            } catch (NoSuchItemException $e) {
+                return false;
+            }
         }
 
         return true;
     }
 
     /**
-     * Añadir una categoría y devolver el Id
-     *
-     * @param Category $category
-     *
-     * @return int
      * @throws DuplicatedItemException
      * @throws SPException
      */
     protected function addCategory(Category $category): int
     {
-        try {
-            $categoryId = $this->getWorkingItem('category', $category->getName());
-
-            return $categoryId ?? $this->categoryService->create($category);
-        } catch (DuplicatedItemException $e) {
-            $itemData = $this->categoryService->getByName($category->getName());
-
-            if ($itemData === null) {
-                throw $e;
-            }
-
-            return $this->addWorkingItem('category', $itemData->getName(), $itemData->getId());
-        }
+        return $this->getOrSetCache(
+            self::ITEM_CATEGORY,
+            $category->getName(),
+            fn(): ?int => $this->categoryService->getByName($category->getName())?->getId()
+                ?: $this->categoryService->create($category)
+        );
     }
 
     /**
-     * @param string $type
-     * @param string|int $value
-     *
-     * @return int|null
-     */
-    protected function getWorkingItem(string $type, $value): ?int
-    {
-        return $this->items[$type][$value] ?? null;
-    }
-
-    /**
-     * @param string $type
-     * @param string|int $value
-     * @param int $id
-     *
-     * @return int
-     */
-    protected function addWorkingItem(string $type, $value, int $id): int
-    {
-        if (isset($this->items[$type][$value])) {
-            return $this->items[$type][$value];
-        }
-
-        $this->items[$type][$value] = $id;
-
-        return $id;
-    }
-
-    /**
-     * Añadir un cliente y devolver el Id
-     *
-     * @param Client $client
-     *
-     * @return int
      * @throws DuplicatedItemException
      * @throws SPException
      */
     protected function addClient(Client $client): int
     {
-        try {
-            $clientId = $this->getWorkingItem('client', $client->getName());
+        $clientId = $this->getOrSetCache(
+            self::ITEM_CLIENT,
+            $client->getName(),
+            fn(): ?int => $this->clientService->getByName($client->getName())?->getId()
+                ?: $this->clientService->create($client)
+        );
 
-            return $clientId ?? $this->clientService->create($client);
-        } catch (DuplicatedItemException $e) {
-            $itemData = $this->clientService->getByName($client->getName());
-
-            if ($itemData === null) {
-                throw $e;
-            }
-
-            return $this->addWorkingItem(
-                'client',
-                $itemData->getName(),
-                $itemData->getId()
-            );
-        }
+        return $clientId ?? $this->clientService->create($client);
     }
 
     /**
-     * Añadir una etiqueta y devolver el Id
-     *
-     * @param Tag $tag
-     *
-     * @return int
      * @throws SPException
      */
     protected function addTag(Tag $tag): int
     {
-        try {
-            $tagId = $this->getWorkingItem('tag', $tag->getName());
-
-            return $tagId ?? $this->tagService->create($tag);
-        } catch (DuplicatedItemException $e) {
-            $itemData = $this->tagService->getByName($tag->getName());
-
-            if ($itemData === null) {
-                throw $e;
-            }
-
-            return $this->addWorkingItem(
-                'tag',
-                $itemData->getName(),
-                $itemData->getId()
-            );
-        }
+        return $this->getOrSetCache(
+            self::ITEM_TAG,
+            $tag->getId(),
+            fn(): ?int => $this->tagService->getByName($tag->getName())?->getId()
+                ?: $this->tagService->create($tag)
+        );
     }
 }

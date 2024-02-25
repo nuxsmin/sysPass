@@ -24,18 +24,41 @@
 
 namespace SP\Domain\Import\Ports;
 
-use Exception;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
- * Esta clase es la encargada de importar cuentas.
+ * Interface FileImportService
  */
-interface ImportServiceInterface
+interface FileImportService
 {
+    public function getFilePath(): string;
+
     /**
-     * Iniciar la importación de cuentas.
-     *
-     * @return int Returns the total number of imported items
-     * @throws Exception
+     * @throws FileException
      */
-    public function doImport(): int;
+    public function getFileType(): string;
+
+    /**
+     * Leer los datos de un archivo subido a un array
+     *
+     * @throws FileException
+     */
+    public function readFileToArray(): array;
+
+    /**
+     * Leer los datos de un archivo subido a una cadena
+     *
+     * @throws FileException
+     */
+    public function readFileToString(): string;
+
+    public function getFileHandler(): FileHandlerInterface;
+
+    /**
+     * Read a CSV file
+     *
+     * @throws FileException
+     */
+    public function readFileToArrayFromCsv(string $delimiter): iterable;
 }

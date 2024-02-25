@@ -24,7 +24,7 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -103,13 +103,13 @@ interface UserRepository extends Repository
     public function checkExistsByLogin(string $login): bool;
 
     /**
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateOnLogin(UserData $itemData): int;
+    public function updateOnLogin(User $itemData): int;
 
     /**
      * Updates an user's pass

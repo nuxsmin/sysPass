@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -36,8 +36,8 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class UserForm extends FormBase implements FormInterface
 {
-    protected ?UserData $userData = null;
-    protected int       $isLdap   = 0;
+    protected ?User $userData = null;
+    protected int   $isLdap   = 0;
 
     /**
      * Validar el formulario
@@ -85,7 +85,7 @@ final class UserForm extends FormBase implements FormInterface
     {
         $this->isLdap = $this->request->analyzeInt('isLdap', 0);
 
-        $this->userData = new UserData();
+        $this->userData = new User();
         $this->userData->setId($this->itemId);
         $this->userData->setName($this->request->analyzeString('name'));
         $this->userData->setLogin($this->request->analyzeString('login'));
@@ -184,7 +184,7 @@ final class UserForm extends FormBase implements FormInterface
     /**
      * @throws SPException
      */
-    public function getItemData(): UserData
+    public function getItemData(): User
     {
         if (null === $this->userData) {
             throw new SPException(__u('User data not set'));

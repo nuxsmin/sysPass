@@ -25,12 +25,14 @@
 namespace SP\Domain\Import\Services;
 
 use SP\Core\Application;
-use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\ImportService;
+use SP\Domain\Import\Ports\XmlFileService;
+use SP\Domain\Import\Ports\XmlImportService;
 
-defined('APP_ROOT') || die();
+use function SP\__u;
 
 /**
  * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
@@ -38,29 +40,17 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-final class XmlImport implements XmlImportInterface
+final class XmlImport implements XmlImportService
 {
-    private XmlFileImport   $xmlFileImport;
-    private ImportParamsDto $importParams;
-    private ImportHelper    $importHelper;
-    private ConfigService $configService;
-    private Application                           $application;
-
     /**
      * XmlImport constructor.
      */
     public function __construct(
-        Application                           $application,
-        ImportHelper                          $importHelper,
-        ConfigService $configService,
-        XmlFileImportInterface                $xmlFileImport,
-        ImportParams $importParams
+        private readonly Application    $application,
+        private readonly ImportHelper   $importHelper,
+        private readonly XmlFileService $xmlFileService,
+        private readonly CryptInterface $crypt
     ) {
-        $this->application = $application;
-        $this->importHelper = $importHelper;
-        $this->configService = $configService;
-        $this->xmlFileImport = $xmlFileImport;
-        $this->importParams = $importParams;
     }
 
     /**
@@ -69,41 +59,33 @@ final class XmlImport implements XmlImportInterface
      * @throws ImportException
      * @throws SPException
      */
-    public function doImport(): Import
+    public function doImport(ImportParams $importParams): ImportService
     {
-        $format = $this->xmlFileImport->detectXMLFormat();
+        $format = $this->xmlFileService->detectXMLFormat();
 
-        return $this->selectImportType($format)->doImport();
+        return $this->factory($format)->doImport($importParams);
     }
 
-    /**
-     * @param  string  $format
-     *
-     * @return KeepassImport|SyspassImport
-     * @throws ImportException
-     */
-    protected function selectImportType(string $format)
+    protected function factory(string $format): ImportService
     {
         switch ($format) {
             case 'syspass':
                 return new SyspassImport(
                     $this->application,
                     $this->importHelper,
-                    $this->configService,
-                    $this->xmlFileImport,
-                    $this->importParams
+                    $this->crypt,
+                    $this->xmlFileService
                 );
             case 'keepass':
                 return new KeepassImport(
                     $this->application,
                     $this->importHelper,
-                    $this->configService,
-                    $this->xmlFileImport,
-                    $this->importParams
+                    $this->crypt,
+                    $this->xmlFileService
                 );
         }
 
-        throw new ImportException(__u('Format not detected'));
+        throw ImportException::error(__u('Format not detected'));
     }
 
     /**
@@ -111,6 +93,6 @@ final class XmlImport implements XmlImportInterface
      */
     public function getCounter(): int
     {
-        throw new ImportException(__u('Not implemented'));
+        throw ImportException::error(__u('Not implemented'));
     }
 }

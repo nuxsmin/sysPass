@@ -25,31 +25,28 @@
 namespace SP\Domain\Import\Services;
 
 use DOMDocument;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Ports\XmlFileService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
+
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class XmlFileImport
  *
  * @package Import
  */
-final class XmlFileImport implements XmlFileImportInterface
+final class XmlFile implements XmlFileService
 {
-    protected FileImport   $fileImport;
     protected ?DOMDocument $xmlDOM = null;
 
     /**
-     * XmlFileImport constructor.
-     *
-     * @param FileImportService $fileImport
-     *
      * @throws ImportException
      * @throws FileException
      */
-    public function __construct(FileImportService $fileImport)
+    public function __construct(protected readonly FileHandlerInterface $fileHandler)
     {
-        $this->fileImport = $fileImport;
-
         $this->readXMLFile();
     }
 
@@ -61,6 +58,8 @@ final class XmlFileImport implements XmlFileImportInterface
      */
     protected function readXMLFile(): void
     {
+        $this->fileHandler->checkIsReadable();
+
         libxml_use_internal_errors(true);
 
         // Cargar el XML con DOM
@@ -68,12 +67,12 @@ final class XmlFileImport implements XmlFileImportInterface
         $this->xmlDOM->formatOutput = false;
         $this->xmlDOM->preserveWhiteSpace = false;
 
-        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString(), LIBXML_PARSEHUGE) === false) {
+        if ($this->xmlDOM->load($this->fileHandler->getFile(), LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
-                logger(__METHOD__.' - '.$error->message);
+                logger(__METHOD__ . ' - ' . $error->message);
             }
 
-            throw new ImportException(__u('Internal error'), SPException::ERROR, __u('Unable to process the XML file'));
+            throw ImportException::error(__u('Internal error'), __u('Unable to process the XML file'));
         }
     }
 
@@ -94,9 +93,8 @@ final class XmlFileImport implements XmlFileImportInterface
             }
         }
 
-        throw new ImportException(
+        throw ImportException::error(
             __u('XML file not supported'),
-            SPException::ERROR,
             __u('Unable to guess the application which data was exported from')
         );
     }
@@ -104,30 +102,5 @@ final class XmlFileImport implements XmlFileImportInterface
     public function getXmlDOM(): DOMDocument
     {
         return $this->xmlDOM;
-    }
-
-    /**
-     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     */
-    protected function parseFileHeader(): ?string
-    {
-        if (($handle = @fopen($this->fileImport->getFilePath(), 'rb')) !== false) {
-            // No. de líneas a leer como máximo
-            $maxLines = 5;
-            $count = 0;
-
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match('/(?P<header>KEEPASSX_DATABASE|revelationdata)/i', $buffer, $matches)) {
-                    fclose($handle);
-
-                    return strtolower($matches['header']);
-                }
-                $count++;
-            }
-
-            fclose($handle);
-        }
-
-        return null;
     }
 }

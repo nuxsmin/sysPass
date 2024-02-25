@@ -29,8 +29,10 @@ use DOMElement;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\XmlFileService;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class XmlImportBase
@@ -39,26 +41,21 @@ use SP\Domain\Import\Ports\ImportParams;
  */
 abstract class XmlImportBase extends ImportBase
 {
-    protected readonly XmlFileImportInterface $xmlFileImport;
-    protected readonly DOMDocument            $xmlDOM;
-    protected readonly ConfigDataInterface    $configData;
-    protected readonly ImportParams           $importParams;
+    protected readonly DOMDocument         $document;
+    protected readonly ConfigDataInterface $configData;
 
     /**
      * ImportBase constructor.
      */
     public function __construct(
-        Application    $application,
-        ImportHelper   $importHelper,
-        CryptInterface $crypt,
-        XmlFileImportInterface $xmlFileImport,
-        ImportParams   $importParams
+        Application                       $application,
+        ImportHelper                      $importHelper,
+        CryptInterface                    $crypt,
+        protected readonly XmlFileService $xmlFileImport
     ) {
         parent::__construct($application, $importHelper, $crypt);
-        $this->xmlFileImport = $xmlFileImport;
-        $this->importParams = $importParams;
         $this->configData = $application->getConfig()->getConfigData();
-        $this->xmlDOM = $xmlFileImport->getXmlDOM();
+        $this->document = $xmlFileImport->getXmlDOM();
     }
 
     /**
@@ -77,11 +74,11 @@ abstract class XmlImportBase extends ImportBase
         callable $callback,
         bool   $required = true
     ): void {
-        $nodeList = $this->xmlDOM->getElementsByTagName($nodeName);
+        $nodeList = $this->document->getElementsByTagName($nodeName);
 
         if ($nodeList->length > 0) {
             if (!is_callable($callback)) {
-                throw new ImportException(__u('Invalid Method'), SPException::WARNING);
+                throw ImportException::warning(__u('Invalid Method'), $callback);
             }
 
             /** @var DOMElement $nodes */
@@ -92,9 +89,8 @@ abstract class XmlImportBase extends ImportBase
                 }
             }
         } elseif ($required === true) {
-            throw new ImportException(
+            throw ImportException::warning(
                 __u('Invalid XML format'),
-                SPException::WARNING,
                 sprintf(__('"%s" node doesn\'t exist'), $nodeName)
             );
         }

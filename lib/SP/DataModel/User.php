@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,14 +26,12 @@ namespace SP\DataModel;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class UserBasicData
  *
  * @package SP\DataModel
  */
-class UserData extends UserPassData implements DataModelInterface
+class User extends UserPassData implements DataModelInterface
 {
     protected ?string $login         = null;
     protected ?string $ssoLogin      = null;

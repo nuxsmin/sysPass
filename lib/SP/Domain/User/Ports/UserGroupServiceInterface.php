@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,10 @@
 namespace SP\Domain\User\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserGroupData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -50,7 +50,7 @@ interface UserGroupServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserGroupData;
+    public function getById(int $id): UserGroup;
 
     /**
      * @throws ConstraintException
@@ -71,17 +71,17 @@ interface UserGroupServiceInterface
     /**
      * @throws ServiceException
      */
-    public function create(UserGroupData $itemData): int;
+    public function create(UserGroup $itemData): int;
 
     /**
      * @throws ServiceException
      */
-    public function update(UserGroupData $itemData): void;
+    public function update(UserGroup $itemData): void;
 
     /**
      * Get all items from the service's repository
      *
-     * @return UserGroupData[]
+     * @return UserGroup[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -94,7 +94,7 @@ interface UserGroupServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): UserGroupData;
+    public function getByName(string $name): UserGroup;
 
     /**
      * Returns the users that are using the given group id

@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -69,7 +69,7 @@ final class UserService extends Service implements UserServiceInterface
     }
 
     public static function mapUserLoginResponse(
-        UserData $userData
+        User $userData
     ): UserLoginResponse {
         return (new UserLoginResponse())->setId($userData->getId())
             ->setName($userData->getName())
@@ -139,7 +139,7 @@ final class UserService extends Service implements UserServiceInterface
      *
      * @throws SPException
      */
-    public function getById(int $id): UserData
+    public function getById(int $id): User
     {
         $result = $this->userRepository->getById($id);
 
@@ -157,7 +157,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByLogin(string $login): UserData
+    public function getByLogin(string $login): User
     {
         $result = $this->userRepository->getByLogin($login);
 
@@ -212,7 +212,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function createOnLogin(UserLoginRequest $userLoginRequest): int
     {
-        $userData = new UserData();
+        $userData = new User();
         $userData->setLogin($userLoginRequest->getLogin());
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
@@ -237,7 +237,7 @@ final class UserService extends Service implements UserServiceInterface
      *
      * @throws SPException
      */
-    public function create(UserData $itemData): int
+    public function create(User $itemData): int
     {
         $itemData->setPass(Hash::hashKey($itemData->getPass()));
 
@@ -250,7 +250,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws SPException
      * @throws CryptoException
      */
-    public function createWithMasterPass(UserData $itemData, string $userPass, string $masterPass): int
+    public function createWithMasterPass(User $itemData, string $userPass, string $masterPass): int
     {
         $response = $this->userPassService->createMasterPass(
             $masterPass,
@@ -285,7 +285,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserData $userData): void
+    public function update(User $userData): void
     {
         $update = $this->userRepository->update($userData);
 
@@ -335,7 +335,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function updateOnLogin(UserLoginRequest $userLoginRequest): int
     {
-        $userData = new UserData();
+        $userData = new User();
         $userData->setLogin($userLoginRequest->getLogin());
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
@@ -348,7 +348,7 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return UserData[]
+     * @return User[]
      * @throws ConstraintException
      * @throws QueryException
      */

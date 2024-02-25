@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\User;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
 use SP\Core\Application;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -73,7 +73,7 @@ abstract class UserSaveBase extends ControllerBase
 
     /**
      * @param  int  $userId
-     * @param  UserData  $userData
+     * @param User $userData
      *
      * @throws EnvironmentIsBrokenException
      * @throws Exception
@@ -81,7 +81,7 @@ abstract class UserSaveBase extends ControllerBase
      * @throws QueryException
      * @throws ServiceException
      */
-    final protected function checkChangeUserPass(int $userId, UserData $userData): void
+    final protected function checkChangeUserPass(int $userId, User $userData): void
     {
         if ($userData->isChangePass()) {
             $hash = $this->userPassRecoverService->requestForUserId($userId);

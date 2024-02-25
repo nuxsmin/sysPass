@@ -22,43 +22,34 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Domain\Import\Ports;
 
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
+use SP\Domain\Import\Services\LdapImportParams;
+use SP\Providers\Auth\Ldap\LdapException;
+use SP\Providers\Auth\Ldap\LdapParams;
 
 /**
- * Interface FileImportService
+ * Class UserLdapService
+ *
+ * @package SP\Domain\User\Services
  */
-interface FileImportService
+interface LdapImportService
 {
-    public function getFilePath(): string;
+    public function getTotalObjects(): int;
+
+    public function getSyncedObjects(): int;
+
+    public function getErrorObjects(): int;
 
     /**
-     * @throws FileException
-     */
-    public function getFileType(): string;
-
-    /**
-     * Leer los datos de un archivo subido a un array
+     * Sincronizar usuarios de LDAP
      *
-     * @throws FileException
+     * @throws LdapException
      */
-    public function readFileToArray(): array;
+    public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void;
 
     /**
-     * Leer los datos de un archivo subido a una cadena
-     *
-     * @throws FileException
+     * @throws LdapException
      */
-    public function readFileToString(): string;
-
-    public function getFileHandler(): FileHandlerInterface;
-
-    /**
-     * Read a CSV file
-     *
-     * @throws FileException
-     */
-    public function readFileToArrayFromCsv(string $delimiter): iterable;
+    public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void;
 }

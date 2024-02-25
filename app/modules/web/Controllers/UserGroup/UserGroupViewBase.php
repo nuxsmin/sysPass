@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\UserGroupData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -86,7 +86,7 @@ abstract class UserGroupViewBase extends ControllerBase
 
         $userGroupData = $userGroupId
             ? $this->userGroupService->getById($userGroupId)
-            : new UserGroupData();
+            : new UserGroup();
 
         $this->view->assign('group', $userGroupData);
 

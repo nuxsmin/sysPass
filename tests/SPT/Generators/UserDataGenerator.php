@@ -24,7 +24,7 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\DataModel\UserPassData;
 use SP\DataModel\UserPreferencesData;
 
@@ -33,9 +33,9 @@ use SP\DataModel\UserPreferencesData;
  */
 final class UserDataGenerator extends DataGenerator
 {
-    public function buildUserData(): UserData
+    public function buildUserData(): User
     {
-        return new UserData(array_merge($this->getUserProperties(), $this->getUserPassProperties()));
+        return new User(array_merge($this->getUserProperties(), $this->getUserPassProperties()));
     }
 
     /**

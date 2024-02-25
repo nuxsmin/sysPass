@@ -24,39 +24,50 @@
 
 namespace SP\Domain\Import\Services;
 
+use CallbackFilterIterator;
 use DOMElement;
 use DOMXPath;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Ports\ImportService;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Util\Filter;
+use SplObjectStorage;
 
-defined('APP_ROOT') || die();
+use function SP\__u;
+use function SP\processException;
 
 /**
- * Esta clase es la encargada de importar cuentas desde KeePass
+ * Class KeepassImport
  */
-final class KeepassImport extends XmlImportBase implements Import
+final class KeepassImport extends XmlImportBase
 {
+    /**
+     * @var SplObjectStorage<AccountCreateDto>[] $items
+     */
     private array $items = [];
 
     /**
      * Iniciar la importación desde KeePass
      *
+     * @param ImportParams $importParams
+     * @return ImportService
      * @throws SPException
      */
-    public function doImport(): Import
+    public function doImport(ImportParams $importParams): ImportService
     {
         $this->eventDispatcher->notify(
             'run.import.keepass',
             new Event($this, EventMessage::factory()->addDescription(__u('KeePass XML Import')))
         );
 
-        $this->process();
+        $this->process($importParams);
 
         return $this;
     }
@@ -66,9 +77,9 @@ final class KeepassImport extends XmlImportBase implements Import
      *
      * @throws SPException
      */
-    private function process(): void
+    private function process(ImportParams $importParamsDto): void
     {
-        $clientId = $this->addClient(new Client(null, 'KeePass'));
+        $clientId = $this->addClient(new Client(['name' => 'KeePass']));
 
         $this->eventDispatcher->notify(
             'run.import.keepass.process.client',
@@ -76,67 +87,71 @@ final class KeepassImport extends XmlImportBase implements Import
         );
 
         $this->getGroups();
-
         $this->getEntries();
 
-        /** @var AccountRequest[] $group */
-        foreach ($this->items as $group => $entry) {
+        foreach ($this->items as $groupName => $accounts) {
             try {
-                $categoryId = $this->addCategory(new Category(null, $group, 'KeePass'));
+                foreach ($accounts as $account) {
+                    $this->addAccount(
+                        $account->set('clientId', $clientId),
+                        $importParamsDto
+                    );
 
-                $this->eventDispatcher->notify(
-                    'run.import.keepass.process.category',
-                    new Event($this, EventMessage::factory()->addDetail(__u('Category imported'), $group))
-                );
-
-                if (count($entry) > 0) {
-                    foreach ($entry as $account) {
-                        $account->categoryId = $categoryId;
-                        $account->clientId = $clientId;
-
-                        $this->addAccount($account);
-
-                        $this->eventDispatcher->notify(
-                            'run.import.keepass.process.account',
-                            new Event(
-                                $this,
-                                EventMessage::factory()
-                                    ->addDetail(__u('Account imported'), $account->name)
-                                    ->addDetail(__u('Category'), $group)
-                            )
-                        );
-                    }
+                    $this->eventDispatcher->notify(
+                        'run.import.keepass.process.account',
+                        new Event(
+                            $this,
+                            EventMessage::factory()
+                                        ->addDetail(__u('Account imported'), $account->getName())
+                                        ->addDetail(__u('Category'), $groupName)
+                        )
+                    );
                 }
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify(
-                    'exception',
-                    new Event($e)
-                );
+                $this->eventDispatcher->notify('exception', new Event($e));
             }
         }
     }
 
     /**
-     * Gets the groups found
+     * @throws DuplicatedItemException
+     * @throws SPException
      */
     private function getGroups(): void
     {
-        $DomXpath = new DOMXPath($this->xmlDOM);
-        $tags = $DomXpath->query('/KeePassFile/Root/Group//Group');
+        $DomXpath = new DOMXPath($this->document);
+        $tags = $DomXpath->query('/KeePassFile/Root/Group//Group/Name');
 
-        /** @var DOMElement[] $tags */
-        foreach ($tags as $tag) {
-            if ($tag->nodeType === 1) {
-                $groupName = $DomXpath->query($tag->getNodePath().'/Name')
-                    ->item(0)
-                    ->nodeValue;
+        $nodesList = new CallbackFilterIterator(
+            $tags->getIterator(),
+            static fn(DOMElement $node) => $node->nodeType === XML_ELEMENT_NODE
+        );
 
-                if (!isset($groups[$groupName])) {
-                    $this->items[$groupName] = [];
-                }
-            }
+        /** @var DOMElement $tag */
+        foreach ($nodesList as $tag) {
+            $this->setItem($tag->childNodes->item(0)->nodeValue);
+        }
+    }
+
+    /**
+     * @throws DuplicatedItemException
+     * @throws SPException
+     */
+    private function setItem(string $groupName): void
+    {
+        $groupName = Filter::getString($groupName);
+
+        if (!isset($this->items[$groupName])) {
+            $this->addCategory(new Category(['name' => $groupName, 'description' => 'KeePass']));
+
+            $this->eventDispatcher->notify(
+                'run.import.keepass.process.category',
+                new Event($this, EventMessage::factory()->addDetail(__u('Category imported'), $groupName))
+            );
+
+            $this->items[$groupName] = new SplObjectStorage();
         }
     }
 
@@ -145,42 +160,51 @@ final class KeepassImport extends XmlImportBase implements Import
      */
     private function getEntries(): void
     {
-        $DomXpath = new DOMXPath($this->xmlDOM);
-        $tags = $DomXpath->query('/KeePassFile/Root/Group//Entry[not(parent::History)]');
+        $DomXpath = new DOMXPath($this->document);
+        $entries = $DomXpath->query('/KeePassFile/Root/Group//Entry[not(parent::History)]');
 
-        /** @var DOMElement[] $tags */
-        foreach ($tags as $tag) {
-            if ($tag->nodeType === 1) {
-                $path = $tag->getNodePath();
-                $entryData = [];
+        $nodesList = new CallbackFilterIterator(
+            $entries->getIterator(),
+            static fn(DOMElement $node) => $node->nodeType === XML_ELEMENT_NODE
+        );
 
-                /** @var DOMElement $key */
-                foreach ($DomXpath->query($path.'/String/Key') as $key) {
-                    $value = $DomXpath->query($key->getNodePath().'/../Value')
-                        ->item(0)
-                        ->nodeValue;
+        /** @var DOMElement $entry */
+        foreach ($nodesList as $entry) {
+            $path = $entry->getNodePath();
+            $entryData = [];
 
-                    $entryData[$key->nodeValue] = $value;
-                }
+            /** @var DOMElement $string */
+            foreach ($DomXpath->query($path . '/String') as $string) {
+                $key = $string->childNodes->item(0)->nodeValue;
+                $value = $string->childNodes->item(1)->nodeValue;
 
-                $groupName = $DomXpath->query($path.'/../Name')
-                    ->item(0)
-                    ->nodeValue;
-
-                $this->items[$groupName][] = $this->mapEntryToAccount($entryData);
+                $entryData[$key] = $value;
             }
+
+            $groupName = $DomXpath->query($path . '/../Name')->item(0)->nodeValue;
+
+            $this->getItem($groupName)?->attach($this->mapEntryToAccount($entryData, $groupName));
         }
     }
 
-    private function mapEntryToAccount(array $entry): AccountRequest
+    private function getItem(string $groupName): ?SplObjectStorage
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->name = isset($entry['Title']) ? Filter::getString($entry['Title']) : '';
-        $accountRequest->login = isset($entry['UserName']) ? Filter::getString($entry['UserName']) : '';
-        $accountRequest->pass = $entry['Password'] ?? '';
-        $accountRequest->url = isset($entry['URL']) ? Filter::getString($entry['URL']) : '';
-        $accountRequest->notes = isset($entry['Notes']) ? Filter::getString($entry['Notes']) : '';
+        if (array_key_exists($groupName, $this->items)) {
+            return $this->items[$groupName];
+        }
 
-        return $accountRequest;
+        return null;
+    }
+
+    private function mapEntryToAccount(array $entry, string $groupName): AccountCreateDto
+    {
+        return new AccountCreateDto(
+            name:       Filter::getString($entry['Title'] ?? ''),
+            login:      Filter::getString($entry['UserName'] ?? ''),
+            categoryId: $this->getOrSetCache(self::ITEM_CATEGORY, $groupName),
+            pass:       $entry['Password'] ?? '',
+            url:        Filter::getString($entry['URL'] ?? ''),
+            notes:      Filter::getString($entry['Notes'] ?? '')
+        );
     }
 }

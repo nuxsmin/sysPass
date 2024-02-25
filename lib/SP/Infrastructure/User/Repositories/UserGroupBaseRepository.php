@@ -25,10 +25,10 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserGroupData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -167,7 +167,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserGroup::class);
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
@@ -186,7 +186,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     public function getByName(string $name): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserGroup::class);
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE name = ? LIMIT 1');
         $queryData->addParam($name);
 
@@ -203,7 +203,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     public function getAll(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserGroup::class);
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup ORDER BY name');
 
         return $this->db->doSelect($queryData);
@@ -228,7 +228,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
             'SELECT id, name, description FROM UserGroup WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserGroup::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -269,7 +269,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setMapClassName(UserGroup::class);
         $queryData->setSelect('id, name, description');
         $queryData->setFrom('UserGroup');
         $queryData->setOrder('name');
@@ -293,7 +293,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     /**
      * Creates an item
      *
-     * @param  UserGroupData  $itemData
+     * @param UserGroup $itemData
      *
      * @return int
      * @throws SPException
@@ -320,7 +320,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  UserGroupData  $itemData
+     * @param UserGroup $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -338,7 +338,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     /**
      * Updates an item
      *
-     * @param  UserGroupData  $itemData
+     * @param UserGroup $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -366,7 +366,7 @@ final class UserGroupBaseRepository extends BaseRepository implements UserGroupR
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  UserGroupData  $itemData
+     * @param UserGroup $itemData
      *
      * @return bool
      * @throws ConstraintException

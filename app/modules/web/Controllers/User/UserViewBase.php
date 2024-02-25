@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\User;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -88,7 +88,7 @@ abstract class UserViewBase extends ControllerBase
 
         $user = $userId
             ? $this->userService->getById($userId)
-            : new UserData();
+            : new User();
 
         $this->view->assign('user', $user);
         $this->view->assign(

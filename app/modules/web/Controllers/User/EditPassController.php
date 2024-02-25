@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\User;
 use Exception;
 use JsonException;
 use SP\Core\Events\Event;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -67,7 +67,7 @@ final class EditPassController extends UserViewBase
 
             $user = $id
                 ? $this->userService->getById($id)
-                : new UserData();
+                : new User();
 
             $this->view->assign('user', $user);
 

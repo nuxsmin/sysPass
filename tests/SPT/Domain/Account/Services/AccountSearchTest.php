@@ -27,8 +27,7 @@ namespace SPT\Domain\Account\Services;
 use PHPUnit\Framework\MockObject\Builder\InvocationStubber;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\DataModel\UserData;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\User;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchDataBuilder;
@@ -37,6 +36,7 @@ use SP\Domain\Account\Services\AccountSearch;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -242,7 +242,7 @@ class AccountSearchTest extends UnitaryTestCase
         $userService
             ->method('getByLogin')
             ->willReturn(
-                new UserData([
+                new User([
                                  'id' => self::$faker->randomNumber(),
                                  'userGroupId' => self::$faker->randomNumber(),
                              ])
@@ -252,7 +252,7 @@ class AccountSearchTest extends UnitaryTestCase
         $userGroupService
             ->method('getByName')
             ->willReturn(
-                new UserGroupData([
+                new UserGroup([
                                       'id' => self::$faker->randomNumber(),
                                   ])
             );

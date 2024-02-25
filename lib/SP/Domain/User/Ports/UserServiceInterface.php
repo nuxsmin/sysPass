@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Domain\User\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -65,7 +65,7 @@ interface UserServiceInterface
      *
      * @throws SPException
      */
-    public function getById(int $id): UserData;
+    public function getById(int $id): User;
 
     /**
      * Returns the item for given id
@@ -74,7 +74,7 @@ interface UserServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByLogin(string $login): UserData;
+    public function getByLogin(string $login): User;
 
     /**
      * Deletes an item
@@ -106,7 +106,7 @@ interface UserServiceInterface
      *
      * @throws SPException
      */
-    public function create(UserData $itemData): int;
+    public function create(User $itemData): int;
 
     /**
      * Creates an item
@@ -114,7 +114,7 @@ interface UserServiceInterface
      * @throws SPException
      * @throws CryptoException
      */
-    public function createWithMasterPass(UserData $itemData, string $userPass, string $masterPass): int;
+    public function createWithMasterPass(User $itemData, string $userPass, string $masterPass): int;
 
     /**
      * Searches for items by a given filter
@@ -132,7 +132,7 @@ interface UserServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserData $userData): void;
+    public function update(User $userData): void;
 
     /**
      * Updates a user's pass
@@ -158,7 +158,7 @@ interface UserServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return UserData[]
+     * @return User[]
      * @throws ConstraintException
      * @throws QueryException
      */

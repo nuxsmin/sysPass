@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,43 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Adapters\DataModelInterface;
 use SP\Domain\Common\Models\Model;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class GroupData
- *
- * @package SP\DataModel
  */
-class UserGroupData extends Model implements DataModelInterface
+class UserGroup extends Model implements DataModelInterface
 {
-    public int     $id          = 0;
-    public ?string $name        = null;
-    public ?string $description = null;
-    public ?array  $users       = null;
+    protected ?int    $id          = null;
+    protected ?string $name        = null;
+    protected ?string $description = null;
+    protected ?array  $users       = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
     public function getDescription(): ?string
@@ -66,18 +53,8 @@ class UserGroupData extends Model implements DataModelInterface
         return $this->description;
     }
 
-    public function setDescription(?string $description): void
-    {
-        $this->description = $description;
-    }
-
     public function getUsers(): ?array
     {
         return $this->users;
-    }
-
-    public function setUsers(?array $users): void
-    {
-        $this->users = $users;
     }
 }

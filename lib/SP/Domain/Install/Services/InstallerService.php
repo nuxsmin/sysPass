@@ -28,8 +28,7 @@ namespace SP\Domain\Install\Services;
 use Exception;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserData;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\User;
 use SP\DataModel\UserProfileData;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -42,6 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -351,13 +351,13 @@ final class InstallerService implements InstallerServiceInterface
     private function createAdminAccount(): void
     {
         try {
-            $userGroupData = new UserGroupData();
+            $userGroupData = new UserGroup();
             $userGroupData->setName('Admins');
             $userGroupData->setDescription('sysPass Admins');
 
             $userProfileData = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
 
-            $userData = new UserData([
+            $userData = new User([
                                          'userGroupId' => $this->userGroupService->create($userGroupData),
                                          'userProfileId' => $this->userProfileService->create($userProfileData),
                                          'login' => $this->installData->getAdminLogin(),

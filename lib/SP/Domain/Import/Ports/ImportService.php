@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,32 +24,21 @@
 
 namespace SP\Domain\Import\Ports;
 
-use SP\Domain\Import\Services\LdapImportParams;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
-
 /**
- * Class UserLdapService
- *
- * @package SP\Domain\User\Services
+ * Interface ImportService
  */
-interface LdapImportServiceInterface
+interface ImportService
 {
-    public function getTotalObjects(): int;
-
-    public function getSyncedObjects(): int;
-
-    public function getErrorObjects(): int;
+    /**
+     * @param ImportParams $importParams
+     * @return ImportService
+     */
+    public function doImport(ImportParams $importParams): ImportService;
 
     /**
-     * Sincronizar usuarios de LDAP
+     * Devolver el contador de objetos importados
      *
-     * @throws LdapException
+     * @return int
      */
-    public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void;
-
-    /**
-     * @throws LdapException
-     */
-    public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void;
+    public function getCounter(): int;
 }

@@ -26,7 +26,7 @@ namespace SP\Infrastructure\User\Repositories;
 
 use RuntimeException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserData;
+use SP\DataModel\User;
 use SP\DataModel\UserPreferencesData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -51,7 +51,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     /**
      * Updates an item
      *
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -106,7 +106,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -231,7 +231,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
             WHERE U.id = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserData::class);
+        $queryData->setMapClassName(User::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving the user\'s data'));
@@ -242,7 +242,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     /**
      * Returns all the items
      *
-     * @return UserData[]
+     * @return User[]
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -276,7 +276,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
             FROM User U';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserData::class);
+        $queryData->setMapClassName(User::class);
         $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData)->getDataAsArray();
@@ -328,7 +328,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
             WHERE U.id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserData::class);
+        $queryData->setMapClassName(User::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -428,7 +428,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     /**
      * Creates an item
      *
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return int
      * @throws SPException
@@ -488,7 +488,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -554,7 +554,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
             WHERE U.login = ? OR U.ssoLogin = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserData::class);
+        $queryData->setMapClassName(User::class);
         $queryData->setQuery($query);
         $queryData->setParams([$login, $login]);
         $queryData->setOnErrorMessage(__u('Error while retrieving the user\'s data'));
@@ -585,7 +585,7 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
             FROM User U';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserData::class);
+        $queryData->setMapClassName(User::class);
         $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData);
@@ -658,13 +658,13 @@ final class UserBaseRepository extends BaseRepository implements UserRepository
     }
 
     /**
-     * @param  UserData  $itemData
+     * @param User $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateOnLogin(UserData $itemData): int
+    public function updateOnLogin(User $itemData): int
     {
         $query = 'UPDATE User SET 
             pass = ?,

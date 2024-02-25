@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\UserGroupData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\User\Models\UserGroup;
 
 /**
  * Class UserGroupForm
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class UserGroupForm extends FormBase implements FormInterface
 {
-    protected ?UserGroupData $groupData = null;
+    protected ?UserGroup $groupData = null;
 
     /**
      * Validar el formulario
@@ -71,7 +71,7 @@ final class UserGroupForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->groupData = new UserGroupData();
+        $this->groupData = new UserGroup();
         $this->groupData->setId($this->itemId);
         $this->groupData->setName($this->request->analyzeString('name'));
         $this->groupData->setDescription($this->request->analyzeString('description'));
@@ -91,7 +91,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     /**
      * @throws SPException
      */
-    public function getItemData(): UserGroupData
+    public function getItemData(): UserGroup
     {
         if (null === $this->groupData) {
             throw new SPException(__u('Group data not set'));

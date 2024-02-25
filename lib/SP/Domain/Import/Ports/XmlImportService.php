@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Domain\Import\Ports;
 
 /**
  * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
@@ -30,6 +30,6 @@ namespace SP\Domain\Import\Services;
  *
  * @package SP
  */
-interface XmlImportInterface extends Import
+interface XmlImportService extends ImportService
 {
 }

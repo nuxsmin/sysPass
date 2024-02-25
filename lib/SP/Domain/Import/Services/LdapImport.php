@@ -28,39 +28,40 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\UserData;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\User;
+use SP\Domain\Auth\Ports\LdapActionsService;
+use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Import\Ports\LdapImportServiceInterface;
+use SP\Domain\Import\Ports\LdapImportService;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserGroupService;
 use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
 
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
+
 /**
- * Class UserLdapService
- *
- * @package SP\Domain\User\Services
+ * Class LdapImport
  */
-final class LdapImportService extends Service implements LdapImportServiceInterface
+final class LdapImport extends Service implements LdapImportService
 {
-    protected int                $totalObjects  = 0;
-    protected int                $syncedObjects = 0;
-    protected int                $errorObjects  = 0;
-    private UserServiceInterface $userService;
-    private UserGroupService     $userGroupService;
+    protected int $totalObjects  = 0;
+    protected int $syncedObjects = 0;
+    protected int $errorObjects  = 0;
 
     public function __construct(
-        Application $application,
-        UserServiceInterface $userService,
-        UserGroupService $userGroupService
+        Application                              $application,
+        private readonly UserServiceInterface    $userService,
+        private readonly UserGroupService        $userGroupService,
+        private readonly LdapActionsService      $ldapActionsService,
+        private readonly LdapConnectionInterface $ldapConnection
     ) {
         parent::__construct($application);
-
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
     }
 
 
@@ -84,10 +85,8 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
      *
      * @throws LdapException
      */
-    public function importGroups(
-        LdapParams $ldapParams,
-        LdapImportParams $ldapImportParams
-    ): void {
+    public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void
+    {
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
@@ -108,31 +107,28 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
         if ($numObjects > 0) {
             foreach ($objects as $result) {
                 if (is_array($result)) {
-                    $userGroupData = new UserGroupData();
+                    $userGroup = [];
 
                     foreach ($result as $attribute => $values) {
-
                         $value = $values[0];
 
                         if (strtolower($attribute) === $ldapImportParams->userGroupNameAttribute) {
-                            $userGroupData->setName($value);
+                            $userGroup['name'] = $value;
                         }
                     }
 
-                    if (!empty($userGroupData->getName())) {
+                    if (!isset($userGroup['name'])) {
                         try {
-                            $userGroupData->setDescription(__('Imported from LDAP'));
+                            $userGroup['description'] = __('Imported from LDAP');
 
-                            $this->userGroupService->create($userGroupData);
+                            $this->userGroupService->create(new UserGroup($userGroup));
 
                             $this->eventDispatcher->notify(
                                 'import.ldap.progress.groups',
                                 new Event(
                                     $this,
-                                    EventMessage::factory()->addDetail(
-                                        __u('Group'),
-                                        sprintf('%s', $userGroupData->getName())
-                                    )
+                                    EventMessage::factory()
+                                                ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
                                 )
                             );
 
@@ -156,19 +152,18 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
     protected function getLdap(LdapParams $ldapParams): LdapService
     {
         return LdapBase::factory(
-            $ldapParams,
             $this->eventDispatcher,
-            $this->config->getConfigData()->isDebug()
+            $this->ldapConnection,
+            $this->ldapActionsService,
+            $ldapParams,
         );
     }
 
     /**
      * @throws LdapException
      */
-    public function importUsers(
-        LdapParams $ldapParams,
-        LdapImportParams $ldapImportParams
-    ): void {
+    public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void
+    {
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
@@ -189,35 +184,30 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
         if ($numObjects > 0) {
             foreach ($objects as $result) {
                 if (is_array($result)) {
-                    $userData = new UserData();
+                    $user = [];
 
                     foreach ($result as $attribute => $values) {
-
-                        $value = $values[0];
-
                         switch (strtolower($attribute)) {
                             case $ldapImportParams->userNameAttribute:
-                                $userData->setName($value);
+                                $user['name'] = $values[0];
                                 break;
                             case $ldapImportParams->loginAttribute:
-                                $userData->setLogin($value);
+                                $user['login'] = $values[0];
                                 break;
                             case 'mail':
-                                $userData->setEmail($value);
+                                $user['email'] = $values[0];
                                 break;
                         }
                     }
 
-                    if (!empty($userData->getName())
-                        && !empty($userData->getLogin())
-                    ) {
+                    if (!isset($user['name'], $user['login'])) {
                         try {
-                            $userData->setNotes(__('Imported from LDAP'));
-                            $userData->setUserGroupId($ldapImportParams->defaultUserGroup);
-                            $userData->setUserProfileId($ldapImportParams->defaultUserProfile);
-                            $userData->setIsLdap(true);
+                            $user['notes'] = __('Imported from LDAP');
+                            $user['userGroupId'] = $ldapImportParams->defaultUserGroup;
+                            $user['userProfileId'] = $ldapImportParams->defaultUserProfile;
+                            $user['isLdap'] = true;
 
-                            $this->userService->create($userData);
+                            $this->userService->create(new User($user));
 
                             $this->eventDispatcher->notify(
                                 'import.ldap.progress.users',
@@ -226,7 +216,7 @@ final class LdapImportService extends Service implements LdapImportServiceInterf
                                     EventMessage::factory()
                                         ->addDetail(
                                             __u('User'),
-                                            sprintf('%s (%s)', $userData->getName(), $userData->getLogin())
+                                            sprintf('%s (%s)', $user['name'], $user['login'])
                                         )
                                 )
                             );

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Domain\Import\Ports;
 
 use DOMDocument;
+use SP\Domain\Import\Services\ImportException;
 
 /**
  * Class XmlFileImport
  *
  * @package Import
  */
-interface XmlFileImportInterface
+interface XmlFileService
 {
     /**
      * Detectar la aplicación que generó el XML.
