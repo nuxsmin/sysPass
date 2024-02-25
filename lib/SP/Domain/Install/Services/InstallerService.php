@@ -351,19 +351,22 @@ final class InstallerService implements InstallerServiceInterface
     private function createAdminAccount(): void
     {
         try {
-            $userGroupData = new UserGroup();
-            $userGroupData->setName('Admins');
-            $userGroupData->setDescription('sysPass Admins');
+            $userGroup = new UserGroup(
+                [
+                    'name' => 'Admins',
+                    'description' => 'sysPass Admins'
+                ]
+            );
 
-            $userProfileData = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
+            $userProfile = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
 
             $userData = new User([
-                                         'userGroupId' => $this->userGroupService->create($userGroupData),
-                                         'userProfileId' => $this->userProfileService->create($userProfileData),
-                                         'login' => $this->installData->getAdminLogin(),
-                                         'name' => 'sysPass Admin',
-                                         'isAdminApp' => 1,
-                                     ]);
+                                     'userGroupId' => $this->userGroupService->create($userGroup),
+                                     'userProfileId' => $this->userProfileService->create($userProfile),
+                                     'login' => $this->installData->getAdminLogin(),
+                                     'name' => 'sysPass Admin',
+                                     'isAdminApp' => 1,
+                                 ]);
 
             $id = $this->userService->createWithMasterPass(
                 $userData,

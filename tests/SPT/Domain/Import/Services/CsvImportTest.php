@@ -26,6 +26,7 @@ namespace SPT\Domain\Import\Services;
 
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -67,8 +68,8 @@ class CsvImportTest extends UnitaryTestCase
     {
         $params = new CsvImportParamsDto(1, 1);
         $accounts = static function () {
-            yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
-            yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
+            yield ['Account_name', 'Client_name_1', 'Category_name_1', 'a_url', 'a_login', 'a_password', 'a_note'];
+            yield ['Account_name', 'Client_name_2', 'Category_name_2', 'a_url', 'a_login', 'a_password', 'a_note'];
         };
 
         $this->fileImportService
@@ -77,22 +78,32 @@ class CsvImportTest extends UnitaryTestCase
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
+        $clientServiceCounter = new InvokedCount(2);
+
         $this->clientService
-            ->expects(self::exactly(2))
+            ->expects($clientServiceCounter)
             ->method('create')
             ->with(
-                new Callback(static function (Client $client) {
-                    return $client->getName() === 'Client_name';
+                new Callback(static function (Client $client) use ($clientServiceCounter) {
+                    return ($clientServiceCounter->numberOfInvocations() === 1 &&
+                            $client->getName() === 'Client_name_1') ||
+                           ($clientServiceCounter->numberOfInvocations() === 2 &&
+                            $client->getName() === 'Client_name_2');
                 })
             )
             ->willReturn(100);
 
+        $categoryServiceCounter = new InvokedCount(2);
+
         $this->categoryService
-            ->expects(self::exactly(2))
+            ->expects($categoryServiceCounter)
             ->method('create')
             ->with(
-                new Callback(static function (Category $category) {
-                    return $category->getName() === 'Category_name';
+                new Callback(static function (Category $category) use ($categoryServiceCounter) {
+                    return ($categoryServiceCounter->numberOfInvocations() === 1 &&
+                            $category->getName() === 'Category_name_1')
+                           || ($categoryServiceCounter->numberOfInvocations() === 2 &&
+                               $category->getName() === 'Category_name_2');
                 })
             )
             ->willReturn(200);
