@@ -33,14 +33,18 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
-use SP\Domain\Import\Ports\ImportParams;
-use SP\Domain\Import\Ports\ImportServiceInterface;
-use SP\Domain\Import\Services\FileImport;
+use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Http\JsonMessage;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ImportController
@@ -51,12 +55,12 @@ final class ImportController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private ImportServiceInterface $importService;
+    private ItemsImportService $importService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        ImportServiceInterface $importService
+        ItemsImportService $importService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -65,6 +69,7 @@ final class ImportController extends SimpleControllerBase
 
     /**
      * @throws JsonException
+     * @throws SPException
      */
     public function importAction(): bool
     {
@@ -77,10 +82,7 @@ final class ImportController extends SimpleControllerBase
 
             SessionContext::close();
 
-            $counter = $this->importService->doImport(
-                $this->getImportParams(),
-                FileImport::fromRequest('inFile', $this->request)
-            );
+            $counter = $this->importService->doImport($this->getImportParams())->getCounter();
 
             $this->eventDispatcher->notify(
                 'run.import.end',
@@ -113,27 +115,43 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @return \SP\Domain\Import\Dtos\ImportParams
+     * @return ImportParamsDto
+     * @throws FileException
      */
-    private function getImportParams(): ImportParams
+    private function getImportParams(): ImportParamsDto
     {
-        $importParams = new ImportParamsDto();
-        $importParams->setDefaultUser(
-            $this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId())
+        return new ImportParamsDto(
+            $this->getFileFromRequest('inFile'),
+            $this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId()),
+            $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()),
+            $this->request->analyzeEncrypted('importPwd'),
+            $this->request->analyzeEncrypted('importMasterPwd'),
+            $this->request->analyzeString('csvDelimiter')
         );
-        $importParams->setDefaultGroup(
-            $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId())
-        );
-        $importParams->setImportPwd($this->request->analyzeEncrypted('importPwd'));
-        $importParams->setImportMasterPwd($this->request->analyzeEncrypted('importMasterPwd'));
-        $importParams->setCsvDelimiter($this->request->analyzeString('csvDelimiter'));
+    }
 
-        return $importParams;
+    /**
+     * @param string $filename
+     * @return FileHandler
+     * @throws FileException
+     */
+    public function getFileFromRequest(string $filename): FileHandler
+    {
+        $file = $this->request->getFile($filename);
+
+        if (!is_array($file)) {
+            throw FileException::error(
+                __u('File successfully uploaded'),
+                __u('Please check the web server user permissions')
+            );
+        }
+
+        return new FileHandler($file['tmp_name']);
     }
 
     /**
      * @return void
-     * @throws JsonException
+     * @throws SPException
      * @throws SessionTimeout
      */
     protected function initialize(): void

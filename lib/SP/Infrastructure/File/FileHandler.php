@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,12 @@
 
 namespace SP\Infrastructure\File;
 
+use RuntimeException;
 use SP\Util\Util;
+use SplFileObject;
 
 use function SP\__;
+use function SP\__u;
 use function SP\logger;
 
 /**
@@ -34,21 +37,16 @@ use function SP\logger;
  *
  * @package SP\Infrastructure\File;
  */
-final class FileHandler implements FileHandlerInterface
+final class FileHandler extends SplFileObject implements FileHandlerInterface
 {
-    private const CHUNK_LENGTH = 8192;
     public const  CHUNK_FACTOR = 3;
-    /**
-     * @var resource
-     */
-    private      $handle;
-    private bool $locked = false;
 
     /**
      * FileHandler constructor.
      */
-    public function __construct(private readonly string $file)
+    public function __construct(private readonly string $file, private readonly string $mode = 'r')
     {
+        parent::__construct($this->file, $this->mode);
     }
 
     /**
@@ -56,54 +54,13 @@ final class FileHandler implements FileHandlerInterface
      *
      * @throws FileException
      */
-    public function write($data): FileHandlerInterface
+    public function write(string $data): FileHandlerInterface
     {
-        if (!is_resource($this->handle)) {
-            $this->open('wb');
-        }
-
-        if (@fwrite($this->handle, $data) === false) {
-            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+        if ($this->fwrite($data) === false) {
+            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 
         return $this;
-    }
-
-    /**
-     * Opens the file
-     *
-     * @return resource
-     * @throws FileException
-     */
-    public function open(string $mode = 'rb', ?bool $lock = false)
-    {
-        $this->handle = @fopen($this->file, $mode);
-
-        if ($lock && $this->locked === false) {
-            $this->lock();
-        }
-
-        if ($this->handle === false) {
-            throw new FileException(sprintf(__('Unable to open the file (%s)'), $this->file));
-        }
-
-        return $this->handle;
-    }
-
-    /**
-     * Lock the file
-     *
-     * @throws FileException
-     */
-    private function lock(int $mode = LOCK_EX): void
-    {
-        $this->locked = flock($this->handle, $mode);
-
-        if (!$this->locked) {
-            throw new FileException(sprintf(__('Unable to obtain a lock (%s)'), $this->file));
-        }
-
-        logger(sprintf('File locked: %s', $this->file));
     }
 
     /**
@@ -113,29 +70,35 @@ final class FileHandler implements FileHandlerInterface
      */
     public function readToString(): string
     {
-        $data = file_get_contents($this->file);
+        $this->autoDetectEOL();
+
+        $data = $this->fread($this->getSize());
 
         if ($data === false) {
-            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
+            throw FileException::error(sprintf(__('Unable to read from file (%s)'), $this->file));
         }
 
         return $data;
     }
 
     /**
-     * Reads data from file into an array
+     * Reads data from a CSV file
      *
      * @throws FileException
      */
-    public function readToArray(): array
+    public function readFromCsv(string $delimiter): iterable
     {
-        $data = @file($this->file, FILE_SKIP_EMPTY_LINES);
+        $this->autoDetectEOL();
 
-        if ($data === false) {
-            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
+        while (!$this->eof()) {
+            $data = $this->fgetcsv($delimiter);
+
+            if ($data === false) {
+                throw FileException::error(__u('Error while reading the CSV file file'), $this->file);
+            }
+
+            yield $data;
         }
-
-        return $data;
     }
 
     /**
@@ -145,59 +108,43 @@ final class FileHandler implements FileHandlerInterface
      */
     public function save(string $data): FileHandlerInterface
     {
-        if (file_put_contents($this->file, $data, LOCK_EX) === false) {
-            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+        $this->lock();
+
+        if ($this->fwrite($data) === false) {
+            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
+
+        $this->unlock();
 
         return $this;
     }
 
     /**
-     * Reads data from file
+     * Lock the file
      *
      * @throws FileException
      */
-    public function read(): string
+    private function lock(): void
     {
-        if (!is_resource($this->handle)) {
-            $this->open();
+        if (!$this->flock(LOCK_EX)) {
+            throw FileException::error(sprintf(__('Unable to obtain a lock (%s)'), $this->file));
         }
 
-        $data = '';
-
-        while (!feof($this->handle)) {
-            $data .= fread($this->handle, self::CHUNK_LENGTH);
-        }
-
-        $this->close();
-
-        return $data;
+        logger(sprintf('File locked: %s', $this->file));
     }
 
     /**
-     * Closes the file
+     * Lock the file
      *
      * @throws FileException
-     */
-    public function close(): FileHandlerInterface
-    {
-        if ($this->locked) {
-            $this->unlock();
-        }
-
-        if (!is_resource($this->handle) || @fclose($this->handle) === false) {
-            throw new FileException(sprintf(__('Unable to close the file (%s)'), $this->file));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Unlock the file
      */
     private function unlock(): void
     {
-        $this->locked = !flock($this->handle, LOCK_UN);
+        if (!$this->flock(LOCK_UN)) {
+            throw FileException::error(sprintf(__('Unable to release a lock (%s)'), $this->file));
+        }
+
+        logger(sprintf('File unlocked: %s', $this->file));
     }
 
     /**
@@ -206,31 +153,44 @@ final class FileHandler implements FileHandlerInterface
      *
      * @throws FileException
      */
-    public function readChunked(
-        callable $chunker = null,
-        ?float   $rate = null
-    ): void {
+    public function readChunked(callable $chunker = null, ?float $rate = null): void
+    {
         $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
 
         if ($rate === null || $rate > $maxRate) {
             $rate = (float)$maxRate;
         }
 
-        if (!is_resource($this->handle)) {
-            $this->open();
-        }
-
-        while (!feof($this->handle)) {
+        while (!$this->eof()) {
             if ($chunker !== null) {
-                $chunker(fread($this->handle, round($rate)));
+                $chunker($this->fread(round($rate)));
             } else {
-                print fread($this->handle, round($rate));
+                print $this->fread(round($rate));
                 ob_flush();
                 flush();
             }
         }
+    }
 
-        $this->close();
+    /**
+     * Opens the file
+     *
+     * @return FileHandler
+     * @throws FileException
+     */
+    public function open(string $mode = 'rb', ?bool $lock = false): FileHandlerInterface
+    {
+        try {
+            $file = new self($mode);
+
+            if ($lock) {
+                $file->lock();
+            }
+        } catch (RuntimeException) {
+            throw FileException::error(sprintf(__('Unable to open the file (%s)'), $this->file));
+        }
+
+        return $file;
     }
 
     /**
@@ -240,8 +200,8 @@ final class FileHandler implements FileHandlerInterface
      */
     public function checkIsWritable(): FileHandlerInterface
     {
-        if (!is_writable($this->file) && @touch($this->file) === false) {
-            throw new FileException(sprintf(__('Unable to write in file (%s)'), $this->file));
+        if (!$this->isWritable()) {
+            throw FileException::error(sprintf(__('Unable to write in file (%s)'), $this->file));
         }
 
         return $this;
@@ -254,8 +214,8 @@ final class FileHandler implements FileHandlerInterface
      */
     public function checkFileExists(): FileHandlerInterface
     {
-        if (!file_exists($this->file)) {
-            throw new FileException(sprintf(__('File not found (%s)'), $this->file));
+        if (!$this->isReadable()) {
+            throw FileException::error(sprintf(__('File not found (%s)'), $this->file));
         }
 
         return $this;
@@ -271,12 +231,12 @@ final class FileHandler implements FileHandlerInterface
      */
     public function getFileSize(bool $isExceptionOnZero = false): int
     {
-        $size = filesize($this->file);
+        $size = $this->getSize();
 
         if ($size === false
             || ($isExceptionOnZero === true && $size === 0)
         ) {
-            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
+            throw FileException::error(sprintf(__('Unable to read/write file (%s)'), $this->file));
         }
 
         return $size;
@@ -300,7 +260,7 @@ final class FileHandler implements FileHandlerInterface
     public function delete(): FileHandlerInterface
     {
         if (file_exists($this->file) && @unlink($this->file) === false) {
-            throw new FileException(sprintf(__('Unable to delete file (%s)'), $this->file));
+            throw FileException::error(sprintf(__('Unable to delete file (%s)'), $this->file));
         }
 
         return $this;
@@ -325,8 +285,8 @@ final class FileHandler implements FileHandlerInterface
      */
     public function checkIsReadable(): FileHandlerInterface
     {
-        if (!is_readable($this->file)) {
-            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
+        if (!$this->isReadable()) {
+            throw FileException::error(sprintf(__('Unable to read/write file (%s)'), $this->file));
         }
 
         return $this;
@@ -339,7 +299,7 @@ final class FileHandler implements FileHandlerInterface
     {
         $this->checkIsReadable();
 
-        return filemtime($this->file) ?: 0;
+        return $this->getMTime() ?: 0;
     }
 
     /**
@@ -351,7 +311,7 @@ final class FileHandler implements FileHandlerInterface
     public function chmod(int $permissions): FileHandlerInterface
     {
         if (chmod($this->file, $permissions) === false) {
-            throw new FileException(sprintf(__('Unable to set permissions for file (%s)'), $this->file));
+            throw FileException::error(sprintf(__('Unable to set permissions for file (%s)'), $this->file));
         }
 
         return $this;
@@ -370,5 +330,13 @@ final class FileHandler implements FileHandlerInterface
     public function getHash(): string
     {
         return sha1_file($this->file);
+    }
+
+    /**
+     * @return void
+     */
+    private function autoDetectEOL(): void
+    {
+        ini_set('auto_detect_line_endings', true);
     }
 }

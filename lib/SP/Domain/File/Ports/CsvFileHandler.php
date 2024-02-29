@@ -22,20 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Ports;
+namespace SP\Domain\File\Ports;
 
-use Exception;
+
+use SP\Infrastructure\File\FileException;
 
 /**
- * Esta clase es la encargada de importar cuentas.
+ * Class CsvFileHandler
  */
-interface ImportServiceInterface
+interface CsvFileHandler
 {
     /**
-     * Iniciar la importación de cuentas.
+     * Read a CSV file
      *
-     * @return int Returns the total number of imported items
-     * @throws Exception
+     * @throws FileException
      */
-    public function doImport(): int;
+    public function readCsv(string $delimiter): iterable;
 }

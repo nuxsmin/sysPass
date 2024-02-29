@@ -24,17 +24,20 @@
 
 namespace SP\Domain\Import\Dtos;
 
+use SP\Infrastructure\File\FileHandlerInterface;
+
 /**
  * Class CsvImportParamsDto
  */
 class CsvImportParamsDto extends ImportParamsDto
 {
     public function __construct(
+        FileHandlerInterface $file,
         int                     $defaultUser,
         int                     $defaultGroup,
         private readonly string $delimiter = ';'
     ) {
-        parent::__construct($defaultUser, $defaultGroup);
+        parent::__construct($file, $defaultUser, $defaultGroup);
     }
 
     public function getDelimiter(): string

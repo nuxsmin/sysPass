@@ -136,8 +136,6 @@ class FileBackupServiceTest extends UnitaryTestCase
                     ->method('write')
                     ->with(self::anything());
         $fileHandler->expects(self::once())
-                    ->method('close');
-        $fileHandler->expects(self::once())
                     ->method('getFile');
         $fileHandler->expects(self::once())
                     ->method('delete');

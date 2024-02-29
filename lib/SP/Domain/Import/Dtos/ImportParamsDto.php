@@ -24,12 +24,12 @@
 
 namespace SP\Domain\Import\Dtos;
 
-use SP\Domain\Import\Ports\ImportParams;
+use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
  * Class ImportParamsDto
  */
-class ImportParamsDto implements ImportParams
+class ImportParamsDto
 {
     /**
      * @param int $defaultUser The default user to use as the owner of the imported items
@@ -38,10 +38,12 @@ class ImportParamsDto implements ImportParams
      * @param string|null $masterPassword The master password used for the items encrypted
      */
     public function __construct(
-        private readonly int     $defaultUser,
-        private readonly int     $defaultGroup,
-        private readonly ?string $password = null,
-        private readonly ?string $masterPassword = null
+        private readonly FileHandlerInterface $file,
+        private readonly int                  $defaultUser,
+        private readonly int                  $defaultGroup,
+        private readonly ?string              $password = null,
+        private readonly ?string              $masterPassword = null,
+        private readonly string               $delimiter = ';'
     ) {
     }
 
@@ -64,5 +66,15 @@ class ImportParamsDto implements ImportParams
     public function getDefaultUser(): int
     {
         return $this->defaultUser;
+    }
+
+    public function getFile(): FileHandlerInterface
+    {
+        return $this->file;
+    }
+
+    public function getDelimiter(): string
+    {
+        return $this->delimiter;
     }
 }

@@ -40,7 +40,7 @@ abstract class FileCacheBase implements FileCacheService
     public function __construct(?string $path = null)
     {
         if (null !== $path) {
-            $this->path = new FileHandler($path);
+            $this->path = new FileHandler($path, 'rwb');
         }
     }
 

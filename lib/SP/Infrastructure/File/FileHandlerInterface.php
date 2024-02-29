@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ interface FileHandlerInterface
      *
      * @throws FileException
      */
-    public function write($data): FileHandlerInterface;
+    public function write(string $data): FileHandlerInterface;
 
     /**
      * Opens the file
@@ -44,7 +44,7 @@ interface FileHandlerInterface
      * @return resource
      * @throws FileException
      */
-    public function open(string $mode = 'rb', ?bool $lock = false);
+    public function open(string $mode = 'rb', ?bool $lock = false): FileHandlerInterface;
 
     /**
      * Reads data from file into a string
@@ -54,32 +54,11 @@ interface FileHandlerInterface
     public function readToString(): string;
 
     /**
-     * Reads data from file into an array
-     *
-     * @throws FileException
-     */
-    public function readToArray(): array;
-
-    /**
      * Saves a string into a file
      *
      * @throws FileException
      */
     public function save(string $data): FileHandlerInterface;
-
-    /**
-     * Reads data from file
-     *
-     * @throws FileException
-     */
-    public function read(): string;
-
-    /**
-     * Closes the file
-     *
-     * @throws FileException
-     */
-    public function close(): FileHandlerInterface;
 
     /**
      * @param callable|null $chunker
@@ -156,4 +135,11 @@ interface FileHandlerInterface
     public function getName(): string;
 
     public function getHash(): string;
+
+    /**
+     * Reads data from a CSV file
+     *
+     * @throws FileException
+     */
+    public function readFromCsv(string $delimiter): iterable;
 }

@@ -39,8 +39,8 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Services\XmlVerify;
-use SP\Domain\Import\Ports\ImportParams;
-use SP\Domain\Import\Ports\ImportService;
+use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Util\VersionUtil;
 
@@ -50,16 +50,16 @@ use function SP\processException;
 /**
  * Esta clase es la encargada de importar cuentas desde sysPass
  */
-final class SyspassImport extends XmlImportBase
+final class SyspassImport extends XmlImportBase implements ItemsImportService
 {
     /**
      * Iniciar la importación desde sysPass.
      *
-     * @param ImportParams $importParams
-     * @return ImportService
+     * @param ImportParamsDto $importParams
+     * @return ItemsImportService
      * @throws ImportException
      */
-    public function doImport(ImportParams $importParams): ImportService
+    public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         try {
             $this->eventDispatcher->notify(
@@ -121,7 +121,7 @@ final class SyspassImport extends XmlImportBase
      *
      * @throws ImportException
      */
-    protected function processEncrypted(ImportParams $importParams): void
+    protected function processEncrypted(ImportParamsDto $importParams): void
     {
         $hash = $this->document
             ->getElementsByTagName('Encrypted')
@@ -185,7 +185,7 @@ final class SyspassImport extends XmlImportBase
     /**
      * Checks XML file's data integrity using the signed hash
      */
-    protected function checkIntegrity(ImportParams $importParams): void
+    protected function checkIntegrity(ImportParamsDto $importParams): void
     {
         $key = $importParams->getPassword() ?? sha1($this->configData->getPasswordSalt());
 
@@ -386,7 +386,7 @@ final class SyspassImport extends XmlImportBase
      *
      * @throws ImportException
      */
-    protected function processAccounts(ImportParams $importParams): void
+    protected function processAccounts(ImportParamsDto $importParams): void
     {
         $this->getNodesData(
             'Accounts',

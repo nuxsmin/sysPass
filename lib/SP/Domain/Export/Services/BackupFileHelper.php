@@ -52,7 +52,7 @@ final class BackupFileHelper implements BackupFileHelperService
         private readonly PhpExtensionCheckerService $phpExtensionCheckerService,
         private readonly DirectoryHandlerService    $directoryHandlerService
     ) {
-        $this->hash = $this->buildHash();
+        $this->hash = BackupFileHelper::buildHash();
         $this->directoryHandlerService->checkOrCreate();
         $this->appBackupFilename = self::getAppBackupFilename($this->directoryHandlerService->getPath(), $this->hash);
         $this->dbBackupFilename = self::getDbBackupFilename($this->directoryHandlerService->getPath(), $this->hash);
@@ -63,7 +63,7 @@ final class BackupFileHelper implements BackupFileHelperService
      *
      * @return string
      */
-    private function buildHash(): string
+    private static function buildHash(): string
     {
         return sha1(uniqid(self::BACKUP_PREFFIX, true));
     }
@@ -99,17 +99,9 @@ final class BackupFileHelper implements BackupFileHelperService
     /**
      * @return FileHandlerInterface
      */
-    public function getAppBackupFileHandler(): FileHandlerInterface
-    {
-        return new FileHandler($this->appBackupFilename);
-    }
-
-    /**
-     * @return FileHandlerInterface
-     */
     public function getDbBackupFileHandler(): FileHandlerInterface
     {
-        return new FileHandler($this->dbBackupFilename);
+        return new FileHandler($this->dbBackupFilename, 'w');
     }
 
     /**

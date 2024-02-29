@@ -22,18 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Ports;
+namespace SP\Domain\Import\Services;
 
 /**
- * Class ImportParamsDto
+ * Enum XmlFormat
  */
-interface ImportParams
+enum XmlFormat: string
 {
-    public function getPassword(): ?string;
-
-    public function getDefaultGroup(): int;
-
-    public function getMasterPassword(): ?string;
-
-    public function getDefaultUser(): int;
+    case Syspass = 'syspass';
+    case Keepass = 'keepass';
 }

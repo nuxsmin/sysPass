@@ -26,6 +26,7 @@ namespace SP\Domain\Import\Ports;
 
 use DOMDocument;
 use SP\Domain\Import\Services\ImportException;
+use SP\Domain\Import\Services\XmlFormat;
 
 /**
  * Class XmlFileImport
@@ -39,7 +40,7 @@ interface XmlFileService
      *
      * @throws ImportException
      */
-    public function detectXMLFormat(): string;
+    public function detectFormat(): XmlFormat;
 
-    public function getXmlDOM(): DOMDocument;
+    public function getDocument(): DOMDocument;
 }

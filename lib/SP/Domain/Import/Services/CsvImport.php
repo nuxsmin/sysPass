@@ -32,11 +32,10 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Import\Dtos\CsvImportParamsDto;
-use SP\Domain\Import\Ports\FileImportService;
-use SP\Domain\Import\Ports\ImportParams;
-use SP\Domain\Import\Ports\ImportService;
+use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
 
 use function SP\__;
 use function SP\__u;
@@ -45,15 +44,15 @@ use function SP\processException;
 /**
  * Class CsvImport
  */
-final class CsvImport extends ImportBase
+final class CsvImport extends ImportBase implements ItemsImportService
 {
     private const NUM_FIELDS = 7;
 
     public function __construct(
-        Application                        $application,
-        ImportHelper                       $importHelper,
-        CryptInterface                     $crypt,
-        private readonly FileImportService $fileImport
+        Application                           $application,
+        ImportHelper                          $importHelper,
+        CryptInterface                        $crypt,
+        private readonly FileHandlerInterface $fileHandler
     ) {
         parent::__construct($application, $importHelper, $crypt);
     }
@@ -61,12 +60,12 @@ final class CsvImport extends ImportBase
     /**
      * Import the data from a CSV file
      *
-     * @param CsvImportParamsDto|ImportParams $importParams
-     * @return ImportService
+     * @param ImportParamsDto $importParams
+     * @return ItemsImportService
      * @throws FileException
      * @throws ImportException
      */
-    public function doImport(CsvImportParamsDto|ImportParams $importParams): ImportService
+    public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         $this->eventDispatcher->notify(
             'run.import.csv',
@@ -86,11 +85,11 @@ final class CsvImport extends ImportBase
      * @throws ImportException
      * @throws FileException
      */
-    private function processAccounts(CsvImportParamsDto $importParamsDto): void
+    private function processAccounts(ImportParamsDto $importParamsDto): void
     {
         $line = 0;
 
-        foreach ($this->fileImport->readFileToArrayFromCsv($importParamsDto->getDelimiter()) as $fields) {
+        foreach ($this->fileHandler->readFromCsv($importParamsDto->getDelimiter()) as $fields) {
             $line++;
             $numfields = count($fields);
 

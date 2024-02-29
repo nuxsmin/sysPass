@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use RuntimeException;
-use SP\Domain\Storage\Ports\FileCacheInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 
 /**
  * Class FileCachePacked
@@ -66,7 +66,7 @@ final class FileCachePacked extends FileCacheBase
     /**
      * @throws FileException
      */
-    public function save(mixed $data, ?string $path = null): FileCacheInterface
+    public function save(mixed $data, ?string $path = null): FileCacheService
     {
         $this->checkOrInitializePath($path);
         $this->createPath();
@@ -82,7 +82,7 @@ final class FileCachePacked extends FileCacheBase
             );
         }
 
-        $this->path->checkIsWritable()->write($data)->close();
+        $this->path->write($data);
 
         return $this;
     }

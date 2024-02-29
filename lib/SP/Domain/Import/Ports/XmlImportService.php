@@ -30,6 +30,6 @@ namespace SP\Domain\Import\Ports;
  *
  * @package SP
  */
-interface XmlImportService extends ImportService
+interface XmlImportService extends ItemsImportService
 {
 }

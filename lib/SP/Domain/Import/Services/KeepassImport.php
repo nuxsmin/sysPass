@@ -34,8 +34,8 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Ports\ImportParams;
-use SP\Domain\Import\Ports\ImportService;
+use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Util\Filter;
 use SplObjectStorage;
@@ -46,7 +46,7 @@ use function SP\processException;
 /**
  * Class KeepassImport
  */
-final class KeepassImport extends XmlImportBase
+final class KeepassImport extends XmlImportBase implements ItemsImportService
 {
     /**
      * @var SplObjectStorage<AccountCreateDto>[] $items
@@ -56,11 +56,11 @@ final class KeepassImport extends XmlImportBase
     /**
      * Iniciar la importación desde KeePass
      *
-     * @param ImportParams $importParams
-     * @return ImportService
+     * @param ImportParamsDto $importParams
+     * @return ItemsImportService
      * @throws SPException
      */
-    public function doImport(ImportParams $importParams): ImportService
+    public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         $this->eventDispatcher->notify(
             'run.import.keepass',
@@ -77,7 +77,7 @@ final class KeepassImport extends XmlImportBase
      *
      * @throws SPException
      */
-    private function process(ImportParams $importParamsDto): void
+    private function process(ImportParamsDto $importParamsDto): void
     {
         $clientId = $this->addClient(new Client(['name' => 'KeePass']));
 

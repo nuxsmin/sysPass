@@ -22,43 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Ports;
-
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
+namespace SP\Infrastructure\File;
 
 /**
- * Interface FileImportService
+ * Class CsvFileHandler
  */
-interface FileImportService
+final class CsvFileHandler implements \SP\Domain\File\Ports\CsvFileHandler
 {
-    public function getFilePath(): string;
 
-    /**
-     * @throws FileException
-     */
-    public function getFileType(): string;
-
-    /**
-     * Leer los datos de un archivo subido a un array
-     *
-     * @throws FileException
-     */
-    public function readFileToArray(): array;
-
-    /**
-     * Leer los datos de un archivo subido a una cadena
-     *
-     * @throws FileException
-     */
-    public function readFileToString(): string;
-
-    public function getFileHandler(): FileHandlerInterface;
+    public function __construct(private readonly FileHandlerInterface $fileHandler)
+    {
+    }
 
     /**
      * Read a CSV file
      *
      * @throws FileException
      */
-    public function readFileToArrayFromCsv(string $delimiter): iterable;
+    public function readCsv(string $delimiter): iterable
+    {
+        $handler = $this->fileHandler->open();
+
+        while (($fields = fgetcsv($handler, 0, $delimiter)) !== false) {
+            yield $fields;
+        }
+
+        $this->fileHandler->close();
+    }
 }

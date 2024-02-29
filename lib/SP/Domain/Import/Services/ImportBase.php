@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagServiceInterface;
@@ -101,7 +101,7 @@ abstract class ImportBase extends Service implements ImportService
      * @throws SPException
      * @throws CryptException
      */
-    final protected function addAccount(AccountCreateDto $accountCreateDto, ImportParams $importParams): void
+    final protected function addAccount(AccountCreateDto $accountCreateDto, ImportParamsDto $importParams): void
     {
         if (empty($accountCreateDto->getCategoryId())) {
             throw new ImportException(__u('Category Id not set. Unable to import account.'));
@@ -159,7 +159,7 @@ abstract class ImportBase extends Service implements ImportService
     /**
      * @throws ServiceException
      */
-    private function validateHash(ImportParams $importParams): bool
+    private function validateHash(ImportParamsDto $importParams): bool
     {
         if (!empty($importParams->getMasterPassword())) {
             try {

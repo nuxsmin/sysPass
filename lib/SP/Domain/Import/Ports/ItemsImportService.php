@@ -22,36 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
-
-use SP\Domain\Core\Exceptions\CheckException;
-use SP\Infrastructure\File\ArchiveHandlerInterface;
-use SP\Infrastructure\File\FileHandlerInterface;
+namespace SP\Domain\Import\Ports;
 
 /**
- * BackupFiles
+ * Interface ItemsImportService
  */
-interface BackupFileHelperService
+interface ItemsImportService extends ImportService
 {
     /**
-     * @return FileHandlerInterface
+     * Devolver el contador de objetos importados
+     *
+     * @return int
      */
-    public function getDbBackupFileHandler(): FileHandlerInterface;
-
-    /**
-     * @return ArchiveHandlerInterface
-     * @throws CheckException
-     */
-    public function getDbBackupArchiveHandler(): ArchiveHandlerInterface;
-
-    /**
-     * @return ArchiveHandlerInterface
-     * @throws CheckException
-     */
-    public function getAppBackupArchiveHandler(): ArchiveHandlerInterface;
-
-    /**
-     * @return string
-     */
-    public function getHash(): string;
+    public function getCounter(): int;
 }

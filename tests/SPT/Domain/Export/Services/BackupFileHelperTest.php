@@ -91,16 +91,6 @@ class BackupFileHelperTest extends UnitaryTestCase
         $this->backupFileHelper->getDbBackupArchiveHandler();
     }
 
-    public function testGetAppBackupFileHandler()
-    {
-        $this->phpExtensionCheckerService
-            ->expects(self::once())
-            ->method('checkPhar')
-            ->with(true);
-
-        $this->backupFileHelper->getAppBackupArchiveHandler();
-    }
-
     public function testGetDbBackupFileHandler()
     {
         $expected = BackupFileHelper::getDbBackupFilename(TMP_PATH, $this->backupFileHelper->getHash());
@@ -111,10 +101,12 @@ class BackupFileHelperTest extends UnitaryTestCase
 
     public function testGetAppBackupArchiveHandler()
     {
-        $expected = BackupFileHelper::getAppBackupFilename(TMP_PATH, $this->backupFileHelper->getHash());
-        $out = $this->backupFileHelper->getAppBackupFileHandler();
+        $this->phpExtensionCheckerService
+            ->expects(self::once())
+            ->method('checkPhar')
+            ->with(true);
 
-        $this->assertEquals($expected, $out->getFile());
+        $this->backupFileHelper->getAppBackupArchiveHandler();
     }
 
     /**

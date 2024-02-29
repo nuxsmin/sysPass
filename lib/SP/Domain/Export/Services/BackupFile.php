@@ -71,7 +71,6 @@ final class BackupFile implements BackupFileService
     ) {
         $this->config = $application->getConfig();
         $this->eventDispatcher = $application->getEventDispatcher();
-
         $this->configData = $this->config->getConfigData();
     }
 
@@ -253,7 +252,6 @@ final class BackupFile implements BackupFileService
         ];
 
         $fileHandler->write(implode(PHP_EOL, $sqlOut));
-        $fileHandler->close();
 
         $this->backupFileHelperService->getDbBackupArchiveHandler()->compressFile($fileHandler->getFile());
 

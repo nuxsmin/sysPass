@@ -30,13 +30,16 @@ use SP\Core\Application;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Import\Ports\FileImportService;
-use SP\Domain\Import\Ports\ImportParams;
+use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportService;
+use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
+use SP\Util\Util;
 
 use function SP\__;
 use function SP\__u;
+use function SP\logger;
 
 /**
  * Esta clase es la encargada de importar cuentas.
@@ -54,11 +57,10 @@ final class Import extends Service implements ImportService
     ];
 
     public function __construct(
-        private readonly Application       $application,
-        private readonly ImportHelper      $importHelper,
-        private readonly FileImportService $fileImport,
-        private readonly CryptInterface    $crypt,
-        private readonly Repository        $repository
+        private readonly Application    $application,
+        private readonly ImportHelper   $importHelper,
+        private readonly CryptInterface $crypt,
+        private readonly Repository     $repository
     ) {
         parent::__construct($application);
     }
@@ -67,35 +69,35 @@ final class Import extends Service implements ImportService
     /**
      * Iniciar la importación de cuentas.
      *
-     * @return ImportService Returns the total number of imported items
+     * @return ItemsImportService Returns the total number of imported items
      * @throws Exception
      */
-    public function doImport(ImportParams $importParams): ImportService
+    public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         set_time_limit(0);
 
-        return $this->repository->transactionAware(fn() => $this->factory()->doImport($importParams), $this);
+        return $this->repository->transactionAware(
+            fn(): ItemsImportService => $this->factory($importParams)->doImport($importParams),
+            $this
+        );
     }
 
     /**
      * @throws ImportException
      * @throws FileException
      */
-    protected function factory(): ImportService
+    protected function factory(ImportParamsDto $importParams): ItemsImportService
     {
-        $fileType = $this->fileImport->getFileType();
+        $fileHandler = $importParams->getFile();
+        $this->checkFile($fileHandler);
+        $fileType = $fileHandler->getType();
 
         switch ($fileType) {
             case 'text/plain':
-                return new CsvImport($this->application, $this->importHelper, $this->crypt, $this->fileImport);
+                return new CsvImport($this->application, $this->importHelper, $this->crypt, $fileHandler);
             case 'text/xml':
             case 'application/xml':
-                return new XmlImport(
-                    $this->application,
-                    $this->importHelper,
-                    new XmlFile($this->fileImport->getFileHandler()),
-                    $this->crypt
-                );
+            return $this->xmlFactory($importParams);
         }
 
         throw ImportException::error(
@@ -105,10 +107,57 @@ final class Import extends Service implements ImportService
     }
 
     /**
+     * @throws FileException
      * @throws ImportException
      */
-    public function getCounter(): int
+    private function checkFile(FileHandlerInterface $fileHandler): void
     {
-        throw ImportException::info(__u('Not implemented'));
+        try {
+            $fileHandler->checkIsReadable();
+
+            if (!in_array($fileHandler->getFileType(), self::ALLOWED_MIME)) {
+                throw ImportException::error(
+                    __u('File type not allowed'),
+                    sprintf(__('MIME type: %s'), $fileHandler->getFileType())
+                );
+            }
+        } catch (FileException $e) {
+            logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
+
+            throw FileException::error(
+                __u('Internal error while reading the file'),
+                __u('Please, check PHP configuration for upload files'),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
+    /**
+     * @throws ImportException
+     * @throws FileException
+     */
+    protected function xmlFactory(ImportParamsDto $importParams): ItemsImportService
+    {
+        $xmlFileService = XmlFile::builder($importParams->getFile());
+
+        switch ($xmlFileService->detectFormat()) {
+            case XmlFormat::Syspass:
+                return new SyspassImport(
+                    $this->application,
+                    $this->importHelper,
+                    $this->crypt,
+                    $xmlFileService
+                );
+            case XmlFormat::Keepass:
+                return new KeepassImport(
+                    $this->application,
+                    $this->importHelper,
+                    $this->crypt,
+                    $xmlFileService
+                );
+        }
+
+        throw ImportException::error(__u('Format not detected'));
     }
 }

@@ -55,7 +55,7 @@ abstract class XmlImportBase extends ImportBase
     ) {
         parent::__construct($application, $importHelper, $crypt);
         $this->configData = $application->getConfig()->getConfigData();
-        $this->document = $xmlFileImport->getXmlDOM();
+        $this->document = $xmlFileImport->getDocument();
     }
 
     /**

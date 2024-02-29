@@ -39,8 +39,6 @@ interface Repository
      *
      * @param Closure $closure
      * @param object $newThis
-     *
-     * @return mixed
      * @throws ServiceException
      * @throws Exception
      */

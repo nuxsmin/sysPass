@@ -24,21 +24,16 @@
 
 namespace SP\Domain\Import\Ports;
 
+use SP\Domain\Import\Dtos\ImportParamsDto;
+
 /**
  * Interface ImportService
  */
 interface ImportService
 {
     /**
-     * @param ImportParams $importParams
-     * @return ImportService
+     * @param ImportParamsDto $importParams
+     * @return ItemsImportService
      */
-    public function doImport(ImportParams $importParams): ImportService;
-
-    /**
-     * Devolver el contador de objetos importados
-     *
-     * @return int
-     */
-    public function getCounter(): int;
+    public function doImport(ImportParamsDto $importParams): ItemsImportService;
 }

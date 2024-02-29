@@ -36,12 +36,12 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Import\Dtos\CsvImportParamsDto;
-use SP\Domain\Import\Ports\FileImportService;
 use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**
@@ -52,12 +52,11 @@ use SPT\UnitaryTestCase;
 class CsvImportTest extends UnitaryTestCase
 {
 
-    private AccountService|MockObject    $accountService;
-    private MockObject|CategoryService   $categoryService;
-    private ClientService|MockObject     $clientService;
-    private CryptInterface|MockObject    $crypt;
-    private FileImportService|MockObject $fileImportService;
-    private CsvImport                    $csvImport;
+    private AccountService|MockObject       $accountService;
+    private MockObject|CategoryService      $categoryService;
+    private ClientService|MockObject        $clientService;
+    private FileHandlerInterface|MockObject $fileHandler;
+    private CsvImport                       $csvImport;
 
 
     /**
@@ -66,15 +65,15 @@ class CsvImportTest extends UnitaryTestCase
      */
     public function testDoImport()
     {
-        $params = new CsvImportParamsDto(1, 1);
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
         $accounts = static function () {
             yield ['Account_name', 'Client_name_1', 'Category_name_1', 'a_url', 'a_login', 'a_password', 'a_note'];
             yield ['Account_name', 'Client_name_2', 'Category_name_2', 'a_url', 'a_login', 'a_password', 'a_note'];
         };
 
-        $this->fileImportService
+        $this->fileHandler
             ->expects(self::once())
-            ->method('readFileToArrayFromCsv')
+            ->method('readFromCsv')
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
@@ -132,15 +131,15 @@ class CsvImportTest extends UnitaryTestCase
      */
     public function testDoImportWithWrongFields()
     {
-        $params = new CsvImportParamsDto(1, 1);
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
         $accounts = static function () {
             yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password'];
             yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
         };
 
-        $this->fileImportService
+        $this->fileHandler
             ->expects(self::once())
-            ->method('readFileToArrayFromCsv')
+            ->method('readFromCsv')
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
@@ -168,11 +167,11 @@ class CsvImportTest extends UnitaryTestCase
      */
     public function testDoImportWithoutLines()
     {
-        $params = new CsvImportParamsDto(1, 1);
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
 
-        $this->fileImportService
+        $this->fileHandler
             ->expects(self::once())
-            ->method('readFileToArrayFromCsv')
+            ->method('readFromCsv')
             ->with($params->getDelimiter())
             ->willReturn([]);
 
@@ -201,15 +200,15 @@ class CsvImportTest extends UnitaryTestCase
      */
     public function testDoImportWithEmptyClient()
     {
-        $params = new CsvImportParamsDto(1, 1);
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
         $accounts = static function () {
             yield ['Account_name', '', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
             yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
         };
 
-        $this->fileImportService
+        $this->fileHandler
             ->expects(self::once())
-            ->method('readFileToArrayFromCsv')
+            ->method('readFromCsv')
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
@@ -257,15 +256,15 @@ class CsvImportTest extends UnitaryTestCase
      */
     public function testDoImportWithEmptyCategory()
     {
-        $params = new CsvImportParamsDto(1, 1);
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
         $accounts = static function () {
             yield ['Account_name', 'Client_name', '', 'a_url', 'a_login', 'a_password', 'a_note'];
             yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
         };
 
-        $this->fileImportService
+        $this->fileHandler
             ->expects(self::once())
-            ->method('readFileToArrayFromCsv')
+            ->method('readFromCsv')
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
@@ -324,9 +323,9 @@ class CsvImportTest extends UnitaryTestCase
             $this->createMock(ConfigService::class)
         );
 
-        $this->crypt = $this->createMock(CryptInterface::class);
-        $this->fileImportService = $this->createMock(FileImportService::class);
+        $crypt = $this->createMock(CryptInterface::class);
+        $this->fileHandler = $this->createMock(FileHandlerInterface::class);
 
-        $this->csvImport = new CsvImport($this->application, $importHelper, $this->crypt, $this->fileImportService);
+        $this->csvImport = new CsvImport($this->application, $importHelper, $crypt, $this->fileHandler);
     }
 }

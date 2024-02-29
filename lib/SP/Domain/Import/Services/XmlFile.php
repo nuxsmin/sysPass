@@ -28,24 +28,23 @@ use DOMDocument;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
+use ValueError;
 
 use function SP\__u;
 use function SP\logger;
+use function SP\processException;
 
 /**
- * Class XmlFileImport
- *
- * @package Import
+ * Class XmlFile
  */
 final class XmlFile implements XmlFileService
 {
-    protected ?DOMDocument $xmlDOM = null;
+    private ?DOMDocument $document = null;
 
     /**
      * @throws ImportException
-     * @throws FileException
      */
-    public function __construct(protected readonly FileHandlerInterface $fileHandler)
+    private function __construct(protected readonly FileHandlerInterface $fileHandler)
     {
         $this->readXMLFile();
     }
@@ -54,20 +53,17 @@ final class XmlFile implements XmlFileService
      * Leer el archivo a un objeto XML.
      *
      * @throws ImportException
-     * @throws FileException
      */
     protected function readXMLFile(): void
     {
-        $this->fileHandler->checkIsReadable();
-
         libxml_use_internal_errors(true);
 
         // Cargar el XML con DOM
-        $this->xmlDOM = new DOMDocument();
-        $this->xmlDOM->formatOutput = false;
-        $this->xmlDOM->preserveWhiteSpace = false;
+        $this->document = new DOMDocument();
+        $this->document->formatOutput = false;
+        $this->document->preserveWhiteSpace = false;
 
-        if ($this->xmlDOM->load($this->fileHandler->getFile(), LIBXML_PARSEHUGE) === false) {
+        if ($this->document->load($this->fileHandler->getFile(), LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
                 logger(__METHOD__ . ' - ' . $error->message);
             }
@@ -77,20 +73,31 @@ final class XmlFile implements XmlFileService
     }
 
     /**
+     * @throws ImportException
+     * @throws FileException
+     */
+    public static function builder(FileHandlerInterface $fileHandler): XmlFileService
+    {
+        $fileHandler->checkIsReadable();
+
+        return new self($fileHandler);
+    }
+
+    /**
      * Detectar la aplicación que generó el XML.
      *
      * @throws ImportException
      */
-    public function detectXMLFormat(): string
+    public function detectFormat(): XmlFormat
     {
-        $nodes = $this->xmlDOM->getElementsByTagName('Generator');
+        $nodes = $this->document->getElementsByTagName('Generator');
 
-        if ($nodes->length > 0) {
-            $value = strtolower($nodes->item(0)->nodeValue);
-
-            if ($value === 'keepass' || $value === 'syspass') {
-                return $value;
+        try {
+            if ($nodes->length > 0) {
+                return XmlFormat::from(strtolower($nodes->item(0)->nodeValue));
             }
+        } catch (ValueError $e) {
+            processException($e);
         }
 
         throw ImportException::error(
@@ -99,8 +106,8 @@ final class XmlFile implements XmlFileService
         );
     }
 
-    public function getXmlDOM(): DOMDocument
+    public function getDocument(): DOMDocument
     {
-        return $this->xmlDOM;
+        return $this->document;
     }
 }
