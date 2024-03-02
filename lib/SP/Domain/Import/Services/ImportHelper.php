@@ -33,7 +33,7 @@ use SP\Domain\Tag\Ports\TagServiceInterface;
 /**
  * A helper class to provide the needed services.
  */
-final class ImportHelper
+class ImportHelper
 {
 
     public function __construct(

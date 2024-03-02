@@ -32,7 +32,6 @@ use ValueError;
 
 use function SP\__u;
 use function SP\logger;
-use function SP\processException;
 
 /**
  * Class XmlFile
@@ -41,12 +40,33 @@ final class XmlFile implements XmlFileService
 {
     private readonly DOMDocument $document;
 
+    private function __construct()
+    {
+        $this->createDocument();
+    }
+
+    /**
+     * @return void
+     */
+    private function createDocument(): void
+    {
+        $this->document = new DOMDocument();
+        $this->document->formatOutput = false;
+        $this->document->preserveWhiteSpace = false;
+    }
+
     /**
      * @throws ImportException
+     * @throws FileException
      */
-    private function __construct(protected readonly FileHandlerInterface $fileHandler)
+    public function builder(FileHandlerInterface $fileHandler): XmlFileService
     {
-        $this->readXMLFile();
+        $fileHandler->checkIsReadable();
+
+        $self = new self();
+        $self->readXMLFile($fileHandler->getFile());
+
+        return $self;
     }
 
     /**
@@ -54,33 +74,19 @@ final class XmlFile implements XmlFileService
      *
      * @throws ImportException
      */
-    protected function readXMLFile(): void
+    protected function readXMLFile(string $file): void
     {
         libxml_use_internal_errors(true);
 
-        // Cargar el XML con DOM
-        $this->document = new DOMDocument();
-        $this->document->formatOutput = false;
-        $this->document->preserveWhiteSpace = false;
+        $this->createDocument();
 
-        if ($this->document->load($this->fileHandler->getFile(), LIBXML_PARSEHUGE) === false) {
+        if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
                 logger(__METHOD__ . ' - ' . $error->message);
             }
 
             throw ImportException::error(__u('Internal error'), __u('Unable to process the XML file'));
         }
-    }
-
-    /**
-     * @throws ImportException
-     * @throws FileException
-     */
-    public static function builder(FileHandlerInterface $fileHandler): XmlFileService
-    {
-        $fileHandler->checkIsReadable();
-
-        return new self($fileHandler);
     }
 
     /**
@@ -93,17 +99,15 @@ final class XmlFile implements XmlFileService
         $nodes = $this->document->getElementsByTagName('Generator');
 
         try {
-            if ($nodes->length > 0) {
-                return XmlFormat::from(strtolower($nodes->item(0)->nodeValue));
-            }
+            return XmlFormat::from(strtolower($nodes->item(0)?->nodeValue));
         } catch (ValueError $e) {
-            processException($e);
+            throw ImportException::error(
+                __u('XML file not supported'),
+                __u('Unable to guess the application which data was exported from'),
+                $e->getCode(),
+                $e
+            );
         }
-
-        throw ImportException::error(
-            __u('XML file not supported'),
-            __u('Unable to guess the application which data was exported from')
-        );
     }
 
     public function getDocument(): DOMDocument

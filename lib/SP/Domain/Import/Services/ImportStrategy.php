@@ -30,6 +30,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Import\Ports\ItemsImportService;
+use SP\Domain\Import\Ports\XmlFileService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
@@ -56,7 +57,8 @@ final class ImportStrategy extends Service implements ImportStrategyService
     public function __construct(
         private readonly Application    $application,
         private readonly ImportHelper   $importHelper,
-        private readonly CryptInterface $crypt
+        private readonly CryptInterface $crypt,
+        private readonly XmlFileService $xmlFile,
     ) {
         parent::__construct($application);
     }
@@ -77,8 +79,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
     private function fileTypeFactory(ImportParamsDto $importParams): ItemsImportService
     {
         $fileHandler = $importParams->getFile();
-        $this->checkFile($fileHandler);
-        $fileType = $fileHandler->getFileType();
+        $fileType = $this->checkFile($fileHandler);
 
         switch ($fileType) {
             case 'text/plain':
@@ -86,7 +87,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
                 return new CsvImport($this->application, $this->importHelper, $this->crypt, $fileHandler);
             case 'text/xml':
             case 'application/xml':
-                return $this->xmlFactory($importParams);
+            return $this->xmlFactory($fileHandler);
         }
 
         throw ImportException::error(
@@ -99,17 +100,21 @@ final class ImportStrategy extends Service implements ImportStrategyService
      * @throws FileException
      * @throws ImportException
      */
-    private function checkFile(FileHandlerInterface $fileHandler): void
+    private function checkFile(FileHandlerInterface $fileHandler): string
     {
         try {
             $fileHandler->checkIsReadable();
 
-            if (!in_array($fileHandler->getFileType(), self::ALLOWED_MIME)) {
+            $fileType = $fileHandler->getFileType();
+
+            if (!in_array($fileType, self::ALLOWED_MIME)) {
                 throw ImportException::error(
                     __u('File type not allowed'),
-                    sprintf(__('MIME type: %s'), $fileHandler->getFileType())
+                    sprintf(__('MIME type: %s'), $fileType)
                 );
             }
+
+            return $fileType;
         } catch (FileException $e) {
             logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
 
@@ -126,24 +131,24 @@ final class ImportStrategy extends Service implements ImportStrategyService
      * @throws ImportException
      * @throws FileException
      */
-    protected function xmlFactory(ImportParamsDto $importParams): ItemsImportService
+    protected function xmlFactory(FileHandlerInterface $fileHandler): ItemsImportService
     {
-        $xmlFileService = XmlFile::builder($importParams->getFile());
+        $xmlFile = $this->xmlFile->builder($fileHandler);
 
-        switch ($xmlFileService->detectFormat()) {
+        switch ($xmlFile->detectFormat()) {
             case XmlFormat::Syspass:
                 return new SyspassImport(
                     $this->application,
                     $this->importHelper,
                     $this->crypt,
-                    $xmlFileService->getDocument()
+                    $xmlFile->getDocument()
                 );
             case XmlFormat::Keepass:
                 return new KeepassImport(
                     $this->application,
                     $this->importHelper,
                     $this->crypt,
-                    $xmlFileService->getDocument()
+                    $xmlFile->getDocument()
                 );
         }
 

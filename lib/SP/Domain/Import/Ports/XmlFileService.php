@@ -27,6 +27,8 @@ namespace SP\Domain\Import\Ports;
 use DOMDocument;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFormat;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
  * Class XmlFileImport
@@ -36,11 +38,26 @@ use SP\Domain\Import\Services\XmlFormat;
 interface XmlFileService
 {
     /**
-     * Detectar la aplicación que generó el XML.
+     * Detects the XML format.
+     * If {@link  XmlFileService::builder} is not called first, it will fail.
      *
      * @throws ImportException
      */
     public function detectFormat(): XmlFormat;
 
+    /**
+     * Returns the XML document.
+     * If {@link  XmlFileService::builder} is not called first, it will return a blank document.
+     *
+     * @return DOMDocument
+     */
     public function getDocument(): DOMDocument;
+
+    /**
+     * Builds a new instance of {@link XmlFileService} with the XML file loaded.
+     *
+     * @throws ImportException
+     * @throws FileException
+     */
+    public function builder(FileHandlerInterface $fileHandler): XmlFileService;
 }
