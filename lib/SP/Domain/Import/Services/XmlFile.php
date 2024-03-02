@@ -39,7 +39,7 @@ use function SP\processException;
  */
 final class XmlFile implements XmlFileService
 {
-    private ?DOMDocument $document = null;
+    private readonly DOMDocument $document;
 
     /**
      * @throws ImportException

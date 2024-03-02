@@ -29,7 +29,6 @@ use DOMElement;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Import\Ports\XmlFileService;
 
 use function SP\__;
 use function SP\__u;
@@ -41,21 +40,19 @@ use function SP\__u;
  */
 abstract class XmlImportBase extends ImportBase
 {
-    protected readonly DOMDocument         $document;
     protected readonly ConfigDataInterface $configData;
 
     /**
      * ImportBase constructor.
      */
     public function __construct(
-        Application                       $application,
-        ImportHelper                      $importHelper,
-        CryptInterface                    $crypt,
-        protected readonly XmlFileService $xmlFileImport
+        Application                    $application,
+        ImportHelper                   $importHelper,
+        CryptInterface                 $crypt,
+        protected readonly DOMDocument $document
     ) {
         parent::__construct($application, $importHelper, $crypt);
         $this->configData = $application->getConfig()->getConfigData();
-        $this->document = $xmlFileImport->getDocument();
     }
 
     /**

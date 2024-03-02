@@ -155,7 +155,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
         }
 
         if ($line === 0) {
-            throw ImportException::error(__('No lines read from the file'));
+            throw ImportException::warning(__('No lines read from the file'));
         }
     }
 }
