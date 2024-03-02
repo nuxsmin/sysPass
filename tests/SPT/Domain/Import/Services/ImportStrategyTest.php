@@ -176,6 +176,54 @@ class ImportStrategyTest extends UnitaryTestCase
         self::assertInstanceOf(KeepassImport::class, $out);
     }
 
+    /**
+     * @throws ImportException
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testBuildImportWithFileException()
+    {
+        $fileHandler = $this->createMock(FileHandlerInterface::class);
+        $fileHandler->expects(self::once())
+                    ->method('checkIsReadable')
+                    ->willThrowException(FileException::error('test'));
+
+        $importParamsDto = self::createMock(ImportParamsDto::class);
+        $importParamsDto->expects(self::once())
+                        ->method('getFile')
+                        ->willReturn($fileHandler);
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Internal error while reading the file');
+
+        $this->importStrategy->buildImport($importParamsDto);
+    }
+
+    /**
+     * @throws ImportException
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testBuildImportWithMimeTypeException()
+    {
+        $fileHandler = $this->createMock(FileHandlerInterface::class);
+        $fileHandler->expects(self::once())
+                    ->method('checkIsReadable');
+        $fileHandler->expects(self::once())
+                    ->method('getFileType')
+                    ->willReturn('a_file_type');
+
+        $importParamsDto = self::createMock(ImportParamsDto::class);
+        $importParamsDto->expects(self::once())
+                        ->method('getFile')
+                        ->willReturn($fileHandler);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Mime type not supported ("a_file_type")');
+
+        $this->importStrategy->buildImport($importParamsDto);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

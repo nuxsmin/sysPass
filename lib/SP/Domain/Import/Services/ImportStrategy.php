@@ -79,21 +79,16 @@ final class ImportStrategy extends Service implements ImportStrategyService
     private function fileTypeFactory(ImportParamsDto $importParams): ItemsImportService
     {
         $fileHandler = $importParams->getFile();
-        $fileType = $this->checkFile($fileHandler);
 
-        switch ($fileType) {
-            case 'text/plain':
-            case 'text/csv':
-                return new CsvImport($this->application, $this->importHelper, $this->crypt, $fileHandler);
-            case 'text/xml':
-            case 'application/xml':
-            return $this->xmlFactory($fileHandler);
-        }
-
-        throw ImportException::error(
-            sprintf(__('Mime type not supported ("%s")'), $fileType),
-            __u('Please, check the file format')
-        );
+        return match ($this->checkFile($fileHandler)) {
+            'text/plain', 'text/csv' => new CsvImport(
+                $this->application,
+                $this->importHelper,
+                $this->crypt,
+                $fileHandler
+            ),
+            'text/xml', 'application/xml' => $this->xmlFactory($fileHandler)
+        };
     }
 
     /**
@@ -109,8 +104,8 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             if (!in_array($fileType, self::ALLOWED_MIME)) {
                 throw ImportException::error(
-                    __u('File type not allowed'),
-                    sprintf(__('MIME type: %s'), $fileType)
+                    sprintf(__('Mime type not supported ("%s")'), $fileType),
+                    __u('Please, check the file format')
                 );
             }
 
@@ -135,23 +130,21 @@ final class ImportStrategy extends Service implements ImportStrategyService
     {
         $xmlFile = $this->xmlFile->builder($fileHandler);
 
-        switch ($xmlFile->detectFormat()) {
-            case XmlFormat::Syspass:
-                return new SyspassImport(
-                    $this->application,
-                    $this->importHelper,
-                    $this->crypt,
-                    $xmlFile->getDocument()
-                );
-            case XmlFormat::Keepass:
-                return new KeepassImport(
-                    $this->application,
-                    $this->importHelper,
-                    $this->crypt,
-                    $xmlFile->getDocument()
-                );
-        }
-
-        throw ImportException::error(__u('Format not detected'));
+        return match ($xmlFile->detectFormat()) {
+            XmlFormat::Syspass =>
+            new SyspassImport(
+                $this->application,
+                $this->importHelper,
+                $this->crypt,
+                $xmlFile->getDocument()
+            ),
+            XmlFormat::Keepass =>
+            new KeepassImport(
+                $this->application,
+                $this->importHelper,
+                $this->crypt,
+                $xmlFile->getDocument()
+            )
+        };
     }
 }
