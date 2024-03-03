@@ -208,234 +208,193 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
     /**
      * Obtener las categorías y añadirlas a sysPass.
-     *
-     * @throws ImportException
      */
     protected function processCategories(): void
     {
-        $this->getNodesData(
-            'Categories',
-            'Category',
-            function (DOMElement $category) {
-                $nodesIterator = new CallbackFilterIterator(
-                    $category->childNodes->getIterator(),
-                    static fn(DOMElement $element) => isset($element->tagName)
-                );
+        foreach ($this->getNodesData('Categories', 'Category') as $category) {
+            $nodesIterator = new CallbackFilterIterator(
+                $category->childNodes->getIterator(),
+                static fn(DOMElement $element) => isset($element->tagName)
+            );
 
-                $data = [];
+            $data = [];
 
-                /** @var DOMElement $node */
-                foreach ($nodesIterator as $node) {
-                    $data[$node->tagName] = $node->nodeValue;
-                }
-
-                try {
-                    $this->addCategory(new Category($data));
-
-                    $this->eventDispatcher->notify(
-                        'run.import.syspass.process.category',
-                        new Event(
-                            $this,
-                            EventMessage::factory()
-                                ->addDetail(__u('Category imported'), $data['name'])
-                        )
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
-                }
+            /** @var DOMElement $node */
+            foreach ($nodesIterator as $node) {
+                $data[$node->tagName] = $node->nodeValue;
             }
-        );
+
+            try {
+                $this->addCategory(new Category($data));
+
+                $this->eventDispatcher->notify(
+                    'run.import.syspass.process.category',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                                    ->addDetail(__u('Category imported'), $data['name'])
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+            }
+        }
     }
 
-    /**
-     * Obtener los clientes y añadirlos a sysPass.
-     *
-     * @throws ImportException
-     */
-    protected function processClients(): void
+    private function processClients(): void
     {
-        $this->getNodesData(
-            'Clients',
-            'Client',
-            function (DOMElement $client) {
-                $nodesIterator = new CallbackFilterIterator(
-                    $client->childNodes->getIterator(),
-                    static fn(DOMElement $element) => isset($element->tagName)
-                );
+        foreach ($this->getNodesData('Clients', 'Client') as $client) {
+            $nodesIterator = new CallbackFilterIterator(
+                $client->childNodes->getIterator(),
+                static fn(DOMElement $element) => isset($element->tagName)
+            );
 
-                $data = [];
+            $data = [];
 
-                /** @var DOMElement $node */
-                foreach ($nodesIterator as $node) {
-                    $data[$node->tagName] = $node->nodeValue;
-                }
-
-                try {
-                    $this->addClient(new Client($data));
-
-                    $this->eventDispatcher->notify(
-                        'run.import.syspass.process.client',
-                        new Event(
-                            $this,
-                            EventMessage::factory()
-                                ->addDetail(__u('Client imported'), $data['name'])
-                        )
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
-                }
+            /** @var DOMElement $node */
+            foreach ($nodesIterator as $node) {
+                $data[$node->tagName] = $node->nodeValue;
             }
-        );
+
+            try {
+                $this->addClient(new Client($data));
+
+                $this->eventDispatcher->notify(
+                    'run.import.syspass.process.client',
+                    new Event(
+                        $this,
+                        EventMessage::factory()
+                                    ->addDetail(__u('Client imported'), $data['name'])
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+            }
+        }
     }
 
     /**
-     * Obtener los clientes y añadirlos a sysPass.
-     *
-     * @throws ImportException
      * @deprecated
      */
-    protected function processCustomers(): void
+    private function processCustomers(): void
     {
-        $this->getNodesData(
-            'Customers',
-            'Customer',
-            function (DOMElement $client) {
-                $nodesIterator = new CallbackFilterIterator(
-                    $client->childNodes->getIterator(),
-                    static fn(DOMElement $element) => isset($element->tagName)
-                );
+        foreach ($this->getNodesData('Customers', 'Customer') as $customer) {
+            $nodesIterator = new CallbackFilterIterator(
+                $customer->childNodes->getIterator(),
+                static fn(DOMElement $element) => isset($element->tagName)
+            );
 
-                $data = [];
+            $data = [];
 
-                /** @var DOMElement $node */
-                foreach ($nodesIterator as $node) {
-                    $data[$node->tagName] = $node->nodeValue;
-                }
-
-                try {
-                    $this->addClient(new Client($data));
-
-                    $this->eventDispatcher->notify(
-                        'run.import.syspass.process.customer',
-                        new Event(
-                            $this,
-                            EventMessage::factory()->addDetail(__u('Client imported'), $data['name'])
-                        )
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
-                }
+            /** @var DOMElement $node */
+            foreach ($nodesIterator as $node) {
+                $data[$node->tagName] = $node->nodeValue;
             }
-        );
+
+            try {
+                $this->addClient(new Client($data));
+
+                $this->eventDispatcher->notify(
+                    'run.import.syspass.process.customer',
+                    new Event(
+                        $this,
+                        EventMessage::factory()->addDetail(__u('Client imported'), $data['name'])
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+            }
+        }
     }
 
-    /**
-     * Obtener las etiquetas y añadirlas a sysPass.
-     *
-     * @throws ImportException
-     */
-    protected function processTags(): void
+    private function processTags(): void
     {
-        $this->getNodesData(
-            'Tags',
-            'Tag',
-            function (DOMElement $tag) {
-                $nodesIterator = new CallbackFilterIterator(
-                    $tag->childNodes->getIterator(),
-                    static fn(DOMElement $element) => isset($element->tagName)
-                );
+        foreach ($this->getNodesData('Tags', 'Tag') as $tag) {
+            $nodesIterator = new CallbackFilterIterator(
+                $tag->childNodes->getIterator(),
+                static fn(DOMElement $element) => isset($element->tagName)
+            );
 
-                $data = [];
+            $data = [];
 
-                /** @var DOMElement $node */
-                foreach ($nodesIterator as $node) {
-                    if ($node->tagName === 'name') {
-                        $data['name'] = $node->nodeValue;
-                        $data['id'] = $node->getAttribute('id');
-                    }
-                }
-
-                try {
-                    $this->addTag(new Tag($data));
-
-                    $this->eventDispatcher->notify(
-                        'run.import.syspass.process.tag',
-                        new Event(
-                            $this,
-                            EventMessage::factory()->addDetail(__u('Tag imported'), $data['name'])
-                        )
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
-                }
-            },
-            false
-        );
-    }
-
-    /**
-     * Obtener los datos de las cuentas de sysPass y crearlas.
-     *
-     * @throws ImportException
-     */
-    protected function processAccounts(ImportParamsDto $importParams): void
-    {
-        $this->getNodesData(
-            'Accounts',
-            'Account',
-            function (DOMElement $account) use ($importParams) {
-                $data = [];
-
-                $nodesIterator = new CallbackFilterIterator(
-                    $account->childNodes->getIterator(),
-                    static fn(DOMElement $element) => isset($element->tagName)
-                );
-
-                /** @var DOMElement $node */
-                foreach ($nodesIterator as $node) {
-                    switch ($node->tagName) {
-                        case 'categoryId':
-                            $data['categoryId'] =
-                                $this->getOrSetCache(self::ITEM_CATEGORY, (int)$node->nodeValue);
-                            break;
-                        case 'clientId':
-                        case 'customerId':
-                            $data['clientId'] =
-                                $this->getOrSetCache(self::ITEM_CLIENT, (int)$node->nodeValue);
-                            break;
-                        case 'tags':
-                            $data['tags'] = $this->processAccountTags($node->childNodes);
-                            break;
-                        default:
-                            $data[$node->tagName] = $node->nodeValue;
-                    }
-                }
-
-                try {
-                    $this->addAccount(AccountCreateDto::fromAccount(new Account($data)), $importParams, true);
-
-                    $this->eventDispatcher->notify(
-                        'run.import.syspass.process.account',
-                        new Event(
-                            $this,
-                            EventMessage::factory()->addDetail(__u('Account imported'), $data['name'])
-                        )
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
+            /** @var DOMElement $node */
+            foreach ($nodesIterator as $node) {
+                if ($node->tagName === 'name') {
+                    $data['name'] = $node->nodeValue;
+                    $data['id'] = $node->getAttribute('id');
                 }
             }
-        );
+
+            try {
+                $this->addTag(new Tag($data));
+
+                $this->eventDispatcher->notify(
+                    'run.import.syspass.process.tag',
+                    new Event(
+                        $this,
+                        EventMessage::factory()->addDetail(__u('Tag imported'), $data['name'])
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+            }
+        }
+    }
+
+    private function processAccounts(ImportParamsDto $importParams): void
+    {
+        foreach ($this->getNodesData('Accounts', 'Account') as $account) {
+            $data = [];
+
+            $nodesIterator = new CallbackFilterIterator(
+                $account->childNodes->getIterator(),
+                static fn(DOMElement $element) => isset($element->tagName)
+            );
+
+            /** @var DOMElement $node */
+            foreach ($nodesIterator as $node) {
+                switch ($node->tagName) {
+                    case 'categoryId':
+                        $data['categoryId'] =
+                            $this->getOrSetCache(self::ITEM_CATEGORY, (int)$node->nodeValue);
+                        break;
+                    case 'clientId':
+                    case 'customerId':
+                        $data['clientId'] =
+                            $this->getOrSetCache(self::ITEM_CLIENT, (int)$node->nodeValue);
+                        break;
+                    case 'tags':
+                        $data['tags'] = $this->processAccountTags($node->childNodes);
+                        break;
+                    default:
+                        $data[$node->tagName] = $node->nodeValue;
+                }
+            }
+
+            try {
+                $this->addAccount(AccountCreateDto::fromAccount(new Account($data)), $importParams, true);
+
+                $this->eventDispatcher->notify(
+                    'run.import.syspass.process.account',
+                    new Event(
+                        $this,
+                        EventMessage::factory()->addDetail(__u('Account imported'), $data['name'])
+                    )
+                );
+            } catch (Exception $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+            }
+        }
     }
 
     /**

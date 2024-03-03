@@ -26,12 +26,10 @@ namespace SP\Domain\Import\Services;
 
 use DOMDocument;
 use DOMElement;
+use Iterator;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
-
-use function SP\__;
-use function SP\__u;
 
 /**
  * Class XmlImportBase
@@ -56,40 +54,25 @@ abstract class XmlImportBase extends ImportBase
     }
 
     /**
-     * Obtener los datos de los nodos
+     * Get data from child nodes
      *
-     * @param string $nodeName Nombre del nodo principal
-     * @param string $childNodeName Nombre de los nodos hijos
-     * @param callable $callback Método a ejecutar
-     * @param bool $required Indica si el nodo es requerido
+     * @param string $nodeName Parent node name
+     * @param string $childNodeName Child node name
      *
-     * @throws ImportException
+     * @return iterable<DOMElement>
      */
-    protected function getNodesData(
-        string $nodeName,
-        string $childNodeName,
-        callable $callback,
-        bool   $required = true
-    ): void {
-        $nodeList = $this->document->getElementsByTagName($nodeName);
+    protected function getNodesData(string $nodeName, string $childNodeName): iterable
+    {
+        /** @var Iterator<int, DOMElement> $outerNodeList */
+        $outerNodeList = $this->document->getElementsByTagName($nodeName)->getIterator();
 
-        if ($nodeList->length > 0) {
-            if (!is_callable($callback)) {
-                throw ImportException::warning(__u('Invalid Method'), $callback);
-            }
+        foreach ($outerNodeList as $outerNode) {
+            /** @var Iterator<int, DOMElement> $innerNodeList */
+            $innerNodeList = $outerNode->getElementsByTagName($childNodeName)->getIterator();
 
-            /** @var DOMElement $nodes */
-            foreach ($nodeList as $nodes) {
-                /** @var DOMElement $Account */
-                foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
-                    $callback($node);
-                }
+            foreach ($innerNodeList as $innerNode) {
+                yield $innerNode;
             }
-        } elseif ($required === true) {
-            throw ImportException::warning(
-                __u('Invalid XML format'),
-                sprintf(__('"%s" node doesn\'t exist'), $nodeName)
-            );
         }
     }
 }
