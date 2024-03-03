@@ -313,7 +313,6 @@ class CsvImportTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->categoryService = $this->createMock(CategoryService::class);
         $this->clientService = $this->createMock(ClientService::class);
-        $this->tagService = $this->createMock(TagServiceInterface::class);
 
         $importHelper = new ImportHelper(
             $this->accountService,

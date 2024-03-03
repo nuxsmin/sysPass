@@ -35,7 +35,6 @@ use SP\Domain\Tag\Ports\TagServiceInterface;
  */
 class ImportHelper
 {
-
     public function __construct(
         private readonly AccountService      $accountService,
         private readonly CategoryService     $categoryService,

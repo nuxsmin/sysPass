@@ -57,7 +57,7 @@ abstract class Dto
      */
     public function set(string $property, mixed $value): static|null
     {
-        if (property_exists($this, $property) && !in_array($property, $this->reservedProperties)) {
+        if ($this->checkProperty($property)) {
             $self = clone $this;
             $self->{$property} = $value;
 
@@ -65,5 +65,35 @@ abstract class Dto
         }
 
         return null;
+    }
+
+    private function checkProperty(string $property): bool
+    {
+        return property_exists($this, $property) && !in_array($property, $this->reservedProperties);
+    }
+
+    /**
+     * Set any properties in bacth mode. This allows to set any property from dynamic calls.
+     *
+     * @param string[] $properties
+     * @param array $values
+     *
+     * @return Dto Returns a new instance with the poperties set.
+     */
+    public function setBatch(array $properties, array $values): static
+    {
+        $self = clone $this;
+
+        $filteredProperties = array_filter(
+            array_combine($properties, $values),
+            fn($key) => is_string($key) && $this->checkProperty($key),
+            ARRAY_FILTER_USE_KEY
+        );
+
+        foreach ($filteredProperties as $property => $value) {
+            $self->{$property} = $value;
+        }
+
+        return $self;
     }
 }

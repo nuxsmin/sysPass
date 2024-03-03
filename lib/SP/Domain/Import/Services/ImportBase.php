@@ -66,7 +66,6 @@ abstract class ImportBase extends Service implements ImportService
     protected readonly ClientService       $clientService;
     protected readonly TagServiceInterface $tagService;
     protected readonly ConfigService       $configService;
-    private array                          $items;
     private array $cache;
 
     public function __construct(
@@ -101,37 +100,43 @@ abstract class ImportBase extends Service implements ImportService
      * @throws SPException
      * @throws CryptException
      */
-    final protected function addAccount(AccountCreateDto $accountCreateDto, ImportParamsDto $importParams): void
-    {
+    final protected function addAccount(
+        AccountCreateDto $accountCreateDto,
+        ImportParamsDto  $importParams,
+        bool             $useEncryption = false
+    ): void {
         if (empty($accountCreateDto->getCategoryId())) {
-            throw new ImportException(__u('Category Id not set. Unable to import account.'));
+            throw ImportException::error(__u('Category Id not set. Unable to import account.'));
         }
 
         if (empty($accountCreateDto->getClientId())) {
-            throw new ImportException(__u('Client Id not set. Unable to import account.'));
+            throw ImportException::error(__u('Client Id not set. Unable to import account.'));
         }
 
-        $hasValidHash = $this->getOrSetCache(
-            self::ITEM_MASTER_PASS_HASH,
-            '',
-            fn() => $this->validateHash($importParams)
+        $dto = $accountCreateDto->setBatch(
+            ['userId', 'userGroupId'],
+            [$importParams->getDefaultUser(), $importParams->getDefaultGroup()]
         );
 
-        $dto = $accountCreateDto
-            ->set('userId', $importParams->getDefaultUser())
-            ->set('userGroupId', $importParams->getDefaultGroup());
+        if ($useEncryption) {
+            $hasValidHash = $this->getOrSetCache(
+                self::ITEM_MASTER_PASS_HASH,
+                'current',
+                fn() => $this->validateHash($importParams)
+            );
 
-        if ($hasValidHash === false && !empty($importParams->getMasterPassword())) {
-            if ($this->version >= 210) {
-                $pass = $this->crypt->decrypt(
-                    $accountCreateDto->getPass(),
-                    $accountCreateDto->getKey(),
-                    $importParams->getMasterPassword()
-                );
+            if ($hasValidHash === true && !empty($importParams->getMasterPassword())) {
+                if ($this->version >= 210) {
+                    $pass = $this->crypt->decrypt(
+                        $accountCreateDto->getPass(),
+                        $accountCreateDto->getKey(),
+                        $importParams->getMasterPassword()
+                    );
 
-                $dto = $accountCreateDto->set('pass', $pass)->set('key', '');
-            } else {
-                throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
+                    $dto = $accountCreateDto->setBatch(['pass', 'key'], [$pass, '']);
+                } else {
+                    throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
+                }
             }
         }
 
@@ -167,7 +172,7 @@ abstract class ImportBase extends Service implements ImportService
                     $importParams->getMasterPassword(),
                     $this->configService->getByParam('masterPwd')
                 );
-            } catch (NoSuchItemException $e) {
+            } catch (NoSuchItemException) {
                 return false;
             }
         }
@@ -184,8 +189,8 @@ abstract class ImportBase extends Service implements ImportService
         return $this->getOrSetCache(
             self::ITEM_CATEGORY,
             $category->getName(),
-            fn(): ?int => $this->categoryService->getByName($category->getName())?->getId()
-                ?: $this->categoryService->create($category)
+            fn(): int => $this->categoryService->getByName($category->getName())?->getId()
+                         ?? $this->categoryService->create($category)
         );
     }
 
@@ -195,14 +200,12 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addClient(Client $client): int
     {
-        $clientId = $this->getOrSetCache(
+        return $this->getOrSetCache(
             self::ITEM_CLIENT,
             $client->getName(),
-            fn(): ?int => $this->clientService->getByName($client->getName())?->getId()
-                ?: $this->clientService->create($client)
+            fn(): int => $this->clientService->getByName($client->getName())?->getId()
+                         ?? $this->clientService->create($client)
         );
-
-        return $clientId ?? $this->clientService->create($client);
     }
 
     /**
@@ -213,8 +216,8 @@ abstract class ImportBase extends Service implements ImportService
         return $this->getOrSetCache(
             self::ITEM_TAG,
             $tag->getId(),
-            fn(): ?int => $this->tagService->getByName($tag->getName())?->getId()
-                ?: $this->tagService->create($tag)
+            fn(): int => $this->tagService->getByName($tag->getName())?->getId()
+                         ?? $this->tagService->create($tag)
         );
     }
 }

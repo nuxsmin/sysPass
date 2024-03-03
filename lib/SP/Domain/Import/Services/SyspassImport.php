@@ -420,7 +420,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 }
 
                 try {
-                    $this->addAccount(AccountCreateDto::fromAccount(new Account($data)), $importParams);
+                    $this->addAccount(AccountCreateDto::fromAccount(new Account($data)), $importParams, true);
 
                     $this->eventDispatcher->notify(
                         'run.import.syspass.process.account',
