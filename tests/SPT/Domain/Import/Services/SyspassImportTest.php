@@ -813,13 +813,13 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('decrypt');
 
         $this->accountService
-            ->expects(self::exactly(4))
+            ->expects(self::exactly(5))
             ->method('create')
             ->willThrowException(new RuntimeException('test'));
 
         $out = $this->sysPassImport->doImport($importParamsDto);
 
-        $this->assertEquals(5, $out->getCounter());
+        $this->assertEquals(0, $out->getCounter());
     }
 
     protected function setUp(): void
