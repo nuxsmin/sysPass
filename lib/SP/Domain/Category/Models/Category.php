@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ class Category extends Model implements DataModelInterface
     protected ?string $description = null;
     protected ?string $hash        = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

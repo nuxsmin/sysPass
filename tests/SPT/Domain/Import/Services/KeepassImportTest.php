@@ -51,12 +51,10 @@ class KeepassImportTest extends UnitaryTestCase
 
     private const KEEPASS_FILE = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .
                                  'data_keepass.xml';
-    private CryptInterface|MockObject      $crypt;
-    private KeepassImport                  $keepassImport;
-    private AccountService|MockObject      $accountService;
-    private MockObject|CategoryService     $categoryService;
-    private ClientService|MockObject       $clientService;
-    private TagServiceInterface|MockObject $tagService;
+    private KeepassImport              $keepassImport;
+    private AccountService|MockObject  $accountService;
+    private MockObject|CategoryService $categoryService;
+    private ClientService|MockObject   $clientService;
 
     /**
      * @throws Exception
@@ -152,21 +150,20 @@ class KeepassImportTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->categoryService = $this->createMock(CategoryService::class);
         $this->clientService = $this->createMock(ClientService::class);
-        $this->tagService = $this->createMock(TagServiceInterface::class);
 
         $importHelper = new ImportHelper(
             $this->accountService,
             $this->categoryService,
             $this->clientService,
-            $this->tagService,
+            $this->createMock(TagServiceInterface::class),
             $this->createMock(ConfigService::class)
         );
 
-        $this->crypt = $this->createMock(CryptInterface::class);
+        $crypt = $this->createMock(CryptInterface::class);
 
         $document = new DOMDocument();
         $document->load(self::KEEPASS_FILE, LIBXML_NOBLANKS);
 
-        $this->keepassImport = new KeepassImport($this->application, $importHelper, $this->crypt, $document);
+        $this->keepassImport = new KeepassImport($this->application, $importHelper, $crypt, $document);
     }
 }

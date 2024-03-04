@@ -133,7 +133,7 @@ abstract class ImportBase extends Service implements ImportService
                         $importParams->getMasterPassword()
                     );
 
-                    $dto = $accountCreateDto->setBatch(['pass', 'key'], [$pass, '']);
+                    $dto = $dto->setBatch(['pass', 'key'], [$pass, '']);
                 } else {
                     throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
                 }
@@ -186,9 +186,11 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addCategory(Category $category): int
     {
+        $key = $category->getId() ?? $category->getName();
+
         return $this->getOrSetCache(
             self::ITEM_CATEGORY,
-            $category->getName(),
+            $key,
             fn(): int => $this->categoryService->getByName($category->getName())?->getId()
                          ?? $this->categoryService->create($category)
         );
@@ -200,9 +202,11 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addClient(Client $client): int
     {
+        $key = $client->getId() ?? $client->getName();
+
         return $this->getOrSetCache(
             self::ITEM_CLIENT,
-            $client->getName(),
+            $key,
             fn(): int => $this->clientService->getByName($client->getName())?->getId()
                          ?? $this->clientService->create($client)
         );
@@ -213,9 +217,11 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addTag(Tag $tag): int
     {
+        $key = $tag->getId() ?? $tag->getName();
+
         return $this->getOrSetCache(
             self::ITEM_TAG,
-            $tag->getId(),
+            $key,
             fn(): int => $this->tagService->getByName($tag->getName())?->getId()
                          ?? $this->tagService->create($tag)
         );
