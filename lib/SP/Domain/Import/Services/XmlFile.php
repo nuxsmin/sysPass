@@ -40,7 +40,7 @@ final class XmlFile implements XmlFileService
 {
     private readonly DOMDocument $document;
 
-    private function __construct()
+    public function __construct()
     {
         $this->createDocument();
     }
@@ -78,8 +78,6 @@ final class XmlFile implements XmlFileService
     {
         libxml_use_internal_errors(true);
 
-        $this->createDocument();
-
         if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
                 logger(__METHOD__ . ' - ' . $error->message);
@@ -104,8 +102,7 @@ final class XmlFile implements XmlFileService
             throw ImportException::error(
                 __u('XML file not supported'),
                 __u('Unable to guess the application which data was exported from'),
-                $e->getCode(),
-                $e
+                $e->getCode()
             );
         }
     }
