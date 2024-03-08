@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,25 +46,17 @@ use function SP\processException;
  */
 final class MysqlService implements DatabaseSetupInterface
 {
-    private InstallData           $installData;
-    private DbStorageInterface    $DBStorage;
-    private DatabaseFileInterface $databaseFile;
-    private DatabaseUtil          $databaseUtil;
 
     /**
      * MySQL constructor.
      *
      */
     public function __construct(
-        DbStorageInterface $DBStorage,
-        InstallData $installData,
-        DatabaseFileInterface $databaseFile,
-        DatabaseUtil $databaseUtil
+        private readonly DbStorageInterface    $dbStorage,
+        private readonly InstallData           $installData,
+        private readonly DatabaseFileInterface $databaseFile,
+        private readonly DatabaseUtil          $databaseUtil
     ) {
-        $this->installData = $installData;
-        $this->DBStorage = $DBStorage;
-        $this->databaseFile = $databaseFile;
-        $this->databaseUtil = $databaseUtil;
     }
 
     /**
@@ -78,7 +70,7 @@ final class MysqlService implements DatabaseSetupInterface
     public function connectDatabase(): void
     {
         try {
-            $this->DBStorage->getConnectionSimple();
+            $this->dbStorage->getConnectionSimple();
         } catch (SPException $e) {
             processException($e);
 
@@ -103,14 +95,16 @@ final class MysqlService implements DatabaseSetupInterface
 
         try {
             // Comprobar si el usuario proporcionado existe
-            $sth = $this->DBStorage->getConnectionSimple()
-                ->prepare('SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)');
+            $sth = $this->dbStorage->getConnectionSimple()
+                                   ->prepare(
+                                       'SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)'
+                                   );
 
             $sth->execute([
-                $user,
-                $this->installData->getDbAuthHost(),
-                $this->installData->getDbAuthHostDns(),
-            ]);
+                              $user,
+                              $this->installData->getDbAuthHost(),
+                              $this->installData->getDbAuthHostDns(),
+                          ]);
 
             // Si no existe el usuario, se intenta crear
             if ((int)$sth->fetchColumn() === 0) {
@@ -148,7 +142,7 @@ final class MysqlService implements DatabaseSetupInterface
         try {
             $query = 'CREATE USER %s@%s IDENTIFIED BY %s';
 
-            $dbc = $this->DBStorage->getConnectionSimple();
+            $dbc = $this->dbStorage->getConnectionSimple();
 
             $dbc->exec(
                 sprintf(
@@ -203,7 +197,7 @@ final class MysqlService implements DatabaseSetupInterface
             }
 
             try {
-                $dbc = $this->DBStorage->getConnectionSimple();
+                $dbc = $this->dbStorage->getConnectionSimple();
 
                 $dbc->exec(
                     sprintf(
@@ -267,8 +261,10 @@ final class MysqlService implements DatabaseSetupInterface
 
     public function checkDatabaseExists(): bool
     {
-        $sth = $this->DBStorage->getConnectionSimple()
-            ->prepare('SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1');
+        $sth = $this->dbStorage->getConnectionSimple()
+                               ->prepare(
+                                   'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1'
+                               );
         $sth->execute([$this->installData->getDbName()]);
 
         return (int)$sth->fetchColumn() === 1;
@@ -276,7 +272,7 @@ final class MysqlService implements DatabaseSetupInterface
 
     public function rollback(?string $dbUser = null): void
     {
-        $dbc = $this->DBStorage->getConnectionSimple();
+        $dbc = $this->dbStorage->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
             foreach (DatabaseUtil::TABLES as $table) {
@@ -306,7 +302,8 @@ final class MysqlService implements DatabaseSetupInterface
                 );
 
                 if ($this->installData->getDbAuthHostDns()
-                    && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                    && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
+                ) {
                     $dbc->exec(
                         sprintf(
                             'DROP USER IF EXISTS %s@%s',
@@ -327,7 +324,7 @@ final class MysqlService implements DatabaseSetupInterface
     private function checkDatabase(string $exceptionHint): void
     {
         try {
-            $this->DBStorage
+            $this->dbStorage
                 ->getConnectionSimple()
                 ->exec(sprintf('USE `%s`', $this->installData->getDbName()));
         } catch (PDOException $e) {
@@ -357,7 +354,7 @@ final class MysqlService implements DatabaseSetupInterface
         );
 
         try {
-            $dbc = $this->DBStorage->getConnectionSimple();
+            $dbc = $this->dbStorage->getConnectionSimple();
 
             foreach ($this->databaseFile->parse() as $query) {
                 $dbc->exec($query);

@@ -64,34 +64,20 @@ final class InstallerService implements InstallerServiceInterface
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private RequestInterface            $request;
-    private ConfigFileService           $config;
-    private UserServiceInterface        $userService;
-    private UserGroupServiceInterface   $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
-    private ConfigService               $configService;
-    private DatabaseConnectionData      $databaseConnectionData;
-    private DatabaseSetupInterface      $databaseSetup;
-    private ?InstallData                $installData = null;
+    private RequestInterface $request;
+    private ?InstallData     $installData = null;
 
     public function __construct(
-        RequestInterface            $request,
-        ConfigFileService           $config,
-        UserServiceInterface        $userService,
-        UserGroupServiceInterface   $userGroupService,
-        UserProfileServiceInterface $userProfileService,
-        ConfigService               $configService,
-        DatabaseConnectionData      $databaseConnectionData,
-        DatabaseSetupInterface      $databaseSetup
+        RequestInterface                             $request,
+        private readonly ConfigFileService           $config,
+        private readonly UserServiceInterface        $userService,
+        private readonly UserGroupServiceInterface   $userGroupService,
+        private readonly UserProfileServiceInterface $userProfileService,
+        private readonly ConfigService               $configService,
+        private readonly DatabaseConnectionData      $databaseConnectionData,
+        private readonly DatabaseSetupInterface      $databaseSetup
     ) {
         $this->request = $request;
-        $this->config = $config;
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
-        $this->userProfileService = $userProfileService;
-        $this->configService = $configService;
-        $this->databaseConnectionData = $databaseConnectionData;
-        $this->databaseSetup = $databaseSetup;
     }
 
     /**
@@ -236,8 +222,8 @@ final class InstallerService implements InstallerServiceInterface
             $this->installData->setDbPort(3306);
         }
 
-        if (strpos($this->installData->getDbHost(), 'localhost') === false
-            && strpos($this->installData->getDbHost(), '127.0.0.1') === false
+        if (!str_contains($this->installData->getDbHost(), 'localhost')
+            && !str_contains($this->installData->getDbHost(), '127.0.0.1')
         ) {
             // Use real IP address when unitary testing, because no HTTP request is performed
             // FIXME

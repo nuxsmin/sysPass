@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ use SP\Infrastructure\File\FileHandler;
  */
 final class MysqlSetupBuilder implements MysqlSetupBuilderInterface
 {
-    private const DATABASE_SCHEMA_FILE = SQL_PATH.DIRECTORY_SEPARATOR.'dbstructure.sql';
+    private const DATABASE_SCHEMA_FILE = SQL_PATH . DIRECTORY_SEPARATOR . 'dbstructure.sql';
 
     public static function build(InstallData $installData): DatabaseSetupInterface
     {
