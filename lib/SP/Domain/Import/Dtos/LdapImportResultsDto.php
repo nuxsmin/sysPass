@@ -22,29 +22,46 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Ports;
-
-use SP\Domain\Import\Dtos\LdapImportParamsDto;
-use SP\Domain\Import\Dtos\LdapImportResultsDto;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
+namespace SP\Domain\Import\Dtos;
 
 /**
- * Class UserLdapService
- *
- * @package SP\Domain\User\Services
+ * Class LdapImportResultsDto
  */
-interface LdapImportService
+final class LdapImportResultsDto
 {
-    /**
-     * Sincronizar usuarios de LDAP
-     *
-     * @throws LdapException
-     */
-    public function importGroups(LdapParams $ldapParams, LdapImportParamsDto $ldapImportParams): LdapImportResultsDto;
+    private int $syncedObjects = 0;
+    private int $errorObjects  = 0;
 
     /**
-     * @throws LdapException
+     * @param int $totalObjects
      */
-    public function importUsers(LdapParams $ldapParams, LdapImportParamsDto $ldapImportParams): LdapImportResultsDto;
+    public function __construct(private readonly int $totalObjects)
+    {
+    }
+
+
+    public function addSyncedObject(): void
+    {
+        $this->syncedObjects++;
+    }
+
+    public function addErrorObject(): void
+    {
+        $this->errorObjects++;
+    }
+
+    public function getTotalObjects(): int
+    {
+        return $this->totalObjects;
+    }
+
+    public function getSyncedObjects(): int
+    {
+        return $this->syncedObjects;
+    }
+
+    public function getErrorObjects(): int
+    {
+        return $this->errorObjects;
+    }
 }

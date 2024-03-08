@@ -24,6 +24,7 @@
 
 namespace SPT\Providers\Auth\Ldap;
 
+use EmptyIterator;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
@@ -32,6 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapResults;
 use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SP\Providers\Auth\Ldap\LdapUtil;
 use SPT\UnitaryTestCase;
@@ -155,7 +157,8 @@ class LdapMsAdsTest extends UnitaryTestCase
         $this->ldapActions
             ->expects(self::once())
             ->method('getObjects')
-            ->with($groupsFilter, ['dn'], $userDn);
+            ->with($groupsFilter, ['dn'], $userDn)
+            ->willReturn(new LdapResults(1, new EmptyIterator()));
 
         $this->eventDispatcher
             ->expects(self::once())
@@ -189,7 +192,7 @@ class LdapMsAdsTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('getObjects')
             ->with($groupsFilter, ['dn'], $userDn)
-            ->willReturn(['count' => 0]);
+            ->willReturn(new LdapResults(0, new EmptyIterator()));
 
         $this->eventDispatcher
             ->expects(self::once())

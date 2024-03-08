@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,6 +35,7 @@ use SP\Providers\Auth\Ldap\LdapActions;
 use SP\Providers\Auth\Ldap\LdapCodeEnum;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapResults;
 use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SPT\UnitaryTestCase;
 
@@ -57,8 +58,9 @@ class LdapActionsTest extends UnitaryTestCase
     public function testGetObjects(): void
     {
         $filter = 'test';
-        $collection = $this->createMock(Collection::class);
-        $result = array_map(fn() => self::$faker->randomNumber(), range(0, 9));
+        $collection = $this->createStub(Collection::class);
+        $collection->method('count')->willReturn(10);
+
         $attributes = array_map(fn() => self::$faker->colorName, range(0, 9));
         $searchBase = self::$faker->colorName;
 
@@ -72,11 +74,9 @@ class LdapActionsTest extends UnitaryTestCase
                    )
                    ->willReturn($collection);
 
-        $collection->expects(self::once())->method('toArray')->willReturn($result);
-
         $out = $this->ldapActions->getObjects($filter, $attributes, $searchBase);
 
-        self::assertEquals($result, $out);
+        self::assertEquals(new LdapResults(10, $collection), $out);
     }
 
     /**
@@ -136,18 +136,18 @@ class LdapActionsTest extends UnitaryTestCase
         $out = $this->ldapActions->getAttributes($filter);
 
         $expected = new AttributeCollection([
-            'dn'       => $attributes['dn'],
-            'group'    => array_filter(
-                $attributes['memberof'],
-                fn($key) => $key !== 'count',
-                ARRAY_FILTER_USE_KEY
-            ),
-            'fullname' => $attributes['displayname'],
-            'name'     => $attributes['givenname'],
-            'sn'       => $attributes['sn'],
-            'mail'     => $attributes['mail'],
-            'expire'   => $attributes['lockouttime'],
-        ]);
+                                                'dn' => $attributes['dn'],
+                                                'group' => array_filter(
+                                                    $attributes['memberof'],
+                                                    fn($key) => $key !== 'count',
+                                                    ARRAY_FILTER_USE_KEY
+                                                ),
+                                                'fullname' => $attributes['displayname'],
+                                                'name' => $attributes['givenname'],
+                                                'sn' => $attributes['sn'],
+                                                'mail' => $attributes['mail'],
+                                                'expire' => $attributes['lockouttime'],
+                                            ]);
 
         self::assertEquals($expected, $out);
     }
@@ -158,17 +158,17 @@ class LdapActionsTest extends UnitaryTestCase
     private function buildAttributes(): array
     {
         return [
-            'dn'          => self::$faker->userName,
-            'memberof'    => [
+            'dn' => self::$faker->userName,
+            'memberof' => [
                 'count' => 3,
                 self::$faker->company,
                 self::$faker->company,
                 self::$faker->company,
             ],
             'displayname' => self::$faker->name,
-            'givenname'   => self::$faker->firstName,
-            'sn'          => self::$faker->lastName,
-            'mail'        => self::$faker->email,
+            'givenname' => self::$faker->firstName,
+            'sn' => self::$faker->lastName,
+            'mail' => self::$faker->email,
             'lockouttime' => self::$faker->unixTime,
         ];
     }

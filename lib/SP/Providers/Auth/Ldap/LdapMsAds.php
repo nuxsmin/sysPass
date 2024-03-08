@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -150,11 +150,7 @@ final class LdapMsAds extends LdapBase
         $groupDn = $this->getGroupDn();
         $filter = $this->getGroupMembershipDirectFilter();
 
-        $searchResults = $this->ldapActions->getObjects($filter, ['dn'], $userDn);
-
-        if (isset($searchResults['count'])
-            && (int)$searchResults['count'] === 0
-        ) {
+        if ($this->ldapActions->getObjects($filter, ['dn'], $userDn)->getCount() === 0) {
             $this->eventDispatcher->notify(
                 'ldap.check.group',
                 new Event(

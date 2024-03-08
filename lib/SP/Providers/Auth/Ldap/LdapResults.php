@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,19 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Import\Services;
+namespace SP\Providers\Auth\Ldap;
+
+use Iterator;
 
 /**
- * Class LdapImportParams
- *
- * @package SP\Domain\Import\Services
+ * Class LdapResults
  */
-final class LdapImportParams
+class LdapResults
 {
-    public ?int    $defaultUserGroup       = null;
-    public ?int    $defaultUserProfile     = null;
-    public ?string $loginAttribute         = null;
-    public ?string $userNameAttribute      = null;
-    public ?string $userGroupNameAttribute = null;
-    public ?string $filter                 = null;
+    public function __construct(private readonly int $count, private readonly Iterator $iterator)
+    {
+    }
+
+    public function getIterator(): Iterator
+    {
+        return $this->iterator;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
 }

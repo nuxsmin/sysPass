@@ -33,13 +33,16 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Import\Dtos\LdapImportParamsDto;
+use SP\Domain\Import\Dtos\LdapImportResultsDto;
 use SP\Domain\Import\Ports\LdapImportService;
 use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserGroupService;
 use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapResults;
 
 use function SP\__;
 use function SP\__u;
@@ -50,34 +53,14 @@ use function SP\processException;
  */
 final class LdapImport extends Service implements LdapImportService
 {
-    protected int $totalObjects  = 0;
-    protected int $syncedObjects = 0;
-    protected int $errorObjects  = 0;
-
     public function __construct(
-        Application                              $application,
-        private readonly UserServiceInterface    $userService,
-        private readonly UserGroupService        $userGroupService,
-        private readonly LdapActionsService      $ldapActionsService,
-        private readonly LdapConnectionInterface $ldapConnection
+        Application                                $application,
+        private readonly UserServiceInterface      $userService,
+        private readonly UserGroupServiceInterface $userGroupService,
+        private readonly LdapActionsService        $ldapActionsService,
+        private readonly LdapConnectionInterface   $ldapConnection
     ) {
         parent::__construct($application);
-    }
-
-
-    public function getTotalObjects(): int
-    {
-        return $this->totalObjects;
-    }
-
-    public function getSyncedObjects(): int
-    {
-        return $this->syncedObjects;
-    }
-
-    public function getErrorObjects(): int
-    {
-        return $this->errorObjects;
     }
 
     /**
@@ -85,71 +68,80 @@ final class LdapImport extends Service implements LdapImportService
      *
      * @throws LdapException
      */
-    public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void
+    public function importGroups(LdapParams $ldapParams, LdapImportParamsDto $ldapImportParams): LdapImportResultsDto
     {
-        $ldap = $this->getLdap($ldapParams);
+        $objects = $this->getObjects($ldapParams, $ldapImportParams, true);
 
-        if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->actions()->getObjects($ldap->getGroupObjectFilter());
-        } else {
-            $objects = $ldap->actions()->getObjects($ldapImportParams->filter);
-        }
-
-        $numObjects = (int)$objects['count'];
+        $importResults = new LdapImportResultsDto($objects->getCount());
 
         $this->eventDispatcher->notify(
             'import.ldap.groups',
-            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $numObjects))
+            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
-        $this->totalObjects += $numObjects;
+        $iterator = $objects->getIterator();
 
-        if ($numObjects > 0) {
-            foreach ($objects as $result) {
-                if (is_array($result)) {
-                    $userGroup = [];
+        while ($iterator->valid()) {
+            $entry = $iterator->current();
+            $userGroup = [
+                'name' => $entry[$ldapImportParams->getUserGroupNameAttribute()][0] ?? null,
+                'description' => __('Imported from LDAP')
+            ];
 
-                    foreach ($result as $attribute => $values) {
-                        $value = $values[0];
+            if (!empty($userGroup['name'])) {
+                try {
+                    $this->userGroupService->create(new UserGroup($userGroup));
 
-                        if (strtolower($attribute) === $ldapImportParams->userGroupNameAttribute) {
-                            $userGroup['name'] = $value;
-                        }
-                    }
+                    $this->eventDispatcher->notify(
+                        'import.ldap.progress.groups',
+                        new Event(
+                            $this,
+                            EventMessage::factory()
+                                        ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
+                        )
+                    );
 
-                    if (!isset($userGroup['name'])) {
-                        try {
-                            $userGroup['description'] = __('Imported from LDAP');
+                    $importResults->addSyncedObject();
+                } catch (Exception $e) {
+                    processException($e);
 
-                            $this->userGroupService->create(new UserGroup($userGroup));
+                    $this->eventDispatcher->notify('exception', new Event($e));
 
-                            $this->eventDispatcher->notify(
-                                'import.ldap.progress.groups',
-                                new Event(
-                                    $this,
-                                    EventMessage::factory()
-                                                ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
-                                )
-                            );
-
-                            $this->syncedObjects++;
-                        } catch (Exception $e) {
-                            processException($e);
-
-                            $this->eventDispatcher->notify('exception', new Event($e));
-
-                            $this->errorObjects++;
-                        }
-                    }
+                    $importResults->addErrorObject();
                 }
             }
+
+            $iterator->next();
         }
+
+        return $importResults;
     }
 
     /**
      * @throws LdapException
      */
-    protected function getLdap(LdapParams $ldapParams): LdapService
+    private function getObjects(
+        LdapParams          $ldapParams,
+        LdapImportParamsDto $ldapImportParams,
+        bool                $isGroup = false
+    ): LdapResults {
+        $ldap = $this->getLdap($ldapParams);
+
+        $useInputFilter = empty($ldapImportParams->getFilter());
+
+        $filter = match (true) {
+            $useInputFilter && $isGroup => $ldap->getGroupObjectFilter(),
+            $useInputFilter && !$isGroup => $ldap->getGroupMembershipIndirectFilter(),
+            default => $ldapImportParams->getFilter()
+        };
+
+        return $ldap->actions()->getObjects($filter);
+    }
+
+    /**
+     * @throws LdapException
+     */
+    private function getLdap(LdapParams $ldapParams): LdapService
     {
         return LdapBase::factory(
             $this->eventDispatcher,
@@ -162,76 +154,61 @@ final class LdapImport extends Service implements LdapImportService
     /**
      * @throws LdapException
      */
-    public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams): void
+    public function importUsers(LdapParams $ldapParams, LdapImportParamsDto $ldapImportParams): LdapImportResultsDto
     {
-        $ldap = $this->getLdap($ldapParams);
+        $objects = $this->getObjects($ldapParams, $ldapImportParams);
 
-        if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->actions()->getObjects($ldap->getGroupMembershipIndirectFilter());
-        } else {
-            $objects = $ldap->actions()->getObjects($ldapImportParams->filter);
-        }
-
-        $numObjects = (int)$objects['count'];
+        $importResults = new LdapImportResultsDto($objects->getCount());
 
         $this->eventDispatcher->notify(
             'import.ldap.users',
-            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $numObjects))
+            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
-        $this->totalObjects += $numObjects;
+        $iterator = $objects->getIterator();
 
-        if ($numObjects > 0) {
-            foreach ($objects as $result) {
-                if (is_array($result)) {
-                    $user = [];
+        while ($iterator->valid()) {
+            $entry = $iterator->current();
 
-                    foreach ($result as $attribute => $values) {
-                        switch (strtolower($attribute)) {
-                            case $ldapImportParams->userNameAttribute:
-                                $user['name'] = $values[0];
-                                break;
-                            case $ldapImportParams->loginAttribute:
-                                $user['login'] = $values[0];
-                                break;
-                            case 'mail':
-                                $user['email'] = $values[0];
-                                break;
-                        }
-                    }
+            $user = [
+                'name' => $entry[$ldapImportParams->getUserNameAttribute()][0] ?? null,
+                'login' => $entry[$ldapImportParams->getLoginAttribute()][0] ?? null,
+                'email' => $entry['mail'][0] ?? null,
+                'notes' => __('Imported from LDAP'),
+                'userGroupId' => $ldapImportParams->getDefaultUserGroup(),
+                'userProfileId' => $ldapImportParams->getDefaultUserProfile(),
+                'isLdap' => true
+            ];
 
-                    if (!isset($user['name'], $user['login'])) {
-                        try {
-                            $user['notes'] = __('Imported from LDAP');
-                            $user['userGroupId'] = $ldapImportParams->defaultUserGroup;
-                            $user['userProfileId'] = $ldapImportParams->defaultUserProfile;
-                            $user['isLdap'] = true;
+            if (!empty($user['name']) && !empty($user['login'])) {
+                try {
+                    $this->userService->create(new User($user));
 
-                            $this->userService->create(new User($user));
-
-                            $this->eventDispatcher->notify(
-                                'import.ldap.progress.users',
-                                new Event(
-                                    $this,
-                                    EventMessage::factory()
+                    $this->eventDispatcher->notify(
+                        'import.ldap.progress.users',
+                        new Event(
+                            $this,
+                            EventMessage::factory()
                                         ->addDetail(
                                             __u('User'),
                                             sprintf('%s (%s)', $user['name'], $user['login'])
                                         )
-                                )
-                            );
+                        )
+                    );
 
-                            $this->syncedObjects++;
-                        } catch (Exception $e) {
-                            processException($e);
+                    $importResults->addSyncedObject();
+                } catch (Exception $e) {
+                    processException($e);
 
-                            $this->eventDispatcher->notify('exception', new Event($e));
+                    $this->eventDispatcher->notify('exception', new Event($e));
 
-                            $this->errorObjects++;
-                        }
-                    }
+                    $importResults->addErrorObject();
                 }
             }
+
+            $iterator->next();
         }
+
+        return $importResults;
     }
 }

@@ -27,25 +27,21 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use Exception;
 use JsonException;
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Ports\LdapImportService;
-use SP\Domain\Import\Services\LdapImportParams;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class ImportController
@@ -55,20 +51,12 @@ final class ImportController extends SimpleControllerBase
     use ConfigLdapTrait;
     use JsonTrait;
 
-    private LdapImportService $ldapImportService;
-
     public function __construct(
-        Application         $application,
-        ThemeInterface      $theme,
-        Klein               $router,
-        AclInterface        $acl,
-        RequestInterface    $request,
-        PhpExtensionChecker $extensionChecker,
-        LdapImportService $ldapImportService
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        private readonly LdapImportService $ldapImportService
     ) {
-        parent::__construct($application, $theme);
-
-        $this->ldapImportService = $ldapImportService;
+        parent::__construct($application, $simpleControllerHelper);
     }
 
     /**
@@ -93,10 +81,12 @@ final class ImportController extends SimpleControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('LDAP Import')))
             );
 
-            $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
+            $userImportResults = $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
+            $totalObjects = $userImportResults->getTotalObjects();
 
             if ($checkImportGroups === true) {
-                $this->ldapImportService->importGroups($ldapParams, $ldapImportParams);
+                $groupsImportResults = $this->ldapImportService->importGroups($ldapParams, $ldapImportParams);
+                $totalObjects += $groupsImportResults->getTotalObjects();
             }
 
             $this->eventDispatcher->notify(
@@ -104,7 +94,7 @@ final class ImportController extends SimpleControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Import finished')))
             );
 
-            if ($this->ldapImportService->getTotalObjects() === 0) {
+            if ($totalObjects === 0) {
                 throw new SPException(__u('There aren\'t any objects to synchronize'));
             }
 
@@ -114,10 +104,10 @@ final class ImportController extends SimpleControllerBase
                 [
                     sprintf(
                         __('Imported users: %d / %d'),
-                        $this->ldapImportService->getSyncedObjects(),
-                        $this->ldapImportService->getTotalObjects()
+                        $userImportResults->getSyncedObjects(),
+                        $userImportResults->getTotalObjects()
                     ),
-                    sprintf(__('Errors: %d'), $this->ldapImportService->getErrorObjects()),
+                    sprintf(__('Errors: %d'), $userImportResults->getErrorObjects()),
 
                 ]
             );
@@ -136,22 +126,22 @@ final class ImportController extends SimpleControllerBase
      */
     private function getImportParams(): array
     {
-        $ldapImportParams = new LdapImportParams();
-
-        $ldapImportParams->filter = $this->request->analyzeString('ldap_import_filter');
-        $ldapImportParams->loginAttribute = $this->request->analyzeString('ldap_login_attribute');
-        $ldapImportParams->userNameAttribute = $this->request->analyzeString('ldap_username_attribute');
-        $ldapImportParams->userGroupNameAttribute = $this->request->analyzeString('ldap_groupname_attribute');
-        $ldapImportParams->defaultUserGroup = $this->request->analyzeInt('ldap_defaultgroup');
-        $ldapImportParams->defaultUserProfile = $this->request->analyzeInt('ldap_defaultprofile');
+        $ldapImportParams = new LdapImportParamsDto(
+            $this->request->analyzeInt('ldap_defaultgroup'),
+            $this->request->analyzeInt('ldap_defaultprofile'),
+            $this->request->analyzeString('ldap_login_attribute'),
+            $this->request->analyzeString('ldap_username_attribute'),
+            $this->request->analyzeString('ldap_groupname_attribute'),
+            $this->request->analyzeString('ldap_import_filter')
+        );
 
         $checkImportGroups = $this->request->analyzeBool('ldap_import_groups', false);
 
-        if ((empty($ldapImportParams->loginAttribute)
-             || empty($ldapImportParams->userNameAttribute)
-             || empty($ldapImportParams->defaultUserGroup)
-             || empty($ldapImportParams->defaultUserProfile))
-            && ($checkImportGroups === true && empty($ldapImportParams->userGroupNameAttribute))
+        if ((empty($ldapImportParams->getLoginAttribute())
+             || empty($ldapImportParams->getUserNameAttribute())
+             || empty($ldapImportParams->getDefaultUserGroup())
+             || empty($ldapImportParams->getDefaultUserProfile()))
+            && ($checkImportGroups === true && empty($ldapImportParams->getUserGroupNameAttribute()))
         ) {
             throw new ValidationException(__u('Wrong LDAP parameters'));
         }

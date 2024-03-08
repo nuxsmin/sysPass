@@ -27,6 +27,7 @@ namespace SP\Domain\Auth\Ports;
 use SP\Providers\Auth\Ldap\AttributeCollection;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapResults;
 
 /**
  * Class LdapActions
@@ -54,20 +55,15 @@ interface LdapActionsService
     public function getAttributes(string $filter): AttributeCollection;
 
     /**
-     * Obtener los objetos según el filtro indicado
+     * Get LDAP search results
      *
-     * @param string $filter
-     * @param array $attributes
-     * @param string|null $searchBase
-     *
-     * @return array
      * @throws LdapException
      */
     public function getObjects(
         string  $filter,
-        array   $attributes,
+        array $attributes = [],
         ?string $searchBase = null
-    ): array;
+    ): LdapResults;
 
     public function mutate(LdapParams $ldapParams): LdapActionsService;
 }

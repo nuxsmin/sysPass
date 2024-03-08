@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -133,9 +133,7 @@ final class LdapStd extends LdapBase
     {
         $filter = $this->getGroupMembershipDirectFilter($userDn);
 
-        $searchResults = $this->ldapActions->getObjects($filter, ['dn']);
-
-        if (isset($searchResults['count']) && (int)$searchResults['count'] === 0) {
+        if ($this->ldapActions->getObjects($filter, ['dn'])->getCount() === 0) {
             $this->eventDispatcher->notify(
                 'ldap.check.group',
                 new Event(

@@ -58,32 +58,33 @@ final class LdapActions implements LdapActionsService
     ];
 
     public const ATTRIBUTES_MAPPING = [
-        'dn'              => 'dn',
+        'dn' => 'dn',
         'groupmembership' => 'group',
-        'memberof'        => 'group',
-        'displayname'     => 'fullname',
-        'fullname'        => 'fullname',
-        'givenname'       => 'name',
-        'sn'              => 'sn',
-        'mail'            => 'mail',
-        'lockouttime'     => 'expire',
+        'memberof' => 'group',
+        'displayname' => 'fullname',
+        'fullname' => 'fullname',
+        'givenname' => 'name',
+        'sn' => 'sn',
+        'mail' => 'mail',
+        'lockouttime' => 'expire',
     ];
 
     /**
-     * @param  LaminasLdap  $ldap
-     * @param  LdapParams  $ldapParams
-     * @param  EventDispatcherInterface  $eventDispatcher
+     * @param LaminasLdap $ldap
+     * @param LdapParams $ldapParams
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         private readonly LaminasLdap $ldap,
-        private readonly LdapParams $ldapParams,
+        private readonly LdapParams  $ldapParams,
         private readonly EventDispatcherInterface $eventDispatcher
-    ) {}
+    ) {
+    }
 
     /**
      * Obtener el RDN del grupo.
      *
-     * @param  string  $groupFilter
+     * @param string $groupFilter
      *
      * @return array Groups' DN
      * @throws LdapException
@@ -141,7 +142,7 @@ final class LdapActions implements LdapActionsService
         );
     }
 
-    protected function getGroupFromParams(): string
+    private function getGroupFromParams(): string
     {
         if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
             return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
@@ -153,14 +154,14 @@ final class LdapActions implements LdapActionsService
     /**
      * Get LDAP search results as a Collection
      *
-     * @param  string  $filter  Filtro a utilizar
-     * @param  array|null  $attributes  Atributos a devolver
-     * @param  string|null  $searchBase
+     * @param string $filter Filtro a utilizar
+     * @param array|null $attributes Atributos a devolver
+     * @param string|null $searchBase
      *
      * @return Collection
      * @throws LdapException
      */
-    protected function getResults(
+    private function getResults(
         string $filter,
         ?array $attributes = [],
         ?string $searchBase = null
@@ -179,7 +180,7 @@ final class LdapActions implements LdapActionsService
     }
 
     /**
-     * @param  string  $filter
+     * @param string $filter
      *
      * @return AttributeCollection
      * @throws LdapException
@@ -231,22 +232,18 @@ final class LdapActions implements LdapActionsService
     }
 
     /**
-     * Get LDAP search results as an array
+     * Get LDAP search results
      *
-     * @param  string  $filter
-     * @param  array  $attributes
-     * @param  string|null  $searchBase
-     *
-     * @return array
      * @throws LdapException
      */
     public function getObjects(
         string $filter,
-        array $attributes = self::USER_ATTRIBUTES,
+        array  $attributes = self::USER_ATTRIBUTES,
         ?string $searchBase = null
-    ): array {
-        return $this->getResults($filter, $attributes, $searchBase)
-                    ->toArray();
+    ): LdapResults {
+        $results = $this->getResults($filter, $attributes, $searchBase);
+
+        return new LdapResults($results->count(), $results);
     }
 
     public function mutate(LdapParams $ldapParams): LdapActionsService
