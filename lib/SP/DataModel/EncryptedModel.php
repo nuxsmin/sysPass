@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,10 @@
 
 namespace SP\DataModel;
 
+use ReflectionClass;
+use SP\Domain\Common\Attributes\Encryptable;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 
 /**
  * Trait EncryptedModel
@@ -36,53 +37,70 @@ trait EncryptedModel
     protected ?string $key = null;
 
     /**
-     * @param string $key
+     * Encrypt the encryptable property and returns a new object with the encrypted property and key
+     *
+     * @param string $password
      * @param CryptInterface $crypt
-     * @param string $property
      *
      * @return EncryptedModel
      * @throws CryptException
-     * @throws NoSuchPropertyException
      */
-    public function encrypt(string $key, CryptInterface $crypt, string $property = 'data'): static
+    public function encrypt(string $password, CryptInterface $crypt): static
     {
-        if (property_exists($this, $property)) {
-            if ($this->{$property} === null) {
-                return $this;
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getAttributes(Encryptable::class) as $attribute) {
+            /** @var Encryptable $instance */
+            $instance = $attribute->newInstance();
+
+            $data = $this->{$instance->getDataProperty()};
+
+            if ($data !== null) {
+                return $this->mutate([
+                                         $instance->getKeyProperty() => $crypt->makeSecuredKey($password),
+                                         $instance->getDataProperty() => $crypt->encrypt(
+                                             $data,
+                                             $this->{$instance->getKeyProperty()},
+                                             $password
+                                         )
+                                     ]);
             }
-
-            $this->key = $crypt->makeSecuredKey($key);
-
-            $this->{$property} = $crypt->encrypt($this->{$property}, $this->key, $key);
-
-            return $this;
         }
 
-        throw new NoSuchPropertyException($property);
+        return $this;
     }
 
     /**
-     * @param string $key
+     * Decrypt the encryptable property and returns a new object with the decryped property and key
+     *
+     * @param string $password
      * @param CryptInterface $crypt
-     * @param string $property
      *
      * @return EncryptedModel
      * @throws CryptException
-     * @throws NoSuchPropertyException
      */
-    public function decrypt(string $key, CryptInterface $crypt, string $property = 'data'): static
+    public function decrypt(string $password, CryptInterface $crypt): static
     {
-        if (property_exists($this, $property) && !empty($this->key)) {
-            if ($this->{$property} === null) {
-                return $this;
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getAttributes(Encryptable::class) as $attribute) {
+            /** @var Encryptable $instance */
+            $instance = $attribute->newInstance();
+
+            $data = $this->{$instance->getDataProperty()};
+
+            if ($data !== null) {
+                return $this->mutate([
+                                         $instance->getDataProperty() => $crypt->decrypt(
+                                             $data,
+                                             $this->{$instance->getKeyProperty()},
+                                             $password
+                                         )
+                                     ]);
             }
-
-            $this->{$property} = $crypt->decrypt($this->{$property}, $this->key, $key);
-
-            return $this;
         }
 
-        throw new NoSuchPropertyException($property);
+        return $this;
     }
 
     public function getKey(): ?string

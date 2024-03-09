@@ -22,39 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Plugin\Repositories;
+namespace SP\Domain\Common\Attributes;
 
-use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Attributes\Encryptable;
-use SP\Domain\Common\Models\HydratableModel;
-use SP\Domain\Common\Models\Model;
-use SP\Domain\Common\Models\SerializedModel;
+use Attribute;
 
 /**
- * Class PluginDataModel
+ * Class Encryptable
  */
-#[Encryptable('data', 'key')]
-final class PluginDataModel extends Model implements HydratableModel
+#[Attribute(Attribute::TARGET_CLASS)]
+final class Encryptable
 {
-    use SerializedModel;
-    use EncryptedModel;
-
-    protected ?string $name   = null;
-    protected ?int    $itemId = null;
-    protected ?string $data   = null;
-
-    public function getName(): ?string
+    public function __construct(private readonly string $dataProperty, private readonly string $keyProperty)
     {
-        return $this->name;
     }
 
-    public function getItemId(): ?int
+    public function getDataProperty(): string
     {
-        return $this->itemId;
+        return $this->dataProperty;
     }
 
-    public function getData(): ?string
+    public function getKeyProperty(): string
     {
-        return $this->data;
+        return $this->keyProperty;
     }
 }
