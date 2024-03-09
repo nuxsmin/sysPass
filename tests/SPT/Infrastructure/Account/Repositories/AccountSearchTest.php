@@ -22,13 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Infrastructure\Account\Repositories;
+namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Infrastructure\Account\Repositories\AccountSearch;
@@ -192,7 +192,7 @@ class AccountSearchTest extends UnitaryTestCase
                        ->with(
                            new Callback(static function (QueryData $data) {
                                return !empty($data->getQuery()->getStatement()) &&
-                                      $data->getMapClassName() === AccountSearchVData::class;
+                                      $data->getMapClassName() === AccountSearchView::class;
                            }),
                            true
                        );
@@ -213,7 +213,7 @@ class AccountSearchTest extends UnitaryTestCase
                        ->with(
                            new Callback(static function (QueryData $data) {
                                return !empty($data->getQuery()->getStatement()) &&
-                                      $data->getMapClassName() === AccountSearchVData::class;
+                                      $data->getMapClassName() === AccountSearchView::class;
                            }),
                            true
                        );

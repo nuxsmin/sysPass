@@ -25,7 +25,6 @@
 namespace SP\Domain\Account\Dtos;
 
 use SP\Domain\Account\Ports\AccountSearchConstants;
-use SP\Mvc\Model\QueryCondition;
 
 /**
  * Class AccountSearchFilter
@@ -214,7 +213,7 @@ final class AccountSearchFilterDto
 
     public function getFilterOperator(): string
     {
-        return $this->filterOperator ?? QueryCondition::CONDITION_AND;
+        return $this->filterOperator ?? AccountSearchConstants::FILTER_CHAIN_AND;
     }
 
     public function setFilterOperator(?string $filterOperator): void

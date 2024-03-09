@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
-use SP\DataModel\AccountSearchVData;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchRepository;
@@ -47,10 +47,10 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     private readonly SelectInterface $query;
 
     public function __construct(
-        DatabaseInterface                           $database,
-        ContextInterface                            $session,
-        EventDispatcherInterface                    $eventDispatcher,
-        QueryFactory                                $queryFactory,
+        DatabaseInterface        $database,
+        ContextInterface         $session,
+        EventDispatcherInterface $eventDispatcher,
+        QueryFactory             $queryFactory,
         private readonly AccountFilterBuilder $accountFilterUser
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
@@ -118,7 +118,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         }
 
         return $this->db->doSelect(
-            QueryData::build($this->query)->setMapClassName(AccountSearchVData::class),
+            QueryData::build($this->query)->setMapClassName(AccountSearchView::class),
             true
         );
     }
