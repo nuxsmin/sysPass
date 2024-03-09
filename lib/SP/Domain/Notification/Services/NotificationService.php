@@ -26,17 +26,16 @@ namespace SP\Domain\Notification\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\Notification;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Notification\Repositories\NotificationBaseRepository;
 
 /**
  * Class NotificationService
@@ -45,13 +44,12 @@ use SP\Infrastructure\Notification\Repositories\NotificationBaseRepository;
  */
 final class NotificationService extends Service implements NotificationServiceInterface
 {
-    protected NotificationBaseRepository $notificationRepository;
 
-    public function __construct(Application $application, NotificationRepository $notificationRepository)
-    {
+    public function __construct(
+        Application                             $application,
+        private readonly NotificationRepository $notificationRepository
+    ) {
         parent::__construct($application);
-
-        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -79,7 +77,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Devolver los elementos con los ids especificados
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @return Notification[]
      * @throws ConstraintException
@@ -125,7 +123,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Deletes an item
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -148,7 +146,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Deletes all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -225,7 +223,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     }
 
     /**
-     * @return Notification[]
+     * @return \SP\Domain\Notification\Models\Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -235,7 +233,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     }
 
     /**
-     * @return Notification[]
+     * @return \SP\Domain\Notification\Models\Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -82,6 +82,10 @@ class ItemPresetTest extends UnitaryTestCase
         $this->itemPreset->getByFilter('test', 100, 200, 300);
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
     public function testDelete()
     {
         $id = self::$faker->randomNumber();

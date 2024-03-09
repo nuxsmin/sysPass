@@ -25,10 +25,10 @@
 namespace SP\Domain\Notification\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\Notification;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Notification\Models\Notification;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 

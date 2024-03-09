@@ -28,65 +28,129 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class NotificationRepository
  *
- * @package SP\Infrastructure\Notification\Repositories
+ * @template T of NotificationModel
  */
 interface NotificationRepository extends Repository
 {
     /**
-     * Deletes an item
+     * Creates an item
      *
-     * @param  int  $id
+     * @param NotificationModel $notification
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function create(NotificationModel $notification): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param NotificationModel $notification
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteAdmin(int $id): int;
+    public function update(NotificationModel $notification): int;
 
     /**
      * Deletes an item
      *
-     * @param  array  $ids
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteAdminBatch(array $ids): int;
-
-    /**
-     * Searches for items by a given filter
-     *
-     * @param  ItemSearchData  $itemSearchData
-     * @param  int  $userId
+     * @param int $id
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param int $notificationId
+     *
+     * @return QueryResult<T>
+     */
+    public function getById(int $notificationId): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Returns all the items for given ids
+     *
+     * @param array $notificationsId
+     *
+     * @return QueryResult<T>
+     */
+    public function getByIdBatch(array $notificationsId): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $notificationsId
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $notificationsId): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteAdmin(int $id): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param array $notificationsId
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteAdminBatch(array $notificationsId): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     * @param int $userId
+     *
+     * @return QueryResult<T>
      */
     public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult;
 
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
-     * @param  int  $userId
+     * @param ItemSearchData $itemSearchData
+     * @param int $userId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function searchForAdmin(ItemSearchData $itemSearchData, int $userId): QueryResult;
 
     /**
      * Marcar una notificación como leída
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return int
      * @throws ConstraintException
@@ -97,39 +161,30 @@ interface NotificationRepository extends Repository
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
-     * @param  string  $component
-     * @param  int  $userId
+     * @param string $component
+     * @param int $userId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getForUserIdByDate(string $component, int $userId): QueryResult;
 
     /**
-     * @param  int  $id
+     * @param int $userId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
-    public function getAllForUserId(int $id): QueryResult;
+    public function getAllForUserId(int $userId): QueryResult;
 
     /**
-     * @param  int  $id
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $userId
+     * @return QueryResult<T>
      */
-    public function getAllActiveForUserId(int $id): QueryResult;
+    public function getAllActiveForUserId(int $userId): QueryResult;
 
     /**
-     * @param  int  $id
+     * @param int $userId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
-    public function getAllActiveForAdmin(int $id): QueryResult;
+    public function getAllActiveForAdmin(int $userId): QueryResult;
 }

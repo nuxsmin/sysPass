@@ -25,10 +25,10 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\DataModel\Notification;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Html\Html;
 use SP\Http\JsonMessage;
@@ -65,7 +65,7 @@ final class NotificationsController extends SimpleControllerBase
     {
         $notifications = array_map(
             static function ($notification) {
-                /** @@var $notification Notification */
+                /** @@var $notification \SP\Domain\Notification\Models\Notification */
                 return sprintf(
                     '(%s) - %s',
                     $notification->getComponent(),

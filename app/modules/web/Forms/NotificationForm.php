@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Messages\NotificationMessage;
-use SP\DataModel\Notification;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Notification\Models\Notification;
 
 /**
  * Class NotificationForm
