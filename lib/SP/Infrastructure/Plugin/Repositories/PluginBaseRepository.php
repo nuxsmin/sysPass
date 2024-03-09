@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Plugin\Repositories;
 
 use RuntimeException;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -82,7 +82,7 @@ final class PluginBaseRepository extends BaseRepository implements PluginReposit
     public function getEnabled(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(ItemItemWithIdAndName::class);
+        $queryData->setMapClassName(Item::class);
         $queryData->setQuery('SELECT id, `name` FROM Plugin WHERE enabled = 1 ORDER BY id');
 
         return $this->db->doSelect($queryData);

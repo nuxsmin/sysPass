@@ -27,7 +27,7 @@ namespace SP\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SP\DataModel\FileItemWithIdAndName;
+use SP\DataModel\File;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\File\FileException;
@@ -80,7 +80,7 @@ class FileUtil
         return rmdir($dir);
     }
 
-    public static function isImage(FileItemWithIdAndName $fileData): bool
+    public static function isImage(File $fileData): bool
     {
         return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
     }

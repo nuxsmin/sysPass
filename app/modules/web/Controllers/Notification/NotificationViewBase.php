@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -75,7 +75,7 @@ abstract class NotificationViewBase extends ControllerBase
 
         $notification = $notificationId
             ? $this->notificationService->getById($notificationId)
-            : new NotificationItemWithIdAndName();
+            : new Notification();
 
         $this->view->assign('notification', $notification);
 

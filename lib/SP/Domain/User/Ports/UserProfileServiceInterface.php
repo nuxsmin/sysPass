@@ -25,7 +25,7 @@
 namespace SP\Domain\User\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserProfileItemWithIdAndName;
+use SP\DataModel\UserProfile;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,7 +45,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserProfileItemWithIdAndName;
+    public function getById(int $id): UserProfile;
 
     /**
      * @throws ConstraintException
@@ -74,7 +74,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(UserProfileItemWithIdAndName $itemData): int;
+    public function create(UserProfile $itemData): int;
 
     /**
      * @throws ConstraintException
@@ -82,7 +82,7 @@ interface UserProfileServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserProfileItemWithIdAndName $itemData): void;
+    public function update(UserProfile $itemData): void;
 
     /**
      * @throws ConstraintException
@@ -93,7 +93,7 @@ interface UserProfileServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return UserProfileItemWithIdAndName[]
+     * @return UserProfile[]
      * @throws ConstraintException
      * @throws QueryException
      */

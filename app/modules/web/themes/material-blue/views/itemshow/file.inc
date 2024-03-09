@@ -23,14 +23,14 @@
  */
 
 /**
- * @var FileItemWithIdAndName $fileData
+ * @var File $fileData
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\FileItemWithIdAndName;
+use SP\DataModel\File;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;

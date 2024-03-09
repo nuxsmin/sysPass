@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Messages\NotificationMessage;
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class NotificationForm extends FormBase implements FormInterface
 {
-    protected ?NotificationItemWithIdAndName $notificationData = null;
+    protected ?Notification $notificationData = null;
 
     /**
      * Validar el formulario
@@ -71,7 +71,7 @@ final class NotificationForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->notificationData = new NotificationItemWithIdAndName();
+        $this->notificationData = new Notification();
         $this->notificationData->setId($this->itemId);
         $this->notificationData->setType($this->request->analyzeString('notification_type'));
         $this->notificationData->setComponent($this->request->analyzeString('notification_component'));
@@ -113,7 +113,7 @@ final class NotificationForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?NotificationItemWithIdAndName
+    public function getItemData(): ?Notification
     {
         return $this->notificationData;
     }

@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Adapters;
 
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
@@ -246,7 +246,7 @@ final class AccountSearchItem
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getTags(): array
     {

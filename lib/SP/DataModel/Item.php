@@ -25,22 +25,17 @@
 namespace SP\DataModel;
 
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+use SP\Domain\Common\Models\Model;
 
 /**
- * Class ActionData
+ * Class ItemData
  *
  * @package SP\DataModel
  */
-class ActionItemWithIdAndName implements ItemWithIdAndNameModel
+class Item extends Model implements ItemWithIdAndNameModel
 {
-    public function __construct(
-        private readonly int    $id,
-        private readonly string $name,
-        private readonly string $text,
-        private readonly string $route
-    ) {
-    }
-
+    protected ?int    $id   = null;
+    protected ?string $name = null;
 
     public function getId(): ?int
     {
@@ -50,15 +45,5 @@ class ActionItemWithIdAndName implements ItemWithIdAndNameModel
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
-    public function getRoute(): string
-    {
-        return $this->route;
     }
 }

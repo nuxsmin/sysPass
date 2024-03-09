@@ -26,7 +26,7 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Acl\Acl;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Services\AccountAcl;
@@ -75,8 +75,8 @@ class AccountAclTest extends UnitaryTestCase
                 'isPrivateGroup' => 0,
                 'otherUserGroupEdit' => 0,
                 'otherUserEdit' => 0,
-                'users' => [new ItemItemWithIdAndName(['id' => 3, 'isEdit' => 1])],
-                'groups' => [new ItemItemWithIdAndName(['id' => 2, 'isEdit' => 1])],
+                'users' => [new Item(['id' => 3, 'isEdit' => 1])],
+                'groups' => [new Item(['id' => 2, 'isEdit' => 1])],
 
             ],
             2 => [
@@ -88,8 +88,8 @@ class AccountAclTest extends UnitaryTestCase
                 'otherUserEdit' => 0,
                 'users' => [],
                 'groups' => [
-                    new ItemItemWithIdAndName(['id' => 2, 'isEdit' => 1]),
-                    new ItemItemWithIdAndName(['id' => 3, 'isEdit' => 1]),
+                    new Item(['id' => 2, 'isEdit' => 1]),
+                    new Item(['id' => 3, 'isEdit' => 1]),
                 ],
             ],
             3 => [

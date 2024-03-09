@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileItemWithIdAndName;
+use SP\DataModel\UserProfile;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -82,7 +82,7 @@ abstract class UserProfileViewBase extends ControllerBase
 
         $profile = $profileId
             ? $this->userProfileService->getById($profileId)
-            : new UserProfileItemWithIdAndName();
+            : new UserProfile();
 
         $this->view->assign('profile', $profile);
         $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());

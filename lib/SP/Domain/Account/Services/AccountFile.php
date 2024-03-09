@@ -25,8 +25,8 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
+use SP\DataModel\File;
 use SP\DataModel\FileExtData;
-use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Ports\AccountFileService;
@@ -62,14 +62,14 @@ final class AccountFile extends Service implements AccountFileService
     /**
      * Creates an item
      *
-     * @param FileItemWithIdAndName $itemData
+     * @param File $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws InvalidImageException
      * @throws QueryException
      */
-    public function create(FileItemWithIdAndName $itemData): int
+    public function create(File $itemData): int
     {
         if (FileUtil::isImage($itemData)) {
             $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
@@ -152,7 +152,7 @@ final class AccountFile extends Service implements AccountFileService
      * Returns the item for given id
      *
      * @param int $id
-     * @return FileItemWithIdAndName[]
+     * @return File[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

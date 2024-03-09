@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -67,7 +67,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['accountId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemItemWithIdAndName::class));
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Item::class));
     }
 
     /**
@@ -92,7 +92,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['userGroupId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemItemWithIdAndName::class));
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Item::class));
     }
 
     /**

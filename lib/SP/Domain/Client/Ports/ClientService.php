@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Client\Ports;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
@@ -106,7 +106,7 @@ interface ClientService
     /**
      * Returns all clients visible for a given user
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      * @throws QueryException
      * @throws ConstraintException
      */

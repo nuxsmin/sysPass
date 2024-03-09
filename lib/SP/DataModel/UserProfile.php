@@ -27,23 +27,40 @@ namespace SP\DataModel;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
+defined('APP_ROOT') || die();
+
 /**
- * Class ItemData
+ * Class ProfileBaseData
  *
  * @package SP\DataModel
  */
-class ItemItemWithIdAndName extends Model implements ItemWithIdAndNameModel
+class UserProfile extends Model implements ItemWithIdAndNameModel
 {
-    protected ?int    $id   = null;
-    protected ?string $name = null;
+    protected ?int         $id      = null;
+    protected ?string      $name    = null;
+    protected ?ProfileData $profile = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return (int)$this->id;
+    }
+
+    /**
+     * @return ProfileData|null
+     */
+    public function getProfile(): ?ProfileData
+    {
+        return $this->profile;
     }
 }

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Common\Dtos;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 
 /**
  * Trait ItemDataTrait
@@ -32,12 +32,12 @@ use SP\DataModel\ItemItemWithIdAndName;
 trait ItemDataTrait
 {
     /**
-     * @param ItemItemWithIdAndName[] $items
+     * @param Item[] $items
      *
      * @return array
      */
     private static function buildFromItemData(array $items): array
     {
-        return array_filter($items, static fn($value) => $value instanceof ItemItemWithIdAndName);
+        return array_filter($items, static fn($value) => $value instanceof Item);
     }
 }

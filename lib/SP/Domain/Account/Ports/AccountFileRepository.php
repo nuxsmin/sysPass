@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\FileItemWithIdAndName;
+use SP\DataModel\File;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -41,13 +41,13 @@ interface AccountFileRepository extends Repository
     /**
      * Creates an item
      *
-     * @param FileItemWithIdAndName $fileData
+     * @param File $fileData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(FileItemWithIdAndName $fileData): int;
+    public function create(File $fileData): int;
 
     /**
      * Returns the item for given id

@@ -25,42 +25,40 @@
 namespace SP\DataModel;
 
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
-use SP\Domain\Common\Models\Model;
-
-defined('APP_ROOT') || die();
 
 /**
- * Class ProfileBaseData
+ * Class ActionData
  *
  * @package SP\DataModel
  */
-class UserProfileItemWithIdAndName extends Model implements ItemWithIdAndNameModel
+class Action implements ItemWithIdAndNameModel
 {
-    protected ?int         $id      = null;
-    protected ?string      $name    = null;
-    protected ?ProfileData $profile = null;
+    public function __construct(
+        private readonly int    $id,
+        private readonly string $name,
+        private readonly string $text,
+        private readonly string $route
+    ) {
+    }
 
-    /**
-     * @return string|null
-     */
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
+    public function getText(): string
     {
-        return (int)$this->id;
+        return $this->text;
     }
 
-    /**
-     * @return ProfileData|null
-     */
-    public function getProfile(): ?ProfileData
+    public function getRoute(): string
     {
-        return $this->profile;
+        return $this->route;
     }
 }

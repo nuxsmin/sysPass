@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Account\Ports;
 
+use SP\DataModel\File;
 use SP\DataModel\FileExtData;
-use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -48,7 +48,7 @@ interface AccountFileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(FileItemWithIdAndName $itemData): int;
+    public function create(File $itemData): int;
 
     /**
      * Returns the item for given id
@@ -92,7 +92,7 @@ interface AccountFileService
     /**
      * Returns the item for given id
      *
-     * @return FileItemWithIdAndName[]
+     * @return File[]
      * @throws ConstraintException
      * @throws QueryException
      */

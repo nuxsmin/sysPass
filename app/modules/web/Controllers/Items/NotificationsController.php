@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -65,7 +65,7 @@ final class NotificationsController extends SimpleControllerBase
     {
         $notifications = array_map(
             static function ($notification) {
-                /** @@var $notification NotificationItemWithIdAndName */
+                /** @@var $notification Notification */
                 return sprintf(
                     '(%s) - %s',
                     $notification->getComponent(),

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Acl;
 
-use SP\DataModel\ActionItemWithIdAndName;
+use SP\DataModel\Action;
 use SP\Infrastructure\File\FileException;
 
 /**
@@ -37,7 +37,7 @@ interface ActionsInterface
      *
      * @throws ActionNotFoundException
      */
-    public function getActionById(int $id): ActionItemWithIdAndName;
+    public function getActionById(int $id): Action;
 
     /**
      * @throws FileException

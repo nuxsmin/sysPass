@@ -25,7 +25,7 @@
 namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Services\AccountToUser;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -57,7 +57,7 @@ class AccountToUserTest extends UnitaryTestCase
         $result =
             new QueryResult(
                 [
-                    new ItemItemWithIdAndName(
+                    new Item(
                         [
                             'id' => self::$faker->randomNumber(),
                             'name' => self::$faker->colorName,
@@ -75,9 +75,9 @@ class AccountToUserTest extends UnitaryTestCase
             ->willReturn($result);
 
         $actual = $this->accountToUser->getUsersByAccountId($accountId);
-        $expected = $result->getData(ItemItemWithIdAndName::class)->toArray(null, null, true);
+        $expected = $result->getData(Item::class)->toArray(null, null, true);
 
-        $this->assertTrue($actual[0] instanceof ItemItemWithIdAndName);
+        $this->assertTrue($actual[0] instanceof Item);
         $this->assertEquals($expected, $actual[0]->toArray(null, null, true));
     }
 

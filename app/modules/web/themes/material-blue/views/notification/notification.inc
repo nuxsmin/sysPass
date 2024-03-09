@@ -23,14 +23,14 @@
  */
 
 /**
- * @var  NotificationItemWithIdAndName $notification
+ * @var  Notification $notification
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;

@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileItemWithIdAndName;
+use SP\DataModel\UserProfile;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class UserProfileForm extends FormBase implements FormInterface
 {
-    protected ?UserProfileItemWithIdAndName $userProfileData = null;
+    protected ?UserProfile $userProfileData = null;
 
     /**
      * Validar el formulario
@@ -74,7 +74,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     {
         $profileData = $this->getProfileDataFromRequest();
 
-        $this->userProfileData = new UserProfileItemWithIdAndName();
+        $this->userProfileData = new UserProfile();
         $this->userProfileData->setName($this->request->analyzeString('profile_name'));
         $this->userProfileData->setId($this->itemId);
         $this->userProfileData->setProfile($profileData);
@@ -133,7 +133,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     /**
      * @throws SPException
      */
-    public function getItemData(): UserProfileItemWithIdAndName
+    public function getItemData(): UserProfile
     {
         if (null === $this->userProfileData) {
             throw new SPException(__u('Profile data not set'));

@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\FileItemWithIdAndName;
+use SP\DataModel\File;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\SPException;
@@ -92,7 +92,7 @@ final class UploadController extends ControllerBase
             try {
                 $fileHandler = new FileHandler($file['tmp_name']);
 
-                $fileData = new FileItemWithIdAndName();
+                $fileData = new File();
                 $fileData->setAccountId($accountId);
                 $fileData->setName(htmlspecialchars($file['name'], ENT_QUOTES));
                 $fileData->setSize($file['size']);
@@ -161,14 +161,14 @@ final class UploadController extends ControllerBase
     }
 
     /**
-     * @param FileItemWithIdAndName $fileData
+     * @param File $fileData
      * @param FileHandlerInterface $fileHandler
      *
      * @return string
      * @throws SPException
      * @throws FileException
      */
-    private function checkAllowedMimeType(FileItemWithIdAndName $fileData, FileHandlerInterface $fileHandler): string
+    private function checkAllowedMimeType(File $fileData, FileHandlerInterface $fileHandler): string
     {
         if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime(), true)) {
             return $fileData->getType();

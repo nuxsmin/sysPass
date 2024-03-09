@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -37,7 +37,7 @@ interface AccountToUserService
     /**
      * @param int $id
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

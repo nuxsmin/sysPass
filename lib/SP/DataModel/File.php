@@ -32,7 +32,7 @@ use SP\Domain\Common\Models\Model;
  *
  * @package SP\DataModel
  */
-class FileItemWithIdAndName extends Model implements ItemWithIdAndNameModel
+class File extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id        = null;
     protected ?int    $accountId = null;
@@ -79,7 +79,7 @@ class FileItemWithIdAndName extends Model implements ItemWithIdAndNameModel
     }
 
     /**
-     * @param  string  $thumb
+     * @param string $thumb
      */
     public function setThumb(string $thumb): void
     {

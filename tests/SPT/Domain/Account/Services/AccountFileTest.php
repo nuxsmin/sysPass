@@ -25,8 +25,8 @@
 namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\DataModel\File;
 use SP\DataModel\FileExtData;
-use SP\DataModel\FileItemWithIdAndName;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Services\AccountFile;
 use SP\Domain\Common\Services\ServiceException;
@@ -59,8 +59,8 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testCreate(): void
     {
-        $fileData = FileItemWithIdAndName::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
-                                         ->mutate(
+        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
+                        ->mutate(
                                 ['type' => self::$faker->mimeType()]
                             );
 
@@ -83,7 +83,7 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testCreateWithThumbnail(): void
     {
-        $fileData = FileItemWithIdAndName::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
         $this->accountFileRepository
             ->expects(self::once())
@@ -221,7 +221,7 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testGetByAccountId(): void
     {
-        $fileData = FileItemWithIdAndName::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
         $queryResult = new QueryResult([$fileData]);
 

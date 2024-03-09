@@ -27,7 +27,7 @@ namespace SP\Providers\Notification;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Notification\Ports\NotificationServiceInterface;
 use SP\Providers\EventsTrait;
@@ -96,7 +96,7 @@ final class NotificationHandler extends Provider implements EventReceiver
         $userIds = $eventMessage !== null ? $eventMessage->getExtra('userId') : [];
 
         foreach ($userIds as $userId) {
-            $notificationData = new NotificationItemWithIdAndName();
+            $notificationData = new Notification();
             $notificationData->setType(__('Request'));
             $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($userId);
@@ -107,9 +107,9 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param NotificationItemWithIdAndName $notificationData
+     * @param Notification $notificationData
      */
-    private function notify(NotificationItemWithIdAndName $notificationData): void
+    private function notify(Notification $notificationData): void
     {
         try {
             $this->notificationService->create($notificationData);
@@ -129,7 +129,7 @@ final class NotificationHandler extends Provider implements EventReceiver
         if ($notify[0] === true) {
             $userId = $eventMessage->getExtra('userId')[0];
 
-            $notificationData = new NotificationItemWithIdAndName();
+            $notificationData = new Notification();
             $notificationData->setType(__('Notification'));
             $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($userId);

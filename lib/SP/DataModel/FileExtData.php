@@ -29,7 +29,7 @@ namespace SP\DataModel;
  *
  * @package SP\DataModel
  */
-class FileExtData extends FileItemWithIdAndName
+class FileExtData extends File
 {
     protected ?string $clientName  = null;
     protected ?string $accountName = null;

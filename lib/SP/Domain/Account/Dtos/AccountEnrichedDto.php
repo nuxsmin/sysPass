@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
@@ -37,15 +37,15 @@ class AccountEnrichedDto
 
     private readonly int $id;
     /**
-     * @var ItemItemWithIdAndName[] Los usuarios secundarios de la cuenta.
+     * @var Item[] Los usuarios secundarios de la cuenta.
      */
     private array $users = [];
     /**
-     * @var ItemItemWithIdAndName[] Los grupos secundarios de la cuenta.
+     * @var Item[] Los grupos secundarios de la cuenta.
      */
     private array $userGroups = [];
     /**
-     * @var ItemItemWithIdAndName[] Las etiquetas de la cuenta.
+     * @var Item[] Las etiquetas de la cuenta.
      */
     private array $tags = [];
 
@@ -68,7 +68,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemItemWithIdAndName[] $users
+     * @param Item[] $users
      *
      * @return AccountEnrichedDto
      */
@@ -81,7 +81,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemItemWithIdAndName[] $groups
+     * @param Item[] $groups
      *
      * @return AccountEnrichedDto
      */
@@ -94,7 +94,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemItemWithIdAndName[] $tags
+     * @param Item[] $tags
      *
      * @return AccountEnrichedDto
      */
@@ -107,7 +107,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getUsers(): array
     {
@@ -115,7 +115,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getUserGroups(): array
     {
@@ -123,7 +123,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getTags(): array
     {

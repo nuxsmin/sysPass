@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Models\Simple;
@@ -52,7 +52,7 @@ final class AccountToTag extends Service implements AccountToTagService
     /**
      * @param int $id
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -64,6 +64,6 @@ final class AccountToTag extends Service implements AccountToTagService
             ->getTagsByAccountId($id)
             ->getDataAsArray(Simple::class);
 
-        return array_map(fn($tag) => ItemItemWithIdAndName::buildFromSimpleModel($tag), $tags);
+        return array_map(fn($tag) => Item::buildFromSimpleModel($tag), $tags);
     }
 }

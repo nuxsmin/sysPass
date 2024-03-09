@@ -25,16 +25,16 @@
 namespace SPT\Generators;
 
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileItemWithIdAndName;
+use SP\DataModel\UserProfile;
 
 /**
  * Class UserProfileDataGenerator
  */
 final class UserProfileDataGenerator extends DataGenerator
 {
-    public function buildUserProfileData(): UserProfileItemWithIdAndName
+    public function buildUserProfileData(): UserProfile
     {
-        return new UserProfileItemWithIdAndName($this->getUserProfileProperties());
+        return new UserProfile($this->getUserProfileProperties());
     }
 
     private function getUserProfileProperties(): array

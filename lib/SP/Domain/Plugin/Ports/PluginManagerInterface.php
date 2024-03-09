@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -169,7 +169,7 @@ interface PluginManagerInterface
     /**
      * Devolver los plugins activados
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      * @throws ConstraintException
      * @throws QueryException
      */

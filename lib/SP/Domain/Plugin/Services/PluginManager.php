@@ -25,7 +25,7 @@
 namespace SP\Domain\Plugin\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -264,7 +264,7 @@ final class PluginManager extends Service implements PluginManagerInterface
     /**
      * Devolver los plugins activados
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

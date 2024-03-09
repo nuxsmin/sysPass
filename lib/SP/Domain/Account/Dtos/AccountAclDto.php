@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
@@ -110,7 +110,7 @@ final class AccountAclDto
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getUsersId(): array
     {
@@ -118,7 +118,7 @@ final class AccountAclDto
     }
 
     /**
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      */
     public function getUserGroupsId(): array
     {

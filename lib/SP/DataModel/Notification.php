@@ -32,7 +32,7 @@ use SP\Domain\Core\Messages\MessageInterface;
  *
  * @package SP\DataModel
  */
-class NotificationItemWithIdAndName implements ItemWithIdAndNameModel
+class Notification implements ItemWithIdAndNameModel
 {
     /**
      * @var int

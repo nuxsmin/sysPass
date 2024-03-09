@@ -25,7 +25,7 @@
 namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Services\AccountToTag;
 use SP\Domain\Common\Models\Simple;
@@ -67,7 +67,7 @@ class AccountToTagTest extends UnitaryTestCase
         $actual = $this->accountToTag->getTagsByAccountId($accountId);
         $expected = $result->getData(Simple::class)->toArray(null, null, true);
 
-        $this->assertTrue($actual[0] instanceof ItemItemWithIdAndName);
+        $this->assertTrue($actual[0] instanceof Item);
         $this->assertEquals($expected, $actual[0]->toArray());
     }
 

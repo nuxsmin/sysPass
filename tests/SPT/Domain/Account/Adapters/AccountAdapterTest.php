@@ -27,7 +27,7 @@ namespace SPT\Domain\Account\Adapters;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\DataModel\ActionItemWithIdAndName;
+use SP\DataModel\Action;
 use SP\Domain\Account\Adapters\AccountAdapter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
@@ -57,7 +57,7 @@ class AccountAdapterTest extends UnitaryTestCase
                 ->method('getActionById')
                 ->with(AclActionsInterface::ACCOUNT_VIEW)
                 ->willReturn(
-                    new ActionItemWithIdAndName(
+                    new Action(
                         self::$faker->randomNumber(),
                         self::$faker->colorName,
                         self::$faker->sentence,
@@ -140,7 +140,7 @@ class AccountAdapterTest extends UnitaryTestCase
                 ->method('getActionById')
                 ->with(AclActionsInterface::ACCOUNT_VIEW)
                 ->willReturn(
-                    new ActionItemWithIdAndName(
+                    new Action(
                         self::$faker->randomNumber(),
                         self::$faker->colorName,
                         self::$faker->sentence,

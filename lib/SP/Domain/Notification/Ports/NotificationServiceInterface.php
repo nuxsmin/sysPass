@@ -25,7 +25,7 @@
 namespace SP\Domain\Notification\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\NotificationItemWithIdAndName;
+use SP\DataModel\Notification;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,7 +45,7 @@ interface NotificationServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(NotificationItemWithIdAndName $itemData): int;
+    public function create(Notification $itemData): int;
 
     /**
      * Updates an item
@@ -53,14 +53,14 @@ interface NotificationServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(NotificationItemWithIdAndName $itemData): int;
+    public function update(Notification $itemData): int;
 
     /**
      * Devolver los elementos con los ids especificados
      *
      * @param  int[]  $ids
      *
-     * @return NotificationItemWithIdAndName[]
+     * @return Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -113,12 +113,12 @@ interface NotificationServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): NotificationItemWithIdAndName;
+    public function getById(int $id): Notification;
 
     /**
      * Returns all the items
      *
-     * @return NotificationItemWithIdAndName[]
+     * @return Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -136,21 +136,21 @@ interface NotificationServiceInterface
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
-     * @return NotificationItemWithIdAndName[]
+     * @return Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $id): array;
 
     /**
-     * @return NotificationItemWithIdAndName[]
+     * @return Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getAllForUserId(int $id): array;
 
     /**
-     * @return NotificationItemWithIdAndName[]
+     * @return Notification[]
      * @throws ConstraintException
      * @throws QueryException
      */

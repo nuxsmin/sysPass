@@ -24,7 +24,7 @@
 
 /**
  * @var ProfileData $profileData
- * @var UserProfileItemWithIdAndName $profile
+ * @var UserProfile $profile
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -32,7 +32,7 @@
  */
 
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileItemWithIdAndName;
+use SP\DataModel\UserProfile;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;

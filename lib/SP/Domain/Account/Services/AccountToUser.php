@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemItemWithIdAndName;
+use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Ports\AccountToUserService;
 use SP\Domain\Common\Services\Service;
@@ -48,7 +48,7 @@ final class AccountToUser extends Service implements AccountToUserService
     /**
      * @param int $id
      *
-     * @return ItemItemWithIdAndName[]
+     * @return Item[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
