@@ -53,7 +53,7 @@ use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Services\ItemPresetService;
+use SP\Domain\ItemPreset\Services\ItemPreset;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
@@ -140,8 +140,8 @@ final class Init extends HttpModuleBase
     private Language      $language;
     private SecureSession $secureSessionService;
     private PluginManager $pluginManager;
-    private ItemPresetService    $itemPresetService;
-    private DatabaseUtil         $databaseUtil;
+    private ItemPreset   $itemPresetService;
+    private DatabaseUtil $databaseUtil;
     private UserProfileService   $userProfileService;
     private bool                 $isIndex = false;
 
@@ -154,7 +154,7 @@ final class Init extends HttpModuleBase
         LanguageInterface                    $language,
         SecureSessionService $secureSessionService,
         PluginManager                        $pluginManager,
-        ItemPresetService                    $itemPresetService,
+        ItemPreset           $itemPresetService,
         DatabaseUtil                         $databaseUtil,
         UserProfileServiceInterface          $userProfileService,
         private readonly UriContextInterface $uriContext

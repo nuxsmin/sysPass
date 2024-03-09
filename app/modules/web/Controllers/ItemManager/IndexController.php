@@ -37,7 +37,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -68,9 +68,9 @@ final class IndexController extends ControllerBase
     private CustomFieldDefinitionService $customFieldDefService;
     private AccountFileService           $accountFileService;
     private AccountService             $accountService;
-    private AccountHistoryService      $accountHistoryService;
-    private ItemPresetServiceInterface $itemPresetService;
-    private CategoryGrid                   $categoryGrid;
+    private AccountHistoryService $accountHistoryService;
+    private ItemPresetService     $itemPresetService;
+    private CategoryGrid          $categoryGrid;
     private TagGrid                        $tagGrid;
     private ClientGrid                     $clientGrid;
     private CustomFieldGrid                $customFieldGrid;
@@ -90,7 +90,7 @@ final class IndexController extends ControllerBase
         AccountFileService           $accountFileService,
         AccountService               $accountService,
         AccountHistoryService        $accountHistoryService,
-        ItemPresetServiceInterface   $itemPresetService,
+        ItemPresetService            $itemPresetService,
         Helpers\Grid\CategoryGrid    $categoryGrid,
         Helpers\Grid\TagGrid         $tagGrid,
         Helpers\Grid\ClientGrid      $clientGrid,
@@ -98,7 +98,7 @@ final class IndexController extends ControllerBase
         Helpers\Grid\FileGrid        $fileGrid,
         Helpers\Grid\AccountGrid     $accountGrid,
         Helpers\Grid\AccountHistoryGrid $accountHistoryGrid,
-        Helpers\Grid\ItemPresetGrid    $itemPresetGrid
+        Helpers\Grid\ItemPresetGrid  $itemPresetGrid
     ) {
         $this->tabsGridHelper = $tabsGridHelper;
         $this->categoryService = $categoryService;

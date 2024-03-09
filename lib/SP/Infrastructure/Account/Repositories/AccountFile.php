@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\FileData;
+use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -48,13 +48,13 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     /**
      * Creates an item
      *
-     * @param FileData $fileData
+     * @param FileItemWithIdAndName $fileData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(FileData $fileData): int
+    public function create(FileItemWithIdAndName $fileData): int
     {
         $query = $this->queryFactory
             ->newInsert()

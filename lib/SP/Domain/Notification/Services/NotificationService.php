@@ -26,7 +26,7 @@ namespace SP\Domain\Notification\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -60,7 +60,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(NotificationData $itemData): int
+    public function create(NotificationItemWithIdAndName $itemData): int
     {
         return $this->notificationRepository->create($itemData)->getLastId();
     }
@@ -71,7 +71,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(NotificationData $itemData): int
+    public function update(NotificationItemWithIdAndName $itemData): int
     {
         return $this->notificationRepository->update($itemData);
     }
@@ -81,7 +81,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      *
      * @param  int[]  $ids
      *
-     * @return NotificationData[]
+     * @return NotificationItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -175,7 +175,7 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): NotificationData
+    public function getById(int $id): NotificationItemWithIdAndName
     {
         $result = $this->notificationRepository->getById($id);
 
@@ -189,7 +189,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Returns all the items
      *
-     * @return NotificationData[]
+     * @return NotificationItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -215,7 +215,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
-     * @return NotificationData[]
+     * @return NotificationItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -225,7 +225,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     }
 
     /**
-     * @return NotificationData[]
+     * @return NotificationItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -235,7 +235,7 @@ final class NotificationService extends Service implements NotificationServiceIn
     }
 
     /**
-     * @return NotificationData[]
+     * @return NotificationItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */

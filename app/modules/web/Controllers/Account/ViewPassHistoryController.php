@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -50,14 +50,14 @@ final class ViewPassHistoryController extends AccountControllerBase
 
     private AccountService        $accountService;
     private AccountPasswordHelper $accountPasswordHelper;
-    private ItemPresetServiceInterface                       $itemPresetService;
+    private ItemPresetService $itemPresetService;
 
     public function __construct(
         Application           $application,
         WebControllerHelper   $webControllerHelper,
         AccountService        $accountService,
         AccountPasswordHelper $accountPasswordHelper,
-        ItemPresetServiceInterface $itemPresetService
+        ItemPresetService $itemPresetService
     ) {
         parent::__construct(
             $application,

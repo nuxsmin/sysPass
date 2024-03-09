@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,12 +29,12 @@ use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;

@@ -32,7 +32,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Domain\Account\Adapters\AccountPassData;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -73,7 +73,7 @@ final class AccountPasswordHelper extends HelperBase
     }
 
     /**
-     * @param  AccountPassData  $accountData
+     * @param AccountPassItemWithIdAndName $accountData
      *
      * @param  bool  $useImage
      *
@@ -88,8 +88,8 @@ final class AccountPasswordHelper extends HelperBase
      * @throws ServiceException
      */
     public function getPasswordView(
-        AccountPassData $accountData,
-        bool $useImage
+        AccountPassItemWithIdAndName $accountData,
+        bool                         $useImage
     ): array {
         $this->checkActionAccess();
 
@@ -136,7 +136,7 @@ final class AccountPasswordHelper extends HelperBase
     /**
      * Returns account's password
      *
-     * @param  AccountPassData  $accountData
+     * @param AccountPassItemWithIdAndName $accountData
      *
      * @return string
      * @throws BadFormatException
@@ -147,7 +147,7 @@ final class AccountPasswordHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordClear(AccountPassData $accountData): string
+    public function getPasswordClear(AccountPassItemWithIdAndName $accountData): string
     {
         $this->checkActionAccess();
 

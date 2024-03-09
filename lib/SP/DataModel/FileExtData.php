@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ namespace SP\DataModel;
  *
  * @package SP\DataModel
  */
-class FileExtData extends FileData
+class FileExtData extends FileItemWithIdAndName
 {
     protected ?string $clientName  = null;
     protected ?string $accountName = null;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
 use SP\Core\Application;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ItemsPresetForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -36,13 +36,13 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ItemPresetSaveBase extends ControllerBase
 {
-    protected \SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface $itemPresetService;
-    protected ItemsPresetForm                                        $form;
+    protected ItemPresetService $itemPresetService;
+    protected ItemsPresetForm   $form;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        ItemPresetServiceInterface $itemPresetService
+        ItemPresetService $itemPresetService
     ) {
         parent::__construct($application, $webControllerHelper);
 

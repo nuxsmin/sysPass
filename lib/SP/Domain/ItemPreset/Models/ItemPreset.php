@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Models;
+namespace SP\Domain\ItemPreset\Models;
 
-use SP\Domain\Common\Adapters\HydratableInterface;
+use SP\DataModel\ItemPreset\AccountPermission;
+use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\DataModel\ItemPreset\Password;
+use SP\DataModel\ItemPreset\SessionTimeout;
+use SP\Domain\Common\Attributes\Hydratable;
+use SP\Domain\Common\Models\HydratableModel;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Models\SerializedModel;
 
 /**
  * Class ItemPreset
  */
-class ItemPreset extends Model implements HydratableInterface
+#[Hydratable('data', [
+    Password::class,
+    AccountPrivate::class,
+    AccountPermission::class,
+    SessionTimeout::class
+])]
+class ItemPreset extends Model implements HydratableModel
 {
     use SerializedModel;
 
@@ -69,16 +80,18 @@ class ItemPreset extends Model implements HydratableInterface
         return $this->data;
     }
 
-    public function getHash(): string
-    {
-        return sha1(
-            $this->type . (int)$this->userId . (int)$this->userGroupId . (int)$this->userProfileId .
-            (int)$this->priority
-        );
-    }
-
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
     }
 }

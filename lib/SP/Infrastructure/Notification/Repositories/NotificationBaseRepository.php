@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Notification\Repositories;
 
 use RuntimeException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Ports\NotificationRepository;
@@ -48,7 +48,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
     /**
      * Creates an item
      *
-     * @param  NotificationData  $itemData
+     * @param NotificationItemWithIdAndName $itemData
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -85,7 +85,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
     /**
      * Updates an item
      *
-     * @param  NotificationData  $itemData
+     * @param NotificationItemWithIdAndName $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -208,7 +208,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving notification'));
@@ -239,7 +239,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY id';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
@@ -276,7 +276,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY id';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -350,7 +350,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
@@ -387,7 +387,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
         int $userId
     ): QueryResult {
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
@@ -434,7 +434,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
         int $userId
     ): QueryResult {
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
@@ -518,7 +518,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY id';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->setParams([$component, $userId]);
         $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
@@ -551,7 +551,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY `date` DESC ';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
@@ -585,7 +585,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY `date` DESC ';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
@@ -618,7 +618,7 @@ final class NotificationBaseRepository extends BaseRepository implements Notific
             ORDER BY `date` DESC ';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setMapClassName(NotificationItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));

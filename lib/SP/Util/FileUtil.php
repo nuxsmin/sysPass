@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SP\DataModel\FileData;
+use SP\DataModel\FileItemWithIdAndName;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\File\FileException;
@@ -80,7 +80,7 @@ class FileUtil
         return rmdir($dir);
     }
 
-    public static function isImage(FileData $fileData): bool
+    public static function isImage(FileItemWithIdAndName $fileData): bool
     {
         return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
     }

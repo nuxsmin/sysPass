@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserProfileData;
+use SP\DataModel\UserProfileItemWithIdAndName;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserProfileRepository;
@@ -111,7 +111,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setMapClassName(UserProfileItemWithIdAndName::class);
         $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
@@ -128,7 +128,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     public function getAll(): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setMapClassName(UserProfileItemWithIdAndName::class);
         $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
 
         return $this->db->doSelect($queryData);
@@ -153,7 +153,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
             'SELECT id, `name` FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setMapClassName(UserProfileItemWithIdAndName::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -217,7 +217,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Creates an item
      *
-     * @param  UserProfileData  $itemData
+     * @param UserProfileItemWithIdAndName $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -244,7 +244,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param  UserProfileData  $itemData
+     * @param UserProfileItemWithIdAndName $itemData
      *
      * @return bool
      * @throws ConstraintException
@@ -262,7 +262,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Updates an item
      *
-     * @param  UserProfileData  $itemData
+     * @param UserProfileItemWithIdAndName $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -293,7 +293,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param  UserProfileData  $itemData
+     * @param UserProfileItemWithIdAndName $itemData
      *
      * @return bool
      * @throws ConstraintException

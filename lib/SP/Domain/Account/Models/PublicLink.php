@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +24,13 @@
 
 namespace SP\Domain\Account\Models;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class PublicLink
  */
-class PublicLink extends Model implements DataModelInterface
+class PublicLink extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id              = null;
     protected ?int    $itemId          = null;

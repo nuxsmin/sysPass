@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,28 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Common\Attributes;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
-use SP\Domain\Common\Models\Model;
+use Attribute;
 
 /**
- * Class ItemData
- *
- * @package SP\DataModel
+ * Class Hydratable
  */
-class ItemData extends Model implements DataModelInterface
+#[Attribute(Attribute::TARGET_CLASS)]
+final class Hydratable
 {
-    protected ?int    $id   = null;
-    protected ?string $name = null;
+    private readonly array $targetClass;
 
-    public function getId(): ?int
+    public function __construct(private readonly string $sourceProperty, array $targetClass)
     {
-        return $this->id;
+        $this->targetClass = array_filter($targetClass, static fn(string $class) => class_exists($class));
     }
 
-    public function getName(): ?string
+    public function getTargetClass(): array
     {
-        return $this->name;
+        return $this->targetClass;
+    }
+
+    public function getSourceProperty(): string
+    {
+        return $this->sourceProperty;
     }
 }

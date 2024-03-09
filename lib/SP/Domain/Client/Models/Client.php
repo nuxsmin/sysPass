@@ -24,13 +24,13 @@
 
 namespace SP\Domain\Client\Models;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class Client
  */
-class Client extends Model implements DataModelInterface
+class Client extends Model implements ItemWithIdAndNameModel
 {
     protected ?int $isGlobal = null;
     protected ?int    $id          = null;

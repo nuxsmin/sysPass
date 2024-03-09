@@ -28,7 +28,7 @@ use DOMDocument;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Services\ServiceException;
@@ -56,7 +56,7 @@ class XmlAccountExportTest extends UnitaryTestCase
     public function testExport()
     {
         $account = AccountDataGenerator::factory()->buildAccount();
-        $tag = new ItemData(['id' => self::$faker->randomNumber(3)]);
+        $tag = new ItemItemWithIdAndName(['id' => self::$faker->randomNumber(3)]);
 
         $document = new DOMDocument();
 

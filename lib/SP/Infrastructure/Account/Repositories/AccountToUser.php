@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -150,6 +150,6 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemData::class));
+        return $this->db->doSelect(QueryData::build($query)->setMapClassName(ItemItemWithIdAndName::class));
     }
 }

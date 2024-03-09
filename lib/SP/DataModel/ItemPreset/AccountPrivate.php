@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,14 +31,10 @@ namespace SP\DataModel\ItemPreset;
  */
 final class AccountPrivate
 {
-    /**
-     * @param  bool|null  $privateUser
-     * @param  bool|null  $privateGroup
-     */
-    public function __construct(private ?bool $privateUser = false, private ?bool $privateGroup = false)
-    {
-        $this->privateUser = $privateUser;
-        $this->privateGroup = $privateGroup;
+    public function __construct(
+        private readonly ?bool $privateUser = false,
+        private readonly ?bool $privateGroup = false
+    ) {
     }
 
     public function isPrivateUser(): bool

@@ -26,50 +26,47 @@ namespace SP\Domain\ItemPreset\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\ItemPreset\Repositories\ItemPresetBaseRepository;
+
+use function SP\__u;
 
 /**
- * Class ItemPresetService
+ * Class ItemPreset
  *
- * @package SP\Domain\Account\Services
+ * @template T of ItemPresetModel
  */
-final class ItemPresetService extends Service implements ItemPresetServiceInterface
+final class ItemPreset extends Service implements ItemPresetService
 {
-    private ItemPresetBaseRepository $itemPresetRepository;
 
-    public function __construct(Application $application, ItemPresetRepository $itemPresetRepository)
+    public function __construct(Application $application, private readonly ItemPresetRepository $itemPresetRepository)
     {
         parent::__construct($application);
-
-        $this->itemPresetRepository = $itemPresetRepository;
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ItemPresetRequest $itemPresetRequest): int
+    public function create(ItemPresetModel $itemPreset): int
     {
-        return $this->itemPresetRepository->create($itemPresetRequest->prepareToPersist());
+        return $this->itemPresetRepository->create($itemPreset)->getLastId();
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(ItemPresetRequest $itemPresetRequest): int
+    public function update(ItemPresetModel $itemPreset): int
     {
-        return $this->itemPresetRepository->update($itemPresetRequest->prepareToPersist());
+        return $this->itemPresetRepository->update($itemPreset);
     }
 
     /**
@@ -81,8 +78,8 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      */
     public function delete(int $id): ItemPresetService
     {
-        if ($this->itemPresetRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Value not found'));
+        if ($this->itemPresetRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::error(__u('Value not found'));
         }
 
         return $this;
@@ -91,36 +88,35 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
     /**
      * Returns the item for given id
      *
+     * @param int $id
+     * @return ItemPresetModel
      * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function getById(int $id): ItemPreset
+    public function getById(int $id): ItemPresetModel
     {
         $result = $this->itemPresetRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Value not found'));
+            throw NoSuchItemException::error(__u('Value not found'));
         }
 
-        return $result->getData();
+        return $result->getData(ItemPresetModel::class);
     }
 
     /**
      * Returns all the items
      *
-     * @return ItemPreset[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
      */
     public function getAll(): array
     {
-        return $this->itemPresetRepository->getAll()->getDataAsArray();
+        return $this->itemPresetRepository->getAll()->getDataAsArray(ItemPresetModel::class);
     }
 
     /**
      * Searches for items by a given filter
      *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -133,7 +129,7 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForCurrentUser(string $type): ?ItemPreset
+    public function getForCurrentUser(string $type): ?ItemPresetModel
     {
         $userData = $this->context->getUserData();
 
@@ -149,28 +145,18 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUser(
-        string $type,
-        int $userId,
-        int $userGroupId,
-        int $userProfileId
-    ): ?ItemPreset {
-        $result = $this->itemPresetRepository->getByFilter(
+    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId): ?ItemPresetModel
+    {
+        return $this->itemPresetRepository->getByFilter(
             $type,
             $userId,
             $userGroupId,
             $userProfileId
-        );
-
-        if ($result->getNumRows() === 1) {
-            return $result->getData();
-        }
-
-        return null;
+        )->getData(ItemPresetModel::class);
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -178,13 +164,10 @@ final class ItemPresetService extends Service implements ItemPresetServiceInterf
      */
     public function deleteByIdBatch(array $ids): int
     {
-        $count = $this->itemPresetRepository->deleteByIdBatch($ids);
+        $count = $this->itemPresetRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
-            throw new ServiceException(
-                __u('Error while deleting the values'),
-                SPException::WARNING
-            );
+            throw ServiceException::warning(__u('Error while deleting the values'));
         }
 
         return $count;

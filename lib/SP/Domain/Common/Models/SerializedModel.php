@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,37 +24,52 @@
 
 namespace SP\Domain\Common\Models;
 
-use SP\Domain\Core\Exceptions\NoSuchPropertyException;
-use SP\Util\Util;
+use ReflectionClass;
+use SP\Domain\Common\Attributes\Hydratable;
 
 /**
- * Trait Datamodel
+ * Trait SerializedModel
  */
 trait SerializedModel
 {
     /**
      * @template THydrate
-     * @param class-string<THydrate>|null $class
-     * @param string $property
+     * @param class-string<THydrate> $class
      *
      * @return THydrate|null
-     * @throws NoSuchPropertyException
      */
-    public function hydrate(?string $class = null, string $property = 'data'): mixed
+    public function hydrate(string $class): ?object
     {
-        if (property_exists($this, $property)) {
-            if ($this->{$property} === null) {
-                return null;
-            }
+        $reflectionClass = new ReflectionClass($this);
 
-            if ($class !== null) {
-                return Util::unserialize($class, $this->{$property});
-            }
+        foreach ($reflectionClass->getAttributes(Hydratable::class) as $attribute) {
+            /** @var Hydratable $instance */
+            $instance = $attribute->newInstance();
 
-            /** @noinspection UnserializeExploitsInspection */
-            return unserialize($this->{$property});
+            if (in_array($class, $instance->getTargetClass()) && $this->{$instance->getSourceProperty()} !== null) {
+                return unserialize($this->{$instance->getSourceProperty()}, ['allowed_classes' => [$class]]) ?: null;
+            }
         }
 
-        throw new NoSuchPropertyException($property);
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dehydrate(object $object): static
+    {
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getAttributes(Hydratable::class) as $attribute) {
+            /** @var Hydratable $instance */
+            $instance = $attribute->newInstance();
+
+            if (in_array($object::class, $instance->getTargetClass())) {
+                return $this->mutate([$instance->getSourceProperty() => serialize($object)]);
+            }
+        }
+
+        return $this;
     }
 }

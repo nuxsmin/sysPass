@@ -24,7 +24,7 @@
 
 namespace SP\Core\Acl;
 
-use SP\DataModel\ActionData;
+use SP\DataModel\ActionItemWithIdAndName;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
@@ -49,7 +49,7 @@ class Actions implements ActionsInterface
      */
     public const CACHE_EXPIRE = 86400;
     /**
-     * @var  ActionData[]|null
+     * @var  ActionItemWithIdAndName[]|null
      */
     protected ?array $actions = null;
 
@@ -113,14 +113,14 @@ class Actions implements ActionsInterface
         $this->actions = [];
 
         foreach ($this->load() as $a) {
-            $this->actions[$a['id']] = new ActionData($a['id'], $a['name'], $a['text'], $a['route']);
+            $this->actions[$a['id']] = new ActionItemWithIdAndName($a['id'], $a['name'], $a['text'], $a['route']);
         }
     }
 
     /**
      * Loads actions from DB
      *
-     * @return ActionData[]
+     * @return ActionItemWithIdAndName[]
      * @throws FileException
      */
     protected function load(): array
@@ -147,7 +147,7 @@ class Actions implements ActionsInterface
      *
      * @throws ActionNotFoundException
      */
-    public function getActionById(int $id): ActionData
+    public function getActionById(int $id): ActionItemWithIdAndName
     {
         if (!isset($this->actions[$id])) {
             throw new ActionNotFoundException(__u('Action not found'));

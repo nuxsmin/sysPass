@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Common\Services\Service;
@@ -48,13 +48,15 @@ final class AccountToUserGroup extends Service implements AccountToUserGroupServ
     /**
      * @param int $id
      *
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
     public function getUserGroupsByAccountId(int $id): array
     {
-        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray(ItemData::class);
+        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray(
+            ItemItemWithIdAndName::class
+        );
     }
 }

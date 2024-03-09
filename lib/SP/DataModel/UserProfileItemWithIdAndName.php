@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,41 +24,43 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+use SP\Domain\Common\Models\Model;
+
+defined('APP_ROOT') || die();
 
 /**
- * Class ActionData
+ * Class ProfileBaseData
  *
  * @package SP\DataModel
  */
-class ActionData implements DataModelInterface
+class UserProfileItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {
-    public function __construct(
-        private readonly int    $id,
-        private readonly string $name,
-        private readonly string $text,
-        private readonly string $route
-    ) {
-    }
+    protected ?int         $id      = null;
+    protected ?string      $name    = null;
+    protected ?ProfileData $profile = null;
 
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getText(): string
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
-        return $this->text;
+        return (int)$this->id;
     }
 
-    public function getRoute(): string
+    /**
+     * @return ProfileData|null
+     */
+    public function getProfile(): ?ProfileData
     {
-        return $this->route;
+        return $this->profile;
     }
 }

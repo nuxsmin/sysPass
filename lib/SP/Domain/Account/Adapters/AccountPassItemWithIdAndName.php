@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +24,13 @@
 
 namespace SP\Domain\Account\Adapters;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class AccountPassData
  */
-class AccountPassData extends Model implements DataModelInterface
+class AccountPassItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id        = null;
     protected ?string $name      = null;

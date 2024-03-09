@@ -60,7 +60,7 @@ final class Client extends Service implements ClientService
     /**
      * @param ItemSearchData $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -169,7 +169,6 @@ final class Client extends Service implements ClientService
      * Get all items from the service's repository
      *
      * @return array<T>
-     * @throws SPException
      */
     public function getAll(): array
     {

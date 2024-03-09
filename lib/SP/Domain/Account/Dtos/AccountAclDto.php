@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
@@ -110,7 +110,7 @@ final class AccountAclDto
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function getUsersId(): array
     {
@@ -118,7 +118,7 @@ final class AccountAclDto
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function getUserGroupsId(): array
     {

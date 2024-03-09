@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
+use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Ports\AccountFileService;
@@ -62,14 +62,14 @@ final class AccountFile extends Service implements AccountFileService
     /**
      * Creates an item
      *
-     * @param FileData $itemData
+     * @param FileItemWithIdAndName $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws InvalidImageException
      * @throws QueryException
      */
-    public function create(FileData $itemData): int
+    public function create(FileItemWithIdAndName $itemData): int
     {
         if (FileUtil::isImage($itemData)) {
             $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
@@ -152,7 +152,7 @@ final class AccountFile extends Service implements AccountFileService
      * Returns the item for given id
      *
      * @param int $id
-     * @return FileData[]
+     * @return FileItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

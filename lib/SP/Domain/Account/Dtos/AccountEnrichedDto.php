@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
@@ -37,15 +37,15 @@ class AccountEnrichedDto
 
     private readonly int $id;
     /**
-     * @var ItemData[] Los usuarios secundarios de la cuenta.
+     * @var ItemItemWithIdAndName[] Los usuarios secundarios de la cuenta.
      */
     private array $users = [];
     /**
-     * @var ItemData[] Los grupos secundarios de la cuenta.
+     * @var ItemItemWithIdAndName[] Los grupos secundarios de la cuenta.
      */
     private array $userGroups = [];
     /**
-     * @var ItemData[] Las etiquetas de la cuenta.
+     * @var ItemItemWithIdAndName[] Las etiquetas de la cuenta.
      */
     private array $tags = [];
 
@@ -68,7 +68,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemData[] $users
+     * @param ItemItemWithIdAndName[] $users
      *
      * @return AccountEnrichedDto
      */
@@ -81,7 +81,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemData[] $groups
+     * @param ItemItemWithIdAndName[] $groups
      *
      * @return AccountEnrichedDto
      */
@@ -94,7 +94,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @param ItemData[] $tags
+     * @param ItemItemWithIdAndName[] $tags
      *
      * @return AccountEnrichedDto
      */
@@ -107,7 +107,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function getUsers(): array
     {
@@ -115,7 +115,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function getUserGroups(): array
     {
@@ -123,7 +123,7 @@ class AccountEnrichedDto
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function getTags(): array
     {

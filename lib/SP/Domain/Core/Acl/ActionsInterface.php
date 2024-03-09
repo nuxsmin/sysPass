@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Acl;
 
-use SP\DataModel\ActionData;
+use SP\DataModel\ActionItemWithIdAndName;
 use SP\Infrastructure\File\FileException;
 
 /**
@@ -37,7 +37,7 @@ interface ActionsInterface
      *
      * @throws ActionNotFoundException
      */
-    public function getActionById(int $id): ActionData;
+    public function getActionById(int $id): ActionItemWithIdAndName;
 
     /**
      * @throws FileException

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Adapters;
+namespace SP\DataModel;
+
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+use SP\Domain\Common\Models\Model;
 
 /**
- * Interface DataModelInterface
+ * Class ItemData
  *
  * @package SP\DataModel
  */
-interface DataModelInterface
+class ItemItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {
-    public function getId(): ?int;
+    protected ?int    $id   = null;
+    protected ?string $name = null;
 
-    public function getName(): ?string;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 }

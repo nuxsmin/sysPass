@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,33 +25,31 @@
 namespace SP\Domain\ItemPreset\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\ItemPreset\Services\ItemPresetRequest;
-use SP\Domain\ItemPreset\Services\ItemPresetService;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class ItemPresetService
  *
- * @package SP\Domain\Account\Services
+ * @template T of ItemPresetModel
  */
-interface ItemPresetServiceInterface
+interface ItemPresetService
 {
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(ItemPresetRequest $itemPresetRequest): int;
+    public function create(ItemPresetModel $itemPreset): int;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(ItemPresetRequest $itemPresetRequest): int;
+    public function update(ItemPresetModel $itemPreset): int;
 
     /**
      * Deletes an item
@@ -69,12 +67,12 @@ interface ItemPresetServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ItemPreset;
+    public function getById(int $id): ItemPresetModel;
 
     /**
      * Returns all the items
      *
-     * @return ItemPreset[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -83,6 +81,7 @@ interface ItemPresetServiceInterface
     /**
      * Searches for items by a given filter
      *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -92,16 +91,16 @@ interface ItemPresetServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForCurrentUser(string $type): ?ItemPreset;
+    public function getForCurrentUser(string $type): ?ItemPresetModel;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId): ?ItemPreset;
+    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId): ?ItemPresetModel;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException

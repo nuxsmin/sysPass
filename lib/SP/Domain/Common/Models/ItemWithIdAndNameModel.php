@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,19 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Adapters;
+namespace SP\Domain\Common\Models;
 
 /**
- * Interface HydratableInterface
+ * Interface ItemWithIdAndNameModel
  */
-interface HydratableInterface
+interface ItemWithIdAndNameModel
 {
-    /**
-     * @template T
-     * @param class-string<T>|null $class
-     * @param string $property
-     *
-     * @return T|null
-     */
-    public function hydrate(?string $class = null, string $property = 'data'): mixed;
+    public function getId(): ?int;
+
+    public function getName(): ?string;
 }

@@ -28,7 +28,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextException;
-use SP\DataModel\ActionData;
+use SP\DataModel\ActionItemWithIdAndName;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
@@ -106,7 +106,7 @@ class ActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @return ActionData[]
+     * @return ActionItemWithIdAndName[]
      */
     private function checkLoadAndSave(): array
     {
@@ -124,7 +124,7 @@ class ActionsTest extends UnitaryTestCase
             ->willReturn($actions);
 
         $actionsMapped = array_map(
-            static fn(array $a) => new ActionData($a['id'], $a['name'], $a['text'], $a['route']),
+            static fn(array $a) => new ActionItemWithIdAndName($a['id'], $a['name'], $a['text'], $a['route']),
             $actions
         );
 
@@ -172,7 +172,7 @@ class ActionsTest extends UnitaryTestCase
         $actions = $this->getActions();
 
         $actionsMapped = array_map(
-            static fn(array $a) => new ActionData($a['id'], $a['name'], $a['text'], $a['route']),
+            static fn(array $a) => new ActionItemWithIdAndName($a['id'], $a['name'], $a['text'], $a['route']),
             $actions
         );
 
@@ -272,7 +272,7 @@ class ActionsTest extends UnitaryTestCase
             ->willReturn($actions);
 
         $actionsMapped = array_map(
-            static fn(array $a) => new ActionData($a['id'], $a['name'], $a['text'], $a['route']),
+            static fn(array $a) => new ActionItemWithIdAndName($a['id'], $a['name'], $a['text'], $a['route']),
             $actions
         );
 
@@ -292,7 +292,7 @@ class ActionsTest extends UnitaryTestCase
     public function testGetActionById()
     {
         $actionsMapped = array_map(
-            static fn(array $a) => new ActionData($a['id'], $a['name'], $a['text'], $a['route']),
+            static fn(array $a) => new ActionItemWithIdAndName($a['id'], $a['name'], $a['text'], $a['route']),
             $this->getActions()
         );
 

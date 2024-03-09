@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Mvc\Controller\Validators\ValidatorInterface;
 use SPT\Generators\AccountDataGenerator;
 use SPT\Generators\ItemPresetDataGenerator;
@@ -48,8 +48,8 @@ use SPT\UnitaryTestCase;
 class AccountPresetTest extends UnitaryTestCase
 {
 
-    private ItemPresetServiceInterface|MockObject $itemPresetService;
-    private AccountPreset $accountPreset;
+    private ItemPresetService|MockObject $itemPresetService;
+    private AccountPreset                $accountPreset;
     private ValidatorInterface|MockObject         $passwordValidator;
 
     /**
@@ -170,7 +170,7 @@ class AccountPresetTest extends UnitaryTestCase
         $configData = $this->config->getConfigData();
         $configData->setAccountExpireEnabled(true);
 
-        $this->itemPresetService = $this->createMock(ItemPresetServiceInterface::class);
+        $this->itemPresetService = $this->createMock(ItemPresetService::class);
         $this->passwordValidator = $this->createMock(ValidatorInterface::class);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);

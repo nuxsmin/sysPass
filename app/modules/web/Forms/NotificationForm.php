@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Messages\NotificationMessage;
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
  */
 final class NotificationForm extends FormBase implements FormInterface
 {
-    protected ?NotificationData $notificationData = null;
+    protected ?NotificationItemWithIdAndName $notificationData = null;
 
     /**
      * Validar el formulario
@@ -71,7 +71,7 @@ final class NotificationForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->notificationData = new NotificationData();
+        $this->notificationData = new NotificationItemWithIdAndName();
         $this->notificationData->setId($this->itemId);
         $this->notificationData->setType($this->request->analyzeString('notification_type'));
         $this->notificationData->setComponent($this->request->analyzeString('notification_component'));
@@ -113,7 +113,7 @@ final class NotificationForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?NotificationData
+    public function getItemData(): ?NotificationItemWithIdAndName
     {
         return $this->notificationData;
     }

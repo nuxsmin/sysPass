@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,14 +23,14 @@
  */
 
 /**
- * @var  NotificationData $notification
+ * @var  NotificationItemWithIdAndName $notification
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;

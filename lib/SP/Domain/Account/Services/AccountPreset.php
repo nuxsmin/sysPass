@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Mvc\Controller\Validators\ValidatorInterface;
 
 /**
@@ -50,7 +50,7 @@ final class AccountPreset extends Service implements AccountPresetService
 {
     public function __construct(
         Application                                   $application,
-        private readonly ItemPresetServiceInterface   $itemPresetService,
+        private readonly ItemPresetService $itemPresetService,
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly ConfigDataInterface          $configData,

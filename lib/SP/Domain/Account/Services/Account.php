@@ -55,7 +55,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -75,7 +75,7 @@ final class Account extends Service implements AccountService
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly AccountToTagRepository       $accountToTagRepository,
-        private readonly ItemPresetServiceInterface   $itemPresetService,
+        private readonly ItemPresetService $itemPresetService,
         private readonly AccountHistoryService        $accountHistoryService,
         private readonly AccountItemsService          $accountItemsService,
         private readonly AccountPresetService         $accountPresetService,

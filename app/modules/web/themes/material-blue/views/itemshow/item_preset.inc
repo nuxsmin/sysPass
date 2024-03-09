@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,9 +30,9 @@
  * @var TemplateInterface $this
  */
 
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 

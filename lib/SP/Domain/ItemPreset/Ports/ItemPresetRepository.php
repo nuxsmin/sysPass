@@ -24,27 +24,91 @@
 
 namespace SP\Domain\ItemPreset\Ports;
 
+use Exception;
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class AccountDefaultPermissionRepository
+ * Class ItemPresetRepository
  *
- * @package SP\Infrastructure\Account\Repositories
+ * @template T of ItemPresetModel
  */
 interface ItemPresetRepository extends Repository
 {
     /**
+     * Creates an item
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function create(ItemPresetModel $itemPreset): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function update(ItemPresetModel $itemPreset): int;
+
+    /**
+     * Deletes an item
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
+
+    /**
      * Returns the item for given id
      *
-     * @param  string  $type
-     * @param  int  $userId
-     * @param  int  $userGroupId
-     * @param  int  $userProfileId
+     * @param int $itemPresetId
      *
      * @return QueryResult
+     */
+    public function getById(int $itemPresetId): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $itemPresetIds): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param string $type
+     * @param int $userId
+     * @param int $userGroupId
+     * @param int $userProfileId
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */

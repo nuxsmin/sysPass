@@ -26,7 +26,7 @@ namespace SPT\Generators;
 
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
-use SP\Domain\Account\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 
 /**
  * Class ItemPresetDataGenerator
@@ -37,14 +37,14 @@ final class ItemPresetDataGenerator extends DataGenerator
     {
         return new ItemPreset([
                                   'id' => $this->faker->randomNumber(3),
-            'type'          => $this->faker->colorName,
+                                  'type' => $this->faker->colorName,
                                   'userId' => $this->faker->randomNumber(3),
                                   'userGroupId' => $this->faker->randomNumber(3),
                                   'userProfileId' => $this->faker->randomNumber(3),
-            'fixed'         => (int)$this->faker->boolean,
+                                  'fixed' => (int)$this->faker->boolean,
                                   'priority' => $this->faker->randomNumber(3),
-            'data'          => serialize($data),
-        ]);
+                                  'data' => serialize($data),
+                              ]);
     }
 
     public function buildPassword(): Password

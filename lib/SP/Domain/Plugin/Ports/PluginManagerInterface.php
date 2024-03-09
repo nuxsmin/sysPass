@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -169,7 +169,7 @@ interface PluginManagerInterface
     /**
      * Devolver los plugins activados
      *
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */

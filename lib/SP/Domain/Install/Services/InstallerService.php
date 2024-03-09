@@ -29,7 +29,7 @@ use Exception;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\ProfileData;
 use SP\DataModel\User;
-use SP\DataModel\UserProfileData;
+use SP\DataModel\UserProfileItemWithIdAndName;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -344,7 +344,7 @@ final class InstallerService implements InstallerServiceInterface
                 ]
             );
 
-            $userProfile = new UserProfileData(['name' => 'Admin', 'profile' => new ProfileData()]);
+            $userProfile = new UserProfileItemWithIdAndName(['name' => 'Admin', 'profile' => new ProfileData()]);
 
             $userData = new User([
                                      'userGroupId' => $this->userGroupService->create($userGroup),

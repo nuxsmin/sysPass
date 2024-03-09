@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
@@ -32,7 +32,7 @@ use SP\Domain\Common\Models\Model;
  *
  * @package SP\DataModel
  */
-class FileData extends Model implements DataModelInterface
+class FileItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id        = null;
     protected ?int    $accountId = null;

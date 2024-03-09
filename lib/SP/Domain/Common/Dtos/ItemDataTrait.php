@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Common\Dtos;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 
 /**
  * Trait ItemDataTrait
@@ -32,12 +32,12 @@ use SP\DataModel\ItemData;
 trait ItemDataTrait
 {
     /**
-     * @param  ItemData[]  $items
+     * @param ItemItemWithIdAndName[] $items
      *
      * @return array
      */
     private static function buildFromItemData(array $items): array
     {
-        return array_filter($items, static fn($value) => $value instanceof ItemData);
+        return array_filter($items, static fn($value) => $value instanceof ItemItemWithIdAndName);
     }
 }

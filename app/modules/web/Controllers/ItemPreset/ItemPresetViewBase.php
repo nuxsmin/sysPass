@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,14 +27,14 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
@@ -45,14 +45,14 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ItemPresetViewBase extends ControllerBase
 {
-    private ItemPresetServiceInterface $itemPresetService;
-    private ItemPresetHelper                                       $itemPresetHelper;
+    private ItemPresetService $itemPresetService;
+    private ItemPresetHelper  $itemPresetHelper;
 
     public function __construct(
-        Application $application,
+        Application       $application,
         WebControllerHelper $webControllerHelper,
-        ItemPresetServiceInterface $itemPresetService,
-        ItemPresetHelper $itemPresetHelper
+        ItemPresetService $itemPresetService,
+        ItemPresetHelper  $itemPresetHelper
     ) {
         parent::__construct($application, $webControllerHelper);
 

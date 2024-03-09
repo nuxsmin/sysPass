@@ -27,7 +27,7 @@ namespace SP\Domain\User\Services;
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileData;
+use SP\DataModel\UserProfileItemWithIdAndName;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
@@ -67,7 +67,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserProfileData
+    public function getById(int $id): UserProfileItemWithIdAndName
     {
         $result = $this->userProfileRepository->getById($id);
 
@@ -130,7 +130,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(UserProfileData $itemData): int
+    public function create(UserProfileItemWithIdAndName $itemData): int
     {
         return $this->userProfileRepository->create($itemData);
     }
@@ -141,7 +141,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserProfileData $itemData): void
+    public function update(UserProfileItemWithIdAndName $itemData): void
     {
         $update = $this->userProfileRepository->update($itemData);
 
@@ -163,7 +163,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     /**
      * Get all items from the service's repository
      *
-     * @return UserProfileData[]
+     * @return UserProfileItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */

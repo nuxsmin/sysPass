@@ -22,32 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\CustomField\Models;
-
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
-use SP\Domain\Common\Models\Model;
+namespace SP\Domain\Common\Models;
 
 /**
- * Class CustomFieldType
+ * Interface HydratableModel
  */
-class CustomFieldType extends Model implements ItemWithIdAndNameModel
+interface HydratableModel
 {
-    protected ?int    $id   = null;
-    protected ?string $name = null;
-    protected ?string $text = null;
+    /**
+     * Deserialize the hydratable property and returns the object.
+     *
+     * @template T
+     * @param class-string<T> $class
+     *
+     * @return T|null
+     */
+    public function hydrate(string $class): ?object;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function getText(): ?string
-    {
-        return $this->text;
-    }
+    /**
+     * Serialize the object in the hydratable property
+     * @param object $object
+     *
+     * @return static A new instance of the model with the serialized property
+     */
+    public function dehydrate(object $object): static;
 }

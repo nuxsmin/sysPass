@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -65,7 +65,7 @@ final class NotificationsController extends SimpleControllerBase
     {
         $notifications = array_map(
             static function ($notification) {
-                /** @@var $notification NotificationData */
+                /** @@var $notification NotificationItemWithIdAndName */
                 return sprintf(
                     '(%s) - %s',
                     $notification->getComponent(),

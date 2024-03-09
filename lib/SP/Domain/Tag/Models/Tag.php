@@ -24,13 +24,13 @@
 
 namespace SP\Domain\Tag\Models;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class Tag
  */
-class Tag extends Model implements DataModelInterface
+class Tag extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id   = null;
     protected ?string $name = null;

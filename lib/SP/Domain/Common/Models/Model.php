@@ -61,7 +61,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
     {
         return array_filter(
             get_object_vars($this),
-            fn($key) => $key !== 'properties' && $key !== 'fields',
+            static fn(string $key) => $key !== 'properties' && $key !== 'fields',
             ARRAY_FILTER_USE_KEY
         );
     }
@@ -118,9 +118,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     final public static function getCols(?array $exclude = null): array
     {
-        $self = new static();
-
-        return array_keys($self->toArray(null, $exclude));
+        return array_keys((new static())->toArray(null, $exclude));
     }
 
     /**

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Mvc\View\Components;
 
 use RuntimeException;
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 
@@ -76,7 +76,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
         $out = [];
 
         foreach ($this->items as $item) {
-            if (!$item instanceof DataModelInterface) {
+            if (!$item instanceof ItemWithIdAndNameModel) {
                 throw new RuntimeException(__u('Wrong object type'));
             }
 
@@ -137,7 +137,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
     {
         return array_map(
             static function ($item) {
-                if (!$item instanceof DataModelInterface) {
+                if (!$item instanceof ItemWithIdAndNameModel) {
                     throw new RuntimeException(__u('Wrong object type'));
                 }
 

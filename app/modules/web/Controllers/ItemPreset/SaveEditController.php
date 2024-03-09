@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -71,7 +71,7 @@ final class SaveEditController extends ItemPresetSaveBase
                     $this,
                     EventMessage::factory()
                         ->addDescription(__u('Value updated'))
-                        ->addDetail(__u('Type'), $itemData->getItemPresetData()->getType())
+                        ->addDetail(__u('Type'), $itemData->getItemPreset()->getType())
                         ->addDetail(__u('ID'), $id)
                 )
             );

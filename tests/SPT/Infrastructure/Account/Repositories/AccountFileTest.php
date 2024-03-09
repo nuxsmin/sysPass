@@ -27,7 +27,7 @@ namespace SPT\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\FileData;
+use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -95,7 +95,7 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testCreate(): void
     {
-        $fileData = FileData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = FileItemWithIdAndName::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
         $expected = new QueryResult();
         $expected->setLastId(1);

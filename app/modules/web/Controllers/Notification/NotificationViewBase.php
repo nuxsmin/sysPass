@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Notification;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\NotificationData;
+use SP\DataModel\NotificationItemWithIdAndName;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -75,7 +75,7 @@ abstract class NotificationViewBase extends ControllerBase
 
         $notification = $notificationId
             ? $this->notificationService->getById($notificationId)
-            : new NotificationData();
+            : new NotificationItemWithIdAndName();
 
         $this->view->assign('notification', $notification);
 

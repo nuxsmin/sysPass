@@ -27,7 +27,7 @@ namespace SPT\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Account\Repositories\AccountToUserGroup;
@@ -84,7 +84,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === ItemData::class
+                       && $arg->getMapClassName() === ItemItemWithIdAndName::class
                        && !empty($query->getStatement());
             }
         );
@@ -189,7 +189,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['userGroupId'] === $id
-                       && $arg->getMapClassName() === ItemData::class
+                       && $arg->getMapClassName() === ItemItemWithIdAndName::class
                        && !empty($query->getStatement());
             }
         );

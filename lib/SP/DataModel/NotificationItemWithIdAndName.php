@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Core\Messages\MessageInterface;
 
 /**
@@ -32,7 +32,7 @@ use SP\Domain\Core\Messages\MessageInterface;
  *
  * @package SP\DataModel
  */
-class NotificationData implements DataModelInterface
+class NotificationItemWithIdAndName implements ItemWithIdAndNameModel
 {
     /**
      * @var int

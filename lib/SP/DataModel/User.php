@@ -24,14 +24,14 @@
 
 namespace SP\DataModel;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 
 /**
  * Class UserBasicData
  *
  * @package SP\DataModel
  */
-class User extends UserPassData implements DataModelInterface
+class User extends UserPassData implements ItemWithIdAndNameModel
 {
     protected ?string $login         = null;
     protected ?string $ssoLogin      = null;

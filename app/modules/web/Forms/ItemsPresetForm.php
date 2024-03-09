@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,10 +28,10 @@ use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\Domain\Account\Models\ItemPreset;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
@@ -196,7 +196,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     protected function checkCommon(): void
     {
-        $itemPresetData = $this->itemPresetRequest->getItemPresetData();
+        $itemPresetData = $this->itemPresetRequest->getItemPreset();
 
         if (!$itemPresetData->getUserId()
             && !$itemPresetData->getUserGroupId()

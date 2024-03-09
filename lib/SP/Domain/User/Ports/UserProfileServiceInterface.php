@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Domain\User\Ports;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserProfileData;
+use SP\DataModel\UserProfileItemWithIdAndName;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,7 +45,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserProfileData;
+    public function getById(int $id): UserProfileItemWithIdAndName;
 
     /**
      * @throws ConstraintException
@@ -74,7 +74,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(UserProfileData $itemData): int;
+    public function create(UserProfileItemWithIdAndName $itemData): int;
 
     /**
      * @throws ConstraintException
@@ -82,7 +82,7 @@ interface UserProfileServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserProfileData $itemData): void;
+    public function update(UserProfileItemWithIdAndName $itemData): void;
 
     /**
      * @throws ConstraintException
@@ -93,7 +93,7 @@ interface UserProfileServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return UserProfileData[]
+     * @return UserProfileItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */

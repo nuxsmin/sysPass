@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\DataModel\ItemPreset\AccountPermission;
+use SP\DataModel\ItemPreset\AccountPermission as AccountPermissionPreset;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountPermission;
@@ -53,7 +53,7 @@ use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetServiceInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagServiceInterface;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -73,39 +73,39 @@ final class AccountHelper extends AccountHelperBase
 {
     use ItemTrait;
 
-    private AccountService              $accountService;
-    private AccountHistoryService       $accountHistoryService;
-    private PublicLinkService           $publicLinkService;
-    private ItemPresetServiceInterface $itemPresetService;
-    private MasterPassService          $masterPassService;
-    private AccountAclService          $accountAclService;
-    private CategoryService $categoryService;
-    private ClientService          $clientService;
-    private CustomFieldDataService $customFieldService;
-    private ?AccountPermission     $accountAcl = null;
-    private ?int                        $accountId  = null;
-    private UserServiceInterface           $userService;
-    private UserGroupServiceInterface      $userGroupService;
-    private TagServiceInterface            $tagService;
+    private AccountService            $accountService;
+    private AccountHistoryService     $accountHistoryService;
+    private PublicLinkService         $publicLinkService;
+    private ItemPresetService         $itemPresetService;
+    private MasterPassService         $masterPassService;
+    private AccountAclService         $accountAclService;
+    private CategoryService           $categoryService;
+    private ClientService             $clientService;
+    private CustomFieldDataService    $customFieldService;
+    private ?AccountPermission        $accountAcl = null;
+    private ?int                      $accountId  = null;
+    private UserServiceInterface      $userService;
+    private UserGroupServiceInterface $userGroupService;
+    private TagServiceInterface       $tagService;
 
     public function __construct(
-        Application                 $application,
-        TemplateInterface           $template,
-        RequestInterface            $request,
-        AclInterface               $acl,
-        AccountService             $accountService,
-        AccountHistoryService      $accountHistoryService,
-        PublicLinkService          $publicLinkService,
-        ItemPresetServiceInterface $itemPresetService,
-        MasterPassService          $masterPassService,
-        AccountActionsHelper       $accountActionsHelper,
-        AccountAclService          $accountAclService,
-        CategoryService            $categoryService,
-        ClientService              $clientService,
-        CustomFieldDataService $customFieldService,
-        UserServiceInterface       $userService,
-        UserGroupServiceInterface  $userGroupService,
-        TagServiceInterface        $tagService
+        Application               $application,
+        TemplateInterface         $template,
+        RequestInterface          $request,
+        AclInterface              $acl,
+        AccountService            $accountService,
+        AccountHistoryService     $accountHistoryService,
+        PublicLinkService         $publicLinkService,
+        ItemPresetService         $itemPresetService,
+        MasterPassService         $masterPassService,
+        AccountActionsHelper      $accountActionsHelper,
+        AccountAclService         $accountAclService,
+        CategoryService           $categoryService,
+        ClientService             $clientService,
+        CustomFieldDataService    $customFieldService,
+        UserServiceInterface      $userService,
+        UserGroupServiceInterface $userGroupService,
+        TagServiceInterface       $tagService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 
@@ -130,7 +130,7 @@ final class AccountHelper extends AccountHelperBase
      * Sets account's view variables
      *
      * @param AccountEnrichedDto $accountDetailsResponse
-     * @param  int  $actionId
+     * @param int $actionId
      *
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
@@ -205,8 +205,12 @@ final class AccountHelper extends AccountHelperBase
         );
         $this->view->assign(
             'historyData',
-            SelectItemAdapter::factory(AccountHistoryHelper::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId)))
-                ->getItemsFromArray()
+            SelectItemAdapter::factory(
+                AccountHistoryHelper::mapHistoryForDateSelect(
+                    $this->accountHistoryService->getHistoryForAccount($this->accountId)
+                )
+            )
+                             ->getItemsFromArray()
         );
         $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);
         $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
@@ -218,7 +222,7 @@ final class AccountHelper extends AccountHelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
 
                 $this->view->assign(
                     'publicLinkUrl',
@@ -381,7 +385,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view for a blank form
      *
-     * @param  int  $actionId
+     * @param int $actionId
      *
      * @return void
      * @throws UnauthorizedPageException
@@ -412,15 +416,17 @@ final class AccountHelper extends AccountHelperBase
         $accountPrivate = new AccountPrivate();
 
         if ($itemPresetPrivate =
-            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)) {
-            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?: $accountPrivate;
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+        ) {
+            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?? $accountPrivate;
         }
 
-        $accountPermission = new AccountPermission();
+        $accountPermission = new AccountPermissionPreset();
 
         if ($itemPresetPermission =
-            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)) {
-            $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class) ?: $accountPermission;
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)
+        ) {
+            $accountPermission = $itemPresetPermission->hydrate(AccountPermissionPreset::class) ?? $accountPermission;
         }
 
         $selectUsers = SelectItemAdapter::factory($this->userService->getAll());

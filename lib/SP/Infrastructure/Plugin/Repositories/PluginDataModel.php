@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,14 +25,14 @@
 namespace SP\Infrastructure\Plugin\Repositories;
 
 use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Adapters\HydratableInterface;
+use SP\Domain\Common\Models\HydratableModel;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Models\SerializedModel;
 
 /**
  * Class PluginDataModel
  */
-final class PluginDataModel extends Model implements HydratableInterface
+final class PluginDataModel extends Model implements HydratableModel
 {
     use SerializedModel;
     use EncryptedModel;

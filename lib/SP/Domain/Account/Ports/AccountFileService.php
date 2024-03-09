@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
+use SP\DataModel\FileItemWithIdAndName;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -48,7 +48,7 @@ interface AccountFileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(FileData $itemData): int;
+    public function create(FileItemWithIdAndName $itemData): int;
 
     /**
      * Returns the item for given id
@@ -92,7 +92,7 @@ interface AccountFileService
     /**
      * Returns the item for given id
      *
-     * @return FileData[]
+     * @return FileItemWithIdAndName[]
      * @throws ConstraintException
      * @throws QueryException
      */

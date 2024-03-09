@@ -24,13 +24,13 @@
 
 namespace SP\Domain\User\Models;
 
-use SP\Domain\Common\Adapters\DataModelInterface;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class GroupData
  */
-class UserGroup extends Model implements DataModelInterface
+class UserGroup extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id          = null;
     protected ?string $name        = null;

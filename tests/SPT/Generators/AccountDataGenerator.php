@@ -24,7 +24,7 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\ItemData;
+use SP\DataModel\ItemItemWithIdAndName;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
@@ -94,12 +94,12 @@ final class AccountDataGenerator extends DataGenerator
     }
 
     /**
-     * @return ItemData[]
+     * @return ItemItemWithIdAndName[]
      */
     public function buildItemData(): array
     {
         return array_map(
-            fn() => new ItemData(['id' => $this->faker->randomNumber(3), 'name' => $this->faker->name]),
+            fn() => new ItemItemWithIdAndName(['id' => $this->faker->randomNumber(3), 'name' => $this->faker->name]),
             range(0, 9)
         );
     }
