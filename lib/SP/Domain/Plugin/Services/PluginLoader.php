@@ -42,7 +42,7 @@ use function SP\__;
  */
 final class PluginLoader extends Service implements PluginLoaderService
 {
-    public function __construct(Application $application, private readonly PluginManagerService $pluginService)
+    public function __construct(Application $application, private readonly PluginManagerService $pluginManagerService)
     {
         parent::__construct($application);
     }
@@ -54,7 +54,7 @@ final class PluginLoader extends Service implements PluginLoaderService
     public function loadFor(PluginInterface $plugin): void
     {
         try {
-            $model = $this->pluginService->getByName($plugin->getName());
+            $model = $this->pluginManagerService->getByName($plugin->getName());
         } catch (NoSuchItemException $e) {
             $this->eventDispatcher->notify(
                 'plugin.load',
