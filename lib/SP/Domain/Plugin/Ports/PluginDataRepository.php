@@ -39,35 +39,35 @@ interface PluginDataRepository
     /**
      * Creates an item
      *
-     * @param PluginDataModel $itemData
+     * @param PluginDataModel $pluginData
      *
      * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PluginDataModel $itemData): QueryResult;
+    public function create(PluginDataModel $pluginData): QueryResult;
 
     /**
      * Updates an item
      *
-     * @param PluginDataModel $itemData
+     * @param PluginDataModel $pluginData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PluginDataModel $itemData): int;
+    public function update(PluginDataModel $pluginData): int;
 
     /**
      * Deletes an item
      *
-     * @param string $id
+     * @param string $name
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(string $id): int;
+    public function delete(string $name): QueryResult;
 
     /**
      * Deletes an item
@@ -75,22 +75,19 @@ interface PluginDataRepository
      * @param string $name
      * @param int $itemId
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByItemId(string $name, int $itemId): int;
+    public function deleteByItemId(string $name, int $itemId): QueryResult;
 
     /**
-     * Returns the item for given id
+     * Returns the item for given name
      *
-     * @param string $id
-     *
+     * @param string $name
      * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function getById(string $id): QueryResult;
+    public function getByName(string $name): QueryResult;
 
     /**
      * Returns all the items
@@ -102,26 +99,24 @@ interface PluginDataRepository
     public function getAll(): QueryResult;
 
     /**
-     * Returns all the items for given ids
+     * Returns all the items for given names
      *
-     * @param string[] $ids
+     * @param string[] $names
      *
      * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function getByIdBatch(array $ids): QueryResult;
+    public function getByNameBatch(array $names): QueryResult;
 
     /**
-     * Deletes all the items for given ids
+     * Deletes all the items for given names
      *
-     * @param string[] $ids
+     * @param string[] $names
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): int;
+    public function deleteByNameBatch(array $names): QueryResult;
 
     /**
      * Devuelve los datos de un plugin por su nombre

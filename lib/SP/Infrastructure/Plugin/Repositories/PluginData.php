@@ -33,6 +33,8 @@ use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__u;
+
 /**
  * Class PluginData
  *
@@ -42,29 +44,25 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 {
     use RepositoryItemTrait;
 
+    public const TABLE = 'PluginData';
+
     /**
      * Creates an item
      *
-     * @param PluginDataModel $itemData
+     * @param PluginDataModel $pluginData
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PluginDataModel $itemData): QueryResult
+    public function create(PluginDataModel $pluginData): QueryResult
     {
-        $query = /** @lang SQL */
-            'INSERT INTO PluginData SET `name` = ?, itemId = ?, `data` = ?, `key` = ?';
+        $query = $this->queryFactory
+            ->newInsert()
+            ->into(self::TABLE)
+            ->cols($pluginData->toArray(null, ['id']));
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-                                  $itemData->getName(),
-                                  $itemData->getItemId(),
-                                  $itemData->getData(),
-                                  $itemData->getKey(),
-                              ]);
-        $queryData->setOnErrorMessage(__u('Error while adding plugin\'s data'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding plugin\'s data'));
 
         return $this->db->doQuery($queryData);
     }
@@ -72,47 +70,25 @@ final class PluginData extends BaseRepository implements PluginDataRepository
     /**
      * Updates an item
      *
-     * @param PluginDataModel $itemData
+     * @param PluginDataModel $pluginData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PluginDataModel $itemData): int
+    public function update(PluginDataModel $pluginData): int
     {
-        $query = /** @lang SQL */
-            'UPDATE PluginData
-              SET `data` = ?, `key` = ?
-              WHERE `name` = ? AND itemId = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->cols($pluginData->toArray(null, ['name', 'itemId']))
+            ->where(
+                'name = :name AND itemId = :itemId',
+                ['name' => $pluginData->getName(), 'itemId' => $pluginData->getItemId()]
+            )
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-                                  $itemData->getData(),
-                                  $itemData->getKey(),
-                                  $itemData->getName(),
-                                  $itemData->getItemId(),
-                              ]);
-        $queryData->setOnErrorMessage(__u('Error while updating plugin\'s data'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Deletes an item
-     *
-     * @param string $id
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function delete(string $id): int
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PluginData WHERE `name` = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating plugin\'s data'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -121,45 +97,64 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * Deletes an item
      *
      * @param string $name
-     * @param int $itemId
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByItemId(string $name, int $itemId): int
+    public function delete(string $name): QueryResult
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PluginData WHERE `name` = ? AND itemId = ? LIMIT 1');
-        $queryData->setParams([$name, $itemId]);
-        $queryData->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('name = :name', ['name' => $name])
+            ->limit(1);
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
+
+        return $this->db->doQuery($queryData);
     }
 
     /**
-     * Returns the item for given id
+     * Deletes an item
      *
-     * @param string $id
+     * @param string $name
+     * @param int $itemId
      *
-     * @return QueryResult<T>
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(string $id): QueryResult
+    public function deleteByItemId(string $name, int $itemId): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT itemId,
-            `name`,
-            `data`,
-            `key`
-            FROM PluginData
-            WHERE `name` = ?';
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('name = :name AND itemId = :itemId', ['name' => $name, 'itemId' => $itemId])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PluginDataModel::class);
-        $queryData->setQuery($query);
-        $queryData->addParam($id);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
+
+        return $this->db->doQuery($queryData);
+    }
+
+    /**
+     * Returns the item for given name
+     *
+     * @param string $name
+     * @return QueryResult<T>
+     */
+    public function getByName(string $name): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(PluginDataModel::getCols())
+            ->where('name = :name')
+            ->bindValues(['name' => $name])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
         return $this->db->doSelect($queryData);
     }
@@ -168,79 +163,62 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * Returns all the items
      *
      * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT itemId,
-            `name`,
-            `data`,
-            `key` 
-            FROM PluginData 
-            ORDER BY `name`';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(PluginDataModel::getCols())
+            ->orderBy(['name']);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PluginDataModel::class);
-        $queryData->setQuery($query);
+        return $this->db->doSelect(QueryData::buildWithMapper($query, PluginDataModel::class));
+    }
+
+    /**
+     * Returns all the items for given names
+     *
+     * @param string[] $names
+     *
+     * @return QueryResult<T>
+     */
+    public function getByNameBatch(array $names): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(PluginDataModel::getCols())
+            ->where('name IN (:name)', ['name' => $names])
+            ->orderBy(['name']);
+
+        $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
         return $this->db->doSelect($queryData);
     }
 
     /**
-     * Returns all the items for given ids
+     * Deletes all the items for given names
      *
-     * @param string[] $ids
+     * @param string[] $names
      *
-     * @return QueryResult<T>
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByIdBatch(array $ids): QueryResult
+    public function deleteByNameBatch(array $names): QueryResult
     {
-        if (count($ids) === 0) {
+        if (count($names) === 0) {
             return new QueryResult();
         }
 
-        $query = /** @lang SQL */
-            'SELECT itemId,
-            `name`,
-            `data`,
-            `key`
-            FROM PluginData 
-            WHERE `name` IN (' . $this->buildParamsFromArray($ids) . ')
-            ORDER BY `name`';
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('name IN (:name)', ['name' => $names]);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PluginDataModel::class);
-        $queryData->setQuery($query);
-        $queryData->setParams($ids);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * Deletes all the items for given ids
-     *
-     * @param string[] $ids
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function deleteByIdBatch(array $ids): int
-    {
-        if (count($ids) === 0) {
-            return 0;
-        }
-
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PluginData WHERE `name` IN (' . $this->buildParamsFromArray($ids) . ')');
-        $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->doQuery($queryData);
     }
 
     /**
@@ -250,23 +228,17 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * @param int $itemId
      *
      * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getByItemId(string $name, int $itemId): QueryResult
     {
-        $query = /** @lang SQL */
-            'SELECT itemId,
-            `name`,
-            `data`,
-            `key` 
-            FROM PluginData
-            WHERE `name` = ? AND itemId = ? LIMIT 1';
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(PluginDataModel::getCols())
+            ->where('name = :name AND itemId = :itemId', ['name' => $name, 'itemId' => $itemId])
+            ->limit(1);
 
-        $queryData = new QueryData();
-        $queryData->setMapClassName(PluginDataModel::class);
-        $queryData->setQuery($query);
-        $queryData->setParams([$name, $itemId]);
+        $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
         return $this->db->doSelect($queryData);
     }

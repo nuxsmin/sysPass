@@ -121,7 +121,7 @@ final class PluginData extends Service implements PluginDataService
      */
     public function getById(string $id): array
     {
-        $result = $this->pluginDataRepository->getById($id);
+        $result = $this->pluginDataRepository->getByName($id);
 
         if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('Plugin\'s data not found'), SPException::INFO);
