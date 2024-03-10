@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginLoaderInterface;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\__;
@@ -42,7 +42,7 @@ use function SP\__;
  */
 final class PluginLoader extends Service implements PluginLoaderInterface
 {
-    public function __construct(Application $application, private readonly PluginManagerInterface $pluginService)
+    public function __construct(Application $application, private readonly PluginManagerService $pluginService)
     {
         parent::__construct($application);
     }

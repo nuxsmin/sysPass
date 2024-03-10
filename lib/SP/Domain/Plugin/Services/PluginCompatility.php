@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,9 +31,9 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Install\Services\InstallerService;
-use SP\Domain\Plugin\Ports\PluginCompatilityInterface;
+use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\__;
@@ -41,12 +41,12 @@ use function SP\__;
 /**
  * Class PluginCompatility
  */
-final class PluginCompatility extends Service implements PluginCompatilityInterface
+final class PluginCompatility extends Service implements PluginCompatilityService
 {
 
     public function __construct(
         Application                             $application,
-        private readonly PluginManagerInterface $pluginService
+        private readonly PluginManagerService $pluginService
     ) {
         parent::__construct($application);
     }
@@ -64,7 +64,7 @@ final class PluginCompatility extends Service implements PluginCompatilityInterf
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
         $appVersion = implode('.', array_slice(InstallerService::VERSION, 0, 2));
 
-        if (version_compare($pluginVersion, $appVersion) === -1) {
+        if (version_compare($pluginVersion, $appVersion, '<')) {
             $this->eventDispatcher->notify(
                 'plugin.check.version',
                 new Event(

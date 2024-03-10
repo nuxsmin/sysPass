@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -45,7 +45,7 @@ use function SP\__u;
  *
  * @template T of PluginModel
  */
-final class PluginManager extends Service implements PluginManagerInterface
+final class PluginManager extends Service implements PluginManagerService
 {
 
     public function __construct(Application $application, private readonly PluginRepository $pluginRepository)

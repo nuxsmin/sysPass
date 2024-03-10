@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -43,12 +43,12 @@ final class DisableController extends ControllerBase
 {
     use JsonTrait;
 
-    private PluginManagerInterface $pluginService;
+    private PluginManagerService $pluginService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        PluginManagerInterface $pluginService
+        PluginManagerService $pluginService
     ) {
         parent::__construct($application, $webControllerHelper);
 

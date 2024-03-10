@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 /**
  * Class PluginCompatilityInterface
  */
-interface PluginCompatilityInterface
+interface PluginCompatilityService
 {
     /**
      * @param PluginInterface $plugin

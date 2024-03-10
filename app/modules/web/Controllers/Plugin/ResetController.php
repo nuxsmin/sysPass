@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Plugin\Ports\PluginDataService;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -44,14 +44,14 @@ final class ResetController extends ControllerBase
 {
     use JsonTrait;
 
-    private PluginManagerInterface $pluginService;
-    private PluginDataService $pluginDataService;
+    private PluginManagerService $pluginService;
+    private PluginDataService    $pluginDataService;
 
     public function __construct(
-        Application            $application,
-        WebControllerHelper    $webControllerHelper,
-        PluginManagerInterface $pluginService,
-        PluginDataService $pluginDataService
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        PluginManagerService $pluginService,
+        PluginDataService    $pluginDataService
     ) {
         parent::__construct($application, $webControllerHelper);
 

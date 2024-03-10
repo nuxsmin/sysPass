@@ -36,7 +36,7 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Interface PluginManagerInterface
  */
-interface PluginManagerInterface
+interface PluginManagerService
 {
     /**
      * Creates an item

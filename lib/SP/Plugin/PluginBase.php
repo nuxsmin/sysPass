@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginCompatilityInterface;
+use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginLoaderInterface;
 use SP\Domain\Plugin\Ports\PluginOperationInterface;
@@ -51,7 +51,7 @@ abstract class PluginBase implements PluginInterface
      */
     public function __construct(
         protected readonly PluginOperationInterface $pluginOperation,
-        private readonly PluginCompatilityInterface $pluginCompatilityService,
+        private readonly PluginCompatilityService $pluginCompatilityService,
         private readonly PluginLoaderInterface      $pluginLoadService
     ) {
         $this->load();

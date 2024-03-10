@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Plugin;
 use SP\Core\Application;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
@@ -44,14 +44,14 @@ abstract class PluginSearchBase extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private PluginManagerInterface $pluginService;
-    private PluginGrid             $pluginGrid;
+    private PluginManagerService $pluginService;
+    private PluginGrid           $pluginGrid;
 
     public function __construct(
-        Application            $application,
-        WebControllerHelper    $webControllerHelper,
-        PluginManagerInterface $pluginService,
-        PluginGrid             $pluginGrid
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        PluginManagerService $pluginService,
+        PluginGrid           $pluginGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 

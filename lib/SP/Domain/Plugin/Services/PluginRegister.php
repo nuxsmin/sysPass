@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginRegisterInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -43,7 +43,7 @@ use function SP\__u;
  */
 final class PluginRegister extends Service implements PluginRegisterInterface
 {
-    public function __construct(Application $application, private readonly PluginManagerInterface $pluginService)
+    public function __construct(Application $application, private readonly PluginManagerService $pluginService)
     {
         parent::__construct($application);
     }

@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Domain\Plugin\Ports\PluginManagerInterface;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\VersionUtil;
@@ -46,9 +46,9 @@ use function SP\__u;
 final class PluginUpgrader extends Service implements PluginUpgraderInterface
 {
     public function __construct(
-        Application                             $application,
-        private readonly PluginManagerInterface $pluginService,
-        private readonly PluginDataService $pluginDataService
+        Application                           $application,
+        private readonly PluginManagerService $pluginService,
+        private readonly PluginDataService    $pluginDataService
     ) {
         parent::__construct($application);
     }
