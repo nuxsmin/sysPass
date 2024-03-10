@@ -33,7 +33,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserPassRecoverService;
@@ -48,8 +48,8 @@ abstract class UserSaveBase extends ControllerBase
 {
     protected UserServiceInterface   $userService;
     protected CustomFieldDataService $customFieldService;
-    protected UserForm               $form;
-    private MailServiceInterface            $mailService;
+    protected UserForm  $form;
+    private MailService $mailService;
     private UserPassRecoverServiceInterface $userPassRecoverService;
 
     public function __construct(
@@ -57,7 +57,7 @@ abstract class UserSaveBase extends ControllerBase
         WebControllerHelper    $webControllerHelper,
         UserServiceInterface   $userService,
         CustomFieldDataService $customFieldService,
-        MailServiceInterface   $mailService,
+        MailService            $mailService,
         UserPassRecoverServiceInterface $userPassRecoverService
     ) {
         parent::__construct($application, $webControllerHelper);

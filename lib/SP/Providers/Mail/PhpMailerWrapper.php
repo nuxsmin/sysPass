@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,18 +26,21 @@ namespace SP\Providers\Mail;
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Providers\MailerInterface;
+
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * A wrapper for PHPMailer
  */
 final class PhpMailerWrapper implements MailerInterface
 {
-    private PHPMailer $mailer;
 
-    public function __construct(PHPMailer $mailer)
+    public function __construct(private readonly PHPMailer $mailer, private readonly bool $debug = false)
     {
-        $this->mailer = $mailer;
     }
 
     public function isHtml(): MailerInterface
@@ -87,13 +90,50 @@ final class PhpMailerWrapper implements MailerInterface
         }
     }
 
-    public function getMailer(): PHPMailer
-    {
-        return $this->mailer;
-    }
-
     public function getToAddresses(): array
     {
         return $this->mailer->getToAddresses();
+    }
+
+    /**
+     * Configure the mailer with the configuration settings
+     *
+     * @throws MailProviderException
+     */
+    public function configure(MailParams $mailParams): MailerInterface
+    {
+        $instance = clone $this;
+
+        $appName = AppInfoInterface::APP_NAME;
+
+        try {
+            $instance->mailer->SMTPAutoTLS = false;
+            $instance->mailer->isSMTP();
+            $instance->mailer->CharSet = 'utf-8';
+            $instance->mailer->Host = $mailParams->getServer();
+            $instance->mailer->Port = $mailParams->getPort();
+            $instance->mailer->SMTPSecure = strtolower($mailParams->getSecurity());
+
+            if ($mailParams->isMailAuthenabled()) {
+                $instance->mailer->SMTPAuth = true;
+                $instance->mailer->Username = $mailParams->getUser();
+                $instance->mailer->Password = $mailParams->getPass();
+            }
+
+            if ($instance->debug) {
+                $instance->mailer->SMTPDebug = 2;
+                $instance->mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper($level));
+            }
+
+            $instance->mailer->setFrom($mailParams->getFrom(), $appName);
+            $instance->mailer->addReplyTo($mailParams->getFrom(), $appName);
+            $instance->mailer->WordWrap = 100;
+
+            return $instance;
+        } catch (Exception $e) {
+            processException($e);
+
+            throw MailProviderException::error(__u('Unable to initialize'), $e->getMessage(), $e->getCode(), $e);
+        }
     }
 }

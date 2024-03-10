@@ -46,9 +46,9 @@ abstract class Service
 {
     protected const STATUS_INTERNAL_ERROR = 1000;
 
-    protected ConfigFileService $config;
-    protected ContextInterface  $context;
-    protected EventDispatcherInterface $eventDispatcher;
+    protected readonly ConfigFileService        $config;
+    protected readonly ContextInterface         $context;
+    protected readonly EventDispatcherInterface $eventDispatcher;
 
     public function __construct(Application $application)
     {

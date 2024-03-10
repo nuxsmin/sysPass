@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 
@@ -71,9 +71,9 @@ final class MailHandler extends Provider implements EventReceiver
     private string $events;
 
     public function __construct(
-        Application                           $application,
-        private readonly MailServiceInterface $mailService,
-        private readonly RequestInterface     $request
+        Application                       $application,
+        private readonly MailService      $mailService,
+        private readonly RequestInterface $request
     ) {
         parent::__construct($application);
     }

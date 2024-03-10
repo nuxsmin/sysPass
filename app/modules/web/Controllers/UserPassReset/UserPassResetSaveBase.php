@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -45,9 +45,9 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class UserPassResetSaveBase extends ControllerBase
 {
     protected UserPassRecoverServiceInterface $userPassRecoverService;
-    protected UserServiceInterface            $userService;
-    protected MailServiceInterface            $mailService;
-    private TrackServiceInterface             $trackService;
+    protected UserServiceInterface $userService;
+    protected MailService          $mailService;
+    private TrackServiceInterface  $trackService;
     private TrackRequest                      $trackRequest;
 
     /**
@@ -56,11 +56,11 @@ abstract class UserPassResetSaveBase extends ControllerBase
      * @throws JsonException
      */
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
+        Application           $application,
+        WebControllerHelper   $webControllerHelper,
         UserPassRecoverServiceInterface $userPassRecoverService,
-        UserServiceInterface $userService,
-        MailServiceInterface $mailService,
+        UserServiceInterface  $userService,
+        MailService           $mailService,
         TrackServiceInterface $trackService
 
     ) {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -50,16 +50,12 @@ final class CheckController extends SimpleControllerBase
 {
     use ConfigTrait;
 
-    private MailServiceInterface $mailService;
-
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        MailServiceInterface $mailService
+        Application                  $application,
+        SimpleControllerHelper       $simpleControllerHelper,
+        private readonly MailService $mailService
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->mailService = $mailService;
     }
 
     /**
@@ -74,7 +70,7 @@ final class CheckController extends SimpleControllerBase
             $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
             // Valores para la configuración del Correo
-            if (empty($mailParams->server) || empty($mailParams->from) || count($mailRecipients) === 0) {
+            if (empty($mailParams->getServer()) || empty($mailParams->getFrom()) || count($mailRecipients) === 0) {
                 throw new ValidationException(SPException::ERROR, __u('Missing Mail parameters'));
             }
 
@@ -109,20 +105,15 @@ final class CheckController extends SimpleControllerBase
      */
     private function handleMailConfig(): MailParams
     {
-        $mailParams = new MailParams();
-        $mailParams->server = $this->request->analyzeString('mail_server');
-        $mailParams->port = $this->request->analyzeInt('mail_port', 25);
-        $mailParams->security = $this->request->analyzeString('mail_security');
-        $mailParams->from = $this->request->analyzeEmail('mail_from');
-        $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_auth_enabled', false);
-
-
-        if ($mailParams->mailAuthenabled) {
-            $mailParams->user = $this->request->analyzeString('mail_user');
-            $mailParams->pass = $this->request->analyzeEncrypted('mail_pass');
-        }
-
-        return $mailParams;
+        return new MailParams(
+            $this->request->analyzeString('mail_server'),
+            $this->request->analyzeInt('mail_port', 25),
+            $this->request->analyzeString('mail_user'),
+            $this->request->analyzeEncrypted('mail_pass'),
+            $this->request->analyzeString('mail_security'),
+            $this->request->analyzeEmail('mail_from'),
+            $this->request->analyzeBool('mail_auth_enabled', false)
+        );
     }
 
     /**

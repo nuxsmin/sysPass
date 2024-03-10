@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,10 @@
 
 namespace SP\Domain\Notification\Ports;
 
+use PHPMailer\PHPMailer\Exception;
 use SP\Core\Messages\MailMessage;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Providers\Mail\MailParams;
 
 /**
@@ -32,30 +35,24 @@ use SP\Providers\Mail\MailParams;
  *
  * @package SP\Domain\Common\Services
  */
-interface MailServiceInterface
+interface MailService
 {
+    public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams;
+
     /**
      * Checks mail params by sending a test email
      *
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws ServiceException
      */
     public function check(MailParams $mailParams, string $to): void;
 
     /**
-     * @param  string  $subject
-     * @param  array|string  $to
-     * @param  MailMessage  $mailMessage
+     * @param string $subject
+     * @param array|string $to
+     * @param MailMessage $mailMessage
      *
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws Exception
+     * @throws ServiceException
      */
-    public function send(string $subject, $to, MailMessage $mailMessage): void;
-
-    /**
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \SP\Domain\Common\Services\ServiceException
-     */
-    public function sendBatch(string $subject, array $to, MailMessage $mailMessage): void;
-
-    public function getParamsFromConfig(): MailParams;
+    public function send(string $subject, string|array $to, MailMessage $mailMessage): void;
 }

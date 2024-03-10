@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\PasswordUtil;
@@ -76,7 +76,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         Application                           $application,
         private readonly ConfigService        $configService,
         private readonly UserServiceInterface $userService,
-        private readonly MailServiceInterface $mailService,
+        private readonly MailService $mailService,
         private readonly CryptInterface       $crypt,
     ) {
         parent::__construct($application);
@@ -233,7 +233,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             $this->userService->getUserEmailForGroup($groupId)
         );
 
-        $this->mailService->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+        $this->mailService->send($mailMessage->getTitle(), $emails, $mailMessage);
     }
 
     private function getMessageForEmail(string $key): MailMessage
@@ -269,7 +269,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             $this->userService->getUserEmailForAll()
         );
 
-        $this->mailService->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+        $this->mailService->send($mailMessage->getTitle(), $emails, $mailMessage);
     }
 
     /**

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,32 +31,50 @@ namespace SP\Providers\Mail;
  */
 final class MailParams
 {
-    /**
-     * @var string
-     */
-    public string $server;
-    /**
-     * @var int
-     */
-    public int $port;
-    /**
-     * @var string
-     */
-    public string $user;
-    /**
-     * @var string
-     */
-    public string $pass;
-    /**
-     * @var string
-     */
-    public string $security;
-    /**
-     * @var string
-     */
-    public string $from;
-    /**
-     * @var bool
-     */
-    public bool $mailAuthenabled;
+    public function __construct(
+        private readonly string $server,
+        private readonly int    $port,
+        private readonly string $user,
+        private readonly string $pass,
+        private readonly string $security,
+        private readonly string $from,
+        private readonly bool   $mailAuthenabled
+    ) {
+    }
+
+    public function getServer(): string
+    {
+        return $this->server;
+    }
+
+    public function getPort(): int
+    {
+        return $this->port;
+    }
+
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    public function getPass(): string
+    {
+        return $this->pass;
+    }
+
+    public function getSecurity(): string
+    {
+        return $this->security;
+    }
+
+    public function getFrom(): string
+    {
+        return $this->from;
+    }
+
+    public function isMailAuthenabled(): bool
+    {
+        return $this->mailAuthenabled;
+    }
+
 }

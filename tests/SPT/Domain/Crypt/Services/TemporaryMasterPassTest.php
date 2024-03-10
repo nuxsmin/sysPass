@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
-use SP\Domain\Notification\Ports\MailServiceInterface;
+use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SPT\UnitaryTestCase;
@@ -53,7 +53,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
 
     private ConfigService|MockObject $configService;
     private UserServiceInterface|MockObject $userService;
-    private MailServiceInterface|MockObject $mailService;
+    private MailService|MockObject    $mailService;
     private CryptInterface|MockObject $crypt;
     private TemporaryMasterPass $temporaryMasterPass;
 
@@ -394,7 +394,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
 
         $this->configService = $this->createMock(ConfigService::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
-        $this->mailService = $this->createMock(MailServiceInterface::class);
+        $this->mailService = $this->createMock(MailService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->temporaryMasterPass = new TemporaryMasterPass(

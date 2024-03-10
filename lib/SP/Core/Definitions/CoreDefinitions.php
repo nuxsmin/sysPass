@@ -29,7 +29,6 @@ use Klein\Klein;
 use Klein\Request as KleinRequest;
 use Klein\Response as KleinResponse;
 use Monolog\Logger;
-use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
@@ -73,8 +72,8 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
+use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Providers\MailerInterface;
-use SP\Domain\Providers\MailProviderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Minify;
 use SP\Http\Client;
@@ -108,7 +107,6 @@ use SP\Providers\Log\FileLogHandler;
 use SP\Providers\Log\RemoteSyslogHandler;
 use SP\Providers\Log\SyslogHandler;
 use SP\Providers\Mail\MailHandler;
-use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\PhpMailerWrapper;
 use SP\Providers\Notification\NotificationHandler;
 
@@ -141,8 +139,7 @@ final class CoreDefinitions
                     get(ContextInterface::class),
                     autowire(ConfigBackup::class)
                 ),
-            ConfigDataInterface::class =>
-                static fn(ConfigFileService $config) => $config->getConfigData(),
+            ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
             DbStorageInterface::class => autowire(MysqlHandler::class),
             ActionsInterface::class =>
@@ -207,10 +204,13 @@ final class CoreDefinitions
             Csrf::class => autowire(Csrf::class),
             LanguageInterface::class => autowire(Language::class),
             DatabaseInterface::class => autowire(Database::class),
-            MailProviderInterface::class => autowire(MailProvider::class),
-            MailerInterface::class => autowire(PhpMailerWrapper::class)->constructor(
-                create(PHPMailer::class)->constructor(true)
-            ),
+            PhpMailerWrapper::class => autowire(PhpMailerWrapper::class),
+            MailerInterface::class => factory([PhpMailerWrapper::class, 'configure'])
+                ->parameter(
+                    'mailParams',
+                    factory([Mail::class, 'getParamsFromConfig'])
+                        ->parameter('configData', get(ConfigDataInterface::class))
+                ),
             DatabaseSetupInterface::class => static function (RequestInterface $request) {
                 $installData = InstallDataFactory::buildFromRequest($request);
 
