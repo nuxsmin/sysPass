@@ -31,7 +31,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Domain\Plugin\Ports\PluginLoaderInterface;
+use SP\Domain\Plugin\Ports\PluginLoaderService;
 use SP\Domain\Plugin\Ports\PluginOperationInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -52,7 +52,7 @@ abstract class PluginBase implements PluginInterface
     public function __construct(
         protected readonly PluginOperationInterface $pluginOperation,
         private readonly PluginCompatilityService $pluginCompatilityService,
-        private readonly PluginLoaderInterface      $pluginLoadService
+        private readonly PluginLoaderService $pluginLoadService
     ) {
         $this->load();
     }

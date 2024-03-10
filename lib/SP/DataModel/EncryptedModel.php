@@ -56,11 +56,13 @@ trait EncryptedModel
             $data = $this->{$instance->getDataProperty()};
 
             if ($data !== null) {
+                $key = $crypt->makeSecuredKey($password);
+
                 return $this->mutate([
-                                         $instance->getKeyProperty() => $crypt->makeSecuredKey($password),
+                                         $instance->getKeyProperty() => $key,
                                          $instance->getDataProperty() => $crypt->encrypt(
                                              $data,
-                                             $this->{$instance->getKeyProperty()},
+                                             $key,
                                              $password
                                          )
                                      ]);
@@ -88,12 +90,13 @@ trait EncryptedModel
             $instance = $attribute->newInstance();
 
             $data = $this->{$instance->getDataProperty()};
+            $key = $this->{$instance->getKeyProperty()};
 
-            if ($data !== null) {
+            if ($data !== null && $key !== null) {
                 return $this->mutate([
                                          $instance->getDataProperty() => $crypt->decrypt(
                                              $data,
-                                             $this->{$instance->getKeyProperty()},
+                                             $key,
                                              $password
                                          )
                                      ]);

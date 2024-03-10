@@ -31,7 +31,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Domain\Plugin\Ports\PluginLoaderInterface;
+use SP\Domain\Plugin\Ports\PluginLoaderService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -40,7 +40,7 @@ use function SP\__;
 /**
  * Class PluginLoader
  */
-final class PluginLoader extends Service implements PluginLoaderInterface
+final class PluginLoader extends Service implements PluginLoaderService
 {
     public function __construct(Application $application, private readonly PluginManagerService $pluginService)
     {

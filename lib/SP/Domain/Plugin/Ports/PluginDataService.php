@@ -49,7 +49,7 @@ interface PluginDataService
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(PluginDataModel $itemData): QueryResult;
+    public function create(PluginDataModel $pluginData): QueryResult;
 
     /**
      * Updates an item
@@ -60,7 +60,7 @@ interface PluginDataService
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(PluginDataModel $itemData): int;
+    public function update(PluginDataModel $pluginData): int;
 
     /**
      * Returns the item for given plugin and id
@@ -77,7 +77,7 @@ interface PluginDataService
     /**
      * Returns the item for given id
      *
-     * @return PluginDataModel[]
+     * @return array<T>
      * @throws CryptoException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
@@ -85,12 +85,12 @@ interface PluginDataService
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getById(string $id): array;
+    public function getByName(string $name): array;
 
     /**
      * Returns all the items
      *
-     * @return PluginDataModel[]
+     * @return array<T>
      * @throws CryptoException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
@@ -106,7 +106,7 @@ interface PluginDataService
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(string $id): void;
+    public function delete(string $name): void;
 
     /**
      * Deletes an item

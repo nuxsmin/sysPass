@@ -151,8 +151,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
             ->from(self::TABLE)
             ->cols(PluginDataModel::getCols())
             ->where('name = :name')
-            ->bindValues(['name' => $name])
-            ->limit(1);
+            ->bindValues(['name' => $name]);
 
         $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 

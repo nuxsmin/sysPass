@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -41,6 +42,8 @@ use function SP\__u;
 
 /**
  * Class PluginData
+ *
+ * @template T of PluginDataModel
  */
 final class PluginData extends Service implements PluginDataService
 {
@@ -56,87 +59,89 @@ final class PluginData extends Service implements PluginDataService
     /**
      * Creates an item
      *
-     * @param \SP\Domain\Plugin\Models\PluginData $itemData
+     * @param PluginDataModel $pluginData
      * @return QueryResult
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(PluginData $itemData): QueryResult
+    public function create(PluginDataModel $pluginData): QueryResult
     {
-        return $this->pluginDataRepository->create($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
+        return $this->pluginDataRepository->create(
+            $pluginData->encrypt($this->getMasterKeyFromContext(), $this->crypt)
+        );
     }
 
     /**
      * Updates an item
      *
-     * @param \SP\Domain\Plugin\Models\PluginData $itemData
+     * @param PluginDataModel $pluginData
      * @return int
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(PluginData $itemData): int
+    public function update(PluginDataModel $pluginData): int
     {
-        return $this->pluginDataRepository->update($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
+        return $this->pluginDataRepository->update(
+            $pluginData->encrypt($this->getMasterKeyFromContext(), $this->crypt)
+        );
     }
 
     /**
      * Returns the item for given plugin and id
      *
      * @param string $name
-     * @param int $id
-     * @return PluginData
+     * @param int $itemId
+     * @return PluginDataModel
      * @throws ConstraintException
      * @throws CryptException
      * @throws NoSuchItemException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function getByItemId(string $name, int $id): PluginData
+    public function getByItemId(string $name, int $itemId): PluginDataModel
     {
-        $result = $this->pluginDataRepository->getByItemId($name, $id);
+        $result = $this->pluginDataRepository->getByItemId($name, $itemId);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin\'s data not found'));
         }
 
 
-        return $result->getData(PluginData::class)
+        return $result->getData(PluginDataModel::class)
                       ->decrypt($this->getMasterKeyFromContext(), $this->crypt);
     }
 
     /**
      * Returns the item for given id
      *
-     * @param string $id
-     * @return PluginData[]
-     * @throws ConstraintException
+     * @param string $name
+     * @return array<T>
      * @throws CryptException
      * @throws NoSuchItemException
-     * @throws QueryException
      * @throws ServiceException
      */
-    public function getById(string $id): array
+    public function getByName(string $name): array
     {
-        $result = $this->pluginDataRepository->getByName($id);
+        $result = $this->pluginDataRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin\'s data not found'));
         }
 
         return array_map(
-            fn(PluginData $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
-            $result->getDataAsArray()
+            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            $result->getDataAsArray(PluginDataModel::class)
         );
     }
 
     /**
      * Returns all the items
      *
-     * @return PluginData[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
@@ -146,8 +151,8 @@ final class PluginData extends Service implements PluginDataService
     public function getAll(): array
     {
         return array_map(
-            fn(PluginData $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
-            $this->pluginDataRepository->getAll()->getDataAsArray()
+            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            $this->pluginDataRepository->getAll()->getDataAsArray(PluginDataModel::class)
         );
     }
 
@@ -158,10 +163,10 @@ final class PluginData extends Service implements PluginDataService
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(string $id): void
+    public function delete(string $name): void
     {
-        if ($this->pluginDataRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), SPException::INFO);
+        if ($this->pluginDataRepository->delete($name)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Plugin\'s data not found'));
         }
     }
 
@@ -174,8 +179,8 @@ final class PluginData extends Service implements PluginDataService
      */
     public function deleteByItemId(string $name, int $itemId): void
     {
-        if ($this->pluginDataRepository->deleteByItemId($name, $itemId) === 0) {
-            throw new NoSuchItemException(__u('Plugin\'s data not found'), SPException::INFO);
+        if ($this->pluginDataRepository->deleteByItemId($name, $itemId)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Plugin\'s data not found'));
         }
     }
 }
