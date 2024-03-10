@@ -30,10 +30,10 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Models\Plugin;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Domain\Plugin\Ports\PluginRegisterInterface;
+use SP\Domain\Plugin\Ports\PluginRegisterService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\__u;
@@ -41,9 +41,9 @@ use function SP\__u;
 /**
  * Class PluginRegister
  */
-final class PluginRegister extends Service implements PluginRegisterInterface
+final class PluginRegister extends Service implements PluginRegisterService
 {
-    public function __construct(Application $application, private readonly PluginManagerService $pluginService)
+    public function __construct(Application $application, private readonly PluginManagerService $pluginManagerService)
     {
         parent::__construct($application);
     }
@@ -55,7 +55,7 @@ final class PluginRegister extends Service implements PluginRegisterInterface
     public function registerFor(PluginInterface $plugin): void
     {
         try {
-            $this->pluginService->getByName($plugin->getName());
+            $this->pluginManagerService->getByName($plugin->getName());
 
             $this->eventDispatcher->notify(
                 'register.plugin',
@@ -87,11 +87,7 @@ final class PluginRegister extends Service implements PluginRegisterInterface
      */
     private function register(PluginInterface $plugin): void
     {
-        $pluginData = new Plugin();
-        $pluginData->setName($plugin->getName());
-        $pluginData->setEnabled(false);
-
-        $this->pluginService->create($pluginData);
+        $this->pluginManagerService->create(new PluginModel(['name' => $plugin->getName(), 'enabled' => false]));
 
         $this->eventDispatcher->notify(
             'create.plugin',
