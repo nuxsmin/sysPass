@@ -75,7 +75,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
 
         $this->mailService
             ->expects(self::once())
-            ->method('sendBatch')
+            ->method('send')
             ->with(self::anything(), $emails, self::anything());
 
         $this->temporaryMasterPass->sendByEmailForAllUsers($key);
@@ -127,7 +127,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
 
         $this->mailService
             ->expects(self::once())
-            ->method('sendBatch')
+            ->method('send')
             ->with(self::anything(), $emails, self::anything());
 
         $this->temporaryMasterPass->sendByEmailForGroup($groupId, $key);
