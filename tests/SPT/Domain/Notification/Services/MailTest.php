@@ -27,6 +27,7 @@ namespace SPT\Domain\Notification\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
 use SP\Core\Context\ContextException;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
@@ -176,6 +177,106 @@ class MailTest extends UnitaryTestCase
             ->method('send');
 
         $this->mail->check($mailParams, $to);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    public function testCheckWithException()
+    {
+        $configData = $this->config->getConfigData();
+
+        $mailParams = new MailParams(
+            $configData->getMailServer(),
+            $configData->getMailPort(),
+            $configData->getMailUser(),
+            $configData->getMailPass(),
+            $configData->getMailSecurity(),
+            $configData->getMailFrom(),
+            $configData->isMailAuthenabled()
+        );
+
+        $to = self::$faker->email();
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('configure')
+            ->with($mailParams)
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('addAddress')
+            ->with($to)
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('isHtml')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('subject')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('body')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('send')
+            ->willThrowException(new RuntimeException('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while sending the email');
+
+        $this->mail->check($mailParams, $to);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    public function testSendWithException()
+    {
+        $message = new MailMessage();
+        $message->setTitle(self::$faker->colorName);
+        $message->setDescription([self::$faker->text]);
+
+        $to = self::$faker->email();
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('addAddress')
+            ->with($to)
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('isHtml')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('subject')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('body')
+            ->willReturn($this->mailer);
+
+        $this->mailer
+            ->expects($this->once())
+            ->method('send')
+            ->willThrowException(new RuntimeException('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while sending the email');
+
+        $this->mail->send('test', $to, $message);
     }
 
     public function testGetParamsFromConfig()
