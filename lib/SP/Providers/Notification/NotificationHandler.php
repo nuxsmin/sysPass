@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Notification\Models\Notification;
-use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 
@@ -54,7 +54,7 @@ final class NotificationHandler extends Provider implements EventReceiver
 
     public function __construct(
         Application                                   $application,
-        private readonly NotificationServiceInterface $notificationService
+        private readonly NotificationService $notificationService
     ) {
         parent::__construct($application);
     }

@@ -30,19 +30,20 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Notification\Models\Notification;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Notification\Ports\NotificationRepository;
-use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__u;
 
 /**
  * Class NotificationService
  *
- * @package SP\Domain\Notification\Services
+ * @template T of NotificationModel
  */
-final class NotificationService extends Service implements NotificationServiceInterface
+final class Notification extends Service implements NotificationService
 {
 
     public function __construct(
@@ -58,9 +59,9 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(Notification $itemData): int
+    public function create(NotificationModel $notification): int
     {
-        return $this->notificationRepository->create($itemData)->getLastId();
+        return $this->notificationRepository->create($notification)->getLastId();
     }
 
     /**
@@ -69,9 +70,9 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Notification $itemData): int
+    public function update(NotificationModel $notification): int
     {
-        return $this->notificationRepository->update($itemData);
+        return $this->notificationRepository->update($notification);
     }
 
     /**
@@ -79,13 +80,13 @@ final class NotificationService extends Service implements NotificationServiceIn
      *
      * @param int[] $ids
      *
-     * @return Notification[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
      */
     public function getByIdBatch(array $ids): array
     {
-        return $this->notificationRepository->getByIdBatch($ids)->getDataAsArray();
+        return $this->notificationRepository
+            ->getByIdBatch($ids)
+            ->getDataAsArray(NotificationModel::class);
     }
 
     /**
@@ -95,10 +96,10 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): NotificationServiceInterface
+    public function delete(int $id): NotificationService
     {
-        if ($this->notificationRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Notification not found'), SPException::INFO);
+        if ($this->notificationRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Notification not found'));
         }
 
         return $this;
@@ -111,10 +112,10 @@ final class NotificationService extends Service implements NotificationServiceIn
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function deleteAdmin(int $id): NotificationServiceInterface
+    public function deleteAdmin(int $id): NotificationService
     {
-        if ($this->notificationRepository->deleteAdmin($id) === 0) {
-            throw new NoSuchItemException(__u('Notification not found'), SPException::INFO);
+        if ($this->notificationRepository->deleteAdmin($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Notification not found'));
         }
 
         return $this;
@@ -131,13 +132,10 @@ final class NotificationService extends Service implements NotificationServiceIn
      */
     public function deleteAdminBatch(array $ids): int
     {
-        $count = $this->notificationRepository->deleteAdminBatch($ids);
+        $count = $this->notificationRepository->deleteAdminBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
-            throw new ServiceException(
-                __u('Error while deleting the notifications'),
-                SPException::WARNING
-            );
+            throw ServiceException::warning(__u('Error while deleting the notifications'));
         }
 
         return $count;
@@ -154,13 +152,10 @@ final class NotificationService extends Service implements NotificationServiceIn
      */
     public function deleteByIdBatch(array $ids): int
     {
-        $count = $this->notificationRepository->deleteByIdBatch($ids);
+        $count = $this->notificationRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
-            throw new ServiceException(
-                __u('Error while deleting the notifications'),
-                SPException::WARNING
-            );
+            throw ServiceException::warning(__u('Error while deleting the notifications'));
         }
 
         return $count;
@@ -169,31 +164,31 @@ final class NotificationService extends Service implements NotificationServiceIn
     /**
      * Returns the item for given id
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $id
+     * @return NotificationModel
      * @throws NoSuchItemException
      */
-    public function getById(int $id): Notification
+    public function getById(int $id): NotificationModel
     {
         $result = $this->notificationRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Notification not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Notification not found'));
         }
 
-        return $result->getData();
+        return $result->getData(NotificationModel::class);
     }
 
     /**
      * Returns all the items
      *
-     * @return Notification[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
      */
     public function getAll(): array
     {
-        return $this->notificationRepository->getAll()->getDataAsArray();
+        return $this->notificationRepository
+            ->getAll()
+            ->getDataAsArray(NotificationModel::class);
     }
 
     /**
@@ -206,68 +201,78 @@ final class NotificationService extends Service implements NotificationServiceIn
     public function setCheckedById(int $id): void
     {
         if ($this->notificationRepository->setCheckedById($id) === 0) {
-            throw new NoSuchItemException(__u('Notification not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Notification not found'));
         }
     }
 
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
-     * @return Notification[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param string $component
+     * @param int $id
+     * @return array<T>
      */
     public function getForUserIdByDate(string $component, int $id): array
     {
-        return $this->notificationRepository->getForUserIdByDate($component, $id)->getDataAsArray();
+        return $this->notificationRepository
+            ->getForUserIdByDate($component, $id)
+            ->getDataAsArray(NotificationModel::class);
     }
 
     /**
-     * @return \SP\Domain\Notification\Models\Notification[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $id
+     * @return array<T>
      */
     public function getAllForUserId(int $id): array
     {
-        return $this->notificationRepository->getAllForUserId($id)->getDataAsArray();
+        return $this->notificationRepository
+            ->getAllForUserId($id)
+            ->getDataAsArray(NotificationModel::class);
     }
 
     /**
-     * @return \SP\Domain\Notification\Models\Notification[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
      */
-    public function getAllActiveForUserId(int $id): array
+    public function getAllActiveForCurrentUser(): array
     {
-        if ($this->context->getUserData()->getIsAdminApp()) {
-            return $this->notificationRepository->getAllActiveForAdmin($id)->getDataAsArray();
+        $userData = $this->context->getUserData();
+
+        if ($userData->getIsAdminApp()) {
+            return $this->notificationRepository
+                ->getAllActiveForAdmin($userData->getId())
+                ->getDataAsArray(NotificationModel::class);
         }
 
-        return $this->notificationRepository->getAllActiveForUserId($id)->getDataAsArray();
+        return $this->notificationRepository
+            ->getAllActiveForUserId($userData->getId())
+            ->getDataAsArray(NotificationModel::class);
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<T>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
         $userData = $this->context->getUserData();
 
         if ($userData->getIsAdminApp()) {
-            return $this->notificationRepository->searchForAdmin($itemSearchData, $userData->getId());
+            return $this->notificationRepository
+                ->searchForAdmin($itemSearchData, $userData->getId());
         }
 
-        return $this->notificationRepository->searchForUserId($itemSearchData, $userData->getId());
+        return $this->notificationRepository
+            ->searchForUserId($itemSearchData, $userData->getId());
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @param int $userId
+     * @return QueryResult<T>
      */
     public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult
     {

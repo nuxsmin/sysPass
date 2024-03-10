@@ -29,7 +29,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Models\Notification;
-use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Html\Html;
 use SP\Http\JsonMessage;
 use SP\Http\JsonResponse;
@@ -41,12 +41,12 @@ use SP\Mvc\Controller\SimpleControllerHelper;
  */
 final class NotificationsController extends SimpleControllerBase
 {
-    private NotificationServiceInterface $notificationService;
+    private NotificationService $notificationService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        NotificationServiceInterface $notificationService
+        NotificationService $notificationService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -72,7 +72,7 @@ final class NotificationsController extends SimpleControllerBase
                     Html::truncate(Html::stripTags($notification->getDescription()), 30)
                 );
             },
-            $this->notificationService->getAllActiveForUserId($this->session->getUserData()->getId())
+            $this->notificationService->getAllActiveForCurrentUser()
         );
 
         $count = count($notifications);

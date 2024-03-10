@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -47,14 +47,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private NotificationServiceInterface $notificationService;
-    private NotificationGrid             $notificationGrid;
+    private NotificationService $notificationService;
+    private NotificationGrid    $notificationGrid;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        NotificationServiceInterface $notificationService,
-        NotificationGrid $notificationGrid
+        NotificationService $notificationService,
+        NotificationGrid    $notificationGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 

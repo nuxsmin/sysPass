@@ -31,7 +31,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification;
-use SP\Domain\Notification\Ports\NotificationServiceInterface;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -43,14 +43,14 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 abstract class NotificationViewBase extends ControllerBase
 {
-    private NotificationServiceInterface $notificationService;
-    private UserServiceInterface         $userService;
+    private NotificationService  $notificationService;
+    private UserServiceInterface $userService;
 
     public function __construct(
-        Application                  $application,
-        WebControllerHelper          $webControllerHelper,
-        NotificationServiceInterface $notificationService,
-        UserServiceInterface         $userService
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        NotificationService  $notificationService,
+        UserServiceInterface $userService
     ) {
         parent::__construct($application, $webControllerHelper);
 
