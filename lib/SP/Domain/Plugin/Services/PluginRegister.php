@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,11 +30,11 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Domain\Plugin\Ports\PluginRegisterInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 
 use function SP\__u;
 
@@ -87,7 +87,7 @@ final class PluginRegister extends Service implements PluginRegisterInterface
      */
     private function register(PluginInterface $plugin): void
     {
-        $pluginData = new PluginModel();
+        $pluginData = new Plugin();
         $pluginData->setName($plugin->getName());
         $pluginData->setEnabled(false);
 

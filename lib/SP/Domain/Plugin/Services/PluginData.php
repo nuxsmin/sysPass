@@ -32,23 +32,22 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Plugin\Ports\PluginDataInterface;
-use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
+use SP\Domain\Plugin\Ports\PluginDataRepository;
+use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 use function SP\__u;
 
 /**
  * Class PluginData
  */
-final class PluginData extends Service implements PluginDataInterface
+final class PluginData extends Service implements PluginDataService
 {
     public function __construct(
-        Application                                    $application,
-        private readonly PluginDataRepositoryInterface $pluginDataRepository,
-        private readonly CryptInterface                $crypt,
+        Application                           $application,
+        private readonly PluginDataRepository $pluginDataRepository,
+        private readonly CryptInterface       $crypt,
     ) {
         parent::__construct($application);
     }
@@ -57,14 +56,14 @@ final class PluginData extends Service implements PluginDataInterface
     /**
      * Creates an item
      *
-     * @param PluginDataModel $itemData
+     * @param \SP\Domain\Plugin\Models\PluginData $itemData
      * @return QueryResult
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(PluginDataModel $itemData): QueryResult
+    public function create(PluginData $itemData): QueryResult
     {
         return $this->pluginDataRepository->create($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
     }
@@ -72,14 +71,14 @@ final class PluginData extends Service implements PluginDataInterface
     /**
      * Updates an item
      *
-     * @param PluginDataModel $itemData
+     * @param \SP\Domain\Plugin\Models\PluginData $itemData
      * @return int
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(PluginDataModel $itemData): int
+    public function update(PluginData $itemData): int
     {
         return $this->pluginDataRepository->update($itemData->encrypt($this->getMasterKeyFromContext(), $this->crypt));
     }
@@ -89,14 +88,14 @@ final class PluginData extends Service implements PluginDataInterface
      *
      * @param string $name
      * @param int $id
-     * @return PluginDataModel
+     * @return PluginData
      * @throws ConstraintException
      * @throws CryptException
      * @throws NoSuchItemException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function getByItemId(string $name, int $id): PluginDataModel
+    public function getByItemId(string $name, int $id): PluginData
     {
         $result = $this->pluginDataRepository->getByItemId($name, $id);
 
@@ -105,7 +104,7 @@ final class PluginData extends Service implements PluginDataInterface
         }
 
 
-        return $result->getData(PluginDataModel::class)
+        return $result->getData(PluginData::class)
                       ->decrypt($this->getMasterKeyFromContext(), $this->crypt);
     }
 
@@ -113,7 +112,7 @@ final class PluginData extends Service implements PluginDataInterface
      * Returns the item for given id
      *
      * @param string $id
-     * @return PluginDataModel[]
+     * @return PluginData[]
      * @throws ConstraintException
      * @throws CryptException
      * @throws NoSuchItemException
@@ -129,7 +128,7 @@ final class PluginData extends Service implements PluginDataInterface
         }
 
         return array_map(
-            fn(PluginDataModel $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            fn(PluginData $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
             $result->getDataAsArray()
         );
     }
@@ -137,7 +136,7 @@ final class PluginData extends Service implements PluginDataInterface
     /**
      * Returns all the items
      *
-     * @return PluginDataModel[]
+     * @return PluginData[]
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
@@ -147,7 +146,7 @@ final class PluginData extends Service implements PluginDataInterface
     public function getAll(): array
     {
         return array_map(
-            fn(PluginDataModel $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            fn(PluginData $itemData) => $itemData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
             $this->pluginDataRepository->getAll()->getDataAsArray()
         );
     }

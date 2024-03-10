@@ -32,27 +32,25 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Domain\Plugin\Ports\PluginRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Plugin\Repositories\PluginBaseRepository;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 
 use function SP\__u;
 
 /**
  * Class PluginManager
+ *
+ * @template T of PluginModel
  */
 final class PluginManager extends Service implements PluginManagerInterface
 {
-    private PluginBaseRepository $pluginRepository;
 
-    public function __construct(Application $application, PluginRepository $pluginRepository)
+    public function __construct(Application $application, private readonly PluginRepository $pluginRepository)
     {
         parent::__construct($application);
-
-        $this->pluginRepository = $pluginRepository;
     }
 
     /**
@@ -101,7 +99,7 @@ final class PluginManager extends Service implements PluginManagerInterface
     /**
      * Returns all the items
      *
-     * @return PluginModel[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -116,7 +114,7 @@ final class PluginManager extends Service implements PluginManagerInterface
      *
      * @param int[] $ids
      *
-     * @return PluginModel[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

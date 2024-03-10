@@ -24,34 +24,84 @@
 
 namespace SP\Domain\Plugin\Ports;
 
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class PluginRepository
  *
- * @package SP\Infrastructure\Plugin\Repositories
+ * @template T of PluginModel
  */
 interface PluginRepository extends Repository
 {
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Creates an item
      *
-     * @param  string  $name
+     * @param PluginModel $plugin
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function create(PluginModel $plugin): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param PluginModel $plugin
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function update(PluginModel $plugin): int;
+
+    /**
+     * Devuelve los datos de un plugin por su nombre
+     *
+     * @param string $name
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getByName(string $name): QueryResult;
 
     /**
+     * Returns the item for given id
+     *
+     * @param int $pluginId
+     *
+     * @return QueryResult<T>
+     */
+    public function getById(int $pluginId): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Returns all the items for given ids
+     *
+     * @param array $pluginsId
+     *
+     * @return QueryResult<T>
+     */
+    public function getByIdBatch(array $pluginsId): QueryResult;
+
+    /**
      * Cambiar el estado del plugin
      *
-     * @param  int  $id
-     * @param  bool  $enabled
+     * @param int $id
+     * @param bool $enabled
      *
      * @return int
      * @throws ConstraintException
@@ -62,8 +112,8 @@ interface PluginRepository extends Repository
     /**
      * Cambiar el estado del plugin
      *
-     * @param  string  $name
-     * @param  bool  $enabled
+     * @param string $name
+     * @param bool $enabled
      *
      * @return int
      * @throws ConstraintException
@@ -74,8 +124,8 @@ interface PluginRepository extends Repository
     /**
      * Cambiar el estado del plugin
      *
-     * @param  int  $id
-     * @param  bool  $available
+     * @param int $id
+     * @param bool $available
      *
      * @return int
      * @throws ConstraintException
@@ -86,8 +136,8 @@ interface PluginRepository extends Repository
     /**
      * Cambiar el estado del plugin
      *
-     * @param  string  $name
-     * @param  bool  $available
+     * @param string $name
+     * @param bool $available
      *
      * @return int
      * @throws ConstraintException
@@ -98,7 +148,7 @@ interface PluginRepository extends Repository
     /**
      * Restablecer los datos de un plugin
      *
-     * @param  int  $id  Id del plugin
+     * @param int $id Id del plugin
      *
      * @return int
      * @throws ConstraintException
@@ -109,9 +159,42 @@ interface PluginRepository extends Repository
     /**
      * Devolver los plugins activados
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getEnabled(): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $pluginsId
+     *
+     * @return QueryResult
+     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $pluginsId): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
 }

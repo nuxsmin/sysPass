@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
@@ -48,7 +48,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
     public function __construct(
         Application                             $application,
         private readonly PluginManagerInterface $pluginService,
-        private readonly PluginDataInterface    $pluginDataService
+        private readonly PluginDataService $pluginDataService
     ) {
         parent::__construct($application);
     }

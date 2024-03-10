@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Plugin\Repositories;
+namespace SP\Domain\Plugin\Models;
 
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
@@ -30,7 +30,7 @@ use SP\Domain\Common\Models\Model;
 /**
  * Class PluginModel
  */
-class PluginModel extends Model implements ItemWithIdAndNameModel
+class Plugin extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id           = null;
     protected ?string $name         = null;
@@ -43,19 +43,9 @@ class PluginModel extends Model implements ItemWithIdAndNameModel
         return $this->id;
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
     public function getData(): ?string
@@ -63,29 +53,13 @@ class PluginModel extends Model implements ItemWithIdAndNameModel
         return $this->data;
     }
 
-    public function setData(string $data): void
-    {
-        $this->data = $data;
-    }
-
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    public function setEnabled(bool $enabled): void
-    {
-        $this->enabled = $enabled;
-    }
-
-
     public function getVersionLevel(): ?string
     {
         return $this->versionLevel;
-    }
-
-    public function setVersionLevel(string $versionLevel): void
-    {
-        $this->versionLevel = $versionLevel;
     }
 }

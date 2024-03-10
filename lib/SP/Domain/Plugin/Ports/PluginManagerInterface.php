@@ -29,9 +29,9 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Models\Plugin;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 
 /**
  * Interface PluginManagerInterface
@@ -44,7 +44,7 @@ interface PluginManagerInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PluginModel $itemData): int;
+    public function create(Plugin $itemData): int;
 
     /**
      * Updates an item
@@ -52,7 +52,7 @@ interface PluginManagerInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PluginModel $itemData): int;
+    public function update(Plugin $itemData): int;
 
     /**
      * Returns the item for given id
@@ -61,12 +61,12 @@ interface PluginManagerInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): PluginModel;
+    public function getById(int $id): Plugin;
 
     /**
      * Returns all the items
      *
-     * @return PluginModel[]
+     * @return Plugin[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -77,7 +77,7 @@ interface PluginManagerInterface
      *
      * @param  int[]  $ids
      *
-     * @return PluginModel[]
+     * @return Plugin[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -119,7 +119,7 @@ interface PluginManagerInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): PluginModel;
+    public function getByName(string $name): Plugin;
 
     /**
      * Cambiar el estado del plugin

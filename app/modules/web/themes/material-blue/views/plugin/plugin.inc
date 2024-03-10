@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,7 +23,7 @@
  */
 
 /**
- * @var  PluginModel $plugin
+ * @var  Plugin $plugin
  * @var  PluginInterface $pluginInfo
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
@@ -33,8 +33,8 @@
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginInterface;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Mvc\View\TemplateInterface;
 
 $plugin = $_getvar('plugin');

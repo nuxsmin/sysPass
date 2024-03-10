@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,94 +24,114 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 /**
- * Class PluginDataInterface
+ * Class PluginDataRepository
+ *
+ * @template T of PluginDataModel
  */
-interface PluginDataInterface
+interface PluginDataRepository
 {
     /**
      * Creates an item
      *
-     * @throws CryptoException
+     * @param PluginDataModel $itemData
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
      */
     public function create(PluginDataModel $itemData): QueryResult;
 
     /**
      * Updates an item
      *
-     * @throws CryptoException
+     * @param PluginDataModel $itemData
+     *
+     * @return int
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
      */
     public function update(PluginDataModel $itemData): int;
 
     /**
-     * Returns the item for given plugin and id
+     * Deletes an item
      *
-     * @throws NoSuchItemException
-     * @throws CryptoException
+     * @param string $id
+     *
+     * @return int
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
      */
-    public function getByItemId(string $name, int $id): PluginDataModel;
+    public function delete(string $id): int;
+
+    /**
+     * Deletes an item
+     *
+     * @param string $name
+     * @param int $itemId
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByItemId(string $name, int $itemId): int;
 
     /**
      * Returns the item for given id
      *
-     * @return PluginDataModel[]
-     * @throws CryptoException
+     * @param string $id
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws NoSuchItemException
-     * @throws ServiceException
      */
-    public function getById(string $id): array;
+    public function getById(string $id): QueryResult;
 
     /**
      * Returns all the items
      *
-     * @return PluginDataModel[]
-     * @throws CryptoException
+     * @return QueryResult<T>
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
-     * @throws ServiceException
      */
-    public function getAll(): array;
+    public function getAll(): QueryResult;
 
     /**
-     * Deletes an item
+     * Returns all the items for given ids
      *
+     * @param string[] $ids
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
      */
-    public function delete(string $id): void;
+    public function getByIdBatch(array $ids): QueryResult;
 
     /**
-     * Deletes an item
+     * Deletes all the items for given ids
      *
-     * @throws NoSuchItemException
+     * @param string[] $ids
+     *
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByItemId(string $name, int $itemId): void;
+    public function deleteByIdBatch(array $ids): int;
+
+    /**
+     * Devuelve los datos de un plugin por su nombre
+     *
+     * @param string $name
+     * @param int $itemId
+     *
+     * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByItemId(string $name, int $itemId): QueryResult;
 }

@@ -22,39 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Plugin\Repositories;
+namespace SPT\Generators;
 
-use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Attributes\Encryptable;
-use SP\Domain\Common\Models\HydratableModel;
-use SP\Domain\Common\Models\Model;
-use SP\Domain\Common\Models\SerializedModel;
+use SP\Domain\Plugin\Models\Plugin;
 
 /**
- * Class PluginDataModel
+ * Class PluginGenerator
  */
-#[Encryptable('data', 'key')]
-final class PluginDataModel extends Model implements HydratableModel
+final class PluginGenerator extends DataGenerator
 {
-    use SerializedModel;
-    use EncryptedModel;
 
-    protected ?string $name   = null;
-    protected ?int    $itemId = null;
-    protected ?string $data   = null;
-
-    public function getName(): ?string
+    public function buildPlugin(): Plugin
     {
-        return $this->name;
+        return new Plugin($this->pluginProperties());
     }
 
-    public function getItemId(): ?int
+    private function pluginProperties(): array
     {
-        return $this->itemId;
+        return [
+            'id' => $this->faker->randomNumber(3),
+            'name' => $this->faker->colorName(),
+            'data' => $this->faker->text(),
+            'enabled' => $this->faker->boolean()
+        ];
     }
 
-    public function getData(): ?string
-    {
-        return $this->data;
-    }
 }

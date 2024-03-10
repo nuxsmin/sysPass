@@ -26,25 +26,26 @@ namespace SP\Infrastructure\Plugin\Repositories;
 
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginDataRepositoryInterface;
+use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
+use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class PluginDataRepository
+ * Class PluginData
  *
- * @package SP\Infrastructure\Plugin\Repositories
+ * @template T of PluginDataModel
  */
-final class PluginDataBaseRepository extends BaseRepository implements PluginDataRepositoryInterface
+final class PluginData extends BaseRepository implements PluginDataRepository
 {
     use RepositoryItemTrait;
 
     /**
      * Creates an item
      *
-     * @param  PluginDataModel  $itemData
+     * @param PluginDataModel $itemData
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -58,11 +59,11 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getItemId(),
-            $itemData->getData(),
-            $itemData->getKey(),
-        ]);
+                                  $itemData->getName(),
+                                  $itemData->getItemId(),
+                                  $itemData->getData(),
+                                  $itemData->getKey(),
+                              ]);
         $queryData->setOnErrorMessage(__u('Error while adding plugin\'s data'));
 
         return $this->db->doQuery($queryData);
@@ -71,7 +72,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Updates an item
      *
-     * @param  PluginDataModel  $itemData
+     * @param PluginDataModel $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -87,11 +88,11 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
-            $itemData->getData(),
-            $itemData->getKey(),
-            $itemData->getName(),
-            $itemData->getItemId(),
-        ]);
+                                  $itemData->getData(),
+                                  $itemData->getKey(),
+                                  $itemData->getName(),
+                                  $itemData->getItemId(),
+                              ]);
         $queryData->setOnErrorMessage(__u('Error while updating plugin\'s data'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -100,7 +101,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Deletes an item
      *
-     * @param  string  $id
+     * @param string $id
      *
      * @return int
      * @throws ConstraintException
@@ -119,8 +120,8 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Deletes an item
      *
-     * @param  string  $name
-     * @param  int  $itemId
+     * @param string $name
+     * @param int $itemId
      *
      * @return int
      * @throws ConstraintException
@@ -139,9 +140,9 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Returns the item for given id
      *
-     * @param  string  $id
+     * @param string $id
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -166,7 +167,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -190,9 +191,9 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Returns all the items for given ids
      *
-     * @param  string[]  $ids
+     * @param string[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -208,7 +209,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
             `data`,
             `key`
             FROM PluginData 
-            WHERE `name` IN ('.$this->buildParamsFromArray($ids).')
+            WHERE `name` IN (' . $this->buildParamsFromArray($ids) . ')
             ORDER BY `name`';
 
         $queryData = new QueryData();
@@ -222,7 +223,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Deletes all the items for given ids
      *
-     * @param  string[]  $ids
+     * @param string[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -235,7 +236,7 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM PluginData WHERE `name` IN ('.$this->buildParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM PluginData WHERE `name` IN (' . $this->buildParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 
@@ -245,10 +246,10 @@ final class PluginDataBaseRepository extends BaseRepository implements PluginDat
     /**
      * Devuelve los datos de un plugin por su nombre
      *
-     * @param  string  $name
-     * @param  int  $itemId
+     * @param string $name
+     * @param int $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */

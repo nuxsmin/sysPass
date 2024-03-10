@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,10 +33,10 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerInterface;
 use SP\Http\JsonMessage;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Plugin\Repositories\PluginModel;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -116,7 +116,7 @@ final class ViewController extends ControllerBase
 
         $pluginData = $pluginId
             ? $this->pluginService->getById($pluginId)
-            : new PluginModel();
+            : new Plugin();
         $pluginInfo = $this->pluginManager->getPlugin($pluginData->getName());
 
         $this->view->assign('plugin', $pluginData);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,10 +29,10 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginDataInterface;
+use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
+use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginOperationInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 
 /**
  * Class PluginOperation
@@ -40,8 +40,8 @@ use SP\Infrastructure\Plugin\Repositories\PluginDataModel;
 final class PluginOperation implements PluginOperationInterface
 {
     public function __construct(
-        private readonly PluginDataInterface $pluginDataService,
-        private readonly string              $pluginName
+        private readonly PluginDataService $pluginDataService,
+        private readonly string            $pluginName
     ) {
     }
 
