@@ -213,6 +213,15 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginData->getByNameBatch($names);
     }
 
+    public function testGetByNameBatchWithNoNames()
+    {
+        $this->database
+            ->expects(self::never())
+            ->method('doSelect');
+
+        $this->pluginData->getByNameBatch([]);
+    }
+
     /**
      * @throws ConstraintException
      * @throws QueryException
@@ -242,6 +251,19 @@ class PluginDataTest extends UnitaryTestCase
             ->with($callback);
 
         $this->pluginData->deleteByNameBatch($names);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteByNameBatchWithNoNames()
+    {
+        $this->database
+            ->expects(self::never())
+            ->method('doQuery');
+
+        $this->pluginData->deleteByNameBatch([]);
     }
 
     public function testGetByItemId()

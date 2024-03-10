@@ -184,6 +184,10 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      */
     public function getByNameBatch(array $names): QueryResult
     {
+        if (count($names) === 0) {
+            return new QueryResult();
+        }
+
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
