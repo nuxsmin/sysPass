@@ -22,42 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Plugin\Models;
+namespace SPT\Stubs;
 
-use SP\DataModel\EncryptedModel;
-use SP\Domain\Common\Attributes\Encryptable;
-use SP\Domain\Common\Attributes\Hydratable;
-use SP\Domain\Common\Models\HydratableModel;
-use SP\Domain\Common\Models\Model;
-use SP\Domain\Common\Models\SerializedModel;
 use SP\Domain\Plugin\Ports\PluginDataStorage;
 
 /**
- * Class PluginDataModel
+ * Class PluginDataStub
  */
-#[Encryptable('data', 'key')]
-#[Hydratable('data', [PluginDataStorage::class])]
-final class PluginData extends Model implements HydratableModel
+final class PluginDataStub implements PluginDataStorage
 {
-    use SerializedModel;
-    use EncryptedModel;
+    public function __construct(private readonly int $id, private readonly string $name)
+    {
+    }
 
-    protected ?string $name   = null;
-    protected ?int    $itemId = null;
-    protected ?string $data   = null;
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function getData(): ?string
-    {
-        return $this->data;
     }
 }

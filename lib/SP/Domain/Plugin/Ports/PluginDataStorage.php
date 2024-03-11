@@ -22,33 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Attributes;
-
-use Attribute;
+namespace SP\Domain\Plugin\Ports;
 
 /**
- * Class Hydratable
+ * Interface PluginDataStorage
+ *
+ * This interface must be implemented by all classes that are used to store plugin's data
  */
-#[Attribute(Attribute::TARGET_CLASS)]
-final class Hydratable
+interface PluginDataStorage
 {
-    private readonly array $targetClass;
 
-    public function __construct(private readonly string $sourceProperty, array $targetClass)
-    {
-        $this->targetClass = array_filter(
-            $targetClass,
-            static fn(string $class) => class_exists($class) || interface_exists($class)
-        );
-    }
-
-    public function getTargetClass(): array
-    {
-        return $this->targetClass;
-    }
-
-    public function getSourceProperty(): string
-    {
-        return $this->sourceProperty;
-    }
 }

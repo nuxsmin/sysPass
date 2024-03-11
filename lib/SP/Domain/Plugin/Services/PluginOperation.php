@@ -110,7 +110,7 @@ final class PluginOperation implements PluginOperationInterface
             return $this->pluginDataService
                 ->getByItemId($this->pluginName, $itemId)
                 ->hydrate($class);
-        } catch (NoSuchItemException $e) {
+        } catch (NoSuchItemException) {
             return null;
         }
     }

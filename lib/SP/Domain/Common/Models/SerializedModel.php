@@ -46,8 +46,15 @@ trait SerializedModel
             /** @var Hydratable $instance */
             $instance = $attribute->newInstance();
 
-            if (in_array($class, $instance->getTargetClass()) && $this->{$instance->getSourceProperty()} !== null) {
-                return unserialize($this->{$instance->getSourceProperty()}, ['allowed_classes' => [$class]]) ?: null;
+            $valid = array_filter(
+                $instance->getTargetClass(),
+                static fn(string $targetClass) => is_a($class, $targetClass, true)
+            );
+
+            $property = $this->{$instance->getSourceProperty()};
+
+            if (count($valid) > 0 && $property !== null) {
+                return unserialize($property, ['allowed_classes' => [$class]]) ?: null;
             }
         }
 
@@ -65,7 +72,12 @@ trait SerializedModel
             /** @var Hydratable $instance */
             $instance = $attribute->newInstance();
 
-            if (in_array($object::class, $instance->getTargetClass())) {
+            $valid = array_filter(
+                $instance->getTargetClass(),
+                static fn(string $targetClass) => is_a($object, $targetClass, true)
+            );
+
+            if (count($valid) > 0) {
                 return $this->mutate([$instance->getSourceProperty() => serialize($object)]);
             }
         }
