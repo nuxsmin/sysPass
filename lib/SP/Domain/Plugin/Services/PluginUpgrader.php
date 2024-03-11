@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
@@ -47,8 +46,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
 {
     public function __construct(
         Application                           $application,
-        private readonly PluginManagerService $pluginService,
-        private readonly PluginDataService    $pluginDataService
+        private readonly PluginManagerService $pluginManagerService
     ) {
         parent::__construct($application);
     }
@@ -62,7 +60,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
     public function upgradeFor(PluginInterface $plugin, string $version): void
     {
         try {
-            $pluginModel = $this->pluginService->getByName($plugin->getName());
+            $pluginModel = $this->pluginManagerService->getByName($plugin->getName());
         } catch (NoSuchItemException $e) {
             $this->eventDispatcher->notify(
                 'plugin.upgrade',
@@ -89,16 +87,9 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
                 )
             );
 
-            $plugin->onUpgrade(
-                $version,
-                new PluginOperation($this->pluginDataService, $plugin->getName()),
-                $pluginModel
-            );
+            $plugin->onUpgrade($version);
 
-            $pluginModel->setData(null);
-            $pluginModel->setVersionLevel($version);
-
-            $this->pluginService->update($pluginModel);
+            $this->pluginManagerService->update($pluginModel->mutate(['data' => null, 'versionLevel' => $version]));
 
             $this->eventDispatcher->notify(
                 'plugin.upgrade.process',

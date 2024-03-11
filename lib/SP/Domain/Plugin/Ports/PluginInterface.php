@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -74,5 +74,5 @@ interface PluginInterface extends EventReceiver
 
     public function onLoad();
 
-    public function onUpgrade(string $version, PluginOperationInterface $pluginOperation, mixed $extra = null);
+    public function onUpgrade(string $version);
 }

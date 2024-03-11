@@ -44,32 +44,32 @@ final class VersionUtil
     /**
      * Compare versions
      *
-     * @param string $currentVersion
-     * @param array|string $upgradeableVersion A list of upgradeable versions
+     * @param string $version1
+     * @param array|string $version2 A version or a list of comparable versions
      *
-     * @return bool True if $currentVersion is lower than $upgradeableVersion
+     * @return bool True if $version1 is lower than $version2
      */
-    public static function checkVersion(string $currentVersion, array|string $upgradeableVersion): bool
+    public static function checkVersion(string $version1, array|string $version2): bool
     {
-        if (is_array($upgradeableVersion)) {
-            $upgradeableVersion = array_pop($upgradeableVersion);
+        if (is_array($version2)) {
+            $version2 = array_pop($version2);
         }
 
-        $currentVersion = self::normalizeVersionForCompare($currentVersion);
-        $upgradeableVersion = self::normalizeVersionForCompare($upgradeableVersion);
+        $version1 = self::normalizeVersionForCompare($version1);
+        $version2 = self::normalizeVersionForCompare($version2);
 
-        if (empty($currentVersion) || empty($upgradeableVersion)) {
+        if ($version1 === null || $version2 === null) {
             return false;
         }
 
         if (PHP_INT_SIZE > 4) {
-            return version_compare($currentVersion, $upgradeableVersion) === -1;
+            return version_compare($version1, $version2) === -1;
         }
 
-        [$currentVersion, $currentBuild] = explode('.', $currentVersion, 2);
-        [$upgradeVersion, $upgradeBuild] = explode('.', $upgradeableVersion, 2);
+        [$versionOut1, $currentBuild] = explode('.', $version1, 2);
+        [$versionOut2, $upgradeBuild] = explode('.', $version2, 2);
 
-        $versionResult = (int)$currentVersion < (int)$upgradeVersion;
+        $versionResult = (int)$versionOut1 < (int)$versionOut2;
 
         return (($versionResult && (int)$upgradeBuild === 0)
                 || ($versionResult && (int)$currentBuild < (int)$upgradeBuild));
@@ -80,9 +80,9 @@ final class VersionUtil
      *
      * @param array|string $versionIn
      *
-     * @return string
+     * @return string|null
      */
-    public static function normalizeVersionForCompare(array|string $versionIn): string
+    public static function normalizeVersionForCompare(array|string $versionIn): ?string
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {
@@ -103,7 +103,7 @@ final class VersionUtil
             return $nomalizedVersion . '.' . $build;
         }
 
-        return '';
+        return null;
     }
 
     /**
