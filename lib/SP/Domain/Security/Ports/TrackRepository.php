@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,33 +27,24 @@ namespace SP\Domain\Security\Ports;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 
 /**
  * Class TrackRepository
  *
- * @package SP\Infrastructure\Security\Repositories
+ * @template T of TrackModel
  */
-interface TrackRepositoryInterface
+interface TrackRepository
 {
     /**
-     * @param  TrackRequest  $trackRequest
+     * @param TrackModel $track
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(TrackRequest $trackRequest): int;
-
-    /**
-     * @param $id int
-     *
-     * @return int
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function delete(int $id): int;
+    public function add(TrackModel $track): QueryResult;
 
     /**
      * @param $id int
@@ -74,40 +65,23 @@ interface TrackRepositoryInterface
     public function clear(): bool;
 
     /**
-     * @param $id int
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getById(int $id): QueryResult;
-
-    /**
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): QueryResult;
-
-    /**
      * Devuelve los tracks de un cliente desde un tiempo y origen determinados
      *
-     * @param  TrackRequest  $trackRequest
+     * @param TrackModel $track
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTracksForClientFromTime(TrackRequest $trackRequest): QueryResult;
+    public function getTracksForClientFromTime(TrackModel $track): QueryResult;
 
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
-     *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @param int $time The time to decide whether the track has been tracked or not.
+     * If the track time is equal or greater than $time, it's considered as tracked.
+     * @return QueryResult<T>
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchData $itemSearchData, int $time): QueryResult;
 }

@@ -77,10 +77,12 @@ final class Eventlog extends Service implements EventlogService
     {
         $userData = $this->context->getUserData();
 
-        $eventlog->setUserId($userData->getId());
-        $eventlog->setLogin($userData->getLogin() ?: '-');
-        $eventlog->setIpAddress($this->request->getClientAddress());
+        $data = [
+            'userId' => $userData->getId(),
+            'login' => $userData->getLogin() ?: '-',
+            'ipAddress' => $this->request->getClientAddress()
+        ];
 
-        return $this->eventLogRepository->create($eventlog);
+        return $this->eventLogRepository->create($eventlog->mutate($data));
     }
 }

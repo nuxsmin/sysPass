@@ -29,18 +29,16 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TrackData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Security\Ports\TrackRepositoryInterface;
+use SP\Domain\Security\Ports\TrackRepository;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\TrackBaseRepository;
 use SP\Infrastructure\Security\Repositories\TrackRequest;
 
 /**
@@ -57,18 +55,12 @@ final class TrackService extends Service implements TrackServiceInterface
     public const TIME_TRACKING_MAX_ATTEMPTS = 10;
     public const TIME_SLEEP                 = 0.5;
 
-    private TrackBaseRepository $trackRepository;
-    private RequestInterface    $request;
-
     public function __construct(
-        Application $application,
-        TrackRepositoryInterface $trackRepository,
-        RequestInterface $request
+        Application                       $application,
+        private readonly TrackRepository  $trackRepository,
+        private readonly RequestInterface $request
     ) {
         parent::__construct($application);
-
-        $this->trackRepository = $trackRepository;
-        $this->request = $request;
     }
 
 
@@ -81,18 +73,6 @@ final class TrackService extends Service implements TrackServiceInterface
         $trackRequest->setTrackIp($this->request->getClientAddress());
 
         return $trackRequest;
-    }
-
-    /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws NoSuchItemException
-     */
-    public function delete(int $id): void
-    {
-        if ($this->trackRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Track not found'));
-        }
     }
 
     /**
@@ -117,32 +97,6 @@ final class TrackService extends Service implements TrackServiceInterface
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function getById(int $id): TrackData
-    {
-        $result = $this->trackRepository->getById($id);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Track not found'));
-        }
-
-        return $result->getData();
-    }
-
-    /**
-     * @return TrackData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array
-    {
-        return $this->trackRepository->getAll()->getDataAsArray();
-    }
-
-    /**
      * Comprobar los intentos de login
      *
      * @return bool True if delay is performed, false otherwise
@@ -162,13 +116,17 @@ final class TrackService extends Service implements TrackServiceInterface
                         $this,
                         EventMessage::factory()
                             ->addDescription(
-                                sprintf(__('Attempts exceeded (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS)
+                                sprintf(
+                                    __('Attempts exceeded (%d/%d)'),
+                                    $attempts,
+                                    self::TIME_TRACKING_MAX_ATTEMPTS
+                                )
                             )
                             ->addDetail(__u('Seconds'), $delaySeconds)
                     )
                 );
 
-                logger('Tracking delay: '.$delaySeconds.'s');
+                logger('Tracking delay: ' . $delaySeconds . 's');
 
                 sleep($delaySeconds);
 
@@ -189,7 +147,7 @@ final class TrackService extends Service implements TrackServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getTracksForClientFromTime(TrackRequest $trackRequest): int
+    private function getTracksForClientFromTime(TrackRequest $trackRequest): int
     {
         return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getNumRows();
     }
@@ -224,6 +182,6 @@ final class TrackService extends Service implements TrackServiceInterface
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        return $this->trackRepository->search($itemSearchData);
+        return $this->trackRepository->search($itemSearchData, time() - TrackService::TIME_TRACKING);
     }
 }

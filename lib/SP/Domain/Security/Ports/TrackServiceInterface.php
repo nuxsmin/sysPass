@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\Domain\Security\Ports;
 
 use Exception;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TrackData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -52,13 +51,6 @@ interface TrackServiceInterface
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): void;
-
-    /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws NoSuchItemException
-     */
     public function unlock(int $id): void;
 
     /**
@@ -68,34 +60,12 @@ interface TrackServiceInterface
     public function clear(): bool;
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function getById(int $id): TrackData;
-
-    /**
-     * @return TrackData[]
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getAll(): array;
-
-    /**
      * Comprobar los intentos de login
      *
      * @return bool True if delay is performed, false otherwise
      * @throws Exception
      */
     public function checkTracking(TrackRequest $trackRequest): bool;
-
-    /**
-     * Devuelve los tracks de un cliente desde un tiempo y origen determinados
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getTracksForClientFromTime(TrackRequest $trackRequest): int;
 
     /**
      * @throws ServiceException
