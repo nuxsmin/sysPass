@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Security\Ports\EventlogServiceInterface;
+use SP\Domain\Security\Ports\EventlogService;
 use SP\Domain\Security\Ports\TrackServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -50,17 +50,17 @@ final class IndexController extends ControllerBase
     protected ItemSearchData         $itemSearchData;
     protected TabsGridHelper         $tabsGridHelper;
     private EventlogGrid             $eventlogGrid;
-    private TrackGrid                $trackGrid;
-    private EventlogServiceInterface $eventlogService;
-    private TrackServiceInterface    $trackService;
+    private TrackGrid             $trackGrid;
+    private EventlogService       $eventlogService;
+    private TrackServiceInterface $trackService;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        TabsGridHelper $tabsGridHelper,
-        EventlogGrid $eventlogGrid,
-        TrackGrid $trackGrid,
-        EventlogServiceInterface $eventlogService,
+        TabsGridHelper      $tabsGridHelper,
+        EventlogGrid        $eventlogGrid,
+        TrackGrid           $trackGrid,
+        EventlogService     $eventlogService,
         TrackServiceInterface $trackService
     ) {
         parent::__construct($application, $webControllerHelper);

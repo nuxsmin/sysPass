@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,36 +24,45 @@
 
 namespace SP\Domain\Security\Ports;
 
-use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class EventlogService
+ * Class EventlogRepository
  *
- * @package SP\Domain\Common\Services\EventLog
+ * @template T of EventlogModel
  */
-interface EventlogServiceInterface
+interface EventlogRepository
 {
     /**
+     * Clears the event log
+     *
+     * @return bool con el resultado
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function clear(): bool;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function clear(): bool;
-
-    /**
+     * @param EventlogModel $eventlog
+     *
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(EventlogData $eventlogData): int;
+    public function create(EventlogModel $eventlog): QueryResult;
 }

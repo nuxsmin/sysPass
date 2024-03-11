@@ -25,37 +25,29 @@
 namespace SP\Domain\Security\Services;
 
 use SP\Core\Application;
-use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Security\Ports\EventlogRepositoryInterface;
-use SP\Domain\Security\Ports\EventlogServiceInterface;
+use SP\Domain\Security\Models\Eventlog as EventlogModel;
+use SP\Domain\Security\Ports\EventlogRepository;
+use SP\Domain\Security\Ports\EventlogService;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\EventlogBaseRepository;
 
 /**
  * Class EventlogService
- *
- * @package SP\Domain\Common\Services\EventLog
  */
-final class EventlogService extends Service implements EventlogServiceInterface
+final class Eventlog extends Service implements EventlogService
 {
-    protected EventlogBaseRepository $eventLogRepository;
-    protected RequestInterface       $request;
 
     public function __construct(
-        Application $application,
-        EventlogRepositoryInterface $eventLogRepository,
-        RequestInterface $request
+        Application                         $application,
+        private readonly EventlogRepository $eventLogRepository,
+        private readonly RequestInterface   $request
     ) {
         parent::__construct($application);
-
-        $this->eventLogRepository = $eventLogRepository;
-        $this->request = $request;
     }
 
     /**
@@ -81,14 +73,14 @@ final class EventlogService extends Service implements EventlogServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(EventlogData $eventlogData): int
+    public function create(EventlogModel $eventlog): int
     {
         $userData = $this->context->getUserData();
 
-        $eventlogData->setUserId($userData->getId());
-        $eventlogData->setLogin($userData->getLogin() ?: '-');
-        $eventlogData->setIpAddress($this->request->getClientAddress());
+        $eventlog->setUserId($userData->getId());
+        $eventlog->setLogin($userData->getLogin() ?: '-');
+        $eventlog->setIpAddress($this->request->getClientAddress());
 
-        return $this->eventLogRepository->create($eventlogData);
+        return $this->eventLogRepository->create($eventlog);
     }
 }

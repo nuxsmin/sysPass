@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,12 +27,12 @@ namespace SP\Providers\Log;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\EventlogData;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Security\Ports\EventlogServiceInterface;
+use SP\Domain\Security\Models\Eventlog;
+use SP\Domain\Security\Ports\EventlogService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 
@@ -51,9 +51,9 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     private string $events;
 
     public function __construct(
-        Application                               $application,
-        private readonly EventlogServiceInterface $eventlogService,
-        private readonly LanguageInterface        $language
+        Application                        $application,
+        private readonly EventlogService   $eventlogService,
+        private readonly LanguageInterface $language
     ) {
         parent::__construct($application);
     }
@@ -75,7 +75,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 
         $this->language->setAppLocales();
 
-        $eventlogData = new EventlogData();
+        $eventlogData = new Eventlog();
         $eventlogData->setAction($eventType);
         $eventlogData->setLevel('INFO');
 

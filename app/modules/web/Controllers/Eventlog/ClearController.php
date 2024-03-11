@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Security\Ports\EventlogServiceInterface;
+use SP\Domain\Security\Ports\EventlogService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,7 +45,7 @@ final class ClearController extends ControllerBase
 {
     use JsonTrait;
 
-    private EventlogServiceInterface $eventlogService;
+    private EventlogService $eventlogService;
 
     /**
      * @throws SessionTimeout
@@ -55,7 +55,7 @@ final class ClearController extends ControllerBase
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        EventlogServiceInterface $eventlogService
+        EventlogService $eventlogService
     ) {
         parent::__construct($application, $webControllerHelper);
 
