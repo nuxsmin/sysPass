@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -47,7 +47,7 @@ interface PluginOperationInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(int $itemId, mixed $data): int;
+    public function create(int $itemId, object $data): int;
 
     /**
      * @param int $itemId
@@ -60,7 +60,7 @@ interface PluginOperationInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(int $itemId, mixed $data): int;
+    public function update(int $itemId, object $data): int;
 
     /**
      * @throws ConstraintException
@@ -73,9 +73,9 @@ interface PluginOperationInterface
      * @template T
      *
      * @param int $itemId
-     * @param class-string<T>|null $class
+     * @param class-string<T> $class
      *
-     * @return T
+     * @return T|null
      *
      * @throws ConstraintException
      * @throws CryptoException
@@ -83,5 +83,5 @@ interface PluginOperationInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    public function get(int $itemId, ?string $class = null): mixed;
+    public function get(int $itemId, string $class): ?object;
 }

@@ -44,7 +44,7 @@ interface PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(Plugin $itemData): int;
+    public function create(Plugin $plugin): int;
 
     /**
      * Updates an item
@@ -52,7 +52,7 @@ interface PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Plugin $itemData): int;
+    public function update(Plugin $plugin): int;
 
     /**
      * Returns the item for given id
@@ -164,7 +164,7 @@ interface PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function resetById(int $id): bool;
+    public function resetById(int $id): void;
 
     /**
      * Devolver los plugins activados

@@ -56,11 +56,11 @@ final class PluginOperation implements PluginOperationInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(int $itemId, mixed $data): int
+    public function create(int $itemId, object $data): int
     {
-        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId, 'data' => serialize($data)]);
+        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId]);
 
-        return $this->pluginDataService->create($itemData)->getLastId();
+        return $this->pluginDataService->create($itemData->dehydrate($data))->getLastId();
     }
 
     /**
@@ -74,11 +74,11 @@ final class PluginOperation implements PluginOperationInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(int $itemId, mixed $data): int
+    public function update(int $itemId, object $data): int
     {
-        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId, 'data' => serialize($data)]);
+        $itemData = new PluginDataModel(['name' => $this->pluginName, 'itemId' => $itemId]);
 
-        return $this->pluginDataService->update($itemData);
+        return $this->pluginDataService->update($itemData->dehydrate($data));
     }
 
     /**
@@ -95,16 +95,16 @@ final class PluginOperation implements PluginOperationInterface
      * @template T
      *
      * @param int $itemId
-     * @param class-string<T>|null $class
+     * @param class-string<T> $class
      *
-     * @return mixed|null
+     * @return T|null
      * @throws ConstraintException
      * @throws CryptoException
      * @throws NoSuchPropertyException
      * @throws QueryException
      * @throws ServiceException
      */
-    public function get(int $itemId, ?string $class = null): mixed
+    public function get(int $itemId, string $class): ?object
     {
         try {
             return $this->pluginDataService

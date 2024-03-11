@@ -238,6 +238,9 @@ class NotificationTest extends UnitaryTestCase
         $this->assertEquals([1], $out);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testGetByIdBatch()
     {
         $queryResult = $this->createMock(QueryResult::class);

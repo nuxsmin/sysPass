@@ -25,7 +25,6 @@
 namespace SP\Domain\Plugin\Services;
 
 use SP\Core\Application;
-use SP\DataModel\Item;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -54,14 +53,14 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Creates an item
+     * Creates an item and returns the id
      *
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PluginModel $itemData): int
+    public function create(PluginModel $plugin): int
     {
-        return $this->pluginRepository->create($itemData)->getLastId();
+        return $this->pluginRepository->create($plugin)->getLastId();
     }
 
     /**
@@ -70,9 +69,9 @@ final class PluginManager extends Service implements PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PluginModel $itemData): int
+    public function update(PluginModel $plugin): int
     {
-        return $this->pluginRepository->update($itemData);
+        return $this->pluginRepository->update($plugin);
     }
 
     /**
@@ -80,33 +79,27 @@ final class PluginManager extends Service implements PluginManagerService
      *
      * @param int $id
      * @return PluginModel
-     * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getById(int $id): PluginModel
     {
         $result = $this->pluginRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
 
-        return $result->getData();
+        return $result->getData(PluginModel::class);
     }
 
     /**
      * Returns all the items
      *
      * @return array<T>
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getAll(): array
     {
-        return $this->pluginRepository->getAll()->getDataAsArray();
+        return $this->pluginRepository->getAll()->getDataAsArray(PluginModel::class);
     }
 
     /**
@@ -115,13 +108,10 @@ final class PluginManager extends Service implements PluginManagerService
      * @param int[] $ids
      *
      * @return array<T>
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getByIdBatch(array $ids): array
     {
-        return $this->pluginRepository->getByIdBatch($ids)->getDataAsArray();
+        return $this->pluginRepository->getByIdBatch($ids)->getDataAsArray(PluginModel::class);
     }
 
     /**
@@ -136,8 +126,8 @@ final class PluginManager extends Service implements PluginManagerService
      */
     public function deleteByIdBatch(array $ids): void
     {
-        if ($this->pluginRepository->deleteByIdBatch($ids) !== count($ids)) {
-            throw new ServiceException(__u('Error while deleting the plugins'));
+        if ($this->pluginRepository->deleteByIdBatch($ids)->getAffectedNumRows() !== count($ids)) {
+            throw ServiceException::error(__u('Error while deleting the plugins'));
         }
     }
 
@@ -150,16 +140,16 @@ final class PluginManager extends Service implements PluginManagerService
      */
     public function delete(int $id): void
     {
-        if ($this->pluginRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+        if ($this->pluginRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<T>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -181,10 +171,10 @@ final class PluginManager extends Service implements PluginManagerService
         $result = $this->pluginRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
 
-        return $result->getData();
+        return $result->getData(PluginModel::class);
     }
 
     /**
@@ -197,7 +187,7 @@ final class PluginManager extends Service implements PluginManagerService
     public function toggleEnabled(int $id, bool $enabled): void
     {
         if ($this->pluginRepository->toggleEnabled($id, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
     }
 
@@ -211,7 +201,7 @@ final class PluginManager extends Service implements PluginManagerService
     public function toggleEnabledByName(string $name, bool $enabled): void
     {
         if ($this->pluginRepository->toggleEnabledByName($name, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
     }
 
@@ -225,7 +215,7 @@ final class PluginManager extends Service implements PluginManagerService
     public function toggleAvailable(int $id, bool $available): void
     {
         if ($this->pluginRepository->toggleAvailable($id, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
     }
 
@@ -239,7 +229,7 @@ final class PluginManager extends Service implements PluginManagerService
     public function toggleAvailableByName(string $name, bool $available): void
     {
         if ($this->pluginRepository->toggleAvailableByName($name, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
     }
 
@@ -250,25 +240,23 @@ final class PluginManager extends Service implements PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function resetById(int $id): bool
+    public function resetById(int $id): void
     {
-        if (($count = $this->pluginRepository->resetById($id)) === 0) {
-            throw new NoSuchItemException(__u('Plugin not found'), SPException::INFO);
+        if ($this->pluginRepository->resetById($id) === 0) {
+            throw NoSuchItemException::info(__u('Plugin not found'));
         }
-
-        return $count;
     }
 
     /**
      * Devolver los plugins activados
      *
-     * @return Item[]
+     * @return array<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
     public function getEnabled(): array
     {
-        return $this->pluginRepository->getEnabled()->getDataAsArray();
+        return $this->pluginRepository->getEnabled()->getDataAsArray(PluginModel::class);
     }
 }
