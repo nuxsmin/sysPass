@@ -44,7 +44,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
@@ -53,7 +54,6 @@ use SP\Domain\User\Services\UserLoginRequest;
 use SP\Domain\User\Services\UserPassService;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Providers\Auth\AuthProviderInterface;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
@@ -89,7 +89,7 @@ final class Login extends Service implements LoginService
         Application                                      $application,
         private readonly AuthProviderInterface           $authProvider,
         private readonly LanguageInterface               $language,
-        private readonly TrackServiceInterface           $trackService,
+        private readonly TrackService $trackService,
         private readonly RequestInterface                $request,
         private readonly UserServiceInterface            $userService,
         private readonly UserPassRecoverServiceInterface $userPassRecoverService,
@@ -101,7 +101,7 @@ final class Login extends Service implements LoginService
 
         $this->configData = $this->config->getConfigData();
         $this->userLoginData = new UserLoginData();
-        $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
+        $this->trackRequest = $this->trackService->buildTrackRequest(__CLASS__);
         $this->authProvider->initialize();
     }
 

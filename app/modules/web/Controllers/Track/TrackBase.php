@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Track;
 
 
 use SP\Core\Application;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -35,12 +35,12 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class TrackBase extends ControllerBase
 {
-    protected TrackServiceInterface $trackService;
+    protected TrackService $trackService;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        TrackServiceInterface $trackService
+        TrackService $trackService
     ) {
         parent::__construct($application, $webControllerHelper);
 

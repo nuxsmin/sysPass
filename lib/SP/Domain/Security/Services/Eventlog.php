@@ -83,6 +83,6 @@ final class Eventlog extends Service implements EventlogService
             'ipAddress' => $this->request->getClientAddress()
         ];
 
-        return $this->eventLogRepository->create($eventlog->mutate($data));
+        return $this->eventLogRepository->create($eventlog->mutate($data))->getLastId();
     }
 }

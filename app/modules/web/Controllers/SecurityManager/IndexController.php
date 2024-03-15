@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogService;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
@@ -51,8 +51,8 @@ final class IndexController extends ControllerBase
     protected TabsGridHelper         $tabsGridHelper;
     private EventlogGrid             $eventlogGrid;
     private TrackGrid             $trackGrid;
-    private EventlogService       $eventlogService;
-    private TrackServiceInterface $trackService;
+    private EventlogService $eventlogService;
+    private TrackService    $trackService;
 
     public function __construct(
         Application         $application,
@@ -61,7 +61,7 @@ final class IndexController extends ControllerBase
         EventlogGrid        $eventlogGrid,
         TrackGrid           $trackGrid,
         EventlogService     $eventlogService,
-        TrackServiceInterface $trackService
+        TrackService $trackService
     ) {
         parent::__construct($application, $webControllerHelper);
 

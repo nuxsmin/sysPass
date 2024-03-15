@@ -32,10 +32,10 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -46,9 +46,9 @@ abstract class UserPassResetSaveBase extends ControllerBase
 {
     protected UserPassRecoverServiceInterface $userPassRecoverService;
     protected UserServiceInterface $userService;
-    protected MailService          $mailService;
-    private TrackServiceInterface  $trackService;
-    private TrackRequest                      $trackRequest;
+    protected MailService $mailService;
+    private TrackService  $trackService;
+    private TrackRequest  $trackRequest;
 
     /**
      * @throws SessionTimeout
@@ -61,7 +61,7 @@ abstract class UserPassResetSaveBase extends ControllerBase
         UserPassRecoverServiceInterface $userPassRecoverService,
         UserServiceInterface  $userService,
         MailService           $mailService,
-        TrackServiceInterface $trackService
+        TrackService $trackService
 
     ) {
         parent::__construct($application, $webControllerHelper);
@@ -70,7 +70,7 @@ abstract class UserPassResetSaveBase extends ControllerBase
         $this->mailService = $mailService;
         $this->trackService = $trackService;
 
-        $this->trackRequest = $this->trackService->getTrackRequest($this->getViewBaseName());
+        $this->trackRequest = $this->trackService->buildTrackRequest($this->getViewBaseName());
     }
 
     /**

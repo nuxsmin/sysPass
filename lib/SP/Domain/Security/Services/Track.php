@@ -30,30 +30,32 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
+
+use function SP\__;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
- * Class TrackService
+ * Class Track
  *
  * @package SP\Domain\Common\Services
  */
-final class TrackService extends Service implements TrackServiceInterface
+final class Track extends Service implements TrackService
 {
-    /**
-     * Tiempo para contador de intentos
-     */
-    public const TIME_TRACKING              = 600;
-    public const TIME_TRACKING_MAX_ATTEMPTS = 10;
-    public const TIME_SLEEP                 = 0.5;
+    private const TIME_TRACKING              = 600;
+    private const TIME_TRACKING_MAX_ATTEMPTS = 10;
+    private const TIME_SLEEP                 = 0.25;
 
     public function __construct(
         Application                       $application,
@@ -67,12 +69,10 @@ final class TrackService extends Service implements TrackServiceInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function getTrackRequest(string $source): TrackRequest
+    public function buildTrackRequest(string $source): TrackRequest
     {
-        $trackRequest = new TrackRequest(time() - self::TIME_TRACKING, $source);
-        $trackRequest->setTrackIp($this->request->getClientAddress());
-
-        return $trackRequest;
+        $time = time() - self::TIME_TRACKING;
+        return new TrackRequest($time, $source, $this->request->getClientAddress());
     }
 
     /**
@@ -83,7 +83,7 @@ final class TrackService extends Service implements TrackServiceInterface
     public function unlock(int $id): void
     {
         if ($this->trackRepository->unlock($id) === 0) {
-            throw new NoSuchItemException(__u('Track not found'));
+            throw NoSuchItemException::info(__u('Track not found'));
         }
     }
 
@@ -105,7 +105,8 @@ final class TrackService extends Service implements TrackServiceInterface
     public function checkTracking(TrackRequest $trackRequest): bool
     {
         try {
-            $attempts = $this->getTracksForClientFromTime($trackRequest);
+            $attempts = $this->trackRepository->getTracksForClientFromTime($this->buildTrackFrom($trackRequest))
+                                              ->getNumRows();
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
                 $delaySeconds = self::TIME_SLEEP * $attempts;
@@ -141,29 +142,24 @@ final class TrackService extends Service implements TrackServiceInterface
         return false;
     }
 
-    /**
-     * Devuelve los tracks de un cliente desde un tiempo y origen determinados
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    private function getTracksForClientFromTime(TrackRequest $trackRequest): int
+    private function buildTrackFrom(TrackRequest $trackRequest): TrackModel
     {
-        return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getNumRows();
+        return new TrackModel([
+                                  'ipv4' => $trackRequest->getIpv4(),
+                                  'ipv6' => $trackRequest->getIpv6(),
+                                  'source' => $trackRequest->getSource(),
+                                  'userId' => $trackRequest->getUserId(),
+                                  'time' => $trackRequest->getTime()
+                              ]);
     }
 
     /**
-     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      */
     public function add(TrackRequest $trackRequest): int
     {
-        if ($trackRequest->getIpv4() === null && $trackRequest->getIpv6() === null) {
-            throw new ServiceException(__u('IP address not set'));
-        }
-
-        $result = $this->trackRepository->add($trackRequest);
+        $result = $this->trackRepository->add($this->buildTrackFrom($trackRequest));
 
         $this->eventDispatcher->notify(
             'track.add',
@@ -173,15 +169,15 @@ final class TrackService extends Service implements TrackServiceInterface
             )
         );
 
-        return $result;
+        return $result->getLastId();
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
-        return $this->trackRepository->search($itemSearchData, time() - TrackService::TIME_TRACKING);
+        return $this->trackRepository->search($itemSearchData, time() - self::TIME_TRACKING);
     }
 }

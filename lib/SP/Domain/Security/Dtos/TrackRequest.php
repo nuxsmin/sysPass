@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Security\Repositories;
+namespace SP\Domain\Security\Dtos;
 
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
@@ -34,30 +34,27 @@ use SP\Http\Address;
  */
 final class TrackRequest
 {
-    public int      $time;
-    public string   $source;
-    public ?int     $userId = null;
-    private ?string $ipv6   = null;
-    private ?string $ipv4   = null;
+    private ?string $ipv6 = null;
+    private ?string $ipv4 = null;
 
     /**
-     * @param  int  $time
-     * @param  string  $source
-     * @param  int|null  $userId
+     * @throws InvalidArgumentException
      */
-    public function __construct(int $time, string $source, ?int $userId = null)
-    {
-        $this->time = $time;
-        $this->source = $source;
-        $this->userId = $userId;
+    public function __construct(
+        private readonly int    $time,
+        private readonly string $source,
+        string                  $address,
+        private readonly ?int   $userId = null
+    ) {
+        $this->setTrackIp($address);
     }
 
     /**
-     * @param  string  $address
+     * @param string $address
      *
      * @throws InvalidArgumentException
      */
-    public function setTrackIp(string $address): void
+    private function setTrackIp(string $address): void
     {
         $binary = Address::toBinary($address);
         $length = strlen($binary);
@@ -69,19 +66,28 @@ final class TrackRequest
         }
     }
 
-    /**
-     * @return string
-     */
     public function getIpv6(): ?string
     {
         return $this->ipv6;
     }
 
-    /**
-     * @return string
-     */
     public function getIpv4(): ?string
     {
         return $this->ipv4;
+    }
+
+    public function getTime(): int
+    {
+        return $this->time;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
     }
 }

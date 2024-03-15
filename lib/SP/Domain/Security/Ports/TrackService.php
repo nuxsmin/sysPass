@@ -30,21 +30,21 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 
 /**
  * Class TrackService
  *
  * @package SP\Domain\Common\Services
  */
-interface TrackServiceInterface
+interface TrackService
 {
     /**
      * @throws InvalidArgumentException
      */
-    public function getTrackRequest(string $source): TrackRequest;
+    public function buildTrackRequest(string $source): TrackRequest;
 
     /**
      * @throws QueryException

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
@@ -48,14 +48,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private TrackServiceInterface $trackService;
-    private TrackGrid             $trackGrid;
+    private TrackService $trackService;
+    private TrackGrid    $trackGrid;
 
     public function __construct(
-        Application $application,
+        Application  $application,
         WebControllerHelper $webControllerHelper,
-        TrackServiceInterface $trackService,
-        TrackGrid $trackGrid
+        TrackService $trackService,
+        TrackGrid    $trackGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 

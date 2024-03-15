@@ -43,12 +43,12 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Util\Filter;
 
@@ -71,7 +71,7 @@ final class Api extends Service implements ApiService
      */
     public function __construct(
         Application                                  $application,
-        private readonly TrackServiceInterface       $trackService,
+        private readonly TrackService      $trackService,
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserServiceInterface        $userService,
@@ -79,7 +79,7 @@ final class Api extends Service implements ApiService
     ) {
         parent::__construct($application);
 
-        $this->trackRequest = $trackService->getTrackRequest(__CLASS__);
+        $this->trackRequest = $trackService->buildTrackRequest(__CLASS__);
     }
 
     /**

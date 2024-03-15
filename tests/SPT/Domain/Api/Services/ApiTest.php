@@ -42,11 +42,11 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Security\Ports\TrackServiceInterface;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Security\Repositories\TrackRequest;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SPT\Generators\UserDataGenerator;
 use SPT\Generators\UserProfileDataGenerator;
@@ -63,12 +63,12 @@ use function PHPUnit\Framework\onConsecutiveCalls;
 class ApiTest extends UnitaryTestCase
 {
 
-    private TrackServiceInterface|MockObject     $trackService;
+    private TrackService|MockObject         $trackService;
     private ApiRequestService|MockObject    $apiRequest;
     private AuthTokenService|MockObject     $authTokenService;
     private UserServiceInterface|MockObject $userService;
     private MockObject|UserProfileServiceInterface $userProfileService;
-    private Api $apiService;
+    private Api                             $apiService;
     private TrackRequest                           $trackRequest;
 
     public static function getParamIntDataProvider(): array
@@ -153,10 +153,10 @@ class ApiTest extends UnitaryTestCase
     /**
      * @dataProvider getParamDataProvider
      *
-     * @param  mixed  $value
-     * @param  mixed  $expected
-     * @param  bool  $required
-     * @param  bool  $present
+     * @param mixed $value
+     * @param mixed $expected
+     * @param bool $required
+     * @param bool $present
      */
     public function testGetParam(mixed $value, mixed $expected, bool $required, bool $present)
     {
@@ -167,8 +167,8 @@ class ApiTest extends UnitaryTestCase
         callable $callable,
         mixed $value,
         mixed $expected,
-        bool $required,
-        bool $present
+        bool  $required,
+        bool  $present
     ): void {
         $param = self::$faker->colorName;
 
@@ -292,19 +292,20 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      * @throws ContextException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->trackService = $this->createMock(TrackServiceInterface::class);
+        $this->trackService = $this->createMock(TrackService::class);
         $this->apiRequest = $this->createMock(ApiRequestService::class);
         $this->authTokenService = $this->createMock(AuthTokenService::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
 
-        $this->trackRequest = new TrackRequest(time(), __CLASS__);
-        $this->trackService->method('getTrackRequest')->willReturn($this->trackRequest);
+        $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());
+        $this->trackService->method('buildTrackRequest')->willReturn($this->trackRequest);
         $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName);
 
         $this->apiService = new Api(
@@ -444,7 +445,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->will(onConsecutiveCalls($authToken, $authToken, $authToken));
 
-        $vaultKey = sha1($authToken.$authToken);
+        $vaultKey = sha1($authToken . $authToken);
 
         $vault = Vault::factory(new Crypt())->saveData(self::$faker->password, $vaultKey);
 
@@ -577,7 +578,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->willReturn($authToken);
 
-        $vaultKey = sha1($authToken.$authToken);
+        $vaultKey = sha1($authToken . $authToken);
 
         $masterPass = self::$faker->password;
 
@@ -640,7 +641,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->willReturn($authToken);
 
-        $vaultKey = sha1($authToken.$authToken);
+        $vaultKey = sha1($authToken . $authToken);
 
         $masterPass = self::$faker->password;
 
