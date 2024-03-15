@@ -37,7 +37,7 @@ use SP\Domain\Security\Ports\EventlogService;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class EventlogService
+ * Class Eventlog
  */
 final class Eventlog extends Service implements EventlogService
 {

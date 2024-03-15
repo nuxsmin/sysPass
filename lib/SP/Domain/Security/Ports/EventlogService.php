@@ -55,5 +55,5 @@ interface EventlogService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(Eventlog $eventlogData): int;
+    public function create(Eventlog $eventlog): int;
 }
