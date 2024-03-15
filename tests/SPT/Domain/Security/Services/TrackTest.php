@@ -27,8 +27,8 @@ namespace SPT\Domain\Security\Services;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
 use SP\DataModel\ItemSearchData;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -123,7 +123,33 @@ class TrackTest extends UnitaryTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testCheckTrackingWithException()
+    {
+        $trackRequest = $this->getTrackRequest();
+        $track = new TrackModel([
+                                    'ipv4' => $trackRequest->getIpv4(),
+                                    'ipv6' => $trackRequest->getIpv6(),
+                                    'source' => $trackRequest->getSource(),
+                                    'userId' => $trackRequest->getUserId(),
+                                    'time' => $trackRequest->getTime()
+                                ]);
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('getTracksForClientFromTime')
+            ->with($track)
+            ->willThrowException(new RuntimeException('test'));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('test');
+
+        $this->track->checkTracking($trackRequest);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws QueryException
