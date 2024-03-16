@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,7 +46,7 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetLocales()
     {
-        $locale = self::$faker->locale;
+        $locale = 'es_ES';
 
         Language::setLocales($locale);
 
@@ -57,7 +57,7 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetLanguage()
     {
-        $locale = self::$faker->locale;
+        $locale = 'es_ES';
 
         $this->context->setLocale($locale);
 
@@ -70,7 +70,7 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetLanguageForceWithUserLanguage()
     {
-        $locale = self::$faker->locale;
+        $locale = 'es_ES';
 
         $this->context->setLocale($locale);
         $this->configData
@@ -92,8 +92,8 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetLanguageForceWithAppLanguage()
     {
-        $locale = self::$faker->locale;
-        $appLocale = self::$faker->locale;
+        $locale = 'es_ES';
+        $appLocale = 'en_US';
 
         $this->context->setLocale($locale);
         $this->context->setUserData(new UserLoginResponse());
@@ -113,8 +113,8 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetLanguageForceWithBrowserLanguage()
     {
-        $locale = self::$faker->locale;
-        $browserLocale = self::$faker->locale;
+        $locale = 'es_ES';
+        $browserLocale = 'en_US';
 
         $this->context->setLocale($locale);
         $this->context->setUserData(new UserLoginResponse());
@@ -147,8 +147,8 @@ class LanguageTest extends UnitaryTestCase
 
     public function testSetAppLocales()
     {
-        $locale = self::$faker->locale;
-        $appLocale = self::$faker->locale;
+        $locale = 'es_ES';
+        $appLocale = 'en_US';
 
         $this->context->setLocale($locale);
 
@@ -166,7 +166,7 @@ class LanguageTest extends UnitaryTestCase
 
     public function testUnsetAppLocales()
     {
-        $locale = self::$faker->locale;
+        $locale = 'es_ES';
 
         $this->context->setLocale($locale);
 
@@ -186,5 +186,4 @@ class LanguageTest extends UnitaryTestCase
 
         $this->language = new Language($this->context, $this->configData, $this->request);
     }
-
 }

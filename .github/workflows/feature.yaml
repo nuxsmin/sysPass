@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
-        php: [ '8.1' ]
+        php: [ '8.2' ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3

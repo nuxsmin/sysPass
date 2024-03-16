@@ -52,9 +52,24 @@ abstract class UnitaryTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$faker = Factory::create();
-
         parent::setUpBeforeClass();
+
+        self::$faker = Factory::create();
+        self::setLocales();
+    }
+
+    private static function setLocales(): void
+    {
+        $lang = 'en_US.utf8';
+
+        putenv('LANG=' . $lang);
+        putenv('LANGUAGE=' . $lang);
+        setlocale(LC_MESSAGES, $lang);
+        setlocale(LC_ALL, $lang);
+
+        bindtextdomain('messages', LOCALES_PATH);
+        textdomain('messages');
+        bind_textdomain_codeset('messages', 'UTF-8');
     }
 
     public static function getRandomNumbers(int $count): array
