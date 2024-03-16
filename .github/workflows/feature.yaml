@@ -20,7 +20,7 @@ jobs:
 
       - name: Setup locales
         run: |
-          locale-gen es_ES.UTF-8 en_US.UTF-8 && update-locale
+          sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
 
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
