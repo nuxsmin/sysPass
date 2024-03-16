@@ -18,6 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup locales
+        run: |
+          locale-gen es_ES.UTF-8 en_US.UTF-8 && update-locale
+
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
         with:
