@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\Tag\Services
  */
-interface TagServiceInterface
+interface TagService
 {
     /**
      * @throws ConstraintException
@@ -65,14 +65,14 @@ interface TagServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): TagServiceInterface;
+    public function delete(int $id): TagService;
 
     /**
      * @param  int[]  $ids
      *
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids): TagServiceInterface;
+    public function deleteByIdBatch(array $ids): TagService;
 
     /**
      * @throws ConstraintException
@@ -91,7 +91,7 @@ interface TagServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return \SP\Domain\Tag\Models\Tag[]
+     * @return Tag[]
      * @throws ConstraintException
      * @throws QueryException
      */

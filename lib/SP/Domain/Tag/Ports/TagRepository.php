@@ -24,26 +24,98 @@
 
 namespace SP\Domain\Tag\Ports;
 
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Tag\Models\Tag as TagModel;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class TagRepository
  *
- * @package SP\Infrastructure\Common\Repositories\Tag
+ * @template T of TagModel
  */
 interface TagRepository extends Repository
 {
     /**
+     * Creates an item
+     *
+     * @param TagModel $tag
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function create(TagModel $tag): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param TagModel $tag
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function update(TagModel $tag): int;
+
+    /**
      * Returns the item for given id
      *
-     * @param  string  $name
+     * @param int $tagId
+     *
+     * @return QueryResult<T>
+     */
+    public function getById(int $tagId): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param string $name
+     *
+     * @return QueryResult<T>
+     */
+    public function getByName(string $name): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): QueryResult;
+    public function deleteByIdBatch(array $ids): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
 }

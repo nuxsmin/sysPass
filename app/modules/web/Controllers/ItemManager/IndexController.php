@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers;
@@ -62,9 +62,9 @@ final class IndexController extends ControllerBase
 {
     protected ?ItemSearchData              $itemSearchData = null;
     private TabsGridHelper      $tabsGridHelper;
-    private CategoryService     $categoryService;
-    private TagServiceInterface $tagService;
-    private ClientService                $clientService;
+    private CategoryService $categoryService;
+    private TagService      $tagService;
+    private ClientService   $clientService;
     private CustomFieldDefinitionService $customFieldDefService;
     private AccountFileService           $accountFileService;
     private AccountService             $accountService;
@@ -84,7 +84,7 @@ final class IndexController extends ControllerBase
         WebControllerHelper          $webControllerHelper,
         Helpers\TabsGridHelper       $tabsGridHelper,
         CategoryService              $categoryService,
-        TagServiceInterface          $tagService,
+        TagService $tagService,
         ClientService                $clientService,
         CustomFieldDefinitionService $customFieldDefService,
         AccountFileService           $accountFileService,

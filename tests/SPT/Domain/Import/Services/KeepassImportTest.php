@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\KeepassImport;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SPT\UnitaryTestCase;
 
 /**
@@ -155,7 +155,7 @@ class KeepassImportTest extends UnitaryTestCase
             $this->accountService,
             $this->categoryService,
             $this->clientService,
-            $this->createMock(TagServiceInterface::class),
+            $this->createMock(TagService::class),
             $this->createMock(ConfigService::class)
         );
 

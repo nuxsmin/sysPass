@@ -380,10 +380,11 @@ class ClientTest extends UnitaryTestCase
     }
 
     /**
+     * @throws DuplicatedItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function testCheckDuplicatedOnUpdate()
+    public function testUpdateWithDuplicate()
     {
         $client = ClientGenerator::factory()->buildClient();
 

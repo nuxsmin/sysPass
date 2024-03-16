@@ -54,7 +54,7 @@ use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
@@ -86,7 +86,7 @@ final class AccountHelper extends AccountHelperBase
     private ?int                      $accountId  = null;
     private UserServiceInterface      $userService;
     private UserGroupServiceInterface $userGroupService;
-    private TagServiceInterface       $tagService;
+    private TagService $tagService;
 
     public function __construct(
         Application               $application,
@@ -105,7 +105,7 @@ final class AccountHelper extends AccountHelperBase
         CustomFieldDataService    $customFieldService,
         UserServiceInterface      $userService,
         UserGroupServiceInterface $userGroupService,
-        TagServiceInterface       $tagService
+        TagService $tagService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 

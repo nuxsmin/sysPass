@@ -44,7 +44,7 @@ use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Tag\Models\Tag;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SPT\UnitaryTestCase;
 
@@ -64,9 +64,9 @@ class SyspassImportTest extends UnitaryTestCase
 
     private AccountService|MockObject      $accountService;
     private MockObject|CategoryService     $categoryService;
-    private ClientService|MockObject       $clientService;
-    private TagServiceInterface|MockObject $tagService;
-    private CryptInterface|MockObject      $crypt;
+    private ClientService|MockObject  $clientService;
+    private TagService|MockObject     $tagService;
+    private CryptInterface|MockObject $crypt;
     private SyspassImport                  $sysPassImport;
     private ConfigService|MockObject       $configService;
 
@@ -829,7 +829,7 @@ class SyspassImportTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->categoryService = $this->createMock(CategoryService::class);
         $this->clientService = $this->createMock(ClientService::class);
-        $this->tagService = $this->createMock(TagServiceInterface::class);
+        $this->tagService = $this->createMock(TagService::class);
         $this->configService = $this->createMock(ConfigService::class);
 
         $importHelper = new ImportHelper(

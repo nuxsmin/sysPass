@@ -36,7 +36,7 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Http\JsonMessage;
@@ -63,9 +63,9 @@ final class BulkEditController extends ControllerBase
     private AccountGrid            $accountGrid;
     private CustomFieldDataService $customFieldService;
     private CategoryService        $categoryService;
-    private ClientService       $clientService;
-    private TagServiceInterface $tagService;
-    private UserServiceInterface           $userService;
+    private ClientService        $clientService;
+    private TagService           $tagService;
+    private UserServiceInterface $userService;
     private UserGroupServiceInterface      $userGroupService;
 
     public function __construct(
@@ -73,7 +73,7 @@ final class BulkEditController extends ControllerBase
         WebControllerHelper  $webControllerHelper,
         CategoryService      $categoryService,
         ClientService        $clientService,
-        TagServiceInterface  $tagService,
+        TagService           $tagService,
         UserServiceInterface $userService,
         UserGroupServiceInterface $userGroupService
     ) {

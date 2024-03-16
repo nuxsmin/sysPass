@@ -39,7 +39,7 @@ use SP\Domain\Import\Dtos\CsvImportParamsDto;
 use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
@@ -318,7 +318,7 @@ class CsvImportTest extends UnitaryTestCase
             $this->accountService,
             $this->categoryService,
             $this->clientService,
-            $this->createMock(TagServiceInterface::class),
+            $this->createMock(TagService::class),
             $this->createMock(ConfigService::class)
         );
 

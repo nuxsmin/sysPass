@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGrid;
@@ -71,8 +71,8 @@ final class AccountSearchHelper extends HelperBase
     private ClientService $clientService;
     private AccountSearchService    $accountSearchService;
     private AccountActionsHelper $accountActionsHelper;
-    private CategoryService      $categoryService;
-    private TagServiceInterface  $tagService;
+    private CategoryService $categoryService;
+    private TagService      $tagService;
 
     public function __construct(
         Application          $application,
@@ -80,7 +80,7 @@ final class AccountSearchHelper extends HelperBase
         RequestInterface     $request,
         ClientService        $clientService,
         CategoryService      $categoryService,
-        TagServiceInterface  $tagService,
+        TagService $tagService,
         AccountSearchService $accountSearchService,
         AccountActionsHelper $accountActionsHelper
     ) {

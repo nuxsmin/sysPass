@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
 
@@ -39,7 +39,7 @@ use SP\Modules\Api\Controllers\Help\TagHelp;
  */
 abstract class TagBase extends ControllerBase
 {
-    protected TagServiceInterface $tagService;
+    protected TagService $tagService;
 
     /**
      * @throws InvalidClassException
@@ -49,7 +49,7 @@ abstract class TagBase extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        TagServiceInterface $tagService
+        TagService $tagService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 

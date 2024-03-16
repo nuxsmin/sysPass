@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlTagExport;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SPT\Generators\TagGenerator;
 use SPT\UnitaryTestCase;
 
@@ -43,8 +43,8 @@ class XmlTagExportTest extends UnitaryTestCase
 {
     use XmlTrait;
 
-    private TagServiceInterface|MockObject $tagService;
-    private XmlTagExport                   $xmlTagExport;
+    private TagService|MockObject $tagService;
+    private XmlTagExport          $xmlTagExport;
 
     /**
      * @throws Exception
@@ -114,7 +114,7 @@ class XmlTagExportTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->tagService = $this->createMock(TagServiceInterface::class);
+        $this->tagService = $this->createMock(TagService::class);
 
         $this->xmlTagExport = new XmlTagExport(
             $this->application,

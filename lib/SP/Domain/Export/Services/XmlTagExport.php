@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 
 use function SP\__u;
 
@@ -41,7 +41,7 @@ final class XmlTagExport extends XmlExportEntityBase
 {
     public function __construct(
         Application                          $application,
-        private readonly TagServiceInterface $tagService
+        private readonly TagService $tagService
     ) {
         parent::__construct($application);
     }

@@ -28,39 +28,34 @@ use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Tag\Models\Tag;
+use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Tag\Ports\TagRepository;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\Tag\Repositories\TagBaseRepository;
+
+use function SP\__u;
 
 /**
- * Class TagService
+ * Class Tag
  *
- * @package SP\Domain\Tag\Services
+ * @template T of TagModel
  */
-final class TagService extends Service implements TagServiceInterface
+final class Tag extends Service implements TagService
 {
-    use ServiceItemTrait;
 
-    private TagBaseRepository $tagRepository;
-
-    public function __construct(Application $application, TagRepository $tagRepository)
+    public function __construct(Application $application, private readonly TagRepository $tagRepository)
     {
         parent::__construct($application);
-
-        $this->tagRepository = $tagRepository;
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<T>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -68,35 +63,35 @@ final class TagService extends Service implements TagServiceInterface
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param int $id
+     * @return TagModel
      * @throws NoSuchItemException
      */
-    public function getById(int $id): Tag
+    public function getById(int $id): TagModel
     {
         $result = $this->tagRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Tag not found'));
         }
 
-        return $result->getData();
+        return $result->getData(TagModel::class);
     }
 
     /**
+     * @param string $name
+     * @return TagModel
      * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function getByName(string $name): ?Tag
+    public function getByName(string $name): TagModel
     {
         $result = $this->tagRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), SPException::INFO);
+            throw NoSuchItemException::info(__u('Tag not found'));
         }
 
-        return $result->getData();
+        return $result->getData(TagModel::class);
     }
 
     /**
@@ -104,24 +99,24 @@ final class TagService extends Service implements TagServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): TagServiceInterface
+    public function delete(int $id): TagService
     {
-        if ($this->tagRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Tag not found'), SPException::INFO);
+        if ($this->tagRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Tag not found'));
         }
 
         return $this;
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids): TagServiceInterface
+    public function deleteByIdBatch(array $ids): TagService
     {
         if ($this->tagRepository->deleteByIdBatch($ids) !== count($ids)) {
-            throw new ServiceException(__u('Error while removing the tags'), SPException::WARNING);
+            throw ServiceException::warning(__u('Error while removing the tags'));
         }
 
         return $this;
@@ -132,9 +127,9 @@ final class TagService extends Service implements TagServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(Tag $itemData): int
+    public function create(TagModel $itemData): int
     {
-        return $this->tagRepository->create($itemData);
+        return $this->tagRepository->create($itemData)->getLastId();
     }
 
     /**
@@ -142,7 +137,7 @@ final class TagService extends Service implements TagServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Tag $itemData): int
+    public function update(TagModel $itemData): int
     {
         return $this->tagRepository->update($itemData);
     }
@@ -150,12 +145,10 @@ final class TagService extends Service implements TagServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return Tag[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<T>
      */
     public function getAll(): array
     {
-        return $this->tagRepository->getAll();
+        return $this->tagRepository->getAll()->getDataAsArray(TagModel::class);
     }
 }

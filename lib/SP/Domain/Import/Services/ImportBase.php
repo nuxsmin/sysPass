@@ -44,7 +44,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -63,9 +63,9 @@ abstract class ImportBase extends Service implements ImportService
     protected int $counter = 0;
     protected readonly AccountService      $accountService;
     protected readonly CategoryService     $categoryService;
-    protected readonly ClientService       $clientService;
-    protected readonly TagServiceInterface $tagService;
-    protected readonly ConfigService       $configService;
+    protected readonly ClientService $clientService;
+    protected readonly TagService    $tagService;
+    protected readonly ConfigService $configService;
     private array $cache;
 
     public function __construct(

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -39,12 +39,12 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 final class TagsController extends SimpleControllerBase
 {
-    private TagServiceInterface $tagService;
+    private TagService $tagService;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        TagServiceInterface $tagService
+        TagService $tagService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

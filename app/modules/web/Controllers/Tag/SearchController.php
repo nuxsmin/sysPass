@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Tag\Ports\TagServiceInterface;
+use SP\Domain\Tag\Ports\TagService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -47,14 +47,14 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private TagServiceInterface $tagService;
-    private TagGrid             $tagGrid;
+    private TagService $tagService;
+    private TagGrid    $tagGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        TagServiceInterface $tagService,
-        TagGrid $tagGrid
+        TagService  $tagService,
+        TagGrid     $tagGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
