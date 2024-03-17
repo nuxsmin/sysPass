@@ -41,14 +41,14 @@ final class CustomFieldDataGenerator extends DataGenerator
         $key = null;
 
         if ($useEncryption) {
-            $key = $this->faker->sha1;
+            $key = $this->faker->sha1();
         }
 
         return [
             'moduleId' => $this->faker->randomNumber(3),
             'itemId' => $this->faker->randomNumber(3),
             'definitionId' => $this->faker->randomNumber(3),
-            'data' => $this->faker->text,
+            'data' => $this->faker->text(),
             'key' => $key,
         ];
     }

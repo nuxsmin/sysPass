@@ -45,7 +45,7 @@ final class PublicLinkDataGenerator extends DataGenerator
             'hash' => $this->faker->randomNumber(3),
             'userId' => $this->faker->randomNumber(3),
             'typeId' => $this->faker->randomNumber(3),
-            'notify'          => $this->faker->boolean,
+            'notify' => $this->faker->boolean(),
             'dateAdd'         => $this->faker->unixTime(),
             'dateUpdate'      => $this->faker->unixTime(),
             'dateExpire'      => $this->faker->unixTime(),
@@ -53,7 +53,7 @@ final class PublicLinkDataGenerator extends DataGenerator
             'totalCountViews' => $this->faker->randomNumber(3),
             'maxCountViews' => $this->faker->randomNumber(3),
             'useInfo'         => serialize($this->getUseInfo()),
-            'data'            => $this->faker->text,
+            'data' => $this->faker->text(),
         ];
     }
 
@@ -61,11 +61,11 @@ final class PublicLinkDataGenerator extends DataGenerator
     {
         return array_map(
             fn() => [
-                'who'   => $this->faker->ipv4,
-                'time'  => $this->faker->unixTime,
-                'hash'  => $this->faker->sha1,
-                'agent' => $this->faker->userAgent,
-                'https' => $this->faker->boolean,
+                'who' => $this->faker->ipv4(),
+                'time' => $this->faker->unixTime(),
+                'hash' => $this->faker->sha1(),
+                'agent' => $this->faker->userAgent(),
+                'https' => $this->faker->boolean(),
             ],
             range(0, 9)
         );
@@ -75,10 +75,10 @@ final class PublicLinkDataGenerator extends DataGenerator
     {
         return new PublicLinkList(
             array_merge($this->getPublicLinkProperties(), [
-                'userName'    => $this->faker->name,
-                'userLogin'   => $this->faker->userName,
-                'accountName' => $this->faker->colorName,
-                'clientName'  => $this->faker->company,
+                'userName' => $this->faker->name(),
+                'userLogin' => $this->faker->userName(),
+                'accountName' => $this->faker->colorName(),
+                'clientName' => $this->faker->company(),
             ])
         );
     }

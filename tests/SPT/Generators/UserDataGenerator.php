@@ -45,24 +45,24 @@ final class UserDataGenerator extends DataGenerator
     {
         return [
             'id' => $this->faker->randomNumber(3),
-            'name'          => $this->faker->name,
+            'name' => $this->faker->name(),
             'email' => $this->faker->randomNumber(3),
-            'login'         => $this->faker->name,
-            'ssoLogin'      => $this->faker->userName,
-            'notes'         => $this->faker->text,
+            'login' => $this->faker->name(),
+            'ssoLogin' => $this->faker->userName(),
+            'notes' => $this->faker->text(),
             'userGroupId' => $this->faker->randomNumber(3),
-            'userGroupName' => $this->faker->name,
+            'userGroupName' => $this->faker->name(),
             'userProfileId' => $this->faker->randomNumber(3),
-            'isAdminApp'    => $this->faker->boolean,
-            'isAdminAcc'    => $this->faker->boolean,
-            'isDisabled'    => $this->faker->boolean,
-            'isChangePass'  => $this->faker->boolean,
-            'isChangedPass' => $this->faker->boolean,
-            'isLdap'        => $this->faker->boolean,
-            'isMigrate'     => $this->faker->boolean,
+            'isAdminApp' => $this->faker->boolean(),
+            'isAdminAcc' => $this->faker->boolean(),
+            'isDisabled' => $this->faker->boolean(),
+            'isChangePass' => $this->faker->boolean(),
+            'isChangedPass' => $this->faker->boolean(),
+            'isLdap' => $this->faker->boolean(),
+            'isMigrate' => $this->faker->boolean(),
             'loginCount' => $this->faker->randomNumber(3),
-            'lastLogin'     => $this->faker->unixTime,
-            'lastUpdate'    => $this->faker->unixTime,
+            'lastLogin' => $this->faker->unixTime(),
+            'lastUpdate' => $this->faker->unixTime(),
             'preferences'   => serialize($this->buildUserPreferencesData()),
         ];
     }
@@ -75,16 +75,16 @@ final class UserDataGenerator extends DataGenerator
     private function getUserPreferencesProperties(): array
     {
         return [
-            'lang'                     => $this->faker->languageCode,
-            'theme'                    => $this->faker->colorName,
+            'lang' => $this->faker->languageCode(),
+            'theme' => $this->faker->colorName(),
             'resultsPerPage' => $this->faker->randomNumber(3),
-            'accountLink'              => $this->faker->boolean,
-            'sortViews'                => $this->faker->boolean,
-            'topNavbar'                => $this->faker->boolean,
-            'optionalActions'          => $this->faker->boolean,
-            'resultsAsCards'           => $this->faker->boolean,
-            'checkNotifications'       => $this->faker->boolean,
-            'showAccountSearchFilters' => $this->faker->boolean,
+            'accountLink' => $this->faker->boolean(),
+            'sortViews' => $this->faker->boolean(),
+            'topNavbar' => $this->faker->boolean(),
+            'optionalActions' => $this->faker->boolean(),
+            'resultsAsCards' => $this->faker->boolean(),
+            'checkNotifications' => $this->faker->boolean(),
+            'showAccountSearchFilters' => $this->faker->boolean(),
             'user_id' => $this->faker->randomNumber(3),
         ];
     }
@@ -96,11 +96,11 @@ final class UserDataGenerator extends DataGenerator
     {
         return [
             'id' => $this->faker->randomNumber(3),
-            'pass'            => $this->faker->password,
-            'hashSalt'        => $this->faker->sha1,
-            'mPass'           => $this->faker->sha1,
-            'mKey'            => $this->faker->sha1,
-            'lastUpdateMPass' => $this->faker->dateTime->getTimestamp(),
+            'pass' => $this->faker->password(),
+            'hashSalt' => $this->faker->sha1(),
+            'mPass' => $this->faker->sha1(),
+            'mKey' => $this->faker->sha1(),
+            'lastUpdateMPass' => $this->faker->dateTime()->getTimestamp(),
         ];
     }
 

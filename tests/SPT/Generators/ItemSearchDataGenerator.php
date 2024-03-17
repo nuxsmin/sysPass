@@ -34,7 +34,7 @@ final class ItemSearchDataGenerator extends DataGenerator
     public function buildItemSearchData(): ItemSearchData
     {
         return new ItemSearchData(
-            $this->faker->name,
+            $this->faker->name(),
             $this->faker->randomNumber(3),
             $this->faker->randomNumber(3)
         );

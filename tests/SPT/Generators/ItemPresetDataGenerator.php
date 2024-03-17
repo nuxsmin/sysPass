@@ -37,11 +37,11 @@ final class ItemPresetDataGenerator extends DataGenerator
     {
         return new ItemPreset([
                                   'id' => $this->faker->randomNumber(3),
-                                  'type' => $this->faker->colorName,
+                                  'type' => $this->faker->colorName(),
                                   'userId' => $this->faker->randomNumber(3),
                                   'userGroupId' => $this->faker->randomNumber(3),
                                   'userProfileId' => $this->faker->randomNumber(3),
-                                  'fixed' => (int)$this->faker->boolean,
+                                  'fixed' => (int)$this->faker->boolean(),
                                   'priority' => $this->faker->randomNumber(3),
                                   'data' => serialize($data),
                               ]);
@@ -51,13 +51,13 @@ final class ItemPresetDataGenerator extends DataGenerator
     {
         return new Password(
             $this->faker->numberBetween(1, 12),
-            $this->faker->boolean,
-            $this->faker->boolean,
-            $this->faker->boolean,
-            $this->faker->boolean,
-            $this->faker->boolean,
-            $this->faker->boolean,
-            $this->faker->unixTime,
+            $this->faker->boolean(),
+            $this->faker->boolean(),
+            $this->faker->boolean(),
+            $this->faker->boolean(),
+            $this->faker->boolean(),
+            $this->faker->boolean(),
+            $this->faker->unixTime(),
             $this->faker->randomNumber(3),
             $this->faker->regexify('abc123')
         );
@@ -65,6 +65,6 @@ final class ItemPresetDataGenerator extends DataGenerator
 
     public function buildAccountPrivate(): AccountPrivate
     {
-        return new AccountPrivate($this->faker->boolean, $this->faker->boolean);
+        return new AccountPrivate($this->faker->boolean(), $this->faker->boolean());
     }
 }

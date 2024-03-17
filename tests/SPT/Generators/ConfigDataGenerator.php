@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ final class ConfigDataGenerator extends DataGenerator
     public function buildConfigData(): ConfigData
     {
         return new ConfigData([
-            ConfigDataInterface::PASSWORD_SALT => $this->faker->sha1,
+                                  ConfigDataInterface::PASSWORD_SALT => $this->faker->sha1(),
         ]);
     }
 }

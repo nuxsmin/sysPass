@@ -36,7 +36,7 @@ final class FileDataGenerator extends DataGenerator
         return new Simple(
             array_merge(
                 $this->buildFileData()->toArray(null, null, true),
-                ['clientName' => $this->faker->name, 'accountName' => $this->faker->name]
+                ['clientName' => $this->faker->name(), 'accountName' => $this->faker->name()]
             )
         );
     }

@@ -50,7 +50,6 @@ class RequestTest extends UnitaryTestCase
     private CryptPKIInterface|MockObject    $cryptPKI;
     private HeaderDataCollection|MockObject $headers;
     private DataCollection                  $paramsGet;
-    private DataCollection                  $paramsPost;
     private DataCollection                  $server;
     private DataCollection                  $files;
 
@@ -706,13 +705,6 @@ class RequestTest extends UnitaryTestCase
      */
     public function testVerifySignatureWithoutHash()
     {
-        $params = [
-            'a' => 1,
-            'b' => 2,
-            'c' => 3
-        ];
-        $signature = Hash::signMessage(implode('&', $params), 'a_key');
-
         $this->ensureGet();
 
         $this->kleinRequest->expects(self::never())->method('params');
@@ -807,11 +799,15 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetSecureAppPath()
     {
-        $path = '../../opt/project/index.php';
+        $path = sprintf(
+            '%s%s/index.php',
+            implode('', array_fill(0, count(explode('/', APP_ROOT)) - 1, '../')),
+            APP_ROOT
+        );
 
         $out = Request::getSecureAppPath($path);
 
-        $this->assertEquals('/opt/project/index.php', $out);
+        $this->assertEquals(sprintf('%s/index.php', APP_ROOT), $out);
     }
 
     public function testGetSecureAppPathWithUnknownFile()
@@ -859,10 +855,12 @@ class RequestTest extends UnitaryTestCase
                       ->method('get')
                       ->with(
                           ...
-                          self::withConsecutive(['Http-Forwarded'],
-                                                ['Http-Forwarded-Host'],
-                                                ['Http-Forwarded-Proto'],
-                                                ['Http-Forwarded'])
+                          self::withConsecutive(
+                              ['Http-Forwarded'],
+                              ['Http-Forwarded-Host'],
+                              ['Http-Forwarded-Proto'],
+                              ['Http-Forwarded']
+                          )
                       )
                       ->willReturn('', $domain, 'https', 'for=10.10.10.10');
 
@@ -883,14 +881,17 @@ class RequestTest extends UnitaryTestCase
                       ->method('get')
                       ->with(
                           ...
-                          self::withConsecutive(['Http-Forwarded'],
-                                                ['Http-Forwarded-Host'],
-                                                ['Http-Forwarded-Proto'])
+                          self::withConsecutive(
+                              ['Http-Forwarded'],
+                              ['Http-Forwarded-Host'],
+                              ['Http-Forwarded-Proto']
+                          )
                       )
                       ->willReturn('', '', '');
 
         $request = new Request($this->kleinRequest, $this->cryptPKI);
 
+        /** @noinspection HttpUrlsUsage */
         $this->assertEquals(sprintf('http://%s', $domain), $request->getHttpHost());
     }
 
@@ -912,7 +913,11 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetSecureAppFile()
     {
-        $path = '../../opt/project/index.php';
+        $path = sprintf(
+            '%s%s/index.php',
+            implode('', array_fill(0, count(explode('/', APP_ROOT)) - 1, '../')),
+            APP_ROOT
+        );
 
         $out = Request::getSecureAppFile($path);
 
@@ -957,12 +962,12 @@ class RequestTest extends UnitaryTestCase
             ->method('paramsGet')
             ->willReturn($this->paramsGet);
 
-        $this->paramsPost = new DataCollection();
+        $paramsPost = new DataCollection();
 
         $this->kleinRequest
             ->expects(self::atMost(1))
             ->method('paramsPost')
-            ->willReturn($this->paramsPost);
+            ->willReturn($paramsPost);
 
         $this->server = new DataCollection();
 
