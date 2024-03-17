@@ -25,6 +25,8 @@
 namespace SPT\Http;
 
 use Faker\Factory;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 use SPT\UnitaryTestCase;
@@ -32,8 +34,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AddressTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AddressTest extends UnitaryTestCase
 {
 
@@ -108,12 +110,11 @@ class AddressTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider binaryCheckProvider
-     *
      * @param string $address
      *
      * @throws InvalidArgumentException
      */
+    #[DataProvider('binaryCheckProvider')]
     public function testToBinary(string $address)
     {
         $binary = Address::toBinary($address);
@@ -178,8 +179,6 @@ class AddressTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider checkAddressProvider
-     *
      * @param string $address
      * @param string $inAddress
      * @param string $inMask
@@ -187,14 +186,13 @@ class AddressTest extends UnitaryTestCase
      *
      * @throws InvalidArgumentException
      */
+    #[DataProvider('checkAddressProvider')]
     public function testCheck(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, $inMask));
     }
 
     /**
-     * @dataProvider checkAddressCidrProvider
-     *
      * @param string $address
      * @param string $inAddress
      * @param string $inMask
@@ -202,6 +200,7 @@ class AddressTest extends UnitaryTestCase
      *
      * @throws InvalidArgumentException
      */
+    #[DataProvider('checkAddressCidrProvider')]
     public function testCheckWithCidr(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, Address::cidrToDec($inMask)));
@@ -304,11 +303,10 @@ class AddressTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider checkCidrProvider
-     *
      * @param $cidr
      * @param $mask
      */
+    #[DataProvider('checkCidrProvider')]
     public function testCidrToDec($cidr, $mask)
     {
         $this->assertEquals($mask, Address::cidrToDec($cidr));

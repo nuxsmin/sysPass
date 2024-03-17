@@ -24,6 +24,7 @@
 
 namespace SPT\Core\Context;
 
+use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\SessionContext;
 use SP\Core\Context\StatelessContext;
@@ -31,9 +32,8 @@ use SPT\UnitaryTestCase;
 
 /**
  * Class ContextFactoryTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class ContextFactoryTest extends UnitaryTestCase
 {
     public function testGetForModuleWithWeb()

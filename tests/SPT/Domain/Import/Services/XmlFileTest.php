@@ -24,18 +24,20 @@
 
 namespace SPT\Domain\Import\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFile;
 use SP\Domain\Import\Services\XmlFormat;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlFileTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlFileTest extends UnitaryTestCase
 {
     private const KEEPASS_FILE = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .
@@ -52,11 +54,10 @@ class XmlFileTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider fileFormatProvider
-     *
      * @throws ImportException
      * @throws FileException
      */
+    #[DataProvider('fileFormatProvider')]
     public function testDetectFormat(string $file, XmlFormat $format)
     {
         $fileHandler = new FileHandler($file);

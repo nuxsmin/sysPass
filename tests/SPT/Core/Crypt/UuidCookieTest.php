@@ -32,12 +32,13 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Http\RequestInterface;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class UuidCookieTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class UuidCookieTest extends UnitaryTestCase
 {
 

@@ -25,6 +25,7 @@
 namespace SPT\Domain\Import\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
@@ -51,8 +52,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class SyspassImportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class SyspassImportTest extends UnitaryTestCase
 {
 

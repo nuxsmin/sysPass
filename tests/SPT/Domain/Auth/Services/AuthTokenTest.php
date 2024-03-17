@@ -27,6 +27,8 @@ namespace SPT\Domain\Auth\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -50,8 +52,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AuthTokenTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AuthTokenTest extends UnitaryTestCase
 {
 
@@ -213,7 +215,6 @@ class AuthTokenTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider secureActionDataProvider
      * @param int $action
      * @throws ConstraintException
      * @throws CryptoException
@@ -222,6 +223,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws ContextException
      */
+    #[DataProvider('secureActionDataProvider')]
     public function testCreateWithSecureAction(int $action)
     {
         $this->context->setTrasientKey('_masterpass', 'test_pass');
@@ -409,7 +411,6 @@ class AuthTokenTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider secureActionDataProvider
      * @param int $action
      * @throws ConstraintException
      * @throws CryptoException
@@ -418,6 +419,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws ContextException
      */
+    #[DataProvider('secureActionDataProvider')]
     public function testUpdateWithSecureAction(int $action)
     {
         $this->context->setTrasientKey('_masterpass', 'test_pass');

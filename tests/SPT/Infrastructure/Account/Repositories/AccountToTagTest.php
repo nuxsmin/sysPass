@@ -25,6 +25,7 @@
 namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -41,8 +42,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountToTagRepositoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountToTagTest extends UnitaryTestCase
 {
     private MockObject|DatabaseInterface $database;

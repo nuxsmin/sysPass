@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemPreset\AccountPrivate;
@@ -60,8 +61,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountTest extends UnitaryTestCase
 {
     private AccountRepository|MockObject $accountRepository;

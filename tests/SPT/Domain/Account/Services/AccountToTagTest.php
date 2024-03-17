@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToTagRepository;
@@ -38,8 +39,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountToTagServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountToTagTest extends UnitaryTestCase
 {
 

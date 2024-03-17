@@ -26,6 +26,7 @@ namespace SPT\Domain\Account\Adapters;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\DataModel\Action;
 use SP\Domain\Account\Adapters\AccountAdapter;
@@ -41,8 +42,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountAdapterTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountAdapterTest extends UnitaryTestCase
 {
     /**

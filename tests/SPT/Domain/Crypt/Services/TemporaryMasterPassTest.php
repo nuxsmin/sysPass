@@ -25,6 +25,7 @@
 namespace SPT\Domain\Crypt\Services;
 
 use PHPMailer\PHPMailer\Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -46,8 +47,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class TemporaryMasterPassTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class TemporaryMasterPassTest extends UnitaryTestCase
 {
 

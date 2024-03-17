@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Import\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -38,8 +39,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ImportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ImportTest extends UnitaryTestCase
 {
     private Repository|MockObject            $repository;

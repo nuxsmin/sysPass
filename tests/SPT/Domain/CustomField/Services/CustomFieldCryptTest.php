@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\CustomField\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CustomFieldCryptTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CustomFieldCryptTest extends UnitaryTestCase
 {
 

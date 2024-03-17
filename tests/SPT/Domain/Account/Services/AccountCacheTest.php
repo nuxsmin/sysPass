@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -39,8 +40,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountCacheServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountCacheTest extends UnitaryTestCase
 {
 

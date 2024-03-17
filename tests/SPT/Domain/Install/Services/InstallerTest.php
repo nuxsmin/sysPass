@@ -25,6 +25,7 @@
 namespace SPT\Domain\Install\Services;
 
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Config\Ports\ConfigService;
@@ -46,8 +47,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class InstallerTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class InstallerTest extends UnitaryTestCase
 {
     /**

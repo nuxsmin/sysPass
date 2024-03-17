@@ -25,6 +25,7 @@
 namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountHistoryRepositoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountHistoryTest extends UnitaryTestCase
 {
     private DatabaseInterface|MockObject $database;

@@ -24,6 +24,8 @@
 
 namespace SPT\Domain\Config\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Application;
@@ -40,8 +42,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class UpgradeConfigTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class UpgradeConfigTest extends UnitaryTestCase
 {
 
@@ -132,9 +134,9 @@ class UpgradeConfigTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider versionDataProvider
      * @return void
      */
+    #[DataProvider('versionDataProvider')]
     public function testNeedsUpgrade(string $version, bool $expected)
     {
         $this->assertEquals($expected, UpgradeConfig::needsUpgrade($version));

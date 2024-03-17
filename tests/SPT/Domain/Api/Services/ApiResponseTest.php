@@ -24,14 +24,15 @@
 
 namespace SPT\Domain\Api\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SPT\UnitaryTestCase;
 
 /**
  * Class ApiResponseTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ApiResponseTest extends UnitaryTestCase
 {
 

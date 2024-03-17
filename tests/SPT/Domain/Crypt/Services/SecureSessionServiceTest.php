@@ -27,6 +27,7 @@ namespace SPT\Domain\Crypt\Services;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
@@ -44,8 +45,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class SecureSessionServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class SecureSessionServiceTest extends UnitaryTestCase
 {
     private SecureSession $secureSessionService;

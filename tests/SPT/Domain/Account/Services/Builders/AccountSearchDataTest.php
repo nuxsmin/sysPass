@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services\Builders;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
@@ -45,8 +46,8 @@ use function PHPUnit\Framework\once;
 /**
  * Class AccountSearchDataBuilderTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountSearchDataTest extends UnitaryTestCase
 {
 

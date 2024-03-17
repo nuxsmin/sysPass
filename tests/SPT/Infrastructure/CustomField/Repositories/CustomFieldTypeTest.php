@@ -26,6 +26,7 @@ namespace SPT\Infrastructure\CustomField\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CustomFieldTypeTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CustomFieldTypeTest extends UnitaryTestCase
 {
 

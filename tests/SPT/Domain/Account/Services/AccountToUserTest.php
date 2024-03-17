@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserRepository;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountToUserServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountToUserTest extends UnitaryTestCase
 {
 

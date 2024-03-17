@@ -24,6 +24,7 @@
 
 namespace SPT\Providers\Auth;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Auth\Services\AuthException;
@@ -36,8 +37,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AuthProviderTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AuthProviderTest extends UnitaryTestCase
 {
 

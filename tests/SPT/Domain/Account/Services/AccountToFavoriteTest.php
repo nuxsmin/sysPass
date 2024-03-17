@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToFavoriteRepository;
 use SP\Domain\Account\Services\AccountToFavorite;
@@ -36,8 +37,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountToFavoriteServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountToFavoriteTest extends UnitaryTestCase
 {
 

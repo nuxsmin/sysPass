@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Import\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
@@ -47,8 +48,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CsvImportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CsvImportTest extends UnitaryTestCase
 {
 

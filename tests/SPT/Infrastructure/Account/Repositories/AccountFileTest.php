@@ -25,6 +25,7 @@
 namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\File;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountFileRepositoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountFileTest extends UnitaryTestCase
 {
     private DatabaseInterface|MockObject $database;

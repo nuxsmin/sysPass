@@ -35,12 +35,13 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlAccountExport;
 use SPT\Generators\AccountDataGenerator;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlAccountExportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlAccountExportTest extends UnitaryTestCase
 {
     use XmlTrait;

@@ -25,6 +25,8 @@
 namespace SPT\Domain\Import\Services;
 
 use ArrayIterator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\DataModel\User;
@@ -44,8 +46,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class LdapImportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapImportTest extends UnitaryTestCase
 {
 
@@ -178,9 +180,9 @@ class LdapImportTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider userFilterByTypeProvider
      * @throws LdapException
      */
+    #[DataProvider('userFilterByTypeProvider')]
     public function testImportUsersWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
@@ -247,10 +249,9 @@ class LdapImportTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider emptyNameOrLoginProvider
-     *
      * @throws LdapException
      */
+    #[DataProvider('emptyNameOrLoginProvider')]
     public function testImportUsersWithEmptyNameOrLogin(array $entry)
     {
         $ldapParams = new LdapParams(
@@ -412,9 +413,9 @@ class LdapImportTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider groupFilterByTypeProvider
      * @throws LdapException
      */
+    #[DataProvider('groupFilterByTypeProvider')]
     public function testImportGroupsWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(

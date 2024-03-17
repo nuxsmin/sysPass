@@ -25,6 +25,8 @@
 namespace SPT\Providers\Auth\Ldap;
 
 use EmptyIterator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
@@ -41,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class LdapStdTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapStdTest extends UnitaryTestCase
 {
 
@@ -85,9 +87,9 @@ class LdapStdTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider groupDataProvider()
      * @throws LdapException
      */
+    #[DataProvider('groupDataProvider')]
     public function testIsUserInGroup(string $group)
     {
         $this->ldapParams->setGroup($group);

@@ -26,6 +26,7 @@ namespace SPT\Domain\Crypt\Services;
 
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountCryptService;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class MasterPassTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class MasterPassTest extends UnitaryTestCase
 {
 

@@ -35,12 +35,13 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Services\XmlVerify;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlVerifyTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlVerifyTest extends UnitaryTestCase
 {
     private const VALID_ENCRYPTED_FILE  = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .

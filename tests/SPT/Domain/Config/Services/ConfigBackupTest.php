@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Config\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -39,8 +40,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ConfigBackupTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ConfigBackupTest extends UnitaryTestCase
 {
 

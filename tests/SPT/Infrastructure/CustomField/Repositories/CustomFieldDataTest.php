@@ -30,6 +30,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -45,8 +46,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CustomFieldDataTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CustomFieldDataTest extends UnitaryTestCase
 {
 

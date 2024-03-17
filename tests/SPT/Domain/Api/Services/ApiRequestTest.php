@@ -25,6 +25,8 @@
 namespace SPT\Domain\Api\Services;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Api\Services\ApiRequestException;
 use SPT\UnitaryTestCase;
@@ -32,8 +34,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ApiRequestTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ApiRequestTest extends UnitaryTestCase
 {
     /**
@@ -97,11 +99,10 @@ class ApiRequestTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider getJsonRpcProperty
-     *
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[DataProvider('getJsonRpcProperty')]
     public function testBuildFromRequestWithoutProperty(string $property)
     {
         $stream = tempnam(sys_get_temp_dir(), time());

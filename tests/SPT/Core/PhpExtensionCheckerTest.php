@@ -24,6 +24,8 @@
 
 namespace SPT\Core;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -31,9 +33,8 @@ use SPT\UnitaryTestCase;
 
 /**
  * Class PhpExtensionCheckerTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class PhpExtensionCheckerTest extends UnitaryTestCase
 {
 
@@ -48,11 +49,10 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider extensionMethodDataProvider
-     *
      * @param string $method
      * @return void
      */
+    #[DataProvider('extensionMethodDataProvider')]
     public function testCallMagicMethod(string $method)
     {
         $phpExtensionChecker = new PhpExtensionChecker();

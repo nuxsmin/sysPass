@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\PublickLinkOldData;
 use SP\Domain\Account\Ports\PublicLinkRepository;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class UpgradePublicLinkServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class UpgradePublicLinkTest extends UnitaryTestCase
 {
 

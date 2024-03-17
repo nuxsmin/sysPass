@@ -33,12 +33,13 @@ use SP\Domain\Export\Services\XmlTagExport;
 use SP\Domain\Tag\Ports\TagService;
 use SPT\Generators\TagGenerator;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlTagExportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlTagExportTest extends UnitaryTestCase
 {
     use XmlTrait;

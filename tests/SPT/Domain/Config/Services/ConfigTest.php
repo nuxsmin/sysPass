@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Config\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ConfigTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ConfigTest extends UnitaryTestCase
 {
 

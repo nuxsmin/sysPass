@@ -26,6 +26,7 @@ namespace SPT\Domain\Export\Services;
 
 use PDO;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,8 +49,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class FileBackupServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private BackupFile                         $fileBackupService;

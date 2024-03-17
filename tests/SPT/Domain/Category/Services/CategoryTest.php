@@ -25,6 +25,7 @@
 namespace SPT\Domain\Category\Services;
 
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Category\Services\Category;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CategoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CategoryTest extends UnitaryTestCase
 {
 

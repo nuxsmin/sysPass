@@ -24,6 +24,8 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Acl\Acl;
 use SP\DataModel\Item;
@@ -43,8 +45,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountAclServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountAclTest extends UnitaryTestCase
 {
     private const ACTIONS = [
@@ -167,11 +169,10 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:admin
-     *
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
     public function testGetAclForAdminApp(): void
     {
         $this->context
@@ -338,10 +339,9 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:admin
-     *
      * @return AccountPermission
      */
+    #[Group('acl:admin')]
     private function getExampleAclForAdmin(): AccountPermission
     {
         return (new AccountPermission(0))
@@ -367,11 +367,10 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:admin
-     *
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Group('acl:admin')]
     public function testGetAclForAdminAcc(): void
     {
         $this->context
@@ -401,9 +400,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -413,6 +409,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testCheckViewPass(
         int $accountId,
         int $userId,
@@ -437,9 +435,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -449,6 +444,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testCheckDelete(
         int $accountId,
         int $userId,
@@ -473,9 +470,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -485,6 +479,9 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
+
     public function testEditPass(
         int $accountId,
         int $userId,
@@ -509,9 +506,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -521,6 +515,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testEditAndRestore(
         int $accountId,
         int $userId,
@@ -546,9 +542,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -558,6 +551,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testCheckPermission(
         int $accountId,
         int $userId,
@@ -582,9 +577,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -594,6 +586,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testViewFiles(
         int $accountId,
         int $userId,
@@ -618,9 +612,6 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
-     * @group acl:action
-     * @dataProvider accountPropertiesProvider
-     *
      * @param int $accountId
      * @param int $userId
      * @param int $groupId
@@ -630,6 +621,8 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Group('acl:admin')]
+    #[DataProvider('accountPropertiesProvider')]
     public function testCheckView(
         int $accountId,
         int $userId,

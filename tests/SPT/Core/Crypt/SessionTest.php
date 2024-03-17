@@ -24,6 +24,7 @@
 
 namespace SPT\Core\Crypt;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Session;
@@ -35,8 +36,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class SessionTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class SessionTest extends UnitaryTestCase
 {
 

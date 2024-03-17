@@ -26,6 +26,7 @@ namespace SPT\Domain\Client\Services;
 
 use Aura\SqlQuery\QueryFactory;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
@@ -45,8 +46,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CategoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ClientTest extends UnitaryTestCase
 {
 

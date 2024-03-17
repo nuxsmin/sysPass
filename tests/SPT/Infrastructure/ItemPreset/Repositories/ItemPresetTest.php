@@ -30,6 +30,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
@@ -47,8 +48,8 @@ use stdClass;
 /**
  * Class ItemPresetTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ItemPresetTest extends UnitaryTestCase
 {
 

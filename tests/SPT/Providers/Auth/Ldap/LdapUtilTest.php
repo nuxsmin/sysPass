@@ -24,14 +24,16 @@
 
 namespace SPT\Providers\Auth\Ldap;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Providers\Auth\Ldap\LdapUtil;
 use SPT\UnitaryTestCase;
 
 /**
  * Class LdapUtilTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapUtilTest extends UnitaryTestCase
 {
 
@@ -59,12 +61,11 @@ class LdapUtilTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider groupNameProvider
-     *
      * @param string $group
      * @param string|null $expected
      * @return void
      */
+    #[DataProvider('groupNameProvider')]
     public function testGetGroupName(string $group, ?string $expected)
     {
         self::assertEquals($expected, LdapUtil::getGroupName($group));

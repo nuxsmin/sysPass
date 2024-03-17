@@ -24,15 +24,15 @@
 
 namespace SPT\Core\Crypt;
 
+use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Crypt\Crypt;
 use SP\Domain\Core\Exceptions\CryptException;
 use SPT\UnitaryTestCase;
 
 /**
  * Class CryptTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class CryptTest extends UnitaryTestCase
 {
     /**

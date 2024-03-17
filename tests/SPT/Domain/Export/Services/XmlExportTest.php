@@ -49,12 +49,13 @@ use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlExportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlExportTest extends UnitaryTestCase
 {
     use XmlTrait;

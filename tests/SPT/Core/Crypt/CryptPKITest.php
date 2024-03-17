@@ -25,6 +25,7 @@
 namespace SPT\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\CryptPKI;
@@ -37,9 +38,8 @@ use function PHPUnit\Framework\once;
 
 /**
  * Class CryptPKITest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class CryptPKITest extends UnitaryTestCase
 {
     private CryptPKI                        $cryptPki;

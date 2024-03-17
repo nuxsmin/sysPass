@@ -29,12 +29,13 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\CryptException;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class VaultTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class VaultTest extends UnitaryTestCase
 {
     /**

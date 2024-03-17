@@ -25,6 +25,7 @@
 namespace SPT\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -39,8 +40,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountSearchRepositoryTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountSearchTest extends UnitaryTestCase
 {
 

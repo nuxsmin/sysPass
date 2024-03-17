@@ -25,6 +25,8 @@
 namespace SPT\Domain\Import\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -44,8 +46,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ImportStrategyTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ImportStrategyTest extends UnitaryTestCase
 {
 
@@ -69,12 +71,11 @@ class ImportStrategyTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider csvImportProvider
-     *
      * @throws ImportException
      * @throws Exception
      * @throws FileException
      */
+    #[DataProvider('csvImportProvider')]
     public function testBuildImportWithCsv(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -95,12 +96,11 @@ class ImportStrategyTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider xmlImportProvider
-     *
      * @throws ImportException
      * @throws Exception
      * @throws FileException
      */
+    #[DataProvider('xmlImportProvider')]
     public function testBuildImportWithSyspassXml(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -136,12 +136,11 @@ class ImportStrategyTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider xmlImportProvider
-     *
      * @throws ImportException
      * @throws Exception
      * @throws FileException
      */
+    #[DataProvider('xmlImportProvider')]
     public function testBuildImportWithKeepassXml(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);

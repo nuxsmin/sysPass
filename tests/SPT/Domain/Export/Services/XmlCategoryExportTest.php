@@ -33,12 +33,13 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlCategoryExport;
 use SPT\Generators\CategoryGenerator;
 use SPT\UnitaryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlCategoryExportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class XmlCategoryExportTest extends UnitaryTestCase
 {
     use XmlTrait;

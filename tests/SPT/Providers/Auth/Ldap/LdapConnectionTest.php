@@ -25,6 +25,7 @@
 namespace SPT\Providers\Auth\Ldap;
 
 use Laminas\Ldap\Ldap;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -40,8 +41,8 @@ use function PHPUnit\Framework\once;
 /**
  * Class LdapConnectionTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapConnectionTest extends UnitaryTestCase
 {
     private LdapConnection                      $ldapConnection;

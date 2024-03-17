@@ -28,6 +28,7 @@ use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config as ConfigModel;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ConfigTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ConfigTest extends UnitaryTestCase
 {
     private Config $configRepository;

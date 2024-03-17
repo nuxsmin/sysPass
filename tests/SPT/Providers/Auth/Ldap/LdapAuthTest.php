@@ -24,6 +24,7 @@
 
 namespace SPT\Providers\Auth\Ldap;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class LdapAuthTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapAuthTest extends UnitaryTestCase
 {
 

@@ -24,26 +24,27 @@
 
 namespace SPT\Domain\Account\Services\Builders;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
 use SPT\UnitaryTestCase;
 
 /**
  * Class AccountSearchTokenizerTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountSearchTokenizerTest extends UnitaryTestCase
 {
     use AccountSearchTokenizerDataTrait;
 
     /**
-     * @dataProvider searchByItemDataProvider
-     *
      * @param string $search
      * @param array $expectedConditions
      *
      * @return void
      */
+    #[DataProvider('searchByItemDataProvider')]
     public function testTokenizeFromFilterByItems(string $search, array $expectedConditions): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -54,13 +55,12 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchByConditionDataProvider
-     *
      * @param string $search
      * @param array $expectedConditions
      *
      * @return void
      */
+    #[DataProvider('searchByConditionDataProvider')]
     public function testTokenizeFromFilterByCondition(string $search, array $expectedConditions): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -71,13 +71,12 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchUsingOperatorDataProvider
-     *
      * @param string $search
      * @param string|null $expectedCondition
      *
      * @return void
      */
+    #[DataProvider('searchUsingOperatorDataProvider')]
     public function testTokenizeFromFilterUsingOperator(string $search, ?string $expectedCondition): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -88,13 +87,12 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchUsingStringDataProvider
-     *
      * @param string $search
      * @param string $expectedString
      *
      * @return void
      */
+    #[DataProvider('searchUsingStringDataProvider')]
     public function testTokenizeFromFilterUsingSearchString(string $search, string $expectedString): void
     {
         $tokenizer = new AccountSearchTokenizer();

@@ -24,6 +24,7 @@
 
 namespace SPT\Core\UI;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Core\Context\ContextInterface;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ThemeIconsTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ThemeIconsTest extends UnitaryTestCase
 {
     public function testGetIconByNameWithUnknownIcon()

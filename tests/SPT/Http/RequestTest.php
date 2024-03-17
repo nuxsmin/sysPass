@@ -26,6 +26,7 @@ namespace SPT\Http;
 
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -41,8 +42,8 @@ use function PHPUnit\Framework\exactly;
 /**
  * Class RequestTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class RequestTest extends UnitaryTestCase
 {
 

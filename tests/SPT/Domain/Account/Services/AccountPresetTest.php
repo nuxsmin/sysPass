@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountPresetServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountPresetTest extends UnitaryTestCase
 {
 

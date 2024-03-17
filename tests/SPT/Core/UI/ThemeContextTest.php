@@ -24,14 +24,15 @@
 
 namespace SPT\Core\UI;
 
+use PHPUnit\Framework\Attributes\Group;
 use SP\Core\UI\ThemeContext;
 use SPT\UnitaryTestCase;
 
 /**
  * Class ThemeContextTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ThemeContextTest extends UnitaryTestCase
 {
 

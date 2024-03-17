@@ -24,6 +24,7 @@
 
 namespace SPT\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\DataModel\UserPreferencesData;
@@ -34,9 +35,8 @@ use SPT\UnitaryTestCase;
 
 /**
  * Class LanguageTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class LanguageTest extends UnitaryTestCase
 {
 

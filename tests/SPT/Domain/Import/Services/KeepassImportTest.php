@@ -25,6 +25,7 @@
 namespace SPT\Domain\Import\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountService;
@@ -44,8 +45,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class KeepassImportTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class KeepassImportTest extends UnitaryTestCase
 {
 

@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\CustomField\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,8 +49,8 @@ use TypeError;
 /**
  * Class CustomFieldDataTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CustomFieldDataTest extends UnitaryTestCase
 {
 

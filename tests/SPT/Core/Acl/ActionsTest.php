@@ -24,6 +24,8 @@
 
 namespace SPT\Core\Acl;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Actions;
@@ -40,9 +42,8 @@ use function PHPUnit\Framework\once;
 
 /**
  * Class ActionsTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class ActionsTest extends UnitaryTestCase
 {
 
@@ -60,12 +61,11 @@ class ActionsTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider expirationDataProvider
-     *
      * @throws FileException
      * @throws Exception
      * @throws ActionNotFoundException
      */
+    #[DataProvider('expirationDataProvider')]
     public function testResetAndExpired(bool $expiredCache, bool $expiredDate)
     {
         $fileTime = self::$faker->randomNumber();

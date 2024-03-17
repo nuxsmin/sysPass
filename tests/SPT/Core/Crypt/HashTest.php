@@ -25,14 +25,15 @@
 namespace SPT\Core\Crypt;
 
 use Faker\Factory;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Crypt\Hash;
 use SPT\UnitaryTestCase;
 
 /**
  * Class HashTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class HashTest extends UnitaryTestCase
 {
     public function testHashKey()

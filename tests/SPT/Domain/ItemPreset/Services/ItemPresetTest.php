@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\ItemPreset\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -41,8 +42,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ItemPresetTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ItemPresetTest extends UnitaryTestCase
 {
 

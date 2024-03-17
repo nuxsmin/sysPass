@@ -26,6 +26,7 @@ namespace SPT\Providers\Auth\Ldap;
 
 use Laminas\Ldap\Collection;
 use Laminas\Ldap\Ldap;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class LdapActionsTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class LdapActionsTest extends UnitaryTestCase
 {
 

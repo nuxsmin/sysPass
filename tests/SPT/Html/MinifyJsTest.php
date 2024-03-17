@@ -28,6 +28,7 @@ use Klein\DataCollection\HeaderDataCollection;
 use Klein\DataCollection\ServerDataCollection;
 use Klein\Request;
 use Klein\Response;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -41,8 +42,8 @@ use TypeError;
 /**
  * Class MinifyJsTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class MinifyJsTest extends UnitaryTestCase
 {
 

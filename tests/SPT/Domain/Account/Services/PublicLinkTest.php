@@ -26,6 +26,7 @@ namespace SPT\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
@@ -49,8 +50,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class PublicLinkServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class PublicLinkTest extends UnitaryTestCase
 {
 

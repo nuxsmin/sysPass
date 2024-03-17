@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\File;
 use SP\DataModel\FileExtData;
@@ -43,8 +44,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountFileServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountFileTest extends UnitaryTestCase
 {
 

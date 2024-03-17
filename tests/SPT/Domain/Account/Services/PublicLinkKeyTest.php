@@ -25,14 +25,15 @@
 namespace SPT\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SPT\UnitaryTestCase;
 
 /**
  * Class PublicLinkKeyTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class PublicLinkKeyTest extends UnitaryTestCase
 {
 

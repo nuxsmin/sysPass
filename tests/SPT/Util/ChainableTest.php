@@ -30,8 +30,8 @@ use SP\Util\Chainable;
 /**
  * Class ChainableTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ChainableTest extends TestCase
 {
     public function testNext()

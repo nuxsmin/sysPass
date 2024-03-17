@@ -24,14 +24,14 @@
 
 namespace SPT\Core\Context;
 
+use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Context\SessionUtil;
 use SPT\UnitaryTestCase;
 
 /**
  * Class SessionUtilTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class SessionUtilTest extends UnitaryTestCase
 {
 

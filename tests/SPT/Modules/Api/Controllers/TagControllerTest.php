@@ -27,6 +27,7 @@ namespace SPT\Modules\Api\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SPT\Modules\Api\ApiTestCase;
 use stdClass;
@@ -276,12 +277,11 @@ class TagControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider searchProvider
-     *
      * @throws DependencyException
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(

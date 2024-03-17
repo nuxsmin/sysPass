@@ -24,6 +24,7 @@
 
 namespace SPT\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SP\Util\Util;
 
@@ -42,6 +43,36 @@ class UtilTest extends TestCase
         ini_set('memory_limit', -1);
     }
 
+    public static function boolProvider(): array
+    {
+        return [
+            ['false', false],
+            ['no', false],
+            ['n', false],
+            ['0', false],
+            ['off', false],
+            [0, false],
+            ['true', true],
+            ['yes', true],
+            ['y', true],
+            ['1', true],
+            ['on', true],
+            [1, true]
+        ];
+    }
+
+    public static function unitsProvider(): array
+    {
+        return [
+            ['128K', 131072],
+            ['128M', 134217728],
+            ['128G', 137438953472],
+            [131072, 131072],
+            [134217728, 134217728],
+            [137438953472, 137438953472],
+        ];
+    }
+
     public function testCastToClass()
     {
         self::markTestIncomplete();
@@ -53,11 +84,10 @@ class UtilTest extends TestCase
     }
 
     /**
-     * @dataProvider unitsProvider
-     *
      * @param $unit
      * @param $expected
      */
+    #[DataProvider('unitsProvider')]
     public function testConvertShortUnit($unit, $expected)
     {
         $this->assertEquals($expected, Util::convertShortUnit($unit));
@@ -80,49 +110,18 @@ class UtilTest extends TestCase
     }
 
     /**
-     * @dataProvider boolProvider
-     *
      * @param $value
      * @param $expected
      */
+    #[DataProvider('boolProvider')]
     public function testBoolval($value, $expected)
     {
         $this->assertEquals($expected, Util::boolval($value));
         $this->assertEquals($expected, Util::boolval($value, true));
     }
 
-    public static function boolProvider(): array
-    {
-        return [
-            ['false', false],
-            ['no', false],
-            ['n', false],
-            ['0', false],
-            ['off', false],
-            [0, false],
-            ['true', true],
-            ['yes', true],
-            ['y', true],
-            ['1', true],
-            ['on', true],
-            [1, true]
-        ];
-    }
-
     public function testGetTempDir()
     {
         self::markTestIncomplete();
-    }
-
-    public static function unitsProvider(): array
-    {
-        return [
-            ['128K', 131072],
-            ['128M', 134217728],
-            ['128G', 137438953472],
-            [131072, 131072],
-            [134217728, 134217728],
-            [137438953472, 137438953472],
-        ];
     }
 }

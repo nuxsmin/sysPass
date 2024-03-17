@@ -24,6 +24,7 @@
 
 namespace SPT\Providers\Auth\Browser;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -35,8 +36,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class BrowserAuthTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class BrowserAuthTest extends UnitaryTestCase
 {
 

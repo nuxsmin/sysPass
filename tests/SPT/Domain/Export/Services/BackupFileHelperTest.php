@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Export\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class BackupFileHelperTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class BackupFileHelperTest extends UnitaryTestCase
 {
 

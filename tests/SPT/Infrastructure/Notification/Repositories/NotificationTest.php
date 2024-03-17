@@ -29,6 +29,7 @@ use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
@@ -45,8 +46,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class NotificationTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class NotificationTest extends UnitaryTestCase
 {
 

@@ -26,6 +26,8 @@ namespace SPT\Domain\Api\Services;
 
 use Exception;
 use Faker\Factory;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use SP\Core\Context\ContextException;
@@ -58,8 +60,8 @@ use function PHPUnit\Framework\onConsecutiveCalls;
 /**
  * Class ApiServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ApiTest extends UnitaryTestCase
 {
 
@@ -151,13 +153,12 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider getParamDataProvider
-     *
      * @param mixed $value
      * @param mixed $expected
      * @param bool $required
      * @param bool $present
      */
+    #[DataProvider('getParamDataProvider')]
     public function testGetParam(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParam'], ...func_get_args());
@@ -242,9 +243,7 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->setHelpClass(stdClass::class);
     }
 
-    /**
-     * @dataProvider getParamIntDataProvider
-     */
+    #[DataProvider('getParamIntDataProvider')]
     public function testGetParamInt(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamInt'], ...func_get_args());
@@ -527,31 +526,19 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->setup($actionId);
     }
 
-    /**
-     * @dataProvider getParamStringDataProvider
-     *
-     * @return void
-     */
-    public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present)
+    #[DataProvider('getParamStringDataProvider')]
+    public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present): void
     {
         $this->checkParam([$this->apiService, 'getParamString'], ...func_get_args());
     }
 
-    /**
-     * @dataProvider getParamArrayDataProvider
-     *
-     * @return void
-     */
+    #[DataProvider('getParamArrayDataProvider')]
     public function testGetParamArray(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamArray'], ...func_get_args());
     }
 
-    /**
-     * @dataProvider getParamRawDataProvider
-     *
-     * @return void
-     */
+    #[DataProvider('getParamRawDataProvider')]
     public function testGetParamRaw(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamRaw'], ...func_get_args());

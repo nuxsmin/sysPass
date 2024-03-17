@@ -24,6 +24,7 @@
 
 namespace SPT\Core;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -37,9 +38,8 @@ use SPT\UnitaryTestCase;
 
 /**
  * Class MimeTypesTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class MimeTypesTest extends UnitaryTestCase
 {
 

@@ -24,6 +24,7 @@
 
 namespace SPT\Core\Bootstrap;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Bootstrap\UriContext;
 use SP\Domain\Http\RequestInterface;
@@ -31,9 +32,8 @@ use SPT\UnitaryTestCase;
 
 /**
  * Class UriContextTest
- *
- * @group unitary
  */
+#[Group('unitary')]
 class UriContextTest extends UnitaryTestCase
 {
     /**

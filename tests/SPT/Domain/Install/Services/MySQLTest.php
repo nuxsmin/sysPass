@@ -27,6 +27,7 @@ namespace SPT\Domain\Install\Services;
 use PDO;
 use PDOException;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -46,8 +47,8 @@ use function SP\__u;
 /**
  * Class MySQLTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class MySQLTest extends UnitaryTestCase
 {
     private DbStorageInterface|MockObject    $dbStorage;

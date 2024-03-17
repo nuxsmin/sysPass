@@ -24,6 +24,8 @@
 
 namespace SPT\Providers\Acl;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
@@ -37,8 +39,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AclHandlerTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AclHandlerTest extends UnitaryTestCase
 {
     private MockObject|UserProfileServiceInterface $userProfileService;
@@ -113,11 +115,10 @@ class AclHandlerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider userEventProvider
-     *
      * @throws Exception
      * @throws SPException
      */
+    #[DataProvider('userEventProvider')]
     public function testUpdateWithUserEvent(string $userEvent)
     {
         $event = $this->createMock(Event::class);
@@ -129,11 +130,10 @@ class AclHandlerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider userEventProvider
-     *
      * @throws Exception
      * @throws SPException
      */
+    #[DataProvider('userEventProvider')]
     public function testUpdateWithUserEventWithExtra(string $userEvent)
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -149,11 +149,10 @@ class AclHandlerTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider userEventProvider
-     *
      * @throws Exception
      * @throws SPException
      */
+    #[DataProvider('userEventProvider')]
     public function testUpdateWithUserEventWithoutExtra(string $userEvent)
     {
         $eventMessage = $this->createMock(EventMessage::class);

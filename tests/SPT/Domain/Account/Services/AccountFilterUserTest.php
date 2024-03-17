@@ -26,6 +26,7 @@ namespace SPT\Domain\Account\Services;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,8 +36,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountFilterUserTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountFilterUserTest extends UnitaryTestCase
 {
     private const WHERE_HASHES = [

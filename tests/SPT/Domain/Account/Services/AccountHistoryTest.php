@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
@@ -41,8 +42,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountHistoryServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountHistoryTest extends UnitaryTestCase
 {
 

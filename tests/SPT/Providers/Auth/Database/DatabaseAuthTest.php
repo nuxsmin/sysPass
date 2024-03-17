@@ -24,6 +24,7 @@
 
 namespace SPT\Providers\Auth\Database;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\UserLoginData;
@@ -37,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class DatabaseAuthTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class DatabaseAuthTest extends UnitaryTestCase
 {
 

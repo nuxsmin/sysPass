@@ -25,6 +25,7 @@
 namespace SPT\Core\UI;
 
 use Directory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -39,8 +40,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ThemeTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ThemeTest extends UnitaryTestCase
 {
 

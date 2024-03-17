@@ -27,6 +27,7 @@ namespace SPT\Modules\Api\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SPT\Modules\Api\ApiTestCase;
@@ -153,12 +154,11 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider getUnsetParams
-     *
      * @throws DependencyException
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[DataProvider('getUnsetParams')]
     public function testCreateActionRequiredParameters(string $unsetParam): void
     {
         $params = self::PARAMS;
@@ -410,12 +410,11 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider searchProvider
-     *
      * @throws DependencyException
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -522,12 +521,11 @@ class AccountControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider getUnsetParams
-     *
      * @throws DependencyException
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[DataProvider('getUnsetParams')]
     public function testEditActionRequiredParameter(string $unsetParam): void
     {
         $response = $this->createAccount();

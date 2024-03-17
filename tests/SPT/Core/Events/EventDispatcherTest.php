@@ -24,6 +24,8 @@
 
 namespace SPT\Core\Events;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -33,8 +35,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class EventDispatcherTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class EventDispatcherTest extends UnitaryTestCase
 {
     private const VALID_EVENTS = 'test|foo.bar.event';
@@ -65,10 +67,9 @@ class EventDispatcherTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider eventNameProvider
-     *
      * @param string $eventName
      */
+    #[DataProvider('eventNameProvider')]
     public function testNotify(string $eventName)
     {
         $event = new Event($this);

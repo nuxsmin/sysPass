@@ -24,6 +24,7 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -44,8 +45,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountCryptServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountCryptTest extends UnitaryTestCase
 {
 

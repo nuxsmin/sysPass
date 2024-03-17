@@ -24,6 +24,8 @@
 
 namespace SPT\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Builder\InvocationStubber;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -46,8 +48,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class AccountSearchServiceTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class AccountSearchTest extends UnitaryTestCase
 {
     use AccountSearchTokenizerDataTrait;
@@ -57,12 +59,11 @@ class AccountSearchTest extends UnitaryTestCase
     private AccountSearchDataBuilder|MockObject $accountSearchDataBuilder;
 
     /**
-     * @dataProvider searchUsingStringDataProvider
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
+    #[DataProvider('searchUsingStringDataProvider')]
     public function testGetByFilter(string $search)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -82,12 +83,11 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchByItemDataProvider
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
+    #[DataProvider('searchByItemDataProvider')]
     public function testGetByFilterUsingItems(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -153,12 +153,11 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchByItemDataProvider
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
+    #[DataProvider('searchByItemDataProvider')]
     public function testGetByFilterUsingItemsDoesNotThrowException(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -181,12 +180,11 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider searchByConditionDataProvider
-     *
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
+    #[DataProvider('searchByConditionDataProvider')]
     public function testGetByFilterUsingConditions(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);

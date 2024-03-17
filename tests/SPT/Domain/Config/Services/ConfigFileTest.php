@@ -25,6 +25,7 @@
 namespace SPT\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -42,8 +43,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class ConfigFileTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class ConfigFileTest extends UnitaryTestCase
 {
     private XmlFileStorageService|MockObject $fileStorageService;

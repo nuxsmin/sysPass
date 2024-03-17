@@ -24,6 +24,8 @@
 
 namespace SPT\Core\Crypt;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Hash;
@@ -36,8 +38,8 @@ use SPT\UnitaryTestCase;
 /**
  * Class CsrfTest
  *
- * @group unitary
  */
+#[Group('unitary')]
 class CsrfTest extends UnitaryTestCase
 {
 
@@ -103,10 +105,9 @@ class CsrfTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider httpMethodDataProvider
-     *
      * @return void
      */
+    #[DataProvider('httpMethodDataProvider')]
     public function testCheckWithValidToken(Method $method, string $header)
     {
         $salt = self::$faker->sha1;
@@ -150,10 +151,9 @@ class CsrfTest extends UnitaryTestCase
 
 
     /**
-     * @dataProvider httpMethodDataProvider
-     *
      * @return void
      */
+    #[DataProvider('httpMethodDataProvider')]
     public function testCheckWithInvalidToken(Method $method, string $header)
     {
         $this->requestInterface
@@ -191,10 +191,9 @@ class CsrfTest extends UnitaryTestCase
     }
 
     /**
-     * @dataProvider httpMethodDataProvider
-     *
      * @return void
      */
+    #[DataProvider('httpMethodDataProvider')]
     public function testCheckWithNoToken(Method $method, string $header)
     {
         $this->requestInterface
