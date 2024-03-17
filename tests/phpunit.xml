@@ -48,7 +48,7 @@
             <directory suffix=".php">./SPT/Mvc</directory>
             <directory suffix=".php">./SPT/Providers</directory>
             <directory suffix=".php">./SPT/Util</directory>
-            <exclude>./SPT/Domain/Account/Search/AccountSearchTokenizerDataTrait.php</exclude>
+            <exclude>./SPT/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
             <exclude>./SPT/Domain/Export/Services/XmlTrait.php</exclude>
         </testsuite>
         <testsuite name="api">
