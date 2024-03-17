@@ -4,7 +4,7 @@
   ~
   ~ @author nuxsmin
   ~ @link https://syspass.org
-  ~ @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+  ~ @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
   ~
   ~ This file is part of sysPass.
   ~
@@ -40,21 +40,14 @@
     </coverage>
     <testsuites>
         <testsuite name="core">
-            <directory suffix=".php">./SPT</directory>
-            <exclude>./SPT/Modules</exclude>
-            <exclude>./SPT/Services/Install/</exclude>
-            <exclude>./SPT/Services/Backup</exclude>
-            <exclude>./SPT/Generators</exclude>
-            <exclude>./SPT/Domain/Account/Search/AccountSearchTokenizerDataTrait.php</exclude>
-            <exclude>./SPT/DatabaseTestCase.php</exclude>
-            <exclude>./SPT/DatabaseTrait.php</exclude>
-            <exclude>./SPT/DatabaseUtil.php</exclude>
-            <exclude>./SPT/PHPUnitHelper.php</exclude>
-            <exclude>./SPT/UnitaryTestCase.php</exclude>
-            <exclude>./SPT/bootstrap.php</exclude>
-            <exclude>./SPT/Stubs/AccountRepositoryStub.php</exclude>
-            <exclude>./SPT/Stubs/PublicLinkRepositoryStub.php</exclude>
-            <exclude>./SPT/WebTestCase.php</exclude>
+            <directory suffix=".php">./SPT/Core</directory>
+            <directory suffix=".php">./SPT/Domain</directory>
+            <directory suffix=".php">./SPT/Html</directory>
+            <directory suffix=".php">./SPT/Http</directory>
+            <directory suffix=".php">./SPT/Infrastructure</directory>
+            <directory suffix=".php">./SPT/Mvc</directory>
+            <directory suffix=".php">./SPT/Providers</directory>
+            <directory suffix=".php">./SPT/Util</directory>
         </testsuite>
         <testsuite name="api">
             <directory suffix=".php">./SPT/Modules/Api</directory>
