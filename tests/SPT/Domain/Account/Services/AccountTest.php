@@ -64,17 +64,17 @@ use SPT\UnitaryTestCase;
  */
 class AccountTest extends UnitaryTestCase
 {
-    private AccountRepository|MockObject            $accountRepository;
+    private AccountRepository|MockObject $accountRepository;
     private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;
-    private AccountToUserRepository|MockObject      $accountToUserRepository;
+    private AccountToUserRepository|MockObject $accountToUserRepository;
     private AccountToTagRepository|MockObject $accountToTagRepository;
-    private ItemPresetService|MockObject      $itemPresetService;
-    private AccountHistoryService|MockObject  $accountHistoryService;
-    private ConfigService|MockObject                $configService;
-    private AccountCryptService|MockObject          $accountCryptService;
-    private AccountPresetService|MockObject         $accountPresetService;
-    private AccountItemsService|MockObject          $accountItemsService;
-    private Account                                 $account;
+    private ItemPresetService|MockObject $itemPresetService;
+    private AccountHistoryService|MockObject $accountHistoryService;
+    private ConfigService|MockObject $configService;
+    private AccountCryptService|MockObject $accountCryptService;
+    private AccountPresetService|MockObject $accountPresetService;
+    private AccountItemsService|MockObject $accountItemsService;
+    private Account $account;
 
     /**
      * @throws ServiceException
@@ -1325,7 +1325,12 @@ class AccountTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->accountRepository = $this->getMockForAbstractClass(AccountRepositoryStub::class);
+        $accountRepositoryMethods = array_filter(
+            get_class_methods(AccountRepositoryStub::class),
+            static fn(string $method) => $method != 'transactionAware'
+        );
+
+        $this->accountRepository = $this->createPartialMock(AccountRepositoryStub::class, $accountRepositoryMethods);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
         $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);

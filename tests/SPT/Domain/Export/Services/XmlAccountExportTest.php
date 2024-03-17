@@ -58,8 +58,6 @@ class XmlAccountExportTest extends UnitaryTestCase
         $account = AccountDataGenerator::factory()->buildAccount();
         $tag = new Item(['id' => self::$faker->randomNumber(3)]);
 
-        $document = new DOMDocument();
-
         $this->accountService
             ->expects(self::once())
             ->method('getAllBasic')
@@ -107,8 +105,6 @@ class XmlAccountExportTest extends UnitaryTestCase
      */
     public function testExportWithoutAccounts()
     {
-        $document = new DOMDocument();
-
         $this->accountService
             ->expects(self::once())
             ->method('getAllBasic')
@@ -130,8 +126,6 @@ class XmlAccountExportTest extends UnitaryTestCase
      */
     public function testExportWithException()
     {
-        $document = new DOMDocument();
-
         $this->accountService
             ->expects(self::once())
             ->method('getAllBasic')

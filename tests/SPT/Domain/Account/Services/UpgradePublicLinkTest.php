@@ -82,8 +82,13 @@ class UpgradePublicLinkTest extends UnitaryTestCase
     {
         parent::setUp();
 
+        $publicLinkRepositoryMethods = array_filter(
+            get_class_methods(PublicLinkRepositoryStub::class),
+            static fn(string $method) => $method != 'transactionAware'
+        );
+
         $this->publicLinkRepository =
-            $this->getMockForAbstractClass(PublicLinkRepositoryStub::class);
+            $this->createPartialMock(PublicLinkRepositoryStub::class, $publicLinkRepositoryMethods);
 
         $this->upgradePublicLinkService = new UpgradePublicLink($this->application, $this->publicLinkRepository);
     }

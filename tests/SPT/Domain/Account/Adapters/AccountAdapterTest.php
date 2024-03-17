@@ -130,7 +130,7 @@ class AccountAdapterTest extends UnitaryTestCase
     public function testIncludeCustomFields(): void
     {
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();
-        $customFieldsService = $this->createStub(CustomFieldDataService::class);
+        $customFieldsService = $this->createMock(CustomFieldDataService::class);
         $customFieldsService->expects(self::once())
             ->method('getBy')
                             ->willReturn([$customFieldData]);
