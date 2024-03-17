@@ -47,5 +47,4 @@ final class PluginGenerator extends DataGenerator
             'versionLevel' => sprintf('%d.%d', $this->faker->randomNumber(3, true), $this->faker->randomNumber(6, true))
         ];
     }
-
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SPT\Stubs;
 
-use Closure;
 use SP\Domain\Account\Ports\AccountRepository;
 
 /**
@@ -32,8 +31,5 @@ use SP\Domain\Account\Ports\AccountRepository;
  */
 abstract class AccountRepositoryStub implements AccountRepository
 {
-    public function transactionAware(Closure $closure, object $newThis): mixed
-    {
-        return $closure->call($newThis);
-    }
+    use TransactionAwareTrait;
 }

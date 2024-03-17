@@ -27,7 +27,6 @@ namespace SPT\Domain\Crypt\Services;
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountCryptService;
 use SP\Domain\Common\Ports\Repository;
@@ -49,11 +48,11 @@ use SPT\UnitaryTestCase;
 class MasterPassTest extends UnitaryTestCase
 {
 
-    private ConfigService|MockObject                    $configService;
+    private ConfigService|MockObject $configService;
     private AccountCryptService|MockObject     $accountCryptService;
     private CustomFieldCryptService|MockObject $customFieldCryptService;
     private MockObject|RepositoryInterface     $repository;
-    private MasterPass                                  $masterPass;
+    private MasterPass               $masterPass;
 
     public function testCheckUserUpdateMPassWithFutureTime()
     {
@@ -166,13 +165,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->repository
             ->expects(self::once())
             ->method('transactionAware')
-            ->with(
-                new Callback(static function (callable $callable) {
-                    $callable();
-
-                    return true;
-                })
-            );
+            ->with(self::withResolveCallableCallback());
 
         $request = new UpdateMasterPassRequest('123', '456', $hash);
 
@@ -236,5 +229,4 @@ class MasterPassTest extends UnitaryTestCase
             $this->repository
         );
     }
-
 }

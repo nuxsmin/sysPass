@@ -25,7 +25,6 @@
 namespace SPT\Domain\Config\Services;
 
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\DataModel\Dto\ConfigRequest;
@@ -216,13 +215,7 @@ class ConfigTest extends UnitaryTestCase
         $this->configRepository
             ->expects(self::once())
             ->method('transactionAware')
-            ->with(
-                new Callback(function (callable $closure) {
-                    $closure();
-
-                    return true;
-                })
-            );
+            ->with(self::withResolveCallableCallback());
 
         $this->configRepository
             ->expects(self::exactly(3))

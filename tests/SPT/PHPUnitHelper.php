@@ -104,4 +104,20 @@ trait PHPUnitHelper
             }
         });
     }
+
+    public static function withResolveCallableCallback(): Callback
+    {
+        return new Callback(function (callable $callable) {
+            $callable();
+            return true;
+        });
+    }
+
+    public static function getRepositoryStubMethods(string $class): array
+    {
+        return array_filter(
+            get_class_methods($class),
+            static fn(string $method) => $method != 'transactionAware'
+        );
+    }
 }

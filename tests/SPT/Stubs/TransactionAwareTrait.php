@@ -24,12 +24,15 @@
 
 namespace SPT\Stubs;
 
-use SP\Domain\Account\Ports\PublicLinkRepository;
+use Closure;
 
 /**
- * Class PublicLinkRepositoryStub
+ * Trait TransactionAwareTrait
  */
-abstract class PublicLinkRepositoryStub implements PublicLinkRepository
+trait TransactionAwareTrait
 {
-    use TransactionAwareTrait;
+    public function transactionAware(Closure $closure, object $newThis): mixed
+    {
+        return $closure->call($newThis);
+    }
 }

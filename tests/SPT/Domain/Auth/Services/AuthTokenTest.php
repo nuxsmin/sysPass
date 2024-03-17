@@ -59,7 +59,7 @@ class AuthTokenTest extends UnitaryTestCase
 
     private AuthTokenRepository|MockObject $authTokenRepository;
     private CryptInterface|MockObject      $crypt;
-    private AuthToken                               $authToken;
+    private AuthToken $authToken;
 
     public static function secureActionDataProvider(): array
     {
@@ -567,12 +567,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authTokenRepository
             ->expects(self::once())
             ->method('transactionAware')
-            ->with(
-                new Callback(function (callable $callable) use ($authToken) {
-                    $callable();
-                    return true;
-                })
-            )
+            ->with(self::withResolveCallableCallback())
             ->willReturn(true);
 
         $this->authTokenRepository

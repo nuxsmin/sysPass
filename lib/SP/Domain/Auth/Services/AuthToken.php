@@ -94,9 +94,8 @@ final class AuthToken extends Service implements AuthTokenService
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @param int $id
+     * @return AuthTokenModel
      */
     public function getById(int $id): AuthTokenModel
     {
@@ -278,10 +277,10 @@ final class AuthToken extends Service implements AuthTokenService
     /**
      * Devolver los datos de un token
      *
-     * @throws ConstraintException
+     * @param int $actionId
+     * @param string $token
+     * @return AuthTokenModel
      * @throws NoSuchItemException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getTokenByToken(int $actionId, string $token): AuthTokenModel
     {
@@ -296,9 +295,6 @@ final class AuthToken extends Service implements AuthTokenService
 
     /**
      * @return array<T>
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function getAll(): array
     {

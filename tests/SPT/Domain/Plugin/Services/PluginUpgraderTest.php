@@ -62,17 +62,19 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        $version = $pluginModel->getVersionLevel() + 100;
+        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
+
+        $upgradeVersion = sprintf('%d.%d', (int)$version + 100, (int)$build);
 
         $plugin->expects($this->once())
                ->method('onUpgrade')
-               ->with($version);
+            ->with($upgradeVersion);
 
         $pluginManagerService->expects($this->once())
                              ->method('update')
-                             ->with($pluginModel->mutate(['data' => null, 'versionLevel' => $version]));
+            ->with($pluginModel->mutate(['data' => null, 'versionLevel' => $upgradeVersion]));
 
-        $pluginUpgrader->upgradeFor($plugin, $version);
+        $pluginUpgrader->upgradeFor($plugin, $upgradeVersion);
     }
 
     /**
@@ -95,7 +97,9 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        $version = $pluginModel->getVersionLevel() - 100;
+        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
+
+        $upgradeVersion = sprintf('%d.%d', (int)$version - 100, (int)$build);
 
         $plugin->expects($this->never())
                ->method('onUpgrade');
@@ -103,7 +107,7 @@ class PluginUpgraderTest extends UnitaryTestCase
         $pluginManagerService->expects($this->never())
                              ->method('update');
 
-        $pluginUpgrader->upgradeFor($plugin, $version);
+        $pluginUpgrader->upgradeFor($plugin, $upgradeVersion);
     }
 
     /**
