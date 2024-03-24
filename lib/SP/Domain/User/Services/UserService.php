@@ -34,7 +34,7 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserRepository;
@@ -68,30 +68,30 @@ final class UserService extends Service implements UserServiceInterface
     }
 
     public static function mapUserLoginResponse(
-        User $userData
+        UserModel $user
     ): UserLoginResponse {
-        return (new UserLoginResponse())->setId($userData->getId())
-            ->setName($userData->getName())
-            ->setLogin($userData->getLogin())
-            ->setSsoLogin($userData->getSsoLogin())
-            ->setEmail($userData->getEmail())
-            ->setPass($userData->getPass())
-            ->setHashSalt($userData->getHashSalt())
-            ->setMPass($userData->getMPass())
-            ->setMKey($userData->getMKey())
-            ->setLastUpdateMPass($userData->getLastUpdateMPass())
-            ->setUserGroupId($userData->getUserGroupId())
-            ->setUserGroupName($userData->getUserGroupName())
-            ->setUserProfileId($userData->getUserProfileId())
-            ->setPreferences(self::getUserPreferences($userData->getPreferences()))
-            ->setIsLdap($userData->isLdap())
-            ->setIsAdminAcc($userData->isAdminAcc())
-            ->setIsAdminApp($userData->isAdminApp())
-            ->setIsMigrate($userData->isMigrate())
-            ->setIsChangedPass($userData->isChangedPass())
-            ->setIsChangePass($userData->isChangePass())
-            ->setIsDisabled($userData->isDisabled())
-            ->setLastUpdate((int)strtotime($userData->getLastUpdate()));
+        // TODO: create static method UserLoginResponse::from($user)
+        return (new UserLoginResponse())->setId($user->getId())
+                                        ->setName($user->getName())
+                                        ->setLogin($user->getLogin())
+                                        ->setSsoLogin($user->getSsoLogin())
+                                        ->setEmail($user->getEmail())
+                                        ->setPass($user->getPass())
+                                        ->setHashSalt($user->getHashSalt())
+                                        ->setMPass($user->getMPass())
+                                        ->setMKey($user->getMKey())
+                                        ->setLastUpdateMPass($user->getLastUpdateMPass())
+                                        ->setUserGroupId($user->getUserGroupId())
+                                        ->setUserProfileId($user->getUserProfileId())
+                                        ->setPreferences(self::getUserPreferences($user->getPreferences()))
+                                        ->setIsLdap($user->isLdap())
+                                        ->setIsAdminAcc($user->isAdminAcc())
+                                        ->setIsAdminApp($user->isAdminApp())
+                                        ->setIsMigrate($user->isMigrate())
+                                        ->setIsChangedPass($user->isChangedPass())
+                                        ->setIsChangePass($user->isChangePass())
+                                        ->setIsDisabled($user->isDisabled())
+                                        ->setLastUpdate((int)strtotime($user->getLastUpdate()));
     }
 
     /**
@@ -138,7 +138,7 @@ final class UserService extends Service implements UserServiceInterface
      *
      * @throws SPException
      */
-    public function getById(int $id): User
+    public function getById(int $id): UserModel
     {
         $result = $this->userRepository->getById($id);
 
@@ -156,7 +156,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByLogin(string $login): User
+    public function getByLogin(string $login): UserModel
     {
         $result = $this->userRepository->getByLogin($login);
 
@@ -211,7 +211,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function createOnLogin(UserLoginRequest $userLoginRequest): int
     {
-        $userData = new User();
+        $userData = new UserModel();
         $userData->setLogin($userLoginRequest->getLogin());
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
@@ -236,7 +236,7 @@ final class UserService extends Service implements UserServiceInterface
      *
      * @throws SPException
      */
-    public function create(User $itemData): int
+    public function create(UserModel $itemData): int
     {
         $itemData->setPass(Hash::hashKey($itemData->getPass()));
 
@@ -249,7 +249,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws SPException
      * @throws CryptoException
      */
-    public function createWithMasterPass(User $itemData, string $userPass, string $masterPass): int
+    public function createWithMasterPass(UserModel $itemData, string $userPass, string $masterPass): int
     {
         $response = $this->userPassService->createMasterPass(
             $masterPass,
@@ -284,7 +284,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(User $userData): void
+    public function update(UserModel $userData): void
     {
         $update = $this->userRepository->update($userData);
 
@@ -334,7 +334,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function updateOnLogin(UserLoginRequest $userLoginRequest): int
     {
-        $userData = new User();
+        $userData = new UserModel();
         $userData->setLogin($userLoginRequest->getLogin());
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
@@ -347,7 +347,7 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return User[]
+     * @return UserModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
