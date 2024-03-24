@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,211 +19,126 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html;
 
-use Klein\Klein;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Http\Request;
-
-defined('APP_ROOT') || die();
+use Klein\Request;
+use Klein\Response;
+use SP\Domain\Html\Header;
+use SP\Domain\Html\MinifyFile;
+use SP\Domain\Html\MinifyInterface;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandlerInterface;
+use SplObjectStorage;
 
 /**
- * Class Minify para la gestión de archivos JS y CSS
- *
- * @package SP
+ * Class Minify
  */
-final class Minify
+abstract class Minify implements MinifyInterface
 {
-    /**
-     * Constantes para tipos de archivos
-     */
-    const FILETYPE_JS = 1;
-    const FILETYPE_CSS = 2;
-    const OFFSET = 3600 * 24 * 30;
-    /**
-     * @var Klein
-     */
-    protected $router;
+    private const OFFSET = 3600 * 24 * 30;
+
 
     /**
-     * Array con los archivos a procesar
-     *
-     * @var array
+     * @var SplObjectStorage<MinifyFile>
      */
-    private $files = [];
-    /**
-     * Tipos de archivos a procesar
-     *
-     * @var int
-     */
-    private $type = 0;
-    /**
-     * Base relativa de búsqueda de los archivos
-     *
-     * @var string
-     */
-    private $base = '';
+    private SplObjectStorage $files;
 
-    /**
-     * Minify constructor.
-     *
-     * @param Klein $router
-     */
-    public function __construct(Klein $router)
-    {
-        $this->router = $router;
-    }
-
-    /**
-     * @param string $path
-     * @param bool   $checkPath
-     *
-     * @return $this
-     */
-    public function setBase($path, $checkPath = false)
-    {
-        $this->base = $checkPath === true ? Request::getSecureAppPath($path) : $path;
-
-        return $this;
+    public function __construct(
+        private readonly Response $response,
+        private readonly Request $request
+    ) {
+        $this->files = new SplObjectStorage();
     }
 
     /**
      * Devolver al navegador archivos CSS y JS comprimidos
      * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
      * devuelve el código HTTP/304
-     *
-     * @param bool $disableMinify Deshabilitar minimizar
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
-    public function getMinified($disableMinify = false)
+    public function getMinified(): void
     {
-        if (count($this->files) === 0) {
+        if ($this->files->count() === 0) {
             return;
         }
 
         $this->setHeaders();
 
-        $data = '';
-
-        foreach ($this->files as $file) {
-            $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
-
-            // Obtener el recurso desde una URL
-            if ($file['type'] === 'url') {
-                logger('URL:' . $file['name']);
-
-//                    $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
-            } else {
-                if ($file['min'] === true && $disableMinify === false) {
-                    $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
-
-                    if ($this->type === self::FILETYPE_JS) {
-                        $data .= $this->jsCompress(file_get_contents($filePath));
-                    }
-                } else {
-                    $data .= PHP_EOL . '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
-                }
-            }
+        if (!$this->response->isSent()) {
+            $this->response->body($this->minify($this->files));
         }
-
-        $this->router->response()->body($data);
     }
 
     /**
      * Sets HTTP headers
      */
-    protected function setHeaders()
+    private function setHeaders(): void
     {
-        $response = $this->router->response();
-        $headers = $this->router->request()->headers();
+        if (($etag = $this->checkEtag()) === null) {
+            return;
+        }
 
+        $this->response->header(Header::ETAG->value, $etag);
+        $this->response->header(
+            Header::CACHE_CONTROL->value,
+            sprintf('public, max-age={%d}, must-revalidate', self::OFFSET)
+        );
+        $this->response->header(Header::PRAGMA->value, sprintf('public; maxage={%d}', self::OFFSET));
+        $this->response->header(Header::EXPIRES->value, gmdate('D, d M Y H:i:s \G\M\T', time() + self::OFFSET));
+        $this->response->header(Header::CONTENT_TYPE->value, $this->getContentTypeHeader());
+    }
+
+    private function checkEtag(): ?string
+    {
         $etag = $this->getEtag();
+        $headers = $this->request->headers();
 
         // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $headers->get('If-None-Match')
-            && !($headers->get('Cache-Control') === 'no-cache'
-                || $headers->get('Cache-Control') === 'max-age=0'
-                || $headers->get('Pragma') === 'no-cache')
+        if ($etag === $headers->get(Header::IF_NONE_MATCH->value)
+            && !($headers->get(Header::CACHE_CONTROL->value) === 'no-cache'
+                 || $headers->get(Header::CACHE_CONTROL->value) === 'max-age=0'
+                 || $headers->get(Header::PRAGMA->value) === 'no-cache')
         ) {
-            $response->header($_SERVER['SERVER_PROTOCOL'], '304 Not Modified');
-            $response->send();
-            exit();
+            $this->response->header($this->request->server()->get('SERVER_PROTOCOL'), '304 Not Modified');
+            $this->response->send();
+
+            return null;
         }
 
-        $response->header('Etag', $etag);
-        $response->header('Cache-Control', 'public, max-age={' . self::OFFSET . '}, must-revalidate');
-        $response->header('Pragma', 'public; maxage={' . self::OFFSET . '}');
-        $response->header('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + self::OFFSET));
-
-        switch ($this->type) {
-            case self::FILETYPE_JS;
-                $response->header('Content-type', 'application/javascript; charset: UTF-8');
-                break;
-            case self::FILETYPE_CSS:
-                $response->header('Content-type', 'text/css; charset: UTF-8');
-                break;
-        }
+        return $etag;
     }
 
     /**
-     * Calcular el hash MD5 de varios archivos.
+     * Calcular el hash de varios archivos.
      *
      * @return string Con el hash
      */
-    private function getEtag()
+    private function getEtag(): string
     {
-        $md5Sum = '';
+        $etag = '';
 
         foreach ($this->files as $file) {
-            $md5Sum .= $file['md5'];
+            $etag .= $file->getHash();
         }
 
-        return md5($md5Sum);
+        return sha1($etag);
     }
 
-    /**
-     * Comprimir código javascript.
-     *
-     * @param string $buffer código a comprimir
-     *
-     * @return string
-     */
-    private function jsCompress($buffer)
-    {
-        $regexReplace = [
-            '#/\*[^*]*\*+([^/][^*]*\*+)*/#',
-            '#^[\s\t]*//.*$#m',
-            '#[\s\t]+$#m',
-            '#^[\s\t]+#m',
-            '#\s*//\s.*$#m'
-        ];
+    abstract protected function getContentTypeHeader(): string;
 
-        return str_replace(["\r\n", "\r", "\n", "\t"], '', preg_replace($regexReplace, '', $buffer));
-    }
+    abstract protected function minify(SplObjectStorage $files): string;
 
     /**
-     * @param      $files
+     * @param FileHandlerInterface[] $files
      * @param bool $minify
-     *
-     * @return Minify
+     * @return MinifyInterface
+     * @throws FileException
      */
-    public function addFilesFromString($files, $minify = true)
+    public function addFiles(array $files, bool $minify = true): MinifyInterface
     {
-        if (strrpos($files, ',')) {
-            $files = explode(',', $files);
-
-            foreach ($files as $filename) {
-                $this->addFile($filename, $minify);
-            }
-        } else {
-            $this->addFile($files, $minify);
-        }
+        array_walk($files, fn(FileHandlerInterface $fileHandler) => $this->addFile($fileHandler));
 
         return $this;
     }
@@ -231,115 +146,25 @@ final class Minify
     /**
      * Añadir un archivo
      *
-     * @param string $file
-     * @param bool   $minify Si es necesario reducir
-     * @param string $base
+     * @param FileHandlerInterface $fileHandler
+     * @param bool $minify Si es necesario reducir
      *
-     * @return $this
+     * @return MinifyInterface
+     * @throws FileException
      */
-    public function addFile($file, $minify = true, $base = null)
-    {
-        if ($base === null) {
-            $base = $this->base;
-            $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
-        } else {
-            $filePath = $base . DIRECTORY_SEPARATOR . $file;
-        }
+    public function addFile(
+        FileHandlerInterface $fileHandler,
+        bool                 $minify = true
+    ): MinifyInterface {
+        $fileHandler->checkFileExists();
 
-        if (file_exists($filePath)) {
-            $this->files[] = [
-                'type' => 'file',
-                'base' => $base,
-                'name' => Request::getSecureAppFile($file, $base),
-                'min' => $minify === true && $this->needsMinify($file),
-                'md5' => md5_file($filePath)
-            ];
-        } else {
-            logger('File not found: ' . $filePath);
-        }
+        $this->files->attach(new MinifyFile($fileHandler, $minify));
 
         return $this;
     }
 
-    /**
-     * Comprobar si es necesario reducir
-     *
-     * @param string $file El nombre del archivo
-     *
-     * @return bool
-     */
-    private function needsMinify($file)
+    public function builder(): MinifyInterface
     {
-        return !preg_match('/\.min|pack\.css|js/', $file);
-    }
-
-    /**
-     * @param array $files
-     * @param bool  $minify
-     *
-     * @return Minify
-     */
-    public function addFiles(array $files, $minify = true)
-    {
-        foreach ($files as $filename) {
-            $this->processFile($filename, $minify);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param      $file
-     * @param bool $minify
-     */
-    protected function processFile($file, $minify = true)
-    {
-        $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
-
-        if (file_exists($filePath)) {
-            $this->files[] = array(
-                'type' => 'file',
-                'base' => $this->base,
-                'name' => Request::getSecureAppFile($file, $this->base),
-                'min' => $minify === true && $this->needsMinify($file),
-                'md5' => md5_file($filePath)
-            );
-        } else {
-            logger('File not found: ' . $filePath);
-        }
-    }
-
-    /**
-     * Añadir un recurso desde URL
-     *
-     * @param $url
-     *
-     * @return $this
-     */
-    public function addUrl($url)
-    {
-        $this->files[] = array(
-            'type' => 'url',
-            'base' => $this->base,
-            'name' => $url,
-            'min' => false,
-            'md5' => ''
-        );
-
-        return $this;
-    }
-
-    /**
-     * Establecer el tipo de recurso a procesar
-     *
-     * @param int $type
-     *
-     * @return $this
-     */
-    public function setType($type)
-    {
-        $this->type = (int)$type;
-
-        return $this;
+        return clone $this;
     }
 }

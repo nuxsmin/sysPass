@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
-
-defined('APP_ROOT') || die();
 
 /**
  * Interface DataGridHeader
@@ -36,10 +34,10 @@ interface DataGridHeaderInterface
     /**
      * @param $header string
      */
-    public function addHeader($header);
+    public function addHeader(string $header): void;
 
     /**
      * @return array
      */
-    public function getHeaders();
+    public function getHeaders(): array;
 }

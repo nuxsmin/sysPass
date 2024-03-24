@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
@@ -29,23 +29,23 @@ use SP\DataModel\UserLoginData;
 /**
  * Interface AuthInterface
  *
+ * @template T
  * @package Auth
  */
 interface AuthInterface
 {
     /**
-     * Autentificar al usuario
+     * Authenticate using user's data
      *
-     * @param UserLoginData $UserData Datos del usuario
-     *
-     * @return mixed|AuthDataBase
+     * @param UserLoginData $userLoginData
+     * @return T
      */
-    public function authenticate(UserLoginData $UserData);
+    public function authenticate(UserLoginData $userLoginData): AuthDataBase;
 
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
-    public function isAuthGranted();
+    public function isAuthGranted(): bool;
 }

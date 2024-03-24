@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
@@ -31,53 +31,30 @@ namespace SP\Providers\Auth;
  */
 final class AuthResult
 {
-    /**
-     * @var string
-     */
-    public $auth;
-    /**
-     * @var AuthDataBase
-     */
-    public $data;
-    /**
-     * @var bool
-     */
-    public $authGranted = false;
 
     /**
      * AuthResult constructor.
      *
-     * @param string       $auth
+     * @param string $authName
      * @param AuthDataBase $data
      */
-    public function __construct($auth, AuthDataBase $data)
+    public function __construct(private readonly string $authName, private readonly AuthDataBase $data)
     {
-        $this->auth = $auth;
-        $this->data = $data;
-        $this->authGranted = $data->isAuthGranted();
     }
 
     /**
      * @return string
      */
-    public function getAuth()
+    public function getAuthName(): string
     {
-        return $this->auth;
+        return $this->authName;
     }
 
     /**
      * @return AuthDataBase
      */
-    public function getData()
+    public function getData(): AuthDataBase
     {
         return $this->data;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAuthGranted()
-    {
-        return $this->authGranted;
     }
 }

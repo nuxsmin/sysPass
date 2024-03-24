@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,27 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Application;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\DataModel\ItemPresetData;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Http\RequestInterface;
+use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class ItemPresetHelper
@@ -43,47 +48,64 @@ use SP\Services\UserProfile\UserProfileService;
  */
 final class ItemPresetHelper extends HelperBase
 {
-    /**
-     * @var SelectItemAdapter
-     */
-    private $users;
-    /**
-     * @var SelectItemAdapter
-     */
-    private $userGroups;
-    /**
-     * @var SelectItemAdapter
-     */
-    private $userProfiles;
+    private ?SelectItemAdapter          $users      = null;
+    private ?SelectItemAdapter          $userGroups = null;
+    private UserServiceInterface        $userService;
+    private UserGroupServiceInterface   $userGroupService;
+    private UserProfileServiceInterface $userProfileService;
+
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request,
+        UserServiceInterface $userService,
+        UserGroupServiceInterface $userGroupService,
+        UserProfileServiceInterface $userProfileService
+
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->userService = $userService;
+        $this->userGroupService = $userGroupService;
+        $this->userProfileService = $userProfileService;
+    }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPermissionView(ItemPresetData $itemPresetData)
+    public function makeAccountPermissionView(ItemPreset $itemPresetData): void
     {
-        $accountPermission = $itemPresetData->hydrate(AccountPermission::class, 'data') ?: new AccountPermission();
+        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?? new AccountPermission();
 
         $this->view->assign('typeTemplate', 'item_preset-permission');
         $this->view->assign('presetName', __('Permission Preset'));
 
         $this->view->assign('permission', $accountPermission);
 
-        $this->view->assign('usersView', $this->users->getItemsFromModelSelected($accountPermission->getUsersView()));
-        $this->view->assign('usersEdit', $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit()));
-        $this->view->assign('userGroupsView', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
-        $this->view->assign('userGroupsEdit', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
+        $this->view->assign(
+            'usersView',
+            $this->users->getItemsFromModelSelected($accountPermission->getUsersView())
+        );
+        $this->view->assign(
+            'usersEdit',
+            $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit())
+        );
+        $this->view->assign(
+            'userGroupsView',
+            $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView())
+        );
+        $this->view->assign(
+            'userGroupsEdit',
+            $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit())
+        );
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPrivateView(ItemPresetData $itemPresetData)
+    public function makeAccountPrivateView(ItemPreset $itemPresetData): void
     {
-        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class, 'data') ?: new AccountPrivate();
+        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class) ?? new AccountPrivate();
 
         $this->view->assign('typeTemplate', 'item_preset-private');
         $this->view->assign('presetName', __('Private Account Preset'));
@@ -92,14 +114,13 @@ final class ItemPresetHelper extends HelperBase
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      * @throws InvalidArgumentException
      */
-    public function makeSessionTimeoutView(ItemPresetData $itemPresetData)
+    public function makeSessionTimeoutView(ItemPreset $itemPresetData): void
     {
-        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class, 'data') ?: new SessionTimeout($this->request->getClientAddress(), 3600);
+        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class)
+                          ?? new SessionTimeout($this->request->getClientAddress(), 3600);
 
         $this->view->assign('typeTemplate', 'item_preset-session_timeout');
         $this->view->assign('presetName', __('Session Timeout Preset'));
@@ -108,13 +129,11 @@ final class ItemPresetHelper extends HelperBase
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
-     *
      * @throws NoSuchPropertyException
      */
-    public function makeAccountPasswordView(ItemPresetData $itemPresetData)
+    public function makeAccountPasswordView(ItemPreset $itemPresetData): void
     {
-        $password = $itemPresetData->hydrate(Password::class, 'data') ?: new Password;
+        $password = $itemPresetData->hydrate(Password::class) ?? new Password();
 
         $this->view->assign('typeTemplate', 'item_preset-password');
         $this->view->assign('presetName', __('Account Password Preset'));
@@ -125,16 +144,26 @@ final class ItemPresetHelper extends HelperBase
     }
 
     /**
-     * @param ItemPresetData $itemPresetData
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function setCommon(ItemPresetData $itemPresetData)
+    public function setCommon(ItemPreset $itemPresetData): void
     {
-        $this->users = SelectItemAdapter::factory(UserService::getItemsBasic());
-        $this->userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
-        $this->userProfiles = SelectItemAdapter::factory(UserProfileService::getItemsBasic());
+        $this->users = SelectItemAdapter::factory($this->userService->getAll());
+        $this->userGroups = SelectItemAdapter::factory($this->userGroupService->getAll());
+        $userProfiles = SelectItemAdapter::factory($this->userProfileService->getAll());
 
-        $this->view->assign('users', $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()]));
-        $this->view->assign('userGroups', $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()]));
-        $this->view->assign('userProfiles', $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()]));
+        $this->view->assign(
+            'users',
+            $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()])
+        );
+        $this->view->assign(
+            'userGroups',
+            $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()])
+        );
+        $this->view->assign(
+            'userProfiles',
+            $userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()])
+        );
     }
 }

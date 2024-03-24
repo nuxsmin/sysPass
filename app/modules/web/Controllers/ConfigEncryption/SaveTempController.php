@@ -1,0 +1,131 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Modules\Web\Controllers\ConfigEncryption;
+
+use Exception;
+use JsonException;
+use SP\Core\Application;
+use SP\Core\Events\Event;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
+use SP\Http\JsonMessage;
+use SP\Modules\Web\Controllers\SimpleControllerBase;
+use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
+
+/**
+ * Class ConfigEncryptionController
+ *
+ * @package SP\Modules\Web\Controllers
+ */
+final class SaveTempController extends SimpleControllerBase
+{
+    use JsonTrait;
+
+    private TemporaryMasterPassService $temporaryMasterPassService;
+
+    public function __construct(
+        Application $application,
+        SimpleControllerHelper $simpleControllerHelper,
+        TemporaryMasterPassService $temporaryMasterPassService
+    ) {
+        parent::__construct($application, $simpleControllerHelper);
+
+        $this->temporaryMasterPassService = $temporaryMasterPassService;
+    }
+
+    /**
+     * Create a temporary master pass
+     *
+     * @return bool
+     * @throws JsonException
+     */
+    public function saveTempAction(): bool
+    {
+        try {
+            $key =
+                $this->temporaryMasterPassService->create(
+                    $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
+                );
+
+            $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
+            $sendEmail = $this->configData->isMailEnabled()
+                         && $this->request->analyzeBool('temporary_masterpass_email');
+
+            if ($sendEmail) {
+                try {
+                    if ($groupId > 0) {
+                        $this->temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
+                    } else {
+                        $this->temporaryMasterPassService->sendByEmailForAllUsers($key);
+                    }
+
+                    return $this->returnJsonResponse(
+                        JsonMessage::JSON_SUCCESS,
+                        __u('Temporary password generated'),
+                        [__u('Email sent')]
+                    );
+                } catch (Exception $e) {
+                    processException($e);
+
+                    $this->eventDispatcher->notify('exception', new Event($e));
+
+                    return $this->returnJsonResponse(
+                        JsonMessage::JSON_WARNING,
+                        __u('Temporary password generated'),
+                        [__u('Error while sending the email')]
+                    );
+                }
+            }
+
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Temporary password generated'));
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify('exception', new Event($e));
+
+            return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws SessionTimeout
+     */
+    protected function initialize(): void
+    {
+        try {
+            $this->checks();
+            $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
+        } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notify('exception', new Event($e));
+
+            $this->returnJsonResponseException($e);
+        }
+    }
+}

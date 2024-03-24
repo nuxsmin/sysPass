@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,75 +19,73 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\DependencyException;
-use DI\NotFoundException;
-use Psr\Container\ContainerInterface;
+use JsonException;
+use Klein\Klein;
+use SP\Core\Application;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\StatelessContext;
-use SP\Core\Exceptions\InitializationException;
+use SP\Core\HttpModuleBase;
 use SP\Core\Language;
-use SP\Core\ModuleBase;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\File\FileException;
+use SP\Core\ProvidersHelper;
+use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\InitializationException;
+use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Http\RequestInterface;
+use SP\Domain\Upgrade\Services\UpgradeAppService;
+use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
+use SP\Domain\Upgrade\Services\UpgradeUtil;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
 use SP\Util\HttpUtil;
+
+use function SP\logger;
 
 /**
  * Class Init
- *
- * @package api
  */
-final class Init extends ModuleBase
+final class Init extends HttpModuleBase
 {
-    /**
-     * @var StatelessContext
-     */
-    protected $context;
-    /**
-     * @var Language
-     */
-    protected $language;
+    private Language     $language;
+    private DatabaseUtil $databaseUtil;
 
-    /**
-     * Module constructor.
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
+    public function __construct(
+        Application      $application,
+        ProvidersHelper  $providersHelper,
+        RequestInterface $request,
+        Klein            $router,
+        LanguageInterface $language,
+        DatabaseUtil     $databaseUtil
+    ) {
+        parent::__construct(
+            $application,
+            $providersHelper,
+            $request,
+            $router
+        );
 
-        $this->context = $container->get(StatelessContext::class);
-        $this->language = $container->get(Language::class);
+        $this->language = $language;
+        $this->databaseUtil = $databaseUtil;
     }
 
     /**
-     * @param string $controller
-     *
+     * @throws EnvironmentIsBrokenException
+     * @throws JsonException
      * @throws ContextException
      * @throws InitializationException
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
      * @throws FileException
+     * @throws ConfigException
      */
-    public function initialize($controller)
+    public function initialize(string $controller): void
     {
         logger(__FUNCTION__);
 
         // Initialize context
         $this->context->initialize();
-
-        // Load config
-        $this->config->loadConfig();
 
         // Load language
         $this->language->setLanguage();
@@ -99,21 +97,19 @@ final class Init extends ModuleBase
         $this->checkInstalled();
 
         // Checks if maintenance mode is turned on
-        if ($this->checkMaintenanceMode($this->context)) {
+        if ($this->checkMaintenanceMode()) {
             throw new InitializationException('Maintenance mode');
         }
 
         // Checks if upgrade is needed
         $this->checkUpgrade();
 
-        $databaseUtil = $this->container->get(DatabaseUtil::class);
-
         // Checks if the database is set up
-        if (!$databaseUtil->checkDatabaseConnection()) {
+        if (!$this->databaseUtil->checkDatabaseConnection()) {
             throw new InitializationException('Database connection error');
         }
 
-        if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+        if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
             throw new InitializationException('Database checking error');
         }
 
@@ -127,7 +123,7 @@ final class Init extends ModuleBase
      *
      * @throws InitializationException
      */
-    private function checkInstalled()
+    private function checkInstalled(): void
     {
         if (!$this->configData->isInstalled()) {
             throw new InitializationException('Not installed');
@@ -141,13 +137,17 @@ final class Init extends ModuleBase
      * @throws FileException
      * @throws InitializationException
      */
-    private function checkUpgrade()
+    private function checkUpgrade(): void
     {
+        if (IS_TESTING) {
+            return;
+        }
+
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 
         if ($this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
+            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion())
+                || UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
         ) {
             $this->config->generateUpgradeKey();
 

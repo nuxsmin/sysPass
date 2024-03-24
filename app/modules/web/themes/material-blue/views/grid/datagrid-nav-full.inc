@@ -1,8 +1,8 @@
 <?php
 /**
  * @var SP\Html\DataGrid\DataGridInterface $data
- * @var Template                           $this
- * @var callable                           $_getvar
+ * @var \SP\Mvc\View\TemplateInterface $this
+ * @var callable $_getvar
  */
 
 use SP\Mvc\View\Template;

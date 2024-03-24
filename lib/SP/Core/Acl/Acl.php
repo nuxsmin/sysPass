@@ -1,11 +1,11 @@
 <?php
 
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,63 +20,53 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Acl;
 
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
-defined('APP_ROOT') || die();
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-final class Acl implements ActionsInterface
+final class Acl implements AclActionsInterface, AclInterface
 {
     /**
-     * @var Actions
+     * @deprecated
      */
-    protected static $action;
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
+    private static ActionsInterface $actionsStatic;
+    private ActionsInterface        $actions;
 
-    /**
-     * Acl constructor.
-     *
-     * @param ContextInterface $context
-     * @param EventDispatcher  $eventDispatcher
-     * @param Actions|null     $action
-     */
-    public function __construct(ContextInterface $context, EventDispatcher $eventDispatcher, Actions $action = null)
-    {
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
-
-        self::$action = $action;
+    public function __construct(
+        private readonly ContextInterface         $context,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        ActionsInterface $actions
+    ) {
+        self::$actionsStatic = $actions;
+        $this->actions = $actions;
     }
 
     /**
      * Returns action route
      *
-     * @param $actionId
-     *
-     * @return string
+     * @deprecated Use {@link Acl::getRouteFor()} instead
      */
-    public static function getActionRoute($actionId)
+    public static function getActionRoute(string $actionId): string
     {
         try {
-            return self::$action !== null ? self::$action->getActionById($actionId)->getRoute() : '';
+            return self::$actionsStatic?->getActionById($actionId)->getRoute();
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
@@ -87,16 +77,18 @@ final class Acl implements ActionsInterface
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param int  $actionId El id de la acción
+     * @param int $actionId El id de la acción
      * @param bool $translate
      *
      * @return string
-     * @internal param bool $shortName Si se devuelve el nombre corto de la acción
+     * @internal param bool $translate Si se devuelve el nombre corto de la acción
+     * @deprecated Use {@link Acl::getInfoFor()} instead
      */
-    public static function getActionInfo($actionId, $translate = true)
+    public static function getActionInfo(int $actionId, bool $translate = true): string
     {
         try {
-            $text = self::$action->getActionById($actionId)->getText();
+            $text = self::$actionsStatic?->getActionById($actionId)->getText();
+
             return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {
             processException($e);
@@ -106,14 +98,45 @@ final class Acl implements ActionsInterface
     }
 
     /**
-     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
+     * Obtener el nombre de la acción indicada
      *
-     * @param int $action con el Id de la acción
-     * @param int $userId opcional, con el Id del usuario
+     * @param int $actionId El id de la acción
+     * @param bool $translate
      *
-     * @return bool
+     * @return string
+     * @internal param bool $translate Si se devuelve el nombre corto de la acción
      */
-    public function checkUserAccess($action, $userId = 0)
+    public function getInfoFor(int $actionId, bool $translate = true): string
+    {
+        try {
+            $text = $this->actions->getActionById($actionId)->getText();
+
+            return $translate ? __($text) : $text;
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns action route
+     */
+    public function getRouteFor(string $actionId): string
+    {
+        try {
+            return $this->actions->getActionById($actionId)->getRoute();
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
+     */
+    public function checkUserAccess(int $action, int $userId = 0): bool
     {
         if (!($userProfile = $this->context->getUserProfile())) {
             return false;
@@ -146,18 +169,18 @@ final class Acl implements ActionsInterface
                 return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
             case self::ITEMS_MANAGE:
                 return ($userData->getIsAdminAcc()
-                    || $userProfile->isMgmCategories()
-                    || $userProfile->isMgmCustomers()
-                    || $userProfile->isMgmAccounts()
-                    || $userProfile->isMgmFiles()
-                    || $userProfile->isMgmTags()
-                    || $userProfile->isMgmCustomFields()
-                    || $userProfile->isMgmPublicLinks());
+                        || $userProfile->isMgmCategories()
+                        || $userProfile->isMgmCustomers()
+                        || $userProfile->isMgmAccounts()
+                        || $userProfile->isMgmFiles()
+                        || $userProfile->isMgmTags()
+                        || $userProfile->isMgmCustomFields()
+                        || $userProfile->isMgmPublicLinks());
             case self::CONFIG:
                 return ($userProfile->isConfigGeneral()
-                    || $userProfile->isConfigEncryption()
-                    || $userProfile->isConfigBackup()
-                    || $userProfile->isConfigImport());
+                        || $userProfile->isConfigEncryption()
+                        || $userProfile->isConfigBackup()
+                        || $userProfile->isConfigImport());
             case self::CONFIG_GENERAL:
             case self::CONFIG_ACCOUNT:
             case self::CONFIG_WIKI:
@@ -226,12 +249,12 @@ final class Acl implements ActionsInterface
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
                 return ($userProfile->isMgmUsers()
-                    || $userProfile->isMgmGroups()
-                    || $userProfile->isMgmProfiles()
-                    || $userProfile->isMgmApiTokens());
+                        || $userProfile->isMgmGroups()
+                        || $userProfile->isMgmProfiles()
+                        || $userProfile->isMgmApiTokens());
             case self::SECURITY_MANAGE:
                 return $userProfile->isEvl()
-                    || $userProfile->isMgmUsers();
+                       || $userProfile->isMgmUsers();
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_VIEW:
@@ -279,7 +302,7 @@ final class Acl implements ActionsInterface
             case self::EVENTLOG_CLEAR:
                 return $userProfile->isEvl();
             case self::CUSTOMFIELD_VIEW_PASS:
-                return ($userData->getIsAdminApp() || $userProfile->isAccViewPass());
+                return $userProfile->isAccViewPass();
             case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:
             case self::NOTIFICATION_VIEW:
@@ -289,16 +312,20 @@ final class Acl implements ActionsInterface
         }
 
         try {
-            $actionName = self::$action->getActionById($action)->getName();
-        } catch (ActionNotFoundException $e) {
+            $actionName = $this->actions->getActionById($action)->getName();
+        } catch (ActionNotFoundException) {
             $actionName = __u('N/A');
         }
 
-        $this->eventDispatcher->notifyEvent('acl.deny',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Access denied'))
-                ->addDetail(__u('Action'), $actionName)
-                ->addDetail(__u('User'), $userData->getLogin()))
+        $this->eventDispatcher->notify(
+            'acl.deny',
+            new Event(
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('Access denied'))
+                            ->addDetail(__u('Action'), $actionName)
+                            ->addDetail(__u('User'), $userData->getLogin())
+            )
         );
 
         return false;

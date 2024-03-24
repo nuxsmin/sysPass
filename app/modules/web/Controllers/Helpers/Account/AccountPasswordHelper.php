@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,26 +19,32 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\CryptoException;
-use DI\DependencyException;
-use DI\NotFoundException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\DataModel\AccountPassData;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Crypt\Ports\MasterPassService;
+use SP\Domain\Http\RequestInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Crypt\MasterPassService;
-use SP\Services\ServiceException;
+use SP\Mvc\View\TemplateInterface;
 use SP\Util\ImageUtil;
+use SP\Util\ImageUtilInterface;
 
 /**
  * Class AccountPasswordHelper
@@ -47,27 +53,44 @@ use SP\Util\ImageUtil;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    /**
-     * @var Acl
-     */
-    private $acl;
+    private Acl                        $acl;
+    private ImageUtil         $imageUtil;
+    private MasterPassService $masterPassService;
+
+    public function __construct(
+        Application        $application,
+        TemplateInterface  $template,
+        RequestInterface   $request,
+        AclInterface       $acl,
+        ImageUtilInterface $imageUtil,
+        MasterPassService $masterPassService
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->acl = $acl;
+        $this->imageUtil = $imageUtil;
+        $this->masterPassService = $masterPassService;
+    }
 
     /**
-     * @param AccountPassData $accountData
+     * @param AccountPassItemWithIdAndName $accountData
      *
-     * @param bool            $useImage
+     * @param  bool  $useImage
      *
      * @return array
-     * @throws HelperException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws BadFormatException
      * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
      * @throws FileNotFoundException
+     * @throws HelperException
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordView(AccountPassData $accountData, bool $useImage)
-    {
+    public function getPasswordView(
+        AccountPassItemWithIdAndName $accountData,
+        bool                         $useImage
+    ): array {
         $this->checkActionAccess();
 
         $this->view->addTemplate('viewpass');
@@ -78,27 +101,34 @@ final class AccountPasswordHelper extends HelperBase
         $pass = $this->getPasswordClear($accountData);
 
         if ($useImage) {
-            $imageUtil = $this->dic->get(ImageUtil::class);
-
-            $this->view->assign('login', $imageUtil->convertText($accountData->getLogin()));
-            $this->view->assign('pass', $imageUtil->convertText($pass));
+            $this->view->assign(
+                'login',
+                $this->imageUtil->convertText($accountData->getLogin())
+            );
+            $this->view->assign(
+                'pass',
+                $this->imageUtil->convertText($pass)
+            );
         } else {
             $this->view->assign('login', $accountData->getLogin());
-            $this->view->assign('pass', htmlspecialchars($pass, ENT_COMPAT));
+            $this->view->assign(
+                'pass',
+                htmlspecialchars($pass, ENT_COMPAT)
+            );
         }
 
         return [
             'useimage' => $useImage,
-            'html' => $this->view->render()
+            'html'     => $this->view->render(),
         ];
     }
 
     /**
      * @throws HelperException
      */
-    private function checkActionAccess()
+    private function checkActionAccess(): void
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)) {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW_PASS)) {
             throw new HelperException(__u('You don\'t have permission to access this account'));
         }
     }
@@ -106,33 +136,35 @@ final class AccountPasswordHelper extends HelperBase
     /**
      * Returns account's password
      *
-     * @param AccountPassData $accountData
+     * @param AccountPassItemWithIdAndName $accountData
      *
      * @return string
-     * @throws HelperException
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws BadFormatException
      * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
+     * @throws HelperException
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordClear(AccountPassData $accountData)
+    public function getPasswordClear(AccountPassItemWithIdAndName $accountData): string
     {
         $this->checkActionAccess();
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
-            throw new HelperException(__('Master password updated') . '<br>' . __('Please, restart the session for update it'));
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+            throw new HelperException(
+                __('Master password updated')
+                .'<br>'
+                .__('Please, restart the session for update it')
+            );
         }
 
-        return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize()
-    {
-        $this->acl = $this->dic->get(Acl::class);
+        return trim(
+            Crypt::decrypt(
+                $accountData->getPass(),
+                $accountData->getKey(),
+                CryptSession::getSessionKey($this->context)
+            )
+        );
     }
 }

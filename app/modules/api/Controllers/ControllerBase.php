@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,25 +19,27 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use Klein\Klein;
-use Psr\Container\ContainerInterface;
-use SP\Core\Context\StatelessContext;
+use League\Fractal\Manager;
+use SP\Core\Acl\Acl;
+use SP\Core\Application;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Exceptions\SPException;
-use SP\Http\Json;
-use SP\Services\Api\ApiResponse;
-use SP\Services\Api\ApiService;
-use SP\Services\Api\JsonRpcResponse;
-use SP\Services\ServiceException;
+use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Services\JsonRpcResponse;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
 
 /**
  * Class ControllerBase
@@ -46,69 +48,38 @@ use SP\Services\ServiceException;
  */
 abstract class ControllerBase
 {
-    const SEARCH_COUNT_ITEMS = 25;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var string
-     */
-    protected $controllerName;
-    /**
-     * @var
-     */
-    protected $actionName;
-    /**
-     * @var StatelessContext
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var ApiService
-     */
-    protected $apiService;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var bool
-     */
-    private $isAuthenticated = false;
+    protected const SEARCH_COUNT_ITEMS = 25;
 
-    /**
-     * Constructor
-     *
-     * @param Container $container
-     * @param string    $actionName
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    public final function __construct(Container $container, $actionName)
-    {
-        $this->dic = $container;
-        $this->context = $container->get(StatelessContext::class);
-        $this->eventDispatcher = $container->get(EventDispatcher::class);
-        $this->router = $container->get(Klein::class);
-        $this->apiService = $container->get(ApiService::class);
+    protected string              $controllerName;
+    protected ContextInterface    $context;
+    protected EventDispatcher $eventDispatcher;
+    protected ApiService      $apiService;
+    protected Klein           $router;
+    protected ConfigDataInterface $configData;
+    protected Manager             $fractal;
+    protected Acl                 $acl;
+    protected string              $actionName;
+    private bool                  $isAuthenticated = false;
 
+    public function __construct(
+        Application $application,
+        Klein       $router,
+        ApiService  $apiService,
+        AclInterface $acl
+    ) {
+        $this->context = $application->getContext();
+        $this->configData = $application->getConfig()->getConfigData();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->router = $router;
+        $this->apiService = $apiService;
+        $this->acl = $acl;
+
+        $this->fractal = new Manager();
         $this->controllerName = $this->getControllerName();
-        $this->actionName = $actionName;
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
+        $this->actionName = $this->context->getTrasientKey(BootstrapBase::CONTEXT_ACTION_NAME);
     }
 
-    /**
-     * @return string
-     */
-    final protected function getControllerName()
+    final protected function getControllerName(): string
     {
         $class = static::class;
 
@@ -116,20 +87,10 @@ abstract class ControllerBase
     }
 
     /**
-     * @return bool
-     */
-    protected function isAuthenticated()
-    {
-        return $this->isAuthenticated;
-    }
-
-    /**
-     * @param int $actionId
-     *
      * @throws SPException
      * @throws ServiceException
      */
-    final protected function setupApi($actionId)
+    final protected function setupApi(int $actionId): void
     {
         $this->apiService->setup($actionId);
 
@@ -140,10 +101,8 @@ abstract class ControllerBase
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
-     *
-     * @param ApiResponse $apiResponse
      */
-    final protected function returnResponse(ApiResponse $apiResponse)
+    final protected function returnResponse(ApiResponse $apiResponse): void
     {
         try {
             if ($this->isAuthenticated === false) {
@@ -160,19 +119,13 @@ abstract class ControllerBase
 
     /**
      * Returns a JSON response back to the browser
-     *
-     * @param string $response
      */
-    final private function sendJsonResponse(string $response)
+    private function sendJsonResponse(string $response): void
     {
-        $json = Json::factory($this->router->response());
-        $json->returnRawJson($response);
+        JsonResponse::factory($this->router->response())->sendRaw($response);
     }
 
-    /**
-     * @param Exception $e
-     */
-    final protected function returnResponseException(Exception $e)
+    final protected function returnResponseException(Exception $e): void
     {
         $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
     }

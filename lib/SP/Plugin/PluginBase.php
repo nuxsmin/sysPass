@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,118 +19,68 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Plugin;
 
 use Defuse\Crypto\Exception\CryptoException;
-use Psr\Container\ContainerInterface;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Services\Plugin\PluginService;
-use SP\Services\ServiceException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Plugin\Ports\PluginCompatilityService;
+use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\PluginLoaderService;
+use SP\Domain\Plugin\Ports\PluginOperationInterface;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
  * Class PluginBase
- *
- * @package SP\Plugin
  */
 abstract class PluginBase implements PluginInterface
 {
-    /**
-     * @var string Directorio base
-     */
-    protected $base;
-    /**
-     * @var string Tipo de plugin
-     */
-    protected $type;
-    /**
-     * @var string
-     */
-    protected $themeDir;
-    /**
-     * @var mixed
-     */
-    protected $data;
-    /**
-     * @var int
-     */
-    protected $enabled;
-    /**
-     * @var PluginOperation
-     */
-    protected $pluginOperation;
-    /**
-     * @var PluginService
-     */
-    private $pluginService;
+    protected ?string $base = null;
+    protected ?string $themeDir = null;
+    protected mixed   $data;
 
     /**
-     * PluginBase constructor.
-     *
-     * @param ContainerInterface $dic
-     * @param PluginOperation    $pluginOperation
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
-    public final function __construct(ContainerInterface $dic, PluginOperation $pluginOperation)
-    {
-        $this->pluginService = $dic->get(PluginService::class);
-        $this->pluginOperation = $pluginOperation;
-        $this->init($dic);
+    public function __construct(
+        protected readonly PluginOperationInterface $pluginOperation,
+        private readonly PluginCompatilityService $pluginCompatilityService,
+        private readonly PluginLoaderService $pluginLoadService
+    ) {
+        $this->load();
     }
 
     /**
-     * @return string
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
-    public function getType()
+    private function load(): void
     {
-        return $this->type;
+        if ($this->pluginCompatilityService->checkFor($this)) {
+            $this->pluginLoadService->loadFor($this);
+        }
     }
 
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getThemeDir()
+    public function getThemeDir(): ?string
     {
         return $this->themeDir;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }
 
     /**
-     * @return int
-     */
-    public function getEnabled()
-    {
-        return (int)$this->enabled;
-    }
-
-    /**
-     * @param int $enabled
-     */
-    public function setEnabled($enabled)
-    {
-        $this->enabled = (int)$enabled;
-    }
-
-    /**
-     * @param int   $id
+     * @param int $id
      * @param mixed $data
      *
      * @throws CryptoException
@@ -139,7 +89,7 @@ abstract class PluginBase implements PluginInterface
      * @throws QueryException
      * @throws ServiceException
      */
-    final public function saveData(int $id, $data)
+    final public function saveData(int $id, mixed $data): void
     {
         if ($this->data === null) {
             $this->pluginOperation->create($id, $data);
@@ -150,22 +100,16 @@ abstract class PluginBase implements PluginInterface
         $this->data = $data;
     }
 
-    /**
-     * Establecer las locales del plugin
-     */
-    protected function setLocales()
+    protected function setLocales(): void
     {
-        $locales = $this->getBase() . DIRECTORY_SEPARATOR . 'locales';
+        $locales = sprintf('%s%slocales', $this->getBase(), DIRECTORY_SEPARATOR);
         $name = strtolower($this->getName());
 
         bindtextdomain($name, $locales);
         bind_textdomain_codeset($name, 'UTF-8');
     }
 
-    /**
-     * @return string
-     */
-    public function getBase()
+    public function getBase(): ?string
     {
         return $this->base;
     }

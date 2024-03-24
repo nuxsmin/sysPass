@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,164 +19,106 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth;
 
 /**
- * Class AuthData
- *
- * @package Auth
+ * Class AuthDataBase
  */
 abstract class AuthDataBase
 {
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $email;
-    /**
-     * @var bool
-     */
-    protected $authenticated;
-    /**
-     * @var int
-     */
-    protected $statusCode = 0;
-    /**
-     * @var string
-     */
-    protected $server;
-    /**
-     * @var bool
-     */
-    protected $authGranted = false;
-    /**
-     * @var bool
-     */
-    protected $failed = false;
+    protected ?string $name          = null;
+    protected ?string $email         = null;
+    protected ?bool   $authenticated = null;
+    protected int     $statusCode    = 0;
+    protected ?string $server        = null;
+    protected bool    $failed        = false;
+    protected bool    $success       = false;
 
     /**
-     * @return string
+     * @param bool $authoritative Whether this authentication is required to access to the application
      */
-    public function getName()
+    public function __construct(private readonly bool $authoritative = false)
+    {
+    }
+
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return int
-     */
-    public function getAuthenticated()
+    public function getAuthenticated(): ?int
     {
         return $this->authenticated;
     }
 
-    /**
-     * @param bool $authenticated
-     *
-     * @return $this
-     */
-    public function setAuthenticated($authenticated = null)
-    {
-        $this->authenticated = $authenticated !== null ? (bool)$authenticated : null;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServer()
+    public function getServer(): ?string
     {
         return $this->server;
     }
 
-    /**
-     * @param string $server
-     */
-    public function setServer($server)
+    public function setServer(string $server): void
     {
         $this->server = $server;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
-        return (int)$this->statusCode;
+        return $this->statusCode;
+    }
+
+    public function setStatusCode(int $statusCode): void
+    {
+        $this->statusCode = $statusCode;
     }
 
     /**
-     * @param int $statusCode
-     */
-    public function setStatusCode($statusCode)
-    {
-        $this->statusCode = (int)$statusCode;
-    }
-
-    /**
-     * Indica si es requerida para acceder a la aplicación
+     * Whether this authentication is required to access to the application
      *
      * @return bool
      */
-    public function isAuthGranted()
+    public function isAuthoritative(): bool
     {
-        return (bool)$this->authGranted;
+        return $this->authoritative;
     }
 
-    /**
-     * Indica si es requerida para acceder a la aplicación
-     *
-     * @param bool $authGranted
-     */
-    public function setAuthGranted($authGranted)
+    public function fail(): static
     {
-        $this->authGranted = (bool)$authGranted;
+        $this->authenticated = true;
+        $this->failed = true;
+        $this->success = false;
+
+        return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFailed()
+    public function success(): static
     {
-        return $this->failed;
+        $this->authenticated = true;
+        $this->success = true;
+        $this->failed = false;
+
+        return $this;
     }
 
-    /**
-     * @param bool $failed
-     */
-    public function setFailed($failed)
+    public function isOk(): bool
     {
-        $this->failed = $failed;
+        return $this->authenticated && $this->success && !$this->failed;
     }
 }

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Providers\Auth\Ldap;
 
@@ -32,56 +34,37 @@ namespace SP\Providers\Auth\Ldap;
 final class LdapUtil
 {
     /**
-     * Escapar carácteres especiales en el RDN de LDAP.
-     *
-     * @param string $dn con el RDN del usuario
-     *
-     * @return string
-     */
-    public static function escapeLdapDN($dn)
-    {
-        $chars = [
-            '/(,)(?!uid|cn|ou|dc)/i',
-            '/(?<!uid|cn|ou|dc)(=)/i',
-            '/([";<>\+#\/]+)/',
-            '/\G(\s)/',
-            '/(\s)(?=\s*$)/'
-        ];
-
-        return preg_replace($chars, '\\\1', $dn);
-    }
-
-    /**
      * Obtener el nombre del grupo a partir del CN
      *
      * @param string $group
      *
-     * @return bool
+     * @return string|null
      */
-    public static function getGroupName(string $group)
+    public static function getGroupName(string $group): ?string
     {
         if (preg_match('/^cn=(?<groupname>[^,]+),.*/i', $group, $matches)) {
             return $matches['groupname'];
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * @param array  $attributes
+     * @param array $attributes
      * @param string $value
      *
      * @return string
      */
-    public static function getAttributesForFilter(array $attributes, $value): string
+    public static function getAttributesForFilter(array $attributes, string $value): string
     {
-        $value = ldap_escape((string)$value, null, LDAP_ESCAPE_FILTER);
+        $value = ldap_escape($value, null, LDAP_ESCAPE_FILTER);
 
         return implode(
             '',
-            array_map(function ($attribute) use ($value) {
-                return sprintf('(%s=%s)', $attribute, $value);
-            }, $attributes)
+            array_map(
+                static fn($attribute) => sprintf('(%s=%s)', $attribute, $value),
+                $attributes
+            )
         );
     }
 }

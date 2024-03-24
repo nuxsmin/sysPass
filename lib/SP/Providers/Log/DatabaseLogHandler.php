@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,25 +19,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventReceiver;
-use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Exceptions\SPException;
-use SP\Core\Language;
-use SP\DataModel\EventlogData;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Security\Models\Eventlog;
+use SP\Domain\Security\Ports\EventlogService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\EventLog\EventlogService;
-use SplSubject;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class LogHandler
@@ -48,54 +48,34 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    /**
-     * @var EventlogService
-     */
-    private $eventlogService;
-    /**
-     * @var string
-     */
-    private $events;
-    /**
-     * @var Language
-     */
-    private $language;
+    private string $events;
 
-    /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param SplSubject $subject <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject)
-    {
-        $this->updateEvent('update', new Event($subject));
+    public function __construct(
+        Application                        $application,
+        private readonly EventlogService   $eventlogService,
+        private readonly LanguageInterface $language
+    ) {
+        parent::__construct($application);
     }
+
 
     /**
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      *
      * @throws InvalidClassException
      */
-    public function updateEvent($eventType, Event $event)
+    public function update(string $eventType, Event $event): void
     {
-        if (strpos($eventType, 'database.') !== false) {
+        if (str_contains($eventType, 'database.')) {
             return;
         }
 
         $this->language->setAppLocales();
 
-        $eventlogData = new EventlogData();
+        $eventlogData = new Eventlog();
         $eventlogData->setAction($eventType);
         $eventlogData->setLevel('INFO');
 
@@ -130,40 +110,23 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
-     * @return string
+     * @return string|null
      */
-    public function getEventsString()
+    public function getEventsString(): ?string
     {
         return $this->events;
     }
 
-    /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents()
+    public function initialize(): void
     {
-        return LogInterface::EVENTS;
-    }
-
-    /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(Container $dic)
-    {
-        $this->language = $dic->get(Language::class);
-        $this->eventlogService = $dic->get(EventlogService::class);
-
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
-        if (empty($configEvents)) {
+        if (count($configEvents) === 0) {
             $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
+
+        $this->initialized = true;
     }
 }

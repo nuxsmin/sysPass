@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Notification;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
+use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventReceiver;
-use SP\DataModel\NotificationData;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Notification\Models\Notification;
+use SP\Domain\Notification\Ports\NotificationService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\Notification\NotificationService;
-use SplSubject;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class NotificationHandler
@@ -45,28 +45,18 @@ final class NotificationHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
+    public const EVENTS = [
         'request.account',
-        'show.account.link'
+        'show.account.link',
     ];
 
-    /**
-     * @var NotificationService
-     */
-    private $notificationService;
-    /**
-     * @var string
-     */
-    private $events;
+    private string $events;
 
-    /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents()
-    {
-        return self::EVENTS;
+    public function __construct(
+        Application                                   $application,
+        private readonly NotificationService $notificationService
+    ) {
+        parent::__construct($application);
     }
 
     /**
@@ -74,35 +64,18 @@ final class NotificationHandler extends Provider implements EventReceiver
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): string
     {
         return $this->events;
-    }
-
-    /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param SplSubject $subject <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject)
-    {
-        $this->updateEvent('update', new Event($subject));
     }
 
     /**
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      */
-    public function updateEvent($eventType, Event $event)
+    public function update(string $eventType, Event $event): void
     {
         switch ($eventType) {
             case 'request.account':
@@ -117,13 +90,14 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function requestAccountNotification(Event $event)
+    private function requestAccountNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
+        $userIds = $eventMessage !== null ? $eventMessage->getExtra('userId') : [];
 
-        foreach ($data['userId'] as $userId) {
-            $notificationData = new NotificationData();
+        foreach ($userIds as $userId) {
+            $description = $eventMessage->composeHtml();
+            $notificationData = new Notification();
             $notificationData->setType(__('Request'));
             $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($userId);
@@ -134,9 +108,9 @@ final class NotificationHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param NotificationData $notificationData
+     * @param Notification $notificationData
      */
-    private function notify(NotificationData $notificationData)
+    private function notify(Notification $notificationData): void
     {
         try {
             $this->notificationService->create($notificationData);
@@ -148,32 +122,28 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function showAccountLinkNotification(Event $event)
+    private function showAccountLinkNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
+        $notify = $eventMessage !== null ? $eventMessage->getExtra('notify') : [];
 
-        if ($data['notify'][0] === true) {
-            $notificationData = new NotificationData();
+        if ($notify[0] === true) {
+            $userId = $eventMessage->getExtra('userId')[0];
+            $description = $eventMessage->composeHtml();
+
+            $notificationData = new Notification();
             $notificationData->setType(__('Notification'));
             $notificationData->setComponent(__('Accounts'));
-            $notificationData->setUserId($data['userId'][0]);
+            $notificationData->setUserId($userId);
             $notificationData->setDescription($eventMessage, true);
 
             $this->notify($notificationData);
         }
     }
 
-    /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(Container $dic)
+    public function initialize(): void
     {
-        $this->notificationService = $dic->get(NotificationService::class);
-
         $this->events = $this->parseEventsToRegex(self::EVENTS);
+        $this->initialized = true;
     }
 }

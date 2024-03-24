@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -33,7 +33,9 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__;
 
 /**
  * Class AccountHistoryGrid
@@ -42,10 +44,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class AccountHistoryGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -67,10 +66,11 @@ final class AccountHistoryGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Delete Selected'))
-                ->setTitle(__('Delete Selected'))
-                ->setIsSelection(true),
-            true);
+                 ->setName(__('Delete Selected'))
+                 ->setTitle(__('Delete Selected'))
+                 ->setIsSelection(true),
+            true
+        );
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -116,8 +116,8 @@ final class AccountHistoryGrid extends GridBase
     protected function getData(): DataGridData
     {
         // Grid Data
-        $iconEdit = clone $this->icons->getIconEdit();
-        $iconDelete = clone $this->icons->getIconDelete();
+        $iconEdit = $this->icons->edit()->mutate(class: 'opacity50', title: __('Modified'));
+        $iconDelete = $this->icons->delete()->mutate(class: 'opacity50', title: __('Removed'));
 
         // Grid Data
         $gridData = new DataGridData();
@@ -126,8 +126,14 @@ final class AccountHistoryGrid extends GridBase
         $gridData->addDataRowSource('clientName');
         $gridData->addDataRowSource('categoryName');
         $gridData->addDataRowSource('date');
-        $gridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modified'))->setClass('opacity50'));
-        $gridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Removed'))->setClass('opacity50'));
+        $gridData->addDataRowSourceWithIcon(
+            'isModify',
+            $iconEdit
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'isDeleted',
+            $iconDelete
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -136,15 +142,18 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchAccountHistory');
         $gridActionSearch->setTitle(__('Search for Account'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -152,16 +161,19 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRestoreAction()
+    private function getRestoreAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
+        $gridAction->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
         $gridAction->setName(__('Account Restore'));
         $gridAction->setTitle(__('Account Restore'));
-        $gridAction->setIcon($this->icons->getIconRestore());
+        $gridAction->setIcon($this->icons->restore());
         $gridAction->setOnClickFunction('accountManager/restore');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE)
+        );
 
         return $gridAction;
     }
@@ -169,16 +181,19 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
+        $gridAction->setId(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Remove Account'));
         $gridAction->setTitle(__('Remove Account'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE)
+        );
 
         return $gridAction;
     }

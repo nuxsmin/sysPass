@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
@@ -31,109 +31,63 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
  */
 final class AccountActionsDto
 {
-    /**
-     * @var int
-     */
-    private $accountId;
-    /**
-     * @var int
-     */
-    private $accountHistoryId;
-    /**
-     * @var int
-     */
-    private $accountParentId;
-    /**
-     * @var int
-     */
-    private $publicLinkId;
-    /**
-     * @var int
-     */
-    private $publicLinkCreatorId;
+    private ?int $accountId;
+    private ?int $accountHistoryId;
+    private ?int $accountParentId;
+    private ?int $publicLinkId = null;
+    private ?int $publicLinkCreatorId = null;
 
-    /**
-     * AccountActionsDto constructor.
-     *
-     * @param int $accountId
-     * @param int $accountHistoryId
-     * @param int $accountParentId
-     */
-    public function __construct($accountId, $accountHistoryId = null, $accountParentId = null)
+    public function __construct(
+        ?int $accountId,
+        ?int $accountHistoryId = null,
+        ?int $accountParentId = null)
     {
         $this->accountId = $accountId;
         $this->accountHistoryId = $accountHistoryId;
         $this->accountParentId = $accountParentId;
     }
 
-    /**
-     * @return int
-     */
-    public function getAccountId()
+    public function getAccountId(): ?int
     {
         return $this->accountId;
     }
 
-    /**
-     * @return int
-     */
-    public function getAccountHistoryId()
+    public function getAccountHistoryId(): ?int
     {
         return $this->accountHistoryId;
     }
 
-    /**
-     * @return int
-     */
-    public function getAccountParentId()
+    public function getAccountParentId(): ?int
     {
         return $this->accountParentId;
     }
 
-    /**
-     * @return bool
-     */
-    public function isHistory()
+    public function isHistory(): bool
     {
         return $this->accountHistoryId !== null && $this->accountHistoryId > 0;
     }
 
-    /**
-     * @return bool
-     */
-    public function isLinked()
+    public function isLinked(): bool
     {
         return $this->accountParentId !== null && $this->accountParentId > 0;
     }
 
-    /**
-     * @return int
-     */
-    public function getPublicLinkId()
+    public function getPublicLinkId(): ?int
     {
         return $this->publicLinkId;
     }
 
-    /**
-     * @param int $publicLinkId
-     */
-    public function setPublicLinkId(int $publicLinkId)
+    public function setPublicLinkId(int $publicLinkId): void
     {
         $this->publicLinkId = $publicLinkId;
     }
 
-    /**
-     * @return int
-     */
-    public function getPublicLinkCreatorId()
+    public function getPublicLinkCreatorId(): ?int
     {
         return $this->publicLinkCreatorId;
     }
 
-    /**
-     * @param int $publicLinkCreatorId
-     */
-    public function setPublicLinkCreatorId(int $publicLinkCreatorId)
+    public function setPublicLinkCreatorId(int $publicLinkCreatorId): void
     {
         $this->publicLinkCreatorId = $publicLinkCreatorId;
     }

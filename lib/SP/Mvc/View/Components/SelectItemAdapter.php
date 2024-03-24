@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View\Components;
 
 use RuntimeException;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\DataModelInterface;
-use SP\Http\Json;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
+
+use function SP\__u;
 
 /**
  * Class SelectItemAdapter
@@ -36,39 +38,22 @@ use SP\Http\Json;
  */
 final class SelectItemAdapter implements ItemAdapterInterface
 {
-    /**
-     * @var array
-     */
-    protected $items;
+    protected array $items;
 
-    /**
-     * SelectItemAdapter constructor.
-     *
-     * @param array $items
-     */
     public function __construct(array $items)
     {
         $this->items = $items;
     }
 
-    /**
-     * @param array $items
-     *
-     * @return static
-     */
-    public static function factory(array $items)
+    public static function factory(array $items): SelectItemAdapter
     {
-        return new static($items);
+        return new SelectItemAdapter($items);
     }
 
     /**
      * Returns an array of ids from the given array of objects
-     *
-     * @param array $items
-     *
-     * @return array
      */
-    public static function getIdFromArrayOfObjects(array $items)
+    public static function getIdFromArrayOfObjects(array $items): array
     {
         $ids = [];
 
@@ -84,31 +69,29 @@ final class SelectItemAdapter implements ItemAdapterInterface
     /**
      * Returns a JSON like collection of items for a select component
      *
-     * @return string
      * @throws SPException
      */
-    public function getJsonItemsFromModel()
+    public function getJsonItemsFromModel(): string
     {
         $out = [];
 
         foreach ($this->items as $item) {
-            if (!$item instanceof DataModelInterface) {
+            if (!$item instanceof ItemWithIdAndNameModel) {
                 throw new RuntimeException(__u('Wrong object type'));
             }
 
             $out[] = ['id' => $item->getId(), 'name' => $item->getName()];
         }
 
-        return Json::getJson($out);
+        return JsonResponse::buildJsonFrom($out);
     }
 
     /**
      * Returns a collection of items for a select component
      *
-     * @return string
      * @throws SPException
      */
-    public function getJsonItemsFromArray()
+    public function getJsonItemsFromArray(): string
     {
         $out = [];
 
@@ -116,30 +99,31 @@ final class SelectItemAdapter implements ItemAdapterInterface
             $out[] = ['id' => $key, 'name' => $value];
         }
 
-        return Json::getJson($out);
+        return JsonResponse::buildJsonFrom($out);
     }
 
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
-     * @param array $selected
-     * @param null  $skip
+     * @param  array  $selected
+     * @param  string|int|null  $skip
      *
      * @return SelectItem[]
      */
-    public function getItemsFromModelSelected(array $selected, $skip = null)
-    {
+    public function getItemsFromModelSelected(
+        array $selected,
+        mixed $skip = null
+    ): array {
         $items = $this->getItemsFromModel();
 
-        foreach ($items as $item) {
-            if ($skip !== null && $item->getId() === $skip) {
-                $item->setSkip(true);
+        array_walk(
+            $items,
+            static function (SelectItem $item) use ($selected, $skip) {
+                $item->setSkip($item->getId() === $skip);
+                /** @noinspection TypeUnsafeArraySearchInspection */
+                $item->setSelected(in_array($item->getId(), $selected));
             }
-
-            if (in_array($item->getId(), $selected, false)) {
-                $item->setSelected(true);
-            }
-        }
+        );
 
         return $items;
     }
@@ -149,40 +133,38 @@ final class SelectItemAdapter implements ItemAdapterInterface
      *
      * @return SelectItem[]
      */
-    public function getItemsFromModel()
+    public function getItemsFromModel(): array
     {
-        $out = [];
+        return array_map(
+            static function ($item) {
+                if (!$item instanceof ItemWithIdAndNameModel) {
+                    throw new RuntimeException(__u('Wrong object type'));
+                }
 
-        foreach ($this->items as $item) {
-            if (!$item instanceof DataModelInterface) {
-                throw new RuntimeException(__u('Wrong object type'));
-            }
-
-            $out[] = new SelectItem($item->getId(), $item->getName(), $item);
-        }
-
-        return $out;
+                return new SelectItem($item->getId(), $item->getName(), $item);
+            },
+            $this->items
+        );
     }
 
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
-     * @param array $selected
-     * @param bool  $useValueAsKey
-     *
      * @return SelectItem[]
      */
-    public function getItemsFromArraySelected(array $selected, $useValueAsKey = false)
+    public function getItemsFromArraySelected(array $selected, bool $useValueAsKey = false): array
     {
         $items = $this->getItemsFromArray();
 
-        foreach ($items as $item) {
-            $value = $useValueAsKey ? $item->getName() : $item->getId();
+        array_walk(
+            $items,
+            static function (SelectItem $item) use ($selected, $useValueAsKey) {
+                $value = $useValueAsKey ? $item->getName() : $item->getId();
 
-            if (in_array($value, $selected, false)) {
-                $item->setSelected(true);
+                /** @noinspection TypeUnsafeArraySearchInspection */
+                $item->setSelected(in_array($value, $selected));
             }
-        }
+        );
 
         return $items;
     }
@@ -192,14 +174,12 @@ final class SelectItemAdapter implements ItemAdapterInterface
      *
      * @return SelectItem[]
      */
-    public function getItemsFromArray()
+    public function getItemsFromArray(): array
     {
-        $out = [];
-
-        foreach ($this->items as $key => $value) {
-            $out[] = new SelectItem($key, $value);
-        }
-
-        return $out;
+        return array_map(
+            static fn($key, $value) => new SelectItem($key, $value),
+            array_keys($this->items),
+            array_values($this->items)
+        );
     }
 }

@@ -281,6 +281,14 @@ body.userpassreset {
       min-height: 0;
       margin: 5em auto; }
 
+#content tr.header td, #box-popup tr.header td {
+  width: 100%;
+  padding: 7px;
+  background-color: #eceff1;
+  color: #607d8b;
+  font-size: 17px;
+  letter-spacing: .2em;
+  font-weight: bold; }
 #content td.descField, #box-popup td.descField {
   text-align: right;
   padding-right: 20px;
@@ -1051,7 +1059,8 @@ fieldset.warning {
   width: 100%;
   /*margin: auto auto 50px;*/
   line-height: 2em;
-  margin-bottom: 5em; }
+  margin-bottom: 5em;
+  padding-bottom: 5em; }
   #actions #logo {
     display: flex;
     width: 100%;

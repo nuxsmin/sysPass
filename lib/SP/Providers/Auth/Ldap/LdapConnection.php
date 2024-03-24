@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Providers\Auth\Ldap;
 
+use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
+use Laminas\Ldap\Ldap as LaminasLdap;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
+use function SP\__u;
 
 /**
  * Class LdapConnection
@@ -36,52 +42,55 @@ use SP\Core\Events\EventMessage;
  */
 final class LdapConnection implements LdapConnectionInterface
 {
-    const TIMEOUT = 10;
-    /**
-     * @var resource
-     */
-    private $ldapHandler;
-    /**
-     * @var LdapParams
-     */
-    private $ldapParams;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
-    /**
-     * @var bool
-     */
-    private $isConnected = false;
-    /**
-     * @var bool
-     */
-    private $isBound = false;
-    /**
-     * @var bool
-     */
-    private $isTls;
-    /**
-     * @var bool
-     */
-    private $debug;
-    /**
-     * @var string
-     */
-    private $server;
+    private const TIMEOUT_SECONDS    = 10;
+    private const RECONNECT_ATTEMPTS = 3;
 
     /**
-     * LdapBase constructor.
-     *
-     * @param LdapParams      $ldapParams
-     * @param EventDispatcher $eventDispatcher
-     * @param bool            $debug
+     * @throws LdapException
      */
-    public function __construct(LdapParams $ldapParams, EventDispatcher $eventDispatcher, $debug = false)
+    public function __construct(
+        private readonly LaminasLdap              $ldap,
+        private readonly LdapParams               $ldapParams,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly bool                     $debug = false
+    ) {
+        $this->setUp();
+    }
+
+    /**
+     * @throws LdapException
+     */
+    private function setUp(): void
     {
-        $this->ldapParams = $ldapParams;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->debug = (bool)$debug;
+        if ($this->debug) {
+            @ldap_set_option(
+                null,
+                LDAP_OPT_DEBUG_LEVEL,
+                7
+            );
+        }
+
+        try {
+            $this->ldap->setOptions([
+                                        'host' => $this->ldapParams->getPort(),
+                                        'port' => $this->ldapParams->getPort(),
+                                        'useStartTls' => $this->ldapParams->isTlsEnabled(),
+                                        'username' => $this->ldapParams->getBindDn(),
+                                        'password' => $this->ldapParams->getBindPass(),
+                                        'networkTimeout' => self::TIMEOUT_SECONDS,
+                                        'reconnectAttempts' => self::RECONNECT_ATTEMPTS,
+                                    ]);
+        } catch (LaminasLdapException $e) {
+            throw LdapException::error($e->getMessage(), null, $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @throws LdapException
+     */
+    public function mutate(LdapParams $ldapParams): LdapConnectionInterface
+    {
+        return new self($this->ldap, $ldapParams, $this->eventDispatcher, $this->debug);
     }
 
     /**
@@ -89,266 +98,59 @@ final class LdapConnection implements LdapConnectionInterface
      *
      * @throws LdapException
      */
-    public function checkConnection()
+    public function checkConnection(): void
     {
+        $this->connect();
+
+        $this->eventDispatcher->notify(
+            'ldap.check.connection',
+            new Event(
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('LDAP connection OK'))
+            )
+        );
+    }
+
+    /**
+     * Connects to LDAP server using authentication
+     *
+     * @param string|null $bindDn con el DN del usuario
+     * @param string|null $bindPass con la clave del usuario
+     *
+     * @throws LdapException
+     */
+    public function connect(
+        ?string $bindDn = null,
+        ?string $bindPass = null
+    ): void {
+        $username = $bindDn ?: $this->ldapParams->getBindDn();
+        $password = $bindPass ?: $this->ldapParams->getBindPass();
+
         try {
-            $this->connectAndBind();
-
-            $this->eventDispatcher->notifyEvent('ldap.check.connection',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('LDAP connection OK')))
+            $this->ldap->bind(
+                $username,
+                $password
             );
-        } catch (LdapException $e) {
-            throw $e;
-        }
-    }
+        } catch (LaminasLdapException $e) {
+            $this->eventDispatcher->notify('exception', new Event($e));
 
-    /**
-     * @return resource
-     * @throws LdapException
-     */
-    public function connectAndBind()
-    {
-        if (!$this->isConnected && !$this->isBound) {
-            $this->isConnected = $this->connect();
-            $this->isBound = $this->bind();
-        }
-
-        return $this->ldapHandler;
-    }
-
-    /**
-     * Realizar la conexión al servidor de LDAP.
-     *
-     * @return bool
-     * @throws LdapException
-     */
-    public function connect(): bool
-    {
-        if ($this->isConnected) {
-            return true;
-        }
-
-        $this->checkParams();
-
-        // Habilitar la traza si el modo debug está habilitado
-        if ($this->debug) {
-            @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
-        }
-
-        $this->ldapHandler = @ldap_connect($this->getServerUri());
-
-        // Conexión al servidor LDAP
-        if (!is_resource($this->ldapHandler)) {
-            $this->eventDispatcher->notifyEvent('ldap.connect',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Unable to connect to LDAP server'))
-                    ->addDetail(__u('Server'), $this->getServer()))
+            $this->eventDispatcher->notify(
+                'ldap.bind',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('LDAP connection error'))
+                                ->addDetail('LDAP ERROR', $this->ldap->getLastError())
+                                ->addDetail('LDAP DN', $username)
+                )
             );
 
-            throw new LdapException(__u('Unable to connect to LDAP server'));
-        }
-
-        @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, self::TIMEOUT);
-        @ldap_set_option($this->ldapHandler, LDAP_OPT_PROTOCOL_VERSION, 3);
-        @ldap_set_option($this->ldapHandler, LDAP_OPT_REFERRALS, 0);
-
-        $this->isTls = $this->connectTls();
-
-        return true;
-    }
-
-    /**
-     * Comprobar si los parámetros necesario de LDAP están establecidos.
-     *
-     * @throws LdapException
-     */
-    public function checkParams()
-    {
-        if (empty($this->ldapParams->getSearchBase())
-            || empty($this->getServer())
-            || empty($this->ldapParams->getBindDn())
-        ) {
-            $this->eventDispatcher->notifyEvent('ldap.check.params',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('LDAP parameters are not set'))));
-
-            throw new LdapException(__u('LDAP parameters are not set'));
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getServer(): string
-    {
-        return $this->server ?: $this->ldapParams->getServer();
-    }
-
-    /**
-     * @param string $server
-     *
-     * @return LdapConnection
-     */
-    public function setServer(string $server)
-    {
-        $this->server = $server;
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getServerUri(): string
-    {
-        $server = $this->getServer();
-        $port = $this->ldapParams->getPort();
-
-        if (strpos($server, '://') !== false) {
-            return $server . ':' . $port;
-        } elseif ($port === 389 || $port === null) {
-            return 'ldap://' . $server;
-        } elseif ($port === 636) {
-            return 'ldaps://' . $server;
-        }
-
-        return 'ldap://' . $server . ':' . $port;
-    }
-
-    /**
-     * Connect through TLS
-     *
-     * @throws LdapException
-     */
-    private function connectTls(): bool
-    {
-        if ($this->ldapParams->isTlsEnabled()) {
-            $result = @ldap_start_tls($this->ldapHandler);
-
-            if ($result === false) {
-                $this->eventDispatcher->notifyEvent('ldap.connect.tls',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Unable to connect to LDAP server'))
-                        ->addDetail(__u('Server'), $this->getServer())
-                        ->addDetail('TLS', __u('ON'))
-                        ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))));
-
-                throw new LdapException(__u('Unable to connect to LDAP server'));
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Registrar error de LDAP y devolver el mensaje de error
-     *
-     * @param $ldapHandler
-     *
-     * @return string
-     */
-    public static function getLdapErrorMessage($ldapHandler)
-    {
-        return sprintf('%s (%d)', ldap_error($ldapHandler), ldap_errno($ldapHandler));
-    }
-
-    /**
-     * Realizar la autentificación con el servidor de LDAP.
-     *
-     * @param string $bindDn   con el DN del usuario
-     * @param string $bindPass con la clave del usuario
-     *
-     * @return bool
-     * @throws LdapException
-     */
-    public function bind(string $bindDn = null, string $bindPass = null): bool
-    {
-        $dn = $bindDn ?: $this->ldapParams->getBindDn();
-        $pass = $bindPass ?: $this->ldapParams->getBindPass();
-
-        if (@ldap_bind($this->ldapHandler, $dn, $pass) === false) {
-            $this->eventDispatcher->notifyEvent('ldap.bind',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Connection error (BIND)'))
-                    ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))
-                    ->addDetail('LDAP DN', $dn))
-            );
-
-            throw new LdapException(
-                __u('Connection error (BIND)'),
-                LdapException::ERROR,
-                self::getLdapErrorMessage($this->ldapHandler),
-                $this->getErrorCode()
+            throw LdapException::error(
+                __u('LDAP connection error'),
+                $this->ldap->getLastError(),
+                $this->ldap->getLastErrorCode()
             );
         }
-
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    public function getErrorCode()
-    {
-        if (is_resource($this->ldapHandler)) {
-            return ldap_errno($this->ldapHandler);
-        }
-
-        return -1;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isConnected(): bool
-    {
-        return $this->isConnected;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBound(): bool
-    {
-        return $this->isBound;
-    }
-
-    /**
-     * @return LdapParams
-     */
-    public function getLdapParams(): LdapParams
-    {
-        return $this->ldapParams;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDebug(): bool
-    {
-        return $this->debug;
-    }
-
-    /**
-     * Realizar la desconexión del servidor de LDAP.
-     */
-    public function unbind(): bool
-    {
-        if (($this->isConnected || $this->isBound)
-            && @ldap_unbind($this->ldapHandler) === false
-        ) {
-            $this->eventDispatcher->notifyEvent('ldap.unbind',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error while disconnecting from LDAP server'))
-                    ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler)))
-            );
-
-            return false;
-        }
-
-        return true;
     }
 }

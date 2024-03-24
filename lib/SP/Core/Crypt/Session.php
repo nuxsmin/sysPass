@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,40 +19,34 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Context\SessionContext;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Exceptions\CryptException;
+
+use function SP\logger;
 
 /**
  * Class Session
  *
  * @package SP\Core\Crypt
  */
-final class Session
+class Session
 {
     /**
      * Devolver la clave maestra de la sesión
      *
-     * @param SessionContext $sessionContext
-     *
-     * @return string
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public static function getSessionKey(SessionContext $sessionContext)
+    public static function getSessionKey(SessionContextInterface $sessionContext): string
     {
         return $sessionContext->getVault()->getData(self::getKey($sessionContext));
     }
 
-    /**
-     * @param SessionContext $sessionContext
-     *
-     * @return string
-     */
-    private static function getKey(SessionContext $sessionContext)
+    private static function getKey(SessionContextInterface $sessionContext): string
     {
         return session_id() . $sessionContext->getSidStartTime();
     }
@@ -60,32 +54,27 @@ final class Session
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param                $data
-     * @param SessionContext $sessionContext
-     *
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public static function saveSessionKey($data, SessionContext $sessionContext)
+    public static function saveSessionKey(string $data, SessionContextInterface $sessionContext): void
     {
-        $sessionContext->setVault((new Vault())->saveData($data, self::getKey($sessionContext)));
+        $sessionContext->setVault(Vault::factory(new Crypt())->saveData($data, self::getKey($sessionContext)));
     }
 
     /**
      * Regenerar la clave de sesión
      *
-     * @param SessionContext $sessionContext
-     *
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public static function reKey(SessionContext $sessionContext)
+    public static function reKey(SessionContextInterface $sessionContext): void
     {
         logger(__METHOD__);
 
-        $oldSeed = session_id() . $sessionContext->getSidStartTime();
+        $oldSeed = sprintf("%s%s", session_id(), $sessionContext->getSidStartTime());
 
         session_regenerate_id(true);
 
-        $newSeed = session_id() . $sessionContext->setSidStartTime(time());
+        $newSeed = sprintf("%s%s", session_id(), $sessionContext->setSidStartTime(time()));
 
         $sessionContext->setVault($sessionContext->getVault()->reKey($newSeed, $oldSeed));
     }

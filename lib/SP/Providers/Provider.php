@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,51 +19,45 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers;
 
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * Class Service
  *
  * @package SP\Providers
  */
-abstract class Provider
+abstract class Provider implements ProviderInterface
 {
-    const STATUS_INTERNAL_ERROR = 1000;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ContextInterface
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected readonly ConfigFileService $config;
+    protected readonly ContextInterface  $context;
+    protected readonly EventDispatcherInterface $eventDispatcher;
+    protected bool                              $initialized = false;
 
     /**
      * Provider constructor.
      *
-     * @param ContainerInterface $dic
+     * @param Application $application
      */
-    final public function __construct(ContainerInterface $dic)
+    public function __construct(Application $application)
     {
-        $this->config = $dic->get(Config::class);
-        $this->context = $dic->get(ContextInterface::class);
-        $this->eventDispatcher = $dic->get(EventDispatcher::class);
+        $this->config = $application->getConfig();
+        $this->context = $application->getContext();
+        $this->eventDispatcher = $application->getEventDispatcher();
+    }
 
-        if (method_exists($this, 'initialize')) {
-            $this->initialize($dic);
-        }
+    /**
+     * @return bool
+     */
+    public function isInitialized(): bool
+    {
+        return $this->initialized;
     }
 }

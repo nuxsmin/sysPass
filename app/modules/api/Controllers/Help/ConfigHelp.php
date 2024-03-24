@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers\Help;
@@ -36,7 +36,7 @@ final class ConfigHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function backup()
+    public static function backup(): array
     {
         return
             [
@@ -47,7 +47,7 @@ final class ConfigHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function export()
+    public static function export(): array
     {
         return
             [

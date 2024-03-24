@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -34,7 +34,7 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Http\Address;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class TrackGrid
@@ -43,10 +43,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class TrackGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    protected ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -120,29 +117,42 @@ final class TrackGrid extends GridBase
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('dateTime');
         $gridData->addDataRowSource('dateTimeUnlock');
-        $gridData->addDataRowSource('source', null, null, false);
-        $gridData->addDataRowSource('ipv4', null, function ($value) use ($demo) {
-            if ($value !== null) {
-                if ($demo) {
-                    return '*.*.*.*';
+        $gridData->addDataRowSource(
+            'source',
+            null,
+            null,
+            false
+        );
+        $gridData->addDataRowSource(
+            'ipv4',
+            null,
+            function ($value) use ($demo) {
+                if ($value !== null) {
+                    if ($demo) {
+                        return '*.*.*.*';
+                    }
+
+                    return Address::fromBinary($value);
                 }
 
-                return Address::fromBinary($value);
+                return '&nbsp;';
             }
+        );
+        $gridData->addDataRowSource(
+            'ipv6',
+            null,
+            function ($value) use ($demo) {
+                if ($value !== null) {
+                    if ($demo) {
+                        return '*.*.*.*';
+                    }
 
-            return '&nbsp;';
-        });
-        $gridData->addDataRowSource('ipv6', null, function ($value) use ($demo) {
-            if ($value !== null) {
-                if ($demo) {
-                    return '*.*.*.*';
+                    return Address::fromBinary($value);
                 }
 
-                return Address::fromBinary($value);
+                return '&nbsp;';
             }
-
-            return '&nbsp;';
-        });
+        );
         $gridData->addDataRowSource('userId');
         $gridData->setData($this->queryResult);
 
@@ -152,16 +162,19 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::TRACK_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::TRACK_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchTrack');
         $gridActionSearch->setTitle(__('Search for track'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -169,18 +182,21 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRefrestAction()
+    private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_SEARCH);
+        $gridAction->setId(AclActionsInterface::TRACK_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('track/refresh');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
         $gridAction->addData('action-form', 'frmSearchTrack');
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
+        );
 
         return $gridAction;
     }
@@ -188,17 +204,20 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getClearAction()
+    private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_CLEAR);
+        $gridAction->setId(AclActionsInterface::TRACK_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
-        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
-        $gridAction->setIcon($this->icons->getIconClear());
+        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
+        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
+        $gridAction->setIcon($this->icons->clear());
         $gridAction->setOnClickFunction('track/clear');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_CLEAR));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::TRACK_CLEAR)
+        );
 
         return $gridAction;
     }
@@ -206,17 +225,20 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getUnlockAction()
+    private function getUnlockAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::TRACK_UNLOCK);
+        $gridAction->setId(AclActionsInterface::TRACK_UNLOCK);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
-        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
-        $gridAction->setIcon($this->icons->getIconCheck());
+        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
+        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
+        $gridAction->setIcon($this->icons->check());
         $gridAction->setOnClickFunction('track/unlock');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_UNLOCK));
         $gridAction->setFilterRowSource('tracked', 0);
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::TRACK_UNLOCK)
+        );
 
         return $gridAction;
     }

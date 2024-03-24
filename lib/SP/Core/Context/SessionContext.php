@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,55 +19,51 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Context;
 
-use SP\Core\Crypt\Vault;
-use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
-use SP\Services\Account\AccountSearchFilter;
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\User\Services\UserLoginResponse;
+
+use function SP\__u;
+use function SP\getLastCaller;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Session
  *
  * @package SP\Core\Session
  */
-final class SessionContext extends ContextBase
+class SessionContext extends ContextBase implements SessionContextInterface
 {
-    const MAX_SID_TIME = 120;
+    public const MAX_SID_TIME = 120;
 
-    private static $isReset = false;
-    private static $isLocked = false;
-
-    /**
-     * @return bool
-     */
-    public static function isLocked()
-    {
-        return self::$isLocked;
-    }
+    private static bool $isReset  = false;
+    private static bool $isLocked = false;
 
     /**
      * Closes session
      */
-    public static function close()
+    public static function close(): void
     {
         if (!self::$isLocked) {
-            logger('Session closed');
+            self::$isLocked = session_write_close();
 
-            session_write_close();
-
-            self::$isLocked = true;
+            logger(sprintf('Session close value=%s caller=%s', self::$isLocked, getLastCaller()));
         }
     }
 
     /**
      * Destruir la sesión y reiniciar
      */
-    public static function restart()
+    public static function restart(): void
     {
         self::$isReset = true;
 
@@ -78,23 +74,16 @@ final class SessionContext extends ContextBase
 
     /**
      * Devuelve el tema visual utilizado en sysPass
-     *
-     * @return string
      */
-    public function getTheme()
+    public function getTheme(): string
     {
         return $this->getContextKey('theme');
     }
 
     /**
-     * Devolver una variable de sesión
-     *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
+     * Return a context variable's value
      */
-    protected function getContextKey(string $key, $default = null)
+    protected function getContextKey(string $key, mixed $default = null): mixed
     {
         try {
             return parent::getContextKey($key, $default);
@@ -107,23 +96,20 @@ final class SessionContext extends ContextBase
 
     /**
      * Establece el tema visual utilizado en sysPass
-     *
-     * @param $theme string El tema visual a utilizar
      */
-    public function setTheme($theme)
+    public function setTheme(string $theme): void
     {
         $this->setContextKey('theme', $theme);
     }
 
     /**
-     * Establecer una variable de sesión
+     * Set a context variable and its value
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
-     *
-     * @return mixed
+     * @template T
+     * @param T $value
+     * @return T|null
      */
-    protected function setContextKey(string $key, $value)
+    protected function setContextKey(string $key, mixed $value): mixed
     {
         try {
             if (self::$isLocked) {
@@ -142,200 +128,136 @@ final class SessionContext extends ContextBase
 
     /**
      * Establecer la hora de carga de la configuración
-     *
-     * @param int $time
      */
-    public function setConfigTime($time)
+    public function setConfigTime(int $time): void
     {
-        $this->setContextKey('configTime', (int)$time);
+        $this->setContextKey('configTime', $time);
     }
 
     /**
      * Devolver la hora de carga de la configuración
-     *
-     * @return int
      */
-    public function getConfigTime()
+    public function getConfigTime(): int
     {
-        return $this->getContextKey('configTime');
+        return (int)$this->getContextKey('configTime');
     }
 
     /**
      * Establece los datos del usuario en la sesión.
-     *
-     * @param UserLoginResponse $userLoginResponse
      */
-    public function setUserData(UserLoginResponse $userLoginResponse = null)
+    public function setUserData(?UserLoginResponse $userLoginResponse = null): void
     {
         $this->setContextKey('userData', $userLoginResponse);
     }
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
-     *
-     * @return ProfileData
      */
-    public function getUserProfile()
+    public function getUserProfile(): ?ProfileData
     {
         return $this->getContextKey('userProfile');
     }
 
     /**
      * Establece el objeto de perfil de usuario en la sesión.
-     *
-     * @param ProfileData $ProfileData
      */
-    public function setUserProfile(ProfileData $ProfileData)
+    public function setUserProfile(ProfileData $profileData): void
     {
-        $this->setContextKey('userProfile', $ProfileData);
+        $this->setContextKey('userProfile', $profileData);
     }
 
-    /**
-     * @return AccountSearchFilter
-     */
-    public function getSearchFilters()
+    public function getSearchFilters(): ?AccountSearchFilterDto
     {
-        return $this->getContextKey('searchFilters', null);
+        return $this->getContextKey('searchFilters');
     }
 
-    /**
-     * @param AccountSearchFilter $searchFilters
-     */
-    public function setSearchFilters(AccountSearchFilter $searchFilters)
+    public function setSearchFilters(AccountSearchFilterDto $searchFilters): void
     {
         $this->setContextKey('searchFilters', $searchFilters);
     }
 
-    public function resetAccountAcl()
+    public function resetAccountAcl(): void
     {
         $this->setContextKey('accountAcl', null);
     }
 
     /**
-     * Returns if user is logged in
-     *
-     * @return bool
+     * Returns whether the user is logged in
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return self::$isReset === false && $this->getUserData()->getLogin()
-            && is_object($this->getUserData()->getPreferences());
+               && is_object($this->getUserData()->getPreferences());
     }
 
     /**
      * Devuelve los datos del usuario en la sesión.
-     *
-     * @return UserLoginResponse
      */
-    public function getUserData()
+    public function getUserData(): UserLoginResponse
     {
         return $this->getContextKey('userData', new UserLoginResponse());
     }
 
     /**
      * Establecer si el usuario está completamente autorizado
-     *
-     * @param $bool
      */
-    public function setAuthCompleted($bool)
+    public function setAuthCompleted(bool $bool): void
     {
-        $this->setContextKey('authCompleted', (bool)$bool);
+        $this->setContextKey('authCompleted', $bool);
     }
 
     /**
      * Devolver si el usuario está completamente logeado
      */
-    public function getAuthCompleted()
+    public function getAuthCompleted(): bool
     {
-        return $this->getContextKey('authCompleted', false);
+        return (bool)$this->getContextKey('authCompleted', false);
     }
 
     /**
      * Devolver la clave maestra temporal
-     *
-     * @return string
      */
-    public function getTemporaryMasterPass()
+    public function getTemporaryMasterPass(): ?string
     {
         return $this->getContextKey('tempmasterpass');
     }
 
     /**
      * Sets a temporary master password
-     *
-     * @param string $password
      */
-    public function setTemporaryMasterPass(string $password)
+    public function setTemporaryMasterPass(string $password): void
     {
         $this->setContextKey('tempmasterpass', $password);
     }
 
     /**
-     * @return mixed
-     */
-    public function getSecurityKey()
-    {
-        return $this->getContextKey('sk');
-    }
-
-    /**
-     * @param string $salt
-     *
-     * @return string
-     */
-    public function generateSecurityKey(string $salt)
-    {
-        return $this->setSecurityKey(sha1(time() . $salt));
-    }
-
-    /**
-     * @param $sk
-     *
-     * @return mixed
-     */
-    public function setSecurityKey($sk)
-    {
-        return $this->setContextKey('sk', $sk);
-    }
-
-    /**
      * Devolver la clave pública
-     *
-     * @return mixed
      */
-    public function getPublicKey()
+    public function getPublicKey(): ?string
     {
         return $this->getContextKey('pubkey');
     }
 
     /**
      * Establecer la clave pública
-     *
-     * @param $key
      */
-    public function setPublicKey($key)
+    public function setPublicKey(string $key): void
     {
         $this->setContextKey('pubkey', $key);
     }
 
     /**
      * Devuelve el timeout de la sesión
-     *
-     * @return int|null El valor en segundos
      */
-    public function getSessionTimeout()
+    public function getSessionTimeout(): ?int
     {
         return $this->getContextKey('sessionTimeout');
     }
 
     /**
      * Establecer el timeout de la sesión
-     *
-     * @param int $timeout El valor en segundos
-     *
-     * @return int
      */
-    public function setSessionTimeout($timeout)
+    public function setSessionTimeout(int $timeout): int
     {
         $this->setContextKey('sessionTimeout', $timeout);
 
@@ -344,130 +266,120 @@ final class SessionContext extends ContextBase
 
     /**
      * Devuelve la hora de la última actividad
-     *
-     * @return int
      */
-    public function getLastActivity()
+    public function getLastActivity(): int
     {
         return $this->getContextKey('lastActivity', 0);
     }
 
     /**
      * Establece la hora de la última actividad
-     *
-     * @param $time int La marca de hora
      */
-    public function setLastActivity($time)
+    public function setLastActivity(int $time): void
     {
         $this->setContextKey('lastActivity', $time);
     }
 
     /**
      * Devuelve la hora de inicio de actividad.
-     *
-     * @return int
      */
-    public function getStartActivity()
+    public function getStartActivity(): int
     {
         return $this->getContextKey('startActivity', 0);
     }
 
     /**
      * Establecer el lenguaje de la sesión
-     *
-     * @param $locale
      */
-    public function setLocale($locale)
+    public function setLocale(string $locale): void
     {
         $this->setContextKey('locale', $locale);
     }
 
     /**
      * Devuelve el lenguaje de la sesión
-     *
-     * @return string
      */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->getContextKey('locale');
     }
 
     /**
      * Devolver el color asociado a una cuenta
-     *
-     * @return string
      */
-    public function getAccountColor()
+    public function getAccountColor(): string
     {
         return $this->getContextKey('accountcolor');
     }
 
     /**
      * Establece el color asociado a una cuenta
-     *
-     * @param array $color
      */
-    public function setAccountColor(array $color)
+    public function setAccountColor(array $color): void
     {
         $this->setContextKey('accountcolor', $color);
     }
 
     /**
      * Devuelve el estado de la aplicación
-     *
-     * @return bool
      */
-    public function getAppStatus()
+    public function getAppStatus(): ?string
     {
         return $this->getContextKey('status');
     }
 
     /**
      * Establecer el estado de la aplicación
-     *
-     * @param string $status
      */
-    public function setAppStatus($status)
+    public function setAppStatus(string $status): void
     {
         $this->setContextKey('status', $status);
     }
 
     /**
-     * Reset del estado de la aplicación
-     *
-     * @return bool
+     * Return the CSRF key
      */
-    public function resetAppStatus()
+    public function getCSRF(): ?string
+    {
+        return $this->getContextKey('csrf');
+    }
+
+    /**
+     * Set the CSRF key
+     */
+    public function setCSRF(string $csrf): void
+    {
+        $this->setContextKey('csrf', $csrf);
+    }
+
+    /**
+     * Reset del estado de la aplicación
+     */
+    public function resetAppStatus(): ?bool
     {
         return $this->setContextKey('status', null);
     }
 
     /**
      * Devuelve la clave maestra encriptada
-     *
-     * @return Vault
      */
-    public function getVault()
+    public function getVault(): ?VaultInterface
     {
         return $this->getContextKey('vault');
     }
 
     /**
      * Establecer la clave maestra encriptada
-     *
-     * @param Vault $vault
      */
-    public function setVault(Vault $vault)
+    public function setVault(VaultInterface $vault): void
     {
         $this->setContextKey('vault', $vault);
     }
 
     /**
      * Establece la cache de cuentas
-     *
-     * @param array $accountsCache
      */
-    public function setAccountsCache(array $accountsCache)
+    public function setAccountsCache(array $accountsCache): void
     {
         $this->setContextKey('accountsCache', $accountsCache);
     }
@@ -475,9 +387,9 @@ final class SessionContext extends ContextBase
     /**
      * Devuelve la cache de cuentas
      *
-     * @return AccountCache[]
+     * @return AccountCacheDto[]|null
      */
-    public function getAccountsCache()
+    public function getAccountsCache(): ?array
     {
         return $this->getContextKey('accountsCache');
     }
@@ -485,10 +397,14 @@ final class SessionContext extends ContextBase
     /**
      * @throws ContextException
      */
-    public function initialize()
+    public function initialize(): void
     {
         // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
+        if (headers_sent($filename, $line)
+            || @session_start() === false
+        ) {
+            logger(sprintf('Headers sent in %s:%d file', $filename, $line));
+
             throw new ContextException(__u('Session cannot be initialized'));
         }
 
@@ -502,22 +418,16 @@ final class SessionContext extends ContextBase
 
     /**
      * Devuelve la hora en la que el SID de sesión fue creado
-     *
-     * @return int
      */
-    public function getSidStartTime()
+    public function getSidStartTime(): int
     {
         return $this->getContextKey('sidStartTime', 0);
     }
 
     /**
      * Establece la hora de creación del SID
-     *
-     * @param $time int La marca de hora
-     *
-     * @return int
      */
-    public function setSidStartTime($time)
+    public function setSidStartTime(int $time): int
     {
         $this->setContextKey('sidStartTime', $time);
 
@@ -526,50 +436,30 @@ final class SessionContext extends ContextBase
 
     /**
      * Establece la hora de inicio de actividad
-     *
-     * @param $time int La marca de hora
-     *
-     * @return int
      */
-    public function setStartActivity($time)
+    public function setStartActivity(int $time): int
     {
         $this->setContextKey('startActivity', $time);
 
         return $time;
     }
 
-    /**
-     * @param string $ctxKeyName
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
-    public function setPluginKey(string $ctxKeyName, string $key, $value)
+    public function setPluginKey(string $pluginName, string $key, mixed $value): mixed
     {
         /** @var ContextCollection $ctxKey */
-        $ctxKey = $this->getContextKey($ctxKeyName, new ContextCollection());
+        $ctxKey = $this->getContextKey($pluginName, new ContextCollection());
+        $ctxKey->set($key, $value);
 
-        $this->setContextKey($ctxKeyName, $ctxKey->set($key, $value));
+        $this->setContextKey($pluginName, $value);
 
         return $value;
     }
 
-    /**
-     * @param string $ctxKeyName
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getPluginKey(string $ctxKeyName, string $key)
+    public function getPluginKey(string $pluginName, string $key): mixed
     {
         /** @var ContextCollection $ctxKey */
-        $ctxKey = $this->getContextKey($ctxKeyName);
+        $ctxKey = $this->getContextKey($pluginName);
 
-        if ($ctxKey !== null) {
-            return $ctxKey->get($key);
-        }
-
-        return null;
+        return $ctxKey?->get($key);
     }
 }

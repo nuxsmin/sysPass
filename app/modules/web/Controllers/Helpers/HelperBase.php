@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
+use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class HelperBase
@@ -43,59 +40,30 @@ use SP\Mvc\View\Template;
  */
 abstract class HelperBase
 {
-    /**
-     * @var Template
-     */
-    protected $view;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var SessionContext
-     */
-    protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected TemplateInterface   $view;
+    protected ConfigDataInterface $configData;
+    protected ContextInterface    $context;
+    protected EventDispatcher $eventDispatcher;
+    protected ConfigFile      $config;
+    protected Request         $request;
 
     /**
      * Constructor
      *
-     * @param Template         $template
-     * @param Config           $config
-     * @param ContextInterface $context
-     * @param EventDispatcher  $eventDispatcher
-     * @param Container        $container
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @param Application $application
+     * @param TemplateInterface $template
+     * @param RequestInterface $request
      */
-    final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
-    {
-        $this->dic = $container;
-        $this->request = $this->dic->get(Request::class);
+    public function __construct(
+        Application $application,
+        TemplateInterface $template,
+        RequestInterface $request
+    ) {
+        $this->config = $application->getConfig();
+        $this->context = $application->getContext();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->request = $request;
+        $this->configData = $this->config->getConfigData();
         $this->view = $template;
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
     }
 }

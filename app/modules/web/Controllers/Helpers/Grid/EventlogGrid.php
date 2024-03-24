@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -34,7 +34,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class EventlogGrid
@@ -43,10 +43,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class EventlogGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -122,22 +119,33 @@ final class EventlogGrid extends GridBase
         $gridData->addDataRowSource('level');
         $gridData->addDataRowSource('action', null, null, false);
         $gridData->addDataRowSource('login');
-        $gridData->addDataRowSource('ipAddress', false,
+        $gridData->addDataRowSource(
+            'ipAddress',
+            false,
             function ($value) use ($isDemoMode) {
                 return $isDemoMode ? '*.*.*.*' : $value;
-            });
-        $gridData->addDataRowSource('description', false,
+            }
+        );
+        $gridData->addDataRowSource(
+            'description',
+            false,
             function ($value) use ($isDemoMode) {
                 if ($isDemoMode) {
-                    $value = preg_replace('/\d+\.\d+\.\d+\.\d+/', '*.*.*.*', $value);
+                    $value = preg_replace(
+                        '/\d+\.\d+\.\d+\.\d+/',
+                        '*.*.*.*',
+                        $value
+                    );
                 }
 
                 if (preg_match('/^SQL.*/m', $value)) {
                     $value = preg_replace([
-                        '/([a-zA-Z_]+),/m',
-                        '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'],
-                        ['\\1,<br>', '<br>\\1'],
-                        $value);
+                                              '/([a-zA-Z_]+),/m',
+                                              '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
+                                          ],
+                                          ['\\1,<br>', '<br>\\1'],
+                                          $value
+                    );
                 }
 
                 return wordwrap(
@@ -146,7 +154,9 @@ final class EventlogGrid extends GridBase
                     '<br>',
                     true
                 );
-            }, false);
+            },
+            false
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -155,16 +165,19 @@ final class EventlogGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::EVENTLOG_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchEvent');
         $gridActionSearch->setTitle(__('Search for Events'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -172,18 +185,21 @@ final class EventlogGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRefrestAction()
+    private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $gridAction->setId(AclActionsInterface::EVENTLOG_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('eventlog/refresh');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
         $gridAction->addData('action-form', 'frmSearchEvent');
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
+        );
 
         return $gridAction;
     }
@@ -191,17 +207,20 @@ final class EventlogGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getClearAction()
+    private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::EVENTLOG_CLEAR);
+        $gridAction->setId(AclActionsInterface::EVENTLOG_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
         $gridAction->setName(__('Clear the event log out'));
         $gridAction->setTitle(__('Clear the event log out'));
-        $gridAction->setIcon($this->icons->getIconClear());
+        $gridAction->setIcon($this->icons->clear());
         $gridAction->setOnClickFunction('eventlog/clear');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::EVENTLOG_CLEAR)
+        );
 
         return $gridAction;
     }

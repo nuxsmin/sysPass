@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,82 +19,94 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
 
-
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Exceptions\NoSuchPropertyException;
+use ReflectionClass;
+use SP\Domain\Common\Attributes\Encryptable;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\CryptException;
 
 /**
  * Trait EncryptedModel
- *
- * @package SP\DataModel
  */
 trait EncryptedModel
 {
-    /**
-     * @var string
-     */
-    private $key;
+    protected ?string $key = null;
 
     /**
-     * @param string $key
-     * @param string $property
+     * Encrypt the encryptable property and returns a new object with the encrypted property and key
      *
-     * @return static|null
-     * @throws NoSuchPropertyException
-     * @throws CryptoException
+     * @param string $password
+     * @param CryptInterface $crypt
+     *
+     * @return EncryptedModel
+     * @throws CryptException
      */
-    public function encrypt(string $key, string $property = 'data')
+    public function encrypt(string $password, CryptInterface $crypt): static
     {
-        if (property_exists($this, $property)) {
-            if ($this->$property === null) {
-                return null;
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getAttributes(Encryptable::class) as $attribute) {
+            /** @var Encryptable $instance */
+            $instance = $attribute->newInstance();
+
+            $data = $this->{$instance->getDataProperty()};
+
+            if ($data !== null) {
+                $key = $crypt->makeSecuredKey($password);
+
+                return $this->mutate([
+                                         $instance->getKeyProperty() => $key,
+                                         $instance->getDataProperty() => $crypt->encrypt(
+                                             $data,
+                                             $key,
+                                             $password
+                                         )
+                                     ]);
             }
-
-            $this->key = Crypt::makeSecuredKey($key);
-
-            $this->$property = Crypt::encrypt($this->$property, $this->key, $key);
-
-            return $this;
         }
 
-        throw new NoSuchPropertyException($property);
+        return $this;
     }
 
     /**
-     * @param string $key
-     * @param string $property
+     * Decrypt the encryptable property and returns a new object with the decryped property and key
      *
-     * @return static|null
-     * @throws NoSuchPropertyException
-     * @throws CryptoException
+     * @param string $password
+     * @param CryptInterface $crypt
+     *
+     * @return EncryptedModel
+     * @throws CryptException
      */
-    public function decrypt(string $key, string $property = 'data')
+    public function decrypt(string $password, CryptInterface $crypt): static
     {
-        if (property_exists($this, $property)
-            && !empty($this->key)
-        ) {
-            if ($this->$property === null) {
-                return null;
+        $reflectionClass = new ReflectionClass($this);
+
+        foreach ($reflectionClass->getAttributes(Encryptable::class) as $attribute) {
+            /** @var Encryptable $instance */
+            $instance = $attribute->newInstance();
+
+            $data = $this->{$instance->getDataProperty()};
+            $key = $this->{$instance->getKeyProperty()};
+
+            if ($data !== null && $key !== null) {
+                return $this->mutate([
+                                         $instance->getDataProperty() => $crypt->decrypt(
+                                             $data,
+                                             $key,
+                                             $password
+                                         )
+                                     ]);
             }
-
-            $this->$property = Crypt::decrypt($this->$property, $this->key, $key);
-
-            return $this;
         }
 
-        throw new NoSuchPropertyException($property);
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getKey(): string
+    public function getKey(): ?string
     {
         return $this->key;
     }

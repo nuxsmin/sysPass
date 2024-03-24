@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
 use Exception;
-use SP\Core\Acl\AccountPermissionException;
-use SP\Core\Acl\UnauthorizedPageException;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Mvc\View\Template;
-use SP\Services\User\UpdatedMasterPassException;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\processException;
 
 /**
  * Class ErrorUtil
@@ -42,26 +45,27 @@ final class ErrorUtil
     /**
      * Constantes de errores
      */
-    const ERR_UNAVAILABLE = 0;
-    const ERR_ACCOUNT_NO_PERMISSION = 1;
-    const ERR_PAGE_NO_PERMISSION = 2;
-    const ERR_UPDATE_MPASS = 3;
-    const ERR_OPERATION_NO_PERMISSION = 4;
-    const ERR_EXCEPTION = 5;
+    public const ERR_UNAVAILABLE             = 0;
+    public const ERR_ACCOUNT_NO_PERMISSION   = 1;
+    public const ERR_PAGE_NO_PERMISSION      = 2;
+    public const ERR_UPDATE_MPASS            = 3;
+    public const ERR_OPERATION_NO_PERMISSION = 4;
+    public const ERR_EXCEPTION               = 5;
 
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template  $view
+     * @param TemplateInterface $view
      * @param Exception $e
-     * @param string    $replace Template replacement
-     * @param bool      $render
+     * @param string|null $replace Template replacement
+     * @param bool $render
      */
-    public static function showExceptionInView(Template $view,
-                                               Exception $e,
-                                               $replace = null,
-                                               $render = true)
-    {
+    public static function showExceptionInView(
+        TemplateInterface $view,
+        Exception $e,
+        ?string   $replace = null,
+        bool      $render = true
+    ): void {
         switch (get_class($e)) {
             case UpdatedMasterPassException::class:
                 self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render, $replace);
@@ -80,23 +84,29 @@ final class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template $view
-     * @param int      $type int con el tipo de error
-     * @param bool     $render
-     * @param null     $replace
+     * @param TemplateInterface $view
+     * @param int $type int con el tipo de error
+     * @param bool $render
+     * @param string|null $replace
      */
-    public static function showErrorInView(Template $view, $type, $render = true, $replace = null)
-    {
+    public static function showErrorInView(
+        TemplateInterface $view,
+        int     $type,
+        bool    $render = true,
+        ?string $replace = null
+    ): void {
         self::addErrorTemplate($view, $replace);
 
         $error = self::getErrorTypes($type);
 
-        $view->append('errors',
+        $view->append(
+            'errors',
             [
                 'type' => SPException::WARNING,
                 'description' => $error['txt'],
-                'hint' => $error['hint']
-            ]);
+                'hint' => $error['hint'],
+            ]
+        );
 
         if ($render) {
             try {
@@ -109,75 +119,61 @@ final class ErrorUtil
         }
     }
 
-    /**
-     * @param Template    $view
-     * @param string|null $replace
-     */
-    private static function addErrorTemplate(Template $view, string $replace = null)
+    private static function addErrorTemplate(TemplateInterface $view, string $replace = null): void
     {
         if ($replace === null) {
             $view->resetTemplates();
 
-            if ($view->hashContentTemplates()) {
+            if ($view->hasContentTemplates()) {
                 $view->resetContentTemplates();
                 $view->addContentTemplate('error', Template::PARTIALS_DIR);
             } else {
                 $view->addTemplate('error', Template::PARTIALS_DIR);
             }
+        } elseif ($view->hasContentTemplates()) {
+            $view->removeContentTemplate($replace);
+            $view->addContentTemplate('error', Template::PARTIALS_DIR);
         } else {
-            if ($view->hashContentTemplates()) {
-                $view->removeContentTemplate($replace);
-                $view->addContentTemplate('error', Template::PARTIALS_DIR);
-            } else {
-                $view->removeTemplate($replace);
-                $view->addTemplate('error', Template::PARTIALS_DIR);
-            }
+            $view->removeTemplate($replace);
+            $view->addTemplate('error', Template::PARTIALS_DIR);
         }
     }
 
     /**
      * Return error message by type
-     *
-     * @param $type
-     *
-     * @return mixed
      */
-    protected static function getErrorTypes($type)
+    protected static function getErrorTypes(int $type): array
     {
         $errorTypes = [
             self::ERR_UNAVAILABLE => [
                 'txt' => __('Option unavailable'),
-                'hint' => __('Please contact to the administrator')
+                'hint' => __('Please contact to the administrator'),
             ],
             self::ERR_ACCOUNT_NO_PERMISSION => [
                 'txt' => __('You don\'t have permission to access this account'),
-                'hint' => __('Please contact to the administrator')
+                'hint' => __('Please contact to the administrator'),
             ],
             self::ERR_PAGE_NO_PERMISSION => [
                 'txt' => __('You don\'t have permission to access this page'),
-                'hint' => __('Please contact to the administrator')
+                'hint' => __('Please contact to the administrator'),
             ],
             self::ERR_OPERATION_NO_PERMISSION => [
                 'txt' => __('You don\'t have permission to do this operation'),
-                'hint' => __('Please contact to the administrator')
+                'hint' => __('Please contact to the administrator'),
             ],
             self::ERR_UPDATE_MPASS => [
                 'txt' => __('Master password updated'),
-                'hint' => __('Please, restart the session for update it')
+                'hint' => __('Please, restart the session for update it'),
             ],
             self::ERR_EXCEPTION => [
                 'txt' => __('An exception occured'),
-                'hint' => __('Please contact to the administrator')
-            ]
+                'hint' => __('Please contact to the administrator'),
+            ],
         ];
 
-        if (!isset($errorTypes[$type])) {
-            return [
-                'txt' => __('An exception occured'),
-                'hint' => __('Please contact to the administrator')
-            ];
-        }
-
-        return $errorTypes[$type];
+        return $errorTypes[$type] ?? [
+            'txt' => __('An exception occured'),
+            'hint' => __('Please contact to the administrator'),
+        ];
     }
 }

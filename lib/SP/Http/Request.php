@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
@@ -27,136 +27,106 @@ namespace SP\Http;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Bootstrap;
-use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\SPException;
+use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Header;
+use SP\Domain\Http\Method;
+use SP\Domain\Http\RequestInterface;
+use SP\Util\FileUtil;
 use SP\Util\Filter;
 use SP\Util\Util;
+
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Clase Request para la gestión de peticiones HTTP
  *
  * @package SP
  */
-final class Request
+class Request implements RequestInterface
 {
     /**
      * @var array Directorios seguros para include
      */
-    const SECURE_DIRS = ['css', 'js'];
-    /**
-     * @var HeaderDataCollection
-     */
-    private $headers;
-    /**
-     * @var \Klein\Request
-     */
-    private $request;
-    /**
-     * @var DataCollection
-     */
-    private $params;
-    /**
-     * @var string
-     */
-    private $method;
-    /**
-     * @var bool
-     */
-    private $https;
+    public const SECURE_DIRS = ['css', 'js'];
+
+    private HeaderDataCollection $headers;
+    private DataCollection       $params;
+    private Method $method;
+    private ?bool  $https = null;
 
     /**
      * Request constructor.
-     *
-     * @param \Klein\Request $request
      */
-    public function __construct(\Klein\Request $request)
+    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIInterface $cryptPKI)
     {
-        $this->request = $request;
         $this->headers = $this->request->headers();
-        $this->params = $this->getParamsByMethod();
+        $this->method = Method::from($this->request->method());
+        $this->params = $this->getParamsForMethod();
         $this->detectHttps();
     }
 
-    /**
-     * @return DataCollection
-     */
-    private function getParamsByMethod()
+    private function getParamsForMethod(): DataCollection
     {
-        if ($this->request->method('GET')) {
-            $this->method = 'GET';
-            return $this->request->paramsGet();
-        } else {
-            $this->method = 'POST';
-            return $this->request->paramsPost();
-        }
+        return match ($this->method) {
+            Method::GET => $this->request->paramsGet(),
+            Method::POST => $this->request->paramsPost()
+        };
     }
 
     /**
      * Detects if the connection is done through HTTPS
      */
-    private function detectHttps()
+    private function detectHttps(): void
     {
-        $this->https = Util::boolval($this->request->server()->get('HTTPS', 'off'))
-            || $this->request->server()->get('SERVER_PORT', 0) === 443;
+        $server = $this->request->server();
+
+        $this->https = Util::boolval($server->get('HTTPS', 'off'))
+                       || $server->get('SERVER_PORT', 0) === 443;
     }
 
     /**
      * Devuelve un nombre de archivo seguro
-     *
-     * @param string $file
-     * @param string $base
-     *
-     * @return string
      */
-    public static function getSecureAppFile(string $file, string $base = null)
-    {
+    public static function getSecureAppFile(
+        string $file,
+        ?string $base = null
+    ): string {
         return basename(self::getSecureAppPath($file, $base));
     }
 
     /**
      * Devolver una ruta segura para
-     *
-     * @param string $path
-     * @param string $base
-     *
-     * @return string
      */
-    public static function getSecureAppPath(string $path, string $base = null)
-    {
+    public static function getSecureAppPath(
+        string $path,
+        ?string $base = null
+    ): string {
         if ($base === null) {
             $base = APP_ROOT;
         } elseif (!in_array(basename($base), self::SECURE_DIRS, true)) {
             return '';
         }
 
-        $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
+        $realPath = realpath(FileUtil::buildPath($base, $path));
 
-        if ($realPath === false
-            || strpos($realPath, $base) !== 0
-        ) {
+        if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';
         }
 
         return $realPath;
     }
 
-    /**
-     * @param bool $fullForwarded
-     *
-     * @return array|string
-     */
-    public function getClientAddress(bool $fullForwarded = false)
+    public function getClientAddress(bool $fullForwarded = false): string
     {
-        if (APP_MODULE === 'tests') {
-            return '127.0.0.1';
-        }
-
         $forwarded = $this->getForwardedFor();
 
         if ($forwarded !== null) {
-            return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
+            return $fullForwarded
+                ? implode(',', $forwarded)
+                : $forwarded[0];
         }
 
         return $this->request->server()->get('REMOTE_ADDR', '');
@@ -165,30 +135,35 @@ final class Request
     /**
      * @return string[]|null
      */
-    public function getForwardedFor()
+    public function getForwardedFor(): ?array
     {
         // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
-        $forwarded = $this->headers->get('HTTP_FORWARDED');
+        // Forwarded: for=12.34.56.78;host=example.com;proto=https,for=23.45.67.89
+        $forwarded = $this->headers->get(Header::HTTP_FORWARDED->value);
 
-        if ($forwarded !== null &&
-            preg_match_all(
-                '/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
+        if ($forwarded !== null
+            && preg_match_all(
+                '/for="?\[?([\w.:]+)]?"?/',
                 $forwarded,
-                $matches)
+                $matches
+            )
         ) {
-            return array_filter(array_merge($matches[1], $matches[2]), function ($value) {
-                return !empty($value);
-            });
+            return array_filter(
+                $matches[1],
+                static fn($value) => !empty($value)
+            );
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
-        $xForwarded = $this->headers->get('HTTP_X_FORWARDED_FOR');
+        $xForwarded = $this->headers->get(Header::HTTP_X_FORWARDED_FOR->value);
 
         if ($xForwarded !== null) {
-            $matches = preg_split('/(?<=[\w])+,\s?/i',
+            $matches = preg_split(
+                '/(?<=\w)+,\s?/',
                 $xForwarded,
                 -1,
-                PREG_SPLIT_NO_EMPTY);
+                PREG_SPLIT_NO_EMPTY
+            );
 
             if (count($matches) > 0) {
                 return $matches;
@@ -200,22 +175,16 @@ final class Request
 
     /**
      * Comprobar si se realiza una recarga de la página
-     *
-     * @return bool
      */
-    public function checkReload()
+    public function checkReload(): bool
     {
-        return $this->headers->get('Cache-Control') === 'max-age=0';
+        return $this->headers->get(Header::CACHE_CONTROL->value) === 'max-age=0';
     }
 
-    /**
-     * @param string $param
-     * @param string $default
-     *
-     * @return string|null
-     */
-    public function analyzeEmail(string $param, string $default = null)
-    {
+    public function analyzeEmail(
+        string $param,
+        ?string $default = null
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -225,12 +194,8 @@ final class Request
 
     /**
      * Analizar un valor encriptado y devolverlo desencriptado
-     *
-     * @param string $param
-     *
-     * @return string
      */
-    public function analyzeEncrypted(string $param)
+    public function analyzeEncrypted(string $param): string
     {
         $encryptedData = $this->analyzeString($param);
 
@@ -240,11 +205,10 @@ final class Request
 
         try {
             // Desencriptar con la clave RSA
-            $clearData = Bootstrap::getContainer()->get(CryptPKI::class)
-                ->decryptRSA(base64_decode($encryptedData));
+            $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
             // Desencriptar con la clave RSA
-            if ($clearData === false) {
+            if ($clearData === null) {
                 logger('No RSA encrypted data from request');
 
                 return $encryptedData;
@@ -258,14 +222,10 @@ final class Request
         }
     }
 
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return string|null
-     */
-    public function analyzeString(string $param, string $default = null)
-    {
+    public function analyzeString(
+        string $param,
+        ?string $default = null
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -273,14 +233,10 @@ final class Request
         return Filter::getString($this->params->get($param));
     }
 
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return string|null
-     */
-    public function analyzeUnsafeString(string $param, string $default = null)
-    {
+    public function analyzeUnsafeString(
+        string $param,
+        ?string $default = null
+    ): ?string {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -289,26 +245,25 @@ final class Request
     }
 
     /**
-     * @param string        $param
+     * @param string $param
      * @param callable|null $mapper
-     * @param mixed         $default
+     * @param null $default
      *
      * @return array|null
      */
-    public function analyzeArray(string $param, callable $mapper = null, $default = null)
-    {
+    public function analyzeArray(
+        string    $param,
+        ?callable $mapper = null,
+        mixed     $default = null
+    ): ?array {
         $requestValue = $this->params->get($param);
 
-        if ($requestValue !== null
-            && is_array($requestValue)
-        ) {
-            if (is_callable($mapper)) {
+        if (is_array($requestValue)) {
+            if ($mapper !== null) {
                 return $mapper($requestValue);
             }
 
-            return array_map(function ($value) {
-                return is_numeric($value) ? Filter::getInt($value) : Filter::getString($value);
-            }, $requestValue);
+            return Filter::getArray($requestValue);
         }
 
         return $default;
@@ -316,32 +271,22 @@ final class Request
 
     /**
      * Comprobar si la petición es en formato JSON
-     *
-     * @return bool
      */
-    public function isJson()
+    public function isJson(): bool
     {
-        return strpos($this->headers->get('Accept'), 'application/json') !== false;
+        return str_contains($this->headers->get(Header::ACCEPT->value), Header::ACCEPT_JSON->value);
     }
 
     /**
      * Comprobar si la petición es Ajax
-     *
-     * @return bool
      */
-    public function isAjax()
+    public function isAjax(): bool
     {
-        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest'
-            || $this->analyzeInt('isAjax', 0) === 1;
+        return $this->headers->get(Header::X_REQUESTED_WITH->value) === 'XMLHttpRequest'
+               || $this->analyzeInt('isAjax', 0) === 1;
     }
 
-    /**
-     * @param string $param
-     * @param int    $default
-     *
-     * @return int
-     */
-    public function analyzeInt(string $param, int $default = null)
+    public function analyzeInt(string $param, ?int $default = null): ?int
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -350,23 +295,12 @@ final class Request
         return Filter::getInt($this->params->get($param));
     }
 
-    /**
-     * @param string $file
-     *
-     * @return array|null
-     */
-    public function getFile(string $file)
+    public function getFile(string $file): ?array
     {
         return $this->request->files()->get($file);
     }
 
-    /**
-     * @param string $param
-     * @param bool   $default
-     *
-     * @return bool
-     */
-    public function analyzeBool(string $param, bool $default = null)
+    public function analyzeBool(string $param, ?bool $default = null): bool
     {
         if (!$this->params->exists($param)) {
             return (bool)$default;
@@ -377,11 +311,11 @@ final class Request
 
     /**
      * @param string $key
-     * @param string $param Checks the signature only for the given param
+     * @param string|null $param Checks the signature only for the given param
      *
      * @throws SPException
      */
-    public function verifySignature(string $key, string $param = null)
+    public function verifySignature(string $key, ?string $param = null): void
     {
         $result = false;
         $hash = $this->params->get('h');
@@ -390,8 +324,7 @@ final class Request
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = str_replace('&h=' . $hash, '', $this->request->uri());
-                $uri = substr($uri, strpos($uri, '?') + 1);
+                $uri = implode('&', $this->request->params('h'));
             } else {
                 $uri = $this->params->get($param, '');
             }
@@ -413,24 +346,17 @@ final class Request
      * Returns the URI used by the browser and checks for the protocol used
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return string
      */
     public function getHttpHost(): string
     {
-        $forwarded = $this->getForwardedData();
+        // Check in style of RFC 7239 otherwise the deprecated standard
+        $forwarded = $this->getForwardedData() ?? $this->getXForwardedData();
 
-        // Check in style of RFC 7239
         if (null !== $forwarded) {
-            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
+            return strtolower(sprintf('%s://%s', $forwarded['proto'], $forwarded['host']));
         }
 
-        $xForward = $this->getXForwardedData();
-
-        // Check (deprecated) de facto standard
-        if (null !== $xForward) {
-            return strtolower($xForward['proto'] . '://' . $xForward['host']);
-        }
-
+        /** @noinspection HttpUrlsUsage */
         $protocol = 'http://';
 
         // We got called directly
@@ -438,28 +364,34 @@ final class Request
             $protocol = 'https://';
         }
 
-        return $protocol . $this->request->server()->get('HTTP_HOST');
+        return sprintf('%s%s', $protocol, $this->request->server()->get('HTTP_HOST'));
     }
 
     /**
      * Devolver datos de forward RFC 7239
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return array|null
      */
-    public function getForwardedData()
+    public function getForwardedData(): ?array
     {
-        $forwarded = $this->getHeader('HTTP_FORWARDED');
+        $forwarded = $this->getHeader(Header::HTTP_FORWARDED->value);
 
         // Check in style of RFC 7239
         if (!empty($forwarded)
-            && preg_match('/proto=(\w+);/i', $forwarded, $matchesProto)
-            && preg_match('/host=(\w+);/i', $forwarded, $matchesHost)
+            && preg_match_all(
+                '/proto=(?P<proto>(\w+))|host=(?P<host>([\w.]+))/i',
+                $forwarded,
+                $matches
+            )
         ) {
+            $mapper = static fn(array $values): string => (string)current(
+                array_filter($values, static fn(mixed $value) => !empty($value))
+            );
+
             $data = [
-                'host ' => $matchesHost[0],
-                'proto' => $matchesProto[0],
-                'for' => $this->getForwardedFor()
+                'host' => $mapper($matches['host']),
+                'proto' => $mapper($matches['proto']),
+                'for' => $this->getForwardedFor(),
             ];
 
             // Check if protocol and host are not empty
@@ -471,11 +403,6 @@ final class Request
         return null;
     }
 
-    /**
-     * @param string $header
-     *
-     * @return string
-     */
     public function getHeader(string $header): string
     {
         return $this->headers->get($header, '');
@@ -483,68 +410,46 @@ final class Request
 
     /**
      * Devolver datos de x-forward
-     *
-     * @return array|null
      */
-    public function getXForwardedData()
+    public function getXForwardedData(): ?array
     {
-        $forwardedHost = $this->getHeader('HTTP_X_FORWARDED_HOST');
-        $forwardedProto = $this->getHeader('HTTP_X_FORWARDED_PROTO');
+        $clean = static fn(string $value) => trim(str_replace('"', '', $value));
+
+        $forwardedHost = $clean($this->getHeader(Header::HTTP_X_FORWARDED_HOST->value));
+        $forwardedProto = $clean($this->getHeader(Header::HTTP_X_FORWARDED_PROTO->value));
 
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
-            $data = [
-                'host' => trim(str_replace('"', '', $forwardedHost)),
-                'proto' => trim(str_replace('"', '', $forwardedProto)),
-                'for' => $this->getForwardedFor()
+            return [
+                'host' => $forwardedHost,
+                'proto' => $forwardedProto,
+                'for' => $this->getForwardedFor(),
             ];
-
-            // Check if protocol and host are not empty
-            if (!empty($data['host']) && !empty($data['proto'])) {
-                return $data;
-            }
         }
 
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod(): string
+    public function getMethod(): Method
     {
         return $this->method;
     }
 
-    /**
-     * @return bool
-     */
-    public function isHttps(): bool
+    public function isHttps(): ?bool
     {
         return $this->https;
     }
 
-    /**
-     * @return int
-     */
     public function getServerPort(): int
     {
         return (int)$this->request->server()->get('SERVER_PORT', 80);
     }
 
-    /**
-     * @return \Klein\Request
-     */
     public function getRequest(): \Klein\Request
     {
         return $this->request;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
     public function getServer(string $key): string
     {
         return (string)$this->request->server()->get($key, '');

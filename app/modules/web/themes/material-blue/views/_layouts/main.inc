@@ -1,7 +1,7 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var \SP\Mvc\View\TemplateInterface $this
  */
 
 use SP\Mvc\View\Template;
@@ -37,7 +37,7 @@ use SP\Mvc\View\Template;
         <?php
         if ($_getvar('useFixedHeader')):
             include $this->includePartial('fixed-header');
-        elseif ($this->hashContentTemplates()):
+        elseif ($this->hasContentTemplates()):
             foreach ($this->getContentTemplates() as $template):
                 include $template;
             endforeach;
@@ -57,8 +57,6 @@ use SP\Mvc\View\Template;
         "use strict";
 
         sysPassApp.log.info("ready");
-
-        sysPassApp.sk.set("<?php echo $_getvar('sk'); ?>");
     });
 </script>
 

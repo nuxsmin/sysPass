@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
-use SP\Config\ConfigData;
-use SP\Html\Html;
-use SP\Http\Request;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Http\RequestInterface;
 
 /**
  * Class HttpUtil
@@ -37,37 +36,23 @@ final class HttpUtil
 {
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS
-     *
-     * @param ConfigData $configData
-     * @param Request    $request
      */
-    public static function checkHttps(ConfigData $configData, Request $request)
+    public static function checkHttps(ConfigDataInterface $configData, RequestInterface $request): void
     {
         if ($configData->isHttpsEnabled() && !$request->isHttps()) {
             $serverPort = $request->getServerPort();
 
-            $port = $serverPort !== 443 ? ':' . $serverPort : '';
+            $port = $serverPort !== 443 ? ':'.$serverPort : '';
             $host = str_replace('http', 'https', $request->getHttpHost());
 
-            header('Location: ' . $host . $port . $_SERVER['REQUEST_URI']);
+            header(
+                sprintf(
+                    'Location: %s%s%s',
+                    $host,
+                    $port,
+                    $_SERVER['REQUEST_URI']
+                )
+            );
         }
-    }
-
-    /**
-     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
-     */
-    public static function importUrlParamsToGet()
-    {
-        $params = [];
-
-        foreach ($_REQUEST as $param => $value) {
-            $param = Filter::getString($param);
-
-            if (strpos($param, 'g_') !== false) {
-                $params[] = substr($param, 2) . '=' . Html::sanitize($value);
-            }
-        }
-
-        return count($params) > 0 ? '?' . implode('&', $params) : '';
     }
 }

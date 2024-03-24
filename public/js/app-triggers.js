@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -368,10 +368,6 @@ sysPass.Triggers = function (log) {
             selectDetect($container);
 
             const $sk = $container.find(":input[name='sk']");
-
-            if ($sk.length > 0 && $sk[0].value !== "") {
-                sysPassApp.sk.set($sk[0].value);
-            }
 
             if (typeof sysPassApp.theme.viewsTriggers.common === "function") {
                 sysPassApp.theme.viewsTriggers.common($container);

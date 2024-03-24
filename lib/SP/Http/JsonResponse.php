@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,278 +19,91 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
 
-use JsonSerializable;
-use stdClass;
+use JsonException;
+use Klein\Response;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Header;
+use SP\Domain\Http\JsonResponseInterface;
+
+use function SP\__u;
 
 /**
- * Class Json para definir la estructura de una respuesta en formato JSON
- *
- * @package SP\Http
+ * Class JsonResponse
  */
-final class JsonResponse implements JsonSerializable
+final class JsonResponse implements JsonResponseInterface
 {
-    const JSON_SUCCESS = 0;
-    const JSON_SUCCESS_STICKY = 100;
-    const JSON_ERROR = 1;
-    const JSON_ERROR_STICKY = 101;
-    const JSON_WARNING = 2;
-    const JSON_WARNING_STICKY = 102;
-    const JSON_LOGOUT = 10;
+    /**
+     * Json constructor.
+     */
+    public function __construct(private readonly Response $response)
+    {
+    }
+
+    public static function factory(Response $response): JsonResponseInterface
+    {
+        return new self($response);
+    }
 
     /**
-     * @var int
-     */
-    protected $status = 1;
-    /**
-     * @var string
-     */
-    protected $description = '';
-    /**
-     * @var string
-     */
-    protected $action = '';
-    /**
-     * @var array
-     */
-    protected $data = [];
-    /**
-     * @var array
-     */
-    protected $messages = [];
-    /**
-     * @var string
-     */
-    protected $container = '';
-    /**
-     * @var string
-     */
-    protected $csrf = '';
-
-    /**
-     * JsonResponse constructor.
+     * Devuelve una respuesta en formato JSON
      *
-     * @param string $description
-     */
-    public function __construct(string $description = null)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
+     * @param string $data JSON string
      *
-     * @return JsonResponse
+     * @return bool
      */
-    public function setStatus($status)
+    public function sendRaw(string $data): bool
     {
-        $this->status = (int)$status;
-
-        return $this;
+        return $this->response
+            ->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value)
+            ->body($data)
+            ->send(true)
+            ->isSent();
     }
 
     /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
+     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @return JsonResponse
-     */
-    public function setDescription($description)
-    {
-        $this->description = __($description);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @param string $action
+     * @param JsonMessage $jsonMessage
      *
-     * @return JsonResponse
+     * @return bool
+     * @throws SPException
      */
-    public function setAction($action)
+    public function send(JsonMessage $jsonMessage): bool
     {
-        $this->action = $action;
+        $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
 
-        return $this;
-    }
+        try {
+            $this->response->body(self::buildJsonFrom($jsonMessage));
+        } catch (SPException $e) {
+            $jsonMessage = new JsonMessage($e->getMessage());
+            $jsonMessage->addMessage($e->getHint());
 
-    /**
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param array|stdClass $data
-     *
-     * @return JsonResponse
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMessages()
-    {
-        return $this->messages;
-    }
-
-    /**
-     * @param array $messages
-     *
-     * @return JsonResponse
-     */
-    public function setMessages(array $messages)
-    {
-        $this->messages = array_map('__', $messages);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
-     * @param string $container
-     *
-     * @return JsonResponse
-     */
-    public function setContainer($container)
-    {
-        $this->container = $container;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCsrf()
-    {
-        return $this->csrf;
-    }
-
-    /**
-     * @param string $csrf
-     *
-     * @return JsonResponse
-     */
-    public function setCsrf($csrf)
-    {
-        $this->csrf = $csrf;
-
-        return $this;
-    }
-
-    /**
-     * @param $message
-     *
-     * @return JsonResponse
-     */
-    public function addMessage($message)
-    {
-        $this->messages[] = __($message);
-        return $this;
-    }
-
-    /**
-     * @param $param
-     *
-     * @return $this
-     */
-    public function addParam($param)
-    {
-        if (is_numeric($param)) {
-            $param = (int)$param;
+            $this->response->body(self::buildJsonFrom($jsonMessage));
         }
 
-        $this->data[] = $param;
-
-        return $this;
+        return $this->response->send(true)->isSent();
     }
 
     /**
-     * Specify data which should be serialized to JSON
+     * Devuelve una cadena en formato JSON
      *
-     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
-    {
-        return $this->getJsonArray();
-    }
-
-    /**
-     * Devolver un array con las propiedades del objeto
+     * @param mixed $data
+     * @param int $flags JSON_* flags
      *
-     * @return array
+     * @return string
+     * @throws SPException
      */
-    public function getJsonArray()
+    public static function buildJsonFrom(mixed $data, int $flags = 0): string
     {
-        $out = [];
-
-        foreach ($this as $key => $value) {
-            $out[$key] = $value;
+        try {
+            return json_encode($data, JSON_THROW_ON_ERROR | $flags);
+        } catch (JsonException $e) {
+            throw new SPException(__u('Encoding error'), SPException::ERROR, $e->getMessage());
         }
-
-        return $out;
-    }
-
-    /**
-     * Establecer los valores por defecto
-     *
-     * @return JsonResponse
-     */
-    public function clear()
-    {
-        $this->status = 0;
-        $this->action = '';
-        $this->data = [];
-        $this->messages = [];
-        $this->container = '';
-        $this->csrf = '';
-
-        return $this;
     }
 }

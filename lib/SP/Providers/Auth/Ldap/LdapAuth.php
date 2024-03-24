@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,166 +19,152 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Auth\Ldap;
 
+use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventMessage;
 use SP\DataModel\UserLoginData;
-use SP\Providers\Auth\AuthInterface;
+use SP\Domain\Auth\Ports\LdapAuthService;
+use SP\Domain\Auth\Ports\LdapService;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class LdapBase
  *
- * @package Auth\Ldap
+ * @implements LdapService<LdapAuthData>
  */
-final class LdapAuth implements AuthInterface
+final class LdapAuth implements LdapAuthService
 {
-    const ACCOUNT_EXPIRED = 701;
-    const ACCOUNT_NO_GROUPS = 702;
-
-    /**
-     * @var string
-     */
-    protected $userLogin;
-    /**
-     * @var LdapAuthData
-     */
-    protected $ldapAuthData;
-    /**
-     * @var LdapParams
-     */
-    protected $ldapParams;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var string
-     */
-    protected $server;
-    /**
-     * @var LdapInterface
-     */
-    private $ldap;
-
     /**
      * LdapBase constructor.
      *
-     * @param LdapInterface   $ldap
+     * @param LdapService $ldap
      * @param EventDispatcher $eventDispatcher
+     * @param ConfigDataInterface $configData
      */
-    public function __construct(LdapInterface $ldap, EventDispatcher $eventDispatcher)
-    {
-        $this->ldap = $ldap;
-        $this->eventDispatcher = $eventDispatcher;
-
-        $this->ldapAuthData = new LdapAuthData();
+    public function __construct(
+        private readonly LdapService $ldap,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ConfigDataInterface      $configData
+    ) {
     }
 
     /**
+     * Authenticate using user's data
+     *
+     * @param UserLoginData $userLoginData
      * @return LdapAuthData
      */
-    public function getLdapAuthData()
+    public function authenticate(UserLoginData $userLoginData): LdapAuthData
     {
-        return $this->ldapAuthData;
-    }
+        $ldapAuthData = new LdapAuthData($this->isAuthGranted());
 
-    /**
-     * @return string
-     */
-    public function getUserLogin()
-    {
-        return $this->userLogin;
-    }
-
-    /**
-     * @param string $userLogin
-     */
-    public function setUserLogin($userLogin)
-    {
-        $this->userLogin = strtolower($userLogin);
-    }
-
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserLoginData $userLoginData Datos del usuario
-     *
-     * @return bool
-     */
-    public function authenticate(UserLoginData $userLoginData)
-    {
         try {
-            $this->ldapAuthData->setAuthGranted($this->isAuthGranted());
-            $this->ldapAuthData->setServer($this->ldap->getServer());
-
-            $this->setUserLogin($userLoginData->getLoginUser());
+            $ldapAuthData->setServer($this->ldap->getServer());
 
             $this->ldap->connect();
 
-            $this->getAttributes($userLoginData->getLoginUser());
+            $this->getAttributes($userLoginData->getLoginUser(), $ldapAuthData);
 
-            $this->ldap->bind($this->ldapAuthData->getDn(), $userLoginData->getLoginPass());
+            // Comprobamos si la cuenta está bloqueada o expirada
+            if ($ldapAuthData->getExpire() > 0) {
+                $ldapAuthData->setStatusCode(LdapAuthService::ACCOUNT_EXPIRED);
+
+                return $ldapAuthData->fail();
+            } elseif (!$ldapAuthData->isInGroup()) {
+                $ldapAuthData->setStatusCode(LdapAuthService::ACCOUNT_NO_GROUPS);
+
+                return $ldapAuthData->fail();
+            }
+
+            $this->ldap->connect($ldapAuthData->getDn(), $userLoginData->getLoginPass());
+
+            return $ldapAuthData->success();
         } catch (LdapException $e) {
             processException($e);
 
-            $this->ldapAuthData->setStatusCode($e->getCode());
-
-            return false;
+            $ldapAuthData->setStatusCode($e->getCode());
         }
 
-        return true;
+        return $ldapAuthData->fail();
     }
 
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
-    public function isAuthGranted()
+    public function isAuthGranted(): bool
     {
-        return true;
+        return !$this->configData->isLdapDatabaseEnabled();
     }
 
     /**
      * Obtener los atributos del usuario.
      *
      * @param string $userLogin
-     *
-     * @return LdapAuthData con los atributos disponibles y sus valores
+     * @param LdapAuthData $ldapAuthData
+     * @return void con los atributos disponibles y sus valores
      * @throws LdapException
      */
-    public function getAttributes(string $userLogin)
+    private function getAttributes(string $userLogin, LdapAuthData $ldapAuthData): void
     {
-        $attributes = $this->ldap->getLdapActions()
-            ->getAttributes($this->ldap->getUserDnFilter($userLogin));
+        $filter = $this->ldap->getUserDnFilter($userLogin);
+        $attributes = $this->ldap->actions()->getAttributes($filter);
+
+        if ($attributes->count() === 0) {
+            $this->eventDispatcher->notify(
+                'ldap.getAttributes',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Error while searching the user on LDAP'))
+                                ->addDetail(
+                                    'LDAP FILTER',
+                                    $filter
+                                )
+                )
+            );
+
+            throw LdapException::error(
+                __u('Error while searching the user on LDAP'),
+                null,
+                LdapCodeEnum::NO_SUCH_OBJECT->value
+            );
+        }
 
         if (!empty($attributes->get('fullname'))) {
-            $this->ldapAuthData->setName($attributes->get('fullname'));
+            $ldapAuthData->setName($attributes->get('fullname'));
         } else {
-            $name = trim($attributes->get('name', '')
-                . ' '
-                . $attributes->get('sn', ''));
+            $name = trim(
+                sprintf('%s %s', $attributes->get('name', ''), $attributes->get('sn', ''))
+            );
 
-            $this->ldapAuthData->setName($name);
+            $ldapAuthData->setName($name);
         }
 
         $mail = $attributes->get('mail');
 
-        $this->ldapAuthData->setDn($attributes->get('dn'));
-        $this->ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
-        $this->ldapAuthData->setExpire($attributes->get('expire'));
+        if ($mail !== null) {
+            $ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
+        }
 
-        $this->ldapAuthData->setInGroup(
+        $ldapAuthData->setDn($attributes->get('dn'));
+        $ldapAuthData->setExpire($attributes->get('expire'));
+        $ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
                 $attributes['dn'],
                 $userLogin,
                 (array)$attributes->get('group')
             )
         );
-
-        return $this->ldapAuthData;
     }
 }

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Http\JsonResponse;
+use JsonException;
+use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Http\JsonMessage;
 use SP\Util\Util;
 
 /**
@@ -43,22 +44,21 @@ trait ConfigTrait
     /**
      * Guardar la configuración
      *
-     * @param ConfigData    $configData
-     * @param Config        $config
-     * @param callable|null $onSuccess
-     *
-     * @return bool
+     * @throws JsonException
      */
-    protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null)
-    {
+    protected function saveConfig(
+        ConfigDataInterface $configData,
+        ConfigFileService $config,
+        callable          $onSuccess = null
+    ): bool {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
-            $config->saveConfig($configData);
+            $config->save($configData);
 
-            if ($configData->isMaintenance() === false && Bootstrap::$LOCK !== false) {
+            if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
                 Util::unlockApp();
             }
 
@@ -66,11 +66,15 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Configuration updated'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the configuration'));
+            return $this->returnJsonResponse(
+                JsonMessage::JSON_ERROR,
+                __u('Error while saving the configuration'),
+                [$e]
+            );
         }
     }
 }

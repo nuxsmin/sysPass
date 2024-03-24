@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
 
-use SP\Services\User\UserLoginResponse;
+use SP\Domain\User\Services\UserLoginResponse;
 
 /**
  * Class UserLoginData
@@ -33,67 +33,36 @@ use SP\Services\User\UserLoginResponse;
  */
 class UserLoginData
 {
-    /**
-     * @var string
-     */
-    protected $loginUser;
-    /**
-     * @var string
-     */
-    protected $loginPass;
-    /**
-     * @var UserLoginResponse
-     */
-    protected $userLoginResponse;
+    protected ?string            $loginUser         = null;
+    protected ?string            $loginPass         = null;
+    protected ?UserLoginResponse $userLoginResponse = null;
 
-    /**
-     * Login del usuario introducido en el formulario
-     *
-     * @return string
-     */
-    public function getLoginUser()
+    public function getLoginUser(): ?string
     {
         return $this->loginUser;
     }
 
-    /**
-     * @param string $login
-     */
-    public function setLoginUser($login)
+    public function setLoginUser(string $login): void
     {
         $this->loginUser = $login;
     }
 
-    /**
-     * Clave del usuario introducida en el formulario
-     *
-     * @return string
-     */
-    public function getLoginPass()
+    public function getLoginPass(): ?string
     {
         return $this->loginPass;
     }
 
-    /**
-     * @param string $loginPass
-     */
-    public function setLoginPass($loginPass)
+    public function setLoginPass(string $loginPass): void
     {
         $this->loginPass = $loginPass;
     }
 
-    /**
-     * @return UserLoginResponse
-     */
-    public function getUserLoginResponse()
+    public function getUserLoginResponse(): ?UserLoginResponse
     {
         return $this->userLoginResponse;
     }
 
-    /**
-     * @param UserLoginResponse $userLoginResponse
-     */
-    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null)
+    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null): void
     {
         $this->userLoginResponse = $userLoginResponse;
     }

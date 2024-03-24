@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
-use SP\Bootstrap;
-use SP\Http\Request;
+use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Http\RequestInterface;
+
+use function SP\logger;
 
 /**
  * Class Cookie
@@ -35,35 +37,19 @@ use SP\Http\Request;
 abstract class Cookie
 {
     /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var string
-     */
-    private $cookieName;
-
-    /**
      * Cookie constructor.
      *
-     * @param string  $cookieName
-     * @param Request $request
+     * @param string $cookieName
+     * @param RequestInterface $request
      */
-    protected function __construct($cookieName, Request $request)
+    protected function __construct(private readonly string $cookieName, protected readonly RequestInterface $request)
     {
-        $this->cookieName = $cookieName;
-        $this->request = $request;
     }
 
     /**
      * Firmar la cookie para autentificación
-     *
-     * @param string $data
-     * @param string $cypher
-     *
-     * @return string
      */
-    public final function sign($data, $cypher)
+    final public function sign(string $data, string $cypher): string
     {
         $data = base64_encode($data);
 
@@ -78,15 +64,17 @@ abstract class Cookie
      *
      * @return bool|string
      */
-    public final function getCookieData($data, $cypher)
+    final public function getCookieData(string $data, string $cypher): bool|string
     {
-        if (strpos($data, ';') === false) {
+        if (!str_contains($data, ';')) {
             return false;
         }
 
-        list($signature, $data) = explode(';', $data, 2);
+        [$signature, $data] = explode(';', $data, 2);
 
-        return Hash::checkMessage($data, $cypher, $signature) ? base64_decode($data) : false;
+        return Hash::checkMessage($data, $cypher, $signature)
+            ? base64_decode($data)
+            : false;
     }
 
     /**
@@ -94,22 +82,21 @@ abstract class Cookie
      *
      * @return bool|string
      */
-    protected function getCookie()
+    protected function getCookie(): bool|string
     {
-        return $this->request->getRequest()->cookies()->get($this->cookieName, false);
+        return $this->request
+            ->getRequest()
+            ->cookies()
+            ->get($this->cookieName, false);
     }
 
     /**
      * Sets cookie data
-     *
-     * @param $data
-     *
-     * @return bool
      */
-    protected function setCookie($data)
+    protected function setCookie(string $data): bool
     {
         // Do not try to set cookies when testing
-        if (APP_MODULE === 'tests') {
+        if (IS_TESTING) {
             return true;
         }
 
@@ -119,6 +106,6 @@ abstract class Cookie
             return false;
         }
 
-        return setcookie($this->cookieName, $data, 0, Bootstrap::$WEBROOT);
+        return setcookie($this->cookieName, $data, 0, BootstrapBase::$WEBROOT);
     }
 }

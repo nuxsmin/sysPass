@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel\ItemPreset;
@@ -29,46 +29,21 @@ namespace SP\DataModel\ItemPreset;
  *
  * @package SP\DataModel
  */
-class AccountPrivate
+final class AccountPrivate
 {
-    /**
-     * @var bool
-     */
-    private $privateUser = false;
-    /**
-     * @var bool
-     */
-    private $privateGroup = false;
+    public function __construct(
+        private readonly ?bool $privateUser = false,
+        private readonly ?bool $privateGroup = false
+    ) {
+    }
 
-    /**
-     * @return bool
-     */
     public function isPrivateUser(): bool
     {
         return $this->privateUser;
     }
 
-    /**
-     * @param bool $privateUser
-     */
-    public function setPrivateUser(bool $privateUser)
-    {
-        $this->privateUser = $privateUser;
-    }
-
-    /**
-     * @return bool
-     */
     public function isPrivateGroup(): bool
     {
         return $this->privateGroup;
-    }
-
-    /**
-     * @param bool $privateGroup
-     */
-    public function setPrivateGroup(bool $privateGroup)
-    {
-        $this->privateGroup = $privateGroup;
     }
 }

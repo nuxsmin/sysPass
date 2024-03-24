@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
-
-use SP\Bootstrap;
-use SP\Config\ConfigData;
-use SP\Core\Acl\Acl;
+use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\Uri;
 
 /**
@@ -37,23 +35,18 @@ use SP\Http\Uri;
  */
 final class Link
 {
-    /**
-     * @param int        $itemId
-     * @param int        $actionId
-     * @param ConfigData $configData
-     *
-     * @param bool  $useUI
-     *
-     * @return string
-     */
-    public static function getDeepLink(int $itemId, int $actionId, ConfigData $configData, bool $useUI = false)
-    {
-        $route = Acl::getActionRoute($actionId) . '/' . $itemId;
+    public static function getDeepLink(
+        int    $itemId,
+        string $actionRoute,
+        ConfigDataInterface $configData,
+        bool   $useUI = false
+    ): string {
+        $route = sprintf('%s/%d', $actionRoute, $itemId);
 
         if ($useUI) {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . '/index.php';
+            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . '/index.php';
         } else {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
         }
 
         $uri = new Uri($baseUrl);

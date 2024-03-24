@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -31,24 +31,22 @@ namespace SP\Util;
  */
 final class Checks
 {
+    private const MIN_PHP_VERSION = 81000;
+    private const MAX_PHP_VERSION = 82000;
+
     /**
      * Comprobar si sysPass se ejecuta en W$indows.
-     *
-     * @return bool
      */
-    public static function checkIsWindows()
+    public static function checkIsWindows(): bool
     {
-        return strpos(PHP_OS, 'WIN') === 0;
+        return PHP_OS_FAMILY === 'Windows';
     }
 
     /**
      * Comprobar la versión de PHP.
-     *
-     * @return bool
      */
-    public static function checkPhpVersion()
+    public static function checkPhpVersion(): bool
     {
-        return version_compare(PHP_VERSION, '7.3', '>=')
-            && version_compare(PHP_VERSION, '7.5', '<');
+        return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
     }
 }

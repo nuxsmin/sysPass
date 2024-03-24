@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,78 +19,38 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Monolog\Handler\StreamHandler;
-use SP\Core\Events\Event;
-use SP\Core\Exceptions\InvalidClassException;
+use SP\Domain\Providers\FileLogHandlerProvider;
 use SP\Providers\EventsTrait;
-use SplSubject;
 
 /**
  * Class FileLogHandler
  *
  * @package SP\Providers\Log
  */
-final class FileLogHandler extends LoggerBase
+final class FileLogHandler extends LoggerBase implements FileLogHandlerProvider
 {
     use EventsTrait;
-
-    /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents()
-    {
-        return LogInterface::EVENTS;
-    }
 
     /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): string
     {
         return $this->events;
     }
 
-    /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param SplSubject $subject <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
-     */
-    public function update(SplSubject $subject)
+    public function initialize(): void
     {
-        $this->updateEvent('update', new Event($subject));
-    }
-
-    /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(Container $dic)
-    {
-        parent::initialize($dic);
-
         $this->logger->pushHandler(new StreamHandler(LOG_FILE));
+
+        parent::initialize();
     }
 }

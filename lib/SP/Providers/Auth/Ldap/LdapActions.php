@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,29 +19,29 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Providers\Auth\Ldap;
 
+use Laminas\Ldap\Collection;
+use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
+use Laminas\Ldap\Ldap as LaminasLdap;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Auth\Ports\LdapActionsService;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
+use function SP\__u;
 
 /**
  * Class LdapActions
  *
  * @package SP\Providers\Auth\Ldap
  */
-final class LdapActions
+final class LdapActions implements LdapActionsService
 {
-    /**
-     * Atributos de búsqueda
-     */
-    const USER_ATTRIBUTES = [
+    public const USER_ATTRIBUTES = [
         'dn',
         'displayname',
         'samaccountname',
@@ -54,10 +54,10 @@ final class LdapActions
         'givenname',
         'sn',
         'userprincipalname',
-        'cn'
+        'cn',
     ];
 
-    const ATTRIBUTES_MAPPING = [
+    public const ATTRIBUTES_MAPPING = [
         'dn' => 'dn',
         'groupmembership' => 'group',
         'memberof' => 'group',
@@ -66,35 +66,19 @@ final class LdapActions
         'givenname' => 'name',
         'sn' => 'sn',
         'mail' => 'mail',
-        'lockouttime' => 'expire'
+        'lockouttime' => 'expire',
     ];
 
     /**
-     * @var LdapParams
+     * @param LaminasLdap $ldap
+     * @param LdapParams $ldapParams
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    private $ldapParams;
-    /**
-     * @var resource
-     */
-    private $ldapHandler;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
-
-    /**
-     * LdapActions constructor.
-     *
-     * @param LdapConnectionInterface $ldapConnection
-     * @param EventDispatcher         $eventDispatcher
-     *
-     * @throws LdapException
-     */
-    public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
-    {
-        $this->ldapHandler = $ldapConnection->connectAndBind();
-        $this->ldapParams = $ldapConnection->getLdapParams();
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private readonly LaminasLdap $ldap,
+        private readonly LdapParams  $ldapParams,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     /**
@@ -105,156 +89,142 @@ final class LdapActions
      * @return array Groups' DN
      * @throws LdapException
      */
-    public function searchGroupsDn(string $groupFilter)
+    public function searchGroupsDn(string $groupFilter): array
     {
-        $filter = '(&(cn='
-            . ldap_escape($this->getGroupFromParams(), null, LDAP_ESCAPE_FILTER)
-            . ')'
-            . $groupFilter
-            . ')';
+        $group = $this->getGroupFromParams();
+
+        /** @noinspection PhpComposerExtensionStubsInspection */
+        $filter = sprintf(
+            '(&(cn=%s)%s)',
+            ldap_escape(
+                $group,
+                null,
+                LDAP_ESCAPE_FILTER
+            ),
+            $groupFilter
+        );
 
         $searchResults = $this->getResults($filter, ['dn']);
 
-        if ((int)$searchResults['count'] === 0) {
-            $this->eventDispatcher->notifyEvent('ldap.search.group',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error while searching the group RDN'))
-                    ->addDetail(__u('Group'), $this->getGroupFromParams())
-                    ->addDetail('LDAP ERROR', LdapConnection::getLdapErrorMessage($this->ldapHandler))
-                    ->addDetail('LDAP FILTER', $filter))
+        if ($searchResults->count() === 0) {
+            $this->eventDispatcher->notify(
+                'ldap.search.group',
+                new Event(
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Error while searching the group RDN'))
+                                ->addDetail(__u('Group'), $group)
+                                ->addDetail('LDAP ERROR', $this->ldap->getLastError())
+                                ->addDetail('LDAP FILTER', $filter)
+                )
             );
 
-            throw new LdapException(
+            throw LdapException::error(
                 __u('Error while searching the group RDN'),
-                LdapException::ERROR,
                 null,
-                LdapCode::NO_SUCH_OBJECT
+                LdapCodeEnum::NO_SUCH_OBJECT->value
             );
         }
 
-        return array_filter(array_map(function ($value) {
-            if (is_array($value)) {
-                return $value['dn'];
-            }
+        return array_values(
+            array_filter(
+                array_map(
+                    static function ($value) {
+                        if (is_array($value)) {
+                            return $value['dn'];
+                        }
 
-            return null;
-        }, $searchResults));
+                        return null;
+                    },
+                    $searchResults->toArray()
+                )
+            )
+        );
     }
 
-    /**
-     * @return string
-     */
-    protected function getGroupFromParams(): string
+    private function getGroupFromParams(): string
     {
         if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
-            return LdapUtil::getGroupName($this->ldapParams->getGroup());
+            return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
         }
 
-        return $this->ldapParams->getGroup();
+        return $this->ldapParams->getGroup() ?: '*';
     }
 
     /**
-     * Devolver los resultados de una paginación
+     * Get LDAP search results as a Collection
      *
-     * @param string $filter     Filtro a utilizar
-     * @param array  $attributes Atributos a devolver
-     * @param string $searchBase
+     * @param string $filter Filtro a utilizar
+     * @param array|null $attributes Atributos a devolver
+     * @param string|null $searchBase
      *
-     * @return bool|array
+     * @return Collection
+     * @throws LdapException
      */
-    protected function getResults($filter, array $attributes = null, $searchBase = null)
-    {
-        $cookie = '';
-        $results = [];
-
+    private function getResults(
+        string $filter,
+        ?array $attributes = [],
+        ?string $searchBase = null
+    ): Collection {
         if (empty($searchBase)) {
             $searchBase = $this->ldapParams->getSearchBase();
         }
 
-        do {
-            ldap_control_paged_result(
-                $this->ldapHandler,
-                LdapInterface::PAGE_SIZE,
-                false,
-                $cookie
-            );
+        try {
+            return $this->ldap->search($filter, $searchBase, LaminasLdap::SEARCH_SCOPE_SUB, $attributes);
+        } catch (LaminasLdapException $e) {
+            $this->eventDispatcher->notify('exception', new Event($e));
 
-            $searchRes = @ldap_search(
-                $this->ldapHandler,
-                $searchBase,
-                $filter,
-                $attributes
-            );
-
-            if (!$searchRes) {
-                return false;
-            }
-
-            $entries = @ldap_get_entries($this->ldapHandler, $searchRes);
-
-            if (!$entries) {
-                return false;
-            }
-
-            $results = array_merge($results, $entries);
-
-            ldap_control_paged_result_response(
-                $this->ldapHandler,
-                $searchRes,
-                $cookie
-            );
-        } while (!empty($cookie) && $entries["count"] > 0);
-
-        return $results;
+            throw LdapException::error($e->getMessage(), null, $e->getCode(), $e);
+        }
     }
 
     /**
-     * Obtener los atributos del usuario.
-     *
      * @param string $filter
      *
      * @return AttributeCollection
      * @throws LdapException
      */
-    public function getAttributes(string $filter)
+    public function getAttributes(string $filter): AttributeCollection
     {
-        $searchResults = $this->getObjects($filter);
+        $searchResults = $this->getResults($filter)
+                              ->getFirst();
 
-        if ((int)$searchResults['count'] === 0) {
-            $this->eventDispatcher->notifyEvent('ldap.getAttributes',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error while searching the user on LDAP'))
-                    ->addDetail('LDAP FILTER', $filter))
-            );
-
-            throw new LdapException(
-                __u('Error while searching the user on LDAP'),
-                LdapException::ERROR,
-                null,
-                LdapCode::NO_SUCH_OBJECT
-            );
+        if ($searchResults === null) {
+            return new AttributeCollection();
         }
 
         // Normalize keys for comparing
-        $results = array_change_key_case($searchResults[0], CASE_LOWER);
+        $results = array_change_key_case($searchResults);
 
         $attributeCollection = new AttributeCollection();
 
-        foreach (self::ATTRIBUTES_MAPPING as $attribute => $map) {
-            if (isset($results[$attribute])) {
-                if (is_array($results[$attribute])) {
-                    if ((int)$results[$attribute]['count'] > 1) {
-                        unset($results[$attribute]['count']);
+        $attributes = array_filter(
+            self::ATTRIBUTES_MAPPING,
+            fn($attribute) => isset($results[$attribute]),
+            ARRAY_FILTER_USE_KEY
+        );
 
-                        // Store the whole array
-                        $attributeCollection->set($map, $results[$attribute]);
-                    } else {
-                        // Store first value
-                        $attributeCollection->set($map, trim($results[$attribute][0]));
-                    }
+        foreach ($attributes as $attribute => $map) {
+            if (is_array($results[$attribute])) {
+                if ((int)$results[$attribute]['count'] > 1) {
+                    // Store the whole array
+                    $attributeCollection->set(
+                        $map,
+                        array_filter($results[$attribute], fn($key) => $key !== 'count', ARRAY_FILTER_USE_KEY)
+                    );
                 } else {
-                    $attributeCollection->set($map, trim($results[$attribute]));
+                    // Store first value
+                    $attributeCollection->set(
+                        $map,
+                        trim($results[$attribute][0])
+                    );
                 }
+            } else {
+                $attributeCollection->set(
+                    $map,
+                    trim($results[$attribute])
+                );
             }
         }
 
@@ -262,35 +232,22 @@ final class LdapActions
     }
 
     /**
-     * Obtener los objetos según el filtro indicado
+     * Get LDAP search results
      *
-     * @param string $filter
-     * @param array  $attributes
-     * @param string $searchBase
-     *
-     * @return array
      * @throws LdapException
      */
-    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES, $searchBase = null)
+    public function getObjects(
+        string $filter,
+        array  $attributes = self::USER_ATTRIBUTES,
+        ?string $searchBase = null
+    ): LdapResults {
+        $results = $this->getResults($filter, $attributes, $searchBase);
+
+        return new LdapResults($results->count(), $results);
+    }
+
+    public function mutate(LdapParams $ldapParams): LdapActionsService
     {
-        $searchResults = $this->getResults($filter, $attributes, $searchBase);
-
-        if ($searchResults === false) {
-            $this->eventDispatcher->notifyEvent('ldap.search',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error while searching objects in base DN'))
-                    ->addDetail('LDAP ERROR', LdapConnection::getLdapErrorMessage($this->ldapHandler))
-                    ->addDetail('LDAP FILTER', $filter))
-            );
-
-            throw new LdapException(
-                __u('Error while searching objects in base DN'),
-                LdapException::ERROR,
-                null,
-                LdapCode::OPERATIONS_ERROR
-            );
-        }
-
-        return $searchResults;
+        return new self($this->ldap, $ldapParams, $this->eventDispatcher);
     }
 }

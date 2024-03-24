@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,24 +19,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use Monolog\Logger;
+use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventReceiver;
-use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Language;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
+
+use function SP\getLastCaller;
 
 /**
  * Class LoggerBase
@@ -47,99 +48,108 @@ abstract class LoggerBase extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const MESSAGE_FORMAT = 'event="%s";address="%s";user="%s";message="%s"';
+    protected Logger   $logger;
+    protected Language $language;
+    protected Request  $request;
+    protected ?string  $events = null;
+
+    public function __construct(
+        Application      $application,
+        Logger           $logger,
+        LanguageInterface $language,
+        RequestInterface $request
+    ) {
+        $this->logger = $logger;
+        $this->language = $language;
+        $this->request = $request;
+
+        parent::__construct($application);
+    }
+
     /**
-     * @var Logger
      */
-    protected $logger;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var string
-     */
-    protected $events;
-    /**
-     * @var Language
-     */
-    protected $language;
+    public function initialize(): void
+    {
+        $configEvents = $this->config->getConfigData()->getLogEvents();
+
+        if (count($configEvents) === 0) {
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
+        } else {
+            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
+        }
+
+        $this->initialized = true;
+    }
 
     /**
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      *
      * @throws InvalidClassException
      */
-    public function updateEvent($eventType, Event $event)
+    public function update(string $eventType, Event $event): void
     {
         $this->language->setAppLocales();
 
-        $userLogin = $this->context->getUserData()->getLogin() ?: 'N/A';
+        $userLogin = 'N/A';
+
+        if ($this->context->isInitialized()) {
+            $userLogin = $this->context->getUserData()->getLogin() ?? 'N/A';
+        }
+
         $source = $event->getSource();
 
         if ($source instanceof Exception) {
-            /** @var Exception $source */
-            $this->logger->error($eventType,
+            $this->logger->error(
+                $eventType,
                 $this->formatContext(
                     __($source->getMessage()),
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $this->logger->debug($eventType,
+            $this->logger->debug(
+                $eventType,
                 $this->formatContext(
                     $eventMessage->composeText(' | '),
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         } else {
-            $this->logger->debug($eventType,
+            $this->logger->debug(
+                $eventType,
                 $this->formatContext(
                     'N/A',
                     $this->request->getClientAddress(true),
-                    $userLogin));
+                    $userLogin
+                )
+            );
         }
 
         $this->language->unsetAppLocales();
     }
 
     /**
-     * @param $message
-     * @param $address
-     * @param $user
+     * @param string $message
+     * @param string $address
+     * @param string $user
      *
      * @return array
      */
-    final protected function formatContext($message, $address, $user): array
-    {
+    final protected function formatContext(
+        string $message,
+        string $address,
+        string $user
+    ): array {
         return [
             'message' => trim($message),
             'user' => trim($user),
             'address' => trim($address),
-            'caller' => getLastCaller(4)
+            'caller' => getLastCaller(4),
         ];
-    }
-
-    /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(Container $dic)
-    {
-        $this->language = $dic->get(Language::class);
-        $this->request = $dic->get(Request::class);
-
-        $configEvents = $this->config->getConfigData()->getLogEvents();
-
-        if (empty($configEvents)) {
-            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
-        } else {
-            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
-        }
-
-        $this->logger = $dic->get(Logger::class);
     }
 }

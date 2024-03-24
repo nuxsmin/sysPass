@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -34,12 +34,12 @@ final class DateUtil
     /**
      * Returns date string from UNIX timestamp
      *
-     * @param        $date
-     * @param string $format
+     * @param  int|string  $date
+     * @param  string  $format
      *
-     * @return false|string
+     * @return int|string
      */
-    public static function getDateFromUnix($date, $format = 'Y-m-d H:i')
+    public static function getDateFromUnix(int|string $date, string $format = 'Y-m-d H:i'): int|string
     {
         return is_numeric($date) ? date($format, $date) : $date;
     }

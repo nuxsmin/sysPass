@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -34,7 +34,9 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Storage\Database\QueryResult;
+use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__;
 
 /**
  * Class PluginGrid
@@ -43,10 +45,7 @@ use SP\Storage\Database\QueryResult;
  */
 final class PluginGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
+    private ?QueryResult $queryResult = null;
 
     /**
      * @param QueryResult $queryResult
@@ -114,9 +113,20 @@ final class PluginGrid extends GridBase
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('name');
-        $gridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconEnabled());
-        $gridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconDisabled(), 0);
-        $gridData->addDataRowSourceWithIcon('available', $this->icons->getIconDelete()->setTitle(__('Unavailable')), 0);
+        $gridData->addDataRowSourceWithIcon(
+            'enabled',
+            $this->icons->enabled()
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'enabled',
+            $this->icons->disabled(),
+            0
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'available',
+            $this->icons->delete()->mutate(title: __('Unavailable')),
+            0
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -125,16 +135,19 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::PLUGIN_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::PLUGIN_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchPlugin');
         $gridActionSearch->setTitle(__('Search for Plugin'));
         $gridActionSearch->setOnSubmitFunction('plugin/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -142,17 +155,20 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PLUGIN_VIEW);
+        $gridAction->setId(AclActionsInterface::PLUGIN_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Plugin'));
         $gridAction->setTitle(__('View Plugin'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('plugin/show');
         $gridAction->setFilterRowSource('available', 0);
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_VIEW));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_VIEW)
+        );
 
         return $gridAction;
     }
@@ -160,17 +176,20 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEnableAction()
+    private function getEnableAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PLUGIN_ENABLE);
+        $gridAction->setId(AclActionsInterface::PLUGIN_ENABLE);
         $gridAction->setName(__('Enable'));
         $gridAction->setTitle(__('Enable'));
-        $gridAction->setIcon($this->icons->getIconEnabled());
+        $gridAction->setIcon($this->icons->enabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled');
         $gridAction->setFilterRowSource('available', 0);
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_ENABLE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_ENABLE)
+        );
         $gridAction->addData('action-method', 'get');
 
         return $gridAction;
@@ -179,17 +198,20 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDisableAction()
+    private function getDisableAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PLUGIN_DISABLE);
+        $gridAction->setId(AclActionsInterface::PLUGIN_DISABLE);
         $gridAction->setName(__('Disable'));
         $gridAction->setTitle(__('Disable'));
-        $gridAction->setIcon($this->icons->getIconDisabled());
+        $gridAction->setIcon($this->icons->disabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled', 0);
         $gridAction->setFilterRowSource('available', 0);
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DISABLE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_DISABLE)
+        );
         $gridAction->addData('action-method', 'get');
 
         return $gridAction;
@@ -198,18 +220,24 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getResetAction()
+    private function getResetAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PLUGIN_RESET);
+        $gridAction->setId(AclActionsInterface::PLUGIN_RESET);
         $gridAction->setName(__('Reset Data'));
         $gridAction->setTitle(__('Reset Data'));
-        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setIcon($this->icons->refresh());
         $gridAction->setOnClickFunction('plugin/reset');
         $gridAction->setFilterRowSource('available', 0);
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_RESET)
+        );
         $gridAction->addData('action-method', 'get');
-        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::PLUGIN));
+        $gridAction->addData(
+            'action-next',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN)
+        );
 
         return $gridAction;
     }
@@ -217,18 +245,24 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::PLUGIN_DELETE);
+        $gridAction->setId(AclActionsInterface::PLUGIN_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Plugin'));
         $gridAction->setTitle(__('Delete Plugin'));
-        $gridAction->setIcon($this->icons->getIconDelete());
-        $gridAction->setFilterRowSource('available', 1);
+        $gridAction->setIcon($this->icons->delete());
+        $gridAction->setFilterRowSource('available');
         $gridAction->setOnClickFunction('plugin/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DELETE));
-        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::PLUGIN));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN_DELETE)
+        );
+        $gridAction->addData(
+            'action-next',
+            Acl::getActionRoute(AclActionsInterface::PLUGIN)
+        );
 
         return $gridAction;
     }

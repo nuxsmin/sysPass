@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,148 +24,61 @@
 
 namespace SP\Html;
 
-defined('APP_ROOT') || die();
-
 /**
- * Esta clase es la encargada de mostrar el HTML
+ * Class Html
  */
 final class Html
 {
     /**
-     * Limpia los datos recibidos de un formulario.
-     *
-     * @param string $data con los datos a limpiar
-     *
-     * @return false|string con los datos limpiados
-     */
-    public static function sanitize(&$data)
-    {
-        if (empty($data)) {
-            return $data;
-        }
-
-        if (is_array($data)) {
-            array_walk_recursive($data, '\SP\Html\Html::sanitize');
-        } else {
-            $data = strip_tags($data);
-
-            // Fix &entity\n;
-            $data = str_replace(['&amp;', '&lt;', '&gt;'], ['&amp;amp;', '&amp;lt;', '&amp;gt;'], $data);
-            $data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
-            $data = preg_replace(/** @lang RegExp */
-                '/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
-            $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
-
-            // Remove any attribute starting with "on" or xmlns
-            $data = preg_replace(/** @lang RegExp */
-                '#(<[^>]+?[\x00-\x20\x2f"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
-
-            // Remove javascript: and vbscript: protocols
-            $data = preg_replace(/** @lang RegExp */
-                '#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
-            $data = preg_replace(/** @lang RegExp */
-                '#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
-            $data = preg_replace(/** @lang RegExp */
-                '#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
-
-            // Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
-            $data = preg_replace(/** @lang RegExp */
-                '#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-            $data = preg_replace(/** @lang RegExp */
-                '#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-            $data = preg_replace(/** @lang RegExp */
-                '#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
-
-            // Remove namespaced elements (we do not need them)
-            $data = preg_replace(/** @lang RegExp */
-                '#</*\w+:\w[^>]*+>#i', '', $data);
-
-            do {
-                // Remove really unwanted tags
-                $old_data = $data;
-                $data = preg_replace(/** @lang RegExp */
-                    '#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
-            } while ($old_data !== $data);
-        }
-
-        return $data;
-    }
-
-    /**
      * Truncar un texto a una determinada longitud.
      *
-     * @param string $text  la cadena a truncar
-     * @param int    $limit la longitud máxima de la cadena
+     * @param string $text la cadena a truncar
+     * @param int $limit la longitud máxima de la cadena
      * @param string $ellipsis
      *
      * @return string con el texto truncado
      *
      * @link http://www.pjgalbraith.com/truncating-text-html-with-php/
      */
-    public static function truncate($text, $limit, $ellipsis = '...')
-    {
+    public static function truncate(
+        string $text,
+        int    $limit,
+        string $ellipsis = '...'
+    ): string {
         if (mb_strlen($text) > $limit) {
-            return trim(mb_substr($text, 0, $limit)) . $ellipsis;
+            return sprintf('%s%s', trim(mb_substr($text, 0, $limit)), $ellipsis);
         }
 
         return $text;
     }
 
     /**
-     * Convertir un color RGB a HEX
-     * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
-     *
-     * @param array $rgb con color en RGB
-     *
-     * @return string
-     */
-    public static function rgb2hex(array $rgb)
-    {
-        $hex = "#";
-
-        foreach ($rgb as $val) {
-            $hex .= str_pad(dechex($val), 2, "0", STR_PAD_LEFT);
-        }
-
-        return $hex;
-    }
-
-    /**
-     * Devolver una cadena con el tag HTML strong.
-     *
-     * @param string $text con la cadena de texto
-     *
-     * @return string
-     */
-    public static function strongText($text)
-    {
-        return '<strong>' . $text . '</strong>';
-    }
-
-    /**
      * Devolver un link HTML.
      *
-     * @param string $text    con la cadena de texto
-     * @param string $link    con el destino del enlace
-     * @param string $title   con el título del enlace
+     * @param string $text con la cadena de texto
+     * @param string|null $link con el destino del enlace
+     * @param string|null $title con el título del enlace
      * @param string $attribs con atributos del enlace
      *
      * @return string
      */
-    public static function anchorText($text, $link = null, $title = null, $attribs = '')
-    {
-        $alink = $link !== null ? $link : $text;
-        $atitle = $title !== null ? $title : $text;
-
-        return sprintf('<a href="%s" title="%s" %s>%s</a>', $alink, $atitle, $attribs, $text);
+    public static function anchorText(
+        string  $text,
+        ?string $link = null,
+        ?string $title = null,
+        string  $attribs = ''
+    ): string {
+        return sprintf(
+            '<a href="%s" title="%s" %s>%s</a>',
+            $link ?? $text,
+            $title ?? $text,
+            $attribs,
+            $text
+        );
     }
 
     /**
      * Strips out HTML tags preserving some spaces
-     *
-     * @param $text
-     *
-     * @return string
      */
     public static function stripTags(string $text): string
     {
@@ -174,11 +87,17 @@ final class Html
         }
 
         // Replace tags, then new lines, tabs and return chars, and then 2 or more spaces
-        return trim(preg_replace(['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'], ' ', $text));
+        return trim(
+            preg_replace(
+                ['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'],
+                ' ',
+                $text
+            )
+        );
     }
 
     /**
-     * @param  string  $url
+     * @param string $url
      *
      * @return string
      */
@@ -192,10 +111,7 @@ final class Html
 
         return preg_replace_callback(
             '/["<>\']+/u',
-            function ($matches)
-            {
-                return urlencode($matches[0]);
-            },
+            static fn($matches) => urlencode($matches[0]),
             strip_tags($url)
         );
     }

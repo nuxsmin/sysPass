@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Providers\Log;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
-use SP\Core\Events\Event;
-use SP\Core\Exceptions\InvalidClassException;
-use SplSubject;
 
 /**
  * Class SyslogHandler
@@ -40,53 +34,21 @@ use SplSubject;
 final class SyslogHandler extends LoggerBase
 {
     /**
-     * Devuelve los eventos que implementa el observador
-     *
-     * @return array
-     */
-    public function getEvents()
-    {
-        return LogInterface::EVENTS;
-    }
-
-    /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): string
     {
         return $this->events;
     }
 
     /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     *
-     * @param SplSubject $subject <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     *
-     * @return void
-     * @throws InvalidClassException
-     * @since 5.1.0
      */
-    public function update(SplSubject $subject)
+    public function initialize(): void
     {
-        $this->updateEvent('update', new Event($subject));
-    }
-
-    /**
-     * @param Container $dic
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function initialize(Container $dic)
-    {
-        parent::initialize($dic);
-
         $this->logger->pushHandler(new MSyslogHandler('syspass'));
+
+        parent::initialize();
     }
 }

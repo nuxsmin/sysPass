@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Context;
+
+use SP\Domain\Core\Context\ContextInterface;
+
+use function SP\__u;
 
 /**
  * Class ContextBase
@@ -31,19 +35,11 @@ namespace SP\Core\Context;
  */
 abstract class ContextBase implements ContextInterface
 {
-    const APP_STATUS_UPDATED = 'updated';
-    const APP_STATUS_RELOADED = 'reloaded';
-    const APP_STATUS_INSTALLED = 'installed';
-    const APP_STATUS_LOGGEDOUT = 'loggedout';
+    public const APP_STATUS_RELOADED  = 'reloaded';
+    public const APP_STATUS_LOGGEDOUT = 'loggedout';
 
-    /**
-     * @var ContextCollection
-     */
-    private $context;
-    /**
-     * @var ContextCollection
-     */
-    private $trasient;
+    private ?ContextCollection $context = null;
+    private ContextCollection  $trasient;
 
     /**
      * ContextBase constructor.
@@ -57,16 +53,12 @@ abstract class ContextBase implements ContextInterface
      * Sets an arbitrary key in the trasient collection.
      * This key is not bound to any known method or type
      *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return mixed
      * @throws ContextException
      */
-    public function setTrasientKey(string $key, $value)
+    public function setTrasientKey(string $key, mixed $value)
     {
         // If the key starts with "_" it's a protected key, thus cannot be overwritten
-        if (strpos($key, '_') === 0
+        if (str_starts_with($key, '_')
             && $this->trasient->exists($key)
             && $this->trasient->get($key) !== $value
         ) {
@@ -81,23 +73,23 @@ abstract class ContextBase implements ContextInterface
     /**
      * Gets an arbitrary key from the trasient collection.
      * This key is not bound to any known method or type
-     *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
      */
-    public function getTrasientKey(string $key, $default = null)
+    public function getTrasientKey(string $key, mixed $default = null): mixed
     {
-        return is_numeric($default) ? (int)$this->trasient->get($key, $default) : $this->trasient->get($key, $default);
+        return is_numeric($default) ?
+            (int)$this->trasient->get($key, $default)
+            : $this->trasient->get($key, $default);
+    }
+
+    public function isInitialized(): bool
+    {
+        return $this->context !== null;
     }
 
     /**
-     * @param $context
-     *
      * @throws ContextException
      */
-    final protected function setContextReference(&$context)
+    final protected function setContextReference(&$context): void
     {
         if ($this->context !== null) {
             throw new ContextException(__u('Context already initialized'));
@@ -107,8 +99,11 @@ abstract class ContextBase implements ContextInterface
             && ($context['context'] instanceof ContextCollection) === false
         ) {
             throw new ContextException(__u('Invalid context'));
-        } elseif (!isset($context['context'])) {
+        }
+
+        if (!isset($context['context'])) {
             $context['context'] = $this->context = new ContextCollection();
+
             return;
         }
 
@@ -116,11 +111,9 @@ abstract class ContextBase implements ContextInterface
     }
 
     /**
-     * @param ContextCollection $contextCollection
-     *
      * @throws ContextException
      */
-    final protected function setContext(ContextCollection $contextCollection)
+    final protected function setContext(ContextCollection $contextCollection): void
     {
         if ($this->context !== null) {
             throw new ContextException(__u('Context already initialized'));
@@ -132,23 +125,22 @@ abstract class ContextBase implements ContextInterface
     /**
      * Devolver una variable de contexto
      *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
      * @throws ContextException
      */
-    protected function getContextKey(string $key, $default = null)
+    protected function getContextKey(string $key, mixed $default = null)
     {
         $this->checkContext();
 
-        return is_numeric($default) ? (int)$this->context->get($key, $default) : $this->context->get($key, $default);
+
+        return is_numeric($default)
+            ? (int)$this->context->get($key, $default)
+            : $this->context->get($key, $default);
     }
 
     /**
      * @throws ContextException
      */
-    private function checkContext()
+    private function checkContext(): void
     {
         if ($this->context === null) {
             throw new ContextException(__u('Context not initialized'));
@@ -158,13 +150,12 @@ abstract class ContextBase implements ContextInterface
     /**
      * Establecer una variable de contexto
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      *
-     * @return mixed
      * @throws ContextException
      */
-    protected function setContextKey(string $key, $value)
+    protected function setContextKey(string $key, mixed $value): mixed
     {
         $this->checkContext();
 

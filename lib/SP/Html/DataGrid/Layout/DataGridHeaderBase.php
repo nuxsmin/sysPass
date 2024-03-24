@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class DataGridHeaderBase para establecer las cabeceras de la matriz
@@ -35,21 +33,14 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
 {
     /**
      * Las cabeceras que identifican las columnas de datos
-     *
-     * @var array
      */
-    private $headers = [];
+    private array $headers = [];
     /**
      * El ancho de las columnas
-     *
-     * @var int
      */
-    private $width = 0;
+    private int $width = 0;
 
-    /**
-     * @param $header string
-     */
-    public function addHeader($header)
+    public function addHeader(string $header): void
     {
         $this->headers[] = $header;
 
@@ -57,18 +48,12 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
         $this->width = ($numHeaders > 0) ? floor(65 / $numHeaders) : 65;
     }
 
-    /**
-     * @return int
-     */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }

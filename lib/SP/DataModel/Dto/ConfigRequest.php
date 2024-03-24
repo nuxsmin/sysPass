@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,47 +19,29 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel\Dto;
 
-
 /**
  * Class ConfigRequest
- *
- * @package SP\DataModel\Dto
  */
 class ConfigRequest
 {
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
-    /**
-     * @param $param
-     * @param $value
-     */
-    public function add($param, $value)
+    public function add(string $param, string $value): void
     {
         $this->data[$param] = $value;
     }
 
-    /**
-     * @param $param
-     *
-     * @return mixed|null
-     */
-    public function get($param)
+    public function get(string $param): ?string
     {
-        return isset($this->data[$param]) ? $this->data[$param] : null;
+        return $this->data[$param] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
