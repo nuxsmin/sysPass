@@ -28,8 +28,8 @@ namespace SP\Modules\Web\Controllers\User;
 use Exception;
 use JsonException;
 use SP\Core\Events\Event;
-use SP\DataModel\User;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\User\Models\User;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 

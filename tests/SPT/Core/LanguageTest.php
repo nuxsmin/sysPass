@@ -27,9 +27,9 @@ namespace SPT\Core;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Services\UserLoginResponse;
 use SPT\UnitaryTestCase;
 
@@ -80,7 +80,7 @@ class LanguageTest extends UnitaryTestCase
 
         $userData = $this->context->getUserData();
 
-        $userData->setPreferences(new UserPreferencesData(['lang' => $locale]));
+        $userData->setPreferences(new UserPreferences(['lang' => $locale]));
 
         $this->language->setLanguage(true);
 

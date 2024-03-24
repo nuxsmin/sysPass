@@ -31,7 +31,6 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserLoginData;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Auth\Dtos\LoginResponse;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LoginService;
@@ -46,6 +45,7 @@ use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
@@ -402,7 +402,7 @@ final class Login extends Service implements LoginService
         $this->context->setLocale($userLoginResponse->getPreferences()->getLang());
 
         if ($this->configData->isDemoEnabled()) {
-            $userLoginResponse->setPreferences(new UserPreferencesData());
+            $userLoginResponse->setPreferences(new UserPreferences());
         }
 
         $this->eventDispatcher->notify(

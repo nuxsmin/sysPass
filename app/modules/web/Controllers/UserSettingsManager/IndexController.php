@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,9 +28,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Language;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\ExtensibleTabControllerInterface;
@@ -100,7 +100,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $template->addTemplate('general');
 
         $userData = $this->session->getUserData();
-        $userPreferences = $userData->getPreferences() ?? new UserPreferencesData();
+        $userPreferences = $userData->getPreferences() ?? new UserPreferences();
 
         $template->assign(
             'langs',
@@ -139,7 +139,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     }
 
     /**
-     * @return \SP\Domain\Core\Events\EventDispatcherInterface
+     * @return EventDispatcherInterface
      */
     public function getEventDispatcher(): EventDispatcherInterface
     {

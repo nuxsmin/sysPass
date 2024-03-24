@@ -26,12 +26,12 @@ namespace SP\Domain\User\Ports;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\User;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Services\UserLoginRequest;
 use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -147,7 +147,7 @@ interface UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePreferencesById(int $userId, UserPreferencesData $userPreferencesData): int;
+    public function updatePreferencesById(int $userId, UserPreferences $userPreferencesData): int;
 
     /**
      * @throws ConstraintException
@@ -158,7 +158,7 @@ interface UserServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return User[]
+     * @return \SP\Domain\User\Models\User[]
      * @throws ConstraintException
      * @throws QueryException
      */

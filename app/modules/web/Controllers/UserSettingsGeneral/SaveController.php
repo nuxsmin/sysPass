@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,7 +28,7 @@ use Exception;
 use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\UserPreferencesData;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserService;
@@ -89,9 +89,9 @@ final class SaveController extends SimpleControllerBase
     /**
      * @param UserLoginResponse $userData
      *
-     * @return UserPreferencesData
+     * @return UserPreferences
      */
-    private function getUserPreferencesData(UserLoginResponse $userData): UserPreferencesData
+    private function getUserPreferencesData(UserLoginResponse $userData): UserPreferences
     {
         $userPreferencesData = clone $userData->getPreferences();
 

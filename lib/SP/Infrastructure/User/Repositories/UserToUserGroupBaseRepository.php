@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\User\Repositories;
 
-use SP\DataModel\UserToUserGroupData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
@@ -45,8 +45,8 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
     /**
      * Checks whether the user is included in the group
      *
-     * @param  int  $groupId
-     * @param  int  $userId
+     * @param int $groupId
+     * @param int $userId
      *
      * @return bool
      * @throws ConstraintException
@@ -64,7 +64,7 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
     /**
      * Returns the groups which the user belongs to
      *
-     * @param  int  $userId
+     * @param int $userId
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -82,8 +82,8 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
     /**
      * Updates users from a group
      *
-     * @param  int  $id
-     * @param  array  $users
+     * @param int $id
+     * @param array $users
      *
      * @return int
      * @throws ConstraintException
@@ -118,8 +118,8 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
     /**
      * Adds users to a group
      *
-     * @param  int  $groupId
-     * @param  array  $users
+     * @param int $groupId
+     * @param array $users
      *
      * @return int
      * @throws ConstraintException
@@ -132,7 +132,7 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES '.$this->buildParamsFromArray($users, '(?,?)');
+            'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES ' . $this->buildParamsFromArray($users, '(?,?)');
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -159,7 +159,7 @@ final class UserToUserGroupBaseRepository extends BaseRepository implements User
     public function getById(int $id): QueryResult
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(UserToUserGroupData::class);
+        $queryData->setMapClassName(UserToUserGroupModel::class);
         $queryData->setQuery('SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
 

@@ -48,8 +48,6 @@ final class Client extends BaseRepository implements ClientRepository
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'Client';
-
     /**
      * Creates an item
      *
@@ -67,7 +65,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
             ->col('hash', $this->makeItemHash($client->getName()));
 
@@ -89,7 +87,7 @@ final class Client extends BaseRepository implements ClientRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->where('hash = :hash')
             ->orWhere('name = :name')
             ->bindValues(
@@ -120,7 +118,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
             ->where('id = :id')
             ->limit(1)
@@ -150,7 +148,7 @@ final class Client extends BaseRepository implements ClientRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->where('(hash = :hash OR name = :name)')
             ->where('id <> :id')
             ->bindValues(
@@ -175,7 +173,7 @@ final class Client extends BaseRepository implements ClientRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $clientId])
@@ -197,7 +195,7 @@ final class Client extends BaseRepository implements ClientRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols())
             ->where('(name = :name OR hash = :hash)')
             ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
@@ -217,7 +215,7 @@ final class Client extends BaseRepository implements ClientRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols());
 
         return $this->db->doSelect(QueryData::buildWithMapper($query, ClientModel::class));
@@ -240,7 +238,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $clientIds]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the clients'));
@@ -261,7 +259,7 @@ final class Client extends BaseRepository implements ClientRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -281,7 +279,7 @@ final class Client extends BaseRepository implements ClientRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols(['hash']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())

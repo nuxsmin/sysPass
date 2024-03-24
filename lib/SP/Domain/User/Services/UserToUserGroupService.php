@@ -25,11 +25,11 @@
 namespace SP\Domain\User\Services;
 
 use SP\Core\Application;
-use SP\DataModel\UserToUserGroupData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserToUserGroup;
 use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -81,7 +81,7 @@ final class UserToUserGroupService extends Service implements UserToUserGroupSer
     {
         $usersId = [];
 
-        /** @var UserToUserGroupData $userToUserGroupData */
+        /** @var \SP\Domain\User\Models\UserToUserGroup $userToUserGroupData */
         $userByGroup = $this->userToUserGroupRepository->getById($id)->getDataAsArray();
 
         foreach ($userByGroup as $userToUserGroupData) {

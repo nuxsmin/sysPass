@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
 final class Account extends Model
 {
     use AccountUseCases;
+
+    public const TABLE = 'Account';
 
     protected ?int    $id                 = null;
     protected ?int    $userId             = null;

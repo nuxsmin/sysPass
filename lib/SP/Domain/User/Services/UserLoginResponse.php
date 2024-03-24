@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Domain\User\Services;
 
-use SP\DataModel\UserPreferencesData;
+use SP\Domain\User\Models\UserPreferences;
 
 /**
  * Class UserLoginResponse
@@ -47,9 +47,9 @@ final class UserLoginResponse
     private bool                 $isChangePass    = false;
     private bool                 $isChangedPass   = false;
     private bool                 $isLdap          = false;
-    private bool                 $isMigrate       = false;
-    private ?UserPreferencesData $preferences     = null;
-    private ?string              $pass            = null;
+    private bool             $isMigrate   = false;
+    private ?UserPreferences $preferences = null;
+    private ?string          $pass        = null;
     private ?string              $hashSalt        = null;
     private ?string              $mPass           = null;
     private ?string              $mKey            = null;
@@ -212,12 +212,12 @@ final class UserLoginResponse
         return $this;
     }
 
-    public function getPreferences(): ?UserPreferencesData
+    public function getPreferences(): ?UserPreferences
     {
         return $this->preferences;
     }
 
-    public function setPreferences(UserPreferencesData $preferences): UserLoginResponse
+    public function setPreferences(UserPreferences $preferences): UserLoginResponse
     {
         $this->preferences = $preferences;
 

@@ -24,9 +24,8 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\User;
-use SP\DataModel\UserPassData;
-use SP\DataModel\UserPreferencesData;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserPreferences;
 
 /**
  * Class UserDataGenerator
@@ -35,7 +34,7 @@ final class UserDataGenerator extends DataGenerator
 {
     public function buildUserData(): User
     {
-        return new User(array_merge($this->getUserProperties(), $this->getUserPassProperties()));
+        return new User($this->getUserProperties());
     }
 
     /**
@@ -51,7 +50,6 @@ final class UserDataGenerator extends DataGenerator
             'ssoLogin' => $this->faker->userName(),
             'notes' => $this->faker->text(),
             'userGroupId' => $this->faker->randomNumber(3),
-            'userGroupName' => $this->faker->name(),
             'userProfileId' => $this->faker->randomNumber(3),
             'isAdminApp' => $this->faker->boolean(),
             'isAdminAcc' => $this->faker->boolean(),
@@ -63,13 +61,18 @@ final class UserDataGenerator extends DataGenerator
             'loginCount' => $this->faker->randomNumber(3),
             'lastLogin' => $this->faker->unixTime(),
             'lastUpdate' => $this->faker->unixTime(),
-            'preferences'   => serialize($this->buildUserPreferencesData()),
+            'preferences' => serialize($this->buildUserPreferencesData()),
+            'pass' => $this->faker->password(),
+            'hashSalt' => $this->faker->sha1(),
+            'mPass' => $this->faker->sha1(),
+            'mKey' => $this->faker->sha1(),
+            'lastUpdateMPass' => $this->faker->dateTime()->getTimestamp(),
         ];
     }
 
-    public function buildUserPreferencesData(): UserPreferencesData
+    public function buildUserPreferencesData(): UserPreferences
     {
-        return new UserPreferencesData($this->getUserPreferencesProperties());
+        return new UserPreferences($this->getUserPreferencesProperties());
     }
 
     private function getUserPreferencesProperties(): array
@@ -87,25 +90,5 @@ final class UserDataGenerator extends DataGenerator
             'showAccountSearchFilters' => $this->faker->boolean(),
             'user_id' => $this->faker->randomNumber(3),
         ];
-    }
-
-    /**
-     * @return array
-     */
-    private function getUserPassProperties(): array
-    {
-        return [
-            'id' => $this->faker->randomNumber(3),
-            'pass' => $this->faker->password(),
-            'hashSalt' => $this->faker->sha1(),
-            'mPass' => $this->faker->sha1(),
-            'mKey' => $this->faker->sha1(),
-            'lastUpdateMPass' => $this->faker->dateTime()->getTimestamp(),
-        ];
-    }
-
-    public function buildUserPassData(): UserPassData
-    {
-        return new UserPassData($this->getUserPassProperties());
     }
 }

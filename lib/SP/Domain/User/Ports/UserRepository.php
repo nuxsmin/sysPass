@@ -24,57 +24,71 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\DataModel\User;
-use SP\DataModel\UserPreferencesData;
+use Exception;
+use JsonException;
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Services\UpdatePassRequest;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\User\Models\UserPreferences;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserRepository
  *
- * @package SP\Infrastructure\User\Repositories
+ * @template T of UserModel
  */
 interface UserRepository extends Repository
 {
     /**
-     * Updates an user's pass
+     * Updates an item
      *
-     * @param  int  $id
-     * @param  UpdatePassRequest  $passRequest
+     * @param UserModel $user
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function update(UserModel $user): int;
+
+    /**
+     * Updates a user's pass
+     *
+     * @param UserModel $user
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePassById(int $id, UpdatePassRequest $passRequest): int;
+    public function updatePassById(UserModel $user): int;
 
     /**
      * @param $login string
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
+     * @throws Exception
      */
     public function getByLogin(string $login): QueryResult;
 
     /**
      * Returns items' basic information
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
-    public function getBasicInfo(): QueryResult;
+    public function getAll(): QueryResult;
 
     /**
      * Updates user's master password
      *
-     * @param  int  $id
-     * @param  string  $pass
-     * @param  string  $key
+     * @param int $id
+     * @param string $pass
+     * @param string $key
      *
      * @return int
      * @throws ConstraintException
@@ -94,7 +108,7 @@ interface UserRepository extends Repository
     public function updateLastLoginById(int $id): int;
 
     /**
-     * @param  string  $login
+     * @param string $login
      *
      * @return bool
      * @throws ConstraintException
@@ -103,65 +117,120 @@ interface UserRepository extends Repository
     public function checkExistsByLogin(string $login): bool;
 
     /**
-     * @param User $itemData
+     * @param UserModel $user
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updateOnLogin(User $itemData): int;
+    public function updateOnLogin(UserModel $user): int;
 
     /**
      * Updates an user's pass
      *
-     * @param  int  $id
-     * @param  UserPreferencesData  $userPreferencesData
+     * @param int $id
+     * @param UserPreferences $userPreferences
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
+     * @throws JsonException
      */
-    public function updatePreferencesById(int $id, UserPreferencesData $userPreferencesData): int;
+    public function updatePreferencesById(int $id, UserPreferences $userPreferences): int;
 
     /**
      * Obtener el email de los usuarios de un grupo
      *
-     * @param  int  $groupId
+     * @param int $groupId
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
+     * @throws Exception
      */
     public function getUserEmailForGroup(int $groupId): QueryResult;
 
     /**
      * Obtener el email de los usuarios
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getUserEmail(): QueryResult;
 
     /**
      * Return the email of the given user's id
      *
-     * @param  int[]  $ids
+     * @param array<int> $ids
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getUserEmailById(array $ids): QueryResult;
 
     /**
      * Returns the usage of the given user's id
      *
-     * @param  int  $id
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function getUsageForUser(int $id): QueryResult;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageForUser(int $id): QueryResult;
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param int $id
+     *
+     * @return QueryResult<T>
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws Exception
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $ids): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws Exception
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Creates an item
+     *
+     * @param UserModel $user
+     *
+     * @return QueryResult
+     * @throws SPException
+     */
+    public function create(UserModel $user): QueryResult;
 }

@@ -28,21 +28,20 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\User;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserBaseRepository;
 use SP\Util\Util;
 
 /**
@@ -54,8 +53,8 @@ final class UserService extends Service implements UserServiceInterface
 {
     use ServiceItemTrait;
 
-    private UserBaseRepository $userRepository;
-    private UserPassService    $userPassService;
+    private UserRepository           $userRepository;
+    private UserPassServiceInterface $userPassService;
 
     public function __construct(
         Application    $application,
@@ -98,13 +97,13 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Returns user's preferences object
      */
-    public static function getUserPreferences(?string $preferences): UserPreferencesData
+    public static function getUserPreferences(?string $preferences): UserPreferences
     {
         if (!empty($preferences)) {
-            return Util::unserialize(UserPreferencesData::class, $preferences, 'SP\UserPreferences');
+            return Util::unserialize(UserPreferences::class, $preferences, 'SP\UserPreferences');
         }
 
-        return new UserPreferencesData();
+        return new UserPreferences();
     }
 
     /**
@@ -185,7 +184,7 @@ final class UserService extends Service implements UserServiceInterface
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException
@@ -321,7 +320,7 @@ final class UserService extends Service implements UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePreferencesById(int $userId, UserPreferencesData $userPreferencesData): int
+    public function updatePreferencesById(int $userId, UserPreferences $userPreferencesData): int
     {
         return $this->userRepository->updatePreferencesById(
             $userId,
@@ -354,7 +353,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function getAll(): array
     {
-        return $this->userRepository->getBasicInfo()->getDataAsArray();
+        return $this->userRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -385,7 +384,7 @@ final class UserService extends Service implements UserServiceInterface
     /**
      * Return the email of the given user's id
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException

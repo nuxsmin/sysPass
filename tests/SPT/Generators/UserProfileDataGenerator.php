@@ -25,7 +25,7 @@
 namespace SPT\Generators;
 
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfile;
+use SP\Domain\User\Models\UserProfile;
 
 /**
  * Class UserProfileDataGenerator

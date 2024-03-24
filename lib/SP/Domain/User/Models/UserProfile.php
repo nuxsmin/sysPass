@@ -22,46 +22,44 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Models;
+namespace SP\Domain\User\Models;
 
+use SP\DataModel\ProfileData;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class Client
+ * Class UserProfile
  */
-class Client extends Model implements ItemWithIdAndNameModel
+class UserProfile extends Model implements ItemWithIdAndNameModel
 {
-    public const TABLE = 'Client';
-    protected ?int $isGlobal = null;
-    protected ?int    $id          = null;
-    protected ?string $name        = null;
-    protected ?string $description = null;
-    protected ?string $hash        = null;
+    public const TABLE = 'UserProfile';
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    protected ?int         $id      = null;
+    protected ?string      $name    = null;
+    protected ?ProfileData $profile = null;
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-
-    public function getDescription(): ?string
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
-        return $this->description;
+        return (int)$this->id;
     }
 
-    public function getHash(): ?string
+    /**
+     * @return ProfileData|null
+     */
+    public function getProfile(): ?ProfileData
     {
-        return $this->hash;
-    }
-
-    public function getIsGlobal(): ?int
-    {
-        return $this->isGlobal;
+        return $this->profile;
     }
 }

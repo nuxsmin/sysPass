@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\User;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\User\Models\User;
 
 /**
  * Class UserForm

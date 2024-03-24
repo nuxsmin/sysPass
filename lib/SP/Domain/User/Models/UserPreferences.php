@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class UserPreferencesData
- *
- * @package SP\DataModel
+ * Class UserPreferences
  */
-class UserPreferencesData extends Model
+class UserPreferences extends Model
 {
     protected ?string $lang                     = null;
     protected ?string $theme                    = null;

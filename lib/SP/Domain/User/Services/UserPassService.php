@@ -30,7 +30,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\UserLoginData;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -38,7 +37,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\User\Repositories\UserBaseRepository;
 
 /**
  * Class UserPassService
@@ -58,9 +56,8 @@ final class UserPassService extends Service implements UserPassServiceInterface
     // Comprobar la clave maestra con la clave del usuario anterior
     public const MPASS_CHECKOLD = 4;
 
-    private ConfigDataInterface $configData;
-    private UserBaseRepository $userRepository;
-    private ConfigService       $configService;
+    private UserRepository $userRepository;
+    private ConfigService  $configService;
 
     public function __construct(
         Application    $application,
@@ -71,8 +68,6 @@ final class UserPassService extends Service implements UserPassServiceInterface
 
         $this->userRepository = $userRepository;
         $this->configService = $configService;
-
-        $this->configData = $this->config->getConfigData();
     }
 
     /**

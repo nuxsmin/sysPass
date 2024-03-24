@@ -25,9 +25,9 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserProfile;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -65,7 +65,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Deletes an item
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return int
      * @throws ConstraintException
@@ -102,7 +102,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -137,7 +137,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Returns all the items for given ids
      *
-     * @param  array  $ids
+     * @param array $ids
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -150,7 +150,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name` FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')';
+            'SELECT id, `name` FROM UserProfile WHERE id IN (' . $this->buildParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(UserProfile::class);
@@ -163,7 +163,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Deletes all the items for given ids
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -176,7 +176,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN ('.$this->buildParamsFromArray($ids).')');
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN (' . $this->buildParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error while removing the profiles'));
 
@@ -186,7 +186,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -202,7 +202,7 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
         if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ?');
 
-            $search = '%'.$itemSearchData->getSeachString().'%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
         }
 
@@ -233,9 +233,9 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO UserProfile SET `name` = ?, `profile` = ?');
         $queryData->setParams([
-            $itemData->getName(),
-            serialize($itemData->getProfile()),
-        ]);
+                                  $itemData->getName(),
+                                  serialize($itemData->getProfile()),
+                              ]);
         $queryData->setOnErrorMessage(__u('Error while creating the profile'));
 
         return $this->db->doQuery($queryData)->getLastId();
@@ -281,10 +281,10 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
-            $itemData->getName(),
-            serialize($itemData->getProfile()),
-            $itemData->getId(),
-        ]);
+                                  $itemData->getName(),
+                                  serialize($itemData->getProfile()),
+                                  $itemData->getId(),
+                              ]);
         $queryData->setOnErrorMessage(__u('Error while updating the profile'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -309,9 +309,9 @@ final class UserProfileBaseRepository extends BaseRepository implements UserProf
 
         $queryData = new QueryData();
         $queryData->setParams([
-            $itemData->getName(),
-            $itemData->getId(),
-        ]);
+                                  $itemData->getName(),
+                                  $itemData->getId(),
+                              ]);
         $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData)->getNumRows() > 0;

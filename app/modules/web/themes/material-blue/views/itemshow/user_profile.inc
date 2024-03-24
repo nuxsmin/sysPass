@@ -32,9 +32,9 @@
  */
 
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfile;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\User\Models\UserProfile;
 use SP\Mvc\View\TemplateInterface;
 
 $profile = $_getvar('profile');

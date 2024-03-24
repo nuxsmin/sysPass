@@ -44,7 +44,7 @@ final class PluginGenerator extends DataGenerator
             'name' => $this->faker->colorName(),
             'data' => $this->faker->text(),
             'enabled' => $this->faker->boolean(),
-            'versionLevel' => sprintf('%d.%d', $this->faker->randomNumber(3, true), $this->faker->randomNumber(6, true))
+            'versionLevel' => sprintf('%d.%d', $this->faker->randomNumber(4, true), $this->faker->randomNumber(6, true))
         ];
     }
 }

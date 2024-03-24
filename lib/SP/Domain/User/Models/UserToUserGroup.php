@@ -22,46 +22,33 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Models;
+namespace SP\Domain\User\Models;
 
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class Client
+ * Class UserToUserGroup
  */
-class Client extends Model implements ItemWithIdAndNameModel
+class UserToUserGroup extends Model
 {
-    public const TABLE = 'Client';
-    protected ?int $isGlobal = null;
-    protected ?int    $id          = null;
-    protected ?string $name        = null;
-    protected ?string $description = null;
-    protected ?string $hash        = null;
+    public const TABLE = 'UserToUserGroup';
 
-    public function getId(): ?int
+    protected ?int   $userGroupId = null;
+    protected ?int   $userId      = null;
+    protected ?array $users       = null;
+
+    public function getUserGroupId(): ?int
     {
-        return $this->id;
+        return $this->userGroupId;
     }
 
-    public function getName(): ?string
+    public function getUserId(): ?int
     {
-        return $this->name;
+        return $this->userId;
     }
 
-
-    public function getDescription(): ?string
+    public function getUsers(): ?array
     {
-        return $this->description;
-    }
-
-    public function getHash(): ?string
-    {
-        return $this->hash;
-    }
-
-    public function getIsGlobal(): ?int
-    {
-        return $this->isGlobal;
+        return $this->users;
     }
 }

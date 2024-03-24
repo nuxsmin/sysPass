@@ -29,7 +29,6 @@ use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserPreferencesData;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
@@ -42,6 +41,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Tag\Ports\TagService;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGrid;
@@ -141,7 +141,7 @@ final class AccountSearchHelper extends HelperBase
             return $accountSearchFilter;
         }
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
+        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
         $limitCount = $userPreferences->getResultsPerPage() > 0
             ? $userPreferences->getResultsPerPage()
             : $this->configData->getAccountCount();
@@ -214,7 +214,7 @@ final class AccountSearchHelper extends HelperBase
                            || $this->accountSearchFilter->isSearchFavorites()
                            || $this->accountSearchFilter->isSortViews());
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
+        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
 
         AccountSearchItem::$accountLink = $userPreferences->isAccountLink();
         AccountSearchItem::$topNavbar = $userPreferences->isTopNavbar();
@@ -289,7 +289,7 @@ final class AccountSearchHelper extends HelperBase
         $gridPager->setFilterOn($this->filterOn);
         $gridPager->setSourceAction(new DataGridActionSearch(AclActionsInterface::ACCOUNT_SEARCH));
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferencesData();
+        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
         $showOptionalActions = $userPreferences->isOptionalActions()
                                || $userPreferences->isResultsAsCards()
                                || ($userPreferences->getUserId() === 0

@@ -30,9 +30,9 @@
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\User;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\User\Models\User;
 use SP\Mvc\View\TemplateInterface;
 
 $user = $_getvar('user');

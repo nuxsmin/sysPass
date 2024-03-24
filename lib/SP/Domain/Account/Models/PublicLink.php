@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class PublicLink extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'PublicLink';
+
     protected ?int    $id              = null;
     protected ?int    $itemId          = null;
     protected ?string $hash            = null;

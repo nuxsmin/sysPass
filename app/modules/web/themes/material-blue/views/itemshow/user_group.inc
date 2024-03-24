@@ -23,7 +23,7 @@
  */
 
 /**
- * @var UserToUserGroupData $groupUsers
+ * @var UserToUserGroup $groupUsers
  * @var UserGroup $group
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
@@ -31,10 +31,10 @@
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\UserToUserGroupData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\Models\UserToUserGroup;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 

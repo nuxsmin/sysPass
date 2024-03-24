@@ -22,45 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Account\Models;
 
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
-defined('APP_ROOT') || die();
-
 /**
- * Class ProfileBaseData
- *
- * @package SP\DataModel
+ * Class AccountToUser
  */
-class UserProfile extends Model implements ItemWithIdAndNameModel
+final class AccountToUser extends Model
 {
-    protected ?int         $id      = null;
-    protected ?string      $name    = null;
-    protected ?ProfileData $profile = null;
 
-    /**
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return (int)$this->id;
-    }
-
-    /**
-     * @return ProfileData|null
-     */
-    public function getProfile(): ?ProfileData
-    {
-        return $this->profile;
-    }
+    public const TABLE = 'AccountToUser';
 }

@@ -28,12 +28,12 @@ namespace SP\Modules\Web\Controllers\User;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
 use SP\Core\Application;
-use SP\DataModel\User;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserPassRecoverService;
@@ -73,7 +73,7 @@ abstract class UserSaveBase extends ControllerBase
 
     /**
      * @param  int  $userId
-     * @param User $userData
+     * @param \SP\Domain\User\Models\User $userData
      *
      * @throws EnvironmentIsBrokenException
      * @throws Exception
