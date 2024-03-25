@@ -30,10 +30,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\UserToUserGroup;
-use SP\Domain\User\Ports\UserToUserGroupRepositoryInterface;
+use SP\Domain\User\Ports\UserToUserGroupRepository;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\User\Repositories\UserToUserGroupBaseRepository;
 
 /**
  * Class UserToUserGroupService
@@ -42,9 +41,9 @@ use SP\Infrastructure\User\Repositories\UserToUserGroupBaseRepository;
  */
 final class UserToUserGroupService extends Service implements UserToUserGroupServiceInterface
 {
-    protected UserToUserGroupBaseRepository $userToUserGroupRepository;
+    protected UserToUserGroupRepository $userToUserGroupRepository;
 
-    public function __construct(Application $application, UserToUserGroupRepositoryInterface $userToUserGroupRepository)
+    public function __construct(Application $application, UserToUserGroupRepository $userToUserGroupRepository)
     {
         parent::__construct($application);
 

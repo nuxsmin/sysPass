@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,81 +26,76 @@ namespace SP\Domain\User\Ports;
 
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserToUserGroupRepository
  *
- * @package SP\Infrastructure\User\Repositories
+ * @template T of UserToUserGroupModel
  */
-interface UserToUserGroupRepositoryInterface
+interface UserToUserGroupRepository
 {
     /**
      * Checks whether the user is included in the group
      *
-     * @param  int  $groupId
-     * @param  int  $userId
+     * @param int $groupId
+     * @param int $userId
      *
      * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function checkUserInGroup(int $groupId, int $userId): bool;
 
     /**
      * Returns the groups which the user belongs to
      *
-     * @param  int  $userId
+     * @param int $userId
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getGroupsForUser(int $userId): QueryResult;
 
     /**
      * Updates users from a group
      *
-     * @param  int  $id
-     * @param  array  $users
+     * @param int $id
+     * @param array $users
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(int $id, array $users): int;
+    public function update(int $id, array $users): QueryResult;
 
     /**
      * Deletes users from a group
      *
      * @param $id int
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $id): int;
+    public function delete(int $id): QueryResult;
 
     /**
      * Adds users to a group
      *
-     * @param  int  $groupId
-     * @param  array  $users
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function add(int $groupId, array $users): int;
-
-    /**
-     * Returns users from a group by group Id
-     *
-     * @param $id int
+     * @param int $groupId
+     * @param array $users
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
+     */
+    public function add(int $groupId, array $users): QueryResult;
+
+    /**
+     * Returns users from a group by group id
+     *
+     * @param $id int
+     *
+     * @return QueryResult<T>
      */
     public function getById(int $id): QueryResult;
 }
