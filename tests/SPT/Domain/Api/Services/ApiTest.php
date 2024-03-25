@@ -192,8 +192,9 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
-     * @throws InvalidClassException
      * @throws InvalidArgumentException
+     * @throws InvalidClassException
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testGetParamWithHelp()
     {
