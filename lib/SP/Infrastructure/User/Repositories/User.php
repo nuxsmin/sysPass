@@ -42,7 +42,6 @@ use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -55,8 +54,6 @@ use function SP\__u;
  */
 final class User extends BaseRepository implements UserRepository
 {
-    use RepositoryItemTrait;
-
     /**
      * Updates an item
      *
@@ -103,7 +100,7 @@ final class User extends BaseRepository implements UserRepository
             ->from(UserModel::TABLE)
             ->where('id <> :id')
             ->where(
-                'UPPER(login) = UPPER(login) 
+                'UPPER(:login) = UPPER(login) 
                 OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
                 OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
             )
@@ -308,7 +305,7 @@ final class User extends BaseRepository implements UserRepository
             ->cols(['id'])
             ->from(UserModel::TABLE)
             ->where(
-                'UPPER(login) = UPPER(login) 
+                'UPPER(:login) = UPPER(login) 
                 OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
                 OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
             )

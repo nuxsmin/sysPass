@@ -22,41 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\User\Models;
+namespace SPT\Generators;
 
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
-use SP\Domain\Common\Models\Model;
+use SP\Domain\User\Models\UserGroup;
 
 /**
- * Class UserGroup
+ * Class UserGroupGenerator
  */
-class UserGroup extends Model implements ItemWithIdAndNameModel
+final class UserGroupGenerator extends DataGenerator
 {
-    public const TABLE = 'UserGroup';
-
-    protected ?int    $id          = null;
-    protected ?string $name        = null;
-    protected ?string $description = null;
-    protected ?array  $users       = null;
-
-    public function getId(): ?int
+    public function buildUserGroupData(): UserGroup
     {
-        return $this->id;
+        return new UserGroup($this->getUserGroupProperties());
     }
 
-
-    public function getName(): ?string
+    private function getUserGroupProperties(): array
     {
-        return $this->name;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function getUsers(): ?array
-    {
-        return $this->users;
+        return [
+            'id' => $this->faker->randomNumber(3),
+            'name' => $this->faker->name(),
+            'description' => $this->faker->text(),
+            'users' => array_map(fn() => $this->faker->randomNumber(3), range(0, 4))
+        ];
     }
 }

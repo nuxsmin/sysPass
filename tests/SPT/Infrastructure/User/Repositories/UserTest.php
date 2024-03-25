@@ -344,6 +344,10 @@ class UserTest extends UnitaryTestCase
         $this->user->getAll();
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
     public function testUpdateLastLoginById()
     {
         $callbackUpdate = new Callback(
@@ -550,6 +554,34 @@ class UserTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
                        && $params['login'] === $searchStringLike
+                       && $arg->getMapClassName() === UserModel::class
+                       && is_a($query, SelectInterface::class)
+                       && !empty($query->getStatement());
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('doSelect')
+            ->with($callback, true);
+
+        $this->user->search($item);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testSearchWithNoString()
+    {
+        $item = new ItemSearchData();
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($item) {
+                $query = $arg->getQuery();
+                $params = $query->getBindValues();
+
+                return count($params) === 0
                        && $arg->getMapClassName() === UserModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());

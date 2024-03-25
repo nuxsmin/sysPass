@@ -24,7 +24,6 @@
 
 namespace SP\Domain\User\Services;
 
-
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
@@ -33,14 +32,13 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserGroupServiceInterface;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserGroupBaseRepository;
 
 /**
  * Class UserGroupService
@@ -51,7 +49,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
 {
     use ServiceItemTrait;
 
-    protected UserGroupBaseRepository $userGroupRepository;
+    protected UserGroupRepository $userGroupRepository;
     protected UserToUserGroupServiceInterface $userToUserGroupService;
     private DatabaseInterface                 $database;
 
@@ -82,7 +80,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserGroup
+    public function getById(int $id): UserGroupModel
     {
         $result = $this->userGroupRepository->getById($id);
 
@@ -113,7 +111,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     }
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException
@@ -136,7 +134,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * @throws ServiceException
      */
-    public function create(UserGroup $itemData): int
+    public function create(UserGroupModel $itemData): int
     {
         return $this->transactionAware(
             function () use ($itemData) {
@@ -157,7 +155,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * @throws ServiceException
      */
-    public function update(UserGroup $itemData): void
+    public function update(UserGroupModel $itemData): void
     {
         $this->transactionAware(
             function () use ($itemData) {
@@ -176,7 +174,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
     /**
      * Get all items from the service's repository
      *
-     * @return UserGroup[]
+     * @return UserGroupModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -192,7 +190,7 @@ final class UserGroupService extends Service implements UserGroupServiceInterfac
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): UserGroup
+    public function getByName(string $name): UserGroupModel
     {
         $result = $this->userGroupRepository->getByName($name);
 

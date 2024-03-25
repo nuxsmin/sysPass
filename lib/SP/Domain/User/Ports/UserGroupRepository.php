@@ -24,48 +24,120 @@
 
 namespace SP\Domain\User\Ports;
 
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserGroupRepository
  *
- * @package SP\Infrastructure\User\Repositories
+ * @template T of UserGroupModel
  */
 interface UserGroupRepository extends Repository
 {
     /**
      * Returns the items that are using the given group id
      *
-     * @param $id int
+     * @param int $userGroupId
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsage(int $id): QueryResult;
+    public function getUsage(int $userGroupId): QueryResult;
 
     /**
      * Returns the users that are using the given group id
      *
-     * @param $id int
+     * @param int $userGroupId
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsageByUsers(int $id): QueryResult;
+    public function getUsageByUsers(int $userGroupId): QueryResult;
 
     /**
      * Returns the item for given name
      *
-     * @param  string  $name
+     * @param string $name
+     *
+     * @return QueryResult<T>
+     */
+    public function getByName(string $name): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param int $id
+     *
+     * @return QueryResult<T>
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array<int> $ids
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): QueryResult;
+    public function deleteByIdBatch(array $ids): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Creates an item
+     *
+     * @param UserGroupModel $userGroup
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function create(UserGroupModel $userGroup): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param UserGroupModel $userGroup
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function update(UserGroupModel $userGroup): int;
+
+    /**
+     * Deletes an item
+     *
+     * @param int $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function delete(int $id): QueryResult;
 }
