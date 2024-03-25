@@ -24,26 +24,91 @@
 
 namespace SP\Domain\User\Ports;
 
+use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserProfile as UserProfileModel;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserProfileRepository
  *
- * @package SP\Infrastructure\User\Repositories
+ * @template T of UserProfileModel
  */
 interface UserProfileRepository extends Repository
 {
     /**
-     * Obtener el nombre de los usuarios que usan un perfil.
+     * Deletes an item
      *
-     * @param $id int El id del perfil
+     * @param int $id
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getUsersForProfile(int $id): QueryResult;
+    public function delete(int $id): QueryResult;
+
+    /**
+     * Returns the item for given id
+     *
+     * @param int $id
+     *
+     * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getById(int $id): QueryResult;
+
+    /**
+     * Updates an item
+     *
+     * @param UserProfileModel $userProfile
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function update(UserProfileModel $userProfile): int;
+
+    /**
+     * Creates an item
+     *
+     * @param UserProfileModel $userProfile
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     */
+    public function create(UserProfileModel $userProfile): QueryResult;
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult<T>
+     */
+    public function search(ItemSearchData $itemSearchData): QueryResult;
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array<int> $ids
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $ids): QueryResult;
+
+    /**
+     * Returns all the items
+     *
+     * @return QueryResult<T>
+     */
+    public function getAll(): QueryResult;
 }

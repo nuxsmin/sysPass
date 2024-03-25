@@ -26,6 +26,7 @@ namespace SPT\Domain\Api\Services;
 
 use Exception;
 use Faker\Factory;
+use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -253,6 +254,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      * @throws SPException
+     * @throws JsonException
      */
     public function testSetup()
     {
@@ -476,8 +478,10 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
-     * @throws ServiceException
+     * @throws CryptException
      * @throws SPException
+     * @throws ServiceException
+     * @throws JsonException
      */
     public function testSetupWithMasterPassWrongTokenPass()
     {

@@ -42,7 +42,7 @@ final class UserProfileDataGenerator extends DataGenerator
         return [
             'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->name(),
-            'profile' => $this->buildProfileData(),
+            'profile' => serialize($this->buildProfileData()),
         ];
     }
 

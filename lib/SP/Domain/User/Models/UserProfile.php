@@ -25,19 +25,24 @@
 namespace SP\Domain\User\Models;
 
 use SP\DataModel\ProfileData;
+use SP\Domain\Common\Attributes\Hydratable;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Models\SerializedModel;
 
 /**
  * Class UserProfile
  */
+#[Hydratable('profile', [ProfileData::class])]
 class UserProfile extends Model implements ItemWithIdAndNameModel
 {
+    use SerializedModel;
+
     public const TABLE = 'UserProfile';
 
-    protected ?int         $id      = null;
-    protected ?string      $name    = null;
-    protected ?ProfileData $profile = null;
+    protected ?int    $id      = null;
+    protected ?string $name    = null;
+    protected ?string $profile = null;
 
     /**
      * @return string|null
@@ -52,13 +57,13 @@ class UserProfile extends Model implements ItemWithIdAndNameModel
      */
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
     /**
-     * @return ProfileData|null
+     * @return string
      */
-    public function getProfile(): ?ProfileData
+    public function getProfile(): string
     {
         return $this->profile;
     }

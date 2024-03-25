@@ -114,7 +114,8 @@ abstract class BaseRepository implements Repository
             ->from($from);
 
         if (!empty($where)) {
-            $query->where($where)->bindValues($bindValues ?? []);
+            $query->where($where)
+                  ->bindValues($bindValues ?? []);
         }
 
         return $this->db->doSelect(QueryData::build($query));

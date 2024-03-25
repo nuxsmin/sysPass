@@ -33,13 +33,13 @@ use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\User\Repositories\UserProfileBaseRepository;
 use SP\Util\Util;
 
 use function SP\__u;
@@ -53,7 +53,7 @@ final class UserProfileService extends Service implements UserProfileServiceInte
 {
     use ServiceItemTrait;
 
-    protected UserProfileBaseRepository $userProfileRepository;
+    protected UserProfileRepository $userProfileRepository;
 
     public function __construct(Application $application, UserProfileRepository $userProfileRepository)
     {
@@ -151,13 +151,21 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @param int $id
+     * @return array
+     *
+     * TODO: Move to UserService instead?
      */
     public function getUsersForProfile(int $id): array
     {
-        return $this->userProfileRepository->getUsersForProfile($id)->getDataAsArray();
+        return $this->userProfileRepository
+            ->getAny(
+                ['id', 'login'],
+                UserModel::TABLE,
+                'userProfileId = :userProfileId',
+                ['userProfileId' => $id]
+            )
+            ->getDataAsArray();
     }
 
     /**

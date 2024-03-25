@@ -30,6 +30,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\DataModel\ProfileData;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
@@ -222,7 +223,9 @@ final class Api extends Service implements ApiService
 
         $this->context->setUserData($userLoginResponse);
         $this->context->setUserProfile(
-            $this->userProfileService->getById($userLoginResponse->getUserProfileId())->getProfile()
+            $this->userProfileService
+                ->getById($userLoginResponse->getUserProfileId())
+                ->hydrate(ProfileData::class)
         );
     }
 
