@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,20 +27,21 @@ namespace SP\Domain\User\Ports;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserPassRecoverRepository
  *
- * @package SP\Infrastructure\Common\Repositories\UserPassRecover
+ * @template T of UserPassRecoverModel
  */
-interface UserPassRecoverRepositoryInterface
+interface UserPassRecoverRepository
 {
     /**
      * Checks recovery limit attempts by user's id and time
      *
-     * @param  int  $userId
-     * @param  int  $time
+     * @param int $userId
+     * @param int $time
      *
      * @return int
      * @throws ConstraintException
@@ -51,20 +52,20 @@ interface UserPassRecoverRepositoryInterface
     /**
      * Adds a hash for a user's id
      *
-     * @param  int  $userId
-     * @param  string  $hash
+     * @param int $userId
+     * @param string $hash
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(int $userId, string $hash): int;
+    public function add(int $userId, string $hash): QueryResult;
 
     /**
      * Toggles a hash used
      *
-     * @param  string  $hash
-     * @param  int  $time
+     * @param string $hash
+     * @param int $time
      *
      * @return int
      * @throws SPException
@@ -74,12 +75,10 @@ interface UserPassRecoverRepositoryInterface
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @param  string  $hash
-     * @param  int  $time
+     * @param string $hash
+     * @param int $time
      *
-     * @return QueryResult
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return QueryResult<T>
      */
     public function getUserIdForHash(string $hash, int $time): QueryResult;
 }

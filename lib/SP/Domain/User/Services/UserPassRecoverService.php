@@ -33,10 +33,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserPassRecoverRepositoryInterface;
+use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
 use SP\Html\Html;
-use SP\Infrastructure\User\Repositories\UserPassRecoverBaseRepository;
 use SP\Util\PasswordUtil;
 
 /**
@@ -55,9 +54,9 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
      */
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
-    protected UserPassRecoverBaseRepository $userPassRecoverRepository;
+    protected UserPassRecoverRepository $userPassRecoverRepository;
 
-    public function __construct(Application $application, UserPassRecoverRepositoryInterface $userPassRecoverRepository)
+    public function __construct(Application $application, UserPassRecoverRepository $userPassRecoverRepository)
     {
         parent::__construct($application);
 
@@ -73,7 +72,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
         $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(
-            Html::anchorText(BootstrapBase::$WEBURI.'/index.php?r=userPassReset/reset/'.$hash)
+            Html::anchorText(BootstrapBase::$WEBURI . '/index.php?r=userPassReset/reset/' . $hash)
         );
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
