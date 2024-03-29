@@ -102,6 +102,18 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     }
 
     /**
+     * Reads data from a file line by line
+     */
+    public function read(): iterable
+    {
+        $this->autoDetectEOL();
+
+        while (!$this->eof()) {
+            yield $this->fgets();
+        }
+    }
+
+    /**
      * Saves a string into a file
      *
      * @throws FileException

@@ -25,71 +25,44 @@
 namespace SP\Infrastructure\Database;
 
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
  * Class MysqlFileParser
- *
- * @package SP\Storage
  */
-final class MysqlFileParser implements DatabaseFileInterface
+final readonly class MysqlFileParser implements DatabaseFileInterface
 {
-    private FileHandler $fileHandler;
-
-    public function __construct(FileHandlerInterface $fileHandler)
+    public function __construct(private FileHandlerInterface $fileHandler)
     {
-        $this->fileHandler = $fileHandler;
     }
 
     /**
-     * Parses a database script file and returns an array of lines parsed
+     * Parses a database script file and yields the queries parsed
      *
      * @throws FileException
      */
-    public function parse(string $delimiter = ';'): array
+    public function parse(string $delimiter = ';'): iterable
     {
-        $queries = [];
-        $query = '';
+        $query = [];
         $delimiterLength = strlen($delimiter);
 
         $this->fileHandler->checkIsReadable();
 
-        $handle = $this->fileHandler->open();
+        foreach ($this->fileHandler->read() as $data) {
+            $line = trim($data);
+            $lineLength = strlen($line);
 
-        while (($buffer = fgets($handle)) !== false) {
-            $buffer = trim($buffer);
-            $length = strlen($buffer);
+            if ($lineLength > 0 && !(str_starts_with($line, '--') || str_contains($line, 'DELIMITER'))) {
+                if (substr($line, -$delimiterLength) === $delimiter) {
+                    $query[] = substr($line, 0, $lineLength - $delimiterLength);
 
-            if ($length > 0
-                && strpos($buffer, '--') !== 0
-            ) {
-                // CHecks if delimiter based EOL is reached
-                $end = strrpos($buffer, $delimiter) === $length - $delimiterLength;
+                    yield implode(' ', $query);
 
-                // Checks if line is an SQL statement wrapped by a comment
-                if (preg_match('#^(?<stmt>/\*!\d+.*\*/)#', $buffer, $matches)) {
-                    if (!$end) {
-                        $query .= $matches['stmt'].PHP_EOL;
-                    } else {
-                        $queries[] = $query.$matches['stmt'];
-
-                        $query = '';
-                    }
-                } elseif (!$end) {
-                    $query .= $buffer.PHP_EOL;
-                } elseif (strpos($buffer, 'DELIMITER') === false) {
-                    $queries[] = $query.
-                                 trim(
-                                     substr_replace($buffer, '', $length - $delimiterLength),
-                                     $delimiterLength
-                                 );
-
-                    $query = '';
+                    $query = [];
+                } else {
+                    $query[] = $line;
                 }
             }
         }
-
-        return $queries;
     }
 }

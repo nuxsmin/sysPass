@@ -142,4 +142,9 @@ interface FileHandlerInterface
      * @throws FileException
      */
     public function readFromCsv(string $delimiter): iterable;
+
+    /**
+     * Reads data from a file line by line
+     */
+    public function read(): iterable;
 }

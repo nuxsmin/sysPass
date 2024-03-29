@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,5 +34,5 @@ interface DatabaseFileInterface
     /**
      * Parses a database script file and returns an array of lines parsed
      */
-    public function parse(string $delimiter = ';'): array;
+    public function parse(string $delimiter = ';'): iterable;
 }
