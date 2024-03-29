@@ -189,7 +189,7 @@ class AccountSearchTest extends UnitaryTestCase
                                 ->method('buildFilter')
                                 ->with(true, self::anything());
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with(
                            new Callback(static function (QueryData $data) {
                                return !empty($data->getQuery()->getStatement()) &&
@@ -210,7 +210,7 @@ class AccountSearchTest extends UnitaryTestCase
                                 ->method('buildFilter');
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with(
                            new Callback(static function (QueryData $data) {
                                return !empty($data->getQuery()->getStatement()) &&

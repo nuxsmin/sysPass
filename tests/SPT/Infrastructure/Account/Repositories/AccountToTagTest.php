@@ -65,7 +65,7 @@ class AccountToTagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -80,8 +80,6 @@ class AccountToTagTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
                 $query = $arg->getQuery();
@@ -94,9 +92,9 @@ class AccountToTagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountToTag->deleteByAccountId($accountId));
     }
@@ -130,7 +128,7 @@ class AccountToTagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(count($tags)))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive(...$callbacks));
 
         $this->accountToTag->add($id, $tags);

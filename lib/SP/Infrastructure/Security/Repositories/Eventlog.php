@@ -59,7 +59,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while clearing the event log out'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() > 0;
     }
 
     /**
@@ -90,7 +90,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
 
         $queryData = QueryData::build($query)->setMapClassName(EventlogModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
 
@@ -111,6 +111,6 @@ final class Eventlog extends BaseRepository implements EventlogRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the plugin'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 }

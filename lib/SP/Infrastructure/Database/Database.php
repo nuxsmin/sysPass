@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,9 +32,9 @@ use PDOStatement;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
 use function SP\logger;
@@ -42,92 +42,21 @@ use function SP\processException;
 
 /**
  * Class Database
- *
- * @package SP\Storage
  */
 final class Database implements DatabaseInterface
 {
-    protected DbStorageInterface $dbHandler;
-    protected int                $numRows    = 0;
-    protected int                $numFields  = 0;
-    protected ?array             $lastResult = null;
-    private EventDispatcher      $eventDispatcher;
-    private ?int                 $lastId     = null;
+    private ?int $lastId = null;
 
     /**
      * DB constructor.
      *
-     * @param DbStorageInterface $dbHandler
+     * @param DbStorageHandler $dbStorageHandler
      * @param EventDispatcher $eventDispatcher
      */
     public function __construct(
-        DbStorageInterface $dbHandler,
-        EventDispatcher    $eventDispatcher
+        private readonly DbStorageHandler         $dbStorageHandler,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
-        $this->dbHandler = $dbHandler;
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    public function getNumRows(): int
-    {
-        return $this->numRows;
-    }
-
-    public function getNumFields(): int
-    {
-        return $this->numFields;
-    }
-
-    public function getLastResult(): ?array
-    {
-        return $this->lastResult;
-    }
-
-    public function getLastId(): ?int
-    {
-        return $this->lastId;
-    }
-
-    public function getDbHandler(): DbStorageInterface
-    {
-        return $this->dbHandler;
-    }
-
-    /**
-     * Perform a SELECT type query
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function doSelect(QueryData $queryData, bool $fullCount = false): QueryResult
-    {
-        if ($queryData->getQuery()->getStatement()) {
-            throw new QueryException($queryData->getOnErrorMessage(), SPException::ERROR, __u('Blank query'));
-        }
-
-        try {
-            $queryResult = $this->doQuery($queryData);
-
-            if ($fullCount === true) {
-                $queryResult->setTotalNumRows($this->getFullRowCount($queryData));
-            }
-
-            return $queryResult;
-        } catch (ConstraintException|QueryException $e) {
-            processException($e);
-
-            throw $e;
-        } catch (Exception $e) {
-            processException($e);
-
-            throw new QueryException(
-                $queryData->getOnErrorMessage(),
-                SPException::ERROR,
-                $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
     }
 
     /**
@@ -136,22 +65,39 @@ final class Database implements DatabaseInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function doQuery(QueryData $queryData): QueryResult
+    public function runQuery(QueryDataInterface $queryData, bool $fullCount = false): QueryResult
     {
-        $stmt = $this->prepareQueryData($queryData->getQuery());
+        try {
+            $query = $queryData->getQuery();
 
-        $this->eventDispatcher->notify(
-            'database.query',
-            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery()->getStatement()))
-        );
+            if (empty($query->getStatement())) {
+                throw QueryException::error($queryData->getOnErrorMessage(), __u('Blank query'));
+            }
 
-        if ($queryData->getQuery() instanceof SelectInterface) {
-            $this->numFields = $stmt->columnCount();
+            $stmt = $this->prepareAndRunQuery($query);
 
-            return new QueryResult($this->fetch($queryData, $stmt));
+            $this->eventDispatcher->notify(
+                'database.query',
+                new Event($this, EventMessage::factory()->addDescription($query->getStatement()))
+            );
+
+            if ($query instanceof SelectInterface) {
+                if ($fullCount === true) {
+                    return QueryResult::withTotalNumRows(
+                        $this->fetch($stmt, $queryData->getMapClassName()),
+                        $this->getFullRowCount($queryData)
+                    );
+                }
+
+                return new QueryResult($this->fetch($stmt, $queryData->getMapClassName()));
+            }
+
+            return new QueryResult(null, $stmt->rowCount(), $this->lastId);
+        } catch (ConstraintException|QueryException $e) {
+            processException($e);
+
+            throw $e;
         }
-
-        return (new QueryResult())->setAffectedNumRows($stmt->rowCount())->setLastId($this->lastId);
     }
 
     /**
@@ -164,34 +110,24 @@ final class Database implements DatabaseInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function prepareQueryData(
-        QueryInterface $query,
-        array          $options = []
-    ): PDOStatement {
+    private function prepareAndRunQuery(QueryInterface $query, array $options = []): PDOStatement
+    {
         try {
-            $connection = $this->dbHandler->getConnection();
+            $connection = $this->dbStorageHandler->getConnection();
 
-            if (count($query->getBindValues()) !== 0) {
-                $stmt = $connection->prepare($query->getStatement(), $options);
+            $stmt = $connection->prepare($query->getStatement(), $options);
 
-                foreach ($query->getBindValues() as $param => $value) {
-                    // Si la clave es un número utilizamos marcadores de posición "?" en
-                    // la consulta. En caso contrario marcadores de nombre
-                    $param = is_int($param) ? $param + 1 : ':' . $param;
+            foreach ($query->getBindValues() as $param => $value) {
+                $type = match (true) {
+                    is_int($value) => PDO::PARAM_INT,
+                    is_bool($value) => PDO::PARAM_BOOL,
+                    default => PDO::PARAM_STR
+                };
 
-                    if ($param === 'blobcontent') {
-                        $stmt->bindValue($param, $value, PDO::PARAM_LOB);
-                    } elseif (is_int($value)) {
-                        $stmt->bindValue($param, $value, PDO::PARAM_INT);
-                    } else {
-                        $stmt->bindValue($param, $value);
-                    }
-                }
-
-                $stmt->execute();
-            } else {
-                $stmt = $connection->query($query);
+                $stmt->bindValue($param, $value, $type);
             }
+
+            $stmt->execute();
 
             $this->lastId = $connection->lastInsertId();
 
@@ -200,47 +136,35 @@ final class Database implements DatabaseInterface
             processException($e);
 
             if ((int)$e->getCode() === 23000) {
-                throw new ConstraintException(
-                    __u('Integrity constraint'),
-                    SPException::ERROR,
-                    $e->getMessage(),
-                    $e->getCode(),
-                    $e
-                );
+                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), $e->getCode(), $e);
             }
 
-            throw new QueryException(
-                $e->getMessage(),
-                SPException::CRITICAL,
-                $e->getCode(),
-                0,
-                $e
-            );
+            throw QueryException::critical($e->getMessage(), $e->getCode(), 0, $e);
         }
     }
 
-    private function fetch(QueryData $queryData, PDOStatement $stmt): array
+    private function fetch(PDOStatement $stmt, ?string $class = null): array
     {
-        if ($queryData->getMapClassName()) {
-            return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
+        $fetchArgs = [PDO::FETCH_DEFAULT];
+
+        if ($class) {
+            $fetchArgs = [PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class];
         }
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(...$fetchArgs);
     }
 
     /**
      * Obtener el número de filas de una consulta realizada
      *
+     * @param QueryDataInterface $queryData
      * @return int Número de filas de la consulta
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function getFullRowCount(QueryData $queryData): int
+    private function getFullRowCount(QueryDataInterface $queryData): int
     {
-        $queryRes = $this->prepareQueryData($queryData->getQueryCount());
-        $num = (int)$queryRes->fetchColumn();
-        $queryRes->closeCursor();
-
-        return $num;
+        return (int)$this->prepareAndRunQuery($queryData->getQueryCount())->fetchColumn();
     }
 
     /**
@@ -248,27 +172,41 @@ final class Database implements DatabaseInterface
      *
      * @param QueryData $queryData
      * @param array $options
+     * @param int $mode Fech mode
      * @param bool|null $buffered Set buffered behavior (useful for big datasets)
      *
      * @return PDOStatement
      * @throws ConstraintException
-     * @throws QueryException|DatabaseException
+     * @throws QueryException
      */
-    public function doQueryRaw(
-        QueryData $queryData,
-        array     $options = [],
-        ?bool     $buffered = null
-    ): PDOStatement {
-        if ($buffered === false && ($this->dbHandler instanceof MysqlHandler)) {
-            $this->dbHandler
-                ->getConnection()
-                ->setAttribute(
-                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
-                    false
-                );
+    public function doFetchWithOptions(
+        QueryDataInterface $queryData,
+        array              $options = [],
+        int                $mode = PDO::FETCH_DEFAULT,
+        ?bool              $buffered = true
+    ): iterable {
+        if ($this->dbStorageHandler->getDriver() === DbStorageDriver::mysql) {
+            $options += [PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered];
         }
 
-        return $this->prepareQueryData($queryData->getQuery(), $options);
+        $stmt = $this->prepareAndRunQuery($queryData->getQuery(), $options);
+
+        while (($row = $stmt->fetch($mode)) !== false) {
+            yield $row;
+        }
+    }
+
+    /**
+     * Execute a raw query
+     *
+     * @param string $query
+     * @throws QueryException
+     */
+    public function runQueryRaw(string $query): void
+    {
+        if ($this->dbStorageHandler->getConnection()->exec($query) === false) {
+            throw QueryException::error(__u('Error executing the query'));
+        }
     }
 
     /**
@@ -276,7 +214,7 @@ final class Database implements DatabaseInterface
      */
     public function beginTransaction(): bool
     {
-        $conn = $this->dbHandler->getConnection();
+        $conn = $this->dbStorageHandler->getConnection();
 
         if (!$conn->inTransaction()) {
             $result = $conn->beginTransaction();
@@ -302,7 +240,7 @@ final class Database implements DatabaseInterface
      */
     public function endTransaction(): bool
     {
-        $conn = $this->dbHandler->getConnection();
+        $conn = $this->dbStorageHandler->getConnection();
 
         $result = $conn->inTransaction() && $conn->commit();
 
@@ -322,7 +260,7 @@ final class Database implements DatabaseInterface
      */
     public function rollbackTransaction(): bool
     {
-        $conn = $this->dbHandler->getConnection();
+        $conn = $this->dbStorageHandler->getConnection();
 
         $result = $conn->inTransaction() && $conn->rollBack();
 
@@ -335,24 +273,5 @@ final class Database implements DatabaseInterface
         );
 
         return $result;
-    }
-
-    /**
-     * Get the columns of a table
-     *
-     * @param string $table
-     *
-     * @return array
-     */
-    public function getColumnsForTable(string $table): array
-    {
-        $conn = $this->dbHandler->getConnection()->query("SELECT * FROM `$table` LIMIT 0");
-        $columns = [];
-
-        for ($i = 0; $i < $conn->columnCount(); $i++) {
-            $columns[] = $conn->getColumnMeta($i)['name'];
-        }
-
-        return $columns;
     }
 }

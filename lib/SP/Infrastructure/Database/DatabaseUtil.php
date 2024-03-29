@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -71,7 +71,7 @@ class DatabaseUtil
     /**
      * DatabaseUtil constructor.
      */
-    public function __construct(private readonly DbStorageInterface $dbStorage)
+    public function __construct(private readonly DbStorageHandler $dbStorage)
     {
     }
 

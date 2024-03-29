@@ -22,16 +22,47 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Common\Repositories;
+namespace SP\Infrastructure\Database;
 
-use SP\Domain\Core\Exceptions\SPException;
+use PDO;
 
 /**
- * Class NoSuchItemException
+ * Interface DBStorageInterface
  *
- * @package SP\Infrastructure\Common\Repositories
+ * @package SP\Storage
  */
-final class NoSuchItemException extends SPException
+interface DbStorageHandler
 {
+    /**
+     * Obtener una conexión PDO
+     *
+     * @return PDO
+     */
+    public function getConnection(): PDO;
 
+    /**
+     * Obtener una conexión PDO sin seleccionar la BD
+     *
+     * @return PDO
+     */
+    public function getConnectionSimple(): PDO;
+
+    /**
+     * Devolcer el estado de la BD
+     *
+     * @return int
+     */
+    public function getDbStatus(): int;
+
+    /**
+     * @return string
+     */
+    public function getConnectionUri(): string;
+
+    /**
+     * @return string|null
+     */
+    public function getDatabaseName(): ?string;
+
+    public function getDriver(): DbStorageDriver;
 }

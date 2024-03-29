@@ -59,7 +59,7 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
             ->where('userId = :userId')
             ->bindValues(['userId' => $id]);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -84,7 +84,7 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding favorite'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->runQuery($queryData)->getLastId();
     }
 
     /**
@@ -111,6 +111,6 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting favorite'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

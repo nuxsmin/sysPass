@@ -25,7 +25,6 @@
 namespace SPT\Domain\Export\Services;
 
 use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -38,7 +37,6 @@ use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DbStorageInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandlerInterface;
@@ -65,14 +63,6 @@ class FileBackupServiceTest extends UnitaryTestCase
     {
         $this->setupBackupFiles();
 
-        $dbStorage = $this->createStub(DbStorageInterface::class);
-        $dbStorage->method('getDatabaseName')
-                  ->willReturn('TestDatabase');
-
-        $this->database
-            ->method('getDbHandler')
-            ->willReturn($dbStorage);
-
         $tablesCount = count(DatabaseUtil::TABLES);
         $tablesType = ['table', 'view'];
 
@@ -83,7 +73,7 @@ class FileBackupServiceTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly($tablesCount))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(
                 new Callback(static function (QueryData $queryData) {
                     return preg_match('/^SHOW CREATE TABLE \w+$/', $queryData->getQuery()) === 1;
@@ -91,23 +81,23 @@ class FileBackupServiceTest extends UnitaryTestCase
             )
             ->willReturn(...$queryResults);
 
-        $statement = $this->createMock(PDOStatement::class);
-        $statement->expects(self::exactly($tablesCount - 1))
-                  ->method('fetch')
-                  ->with(PDO::FETCH_NUM)
-                  ->willReturn(['value1', 2, null], false);
+        $rows = static function () {
+            yield ['a', 1, false];
+            yield ['b', 2, true];
+        };
 
         $this->database
             ->expects(self::exactly($tablesCount - 2))
-            ->method('doQueryRaw')
+            ->method('doFetchWithOptions')
             ->with(
                 new Callback(static function (QueryData $queryData) {
                     return preg_match('/^SELECT \* FROM `\w+`$/', $queryData->getQuery()) === 1;
                 }),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
+                PDO::FETCH_NUM,
                 false
             )
-            ->willReturn($statement);
+            ->willReturnCallback($rows);
 
         $this->fileBackupService->doBackup(TMP_PATH);
     }

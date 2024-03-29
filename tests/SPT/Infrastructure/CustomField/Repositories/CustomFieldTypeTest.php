@@ -59,7 +59,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldType->getAll();

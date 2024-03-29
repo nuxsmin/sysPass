@@ -165,13 +165,11 @@ class TrackTest extends UnitaryTestCase
                                     'time' => $trackRequest->getTime()
                                 ]);
 
-        $queryResult = new QueryResult();
-
         $this->trackRepository
             ->expects($this->once())
             ->method('add')
             ->with($track)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $this->assertEquals(100, $this->track->add($trackRequest));
     }

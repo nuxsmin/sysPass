@@ -55,6 +55,6 @@ final class CustomFieldType extends BaseRepository implements CustomFieldTypeRep
             ->cols(CustomFieldTypeModel::getCols())
             ->orderBy(['name ASC']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, CustomFieldTypeModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldTypeModel::class));
     }
 }

@@ -65,7 +65,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -87,7 +87,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::buildWithMapper($query, AuthTokenModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -102,7 +102,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->from(self::TABLE)
             ->cols(AuthTokenModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthTokenModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenModel::class));
     }
 
     /**
@@ -127,7 +127,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -166,7 +166,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             $query->bindValues(['userLogin' => $search, 'userName' => $search]);
         }
 
-        return $this->db->doSelect(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::build($query), true);
     }
 
     /**
@@ -193,7 +193,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -221,7 +221,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -243,7 +243,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::buildWithMapper($query, AuthTokenModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -272,7 +272,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -301,7 +301,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -325,7 +325,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -354,7 +354,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -376,6 +376,6 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->bindValues(['actionId' => $actionId, 'token' => $token])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AuthTokenModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenModel::class));
     }
 }

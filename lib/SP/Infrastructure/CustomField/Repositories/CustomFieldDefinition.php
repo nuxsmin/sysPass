@@ -75,7 +75,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the custom field'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -97,7 +97,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             ->bindValues(['id' => $customFieldDefinition->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the custom field'));
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -119,7 +119,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $queryData = QueryData::buildWithMapper($query, CustomFieldDefinitionModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -135,7 +135,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             ->cols(CustomFieldDefinitionModel::getCols())
             ->orderBy(['moduleId ASC']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, CustomFieldDefinitionModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDefinitionModel::class));
     }
 
     /**
@@ -161,7 +161,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the custom fields'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -183,7 +183,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the custom field'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -217,6 +217,6 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $queryData = QueryData::build($query)->setMapClassName(CustomFieldDefinitionModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 }

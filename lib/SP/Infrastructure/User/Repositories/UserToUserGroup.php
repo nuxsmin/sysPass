@@ -60,7 +60,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
             ->where('userId = :userId')
             ->bindValues(['userGroupId' => $groupId, 'userId' => $userId]);
 
-        return $this->db->doSelect(QueryData::build($query))->getNumRows() === 1;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() === 1;
     }
 
     /**
@@ -78,7 +78,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
             ->cols(UserToUserGroupModel::getCols())
             ->where('userId = :userId', ['userId' => $userId]);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(UserToUserGroupModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserToUserGroupModel::class));
     }
 
     /**
@@ -121,7 +121,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the group users'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -149,7 +149,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while setting users in the group'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -168,6 +168,6 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
             ->where('userGroupId = :userGroupId', ['userGroupId' => $id])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserToUserGroupModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserToUserGroupModel::class));
     }
 }

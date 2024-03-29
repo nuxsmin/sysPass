@@ -74,7 +74,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getByIdBatch($ids);
@@ -97,7 +97,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getAllActiveForAdmin(100);
@@ -120,7 +120,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getAllForUserId(100);
@@ -144,7 +144,7 @@ class NotificationTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->notification->delete($id);
     }
@@ -177,13 +177,11 @@ class NotificationTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->notification->update($notification);
 
@@ -209,13 +207,11 @@ class NotificationTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->notification->setCheckedById(100);
 
@@ -239,7 +235,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getAllForUserId(100);
@@ -270,7 +266,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->deleteAdminBatch($ids);
@@ -304,7 +300,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([]));
 
@@ -329,7 +325,7 @@ class NotificationTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->notification->deleteAdmin($id);
     }
@@ -351,7 +347,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getById(100);
@@ -382,7 +378,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->deleteByIdBatch($ids);
@@ -410,7 +406,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->notification->searchForUserId($item, 100);
@@ -438,7 +434,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->notification->searchForAdmin($item, 100);
@@ -458,7 +454,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getAll();
@@ -482,7 +478,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->notification->getForUserIdByDate('test', 100);

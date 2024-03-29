@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,43 +24,26 @@
 
 namespace SP\Infrastructure\Database;
 
-use PDO;
+use Aura\SqlQuery\QueryInterface;
+use SP\Domain\Core\Exceptions\QueryException;
 
 /**
- * Interface DBStorageInterface
- *
- * @package SP\Storage
+ * Class QueryData
  */
-interface DbStorageInterface
+interface QueryDataInterface
 {
-    /**
-     * Obtener una conexión PDO
-     *
-     * @return PDO
-     */
-    public function getConnection(): PDO;
+    public function getQuery(): QueryInterface;
+
+    public function getMapClassName(): string;
+
+    public function setMapClassName(string $class): QueryData;
 
     /**
-     * Obtener una conexión PDO sin seleccionar la BD
-     *
-     * @return PDO
+     * @throws QueryException
      */
-    public function getConnectionSimple(): PDO;
+    public function getQueryCount(): QueryInterface;
 
-    /**
-     * Devolcer el estado de la BD
-     *
-     * @return int
-     */
-    public function getDbStatus(): int;
+    public function getOnErrorMessage(): string;
 
-    /**
-     * @return string
-     */
-    public function getConnectionUri(): string;
-
-    /**
-     * @return string|null
-     */
-    public function getDatabaseName(): ?string;
+    public function setOnErrorMessage(string $onErrorMessage): QueryData;
 }

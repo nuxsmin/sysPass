@@ -30,7 +30,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\File\FileException;
 use SP\Util\PasswordUtil;
 
@@ -52,7 +52,7 @@ final class MysqlService implements DatabaseSetupInterface
      *
      */
     public function __construct(
-        private readonly DbStorageInterface    $dbStorage,
+        private readonly DbStorageHandler $dbStorage,
         private readonly InstallData           $installData,
         private readonly DatabaseFileInterface $databaseFile,
         private readonly DatabaseUtil          $databaseUtil

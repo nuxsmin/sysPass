@@ -153,7 +153,7 @@ final class BackupFile implements BackupFileService
 
         $fileHandler->open('w');
 
-        $dbname = $this->database->getDbHandler()->getDatabaseName();
+        $dbname = $this->configData->getDbName();
 
         $sqlOut = [
             '-- ',
@@ -179,7 +179,7 @@ final class BackupFile implements BackupFileService
         foreach ($tables as $table) {
             $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $table), []);
 
-            $data = $this->database->doQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery(QueryData::build($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -196,7 +196,7 @@ final class BackupFile implements BackupFileService
         foreach ($views as $view) {
             $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $view), []);
 
-            $data = $this->database->doQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery(QueryData::build($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -215,13 +215,14 @@ final class BackupFile implements BackupFileService
             $query = Query::buildForMySQL(sprintf('SELECT * FROM `%s`', $table), []);
 
             // Get table records
-            $statement = $this->database->doQueryRaw(
+            $rows = $this->database->doFetchWithOptions(
                 QueryData::build($query),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
+                PDO::FETCH_NUM,
                 false
             );
 
-            while ($row = $statement->fetch(PDO::FETCH_NUM)) {
+            foreach ($rows as $row) {
                 $values = array_map(
                     function (mixed $value) {
                         if (is_numeric($value)) {

@@ -140,12 +140,11 @@ class PluginManagerTest extends UnitaryTestCase
      */
     public function testDelete()
     {
-        $queryResult = new QueryResult();
         $this->pluginRepository
             ->expects($this->once())
             ->method('delete')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->pluginManager->delete(100);
     }
@@ -157,12 +156,11 @@ class PluginManagerTest extends UnitaryTestCase
      */
     public function testDeleteWithNotFound()
     {
-        $queryResult = new QueryResult();
         $this->pluginRepository
             ->expects($this->once())
             ->method('delete')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Plugin not found');
@@ -344,13 +342,11 @@ class PluginManagerTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $queryResult = new QueryResult([]);
-
         $this->pluginRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(3));
+            ->willReturn(new QueryResult(null, 3));
 
         $this->pluginManager->deleteByIdBatch([100, 200, 300]);
     }
@@ -362,13 +358,11 @@ class PluginManagerTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithException()
     {
-        $queryResult = new QueryResult([]);
-
         $this->pluginRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the plugins');
@@ -421,13 +415,11 @@ class PluginManagerTest extends UnitaryTestCase
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
 
-        $queryResult = new QueryResult();
-
         $this->pluginRepository
             ->expects($this->once())
             ->method('create')
             ->with($plugin)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $out = $this->pluginManager->create($plugin);
 

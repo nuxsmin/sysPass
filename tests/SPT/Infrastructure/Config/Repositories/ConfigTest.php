@@ -69,7 +69,7 @@ class ConfigTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->configRepository->getByParam($param);
@@ -100,7 +100,7 @@ class ConfigTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn($queryResult);
 
@@ -128,7 +128,7 @@ class ConfigTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 
@@ -160,7 +160,7 @@ class ConfigTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn($queryResult);
 

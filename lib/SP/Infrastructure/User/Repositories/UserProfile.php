@@ -62,7 +62,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the profile'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -81,7 +81,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserProfileModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserProfileModel::class));
     }
 
     /**
@@ -97,7 +97,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->cols(UserProfileModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserProfileModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserProfileModel::class));
     }
 
     /**
@@ -120,7 +120,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->from(UserProfileModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -148,7 +148,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
 
         $queryData = QueryData::build($query)->setMapClassName(UserProfileModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -174,7 +174,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the profile'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -194,7 +194,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->from(UserProfileModel::TABLE)
             ->where('UPPER(:name) = UPPER(name)', ['name' => $userProfile->getName()]);
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -222,7 +222,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the profile'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -243,6 +243,6 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->where('id <> :id', ['id' => $userProfile->getId()])
             ->where('UPPER(:name) = UPPER(name)', ['name' => $userProfile->getName()]);
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 }

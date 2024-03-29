@@ -80,7 +80,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the user'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -113,7 +113,7 @@ final class User extends BaseRepository implements UserRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -139,7 +139,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -161,7 +161,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the user'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -189,7 +189,7 @@ final class User extends BaseRepository implements UserRepository
             ->bindValues(['id' => $id])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
     }
 
     /**
@@ -214,7 +214,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the users'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -261,7 +261,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setMapClassName(UserModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -286,7 +286,7 @@ final class User extends BaseRepository implements UserRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the user'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -317,7 +317,7 @@ final class User extends BaseRepository implements UserRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -344,7 +344,7 @@ final class User extends BaseRepository implements UserRepository
             ->bindValues(['login' => $login])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
     }
 
     /**
@@ -360,7 +360,7 @@ final class User extends BaseRepository implements UserRepository
             ->cols(UserModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
     }
 
     /**
@@ -386,7 +386,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -408,7 +408,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -426,7 +426,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('UPPER(ssoLogin) = UPPER(:login)')
             ->bindValues(['login' => $login]);
 
-        return $this->db->doSelect(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -456,7 +456,7 @@ final class User extends BaseRepository implements UserRepository
             ->bindValues(['login' => $user->getLogin()])
             ->limit(1);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -481,7 +481,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -520,7 +520,7 @@ final class User extends BaseRepository implements UserRepository
             ->orderBy([sprintf('%s.login', UserModel::TABLE)])
             ->bindValues(['userGroupId' => $groupId]);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(UserModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserModel::class));
     }
 
     /**
@@ -538,7 +538,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('isDisabled = 0')
             ->orderBy(['login']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(UserModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserModel::class));
     }
 
     /**
@@ -559,7 +559,7 @@ final class User extends BaseRepository implements UserRepository
             ->where('isDisabled = 0')
             ->orderBy(['login']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(UserModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserModel::class));
     }
 
     /**
@@ -674,6 +674,6 @@ final class User extends BaseRepository implements UserRepository
             ->orderBy(['Items.ref'])
             ->bindValues(['userId' => $id]);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

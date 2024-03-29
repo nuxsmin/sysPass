@@ -203,13 +203,11 @@ class NotificationTest extends UnitaryTestCase
     {
         $notification = NotificationDataGenerator::factory()->buildNotification();
 
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('create')
             ->with($notification)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $out = $this->notification->create($notification);
 
@@ -267,13 +265,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDelete()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('delete')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->notification->delete(100);
     }
@@ -285,13 +281,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteWithException()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('delete')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Notification not found');
@@ -403,13 +397,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteAdmin()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteAdmin')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->notification->deleteAdmin(100);
     }
@@ -421,13 +413,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteAdminWithException()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteAdmin')
             ->with(100)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Notification not found');
@@ -442,13 +432,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(3));
+            ->willReturn(new QueryResult(null, 3));
 
         $this->notification->deleteByIdBatch([100, 200, 300]);
     }
@@ -460,13 +448,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithException()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the notifications');
@@ -481,13 +467,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteAdminBatch()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteAdminBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(3));
+            ->willReturn(new QueryResult(null, 3));
 
         $this->notification->deleteAdminBatch([100, 200, 300]);
     }
@@ -499,13 +483,11 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteAdminBatchWithException()
     {
-        $queryResult = new QueryResult([]);
-
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteAdminBatch')
             ->with([100, 200, 300])
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the notifications');

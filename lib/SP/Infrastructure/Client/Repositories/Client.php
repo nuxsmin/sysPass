@@ -71,7 +71,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the client'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -97,7 +97,7 @@ final class Client extends BaseRepository implements ClientRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -131,7 +131,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the client'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -159,7 +159,7 @@ final class Client extends BaseRepository implements ClientRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -181,7 +181,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::buildWithMapper($query, ClientModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -203,7 +203,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::buildWithMapper($query, ClientModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -218,7 +218,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, ClientModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, ClientModel::class));
     }
 
     /**
@@ -243,7 +243,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the clients'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -265,7 +265,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the client'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -295,7 +295,7 @@ final class Client extends BaseRepository implements ClientRepository
 
         $queryData = QueryData::build($query)->setMapClassName(ClientModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -316,6 +316,6 @@ final class Client extends BaseRepository implements ClientRepository
             ->groupBy(['id'])
             ->orderBy(['Client.name']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

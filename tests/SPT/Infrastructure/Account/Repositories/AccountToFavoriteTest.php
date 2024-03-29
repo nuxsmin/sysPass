@@ -62,7 +62,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -73,8 +73,6 @@ class AccountToFavoriteTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
         $userId = self::$faker->randomNumber();
-
-        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId, $userId) {
@@ -89,9 +87,9 @@ class AccountToFavoriteTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountToFavorite->delete($accountId, $userId));
     }
@@ -105,8 +103,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $accountId = self::$faker->randomNumber();
         $userId = self::$faker->randomNumber();
 
-        $expected = new QueryResult();
-        $expected->setLastId(1);
+        $expected = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId, $userId) {
@@ -120,7 +117,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn($expected);
 

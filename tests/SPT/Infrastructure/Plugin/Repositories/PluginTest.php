@@ -73,13 +73,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->toggleAvailableByName('test_name', true);
 
@@ -105,13 +103,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->toggleEnabledByName('test_name', true);
 
@@ -142,13 +138,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->update($plugin);
 
@@ -174,13 +168,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->toggleEnabled(100, true);
 
@@ -203,7 +195,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->getEnabled();
@@ -235,7 +227,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->deleteByIdBatch($ids);
@@ -261,13 +253,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->toggleAvailable(100, true);
 
@@ -294,7 +284,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->plugin->search($item);
@@ -319,7 +309,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->plugin->search($item);
@@ -339,7 +329,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->getAll();
@@ -364,13 +354,11 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->plugin->resetById(100);
 
@@ -402,7 +390,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([]));
 
@@ -426,7 +414,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->getByName('test_name');
@@ -453,7 +441,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->getByIdBatch($ids);
@@ -476,7 +464,7 @@ class PluginTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->plugin->getById(100);
@@ -500,7 +488,7 @@ class PluginTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->plugin->delete($id);
     }

@@ -64,7 +64,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
             ->bindValues(['accountId' => $id])
             ->orderBy(['Tag.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -88,7 +88,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the account\'s tags'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -114,7 +114,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
 
             $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the account\'s tags'));
 
-            $this->db->doQuery($queryData);
+            $this->db->runQuery($queryData);
         }
     }
 }

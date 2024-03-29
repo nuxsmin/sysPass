@@ -92,7 +92,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -122,7 +122,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -171,7 +171,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -202,7 +202,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -220,7 +220,7 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -251,7 +251,7 @@ class UserGroupTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->userGroup->delete($id);
     }
@@ -277,7 +277,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->userGroup->search($item);
@@ -301,7 +301,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->userGroup->search($item);
@@ -311,7 +311,7 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -338,7 +338,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->userGroup->getAll();
@@ -348,7 +348,7 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -365,7 +365,7 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -404,7 +404,7 @@ class UserGroupTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->userGroup->deleteByIdBatch($ids);
@@ -418,7 +418,7 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->userGroup->deleteByIdBatch([]);
     }

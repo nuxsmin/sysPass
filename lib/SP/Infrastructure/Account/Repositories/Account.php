@@ -73,7 +73,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->cols(['SUM(n) AS num'])
             ->fromSubSelect('SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory', 'a');
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -97,7 +97,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->bindValues(['id' => $accountId])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(AccountModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountModel::class));
     }
 
     /**
@@ -121,7 +121,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->where('AccountHistory.accountId = :accountId')
             ->bindValues(['accountId' => $accountId]);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -142,7 +142,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -165,7 +165,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -186,7 +186,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -212,7 +212,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -236,7 +236,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -273,7 +273,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error on restoring the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -295,7 +295,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -346,7 +346,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -398,7 +398,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the account'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -421,7 +421,7 @@ final class Account extends BaseRepository implements AccountRepository
         $queryData = QueryData::buildWithMapper($query, AccountViewModel::class)
                               ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -444,7 +444,7 @@ final class Account extends BaseRepository implements AccountRepository
         $queryData = QueryData::buildWithMapper($query, AccountModel::class)
                               ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -459,7 +459,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->from('Account')
             ->cols(AccountModel::getCols(['pass', 'key']));
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AccountModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
     }
 
     /**
@@ -484,7 +484,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -522,7 +522,7 @@ final class Account extends BaseRepository implements AccountRepository
                                ]);
         }
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AccountSearchViewModel::class), true);
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountSearchViewModel::class), true);
     }
 
     /**
@@ -543,7 +543,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -575,7 +575,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -602,7 +602,7 @@ final class Account extends BaseRepository implements AccountRepository
                 ->bindValues(['id' => $accountId]);
         }
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -624,7 +624,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->bindValues(['parentId' => $accountId])
             ->orderBy(['Account.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -645,6 +645,6 @@ final class Account extends BaseRepository implements AccountRepository
                    ])
             ->where('BIT_LENGTH(pass) > 0');
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, AccountModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
     }
 }

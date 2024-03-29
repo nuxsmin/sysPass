@@ -70,7 +70,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                    ]);
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while saving file'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->runQuery($queryData)->getLastId();
     }
 
     /**
@@ -103,7 +103,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->bindValues(['id' => $id])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -133,7 +133,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->orderBy(['name ASC'])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -155,7 +155,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the file'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -180,7 +180,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the files'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -228,6 +228,6 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                                ]);
         }
 
-        return $this->db->doSelect(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::build($query), true);
     }
 }

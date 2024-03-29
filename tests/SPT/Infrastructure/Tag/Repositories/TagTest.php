@@ -70,7 +70,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->tag->getAll();
@@ -96,7 +96,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->tag->search($item);
@@ -119,7 +119,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->tag->search(new ItemSearchData());
@@ -144,7 +144,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->tag->getById($id);
@@ -175,7 +175,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->tag->deleteByIdBatch($ids);
@@ -189,7 +189,7 @@ class TagTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->tag->deleteByIdBatch([]);
     }
@@ -214,7 +214,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->tag->getByName($name);
@@ -238,7 +238,7 @@ class TagTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->tag->delete($id);
     }
@@ -280,7 +280,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -310,7 +310,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -359,7 +359,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -391,7 +391,7 @@ class TagTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 

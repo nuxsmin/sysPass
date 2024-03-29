@@ -67,7 +67,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the group'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -97,7 +97,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->where('userGroupId = :userGroupId')
             ->bindValues(['userGroupId' => $userGroupId]);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -137,7 +137,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->innerJoin(UserModel::TABLE, sprintf('%s.id = %s.id', UserModel::TABLE, 'Users'))
             ->bindValues(['userGroupId' => $userGroupId],);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -156,7 +156,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserGroupModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserGroupModel::class));
     }
 
     /**
@@ -175,7 +175,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->where('name = :name', ['name' => $name])
             ->limit(1);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserGroupModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserGroupModel::class));
     }
 
     /**
@@ -191,7 +191,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->cols(UserGroupModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, UserGroupModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, UserGroupModel::class));
     }
 
     /**
@@ -214,7 +214,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->from(UserGroupModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -244,7 +244,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
 
         $queryData = QueryData::build($query)->setMapClassName(UserGroupModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -270,7 +270,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the group'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -290,7 +290,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->from(UserGroupModel::TABLE)
             ->where('UPPER(:name) = UPPER(name)', ['name' => $userGroup->getName()]);
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -318,7 +318,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the group'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -339,6 +339,6 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->where('id <> :id', ['id' => $userGroup->getId()])
             ->where('UPPER(:name) = UPPER(name)', ['name' => $userGroup->getName()]);
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 }

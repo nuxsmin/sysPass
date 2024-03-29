@@ -73,7 +73,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the category'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -100,7 +100,7 @@ final class Category extends BaseRepository implements CategoryRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -134,7 +134,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the category'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -162,7 +162,7 @@ final class Category extends BaseRepository implements CategoryRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -184,7 +184,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::buildWithMapper($query, CategoryModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -206,7 +206,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::buildWithMapper($query, CategoryModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -221,7 +221,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->from(self::TABLE)
             ->cols(CategoryModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, CategoryModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, CategoryModel::class));
     }
 
     /**
@@ -246,7 +246,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the categories'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -268,7 +268,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the category'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -299,6 +299,6 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $queryData = QueryData::build($query)->setMapClassName(CategoryModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 }

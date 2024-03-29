@@ -22,31 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Infrastructure\Database;
 
 /**
- * Class CsvFileHandler
+ * Enum DbStorageDriver
  */
-final class CsvFileHandler implements \SP\Domain\File\Ports\CsvFileHandler
+enum DbStorageDriver
 {
-
-    public function __construct(private readonly FileHandlerInterface $fileHandler)
-    {
-    }
-
-    /**
-     * Read a CSV file
-     *
-     * @throws FileException
-     */
-    public function readCsv(string $delimiter): iterable
-    {
-        $handler = $this->fileHandler->open();
-
-        while (($fields = fgetcsv($handler, 0, $delimiter)) !== false) {
-            yield $fields;
-        }
-
-        $this->fileHandler->close();
-    }
+    case mysql;
 }

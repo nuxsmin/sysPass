@@ -63,7 +63,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
+        $this->database->expects(self::once())->method('runQuery')->with($callback, false);
 
         $this->account->getTotalNumAccounts();
     }
@@ -86,7 +86,7 @@ class AccountTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilter');
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
+        $this->database->expects(self::once())->method('runQuery')->with($callback, false);
 
         $this->account->getPasswordForId(1);
     }
@@ -109,7 +109,7 @@ class AccountTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('buildFilterHistory');
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback, false);
+        $this->database->expects(self::once())->method('runQuery')->with($callback, false);
 
         $this->account->getPasswordHistoryForId(1);
     }
@@ -132,7 +132,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->incrementDecryptCounter($id);
     }
@@ -155,7 +155,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->incrementDecryptCounter($id);
     }
@@ -195,7 +195,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->create($account);
     }
@@ -222,7 +222,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->editPassword($account->getId(), $account);
     }
@@ -248,7 +248,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->updatePassword($id, $encryptedPassword);
     }
@@ -288,7 +288,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->restoreModified($account->getId(), $account);
     }
@@ -308,7 +308,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->delete($id);
     }
@@ -331,7 +331,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->delete($id);
     }
@@ -368,7 +368,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->update($account->getId(), $account, true, true);
     }
@@ -405,7 +405,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->update($account->getId(), $account, true, false);
     }
@@ -442,7 +442,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->update($account->getId(), $account, false, true);
     }
@@ -471,7 +471,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback);
 
         $this->account->updateBulk($account->getId(), $account, true, true);
@@ -501,7 +501,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback);
 
         $this->account->updateBulk($account->getId(), $account, false, true);
@@ -533,7 +533,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback);
 
         $this->account->updateBulk($account->getId(), $account, true, false);
@@ -544,7 +544,7 @@ class AccountTest extends UnitaryTestCase
      */
     public function testUpdateBulkNoFieldsToUpdate(): void
     {
-        $this->database->expects(self::never())->method('doQuery');
+        $this->database->expects(self::never())->method('runQuery');
 
         $this->account->updateBulk(0, new AccountModel(), false, false);
     }
@@ -564,7 +564,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getById($id);
     }
@@ -584,7 +584,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getByIdEnriched($id);
     }
@@ -598,7 +598,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getAll();
     }
@@ -624,7 +624,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->deleteByIdBatch($ids);
     }
@@ -635,7 +635,7 @@ class AccountTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithNoIds(): void
     {
-        $this->database->expects(self::never())->method('doQuery');
+        $this->database->expects(self::never())->method('runQuery');
 
         $this->account->deleteByIdBatch([]);
     }
@@ -660,7 +660,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback, true);
+        $this->database->expects(self::once())->method('runQuery')->with($callback, true);
 
         $this->account->search($item);
     }
@@ -675,7 +675,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback, true);
+        $this->database->expects(self::once())->method('runQuery')->with($callback, true);
 
         $this->account->search(new ItemSearchData());
     }
@@ -699,7 +699,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->incrementViewCounter($id);
     }
@@ -723,7 +723,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->incrementViewCounter($id);
     }
@@ -743,7 +743,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getDataForLink($id);
     }
@@ -765,7 +765,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getForUser($id);
     }
@@ -784,7 +784,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getForUser();
     }
@@ -806,7 +806,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountFilterUser->expects(self::once())->method('buildFilter');
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getLinked($id);
     }
@@ -820,7 +820,7 @@ class AccountTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doSelect')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->account->getAccountsPassData();
     }

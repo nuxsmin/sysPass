@@ -72,7 +72,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the tag'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -98,7 +98,7 @@ final class Tag extends BaseRepository implements TagRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -132,7 +132,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the tag'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -160,7 +160,7 @@ final class Tag extends BaseRepository implements TagRepository
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -182,7 +182,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::buildWithMapper($query, TagModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -204,7 +204,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::buildWithMapper($query, TagModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -220,7 +220,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->cols(TagModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, TagModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, TagModel::class));
     }
 
     /**
@@ -245,7 +245,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the tags'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -268,7 +268,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the tag'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -298,6 +298,6 @@ final class Tag extends BaseRepository implements TagRepository
 
         $queryData = QueryData::build($query)->setMapClassName(TagModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 }

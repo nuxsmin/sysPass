@@ -64,7 +64,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('id = :id')
             ->bindValue('id', $id);
 
-        $this->db->doQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
+        $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
     }
 
     /**
@@ -100,7 +100,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
             ->orderBy(['PublicLink.id']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -123,7 +123,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->from('PublicLink')
             ->where('id IN (:ids)', ['ids' => $ids]);
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -179,7 +179,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
                                ]);
         }
 
-        return $this->db->doSelect(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::build($query), true);
     }
 
     /**
@@ -215,7 +215,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the link'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -236,7 +236,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('itemId = :itemId')
             ->bindValue('itemId', $id);
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() === 1;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() === 1;
     }
 
     /**
@@ -261,7 +261,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -294,7 +294,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -324,7 +324,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while renewing the link'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -363,7 +363,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('PublicLink.id = :id')
             ->bindValue('id', $id);
 
-        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
+        return $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 
     /**
@@ -400,7 +400,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('PublicLink.hash = :hash')
             ->bindValue('hash', $hash);
 
-        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
+        return $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 
     /**
@@ -423,6 +423,6 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('itemId = :itemId')
             ->bindValue('itemId', $itemId);
 
-        return $this->db->doSelect(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
+        return $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
     }
 }

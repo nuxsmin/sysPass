@@ -73,7 +73,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getAffectedNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
 
     /**
@@ -103,7 +103,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
                 ]
             );
 
-        return $this->db->doQuery(QueryData::build($query))->getNumRows() > 0;
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
 
     /**
@@ -129,7 +129,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
                              'key' => $customFieldData->getKey(),
                          ]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -155,7 +155,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             ->where('moduleId = :moduleId')
             ->bindValues(['itemIds' => $itemIds, 'moduleId' => $moduleId]);
 
-        return $this->db->doQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -170,7 +170,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             ->from(self::TABLE)
             ->cols(CustomFieldDataModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
     }
 
     /**
@@ -187,7 +187,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             ->where('key IS NOT NULL')
             ->orderBy(['definitionId ASC']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
     }
 
     /**
@@ -226,6 +226,6 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
                              'itemId' => $itemId
                          ]);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

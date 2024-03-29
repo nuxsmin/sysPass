@@ -34,7 +34,7 @@ use function SP\__u;
 /**
  * Class QueryData
  */
-final class QueryData
+final class QueryData implements QueryDataInterface
 {
     private const DEFAULT_MAP_CLASS = Simple::class;
     protected string  $mapClassName   = self::DEFAULT_MAP_CLASS;

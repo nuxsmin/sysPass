@@ -69,7 +69,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        $this->db->doQuery($queryData);
+        $this->db->runQuery($queryData);
     }
 
     /**
@@ -100,7 +100,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
             Query::buildForMySQL($query, array_merge_recursive($values))
         )->setOnErrorMessage(__u('Error while updating the account users'));
 
-        $this->db->doQuery($queryData);
+        $this->db->runQuery($queryData);
     }
 
     /**
@@ -124,7 +124,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account users'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -150,6 +150,6 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
     }
 }

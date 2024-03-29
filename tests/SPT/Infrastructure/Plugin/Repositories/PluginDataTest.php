@@ -65,7 +65,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->pluginData->getAll();
@@ -90,7 +90,7 @@ class PluginDataTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->pluginData->deleteByItemId('test_name', 200);
     }
@@ -113,7 +113,7 @@ class PluginDataTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->pluginData->delete('test_name');
     }
@@ -143,7 +143,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([]));
 
@@ -173,13 +173,11 @@ class PluginDataTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->pluginData->update($pluginData);
 
@@ -207,7 +205,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->pluginData->getByNameBatch($names);
@@ -217,7 +215,7 @@ class PluginDataTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doSelect');
+            ->method('runQuery');
 
         $this->pluginData->getByNameBatch([]);
     }
@@ -247,7 +245,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->pluginData->deleteByNameBatch($names);
@@ -261,7 +259,7 @@ class PluginDataTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->pluginData->deleteByNameBatch([]);
     }
@@ -284,7 +282,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->pluginData->getByItemId('test_name', 100);
@@ -307,7 +305,7 @@ class PluginDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->pluginData->getByName('test_name');

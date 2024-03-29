@@ -65,7 +65,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -113,7 +113,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -143,7 +143,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -157,7 +157,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -192,12 +192,11 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->user->updateOnLogin($user);
 
@@ -224,12 +223,11 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->user->updateMasterPassById(100, 'super_secret', 'a_key');
 
@@ -254,7 +252,7 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->user->delete($id);
     }
@@ -267,7 +265,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -306,7 +304,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->user->deleteByIdBatch($ids);
@@ -320,7 +318,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->user->deleteByIdBatch([]);
     }
@@ -338,7 +336,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->user->getAll();
@@ -362,12 +360,11 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->user->updateLastLoginById(100);
 
@@ -382,7 +379,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -434,7 +431,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -465,7 +462,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -479,7 +476,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -498,7 +495,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -523,7 +520,7 @@ class UserTest extends UnitaryTestCase
     {
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -562,7 +559,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->user->search($item);
@@ -590,7 +587,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->user->search($item);
@@ -626,7 +623,7 @@ class UserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->user->search($item);
@@ -654,13 +651,11 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult();
-
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->user->updatePreferencesById(100, $userPreferences);
     }
@@ -688,13 +683,11 @@ class UserTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult();
-
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->user->updatePassById($user);
     }

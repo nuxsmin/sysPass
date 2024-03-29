@@ -60,12 +60,11 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testDelete()
     {
-        $queryResult = new QueryResult();
         $this->pluginDataRepository
             ->expects($this->once())
             ->method('delete')
             ->with('test_plugin')
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->pluginData->delete('test_plugin');
     }
@@ -77,12 +76,11 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testDeleteWithException()
     {
-        $queryResult = new QueryResult();
         $this->pluginDataRepository
             ->expects($this->once())
             ->method('delete')
             ->with('test_plugin')
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Plugin\'s data not found');
@@ -97,12 +95,11 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testDeleteByItemId()
     {
-        $queryResult = new QueryResult();
         $this->pluginDataRepository
             ->expects($this->once())
             ->method('deleteByItemId')
             ->with('test_plugin', 100)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->pluginData->deleteByItemId('test_plugin', 100);
     }
@@ -114,12 +111,11 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testDeleteByItemIdWithException()
     {
-        $queryResult = new QueryResult();
         $this->pluginDataRepository
             ->expects($this->once())
             ->method('deleteByItemId')
             ->with('test_plugin', 100)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Plugin\'s data not found');

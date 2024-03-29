@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Context\ContextInterface;
-use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\DbStorageHandler;
 use Symfony\Component\Console\Tester\CommandTester;
 
 use function SPT\getDbHandler;
@@ -98,6 +98,6 @@ abstract class CliTestCase extends TestCase
 
     protected function setupDatabase(): void
     {
-        self::$dic->set(DbStorageInterface::class, getDbHandler());
+        self::$dic->set(DbStorageHandler::class, getDbHandler());
     }
 }

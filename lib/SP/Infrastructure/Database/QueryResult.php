@@ -39,18 +39,17 @@ class QueryResult
 {
     private readonly SplFixedArray $data;
     private readonly int           $numRows;
-    private int                    $totalNumRows    = 0;
-    private int                    $affectedNumRows = 0;
-    private int                    $statusCode      = 0;
-    private int                    $lastId          = 0;
+    private int $totalNumRows = 0;
+    private int $statusCode   = 0;
 
     /**
      * QueryResult constructor.
-     *
-     * @param array|null $data
      */
-    public function __construct(?array $data = null)
-    {
+    public function __construct(
+        ?array               $data = null,
+        private readonly int $affectedNumRows = 0,
+        private readonly int $lastId = 0
+    ) {
         if (null !== $data) {
             $this->data = SplFixedArray::fromArray($data);
             $this->numRows = $this->data->count();
@@ -123,14 +122,6 @@ class QueryResult
         return $this->totalNumRows;
     }
 
-    public function setTotalNumRows(int $totalNumRows): QueryResult
-    {
-        $self = clone $this;
-        $self->totalNumRows = $totalNumRows;
-
-        return $self;
-    }
-
     public function getStatusCode(): int
     {
         return $this->statusCode;
@@ -141,24 +132,8 @@ class QueryResult
         return $this->affectedNumRows;
     }
 
-    public function setAffectedNumRows(int $affectedNumRows): QueryResult
-    {
-        $self = clone $this;
-        $self->affectedNumRows = $affectedNumRows;
-
-        return $self;
-    }
-
     public function getLastId(): int
     {
         return $this->lastId;
-    }
-
-    public function setLastId(int $lastId): QueryResult
-    {
-        $self = clone $this;
-        $self->lastId = $lastId;
-
-        return $self;
     }
 }

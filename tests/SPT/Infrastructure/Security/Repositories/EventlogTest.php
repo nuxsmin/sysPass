@@ -68,7 +68,7 @@ class EventlogTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->eventlog->clear();
     }
@@ -100,7 +100,7 @@ class EventlogTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([]));
 
@@ -129,7 +129,7 @@ class EventlogTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->eventlog->search($item);
@@ -154,7 +154,7 @@ class EventlogTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->eventlog->search($item);

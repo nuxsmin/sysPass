@@ -81,7 +81,7 @@ use SP\Http\Request;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseInterface;
-use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Infrastructure\File\FileCache;
@@ -141,7 +141,7 @@ final class CoreDefinitions
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
-            DbStorageInterface::class => autowire(MysqlHandler::class),
+            DbStorageHandler::class => autowire(MysqlHandler::class),
             ActionsInterface::class =>
                 static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),

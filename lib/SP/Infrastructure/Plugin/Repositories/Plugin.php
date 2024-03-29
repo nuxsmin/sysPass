@@ -66,7 +66,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the plugin'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -89,7 +89,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -107,7 +107,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -129,7 +129,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -145,7 +145,7 @@ final class Plugin extends BaseRepository implements PluginRepository
             ->cols(PluginModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, PluginModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, PluginModel::class));
     }
 
     /**
@@ -166,7 +166,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -192,7 +192,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the plugins'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -214,7 +214,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the plugin'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -244,7 +244,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setMapClassName(PluginModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -265,7 +265,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -289,7 +289,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -313,7 +313,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -337,7 +337,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -361,7 +361,7 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -384,6 +384,6 @@ final class Plugin extends BaseRepository implements PluginRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 }

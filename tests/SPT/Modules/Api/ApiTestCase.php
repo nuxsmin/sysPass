@@ -49,7 +49,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\Database\MysqlHandler;
 use SPT\DatabaseTrait;
 use stdClass;
@@ -164,7 +164,7 @@ abstract class ApiTestCase extends TestCase
 
                         return new ApiRequest(json_encode($data, JSON_THROW_ON_ERROR));
                     },
-                    DbStorageInterface::class => create(MysqlHandler::class)
+                    DbStorageHandler::class => create(MysqlHandler::class)
                         ->constructor($databaseConnectionData),
                     ConfigDataInterface::class => static function (ConfigFileService $config) use (
                         $databaseConnectionData

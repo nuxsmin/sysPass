@@ -122,13 +122,11 @@ class CategoryTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult([1]);
-
         $this->categoryRepository
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->category->delete($id);
     }
@@ -161,8 +159,7 @@ class CategoryTest extends UnitaryTestCase
     {
         $category = CategoryGenerator::factory()->buildCategory();
 
-        $queryResult = new QueryResult();
-        $queryResult->setLastId(self::$faker->randomNumber());
+        $queryResult = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $this->categoryRepository
             ->expects(self::once())
@@ -183,9 +180,6 @@ class CategoryTest extends UnitaryTestCase
     public function testUpdate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
-
-        $queryResult = new QueryResult();
-        $queryResult->setLastId(self::$faker->randomNumber());
 
         $this->categoryRepository
             ->expects(self::once())
@@ -250,13 +244,11 @@ class CategoryTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-
         $this->categoryRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->category->deleteByIdBatch($ids);
     }
@@ -269,14 +261,11 @@ class CategoryTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(0);
-
         $this->categoryRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult);
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting categories');

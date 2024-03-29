@@ -77,7 +77,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, false);
 
         $this->itemPreset->getByFilter('test', 100, 200, 300);
@@ -101,7 +101,7 @@ class ItemPresetTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->itemPreset->delete($id);
     }
@@ -119,7 +119,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->itemPreset->getAll();
@@ -153,7 +153,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([]));
 
@@ -187,13 +187,11 @@ class ItemPresetTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([]);
-
         $this->database
             ->expects(self::exactly(1))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->itemPreset->update($itemPreset);
 
@@ -227,7 +225,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->itemPreset->search($item);
@@ -250,7 +248,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->itemPreset->search(new ItemSearchData());
@@ -281,7 +279,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->itemPreset->deleteByIdBatch($ids);
@@ -295,7 +293,7 @@ class ItemPresetTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->itemPreset->deleteByIdBatch([]);
     }
@@ -319,7 +317,7 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->itemPreset->getById($id);

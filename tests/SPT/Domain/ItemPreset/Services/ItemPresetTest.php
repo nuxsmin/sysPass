@@ -94,13 +94,12 @@ class ItemPresetTest extends UnitaryTestCase
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
 
-        $queryResult = new QueryResult([]);
 
         $this->itemPresetRepository
             ->expects(self::once())
             ->method('create')
             ->with($itemPreset)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $this->assertEquals(100, $this->itemPreset->create($itemPreset));
     }
@@ -141,7 +140,7 @@ class ItemPresetTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(5));
+            ->willReturn(new QueryResult(null, 5));
 
         $this->assertEquals(5, $this->itemPreset->deleteByIdBatch($ids));
     }
@@ -155,13 +154,11 @@ class ItemPresetTest extends UnitaryTestCase
     {
         $ids = array_map(static fn() => self::$faker->randomNumber(3), range(0, 4));
 
-        $queryResult = new QueryResult([]);
-
         $this->itemPresetRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(4));
+            ->willReturn(new QueryResult(null, 4));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the values');

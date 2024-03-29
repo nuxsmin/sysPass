@@ -58,8 +58,7 @@ class ConfigTest extends UnitaryTestCase
     {
         $config = ConfigGenerator::factory()->buildConfig();
 
-        $queryResult = new QueryResult();
-        $queryResult->setLastId(self::$faker->randomNumber());
+        $queryResult = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $this->configRepository
             ->expects(self::once())
@@ -86,8 +85,7 @@ class ConfigTest extends UnitaryTestCase
             ->with($config->getParameter())
             ->willReturn(false);
 
-        $queryResult = new QueryResult();
-        $queryResult->setLastId(self::$faker->randomNumber());
+        $queryResult = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $this->configRepository
             ->expects(self::once())

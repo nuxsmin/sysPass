@@ -513,8 +513,7 @@ class PublicLinkTest extends UnitaryTestCase
     public function testCreate()
     {
         $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink();
-        $result = new QueryResult();
-        $result->setLastId(self::$faker->randomNumber());
+        $result = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $this->publicLinkRepository
             ->expects(self::once())

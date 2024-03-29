@@ -57,7 +57,7 @@ class UserPassRecoverTest extends UnitaryTestCase
 
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) use ($time) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -79,7 +79,7 @@ class UserPassRecoverTest extends UnitaryTestCase
 
         $this->database
             ->expects($this->once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with(
                 self::callback(static function (QueryData $queryData) use ($hash, $time) {
                     $params = $queryData->getQuery()->getBindValues();
@@ -117,7 +117,7 @@ class UserPassRecoverTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackCreate)
             ->willReturn(new QueryResult([1]));
 
@@ -146,13 +146,11 @@ class UserPassRecoverTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult();
-
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackUpdate)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $out = $this->userPassRecover->toggleUsedByHash($hash, $time);
 

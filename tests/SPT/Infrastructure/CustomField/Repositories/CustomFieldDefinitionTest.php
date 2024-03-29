@@ -67,7 +67,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldDefinition->getAll();
@@ -101,7 +101,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -136,7 +136,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -162,7 +162,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -191,7 +191,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldDefinition->deleteByIdBatch($ids);
@@ -205,7 +205,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $result = $this->customFieldDefinition->deleteByIdBatch([]);
 
@@ -237,7 +237,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->customFieldDefinition->search($item);
@@ -263,7 +263,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->customFieldDefinition->search(new ItemSearchData());
@@ -287,7 +287,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->customFieldDefinition->delete($id);
     }

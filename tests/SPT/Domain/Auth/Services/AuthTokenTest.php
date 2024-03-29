@@ -82,13 +82,11 @@ class AuthTokenTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->authToken->deleteByIdBatch($ids);
     }
@@ -101,14 +99,11 @@ class AuthTokenTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-        $queryResult->setAffectedNumRows(0);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult);
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while removing the tokens');
@@ -149,8 +144,6 @@ class AuthTokenTest extends UnitaryTestCase
             ->with($authToken->getUserId())
             ->willReturn(new QueryResult([$authToken]));
 
-        $queryResult = new QueryResult([]);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('create')
@@ -166,7 +159,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getCreatedBy() === $this->context->getUserData()->getId();
                 })
             )
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $out = $this->authToken->create($authToken);
 
@@ -190,8 +183,6 @@ class AuthTokenTest extends UnitaryTestCase
             ->with($authToken->getUserId())
             ->willReturn(new QueryResult([]));
 
-        $queryResult = new QueryResult([]);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('create')
@@ -207,7 +198,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getCreatedBy() === $this->context->getUserData()->getId();
                 })
             )
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $out = $this->authToken->create($authToken);
 
@@ -236,8 +227,6 @@ class AuthTokenTest extends UnitaryTestCase
             ->with($authToken->getUserId())
             ->willReturn(new QueryResult([$authToken]));
 
-        $queryResult = new QueryResult([]);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('create')
@@ -253,7 +242,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getCreatedBy() === $this->context->getUserData()->getId();
                 })
             )
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $password = $authToken->getHash() . $authToken->getToken();
 
@@ -293,9 +282,6 @@ class AuthTokenTest extends UnitaryTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function testGetTokenByToken()
     {
@@ -432,9 +418,6 @@ class AuthTokenTest extends UnitaryTestCase
             ->with($authToken->getUserId())
             ->willReturn(new QueryResult([$authToken]));
 
-        $queryResult = new QueryResult([]);
-        $queryResult->setLastId(100);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('update')
@@ -519,13 +502,11 @@ class AuthTokenTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult([1]);
-
         $this->authTokenRepository
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->authToken->delete($id);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,21 +28,19 @@ use Exception;
 use PDO;
 use SP\Domain\Core\Exceptions\SPException;
 
-defined('APP_ROOT') || die();
-
 /**
  * Class MySQLHandler
  *
  * Esta clase se encarga de crear las conexiones a la BD
  */
-final class MysqlHandler implements DbStorageInterface
+final class MysqlHandler implements DbStorageHandler
 {
     public const STATUS_OK = 0;
     public const STATUS_KO = 1;
     public const PDO_OPTS  = [
-        PDO::ATTR_EMULATE_PREPARES   => false,
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_FOUND_ROWS   => true,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_FOUND_ROWS => true,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     ];
 
@@ -123,20 +121,20 @@ final class MysqlHandler implements DbStorageInterface
         $dsn = ['charset=utf8'];
 
         if (empty($this->connectionData->getDbSocket())) {
-            $dsn[] = 'host='.$this->connectionData->getDbHost();
+            $dsn[] = 'host=' . $this->connectionData->getDbHost();
 
             if (null !== $this->connectionData->getDbPort()) {
-                $dsn[] = 'port='.$this->connectionData->getDbPort();
+                $dsn[] = 'port=' . $this->connectionData->getDbPort();
             }
         } else {
-            $dsn[] = 'unix_socket='.$this->connectionData->getDbSocket();
+            $dsn[] = 'unix_socket=' . $this->connectionData->getDbSocket();
         }
 
         if (!empty($this->connectionData->getDbName())) {
-            $dsn[] = 'dbname='.$this->connectionData->getDbName();
+            $dsn[] = 'dbname=' . $this->connectionData->getDbName();
         }
 
-        return 'mysql:'.implode(';', $dsn);
+        return 'mysql:' . implode(';', $dsn);
     }
 
     /**
@@ -160,7 +158,7 @@ final class MysqlHandler implements DbStorageInterface
             try {
                 $opts = [
                     PDO::ATTR_EMULATE_PREPARES => true,
-                    PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 ];
 
                 $this->db = new PDO(

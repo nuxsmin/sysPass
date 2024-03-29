@@ -105,7 +105,6 @@ class PluginOperationTest extends UnitaryTestCase
     {
         $pluginDataStorage = new PluginDataStub(100, 'test_data');
 
-        $queryResult = new QueryResult([]);
         $this->pluginDataService
             ->expects($this->once())
             ->method('create')
@@ -117,7 +116,7 @@ class PluginOperationTest extends UnitaryTestCase
                            && $current->getKey() === null;
                 })
             )
-            ->willReturn($queryResult->setLastId(10));
+            ->willReturn(new QueryResult(null, 0, 10));
 
         $out = $this->pluginOperation->create(100, $pluginDataStorage);
 

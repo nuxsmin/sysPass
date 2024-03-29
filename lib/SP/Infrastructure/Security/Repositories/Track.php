@@ -61,7 +61,7 @@ final class Track extends BaseRepository implements TrackRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating track'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -82,7 +82,7 @@ final class Track extends BaseRepository implements TrackRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the track'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -100,7 +100,7 @@ final class Track extends BaseRepository implements TrackRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while clearing the tracks out'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() > 0;
     }
 
     /**
@@ -127,7 +127,7 @@ final class Track extends BaseRepository implements TrackRepository
 
         $queryData = QueryData::buildWithMapper($query, TrackModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -161,6 +161,6 @@ final class Track extends BaseRepository implements TrackRepository
 
         $queryData = QueryData::build($query)->setMapClassName(TrackModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 }

@@ -71,7 +71,7 @@ class AccountFileTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -85,7 +85,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->assertEquals(0, $this->accountFile->deleteByIdBatch([]));
     }
@@ -98,8 +98,7 @@ class AccountFileTest extends UnitaryTestCase
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
-        $expected = new QueryResult();
-        $expected->setLastId(1);
+        $expected = new QueryResult(null, 0, 1);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($fileData) {
@@ -118,7 +117,7 @@ class AccountFileTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn($expected);
 
@@ -144,7 +143,7 @@ class AccountFileTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -157,25 +156,22 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testDelete(): void
     {
-        $id = 1;
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) {
                 $query = $arg->getQuery();
 
-                return $query->getBindValues()['id'] === $id
+                return $query->getBindValues()['id'] === 100
                        && !empty($query->getStatement());
             }
         );
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
-        $this->assertTrue($this->accountFile->delete($id));
+        $this->assertTrue($this->accountFile->delete(100));
     }
 
     public function testGetById(): void
@@ -193,7 +189,7 @@ class AccountFileTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -220,7 +216,7 @@ class AccountFileTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 

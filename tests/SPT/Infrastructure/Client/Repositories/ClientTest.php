@@ -99,7 +99,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackCreate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -129,7 +129,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -157,7 +157,7 @@ class ClientTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->client->delete($id);
     }
@@ -187,7 +187,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->client->deleteByIdBatch($ids);
@@ -201,7 +201,7 @@ class ClientTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->client->deleteByIdBatch([]);
     }
@@ -225,7 +225,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->client->getById($id);
@@ -255,7 +255,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->client->search($item);
@@ -278,7 +278,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->client->search(new ItemSearchData());
@@ -297,7 +297,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->client->getAll();
@@ -319,7 +319,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $select = (new QueryFactory('mysql', QueryFactory::COMMON))->newSelect();
@@ -373,7 +373,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -405,7 +405,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callbackDuplicate)
             ->willReturn(new QueryResult([1]));
 
@@ -435,7 +435,7 @@ class ClientTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->client->getByName($name);

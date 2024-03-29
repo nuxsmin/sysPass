@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlService;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\DbStorageInterface;
+use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
 
@@ -51,8 +51,8 @@ use function SP\__u;
 #[Group('unitary')]
 class MySQLTest extends UnitaryTestCase
 {
-    private DbStorageInterface|MockObject    $dbStorage;
-    private MysqlService                     $mysqlService;
+    private DbStorageHandler|MockObject $dbStorage;
+    private MysqlService                $mysqlService;
     private PDO|MockObject                   $pdo;
     private InstallData                      $installData;
     private ConfigDataInterface              $configData;
@@ -818,7 +818,7 @@ class MySQLTest extends UnitaryTestCase
 
         $this->pdo = $this->createMock(PDO::class);
 
-        $this->dbStorage = $this->createMock(DbStorageInterface::class);
+        $this->dbStorage = $this->createMock(DbStorageHandler::class);
         $this->dbStorage->method('getConnection')->willReturn($this->pdo);
         $this->dbStorage->method('getConnectionSimple')->willReturn($this->pdo);
 

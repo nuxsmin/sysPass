@@ -55,8 +55,6 @@ class AccountToUserTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
                 $query = $arg->getQuery();
@@ -69,9 +67,9 @@ class AccountToUserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
     }
@@ -92,7 +90,7 @@ class AccountToUserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -107,8 +105,6 @@ class AccountToUserTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
                 $query = $arg->getQuery();
@@ -121,9 +117,9 @@ class AccountToUserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
     }
@@ -142,7 +138,7 @@ class AccountToUserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->accountToUser->addByType(
@@ -160,8 +156,6 @@ class AccountToUserTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($accountId) {
                 $query = $arg->getQuery();
@@ -174,9 +168,9 @@ class AccountToUserTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
     }

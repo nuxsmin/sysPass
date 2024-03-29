@@ -65,7 +65,7 @@ final class Config extends BaseRepository implements ConfigRepository
 
         $queryData = QueryData::build($query);
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -84,7 +84,7 @@ final class Config extends BaseRepository implements ConfigRepository
 
         $queryData = QueryData::build($query);
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -104,7 +104,7 @@ final class Config extends BaseRepository implements ConfigRepository
 
         $queryData = QueryData::buildWithMapper($query, ConfigModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -124,6 +124,6 @@ final class Config extends BaseRepository implements ConfigRepository
 
         $queryData = QueryData::build($query);
 
-        return $this->db->doSelect($queryData)->getNumRows() === 1;
+        return $this->db->runQuery($queryData)->getNumRows() === 1;
     }
 }

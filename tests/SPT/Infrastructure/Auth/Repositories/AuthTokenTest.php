@@ -81,7 +81,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->authToken->search($item);
@@ -105,7 +105,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback, true);
 
         $this->authToken->search(new ItemSearchData());
@@ -136,7 +136,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->authToken->deleteByIdBatch($ids);
@@ -150,7 +150,7 @@ class AuthTokenTest extends UnitaryTestCase
     {
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $this->authToken->deleteByIdBatch([]);
     }
@@ -174,7 +174,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->authToken->getTokenByUserId($id);
@@ -199,7 +199,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->authToken->getById($id);
@@ -249,7 +249,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -282,7 +282,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 
@@ -317,13 +317,11 @@ class AuthTokenTest extends UnitaryTestCase
             }
         );
 
-        $queryResult = new QueryResult([1]);
-
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(10));
+            ->willReturn(new QueryResult(null, 10));
 
         $out = $this->authToken->refreshVaultByUserId($userId, $vault, $hash);
 
@@ -348,7 +346,7 @@ class AuthTokenTest extends UnitaryTestCase
             }
         );
 
-        $this->database->expects(self::once())->method('doQuery')->with($callback);
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
 
         $this->authToken->delete($id);
     }
@@ -366,7 +364,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->authToken->getAll();
@@ -397,7 +395,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 
@@ -425,7 +423,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->authToken->getTokenByToken($actionId, $token);
@@ -473,7 +471,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::exactly(2))
-            ->method('doQuery')
+            ->method('runQuery')
             ->with(...self::withConsecutive([$callbackDuplicate], [$callbackUpdate]))
             ->willReturn(new QueryResult([]), new QueryResult([1]));
 
@@ -505,7 +503,7 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 

@@ -118,6 +118,6 @@ abstract class BaseRepository implements Repository
                   ->bindValues($bindValues ?? []);
         }
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

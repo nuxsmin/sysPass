@@ -97,8 +97,6 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-
         $this->customFieldDefinitionRepository
             ->expects(self::once())
             ->method('transactionAware')
@@ -108,7 +106,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(5));
+            ->willReturn(new QueryResult(null, 5));
 
         $this->customFieldDefinition->deleteByIdBatch($ids);
     }
@@ -142,7 +140,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->customFieldDefinition->deleteByIdBatch($ids);
     }
@@ -179,7 +177,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->customFieldDefinition->delete($id);
     }
@@ -228,13 +226,11 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
 
-        $queryResult = new QueryResult();
-
         $this->customFieldDefinitionRepository
             ->expects(self::once())
             ->method('create')
             ->with($customFieldDefinition)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $this->assertEquals(100, $this->customFieldDefinition->create($customFieldDefinition));
     }
@@ -263,13 +259,11 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->method('delete')
             ->with($customFieldDefinition->getId());
 
-        $queryResult = new QueryResult();
-
         $this->customFieldDefinitionRepository
             ->expects(self::once())
             ->method('create')
             ->with($customFieldDefinition)
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $out = $this->customFieldDefinition->changeModule($customFieldDefinition);
 

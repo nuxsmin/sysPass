@@ -124,13 +124,11 @@ class ClientTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
 
-        $queryResult = new QueryResult([1]);
-
         $this->clientRepository
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->client->delete($id);
     }
@@ -163,8 +161,7 @@ class ClientTest extends UnitaryTestCase
     {
         $client = ClientGenerator::factory()->buildClient();
 
-        $queryResult = new QueryResult();
-        $queryResult->setLastId(self::$faker->randomNumber());
+        $queryResult = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $this->clientRepository
             ->expects(self::once())
@@ -249,13 +246,11 @@ class ClientTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-
         $this->clientRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->client->deleteByIdBatch($ids);
     }
@@ -268,13 +263,11 @@ class ClientTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
-        $queryResult = new QueryResult();
-
         $this->clientRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn($queryResult->setAffectedNumRows(0));
+            ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while deleting the clients');

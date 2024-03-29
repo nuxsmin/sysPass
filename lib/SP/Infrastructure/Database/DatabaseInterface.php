@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Database;
 
-use PDOStatement;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 
@@ -35,35 +34,18 @@ use SP\Domain\Core\Exceptions\QueryException;
  */
 interface DatabaseInterface
 {
-    public function doSelect(QueryData $queryData, bool $fullCount = false): QueryResult;
-
     /**
-     * Performs a DB query
+     * Perform any type of query
      *
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function doQuery(QueryData $queryData): QueryResult;
+    public function runQuery(QueryDataInterface $queryData, bool $fullCount = false): QueryResult;
 
     /**
      * Don't fetch records and return prepared statement
      */
-    public function doQueryRaw(QueryData $queryData): PDOStatement;
-
-    /**
-     * Returns the total number of records
-     */
-    public function getFullRowCount(QueryData $queryData): int;
-
-    public function getDbHandler(): DbStorageInterface;
-
-    public function getNumRows(): int;
-
-    public function getNumFields(): int;
-
-    public function getLastResult(): ?array;
-
-    public function getLastId(): ?int;
+    public function doFetchWithOptions(QueryDataInterface $queryData): iterable;
 
     public function beginTransaction(): bool;
 
@@ -71,5 +53,11 @@ interface DatabaseInterface
 
     public function rollbackTransaction(): bool;
 
-    public function getColumnsForTable(string $table): array;
+    /**
+     * Execute a raw query
+     *
+     * @param string $query
+     * @throws QueryException
+     */
+    public function runQueryRaw(string $query): void;
 }

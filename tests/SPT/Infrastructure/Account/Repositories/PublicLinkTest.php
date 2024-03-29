@@ -58,23 +58,19 @@ class PublicLinkTest extends UnitaryTestCase
      */
     public function testDelete(): void
     {
-        $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(1);
-
         $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id
+            static function (QueryData $arg) {
+                return $arg->getQuery()->getBindValues()['id'] === 100
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
-                       ->willReturn($expected);
+            ->willReturn(new QueryResult(null, 1));
 
-        $this->publicLink->delete($id);
+        $this->publicLink->delete(100);
     }
 
     public function testSearch(): void
@@ -96,7 +92,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -116,7 +112,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -136,7 +132,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -151,8 +147,6 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $publicLinkData = $this->buildPublicLinkData();
 
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($publicLinkData) {
                 $query = $arg->getQuery();
@@ -165,9 +159,9 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->publicLink->addLinkView($publicLinkData));
     }
@@ -229,7 +223,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::exactly(2))
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with(...self::withConsecutive([$callbackCheckDuplicate], [$callbackCreate]))
                        ->willReturn(new QueryResult());
 
@@ -255,7 +249,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult([1]));
 
@@ -276,7 +270,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -307,7 +301,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -335,7 +329,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -349,7 +343,7 @@ class PublicLinkTest extends UnitaryTestCase
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
-                       ->method('doQuery');
+            ->method('runQuery');
 
         $this->assertEquals(0, $this->publicLink->deleteByIdBatch([]));
     }
@@ -367,7 +361,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -401,7 +395,7 @@ class PublicLinkTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -422,7 +416,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 

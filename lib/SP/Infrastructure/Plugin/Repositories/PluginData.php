@@ -64,7 +64,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding plugin\'s data'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -90,7 +90,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating plugin\'s data'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -112,7 +112,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -135,7 +135,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -155,7 +155,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -171,7 +171,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
             ->cols(PluginDataModel::getCols())
             ->orderBy(['name']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, PluginDataModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, PluginDataModel::class));
     }
 
     /**
@@ -196,7 +196,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -221,7 +221,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -243,6 +243,6 @@ final class PluginData extends BaseRepository implements PluginDataRepository
 
         $queryData = QueryData::buildWithMapper($query, PluginDataModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 }

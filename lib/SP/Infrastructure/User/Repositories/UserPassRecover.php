@@ -61,7 +61,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
             ->where('date >= :date')
             ->bindValues(['userId' => $userId, 'date' => $time]);
 
-        return $this->db->doSelect(QueryData::build($query))->getNumRows();
+        return $this->db->runQuery(QueryData::build($query))->getNumRows();
     }
 
     /**
@@ -85,7 +85,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while generating the recovering hash'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -111,7 +111,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
         $queryData = QueryData::build($query);
         $queryData->setOnErrorMessage(__u('Error while checking hash'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -140,6 +140,6 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
                 ]
             );
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(UserPassRecoverModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserPassRecoverModel::class));
     }
 }

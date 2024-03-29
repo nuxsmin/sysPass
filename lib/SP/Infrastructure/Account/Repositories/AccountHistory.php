@@ -71,7 +71,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->bindValues(['id' => $id])
             ->orderBy(['Account.id DESC']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -121,7 +121,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating history'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->runQuery($queryData)->getLastId();
     }
 
     /**
@@ -143,7 +143,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -204,7 +204,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -259,7 +259,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
             ->orderBy(['Account.id DESC']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -284,7 +284,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -309,7 +309,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -352,7 +352,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ]);
         }
 
-        return $this->db->doSelect(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::build($query), true);
     }
 
     /**
@@ -377,7 +377,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->where('BIT_LENGTH(pass) > 0')
             ->orderBy(['id ASC']);
 
-        return $this->db->doSelect(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query));
     }
 
     /**
@@ -405,6 +405,6 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

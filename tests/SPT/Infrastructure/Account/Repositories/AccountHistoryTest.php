@@ -64,7 +64,7 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -84,7 +84,7 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doSelect')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -112,7 +112,7 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -126,7 +126,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testDeleteByIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
-                       ->method('doQuery');
+            ->method('runQuery');
 
         $this->accountHistory->deleteByIdBatch([]);
     }
@@ -139,8 +139,6 @@ class AccountHistoryTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
-
-        $queryResult = new QueryResult();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id, $encryptedPassword) {
@@ -155,9 +153,9 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->accountHistory->updatePassword($id, $encryptedPassword));
     }
@@ -180,7 +178,7 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -199,7 +197,7 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -217,7 +215,7 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -232,8 +230,7 @@ class AccountHistoryTest extends UnitaryTestCase
     {
         $dto = $this->buildAccountHistoryCreateDto();
 
-        $expected = new QueryResult();
-        $expected->setLastId(1);
+        $expected = new QueryResult(null, 0, self::$faker->randomNumber());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($dto) {
@@ -271,7 +268,7 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn($expected);
 
@@ -294,22 +291,19 @@ class AccountHistoryTest extends UnitaryTestCase
      */
     public function testDelete(): void
     {
-        $id = 1;
-        $queryResult = new QueryResult();
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id
+                return $arg->getQuery()->getBindValues()['id'] === 100
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
-            ->willReturn($queryResult->setAffectedNumRows(1));
+            ->willReturn(new QueryResult(null, 1));
 
-        $this->assertTrue($this->accountHistory->delete($id));
+        $this->assertTrue($this->accountHistory->delete(100));
     }
 
     /**
@@ -318,23 +312,19 @@ class AccountHistoryTest extends UnitaryTestCase
      */
     public function testDeleteNoResults(): void
     {
-        $id = 1;
-        $expected = new QueryResult();
-        $expected->setAffectedNumRows(0);
-
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
-                return $arg->getQuery()->getBindValues()['id'] === $id
+                return $arg->getQuery()->getBindValues()['id'] === 100
                        && !empty($arg->getQuery()->getStatement());
             }
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
-                       ->willReturn($expected);
+            ->willReturn(new QueryResult(null, 0));
 
-        $this->assertFalse($this->accountHistory->delete($id));
+        $this->assertFalse($this->accountHistory->delete(100));
     }
 
     public function testGetAll(): void
@@ -348,7 +338,7 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult());
 
@@ -376,7 +366,7 @@ class AccountHistoryTest extends UnitaryTestCase
         );
 
         $this->database->expects(self::once())
-                       ->method('doQuery')
+            ->method('runQuery')
                        ->with($callback)
                        ->willReturn(new QueryResult());
 
@@ -390,7 +380,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testDeleteByAccountIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
-                       ->method('doQuery');
+            ->method('runQuery');
 
         $this->accountHistory->deleteByAccountIdBatch([]);
     }

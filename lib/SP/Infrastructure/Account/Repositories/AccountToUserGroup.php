@@ -67,7 +67,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['accountId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
     }
 
     /**
@@ -92,7 +92,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['userGroupId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->doSelect(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
     }
 
     /**
@@ -112,7 +112,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -137,7 +137,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        $this->db->doQuery($queryData);
+        $this->db->runQuery($queryData);
     }
 
     /**
@@ -166,7 +166,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             Query::buildForMySQL($query, array_merge_recursive($values))
         )->setOnErrorMessage(__u('Error while updating the secondary groups'));
 
-        $this->db->doQuery($queryData);
+        $this->db->runQuery($queryData);
     }
 
     /**
@@ -186,6 +186,6 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

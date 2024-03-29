@@ -77,7 +77,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldData->deleteBatch($itemIds, $moduleId);
@@ -93,7 +93,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::never())
-            ->method('doQuery');
+            ->method('runQuery');
 
         $result = $this->customFieldData->deleteBatch([], $moduleId);
 
@@ -126,7 +126,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([1]));
 
@@ -159,7 +159,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -179,7 +179,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldData->getAll();
@@ -211,7 +211,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -244,7 +244,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doQuery')
+            ->method('runQuery')
             ->with($callback)
             ->willReturn(new QueryResult([]));
 
@@ -274,7 +274,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldData->getForModuleAndItemId($moduleId, $itemId);
@@ -293,7 +293,7 @@ class CustomFieldDataTest extends UnitaryTestCase
 
         $this->database
             ->expects(self::once())
-            ->method('doSelect')
+            ->method('runQuery')
             ->with($callback);
 
         $this->customFieldData->getAllEncrypted();

@@ -66,7 +66,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the notification'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -90,7 +90,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the notification'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -112,7 +112,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notification'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -134,7 +134,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notification'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -159,7 +159,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notifications'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -181,7 +181,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -197,7 +197,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->cols(NotificationModel::getCols())
             ->orderBy(['id']);
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, NotificationModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, NotificationModel::class));
     }
 
     /**
@@ -217,7 +217,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -241,7 +241,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notifications'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -262,7 +262,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setMapClassName(NotificationModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     private function getBaseSearch(ItemSearchData $itemSearchData): SelectInterface
@@ -301,7 +301,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setMapClassName(NotificationModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 
     /**
@@ -324,7 +324,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the notification'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -350,7 +350,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -370,7 +370,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -389,7 +389,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -409,6 +409,6 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 }

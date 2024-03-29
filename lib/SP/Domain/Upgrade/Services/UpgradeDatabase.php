@@ -159,7 +159,7 @@ final class UpgradeDatabase extends Service implements UpgradeDatabaseService
                 );
 
                 // Direct PDO handling
-                $this->database->getDbHandler()->getConnection()->exec($query);
+                $this->database->runQueryRaw($query);
             } catch (Exception $e) {
                 processException($e);
 

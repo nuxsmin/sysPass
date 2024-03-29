@@ -63,7 +63,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -88,7 +88,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the permission'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -107,7 +107,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the permission'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -129,7 +129,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::buildWithMapper($query, ItemPresetModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -173,7 +173,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::buildWithMapper($query, ItemPresetModel::class);
 
-        return $this->db->doSelect($queryData);
+        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -188,7 +188,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->from(self::TABLE)
             ->cols(ItemPresetModel::getCols());
 
-        return $this->db->doSelect(QueryData::buildWithMapper($query, ItemPresetModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, ItemPresetModel::class));
     }
 
     /**
@@ -210,7 +210,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the permissions'));
 
-        return $this->db->doQuery($queryData);
+        return $this->db->runQuery($queryData);
     }
 
 
@@ -268,6 +268,6 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $queryData = QueryData::build($query)->setMapClassName(ItemPresetModel::class);
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->runQuery($queryData, true);
     }
 }

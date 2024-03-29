@@ -117,7 +117,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
             $this->query->offset($accountSearchFilter->getLimitStart());
         }
 
-        return $this->db->doSelect(
+        return $this->db->runQuery(
             QueryData::build($this->query)->setMapClassName(AccountSearchView::class),
             true
         );

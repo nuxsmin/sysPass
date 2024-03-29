@@ -83,8 +83,6 @@ class EventlogTest extends UnitaryTestCase
             ]
         );
 
-        $queryResult = new QueryResult();
-
         $this->request
             ->expects($this->once())
             ->method('getClientAddress')
@@ -102,7 +100,7 @@ class EventlogTest extends UnitaryTestCase
                            && $eventlog->getIpAddress() == '192.168.0.1';
                 })
             )
-            ->willReturn($queryResult->setLastId(100));
+            ->willReturn(new QueryResult(null, 0, 100));
 
         $this->assertEquals(100, $this->eventlog->create($eventlog));
     }
