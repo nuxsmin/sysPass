@@ -24,31 +24,37 @@
 
 namespace SP\Infrastructure\Database;
 
+use Exception;
 use PDO;
 
+use function SP\__u;
+
 /**
- * Interface DBStorageInterface
- *
- * @package SP\Storage
+ * Class PDOWrapper
  */
-interface DbStorageHandler
+class PDOWrapper
 {
     /**
-     * Obtener una conexión PDO
+     * Build a PDO object with the given connection data and options
      *
-     * @return PDO
      * @throws DatabaseException
      */
-    public function getConnection(): PDO;
-
-    /**
-     * Obtener una conexión PDO sin seleccionar la BD
-     *
-     * @return PDO
-     * @throws DatabaseException
-     */
-    public function getConnectionSimple(): PDO;
-
-
-    public function getDriver(): DbStorageDriver;
+    public function build(string $connectionUri, DatabaseConnectionData $connectionData, array $opts): PDO
+    {
+        try {
+            return new PDO(
+                $connectionUri,
+                $connectionData->getDbUser(),
+                $connectionData->getDbPass(),
+                $opts
+            );
+        } catch (Exception $e) {
+            throw DatabaseException::critical(
+                __u('Unable to connect to DB'),
+                sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,10 +28,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
  * Class DatabaseConnectionData
- *
- * @package SP\Infrastructure\Database
  */
-final class DatabaseConnectionData
+class DatabaseConnectionData
 {
     private ?string $dbHost   = null;
     private ?string $dbSocket = null;
@@ -42,83 +40,25 @@ final class DatabaseConnectionData
 
     public static function getFromConfig(ConfigDataInterface $configData): DatabaseConnectionData
     {
-        return (new self())
-            ->setDbHost($configData->getDbHost() ?? '')
-            ->setDbName($configData->getDbName() ?? '')
-            ->setDbUser($configData->getDbUser() ?? '')
-            ->setDbPass($configData->getDbPass() ?? '')
-            ->setDbPort($configData->getDbPort() ?? 0)
-            ->setDbSocket($configData->getDbSocket() ?? '');
+        $self = new self();
+        self::setup($configData, $self);
+
+        return $self;
     }
 
-    public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData
+    /**
+     * @param ConfigDataInterface $configData
+     * @param DatabaseConnectionData $self
+     * @return void
+     */
+    private static function setup(ConfigDataInterface $configData, DatabaseConnectionData $self): void
     {
-        return $this->setDbHost($configData->getDbHost())
-            ->setDbName($configData->getDbName())
-            ->setDbUser($configData->getDbUser())
-            ->setDbPass($configData->getDbPass())
-            ->setDbPort($configData->getDbPort())
-            ->setDbSocket($configData->getDbSocket());
-    }
-
-    public function getDbHost(): ?string
-    {
-        return $this->dbHost;
-    }
-
-    public function setDbHost(string $dbHost): DatabaseConnectionData
-    {
-        $this->dbHost = $dbHost;
-
-        return $this;
-    }
-
-    public function getDbName(): ?string
-    {
-        return $this->dbName;
-    }
-
-    public function setDbName(string $dbName): DatabaseConnectionData
-    {
-        $this->dbName = $dbName;
-
-        return $this;
-    }
-
-    public function getDbUser(): ?string
-    {
-        return $this->dbUser;
-    }
-
-    public function setDbUser(string $dbUser): DatabaseConnectionData
-    {
-        $this->dbUser = $dbUser;
-
-        return $this;
-    }
-
-    public function getDbPass(): ?string
-    {
-        return $this->dbPass;
-    }
-
-    public function setDbPass(string $dbPass): DatabaseConnectionData
-    {
-        $this->dbPass = $dbPass;
-
-        return $this;
-    }
-
-    public function getDbPort(): ?int
-    {
-        return $this->dbPort;
-    }
-
-    public function setDbPort(int $dbPort): DatabaseConnectionData
-    {
-        $this->dbPort = $dbPort;
-
-        return $this;
+        $self->dbSocket = $configData->getDbSocket();
+        $self->dbHost = $configData->getDbHost();
+        $self->dbPort = $configData->getDbPort();
+        $self->dbName = $configData->getDbName();
+        $self->dbUser = $configData->getDbUser();
+        $self->dbPass = $configData->getDbPass();
     }
 
     public function getDbSocket(): ?string
@@ -126,21 +66,48 @@ final class DatabaseConnectionData
         return $this->dbSocket;
     }
 
-    public function setDbSocket(?string $dbSocket): DatabaseConnectionData
+    public function getDbHost(): ?string
     {
-        $this->dbSocket = $dbSocket;
+        return $this->dbHost;
+    }
 
-        return $this;
+    public function getDbPort(): ?int
+    {
+        return $this->dbPort;
+    }
+
+    public function getDbName(): ?string
+    {
+        return $this->dbName;
+    }
+
+    public function getDbUser(): ?string
+    {
+        return $this->dbUser;
+    }
+
+    public function getDbPass(): ?string
+    {
+        return $this->dbPass;
     }
 
     public static function getFromEnvironment(): DatabaseConnectionData
     {
-        return (new self())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbName(getenv('DB_NAME'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'))
-            ->setDbPort((int)getenv('DB_PORT'))
-            ->setDbSocket(getenv('DB_SOCKET'));
+        $self = new self();
+        $self->dbSocket = getenv('DB_SOCKET');
+        $self->dbHost = getenv('DB_SERVER');
+        $self->dbPort = (int)getenv('DB_PORT');
+        $self->dbName = getenv('DB_NAME');
+        $self->dbUser = getenv('DB_USER');
+        $self->dbPass = getenv('DB_PASS');
+
+        return $self;
+    }
+
+    public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData
+    {
+        self::setup($configData, $this);
+
+        return $this;
     }
 }

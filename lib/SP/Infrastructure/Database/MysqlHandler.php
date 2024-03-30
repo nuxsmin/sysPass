@@ -24,166 +24,125 @@
 
 namespace SP\Infrastructure\Database;
 
-use Exception;
 use PDO;
-use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
  * Class MySQLHandler
- *
- * Esta clase se encarga de crear las conexiones a la BD
  */
 final class MysqlHandler implements DbStorageHandler
 {
-    public const STATUS_OK = 0;
-    public const STATUS_KO = 1;
-    public const PDO_OPTS  = [
+    private const PDO_OPTS = [
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_FOUND_ROWS => true,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     ];
 
-    private ?PDO                   $db       = null;
-    private int                    $dbStatus = self::STATUS_KO;
-    private DatabaseConnectionData $connectionData;
+    private ?PDO            $pdo = null;
+    private readonly string $connectionUri;
 
-    public function __construct(DatabaseConnectionData $connectionData)
-    {
-        $this->connectionData = $connectionData;
+    public function __construct(
+        private readonly DatabaseConnectionData $connectionData,
+        private readonly PDOWrapper             $PDOWrapper
+    ) {
+        $this->connectionUri = $this->getConnectionUri();
     }
 
-    /**
-     * Devuelve el estado de conexión a la BBDD
-     *
-     * OK -> 0
-     * KO -> 1
-     */
-    public function getDbStatus(): int
-    {
-        return $this->dbStatus;
-    }
-
-    /**
-     * Realizar la conexión con la BBDD.
-     * Esta función utiliza PDO para conectar con la base de datos.
-     *
-     * @throws DatabaseException
-     */
-    public function getConnection(): PDO
-    {
-        if (!$this->db) {
-            if (null === $this->connectionData->getDbUser()
-                || null === $this->connectionData->getDbPass()
-                || null === $this->connectionData->getDbName()
-                || (null === $this->connectionData->getDbHost()
-                    && null === $this->connectionData->getDbSocket())
-            ) {
-                throw new DatabaseException(
-                    __u('Unable to connect to DB'),
-                    SPException::CRITICAL,
-                    __u('Please, check the connection parameters')
-                );
-            }
-
-            try {
-                $this->db = new PDO(
-                    $this->getConnectionUri(),
-                    $this->connectionData->getDbUser(),
-                    $this->connectionData->getDbPass(),
-                    self::PDO_OPTS
-                );
-
-                // Set prepared statement emulation depending on server version
-                $serverVersion = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
-                $this->db->setAttribute(
-                    PDO::ATTR_EMULATE_PREPARES,
-                    version_compare($serverVersion, '5.1.17', '<')
-                );
-
-                $this->dbStatus = self::STATUS_OK;
-            } catch (Exception $e) {
-                throw new DatabaseException(
-                    __u('Unable to connect to DB'),
-                    SPException::CRITICAL,
-                    sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
-                    $e->getCode(),
-                    $e
-                );
-            }
-        }
-
-        return $this->db;
-    }
-
-    public function getConnectionUri(): string
+    private function getConnectionUri(): string
     {
         $dsn = ['charset=utf8'];
 
         if (empty($this->connectionData->getDbSocket())) {
-            $dsn[] = 'host=' . $this->connectionData->getDbHost();
+            $dsn[] = sprintf('host=%s', $this->connectionData->getDbHost());
 
             if (null !== $this->connectionData->getDbPort()) {
-                $dsn[] = 'port=' . $this->connectionData->getDbPort();
+                $dsn[] = sprintf('port=%s', $this->connectionData->getDbPort());
             }
         } else {
-            $dsn[] = 'unix_socket=' . $this->connectionData->getDbSocket();
+            $dsn[] = sprintf('unix_socket=%s', $this->connectionData->getDbSocket());
         }
 
         if (!empty($this->connectionData->getDbName())) {
-            $dsn[] = 'dbname=' . $this->connectionData->getDbName();
+            $dsn[] = sprintf('dbname=%s', $this->connectionData->getDbName());
         }
 
-        return 'mysql:' . implode(';', $dsn);
+        return sprintf('mysql:%s', implode(';', $dsn));
     }
 
     /**
-     * Obtener una conexión PDO sin seleccionar la BD
+     * Set up a database connection with the given connection data.
+     * This method will only set ATTR_EMULATE_PREPARES and ATTR_ERRMODE options.
      *
      * @throws DatabaseException
      */
     public function getConnectionSimple(): PDO
     {
-        if (!$this->db) {
-            if (null === $this->connectionData->getDbHost()
-                && null === $this->connectionData->getDbSocket()
-            ) {
-                throw new DatabaseException(
-                    __u('Unable to connect to DB'),
-                    SPException::CRITICAL,
-                    __u('Please, check the connection parameters')
-                );
-            }
+        if (!$this->pdo) {
+            $this->checkConnectionData();
 
-            try {
-                $opts = [
-                    PDO::ATTR_EMULATE_PREPARES => true,
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                ];
+            $opts = [
+                PDO::ATTR_EMULATE_PREPARES => true,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ];
 
-                $this->db = new PDO(
-                    $this->getConnectionUri(),
-                    $this->connectionData->getDbUser(),
-                    $this->connectionData->getDbPass(),
-                    $opts
-                );
-                $this->dbStatus = self::STATUS_OK;
-            } catch (Exception $e) {
-                throw new DatabaseException(
-                    __u('Unable to connect to DB'),
-                    SPException::CRITICAL,
-                    sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
-                    $e->getCode(),
-                    $e
-                );
-            }
+            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, $opts);
         }
 
-        return $this->db;
+        return $this->pdo;
     }
 
-    public function getDatabaseName(): ?string
+    /**
+     * @param bool $checkName
+     * @return void
+     * @throws DatabaseException
+     */
+    private function checkConnectionData(bool $checkName = false): void
     {
-        return $this->connectionData->getDbName();
+        $nameIsNotPresent = $checkName && null === $this->connectionData->getDbName();
+
+        if ($nameIsNotPresent
+            || null === $this->connectionData->getDbUser()
+            || null === $this->connectionData->getDbPass()
+            || (null === $this->connectionData->getDbHost()
+                && null === $this->connectionData->getDbSocket())
+        ) {
+            throw DatabaseException::critical(
+                __u('Unable to connect to DB'),
+                __u('Please, check the connection parameters')
+            );
+        }
+    }
+
+    /**
+     * @return DbStorageDriver
+     */
+    public function getDriver(): DbStorageDriver
+    {
+        return DbStorageDriver::mysql;
+    }
+
+    /**
+     * Set up a database connection with the given connection data
+     *
+     * @throws DatabaseException
+     */
+    public function getConnection(): PDO
+    {
+        if (!$this->pdo) {
+            $this->checkConnectionData(true);
+
+            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, self::PDO_OPTS);
+
+            // Set prepared statement emulation depending on server version
+            $serverVersion = $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+            $this->pdo->setAttribute(
+                PDO::ATTR_EMULATE_PREPARES,
+                version_compare($serverVersion, '5.1.17', '<')
+            );
+        }
+
+        return $this->pdo;
     }
 }

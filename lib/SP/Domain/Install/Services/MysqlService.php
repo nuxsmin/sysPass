@@ -28,6 +28,7 @@ use Exception;
 use PDOException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
+use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Database\DatabaseFileInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\DbStorageHandler;
@@ -44,7 +45,7 @@ use function SP\processException;
  *
  * @package SP\Domain\Install\Services
  */
-final class MysqlService implements DatabaseSetupInterface
+final readonly class MysqlService implements DatabaseSetupInterface
 {
 
     /**
@@ -52,10 +53,10 @@ final class MysqlService implements DatabaseSetupInterface
      *
      */
     public function __construct(
-        private readonly DbStorageHandler $dbStorage,
-        private readonly InstallData           $installData,
-        private readonly DatabaseFileInterface $databaseFile,
-        private readonly DatabaseUtil          $databaseUtil
+        private DbStorageHandler      $dbStorage,
+        private InstallData           $installData,
+        private DatabaseFileInterface $databaseFile,
+        private DatabaseUtil          $databaseUtil
     ) {
     }
 
@@ -259,17 +260,24 @@ final class MysqlService implements DatabaseSetupInterface
         }
     }
 
+    /**
+     * @throws DatabaseException
+     */
     public function checkDatabaseExists(): bool
     {
-        $sth = $this->dbStorage->getConnectionSimple()
-                               ->prepare(
-                                   'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1'
-                               );
+        $sth = $this->dbStorage
+            ->getConnectionSimple()
+            ->prepare(
+                'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1'
+            );
         $sth->execute([$this->installData->getDbName()]);
 
         return (int)$sth->fetchColumn() === 1;
     }
 
+    /**
+     * @throws DatabaseException
+     */
     public function rollback(?string $dbUser = null): void
     {
         $dbc = $this->dbStorage->getConnectionSimple();
