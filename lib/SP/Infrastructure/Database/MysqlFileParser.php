@@ -43,16 +43,16 @@ final readonly class MysqlFileParser implements DatabaseFileInterface
      */
     public function parse(string $delimiter = ';'): iterable
     {
+        $this->fileHandler->checkIsReadable();
+
         $query = [];
         $delimiterLength = strlen($delimiter);
-
-        $this->fileHandler->checkIsReadable();
 
         foreach ($this->fileHandler->read() as $data) {
             $line = trim($data);
             $lineLength = strlen($line);
 
-            if ($lineLength > 0 && !(str_starts_with($line, '--') || str_contains($line, 'DELIMITER'))) {
+            if ($lineLength > 0 && !(str_starts_with($line, '--') || str_starts_with($line, 'DELIMITER'))) {
                 if (substr($line, -$delimiterLength) === $delimiter) {
                     $query[] = substr($line, 0, $lineLength - $delimiterLength);
 
