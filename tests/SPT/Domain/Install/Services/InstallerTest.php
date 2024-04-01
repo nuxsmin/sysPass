@@ -36,7 +36,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\InstallerService;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserService;
@@ -68,7 +68,7 @@ class InstallerTest extends UnitaryTestCase
      */
     private $configService;
     /**
-     * @var MockObject|UserGroupServiceInterface
+     * @var MockObject|UserGroupService
      */
     private $userGroupService;
     /**
@@ -442,7 +442,7 @@ class InstallerTest extends UnitaryTestCase
         $this->userService = $this->createMock(UserServiceInterface::class);
         $this->request = $this->createStub(RequestInterface::class);
         $this->configService = $this->createMock(ConfigService::class);
-        $this->userGroupService = $this->createMock(UserGroupServiceInterface::class);
+        $this->userGroupService = $this->createMock(UserGroupService::class);
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
 
         parent::setUp();

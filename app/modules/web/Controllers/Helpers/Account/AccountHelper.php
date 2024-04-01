@@ -55,7 +55,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -84,9 +84,9 @@ final class AccountHelper extends AccountHelperBase
     private CustomFieldDataService    $customFieldService;
     private ?AccountPermission        $accountAcl = null;
     private ?int                      $accountId  = null;
-    private UserServiceInterface      $userService;
-    private UserGroupServiceInterface $userGroupService;
-    private TagService $tagService;
+    private UserServiceInterface $userService;
+    private UserGroupService     $userGroupService;
+    private TagService           $tagService;
 
     public function __construct(
         Application               $application,
@@ -94,18 +94,18 @@ final class AccountHelper extends AccountHelperBase
         RequestInterface          $request,
         AclInterface              $acl,
         AccountService            $accountService,
-        AccountHistoryService     $accountHistoryService,
-        PublicLinkService         $publicLinkService,
-        ItemPresetService         $itemPresetService,
-        MasterPassService         $masterPassService,
-        AccountActionsHelper      $accountActionsHelper,
-        AccountAclService         $accountAclService,
-        CategoryService           $categoryService,
-        ClientService             $clientService,
-        CustomFieldDataService    $customFieldService,
-        UserServiceInterface      $userService,
-        UserGroupServiceInterface $userGroupService,
-        TagService $tagService
+        AccountHistoryService  $accountHistoryService,
+        PublicLinkService      $publicLinkService,
+        ItemPresetService      $itemPresetService,
+        MasterPassService      $masterPassService,
+        AccountActionsHelper   $accountActionsHelper,
+        AccountAclService      $accountAclService,
+        CategoryService        $categoryService,
+        ClientService          $clientService,
+        CustomFieldDataService $customFieldService,
+        UserServiceInterface   $userService,
+        UserGroupService       $userGroupService,
+        TagService             $tagService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\Filter;
@@ -49,11 +49,11 @@ use function SP\processException;
 final class AccountSearch extends Service implements AccountSearchService
 {
     public function __construct(
-        Application                                $application,
-        private readonly UserServiceInterface      $userService,
-        private readonly UserGroupServiceInterface $userGroupService,
-        private readonly AccountSearchRepository   $accountSearchRepository,
-        private readonly AccountSearchDataBuilder  $accountSearchDataBuilder
+        Application                               $application,
+        private readonly UserServiceInterface     $userService,
+        private readonly UserGroupService         $userGroupService,
+        private readonly AccountSearchRepository  $accountSearchRepository,
+        private readonly AccountSearchDataBuilder $accountSearchDataBuilder
     ) {
         parent::__construct($application);
     }

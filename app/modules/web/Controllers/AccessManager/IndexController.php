@@ -33,7 +33,7 @@ use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
@@ -61,25 +61,25 @@ final class IndexController extends ControllerBase
     private AuthTokenGrid               $authTokenGrid;
     private PublicLinkGrid              $publicLinkGrid;
     private UserServiceInterface        $userService;
-    private UserGroupServiceInterface   $userGroupService;
+    private UserGroupService $userGroupService;
     private UserProfileServiceInterface $userProfileService;
     private AuthTokenService  $authTokenService;
     private PublicLinkService $publicLinkService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper       $webControllerHelper,
-        TabsGridHelper            $tabsGridHelper,
-        UserGrid                  $userGrid,
-        UserGroupGrid             $userGroupGrid,
-        UserProfileGrid           $userProfileGrid,
-        AuthTokenGrid             $authTokenGrid,
-        PublicLinkGrid            $publicLinkGrid,
-        UserServiceInterface      $userService,
-        UserGroupServiceInterface $userGroupService,
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        TabsGridHelper       $tabsGridHelper,
+        UserGrid             $userGrid,
+        UserGroupGrid        $userGroupGrid,
+        UserProfileGrid      $userProfileGrid,
+        AuthTokenGrid        $authTokenGrid,
+        PublicLinkGrid       $publicLinkGrid,
+        UserServiceInterface $userService,
+        UserGroupService     $userGroupService,
         UserProfileServiceInterface $userProfileService,
-        AuthTokenService          $authTokenService,
-        PublicLinkService         $publicLinkService
+        AuthTokenService     $authTokenService,
+        PublicLinkService    $publicLinkService
     ) {
         parent::__construct($application, $webControllerHelper);
 

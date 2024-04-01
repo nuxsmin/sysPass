@@ -40,7 +40,6 @@ class QueryResult
     private readonly SplFixedArray $data;
     private readonly int           $numRows;
     private int $totalNumRows = 0;
-    private int $statusCode   = 0;
 
     /**
      * QueryResult constructor.
@@ -120,11 +119,6 @@ class QueryResult
     public function getTotalNumRows(): int
     {
         return $this->totalNumRows;
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
     }
 
     public function getAffectedNumRows(): int

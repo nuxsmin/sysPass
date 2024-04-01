@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\UserGroup;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -49,14 +49,14 @@ abstract class UserGroupViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private UserGroupServiceInterface $userGroupService;
+    private UserGroupService $userGroupService;
     private CustomFieldDataService $customFieldService;
     private UserServiceInterface      $userService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        UserGroupServiceInterface $userGroupService,
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        UserGroupService     $userGroupService,
         UserServiceInterface $userService,
         CustomFieldDataService $customFieldService
     ) {

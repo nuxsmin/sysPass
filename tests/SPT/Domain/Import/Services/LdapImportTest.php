@@ -35,7 +35,7 @@ use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Services\LdapImport;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
@@ -52,9 +52,9 @@ class LdapImportTest extends UnitaryTestCase
 {
 
     private LdapImport                           $ldapImport;
-    private UserServiceInterface|MockObject      $userService;
-    private UserGroupServiceInterface|MockObject $userGroupService;
-    private LdapActionsService|MockObject        $ldapActionsService;
+    private UserServiceInterface|MockObject $userService;
+    private UserGroupService|MockObject     $userGroupService;
+    private LdapActionsService|MockObject   $ldapActionsService;
     private LdapConnectionInterface|MockObject   $ldapConnection;
 
     public static function emptyNameOrLoginProvider(): array
@@ -575,7 +575,7 @@ class LdapImportTest extends UnitaryTestCase
         parent::setUp();
 
         $this->userService = $this->createMock(UserServiceInterface::class);
-        $this->userGroupService = $this->createMock(UserGroupServiceInterface::class);
+        $this->userGroupService = $this->createMock(UserGroupService::class);
         $this->ldapActionsService = $this->createMock(LdapActionsService::class);
         $this->ldapConnection = $this->createMock(LdapConnectionInterface::class);
 

@@ -42,7 +42,7 @@ use SP\Domain\Install\Ports\InstallerServiceInterface;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -71,7 +71,7 @@ final class InstallerService implements InstallerServiceInterface
         RequestInterface                             $request,
         private readonly ConfigFileService           $config,
         private readonly UserServiceInterface        $userService,
-        private readonly UserGroupServiceInterface   $userGroupService,
+        private readonly UserGroupService $userGroupService,
         private readonly UserProfileServiceInterface $userProfileService,
         private readonly ConfigService               $configService,
         private readonly DatabaseConnectionData      $databaseConnectionData,

@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -51,15 +51,15 @@ final class ItemPresetHelper extends HelperBase
     private ?SelectItemAdapter          $users      = null;
     private ?SelectItemAdapter          $userGroups = null;
     private UserServiceInterface        $userService;
-    private UserGroupServiceInterface   $userGroupService;
+    private UserGroupService $userGroupService;
     private UserProfileServiceInterface $userProfileService;
 
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestInterface $request,
+        Application          $application,
+        TemplateInterface    $template,
+        RequestInterface     $request,
         UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
+        UserGroupService     $userGroupService,
         UserProfileServiceInterface $userProfileService
 
     ) {

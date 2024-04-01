@@ -28,16 +28,16 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Class UserGroupService
  *
- * @package SP\Domain\Common\Services\UserGroup
+ * @template T of UserGroupModel
  */
-interface UserGroupServiceInterface
+interface UserGroupService
 {
     /**
      * @throws ConstraintException
@@ -50,17 +50,17 @@ interface UserGroupServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserGroup;
+    public function getById(int $id): UserGroupModel;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): UserGroupServiceInterface;
+    public function delete(int $id): void;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException
@@ -71,17 +71,17 @@ interface UserGroupServiceInterface
     /**
      * @throws ServiceException
      */
-    public function create(UserGroup $itemData): int;
+    public function create(UserGroupModel $userGroup): int;
 
     /**
      * @throws ServiceException
      */
-    public function update(UserGroup $itemData): void;
+    public function update(UserGroupModel $userGroup): void;
 
     /**
      * Get all items from the service's repository
      *
-     * @return UserGroup[]
+     * @return UserGroupModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -94,7 +94,7 @@ interface UserGroupServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): UserGroup;
+    public function getByName(string $name): UserGroupModel;
 
     /**
      * Returns the users that are using the given group id

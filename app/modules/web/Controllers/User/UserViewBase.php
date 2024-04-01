@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\User;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -49,16 +49,16 @@ abstract class UserViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    protected UserServiceInterface                          $userService;
-    private UserGroupServiceInterface $userGroupService;
+    protected UserServiceInterface $userService;
+    private UserGroupService       $userGroupService;
     private UserProfileServiceInterface $userProfileService;
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService,
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        UserServiceInterface   $userService,
+        UserGroupService       $userGroupService,
         UserProfileServiceInterface $userProfileService,
         CustomFieldDataService $customFieldService
     ) {

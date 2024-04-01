@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
@@ -63,7 +63,7 @@ final class AclHandler extends Provider implements EventReceiver
     public function __construct(
         Application                                  $application,
         private readonly UserProfileServiceInterface $userProfileService,
-        private readonly UserGroupServiceInterface   $userGroupService
+        private readonly UserGroupService $userGroupService
     ) {
         parent::__construct($application);
     }

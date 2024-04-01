@@ -48,7 +48,7 @@ use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\Task\Services\Task;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -75,7 +75,7 @@ final class IndexController extends ControllerBase
 {
     protected TabsHelper                $tabsHelper;
     private UserServiceInterface        $userService;
-    private UserGroupServiceInterface   $userGroupService;
+    private UserGroupService $userGroupService;
     private UserProfileServiceInterface $userProfileService;
     private MimeTypesService $mimeTypes;
     private DatabaseUtil     $databaseUtil;
@@ -88,7 +88,7 @@ final class IndexController extends ControllerBase
         WebControllerHelper         $webControllerHelper,
         TabsHelper                  $tabsHelper,
         UserServiceInterface        $userService,
-        UserGroupServiceInterface   $userGroupService,
+        UserGroupService $userGroupService,
         UserProfileServiceInterface $userProfileService,
         MimeTypesService $mimeTypes,
         DatabaseUtil                $databaseUtil,

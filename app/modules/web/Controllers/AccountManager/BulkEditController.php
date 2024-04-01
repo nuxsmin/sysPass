@@ -37,7 +37,7 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -66,7 +66,7 @@ final class BulkEditController extends ControllerBase
     private ClientService        $clientService;
     private TagService           $tagService;
     private UserServiceInterface $userService;
-    private UserGroupServiceInterface      $userGroupService;
+    private UserGroupService $userGroupService;
 
     public function __construct(
         Application          $application,
@@ -75,7 +75,7 @@ final class BulkEditController extends ControllerBase
         ClientService        $clientService,
         TagService           $tagService,
         UserServiceInterface $userService,
-        UserGroupServiceInterface $userGroupService
+        UserGroupService $userGroupService
     ) {
         parent::__construct($application, $webControllerHelper);
 

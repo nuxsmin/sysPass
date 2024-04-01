@@ -75,6 +75,8 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      *
      * @param int $userGroupId
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsage(int $userGroupId): QueryResult
     {

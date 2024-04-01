@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
 
@@ -38,7 +38,7 @@ use SP\Modules\Api\Controllers\Help\TagHelp;
  */
 abstract class UserGroupBase extends ControllerBase
 {
-    protected UserGroupServiceInterface $userGroupService;
+    protected UserGroupService $userGroupService;
 
     /**
      * @throws InvalidClassException
@@ -48,7 +48,7 @@ abstract class UserGroupBase extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        UserGroupServiceInterface $groupService
+        UserGroupService $groupService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 

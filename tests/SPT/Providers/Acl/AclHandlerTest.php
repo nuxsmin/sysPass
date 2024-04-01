@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Providers\Acl\AclHandler;
 use SPT\UnitaryTestCase;
@@ -44,7 +44,7 @@ use SPT\UnitaryTestCase;
 class AclHandlerTest extends UnitaryTestCase
 {
     private MockObject|UserProfileServiceInterface $userProfileService;
-    private UserGroupServiceInterface|MockObject   $userGroupService;
+    private UserGroupService|MockObject $userGroupService;
     private AclHandler                             $aclHandler;
 
     public static function userEventProvider(): array
@@ -239,7 +239,7 @@ class AclHandlerTest extends UnitaryTestCase
         parent::setUp();
 
         $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
-        $this->userGroupService = $this->createMock(UserGroupServiceInterface::class);
+        $this->userGroupService = $this->createMock(UserGroupService::class);
 
         $this->aclHandler = new AclHandler($this->application, $this->userProfileService, $this->userGroupService);
     }

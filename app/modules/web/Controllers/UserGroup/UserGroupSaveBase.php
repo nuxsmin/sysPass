@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 use SP\Core\Application;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserGroupForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -37,14 +37,14 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserGroupSaveBase extends ControllerBase
 {
-    protected UserGroupServiceInterface $userGroupService;
+    protected UserGroupService $userGroupService;
     protected CustomFieldDataService $customFieldService;
     protected UserGroupForm             $form;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        UserGroupServiceInterface $userGroupService,
+        UserGroupService    $userGroupService,
         CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

@@ -37,7 +37,7 @@ use SP\Domain\Import\Dtos\LdapImportResultsDto;
 use SP\Domain\Import\Ports\LdapImportService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
-use SP\Domain\User\Ports\UserGroupServiceInterface;
+use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Providers\Auth\Ldap\LdapBase;
 use SP\Providers\Auth\Ldap\LdapException;
@@ -54,11 +54,11 @@ use function SP\processException;
 final class LdapImport extends Service implements LdapImportService
 {
     public function __construct(
-        Application                                $application,
-        private readonly UserServiceInterface      $userService,
-        private readonly UserGroupServiceInterface $userGroupService,
-        private readonly LdapActionsService        $ldapActionsService,
-        private readonly LdapConnectionInterface   $ldapConnection
+        Application                              $application,
+        private readonly UserServiceInterface    $userService,
+        private readonly UserGroupService        $userGroupService,
+        private readonly LdapActionsService      $ldapActionsService,
+        private readonly LdapConnectionInterface $ldapConnection
     ) {
         parent::__construct($application);
     }
