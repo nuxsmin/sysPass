@@ -26,24 +26,25 @@ namespace SP\Domain\User\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
-use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
+use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Html\Html;
 use SP\Util\PasswordUtil;
 
+use function SP\__;
+use function SP\__u;
+
 /**
  * Class UserPassRecoverService
- *
- * @package SP\Domain\Common\Services\UserPassRecover
  */
-final class UserPassRecoverService extends Service implements UserPassRecoverServiceInterface
+final class UserPassRecover extends Service implements UserPassRecoverService
 {
     /**
      * Tiempo máximo para recuperar la clave
@@ -54,16 +55,14 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
      */
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
-    protected UserPassRecoverRepository $userPassRecoverRepository;
-
-    public function __construct(Application $application, UserPassRecoverRepository $userPassRecoverRepository)
-    {
+    public function __construct(
+        Application                                $application,
+        private readonly UserPassRecoverRepository $userPassRecoverRepository
+    ) {
         parent::__construct($application);
-
-        $this->userPassRecoverRepository = $userPassRecoverRepository;
     }
 
-    public static function getMailMessage(string $hash): MailMessage
+    public static function getMailMessage(string $hash, string $baseUri): MailMessage
     {
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(__('Password Change'));
@@ -72,7 +71,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
         $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(
-            Html::anchorText(BootstrapBase::$WEBURI . '/index.php?r=userPassReset/reset/' . $hash)
+            Html::anchorText(sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, $hash))
         );
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
@@ -86,12 +85,10 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
      */
     public function toggleUsedByHash(string $hash): void
     {
-        if ($this->userPassRecoverRepository->toggleUsedByHash(
-                $hash,
-                time() - self::MAX_PASS_RECOVER_TIME
-            ) === 0
-        ) {
-            throw new ServiceException(__u('Wrong hash or expired'), SPException::INFO);
+        $time = time() - self::MAX_PASS_RECOVER_TIME;
+
+        if ($this->userPassRecoverRepository->toggleUsedByHash($hash, $time) === 0) {
+            throw ServiceException::info(__u('Wrong hash or expired'));
         }
     }
 
@@ -104,7 +101,7 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
     public function requestForUserId(int $id): string
     {
         if ($this->checkAttemptsByUserId($id)) {
-            throw new ServiceException(__u('Attempts exceeded'), SPException::WARNING);
+            throw ServiceException::warning(__u('Attempts exceeded'));
         }
 
         $hash = PasswordUtil::generateRandomBytes(16);
@@ -120,41 +117,38 @@ final class UserPassRecoverService extends Service implements UserPassRecoverSer
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkAttemptsByUserId(int $userId): bool
+    private function checkAttemptsByUserId(int $userId): bool
     {
-        return $this->userPassRecoverRepository->getAttemptsByUserId(
-                $userId,
-                time() - self::MAX_PASS_RECOVER_TIME
-            ) >= self::MAX_PASS_RECOVER_LIMIT;
+        $time = time() - self::MAX_PASS_RECOVER_TIME;
+
+        return $this->userPassRecoverRepository->getAttemptsByUserId($userId, $time) >= self::MAX_PASS_RECOVER_LIMIT;
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function add(int $userId, string $hash): bool
+    public function add(int $userId, string $hash): void
     {
-        return $this->userPassRecoverRepository->add($userId, $hash);
+        $this->userPassRecoverRepository->add($userId, $hash);
     }
 
     /**
      * Comprobar el hash de recuperación de clave.
      *
+     * @param string $hash
+     * @return int
      * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
      */
     public function getUserIdForHash(string $hash): int
     {
-        $result = $this->userPassRecoverRepository->getUserIdForHash(
-            $hash,
-            time() - self::MAX_PASS_RECOVER_TIME
-        );
+        $time = time() - self::MAX_PASS_RECOVER_TIME;
+        $result = $this->userPassRecoverRepository->getUserIdForHash($hash, $time);
 
         if ($result->getNumRows() === 0) {
-            throw new ServiceException(__u('Wrong hash or expired'), SPException::INFO);
+            throw ServiceException::info(__u('Wrong hash or expired'));
         }
 
-        return (int)$result->getData()->userId;
+        return $result->getData(UserPassRecoverModel::class)->getUserId();
     }
 }

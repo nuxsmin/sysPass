@@ -34,9 +34,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Models\User;
-use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
+use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserPassRecoverService;
+use SP\Domain\User\Services\UserPassRecover;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -49,8 +49,8 @@ abstract class UserSaveBase extends ControllerBase
     protected UserServiceInterface   $userService;
     protected CustomFieldDataService $customFieldService;
     protected UserForm  $form;
-    private MailService $mailService;
-    private UserPassRecoverServiceInterface $userPassRecoverService;
+    private MailService            $mailService;
+    private UserPassRecoverService $userPassRecoverService;
 
     public function __construct(
         Application            $application,
@@ -58,7 +58,7 @@ abstract class UserSaveBase extends ControllerBase
         UserServiceInterface   $userService,
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
-        UserPassRecoverServiceInterface $userPassRecoverService
+        UserPassRecoverService $userPassRecoverService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -73,7 +73,7 @@ abstract class UserSaveBase extends ControllerBase
 
     /**
      * @param  int  $userId
-     * @param \SP\Domain\User\Models\User $userData
+     * @param User $userData
      *
      * @throws EnvironmentIsBrokenException
      * @throws Exception
@@ -89,7 +89,7 @@ abstract class UserSaveBase extends ControllerBase
             $this->mailService->send(
                 __('Password Change'),
                 $userData->getEmail(),
-                UserPassRecoverService::getMailMessage($hash)
+                UserPassRecover::getMailMessage($hash)
             );
         }
     }

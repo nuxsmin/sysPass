@@ -67,7 +67,7 @@ interface UserPassRecoverRepository
      * @param string $hash
      * @param int $time
      *
-     * @return int
+     * @return int The updated rows. If no rows are updated, it means that the hash doesn't exist or it's expired
      * @throws SPException
      */
     public function toggleUsedByHash(string $hash, int $time): int;
@@ -78,7 +78,7 @@ interface UserPassRecoverRepository
      * @param string $hash
      * @param int $time
      *
-     * @return QueryResult<T>
+     * @return QueryResult<UserPassRecoverModel>
      */
     public function getUserIdForHash(string $hash, int $time): QueryResult;
 }

@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
+use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -44,8 +44,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserPassResetSaveBase extends ControllerBase
 {
-    protected UserPassRecoverServiceInterface $userPassRecoverService;
-    protected UserServiceInterface $userService;
+    protected UserPassRecoverService $userPassRecoverService;
+    protected UserServiceInterface   $userService;
     protected MailService $mailService;
     private TrackService  $trackService;
     private TrackRequest  $trackRequest;
@@ -56,12 +56,12 @@ abstract class UserPassResetSaveBase extends ControllerBase
      * @throws JsonException
      */
     public function __construct(
-        Application           $application,
-        WebControllerHelper   $webControllerHelper,
-        UserPassRecoverServiceInterface $userPassRecoverService,
-        UserServiceInterface  $userService,
-        MailService           $mailService,
-        TrackService $trackService
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        UserPassRecoverService $userPassRecoverService,
+        UserServiceInterface   $userService,
+        MailService            $mailService,
+        TrackService           $trackService
 
     ) {
         parent::__construct($application, $webControllerHelper);

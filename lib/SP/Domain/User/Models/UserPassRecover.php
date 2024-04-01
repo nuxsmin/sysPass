@@ -33,10 +33,10 @@ class UserPassRecover extends Model
 {
     public const TABLE = 'UserPassRecover';
 
-    public ?int    $userId = null;
-    public ?string $hash   = null;
-    public ?int    $date   = null;
-    public ?bool   $used   = null;
+    protected ?int    $userId = null;
+    protected ?string $hash   = null;
+    protected ?int    $date   = null;
+    protected ?bool   $used   = null;
 
     public function getUserId(): ?int
     {

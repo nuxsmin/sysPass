@@ -46,7 +46,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Models\UserPreferences;
-use SP\Domain\User\Ports\UserPassRecoverServiceInterface;
+use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserPassServiceInterface;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
@@ -86,16 +86,16 @@ final class Login extends Service implements LoginService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                                      $application,
-        private readonly AuthProviderInterface           $authProvider,
-        private readonly LanguageInterface               $language,
-        private readonly TrackService $trackService,
-        private readonly RequestInterface                $request,
-        private readonly UserServiceInterface            $userService,
-        private readonly UserPassRecoverServiceInterface $userPassRecoverService,
-        private readonly TemporaryMasterPassService      $temporaryMasterPassService,
-        private readonly UserPassServiceInterface        $userPassService,
-        private readonly UserProfileServiceInterface     $userProfileService
+        Application                                  $application,
+        private readonly AuthProviderInterface       $authProvider,
+        private readonly LanguageInterface           $language,
+        private readonly TrackService                $trackService,
+        private readonly RequestInterface            $request,
+        private readonly UserServiceInterface        $userService,
+        private readonly UserPassRecoverService      $userPassRecoverService,
+        private readonly TemporaryMasterPassService  $temporaryMasterPassService,
+        private readonly UserPassServiceInterface    $userPassService,
+        private readonly UserProfileServiceInterface $userProfileService
     ) {
         parent::__construct($application);
 

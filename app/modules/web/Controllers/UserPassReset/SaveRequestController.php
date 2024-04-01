@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Services\UserPassRecoverService;
+use SP\Domain\User\Services\UserPassRecover;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
@@ -82,7 +82,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             $this->mailService->send(
                 __('Password Change'),
                 $email,
-                UserPassRecoverService::getMailMessage($hash)
+                UserPassRecover::getMailMessage($hash)
             );
 
             return $this->returnJsonResponse(

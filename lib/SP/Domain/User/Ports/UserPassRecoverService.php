@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
  *
  * @package SP\Domain\Common\Services\UserPassRecover
  */
-interface UserPassRecoverServiceInterface
+interface UserPassRecoverService
 {
     /**
      * @throws SPException
@@ -52,18 +52,10 @@ interface UserPassRecoverServiceInterface
     public function requestForUserId(int $id): string;
 
     /**
-     * Comprobar el límite de recuperaciones de clave.
-     *
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function checkAttemptsByUserId(int $userId): bool;
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function add(int $userId, string $hash): bool;
+    public function add(int $userId, string $hash): void;
 
     /**
      * Comprobar el hash de recuperación de clave.
