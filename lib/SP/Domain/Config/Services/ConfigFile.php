@@ -107,7 +107,7 @@ class ConfigFile implements ConfigFileService
     private function isCacheExpired(): bool
     {
         try {
-            return $this->fileCache->isExpiredDate($this->fileStorage->getFileHandler()->getFileTime());
+            return $this->fileCache->isExpiredDate($this->fileStorage->getFileTime());
         } catch (FileException) {
             return true;
         }
@@ -116,9 +116,7 @@ class ConfigFile implements ConfigFileService
     private function loadFromFile(): ConfigData|null
     {
         try {
-            $this->fileStorage->getFileHandler()->checkIsReadable();
-
-            $configData = $this->configMapper($this->fileStorage->load('config')->getItems());
+            $configData = $this->configMapper($this->fileStorage->load('config'));
             $this->fileCache->save($configData);
 
             return $configData;

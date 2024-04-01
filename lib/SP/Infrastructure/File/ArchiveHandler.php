@@ -35,7 +35,7 @@ final class ArchiveHandler implements ArchiveHandlerInterface
 {
     public const COMPRESS_EXTENSION = '.tar.gz';
 
-    private PharData $archive;
+    private readonly PharData $archive;
 
     public function __construct(string $archive, PhpExtensionCheckerService $phpExtensionCheckerService)
     {

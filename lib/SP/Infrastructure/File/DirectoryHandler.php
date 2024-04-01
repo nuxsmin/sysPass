@@ -33,9 +33,9 @@ use function SP\__u;
 /**
  * Class DirectoryHandler
  */
-final class DirectoryHandler implements DirectoryHandlerService
+final readonly class DirectoryHandler implements DirectoryHandlerService
 {
-    public function __construct(private readonly string $path)
+    public function __construct(private string $path)
     {
     }
 

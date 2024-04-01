@@ -68,7 +68,7 @@ class FileCache extends FileCacheBase
         $data = unserialize($this->path->checkIsReadable()->readToString(), ['allowed_classes' => [$class]]);
 
         if (!class_exists($class) || !($data instanceof $class)) {
-            throw new InvalidClassException(
+            throw InvalidClassException::error(
                 sprintf(__u('Either class does not exist or file data cannot unserialized into: %s'), $class)
             );
         }

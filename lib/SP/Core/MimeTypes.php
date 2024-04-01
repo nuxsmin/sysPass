@@ -76,7 +76,7 @@ final class MimeTypes implements MimeTypesService
     {
         if (!$this->fileCache->exists()
             || $this->fileCache->isExpired(self::CACHE_EXPIRE)
-            || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
+            || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileTime())
         ) {
             $this->mapAndSave();
         } else {
@@ -107,7 +107,7 @@ final class MimeTypes implements MimeTypesService
     {
         $this->mimeTypes = array_map(
             static fn($item) => new MimeType($item['type'], $item['description'], $item['extension']),
-            $this->xmlFileStorage->load('mimetypes')->getItems()
+            $this->xmlFileStorage->load('mimetypes')
         );
     }
 

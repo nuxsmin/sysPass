@@ -35,7 +35,6 @@ use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;
@@ -77,15 +76,10 @@ class ActionsTest extends UnitaryTestCase
             ->willReturn($expiredCache);
 
         if (!$expiredCache) {
-            $fileHandler = $this->createMock(FileHandlerInterface::class);
-            $fileHandler->expects(once())
-                        ->method('getFileTime')
-                        ->willReturn($fileTime);
-
             $this->xmlFileStorage
                 ->expects(self::once())
-                ->method('getFileHandler')
-                ->willReturn($fileHandler);
+                ->method('getFileTime')
+                ->willReturn($fileTime);
 
             $this->fileCache
                 ->expects(self::once())
@@ -116,11 +110,6 @@ class ActionsTest extends UnitaryTestCase
             ->expects(once())
             ->method('load')
             ->with('actions')
-            ->willReturn($this->xmlFileStorage);
-
-        $this->xmlFileStorage
-            ->expects(once())
-            ->method('getItems')
             ->willReturn($actions);
 
         $actionsMapped = array_map(
@@ -226,15 +215,10 @@ class ActionsTest extends UnitaryTestCase
             ->with(Actions::CACHE_EXPIRE)
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-        $fileHandler->expects(once())
-                    ->method('getFileTime')
-                    ->willThrowException(new FileException('TestException'));
-
         $this->xmlFileStorage
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->method('getFileTime')
+            ->willThrowException(new FileException('TestException'));
 
         $actionsMapped = $this->checkLoadAndSave();
 
@@ -264,11 +248,6 @@ class ActionsTest extends UnitaryTestCase
             ->expects(once())
             ->method('load')
             ->with('actions')
-            ->willReturn($this->xmlFileStorage);
-
-        $this->xmlFileStorage
-            ->expects(once())
-            ->method('getItems')
             ->willReturn($actions);
 
         $actionsMapped = array_map(

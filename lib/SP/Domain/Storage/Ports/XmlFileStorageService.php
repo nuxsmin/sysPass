@@ -25,7 +25,6 @@
 namespace SP\Domain\Storage\Ports;
 
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
  * Interface XmlFileStorageService
@@ -35,7 +34,7 @@ interface XmlFileStorageService
     /**
      * @throws FileException
      */
-    public function load(string $node = ''): XmlFileStorageService;
+    public function load(string $node = 'root'): array;
 
     /**
      * @param mixed $data Data to be saved
@@ -43,16 +42,7 @@ interface XmlFileStorageService
      *
      * @throws FileException
      */
-    public function save(mixed $data, string $node = ''): XmlFileStorageService;
+    public function save(array|object $data, string $node = 'root'): XmlFileStorageService;
 
-    public function getItems(): mixed;
-
-    /**
-     * Returns the given path node value
-     *
-     * @throws FileException
-     */
-    public function getPathValue(string $path): string;
-
-    public function getFileHandler(): FileHandlerInterface;
+    public function getFileTime(): int;
 }

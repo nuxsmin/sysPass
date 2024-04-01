@@ -86,7 +86,7 @@ use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\XmlHandler;
+use SP\Infrastructure\File\XmlFileStorage;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Acl\AclHandler;
@@ -133,7 +133,7 @@ final class CoreDefinitions
                 static fn() => ContextFactory::getForModule(APP_MODULE),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
-                    create(XmlHandler::class)
+                    create(XmlFileStorage::class)
                         ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
                     create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
                     get(ContextInterface::class),
@@ -145,12 +145,12 @@ final class CoreDefinitions
             ActionsInterface::class =>
                 static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
-                    new XmlHandler(new FileHandler(ACTIONS_FILE))
+                    new XmlFileStorage(new FileHandler(ACTIONS_FILE))
                 ),
             MimeTypesService::class =>
                 static fn() => new MimeTypes(
                     new FileCache(MimeTypes::MIME_CACHE_FILE),
-                    new XmlHandler(new FileHandler(MIMETYPES_FILE))
+                    new XmlFileStorage(new FileHandler(MIMETYPES_FILE))
                 ),
             Acl::class => autowire(Acl::class)
                 ->constructorParameter('actions', get(ActionsInterface::class)),

@@ -30,8 +30,6 @@ use function SP\__;
 
 /**
  * Class FileCacheBase
- *
- * @package SP\Infrastructure\File
  */
 abstract class FileCacheBase implements FileCacheService
 {

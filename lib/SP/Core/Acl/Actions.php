@@ -77,7 +77,7 @@ class Actions implements ActionsInterface
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
-                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
+                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileTime())
             ) {
                 $this->mapAndSave();
             } else {
@@ -125,7 +125,7 @@ class Actions implements ActionsInterface
      */
     protected function load(): array
     {
-        return $this->xmlFileStorage->load('actions')->getItems();
+        return $this->xmlFileStorage->load('actions');
     }
 
     /**

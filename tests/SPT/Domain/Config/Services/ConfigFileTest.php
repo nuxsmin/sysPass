@@ -37,7 +37,6 @@ use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**
@@ -63,7 +62,7 @@ class ConfigFileTest extends UnitaryTestCase
 
         $this->fileStorageService
             ->expects(self::never())
-            ->method('getFileHandler');
+            ->method('getFileTime');
 
         $this->fileStorageService
             ->expects(self::never())
@@ -93,15 +92,12 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
         $time = time();
-        $fileHandler->method('getFileTime')->willReturn($time);
 
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->method('getFileTime')
+            ->willReturn($time);
 
         $this->fileCacheService
             ->expects(self::once())
@@ -134,15 +130,12 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
+        $time = time();
 
         $this->fileStorageService
-            ->expects(self::exactly(2))
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $time = time();
-        $fileHandler->method('getFileTime')->willReturn($time);
+            ->expects(self::once())
+            ->method('getFileTime')
+            ->willReturn($time);
 
         $this->fileCacheService
             ->expects(self::once())
@@ -160,10 +153,7 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('delete');
 
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable');
-
-        $this->ensureConfigFileIsUsed($fileHandler);
+        $this->ensureConfigFileIsUsed();
 
         new ConfigFile(
             $this->fileStorageService,
@@ -174,25 +164,16 @@ class ConfigFileTest extends UnitaryTestCase
     }
 
     /**
-     * @param FileHandlerInterface|MockObject $fileHandler
      * @return void
      */
-    private function ensureConfigFileIsUsed(FileHandlerInterface|MockObject $fileHandler): void
+    private function ensureConfigFileIsUsed(): void
     {
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable');
-
         $configData = $this->config->getConfigData();
 
         $this->fileStorageService
             ->expects(self::once())
             ->method('load')
             ->with('config')
-            ->willReturn($this->fileStorageService);
-
-        $this->fileStorageService
-            ->expects(self::once())
-            ->method('getItems')
             ->willReturn($configData->getAttributes());
 
         $this->fileCacheService
@@ -212,14 +193,7 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $this->fileStorageService
-            ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->ensureConfigFileIsUsed($fileHandler);
+        $this->ensureConfigFileIsUsed();
 
         new ConfigFile(
             $this->fileStorageService,
@@ -240,20 +214,15 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable')
-                    ->willThrowException(FileException::error('test'));
+        $this->fileStorageService
+            ->expects(self::never())
+            ->method('getFileTime');
 
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->fileStorageService
-            ->expects(self::never())
-            ->method('load');
+            ->method('load')
+            ->with('config')
+            ->willThrowException(FileException::error('test'));
 
         $this->configBackupService
             ->expects(self::never())
@@ -288,15 +257,12 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
         $time = time();
-        $fileHandler->method('getFileTime')->willReturn($time);
 
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->method('getFileTime')
+            ->willReturn($time);
 
         $this->fileCacheService
             ->expects(self::once())
@@ -332,15 +298,12 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
         $time = time();
-        $fileHandler->method('getFileTime')->willReturn($time);
 
         $this->fileStorageService
-            ->expects(self::exactly(2))
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->expects(self::exactly(1))
+            ->method('getFileTime')
+            ->willReturn($time);
 
         $this->fileCacheService
             ->expects(self::once())
@@ -352,10 +315,7 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('loadWith');
 
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable');
-
-        $this->ensureConfigFileIsUsed($fileHandler);
+        $this->ensureConfigFileIsUsed();
 
         new ConfigFile(
             $this->fileStorageService,
@@ -376,15 +336,12 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
         $time = time();
-        $fileHandler->method('getFileTime')->willReturn($time);
 
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->method('getFileTime')
+            ->willReturn($time);
 
         $this->fileCacheService
             ->expects(self::once())
@@ -426,20 +383,14 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable')
-                    ->willThrowException(FileException::error('test'));
+        $this->fileStorageService
+            ->expects(self::never())
+            ->method('getFileTime');
 
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->fileStorageService
-            ->expects(self::never())
-            ->method('load');
+            ->method('load')
+            ->willThrowException(FileException::error('test'));
 
         $configData = $this->createMock(ConfigDataInterface::class);
 
@@ -492,20 +443,10 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable')
-                    ->willThrowException(FileException::error('test'));
-
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->fileStorageService
-            ->expects(self::never())
-            ->method('load');
+            ->method('load')
+            ->willThrowException(FileException::error('test'));
 
         $configData = $this->createMock(ConfigDataInterface::class);
 
@@ -557,20 +498,10 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable')
-                    ->willThrowException(FileException::error('test'));
-
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->fileStorageService
-            ->expects(self::never())
-            ->method('load');
+            ->method('load')
+            ->willThrowException(FileException::error('test'));
 
         $configData = $this->createMock(ConfigDataInterface::class);
 
@@ -622,20 +553,10 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::once())
-                    ->method('checkIsReadable')
-                    ->willThrowException(FileException::error('test'));
-
         $this->fileStorageService
             ->expects(self::once())
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
-
-        $this->fileStorageService
-            ->expects(self::never())
-            ->method('load');
+            ->method('load')
+            ->willThrowException(FileException::error('test'));
 
         $this->configBackupService
             ->expects(self::never())
@@ -701,15 +622,9 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-
-        $fileHandler->expects(self::exactly(2))
-                    ->method('checkIsReadable');
-
         $this->fileStorageService
-            ->expects(self::exactly(2))
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->expects(self::never())
+            ->method('getFileTime');
 
         $configData = $this->config->getConfigData();
 
@@ -717,11 +632,6 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::exactly(2))
             ->method('load')
             ->with('config')
-            ->willReturn($this->fileStorageService);
-
-        $this->fileStorageService
-            ->expects(self::exactly(2))
-            ->method('getItems')
             ->willReturn($configData->getAttributes());
 
         $this->fileCacheService

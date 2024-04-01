@@ -33,7 +33,6 @@ use SP\Domain\Core\File\MimeType;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**
@@ -108,11 +107,6 @@ class MimeTypesTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('load')
             ->with('mimetypes')
-            ->willReturn($this->xmlFileStorage);
-
-        $this->xmlFileStorage
-            ->expects(self::once())
-            ->method('getItems')
             ->willReturn($mimeTypes);
 
         $this->fileCache
@@ -141,15 +135,10 @@ class MimeTypesTest extends UnitaryTestCase
             ->with(MimeTypes::CACHE_EXPIRE)
             ->willReturn(false, false);
 
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-        $fileHandler->expects(self::exactly(2))
-                    ->method('getFileTime')
-                    ->willReturn(0);
-
         $this->xmlFileStorage
             ->expects(self::exactly(2))
-            ->method('getFileHandler')
-            ->willReturn($fileHandler);
+            ->method('getFileTime')
+            ->willReturn(0);
 
         $this->fileCache
             ->expects(self::exactly(2))
