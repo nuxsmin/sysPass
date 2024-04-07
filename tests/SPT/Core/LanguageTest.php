@@ -29,8 +29,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
-use SP\Domain\User\Services\UserLoginResponse;
 use SPT\UnitaryTestCase;
 
 /**
@@ -78,9 +79,10 @@ class LanguageTest extends UnitaryTestCase
             ->method('getSiteLang')
             ->willReturn(self::$faker->locale);
 
-        $userData = $this->context->getUserData();
+        $user = (new User(['id' => self::$faker->randomNumber(2)]))
+            ->dehydrate(new UserPreferences(['lang' => $locale]));
 
-        $userData->setPreferences(new UserPreferences(['lang' => $locale]));
+        $this->context->setUserData(new UserDataDto($user));
 
         $this->language->setLanguage(true);
 
@@ -96,7 +98,8 @@ class LanguageTest extends UnitaryTestCase
         $appLocale = 'en_US';
 
         $this->context->setLocale($locale);
-        $this->context->setUserData(new UserLoginResponse());
+
+        $this->context->setUserData(new UserDataDto(new User()));
 
         $this->configData
             ->expects(self::once())
@@ -117,7 +120,8 @@ class LanguageTest extends UnitaryTestCase
         $browserLocale = 'en_US';
 
         $this->context->setLocale($locale);
-        $this->context->setUserData(new UserLoginResponse());
+
+        $this->context->setUserData(new UserDataDto(new User()));
 
         $this->configData
             ->expects(self::once())

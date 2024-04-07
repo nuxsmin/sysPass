@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Providers\Auth\Browser;
 
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Providers\Auth\AuthInterface;
@@ -50,10 +50,10 @@ final class BrowserAuth implements BrowserAuthInterface
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData
+     * @param UserLoginDto $userLoginData
      * @return BrowserAuthData
      */
-    public function authenticate(UserLoginData $userLoginData): BrowserAuthData
+    public function authenticate(UserLoginDto $userLoginData): BrowserAuthData
     {
         $browserAuthData = new BrowserAuthData($this->isAuthGranted());
 

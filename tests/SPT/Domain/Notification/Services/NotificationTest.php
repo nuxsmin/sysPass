@@ -34,9 +34,11 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Services\Notification;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\NotificationDataGenerator;
+use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 
 /**
@@ -84,15 +86,24 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchWithAdmin()
     {
-        $userData = $this->context->getUserData()->setIsAdminApp(true);
-        $this->context->setUserData($userData);
+        $userDataDto = new UserDataDto(
+            UserDataGenerator::factory()
+                             ->buildUserData()
+                             ->mutate(
+                                 [
+                                     'isAdminApp' => true,
+                                 ]
+                             )
+        );
+
+        $this->context->setUserData($userDataDto);
 
         $itemSearchData = new ItemSearchData();
 
         $this->notificationRepository
             ->expects($this->once())
             ->method('searchForAdmin')
-            ->with($itemSearchData, $userData->getId());
+            ->with($itemSearchData, $userDataDto->getId());
 
         $this->notification->search($itemSearchData);
     }
@@ -151,8 +162,16 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testGetAllActiveForCurrentUserWithAdmin()
     {
-        $userData = $this->context->getUserData()->setIsAdminApp(true);
-        $this->context->setUserData($userData);
+        $userDataDto = new UserDataDto(
+            UserDataGenerator::factory()
+                             ->buildUserData()
+                             ->mutate(
+                                 [
+                                     'isAdminApp' => true,
+                                 ]
+                             )
+        );
+        $this->context->setUserData($userDataDto);
 
         $queryResult = $this->createMock(QueryResult::class);
         $queryResult->expects($this->once())
@@ -163,7 +182,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notificationRepository
             ->expects($this->once())
             ->method('getAllActiveForAdmin')
-            ->with($userData->getId())
+            ->with($userDataDto->getId())
             ->willReturn($queryResult);
 
         $out = $this->notification->getAllActiveForCurrentUser();

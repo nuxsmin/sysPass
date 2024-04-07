@@ -28,9 +28,9 @@ use Exception;
 use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserLoginResponse;
 use SP\Domain\User\Services\UserService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
@@ -87,11 +87,11 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      *
      * @return UserPreferences
      */
-    private function getUserPreferencesData(UserLoginResponse $userData): UserPreferences
+    private function getUserPreferencesData(UserDataDto $userData): UserPreferences
     {
         $userPreferencesData = clone $userData->getPreferences();
 

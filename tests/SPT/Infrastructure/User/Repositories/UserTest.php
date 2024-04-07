@@ -38,6 +38,7 @@ use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -599,10 +600,17 @@ class UserTest extends UnitaryTestCase
      */
     public function testSearchWithAdmin()
     {
-        $userData = $this->context->getUserData();
-        $userData->setIsAdminApp(true);
-
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => true,
+                                     ]
+                                 )
+            )
+        );
 
         $item = new ItemSearchData(self::$faker->name);
 
@@ -673,11 +681,12 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 4
+                return count($params) === 5
                        && $params['id'] === $user->getId()
                        && $params['pass'] === $user->getPass()
                        && $params['isChangePass'] === $user->isChangePass()
                        && $params['isChangedPass'] === $user->isChangedPass()
+                       && $params['isMigrate'] === $user->isMigrate()
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
             }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,37 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\User\Services;
+namespace SP\Domain\User\Dtos;
+
+use SP\Domain\User\Services\UserMasterPassStatus;
 
 /**
- * Class UserPassResponse
- *
- * @package SP\DataModel\Dto
+ * Class UserMasterPassDto
  */
-final class UserPassResponse
+final readonly class UserMasterPassDto
 {
-    private int     $status;
-    private ?string $cryptMasterPass = null;
-    private ?string $cryptSecuredKey = null;
-    private ?string $clearMasterPass;
-
     /**
      * UserPassResponse constructor.
      */
-    public function __construct(int $status, ?string $clearUserMPass = null)
-    {
-        $this->status = $status;
-        $this->clearMasterPass = $clearUserMPass;
+    public function __construct(
+        private UserMasterPassStatus $userMasterPassStatus,
+        private ?string              $clearMasterPass = null,
+        private ?string              $cryptMasterPass = null,
+        private ?string              $cryptSecuredKey = null
+    ) {
     }
 
-    public function getStatus(): int
+    public function getUserMasterPassStatus(): UserMasterPassStatus
     {
-        return $this->status;
-    }
-
-    public function setStatus(int $status): void
-    {
-        $this->status = $status;
+        return $this->userMasterPassStatus;
     }
 
     public function getCryptMasterPass(): ?string
@@ -60,19 +52,9 @@ final class UserPassResponse
         return $this->cryptMasterPass;
     }
 
-    public function setCryptMasterPass(string $cryptMasterPass): void
-    {
-        $this->cryptMasterPass = $cryptMasterPass;
-    }
-
     public function getCryptSecuredKey(): ?string
     {
         return $this->cryptSecuredKey;
-    }
-
-    public function setCryptSecuredKey(string $cryptSecuredKey): void
-    {
-        $this->cryptSecuredKey = $cryptSecuredKey;
     }
 
     public function getClearMasterPass(): ?string

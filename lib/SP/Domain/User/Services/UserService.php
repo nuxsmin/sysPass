@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
-use SP\Domain\User\Ports\UserPassServiceInterface;
+use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -53,45 +53,18 @@ final class UserService extends Service implements UserServiceInterface
 {
     use ServiceItemTrait;
 
-    private UserRepository           $userRepository;
-    private UserPassServiceInterface $userPassService;
+    private UserRepository        $userRepository;
+    private UserMasterPassService $userPassService;
 
     public function __construct(
-        Application    $application,
-        UserRepository $userRepository,
-        UserPassServiceInterface $userPassService
+        Application           $application,
+        UserRepository        $userRepository,
+        UserMasterPassService $userPassService
     ) {
         parent::__construct($application);
 
         $this->userRepository = $userRepository;
         $this->userPassService = $userPassService;
-    }
-
-    public static function mapUserLoginResponse(
-        UserModel $user
-    ): UserLoginResponse {
-        // TODO: create static method UserLoginResponse::from($user)
-        return (new UserLoginResponse())->setId($user->getId())
-                                        ->setName($user->getName())
-                                        ->setLogin($user->getLogin())
-                                        ->setSsoLogin($user->getSsoLogin())
-                                        ->setEmail($user->getEmail())
-                                        ->setPass($user->getPass())
-                                        ->setHashSalt($user->getHashSalt())
-                                        ->setMPass($user->getMPass())
-                                        ->setMKey($user->getMKey())
-                                        ->setLastUpdateMPass($user->getLastUpdateMPass())
-                                        ->setUserGroupId($user->getUserGroupId())
-                                        ->setUserProfileId($user->getUserProfileId())
-                                        ->setPreferences(self::getUserPreferences($user->getPreferences()))
-                                        ->setIsLdap($user->isLdap())
-                                        ->setIsAdminAcc($user->isAdminAcc())
-                                        ->setIsAdminApp($user->isAdminApp())
-                                        ->setIsMigrate($user->isMigrate())
-                                        ->setIsChangedPass($user->isChangedPass())
-                                        ->setIsChangePass($user->isChangePass())
-                                        ->setIsDisabled($user->isDisabled())
-                                        ->setLastUpdate((int)strtotime($user->getLastUpdate()));
     }
 
     /**
@@ -251,7 +224,7 @@ final class UserService extends Service implements UserServiceInterface
      */
     public function createWithMasterPass(UserModel $itemData, string $userPass, string $masterPass): int
     {
-        $response = $this->userPassService->createMasterPass(
+        $response = $this->userPassService->create(
             $masterPass,
             $itemData->getLogin(),
             $userPass

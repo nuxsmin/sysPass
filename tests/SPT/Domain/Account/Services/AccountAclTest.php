@@ -27,6 +27,7 @@ namespace SPT\Domain\Account\Services;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Acl;
 use SP\DataModel\Item;
 use SP\Domain\Account\Adapters\AccountPermission;
@@ -38,8 +39,11 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
 use SP\Infrastructure\File\FileException;
+use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 
 /**
@@ -62,8 +66,9 @@ class AccountAclTest extends UnitaryTestCase
         AclActionsInterface::ACCOUNT_COPY_PASS,
         AclActionsInterface::ACCOUNT_DELETE,
     ];
-    private static array $accounts;
-    private AccountAcl   $accountAcl;
+    private static array                               $accounts;
+    private Acl                                        $acl;
+    private UserToUserGroupServiceInterface|MockObject $userToUserGroupService;
 
     public static function setUpBeforeClass(): void
     {
@@ -192,8 +197,7 @@ class AccountAclTest extends UnitaryTestCase
                 self::$faker->numberBetween(1, 4),
                 self::$faker->randomNumber(),
                 self::$faker->randomNumber(),
-                1,
-                0
+                true
             ),
             $this->getExampleAclForAdmin()
         );
@@ -210,10 +214,16 @@ class AccountAclTest extends UnitaryTestCase
         AccountAclDto     $accountAclDto,
         AccountPermission $example
     ): void {
+        $accountAcl = new AccountAcl(
+            $this->application,
+            $this->acl,
+            $this->userToUserGroupService
+        );
+
         foreach (self::ACTIONS as $action) {
             $example->setActionId($action);
 
-            $aclUnderTest = $this->accountAcl->getAcl($action, $accountAclDto);
+            $aclUnderTest = $accountAcl->getAcl($action, $accountAclDto);
 
             $this->assertTrue($aclUnderTest->isCompiledAccountAccess());
             $this->assertTrue($aclUnderTest->isCompiledShowAccess());
@@ -321,12 +331,18 @@ class AccountAclTest extends UnitaryTestCase
         bool $isAdminApp = false,
         bool $isAdminAcc = false
     ): AccountAclDto {
-        $this->context
-            ->getUserData()
-            ->setId($userId)
-            ->setUserGroupId($groupId)
-            ->setIsAdminApp($isAdminApp)
-            ->setIsAdminAcc($isAdminAcc);
+        $this->context->setUserData(
+            new UserDataDto(
+                new User(
+                    [
+                        'id' => $userId,
+                        'userGroupId' => $groupId,
+                        'isAdminApp' => $isAdminApp,
+                        'isAdminAcc' => $isAdminAcc
+                    ]
+                )
+            )
+        );
 
         return new AccountAclDto(
             $accountId,
@@ -481,7 +497,6 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
-
     public function testEditPass(
         int $accountId,
         int $userId,
@@ -674,14 +689,18 @@ class AccountAclTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['lastUpdate' => $dto->getDateEdit() + 10])
+            )
+        );
+
         $accountAclService = new AccountAcl(
             $this->application,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $fileCache
         );
-
-        $this->context->getUserData()->setLastUpdate($dto->getDateEdit() + 10);
 
         $acl = new AccountPermission(self::$faker->randomNumber());
         $acl->setTime($dto->getDateEdit() + 10);
@@ -824,20 +843,14 @@ class AccountAclTest extends UnitaryTestCase
 
         $actions = $this->createMock(ActionsInterface::class);
 
-        $acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
-        $userToUserGroupService->method('getGroupsForUser')
-                               ->willReturnMap([
-                                                   [1, [new Simple(['userGroupId' => 2])]],
-                                                   [2, [new Simple(['userGroupId' => 1])]],
-                                                   [3, [new Simple(['userGroupId' => 2])]],
-                                                   [4, []],
-                                               ]);
-
-        $this->accountAcl = new AccountAcl(
-            $this->application,
-            $acl,
-            $userToUserGroupService
-        );
+        $this->acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
+        $this->userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $this->userToUserGroupService->method('getGroupsForUser')
+                                     ->willReturnMap([
+                                                         [1, [new Simple(['userGroupId' => 2])]],
+                                                         [2, [new Simple(['userGroupId' => 1])]],
+                                                         [3, [new Simple(['userGroupId' => 2])]],
+                                                         [4, []],
+                                                     ]);
     }
 }

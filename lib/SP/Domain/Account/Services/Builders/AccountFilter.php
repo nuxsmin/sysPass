@@ -31,7 +31,7 @@ use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\ContextInterface;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
  * Class AccountFilterUser
@@ -91,14 +91,14 @@ final class AccountFilter implements AccountFilterBuilder
     }
 
     /**
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param bool $useGlobalSearch
      * @param ProfileData|null $userProfile
      *
      * @return bool
      */
     private function isFilterWithoutGlobalSearch(
-        UserLoginResponse $userData,
+        UserDataDto $userData,
         bool         $useGlobalSearch,
         ?ProfileData $userProfile
     ): bool {

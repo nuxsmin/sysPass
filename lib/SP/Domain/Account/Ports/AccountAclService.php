@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
  * Class AccountAclService
@@ -41,12 +41,12 @@ interface AccountAclService
     /**
      * Sets grants which don't need the account's data
      *
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param ProfileData $profileData
      *
      * @return bool
      */
-    public static function getShowPermission(UserLoginResponse $userData, ProfileData $profileData): bool;
+    public static function getShowPermission(UserDataDto $userData, ProfileData $profileData): bool;
 
     /**
      * Obtener la ACL de una cuenta

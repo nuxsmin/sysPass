@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SPT\Providers\Auth\Browser;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Providers\Auth\Browser\BrowserAuth;
@@ -83,7 +83,7 @@ class BrowserAuthTest extends UnitaryTestCase
         $user = self::$faker->userName;
         $pass = self::$faker->password;
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -125,7 +125,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->with(...$this->withConsecutive(['PHP_AUTH_USER'], ['PHP_AUTH_PW']))
             ->willReturn($user, $pass);
 
-        $out = $this->browserAuth->authenticate(new UserLoginData());
+        $out = $this->browserAuth->authenticate(new UserLoginDto());
 
         self::assertInstanceOf(BrowserAuthData::class, $out);
         self::assertTrue($out->isOk());
@@ -146,7 +146,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->with(...$this->withConsecutive(['PHP_AUTH_USER'], ['REMOTE_USER'], ['PHP_AUTH_PW']))
             ->willReturn('', '', '', $pass);
 
-        $out = $this->browserAuth->authenticate(new UserLoginData());
+        $out = $this->browserAuth->authenticate(new UserLoginDto());
 
         self::assertInstanceOf(BrowserAuthData::class, $out);
         self::assertFalse($out->isOk());
@@ -167,7 +167,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->with(...$this->withConsecutive(['PHP_AUTH_USER'], ['PHP_AUTH_PW']))
             ->willReturn($user, '');
 
-        $out = $this->browserAuth->authenticate(new UserLoginData());
+        $out = $this->browserAuth->authenticate(new UserLoginDto());
 
         self::assertInstanceOf(BrowserAuthData::class, $out);
         self::assertFalse($out->isOk());
@@ -188,7 +188,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->with('PHP_AUTH_USER')
             ->willReturn($user);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
 
         $out = $this->browserAuth->authenticate($userLoginData);
@@ -212,7 +212,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->with('PHP_AUTH_USER')
             ->willReturn($user);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
 
         $out = $this->browserAuth->authenticate($userLoginData);

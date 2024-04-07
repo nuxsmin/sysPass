@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,6 +31,8 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Services\Builders\AccountFilter;
+use SP\Domain\User\Dtos\UserDataDto;
+use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 
 /**
@@ -149,7 +151,11 @@ class AccountFilterUserTest extends UnitaryTestCase
 
     public function testBuildFilterWithGlobalSearchForAdminAcc()
     {
-        $this->context->getUserData()->setIsAdminAcc(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true])
+            )
+        );
 
         $this->setExpectationForGlobalSearch('Account');
 
@@ -183,7 +189,11 @@ class AccountFilterUserTest extends UnitaryTestCase
 
     public function testBuildFilterWithGlobalSearchForAdminApp()
     {
-        $this->context->getUserData()->setIsAdminApp(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+            )
+        );
 
         $this->setExpectationForGlobalSearch('Account');
 
@@ -209,7 +219,11 @@ class AccountFilterUserTest extends UnitaryTestCase
 
     public function testBuildFilterHistoryWithGlobalSearchForAdminAcc()
     {
-        $this->context->getUserData()->setIsAdminAcc(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true])
+            )
+        );
 
         $this->setExpectationForGlobalSearch('AccountHistory');
 
@@ -218,7 +232,11 @@ class AccountFilterUserTest extends UnitaryTestCase
 
     public function testBuildFilterHistoryWithGlobalSearchForAdminApp()
     {
-        $this->context->getUserData()->setIsAdminApp(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+            )
+        );
 
         $this->setExpectationForGlobalSearch('AccountHistory');
 

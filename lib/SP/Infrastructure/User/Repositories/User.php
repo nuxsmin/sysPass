@@ -130,10 +130,9 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols($user->toArray(['pass', 'isChangePass', 'isChangedPass']))
+            ->cols($user->toArray(['pass', 'isChangePass', 'isChangedPass', 'isMigrate']))
             ->set('lastUpdate', 'NOW()')
             ->set('hashSalt', '')
-            ->set('isMigrate', 0)
             ->where('id = :id', ['id' => $user->getId()])
             ->limit(1);
 

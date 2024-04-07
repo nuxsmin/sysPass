@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 
 use function SP\__u;
 use function SP\getLastCaller;
@@ -145,9 +145,9 @@ class SessionContext extends ContextBase implements SessionContextInterface
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserLoginResponse $userLoginResponse = null): void
+    public function setUserData(?UserDataDto $userDataDto = null): void
     {
-        $this->setContextKey('userData', $userLoginResponse);
+        $this->setContextKey('userData', $userDataDto);
     }
 
     /**
@@ -193,9 +193,9 @@ class SessionContext extends ContextBase implements SessionContextInterface
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserLoginResponse
+    public function getUserData(): UserDataDto
     {
-        return $this->getContextKey('userData', new UserLoginResponse());
+        return $this->getContextKey('userData', new UserDataDto());
     }
 
     /**

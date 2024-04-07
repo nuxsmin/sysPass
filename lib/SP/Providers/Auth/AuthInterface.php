@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 namespace SP\Providers\Auth;
 
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 
 /**
  * Interface AuthInterface
@@ -37,10 +37,10 @@ interface AuthInterface
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData
+     * @param UserLoginDto $userLoginData
      * @return T
      */
-    public function authenticate(UserLoginData $userLoginData): AuthDataBase;
+    public function authenticate(UserLoginDto $userLoginData): AuthDataBase;
 
     /**
      * Indica si es requerida para acceder a la aplicación

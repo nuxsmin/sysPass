@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SPT\Providers\Auth;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Providers\Auth\AuthInterface;
 use SP\Providers\Auth\AuthProvider;
@@ -66,7 +66,7 @@ class AuthProviderTest extends UnitaryTestCase
      */
     public function testDoAuth()
     {
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 

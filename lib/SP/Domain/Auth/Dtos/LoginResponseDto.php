@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,24 +22,37 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Database;
-
-
-use SP\Providers\Auth\AuthInterface;
+namespace SP\Domain\Auth\Dtos;
 
 /**
- * Class Database
+ * Class LoginResponse
  *
- * Autentificación basada en base de datos
- *
- * @extends AuthInterface<DatabaseAuthData>
+ * @package SP\Domain\Auth\Services
  */
-interface DatabaseAuthInterface extends AuthInterface
+final class LoginResponseDto
 {
+    private int     $status;
+    private ?string $redirect;
+
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * LoginResponse constructor.
      *
-     * @return bool
+     * @param  int  $status
+     * @param  string|null  $redirect
      */
-    public function isAuthGranted(): bool;
+    public function __construct(int $status, ?string $redirect = null)
+    {
+        $this->status = $status;
+        $this->redirect = $redirect;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    public function getRedirect(): ?string
+    {
+        return $this->redirect;
+    }
 }

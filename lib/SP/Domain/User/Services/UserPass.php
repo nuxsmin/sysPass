@@ -24,19 +24,48 @@
 
 namespace SP\Domain\User\Services;
 
+use SP\Core\Application;
+use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+
+use function SP\__u;
 
 /**
  * Class UserPass
  */
-interface UserPassService
+final class UserPass extends Service implements UserPassService
 {
+    public function __construct(
+        Application                     $application,
+        private readonly UserRepository $userRepository
+    ) {
+        parent::__construct($application);
+    }
+
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function migrateUserPassById(int $id, string $userPass): void;
+    public function migrateUserPassById(int $id, string $userPass): void
+    {
+        $user = new User(
+            [
+                'id' => $id,
+                'pass' => Hash::hashKey($userPass),
+                'isChangePass' => 0,
+                'isChangedPass' => 1,
+                'isMigrate' => 0
+            ]
+        );
+
+        if ($this->userRepository->updatePassById($user) === 0) {
+            throw NoSuchItemException::info(__u('User does not exist'));
+        }
+    }
 }

@@ -32,7 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\DataModel\ProfileData;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\Database\MysqlHandler;
@@ -127,7 +127,7 @@ function setupContext(): Container
 
     $context->setTrasientKey('_masterpass', '12345678900');
 
-    $userData = new UserLoginResponse();
+    $userData = new UserDataDto();
     $userData->setId(1);
     $userData->setLogin('Admin');
     $userData->setUserGroupName('Admins');

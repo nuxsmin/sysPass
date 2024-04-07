@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,9 +27,9 @@ namespace SPT\Providers\Auth\Database;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\UserLoginData;
-use SP\Domain\User\Ports\UserPassServiceInterface;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Services\UserPassService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Providers\Auth\Database\DatabaseAuth;
 use SPT\Generators\UserDataGenerator;
@@ -43,9 +43,9 @@ use SPT\UnitaryTestCase;
 class DatabaseAuthTest extends UnitaryTestCase
 {
 
-    private UserServiceInterface|MockObject     $userService;
-    private MockObject|UserPassServiceInterface $userPassService;
-    private DatabaseAuth                        $databaseAuth;
+    private UserServiceInterface|MockObject $userService;
+    private MockObject|UserPassService      $userPassService;
+    private DatabaseAuth                    $databaseAuth;
 
     public function testAuthenticate()
     {
@@ -61,7 +61,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->with($user)
             ->willReturn($userData);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -79,7 +79,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->with($user)
             ->willThrowException(new NoSuchItemException('User does not exist'));
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -99,7 +99,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->with($user)
             ->willReturn($userData);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -132,7 +132,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->method('migrateUserPassById')
             ->with($userData->getId(), $pass);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -167,7 +167,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->method('migrateUserPassById')
             ->with($userData->getId(), $pass);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -202,7 +202,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->method('migrateUserPassById')
             ->with($userData->getId(), $pass);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -236,7 +236,7 @@ class DatabaseAuthTest extends UnitaryTestCase
             ->method('migrateUserPassById')
             ->with($userData->getId(), $pass);
 
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
         $userLoginData->setLoginPass($pass);
 
@@ -253,7 +253,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         parent::setUp();
 
         $this->userService = $this->createMock(UserServiceInterface::class);
-        $this->userPassService = $this->createMock(UserPassServiceInterface::class);
+        $this->userPassService = $this->createMock(UserPassService::class);
 
         $this->databaseAuth = new DatabaseAuth($this->userService, $this->userPassService);
     }

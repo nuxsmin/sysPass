@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Providers\Auth;
 
 use SP\Core\Application;
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Providers\Provider;
@@ -87,11 +87,11 @@ class AuthProvider extends Provider implements AuthProviderInterface
     /**
      * Probar los métodos de autentificación
      *
-     * @param UserLoginData $userLoginData
+     * @param UserLoginDto $userLoginData
      *
      * @return false|AuthResult[]
      */
-    public function doAuth(UserLoginData $userLoginData): array|bool
+    public function doAuth(UserLoginDto $userLoginData): array|bool
     {
         $authsResult = [];
 

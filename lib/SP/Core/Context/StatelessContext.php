@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,7 +25,7 @@
 namespace SP\Core\Context;
 
 use SP\DataModel\ProfileData;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 
 use function SP\processException;
 
@@ -39,9 +39,9 @@ class StatelessContext extends ContextBase
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserLoginResponse $userLoginResponse = null): void
+    public function setUserData(?UserDataDto $userDataDto = null): void
     {
-        $this->setContextKey('userData', $userLoginResponse);
+        $this->setContextKey('userData', $userDataDto);
     }
 
     /**
@@ -99,9 +99,9 @@ class StatelessContext extends ContextBase
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserLoginResponse
+    public function getUserData(): UserDataDto
     {
-        return $this->getContextKey('userData', new UserLoginResponse());
+        return $this->getContextKey('userData', new UserDataDto());
     }
 
     /**

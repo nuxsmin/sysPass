@@ -26,7 +26,7 @@ namespace SP\Domain\Auth\Ports;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Domain\Auth\Dtos\LoginResponse;
+use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,7 +42,7 @@ interface LoginService
     /**
      * Ejecutar las acciones de login
      *
-     * @return LoginResponse
+     * @return LoginResponseDto
      * @throws AuthException
      * @throws SPException
      * @throws EnvironmentIsBrokenException
@@ -54,7 +54,7 @@ interface LoginService
      * @uses Login::authLdap()
      *
      */
-    public function doLogin(): LoginResponse;
+    public function doLogin(): LoginResponseDto;
 
     /**
      * @param string|null $from

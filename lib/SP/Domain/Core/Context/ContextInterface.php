@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,7 +27,8 @@ namespace SP\Domain\Core\Context;
 use SP\Core\Context\ContextException;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Services\UserData;
 
 /**
  * Class ContextInterface
@@ -58,7 +59,7 @@ interface ContextInterface
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserLoginResponse $userLoginResponse = null);
+    public function setUserData(?UserDataDto $userDataDto = null);
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
@@ -78,7 +79,7 @@ interface ContextInterface
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserLoginResponse;
+    public function getUserData(): UserDataDto;
 
     /**
      * Establecer el lenguaje de la sesión

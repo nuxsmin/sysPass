@@ -46,9 +46,9 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserProfileServiceInterface;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Util\Filter;
@@ -216,7 +216,7 @@ final class Api extends Service implements ApiService
      */
     private function setupUser(): void
     {
-        $userLoginResponse = UserService::mapUserLoginResponse(
+        $userLoginResponse = new UserDataDto(
             $this->userService->getById($this->authToken->getUserId())
         );
         $userLoginResponse->getIsDisabled() && $this->accessDenied();

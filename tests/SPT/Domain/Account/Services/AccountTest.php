@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
@@ -51,10 +52,12 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\AccountDataGenerator;
 use SPT\Generators\ItemSearchDataGenerator;
+use SPT\Generators\UserDataGenerator;
 use SPT\Stubs\AccountRepositoryStub;
 use SPT\UnitaryTestCase;
 
@@ -86,7 +89,11 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
-        $this->context->getUserData()->setIsAdminApp(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+            )
+        );
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -115,7 +122,11 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
-        $this->context->getUserData()->setIsAdminApp(false);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false])
+            )
+        );
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -144,8 +155,14 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
-        $this->context->getUserData()->setIsAdminApp(false);
-        $this->context->getUserData()->setIsAdminAcc(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(['isAdminApp' => false, 'isAdminAcc' => true])
+            )
+        );
+
         $this->context->getUserProfile()->setAccPermission(false);
 
         $this->configService->expects(self::once())->method('getByParam')
@@ -175,8 +192,14 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
-        $this->context->getUserData()->setIsAdminApp(false);
-        $this->context->getUserData()->setIsAdminAcc(false);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+            )
+        );
+
         $this->context->getUserProfile()->setAccPermission(true);
 
         $this->configService->expects(self::once())->method('getByParam')
@@ -216,10 +239,20 @@ class AccountTest extends UnitaryTestCase
                                          'data' => serialize(new AccountPrivate(true, true)),
                                      ]);
 
-        $userData = $this->context->getUserData();
-        $userData->setIsAdminApp(true);
-        $userData->setId($accountUpdateDto->getUserId());
-        $userData->setUserGroupId($accountUpdateDto->getUserGroupId());
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'id' => $accountUpdateDto->getUserId(),
+                                         'userGroupId' => $accountUpdateDto->getUserGroupId(),
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -283,10 +316,20 @@ class AccountTest extends UnitaryTestCase
                                          'data' => serialize(new AccountPrivate(true, true)),
                                      ]);
 
-        $userData = $this->context->getUserData();
-        $userData->setIsAdminApp(true);
-        $userData->setId($accountUpdateDto->getUserId());
-        $userData->setUserGroupId($accountUpdateDto->getUserGroupId());
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'id' => $accountUpdateDto->getUserId(),
+                                         'userGroupId' => $accountUpdateDto->getUserGroupId(),
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -513,7 +556,18 @@ class AccountTest extends UnitaryTestCase
         $accountsId = range(0, 4);
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
-        $this->context->getUserData()->setIsAdminApp(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $consecutive = array_merge($accountsId, $accountsId);
         sort($consecutive);
@@ -545,7 +599,18 @@ class AccountTest extends UnitaryTestCase
         $accountsId = range(0, 4);
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
-        $this->context->getUserData()->setIsAdminApp(false);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => false,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
@@ -574,9 +639,20 @@ class AccountTest extends UnitaryTestCase
         $accountsId = range(0, 4);
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
-        $this->context->getUserData()->setIsAdminApp(false);
-        $this->context->getUserData()->setIsAdminAcc(true);
-        $this->context->getUserProfile()->setAccPermission(false);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
+
+        $this->context->setUserProfile(new ProfileData(['accPermission' => false]));
 
         $consecutive = array_merge($accountsId, $accountsId);
         sort($consecutive);
@@ -608,9 +684,20 @@ class AccountTest extends UnitaryTestCase
         $accountsId = range(0, 4);
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
-        $this->context->getUserData()->setIsAdminApp(false);
-        $this->context->getUserData()->setIsAdminAcc(false);
-        $this->context->getUserProfile()->setAccPermission(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => false,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
+
+        $this->context->setUserProfile(new ProfileData(['accPermission' => true]));
 
         $consecutive = array_merge($accountsId, $accountsId);
         sort($consecutive);
@@ -623,8 +710,10 @@ class AccountTest extends UnitaryTestCase
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
                                   ->with(
                                       ...self::withConsecutive(
-                                      ...array_map(fn($v) => [$v, true, $accounts[$v]],
-                                             $accountsId)
+                                      ...array_map(
+                                             fn($v) => [$v, true, $accounts[$v]],
+                                             $accountsId
+                                         )
                                   )
                                   );
 
@@ -668,8 +757,6 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)->willReturn(new QueryResult([$account]));
         $this->accountHistoryService->expects(self::once())->method('create')
                                     ->with($accountHistoryCreateDto);
-
-        $queryResult = new QueryResult();
 
         $this->accountRepository->expects(self::once())->method('delete')
             ->with($id)
@@ -980,7 +1067,18 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
 
-        $this->context->getUserData()->setIsAdminApp(true);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
@@ -1012,10 +1110,24 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $userData = $this->context->getUserData();
-        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()->withUserId($userData->getId())
+        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()
+                                                 ->withUserId($userData->getId())
                                                  ->withUserGroupId($userData->getUserGroupId());
 
-        $userData->setIsAdminApp(false);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'id' => $userData->getId(),
+                                         'userGroupId' => $userData->getUserGroupId(),
+                                         'isAdminApp' => false,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
@@ -1058,9 +1170,21 @@ class AccountTest extends UnitaryTestCase
                                          'data' => serialize(new AccountPrivate(true, true)),
                                      ]);
 
-        $userData = $this->context->getUserData();
-        $userData->setIsAdminApp(true);
-        $userData->setId($accountCreateDto->getUserId());
+
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'id' => $accountCreateDto->getUserId(),
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
+
 
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
@@ -1113,9 +1237,19 @@ class AccountTest extends UnitaryTestCase
                                          'data' => serialize(new AccountPrivate(true, true)),
                                      ]);
 
-        $userData = $this->context->getUserData();
-        $userData->setIsAdminApp(true);
-        $userData->setUserGroupId($accountCreateDto->getUserGroupId());
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'userGroupId' => $accountCreateDto->getUserGroupId(),
+                                         'isAdminApp' => true,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
+            )
+        );
 
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 

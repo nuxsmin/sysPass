@@ -35,7 +35,8 @@ use SP\DataModel\ProfileData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\ContextInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\User;
 use SPT\Generators\ConfigDataGenerator;
 
 /**
@@ -95,23 +96,33 @@ abstract class UnitaryTestCase extends TestCase
      */
     private function mockApplication(): Application
     {
-        $userLogin = new UserLoginResponse();
-        $userLogin
-            ->setLogin(self::$faker->userName)
-            ->setName(self::$faker->userName)
-            ->setId(self::$faker->randomNumber(2))
-            ->setUserGroupId(self::$faker->randomNumber(2))
-            ->setUserProfileId(self::$faker->randomNumber(2));
-
         $this->context = new StatelessContext();
         $this->context->initialize();
-        $this->context->setUserData($userLogin);
+        $this->context->setUserData($this->getUserDataDto());
         $this->context->setUserProfile(new ProfileData());
 
         return new Application(
             $this->getConfig(),
             $this->createStub(EventDispatcherInterface::class),
             $this->context
+        );
+    }
+
+    /**
+     * @return UserDataDto
+     */
+    private function getUserDataDto(): UserDataDto
+    {
+        return new UserDataDto(
+            new User(
+                [
+                    'login' => self::$faker->userName,
+                    'name' => self::$faker->userName,
+                    'id' => self::$faker->randomNumber(2),
+                    'userGroupId' => self::$faker->randomNumber(2),
+                    'userProfileId' => self::$faker->randomNumber(2)
+                ]
+            )
         );
     }
 

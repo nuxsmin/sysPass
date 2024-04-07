@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Crypt\Ports;
 
-use Defuse\Crypto\Exception\CryptoException;
 use PHPMailer\PHPMailer\Exception;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -82,7 +82,7 @@ interface TemporaryMasterPassService
      * @return string con la clave maestra desencriptada
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws CryptoException
+     * @throws CryptException
      */
     public function getUsingKey(string $key): string;
 }

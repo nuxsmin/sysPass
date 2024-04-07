@@ -22,37 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Dtos;
+namespace SP\Providers\Auth\Database;
+
+use SP\Providers\Auth\AuthInterface;
 
 /**
- * Class LoginResponse
+ * Class Database
  *
- * @package SP\Domain\Auth\Services
+ * Autentificación basada en base de datos
+ *
+ * @extends AuthInterface<DatabaseAuthData>
  */
-final class LoginResponse
+interface DatabaseAuthService extends AuthInterface
 {
-    private int     $status;
-    private ?string $redirect;
-
     /**
-     * LoginResponse constructor.
+     * Indica si es requerida para acceder a la aplicación
      *
-     * @param  int  $status
-     * @param  string|null  $redirect
+     * @return bool
      */
-    public function __construct(int $status, ?string $redirect = null)
-    {
-        $this->status = $status;
-        $this->redirect = $redirect;
-    }
-
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    public function getRedirect(): ?string
-    {
-        return $this->redirect;
-    }
+    public function isAuthGranted(): bool;
 }

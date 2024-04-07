@@ -37,6 +37,6 @@ final class ConfigDataGenerator extends DataGenerator
     {
         return new ConfigData([
                                   ConfigDataInterface::PASSWORD_SALT => $this->faker->sha1(),
-        ]);
+                              ]);
     }
 }

@@ -30,6 +30,7 @@ use Defuse\Crypto\KeyProtectedByPassword;
 use DOMDocument;
 use DOMElement;
 use DOMException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -46,10 +47,11 @@ use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
+use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlExportTest
@@ -78,10 +80,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExport()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -216,10 +226,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithCheckDirectoryException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -240,10 +258,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithExportCategoryException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -274,10 +300,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithExportClientException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -315,10 +349,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithExportTagException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -361,10 +403,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithExportAccountException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())
@@ -411,10 +461,18 @@ class XmlExportTest extends UnitaryTestCase
      */
     public function testExportWithCryptException()
     {
-        $userData = $this->context->getUserData();
-        $userData->setLogin('test_user');
-        $userData->setUserGroupName('test_group');
-        $this->context->setUserData($userData);
+        $this->context->setUserData(
+            new UserDataDto(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroup.name' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
 
         $exportPath = $this->createMock(DirectoryHandlerService::class);
         $exportPath->expects(self::once())

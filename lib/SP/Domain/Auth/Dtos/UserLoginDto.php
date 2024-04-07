@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,20 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Auth\Dtos;
 
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
- * Class UserLoginData
- *
- * @package SP\DataModel
+ * Class UserLoginDto
  */
-class UserLoginData
+class UserLoginDto
 {
-    protected ?string            $loginUser         = null;
-    protected ?string            $loginPass         = null;
-    protected ?UserLoginResponse $userLoginResponse = null;
+    protected ?string      $loginUser   = null;
+    protected ?string      $loginPass   = null;
+    protected ?UserDataDto $userDataDto = null;
+
+    /**
+     * @param string|null $loginUser
+     * @param string|null $loginPass
+     * @param UserDataDto|null $userDataDto
+     */
+    public function __construct(?string $loginUser = null, ?string $loginPass = null, ?UserDataDto $userDataDto = null)
+    {
+        $this->loginUser = $loginUser;
+        $this->loginPass = $loginPass;
+        $this->userDataDto = $userDataDto;
+    }
 
     public function getLoginUser(): ?string
     {
@@ -57,13 +67,13 @@ class UserLoginData
         $this->loginPass = $loginPass;
     }
 
-    public function getUserLoginResponse(): ?UserLoginResponse
+    public function getUserDataDto(): ?UserDataDto
     {
-        return $this->userLoginResponse;
+        return $this->userDataDto;
     }
 
-    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null): void
+    public function setUserDataDto(UserDataDto $userDataDto = null): void
     {
-        $this->userLoginResponse = $userLoginResponse;
+        $this->userDataDto = $userDataDto;
     }
 }

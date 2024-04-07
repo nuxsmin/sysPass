@@ -29,7 +29,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -58,7 +58,7 @@ class LdapAuthTest extends UnitaryTestCase
      */
     public function testAuthenticate()
     {
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
@@ -140,7 +140,7 @@ class LdapAuthTest extends UnitaryTestCase
      */
     public function testAuthenticateWithExpireFail()
     {
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
@@ -188,7 +188,7 @@ class LdapAuthTest extends UnitaryTestCase
      */
     public function testAuthenticateWithGroupFail()
     {
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 
@@ -236,7 +236,7 @@ class LdapAuthTest extends UnitaryTestCase
      */
     public function testAuthenticateFailConnect()
     {
-        $userLoginData = new UserLoginData();
+        $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser(self::$faker->userName);
         $userLoginData->setLoginPass(self::$faker->password);
 

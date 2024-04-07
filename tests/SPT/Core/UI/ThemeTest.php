@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Core\UI\Theme;
 use SP\Domain\Core\Context\SessionContextInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 
@@ -88,21 +88,18 @@ class ThemeTest extends UnitaryTestCase
                 ->method('isLoggedIn')
                 ->willReturn(true);
 
-        $userLoginResponse = new UserLoginResponse();
-        $userPreferencesData = UserDataGenerator::factory()->buildUserPreferencesData();
-
-        $userLoginResponse->setPreferences($userPreferencesData);
+        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
 
         $context->expects(self::once())
                 ->method('getUserData')
-                ->willReturn($userLoginResponse);
+            ->willReturn($userDataDto);
 
         $configData = $this->config->getConfigData();
         $configData->setSiteTheme(self::$faker->colorName);
 
         $current = Theme::getThemeName($this->config->getConfigData(), $context);
 
-        $this->assertEquals($userPreferencesData->getTheme(), $current);
+        $this->assertEquals($userDataDto->getPreferences()->getTheme(), $current);
     }
 
     public function testGetViewsPath()

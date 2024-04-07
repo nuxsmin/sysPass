@@ -96,7 +96,7 @@ use SP\Providers\Auth\AuthTypeEnum;
 use SP\Providers\Auth\Browser\BrowserAuth;
 use SP\Providers\Auth\Browser\BrowserAuthInterface;
 use SP\Providers\Auth\Database\DatabaseAuth;
-use SP\Providers\Auth\Database\DatabaseAuthInterface;
+use SP\Providers\Auth\Database\DatabaseAuthService;
 use SP\Providers\Auth\Ldap\LdapActions;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapBase;
@@ -166,7 +166,7 @@ final class CoreDefinitions
                 ),
             ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class),
-            DatabaseAuthInterface::class => autowire(DatabaseAuth::class),
+            DatabaseAuthService::class => autowire(DatabaseAuth::class),
             BrowserAuthInterface::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'getFrom']),
             LdapConnectionInterface::class => autowire(LdapConnection::class),
@@ -178,11 +178,11 @@ final class CoreDefinitions
                 ),
             AuthProviderInterface::class => factory(
                 static function (
-                    AuthProvider          $authProvider,
-                    ConfigDataInterface   $configData,
-                    LdapAuthService $ldapAuth,
-                    BrowserAuthInterface  $browserAuth,
-                    DatabaseAuthInterface $databaseAuth,
+                    AuthProvider         $authProvider,
+                    ConfigDataInterface  $configData,
+                    LdapAuthService      $ldapAuth,
+                    BrowserAuthInterface $browserAuth,
+                    DatabaseAuthService  $databaseAuth,
                 ) {
                     if ($configData->isLdapEnabled()) {
                         $authProvider->registerAuth($ldapAuth, AuthTypeEnum::Ldap);

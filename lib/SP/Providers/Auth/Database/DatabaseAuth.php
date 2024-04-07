@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,36 +26,31 @@ namespace SP\Providers\Auth\Database;
 
 use Exception;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\UserLoginData;
-use SP\Domain\User\Ports\UserPassServiceInterface;
+use SP\Domain\Auth\Dtos\UserLoginDto;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserLoginResponse;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\User\Services\UserPassService;
 
 use function SP\processException;
 
 /**
- * Class Database
- *
- * Autentificación basada en base de datos
- *
- * @package SP\Providers\Auth\Database
+ * Class DatabaseAuth
  */
-final class DatabaseAuth implements DatabaseAuthInterface
+final readonly class DatabaseAuth implements DatabaseAuthService
 {
     public function __construct(
-        private readonly UserServiceInterface     $userService,
-        private readonly UserPassServiceInterface $userPassService
+        private UserServiceInterface $userService,
+        private UserPassService      $userPassService
     ) {
     }
 
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData
+     * @param UserLoginDto $userLoginData
      * @return DatabaseAuthData
      */
-    public function authenticate(UserLoginData $userLoginData): DatabaseAuthData
+    public function authenticate(UserLoginDto $userLoginData): DatabaseAuthData
     {
         $authData = new DatabaseAuthData($this->isAuthGranted());
 
@@ -72,17 +67,14 @@ final class DatabaseAuth implements DatabaseAuthInterface
         return true;
     }
 
-    protected function authUser(UserLoginData $userLoginData): bool
+    private function authUser(UserLoginDto $userLoginData): bool
     {
         try {
-            $userLoginResponse =
-                UserService::mapUserLoginResponse($this->userService->getByLogin($userLoginData->getLoginUser()));
+            $userLoginResponse = new UserDataDto($this->userService->getByLogin($userLoginData->getLoginUser()));
 
-            $userLoginData->setUserLoginResponse($userLoginResponse);
+            $userLoginData->setUserDataDto($userLoginResponse);
 
-            if ($userLoginResponse->getIsMigrate()
-                && $this->checkMigrateUser($userLoginResponse, $userLoginData)
-            ) {
+            if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser($userLoginResponse, $userLoginData)) {
                 $this->userPassService->migrateUserPassById(
                     $userLoginResponse->getId(),
                     $userLoginData->getLoginPass()
@@ -99,7 +91,7 @@ final class DatabaseAuth implements DatabaseAuthInterface
         return false;
     }
 
-    protected function checkMigrateUser(UserLoginResponse $userLoginResponse, UserLoginData $userLoginData): bool
+    private function checkMigrateUser(UserDataDto $userLoginResponse, UserLoginDto $userLoginData): bool
     {
         $passHashSha = sha1($userLoginResponse->getHashSalt() . $userLoginData->getLoginPass());
 

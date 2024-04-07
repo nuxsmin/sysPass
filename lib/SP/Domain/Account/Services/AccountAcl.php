@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -38,8 +37,8 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
-use SP\Domain\User\Services\UserLoginResponse;
 use SP\Infrastructure\File\FileException;
 
 use function SP\processException;
@@ -56,25 +55,19 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
 
-    private ?AccountAclDto                  $accountAclDto = null;
-    private ?AccountPermission              $accountAcl    = null;
-    private Acl                             $acl;
-    private ?FileCacheService               $fileCache;
-    private UserToUserGroupServiceInterface $userToUserGroupService;
-    private UserLoginResponse               $userData;
+    private ?AccountAclDto     $accountAclDto = null;
+    private ?AccountPermission $accountAcl    = null;
+    private UserDataDto        $userData;
 
     public function __construct(
-        Application                     $application,
-        AclInterface                    $acl,
-        UserToUserGroupServiceInterface $userGroupService,
-        ?FileCacheService               $fileCache = null
+        Application                                      $application,
+        private readonly AclInterface                    $acl,
+        private readonly UserToUserGroupServiceInterface $userToUserGroupService,
+        private readonly ?FileCacheService               $fileCache = null
     ) {
         parent::__construct($application);
 
-        $this->acl = $acl;
-        $this->userToUserGroupService = $userGroupService;
         $this->userData = $this->context->getUserData();
-        $this->fileCache = $fileCache;
     }
 
     /**
@@ -130,12 +123,12 @@ final class AccountAcl extends Service implements AccountAclService
     /**
      * Sets grants which don't need the account's data
      *
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param ProfileData $profileData
      *
      * @return bool
      */
-    public static function getShowPermission(UserLoginResponse $userData, ProfileData $profileData): bool
+    public static function getShowPermission(UserDataDto $userData, ProfileData $profileData): bool
     {
         return $userData->getIsAdminApp()
                || $userData->getIsAdminAcc()

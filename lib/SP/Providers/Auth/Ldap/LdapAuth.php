@@ -27,7 +27,7 @@ namespace SP\Providers\Auth\Ldap;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\UserLoginData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -60,10 +60,10 @@ final class LdapAuth implements LdapAuthService
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginData $userLoginData
+     * @param UserLoginDto $userLoginData
      * @return LdapAuthData
      */
-    public function authenticate(UserLoginData $userLoginData): LdapAuthData
+    public function authenticate(UserLoginDto $userLoginData): LdapAuthData
     {
         $ldapAuthData = new LdapAuthData($this->isAuthGranted());
 

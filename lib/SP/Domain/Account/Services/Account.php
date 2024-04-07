@@ -56,7 +56,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Domain\User\Services\UserLoginResponse;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -247,14 +247,14 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param ProfileData $userProfile
      * @param AccountModel $account
      *
      * @return bool
      */
     protected function userCanChangeOwner(
-        UserLoginResponse $userData,
+        UserDataDto $userData,
         ProfileData  $userProfile,
         AccountModel $account
     ): bool {
@@ -263,14 +263,14 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param ProfileData $userProfile
      * @param AccountModel $account
      *
      * @return bool
      */
     protected function userCanChangeGroup(
-        UserLoginResponse $userData,
+        UserDataDto $userData,
         ProfileData  $userProfile,
         AccountModel $account
     ): bool {
@@ -335,13 +335,13 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param UserLoginResponse $userData
+     * @param UserDataDto $userData
      * @param AccountCreateDto $accountCreateDto
      *
      * @return AccountCreateDto
      */
     private static function buildWithUserData(
-        UserLoginResponse $userData,
+        UserDataDto $userData,
         AccountCreateDto $accountCreateDto
     ): AccountCreateDto {
         return $accountCreateDto->withUserGroupId($userData->getUserGroupId())->withUserId($userData->getId());
