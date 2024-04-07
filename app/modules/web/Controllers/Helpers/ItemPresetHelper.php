@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
@@ -51,8 +51,8 @@ final class ItemPresetHelper extends HelperBase
     private ?SelectItemAdapter          $users      = null;
     private ?SelectItemAdapter          $userGroups = null;
     private UserServiceInterface        $userService;
-    private UserGroupService $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
+    private UserGroupService   $userGroupService;
+    private UserProfileService $userProfileService;
 
     public function __construct(
         Application          $application,
@@ -60,7 +60,7 @@ final class ItemPresetHelper extends HelperBase
         RequestInterface     $request,
         UserServiceInterface $userService,
         UserGroupService     $userGroupService,
-        UserProfileServiceInterface $userProfileService
+        UserProfileService $userProfileService
 
     ) {
         parent::__construct($application, $template, $request);

@@ -26,40 +26,29 @@ namespace SP\Domain\User\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\ProfileData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Common\Services\ServiceItemTrait;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User as UserModel;
-use SP\Domain\User\Models\UserProfile;
+use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Ports\UserProfileRepository;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\Util;
 
 use function SP\__u;
 
 /**
- * Class UserProfileService
- *
- * @package SP\Domain\Common\Services\UserProfile
+ * Class UserProfile
  */
-final class UserProfileService extends Service implements UserProfileServiceInterface
+final class UserProfile extends Service implements UserProfileService
 {
-    use ServiceItemTrait;
 
-    protected UserProfileRepository $userProfileRepository;
-
-    public function __construct(Application $application, UserProfileRepository $userProfileRepository)
+    public function __construct(Application $application, private readonly UserProfileRepository $userProfileRepository)
     {
         parent::__construct($application);
-
-        $this->userProfileRepository = $userProfileRepository;
     }
 
     /**
@@ -67,23 +56,20 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserProfile
+    public function getById(int $id): UserProfileModel
     {
         $result = $this->userProfileRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Profile not found'));
+            throw NoSuchItemException::info(__u('Profile not found'));
         }
 
-        $userProfileData = $result->getData();
-        $userProfileData->setProfile(Util::unserialize(ProfileData::class, $userProfileData->getProfile()));
-
-        return $userProfileData;
+        return $result->getData(UserProfileModel::class);
     }
 
     /**
-     * @throws ConstraintException
-     * @throws QueryException
+     * @param ItemSearchData $itemSearchData
+     * @return QueryResult<UserProfileModel>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -95,13 +81,11 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): UserProfileServiceInterface
+    public function delete(int $id): void
     {
-        if ($this->userProfileRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Profile not found'), SPException::INFO);
+        if ($this->userProfileRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Profile not found'));
         }
-
-        return $this;
     }
 
     /**
@@ -113,13 +97,10 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      */
     public function deleteByIdBatch(array $ids): int
     {
-        $count = $this->userProfileRepository->deleteByIdBatch($ids);
+        $count = $this->userProfileRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
-            throw new ServiceException(
-                __u('Error while removing the profiles'),
-                SPException::WARNING
-            );
+            throw ServiceException::warning(__u('Error while removing the profiles'));
         }
 
         return $count;
@@ -130,9 +111,9 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(UserProfile $itemData): int
+    public function create(UserProfileModel $userProfile): int
     {
-        return $this->userProfileRepository->create($itemData);
+        return $this->userProfileRepository->create($userProfile)->getLastId();
     }
 
     /**
@@ -141,12 +122,10 @@ final class UserProfileService extends Service implements UserProfileServiceInte
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserProfile $itemData): void
+    public function update(UserProfileModel $userProfile): void
     {
-        $update = $this->userProfileRepository->update($itemData);
-
-        if ($update === 0) {
-            throw new ServiceException(__u('Error while updating the profile'));
+        if ($this->userProfileRepository->update($userProfile) === 0) {
+            throw ServiceException::error(__u('Error while updating the profile'));
         }
     }
 
@@ -171,12 +150,10 @@ final class UserProfileService extends Service implements UserProfileServiceInte
     /**
      * Get all items from the service's repository
      *
-     * @return UserProfile[]
-     * @throws ConstraintException
-     * @throws QueryException
+     * @return array<UserProfileModel>
      */
     public function getAll(): array
     {
-        return $this->userProfileRepository->getAll()->getDataAsArray();
+        return $this->userProfileRepository->getAll()->getDataAsArray(UserProfileModel::class);
     }
 }

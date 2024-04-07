@@ -32,7 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Providers\Acl\AclHandler;
 use SPT\UnitaryTestCase;
 
@@ -43,8 +43,8 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class AclHandlerTest extends UnitaryTestCase
 {
-    private MockObject|UserProfileServiceInterface $userProfileService;
-    private UserGroupService|MockObject $userGroupService;
+    private MockObject|UserProfileService $userProfileService;
+    private UserGroupService|MockObject   $userGroupService;
     private AclHandler                             $aclHandler;
 
     public static function userEventProvider(): array
@@ -238,7 +238,7 @@ class AclHandlerTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
+        $this->userProfileService = $this->createMock(UserProfileService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);
 
         $this->aclHandler = new AclHandler($this->application, $this->userProfileService, $this->userGroupService);

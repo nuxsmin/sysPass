@@ -57,8 +57,8 @@ use SP\Domain\ItemPreset\Services\ItemPreset;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
-use SP\Domain\User\Services\UserProfileService;
+use SP\Domain\User\Ports\UserProfileService;
+use SP\Domain\User\Services\UserProfile;
 use SP\Http\Address;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -142,8 +142,8 @@ final class Init extends HttpModuleBase
     private PluginManager $pluginManager;
     private ItemPreset   $itemPresetService;
     private DatabaseUtil $databaseUtil;
-    private UserProfileService   $userProfileService;
-    private bool                 $isIndex = false;
+    private UserProfile $userProfileService;
+    private bool        $isIndex = false;
 
     public function __construct(
         Application                          $application,
@@ -156,7 +156,7 @@ final class Init extends HttpModuleBase
         PluginManager                        $pluginManager,
         ItemPreset           $itemPresetService,
         DatabaseUtil                         $databaseUtil,
-        UserProfileServiceInterface          $userProfileService,
+        UserProfileService   $userProfileService,
         private readonly UriContextInterface $uriContext
     ) {
         parent::__construct(

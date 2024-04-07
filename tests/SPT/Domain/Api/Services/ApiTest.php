@@ -47,7 +47,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
@@ -70,7 +70,7 @@ class ApiTest extends UnitaryTestCase
     private ApiRequestService|MockObject    $apiRequest;
     private AuthTokenService|MockObject     $authTokenService;
     private UserServiceInterface|MockObject $userService;
-    private MockObject|UserProfileServiceInterface $userProfileService;
+    private MockObject|UserProfileService $userProfileService;
     private Api                             $apiService;
     private TrackRequest                           $trackRequest;
 
@@ -304,7 +304,7 @@ class ApiTest extends UnitaryTestCase
         $this->apiRequest = $this->createMock(ApiRequestService::class);
         $this->authTokenService = $this->createMock(AuthTokenService::class);
         $this->userService = $this->createMock(UserServiceInterface::class);
-        $this->userProfileService = $this->createMock(UserProfileServiceInterface::class);
+        $this->userProfileService = $this->createMock(UserProfileService::class);
 
         $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());
         $this->trackService->method('buildTrackRequest')->willReturn($this->trackRequest);

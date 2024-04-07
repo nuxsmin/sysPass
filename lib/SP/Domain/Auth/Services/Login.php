@@ -49,7 +49,7 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Domain\User\Services\UserLoginRequest;
 use SP\Domain\User\Services\UserMasterPassStatus;
@@ -97,7 +97,7 @@ final class Login extends Service implements LoginService
         private readonly UserPassRecoverService      $userPassRecoverService,
         private readonly TemporaryMasterPassService  $temporaryMasterPassService,
         private readonly UserMasterPassService $userMasterPassService,
-        private readonly UserProfileServiceInterface $userProfileService
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application);
 

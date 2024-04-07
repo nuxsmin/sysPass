@@ -55,7 +55,7 @@ interface UserProfileRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult<T>
+     * @return QueryResult<UserProfileModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -90,7 +90,7 @@ interface UserProfileRepository extends Repository
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return QueryResult<T>
+     * @return QueryResult<UserProfileModel>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult;
 
@@ -108,7 +108,7 @@ interface UserProfileRepository extends Repository
     /**
      * Returns all the items
      *
-     * @return QueryResult<T>
+     * @return QueryResult<UserProfileModel>
      */
     public function getAll(): QueryResult;
 }

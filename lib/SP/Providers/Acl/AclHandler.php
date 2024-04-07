@@ -32,7 +32,7 @@ use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Util\FileUtil;
@@ -61,9 +61,9 @@ final class AclHandler extends Provider implements EventReceiver
     private string $events;
 
     public function __construct(
-        Application                                  $application,
-        private readonly UserProfileServiceInterface $userProfileService,
-        private readonly UserGroupService $userGroupService
+        Application                         $application,
+        private readonly UserProfileService $userProfileService,
+        private readonly UserGroupService   $userGroupService
     ) {
         parent::__construct($application);
     }

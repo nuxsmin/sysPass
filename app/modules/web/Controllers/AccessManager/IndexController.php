@@ -34,7 +34,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -61,9 +61,9 @@ final class IndexController extends ControllerBase
     private AuthTokenGrid               $authTokenGrid;
     private PublicLinkGrid              $publicLinkGrid;
     private UserServiceInterface        $userService;
-    private UserGroupService $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
-    private AuthTokenService  $authTokenService;
+    private UserGroupService   $userGroupService;
+    private UserProfileService $userProfileService;
+    private AuthTokenService   $authTokenService;
     private PublicLinkService $publicLinkService;
 
     public function __construct(
@@ -77,7 +77,7 @@ final class IndexController extends ControllerBase
         PublicLinkGrid       $publicLinkGrid,
         UserServiceInterface $userService,
         UserGroupService     $userGroupService,
-        UserProfileServiceInterface $userProfileService,
+        UserProfileService $userProfileService,
         AuthTokenService     $authTokenService,
         PublicLinkService    $publicLinkService
     ) {

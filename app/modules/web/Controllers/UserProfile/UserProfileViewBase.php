@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\UserProfile;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -48,13 +48,13 @@ abstract class UserProfileViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private UserProfileServiceInterface $userProfileService;
+    private UserProfileService $userProfileService;
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        UserProfileServiceInterface $userProfileService,
+        UserProfileService  $userProfileService,
         CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

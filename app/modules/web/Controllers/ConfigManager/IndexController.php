@@ -49,7 +49,7 @@ use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -75,26 +75,26 @@ final class IndexController extends ControllerBase
 {
     protected TabsHelper                $tabsHelper;
     private UserServiceInterface        $userService;
-    private UserGroupService $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
-    private MimeTypesService $mimeTypes;
+    private UserGroupService   $userGroupService;
+    private UserProfileService $userProfileService;
+    private MimeTypesService   $mimeTypes;
     private DatabaseUtil     $databaseUtil;
     private ConfigService  $configService;
     private AccountService $accountService;
     private PluginManager  $pluginManager;
 
     public function __construct(
-        Application                 $application,
-        WebControllerHelper         $webControllerHelper,
-        TabsHelper                  $tabsHelper,
-        UserServiceInterface        $userService,
-        UserGroupService $userGroupService,
-        UserProfileServiceInterface $userProfileService,
-        MimeTypesService $mimeTypes,
-        DatabaseUtil                $databaseUtil,
-        ConfigService    $configService,
-        AccountService   $accountService,
-        PluginManager               $pluginManager
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        TabsHelper           $tabsHelper,
+        UserServiceInterface $userService,
+        UserGroupService     $userGroupService,
+        UserProfileService   $userProfileService,
+        MimeTypesService     $mimeTypes,
+        DatabaseUtil         $databaseUtil,
+        ConfigService        $configService,
+        AccountService       $accountService,
+        PluginManager        $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);
 

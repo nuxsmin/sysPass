@@ -28,7 +28,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Models\UserProfile;
+use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -38,16 +38,17 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\Common\Services\UserProfile
  */
-interface UserProfileServiceInterface
+interface UserProfileService
 {
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): UserProfile;
+    public function getById(int $id): UserProfileModel;
 
     /**
+     * @return QueryResult<UserProfileModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -58,7 +59,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): UserProfileServiceInterface;
+    public function delete(int $id): void;
 
     /**
      * @param int[] $ids
@@ -74,7 +75,7 @@ interface UserProfileServiceInterface
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(UserProfile $itemData): int;
+    public function create(UserProfileModel $userProfile): int;
 
     /**
      * @throws ConstraintException
@@ -82,7 +83,7 @@ interface UserProfileServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(UserProfile $itemData): void;
+    public function update(UserProfileModel $userProfile): void;
 
     /**
      * @throws ConstraintException
@@ -93,7 +94,7 @@ interface UserProfileServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return UserProfile[]
+     * @return array<UserProfileModel>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -47,7 +47,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
@@ -76,7 +76,7 @@ final class Api extends Service implements ApiService
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserServiceInterface        $userService,
-        private readonly UserProfileServiceInterface $userProfileService
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application);
 

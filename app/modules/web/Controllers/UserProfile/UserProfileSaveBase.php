@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 use SP\Core\Application;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserProfileForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -37,14 +37,14 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserProfileSaveBase extends ControllerBase
 {
-    protected UserProfileServiceInterface $userProfileService;
+    protected UserProfileService $userProfileService;
     protected CustomFieldDataService $customFieldService;
     protected UserProfileForm             $form;
 
     public function __construct(
-        Application $application,
+        Application         $application,
         WebControllerHelper $webControllerHelper,
-        UserProfileServiceInterface $userProfileService,
+        UserProfileService  $userProfileService,
         CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);

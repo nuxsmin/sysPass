@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileServiceInterface;
+use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserServiceInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
@@ -51,7 +51,7 @@ abstract class UserViewBase extends ControllerBase
 
     protected UserServiceInterface $userService;
     private UserGroupService       $userGroupService;
-    private UserProfileServiceInterface $userProfileService;
+    private UserProfileService $userProfileService;
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
@@ -59,7 +59,7 @@ abstract class UserViewBase extends ControllerBase
         WebControllerHelper    $webControllerHelper,
         UserServiceInterface   $userService,
         UserGroupService       $userGroupService,
-        UserProfileServiceInterface $userProfileService,
+        UserProfileService $userProfileService,
         CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
