@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserPassService;
 
 use function SP\processException;
 

@@ -30,6 +30,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User;
+use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
