@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\User\Ports\UserPassService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Providers\Auth\Database\DatabaseAuth;
 use SPT\Generators\UserDataGenerator;
@@ -43,8 +43,8 @@ use SPT\UnitaryTestCase;
 class DatabaseAuthTest extends UnitaryTestCase
 {
 
-    private UserServiceInterface|MockObject $userService;
-    private MockObject|UserPassService      $userPassService;
+    private UserService|MockObject     $userService;
+    private MockObject|UserPassService $userPassService;
     private DatabaseAuth                    $databaseAuth;
 
     public function testAuthenticate()
@@ -252,7 +252,7 @@ class DatabaseAuthTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->userService = $this->createMock(UserServiceInterface::class);
+        $this->userService = $this->createMock(UserService::class);
         $this->userPassService = $this->createMock(UserPassService::class);
 
         $this->databaseAuth = new DatabaseAuth($this->userService, $this->userPassService);

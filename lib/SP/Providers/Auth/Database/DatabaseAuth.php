@@ -29,7 +29,7 @@ use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserPassService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 
 use function SP\processException;
 
@@ -39,8 +39,8 @@ use function SP\processException;
 final readonly class DatabaseAuth implements DatabaseAuthService
 {
     public function __construct(
-        private UserServiceInterface $userService,
-        private UserPassService      $userPassService
+        private UserService     $userService,
+        private UserPassService $userPassService
     ) {
     }
 

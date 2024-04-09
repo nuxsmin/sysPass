@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\Filter;
 
@@ -50,7 +50,7 @@ final class AccountSearch extends Service implements AccountSearchService
 {
     public function __construct(
         Application                               $application,
-        private readonly UserServiceInterface     $userService,
+        private readonly UserService $userService,
         private readonly UserGroupService         $userGroupService,
         private readonly AccountSearchRepository  $accountSearchRepository,
         private readonly AccountSearchDataBuilder $accountSearchDataBuilder

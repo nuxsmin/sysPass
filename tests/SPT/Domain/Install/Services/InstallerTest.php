@@ -38,8 +38,8 @@ use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\InstallerService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserService;
+use SP\Domain\User\Ports\UserService;
+use SP\Domain\User\Services\User;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Util\VersionUtil;
 use SPT\UnitaryTestCase;
@@ -56,7 +56,7 @@ class InstallerTest extends UnitaryTestCase
      */
     private $databaseSetup;
     /**
-     * @var MockObject|UserService
+     * @var MockObject|User
      */
     private $userService;
     /**
@@ -439,7 +439,7 @@ class InstallerTest extends UnitaryTestCase
     protected function setUp(): void
     {
         $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
-        $this->userService = $this->createMock(UserServiceInterface::class);
+        $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(RequestInterface::class);
         $this->configService = $this->createMock(ConfigService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);

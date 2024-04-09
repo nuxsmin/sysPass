@@ -50,7 +50,7 @@ use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
@@ -73,9 +73,9 @@ use SP\Util\Util;
  */
 final class IndexController extends ControllerBase
 {
-    protected TabsHelper                $tabsHelper;
-    private UserServiceInterface        $userService;
-    private UserGroupService   $userGroupService;
+    protected TabsHelper     $tabsHelper;
+    private UserService      $userService;
+    private UserGroupService $userGroupService;
     private UserProfileService $userProfileService;
     private MimeTypesService   $mimeTypes;
     private DatabaseUtil     $databaseUtil;
@@ -84,17 +84,17 @@ final class IndexController extends ControllerBase
     private PluginManager  $pluginManager;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        TabsHelper           $tabsHelper,
-        UserServiceInterface $userService,
-        UserGroupService     $userGroupService,
-        UserProfileService   $userProfileService,
-        MimeTypesService     $mimeTypes,
-        DatabaseUtil         $databaseUtil,
-        ConfigService        $configService,
-        AccountService       $accountService,
-        PluginManager        $pluginManager
+        Application         $application,
+        WebControllerHelper $webControllerHelper,
+        TabsHelper          $tabsHelper,
+        UserService         $userService,
+        UserGroupService    $userGroupService,
+        UserProfileService  $userProfileService,
+        MimeTypesService    $mimeTypes,
+        DatabaseUtil        $databaseUtil,
+        ConfigService       $configService,
+        AccountService      $accountService,
+        PluginManager       $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);
 

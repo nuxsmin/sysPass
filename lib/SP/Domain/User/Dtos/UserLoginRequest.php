@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,29 +22,32 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\User\Services;
+namespace SP\Domain\User\Dtos;
 
 /**
  * Class UserLoginRequest
- *
- * @package SP\Domain\User\Services
  */
-final class UserLoginRequest
+final readonly class UserLoginRequest
 {
-    private ?string $login    = null;
-    private ?string $name     = null;
-    private ?string $password = null;
-    private ?string $email    = null;
-    private ?bool   $isLdap   = null;
+    /**
+     * @param string $login
+     * @param string|null $password
+     * @param string|null $name
+     * @param string|null $email
+     * @param bool|null $isLdap
+     */
+    public function __construct(
+        private string  $login,
+        private ?string $password = null,
+        private ?string $name = null,
+        private ?string $email = null,
+        private ?bool   $isLdap = false
+    ) {
+    }
 
     public function getLogin(): ?string
     {
         return $this->login;
-    }
-
-    public function setLogin(string $login): void
-    {
-        $this->login = $login;
     }
 
     public function getName(): ?string
@@ -52,19 +55,9 @@ final class UserLoginRequest
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
-    }
-
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
     }
 
     public function getEmail(): ?string
@@ -72,18 +65,8 @@ final class UserLoginRequest
         return $this->email;
     }
 
-    public function setEmail(string $email): void
-    {
-        $this->email = $email;
-    }
-
     public function getisLdap(): ?bool
     {
         return $this->isLdap;
-    }
-
-    public function setIsLdap(bool $isLdap): void
-    {
-        $this->isLdap = $isLdap;
     }
 }

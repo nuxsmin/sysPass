@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
@@ -60,7 +60,7 @@ abstract class AuthTokenViewBase extends ControllerBase
         Application                               $application,
         WebControllerHelper                       $webControllerHelper,
         private readonly CustomFieldDataService $customFieldService,
-        private readonly UserServiceInterface     $userService,
+        private readonly UserService            $userService,
         private readonly AuthTokenService         $authTokenService,
         private readonly AuthTokenActionInterface $authTokenAction,
     ) {

@@ -30,10 +30,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Models\User;
+use SP\Domain\User\Dtos\UserLoginRequest;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
-use SP\Domain\User\Services\UserLoginRequest;
-use SP\Domain\User\Services\UserService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -43,16 +42,16 @@ use SP\Infrastructure\Database\QueryResult;
  *
  * @package SP\Domain\User\Services
  */
-interface UserServiceInterface
+interface UserService
 {
     /**
-     * Actualiza el último inicio de sesión del usuario en la BBDD.
+     * Update the last user log in
      *
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function updateLastLoginById(int $id): int;
+    public function updateLastLoginById(int $id): void;
 
     /**
      * @throws ConstraintException
@@ -65,7 +64,7 @@ interface UserServiceInterface
      *
      * @throws SPException
      */
-    public function getById(int $id): User;
+    public function getById(int $id): UserModel;
 
     /**
      * Returns the item for given id
@@ -74,7 +73,7 @@ interface UserServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getByLogin(string $login): User;
+    public function getByLogin(string $login): UserModel;
 
     /**
      * Deletes an item
@@ -83,10 +82,10 @@ interface UserServiceInterface
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function delete(int $id): UserService;
+    public function delete(int $id): void;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException
@@ -106,7 +105,7 @@ interface UserServiceInterface
      *
      * @throws SPException
      */
-    public function create(User $itemData): int;
+    public function create(UserModel $user): int;
 
     /**
      * Creates an item
@@ -114,11 +113,12 @@ interface UserServiceInterface
      * @throws SPException
      * @throws CryptoException
      */
-    public function createWithMasterPass(User $itemData, string $userPass, string $masterPass): int;
+    public function createWithMasterPass(UserModel $user, string $userPass, string $masterPass): int;
 
     /**
      * Searches for items by a given filter
      *
+     * @return QueryResult<UserModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -132,7 +132,7 @@ interface UserServiceInterface
      * @throws DuplicatedItemException
      * @throws ServiceException
      */
-    public function update(User $userData): void;
+    public function update(UserModel $user): void;
 
     /**
      * Updates a user's pass
@@ -147,7 +147,7 @@ interface UserServiceInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function updatePreferencesById(int $userId, UserPreferences $userPreferencesData): int;
+    public function updatePreferencesById(int $userId, UserPreferences $userPreferences): int;
 
     /**
      * @throws ConstraintException
@@ -158,7 +158,7 @@ interface UserServiceInterface
     /**
      * Get all items from the service's repository
      *
-     * @return \SP\Domain\User\Models\User[]
+     * @return array<UserModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -183,7 +183,7 @@ interface UserServiceInterface
     /**
      * Return the email of the given user's id
      *
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws ConstraintException
      * @throws QueryException

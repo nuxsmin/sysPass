@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Http\JsonMessage;
 use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -50,14 +50,14 @@ final class SaveRequestController extends AccountControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService       $accountService;
-    private UserServiceInterface $userService;
+    private AccountService $accountService;
+    private UserService    $userService;
 
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,
         AccountService       $accountService,
-        UserServiceInterface $userService
+        UserService $userService
     ) {
         parent::__construct(
             $application,

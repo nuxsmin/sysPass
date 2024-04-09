@@ -48,7 +48,7 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Util\Filter;
@@ -71,11 +71,11 @@ final class Api extends Service implements ApiService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                                  $application,
+        Application                        $application,
         private readonly TrackService      $trackService,
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
-        private readonly UserServiceInterface        $userService,
+        private readonly UserService       $userService,
         private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application);

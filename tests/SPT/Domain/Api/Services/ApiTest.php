@@ -48,7 +48,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SPT\Generators\UserDataGenerator;
@@ -68,8 +68,8 @@ class ApiTest extends UnitaryTestCase
 
     private TrackService|MockObject         $trackService;
     private ApiRequestService|MockObject    $apiRequest;
-    private AuthTokenService|MockObject     $authTokenService;
-    private UserServiceInterface|MockObject $userService;
+    private AuthTokenService|MockObject $authTokenService;
+    private UserService|MockObject      $userService;
     private MockObject|UserProfileService $userProfileService;
     private Api                             $apiService;
     private TrackRequest                           $trackRequest;
@@ -303,7 +303,7 @@ class ApiTest extends UnitaryTestCase
         $this->trackService = $this->createMock(TrackService::class);
         $this->apiRequest = $this->createMock(ApiRequestService::class);
         $this->authTokenService = $this->createMock(AuthTokenService::class);
-        $this->userService = $this->createMock(UserServiceInterface::class);
+        $this->userService = $this->createMock(UserService::class);
         $this->userProfileService = $this->createMock(UserProfileService::class);
 
         $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());

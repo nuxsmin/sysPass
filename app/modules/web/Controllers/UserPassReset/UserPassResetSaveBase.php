@@ -35,7 +35,7 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -45,7 +45,7 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class UserPassResetSaveBase extends ControllerBase
 {
     protected UserPassRecoverService $userPassRecoverService;
-    protected UserServiceInterface   $userService;
+    protected UserService $userService;
     protected MailService $mailService;
     private TrackService  $trackService;
     private TrackRequest  $trackRequest;
@@ -59,7 +59,7 @@ abstract class UserPassResetSaveBase extends ControllerBase
         Application            $application,
         WebControllerHelper    $webControllerHelper,
         UserPassRecoverService $userPassRecoverService,
-        UserServiceInterface   $userService,
+        UserService $userService,
         MailService            $mailService,
         TrackService           $trackService
 

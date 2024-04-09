@@ -36,7 +36,7 @@ use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -49,15 +49,15 @@ abstract class UserViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    protected UserServiceInterface $userService;
-    private UserGroupService       $userGroupService;
+    protected UserService    $userService;
+    private UserGroupService $userGroupService;
     private UserProfileService $userProfileService;
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
         Application            $application,
         WebControllerHelper    $webControllerHelper,
-        UserServiceInterface   $userService,
+        UserService        $userService,
         UserGroupService       $userGroupService,
         UserProfileService $userProfileService,
         CustomFieldDataService $customFieldService

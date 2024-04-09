@@ -37,7 +37,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
@@ -49,17 +49,17 @@ use SP\Mvc\View\TemplateInterface;
 final class ItemPresetHelper extends HelperBase
 {
     private ?SelectItemAdapter          $users      = null;
-    private ?SelectItemAdapter          $userGroups = null;
-    private UserServiceInterface        $userService;
+    private ?SelectItemAdapter $userGroups = null;
+    private UserService        $userService;
     private UserGroupService   $userGroupService;
     private UserProfileService $userProfileService;
 
     public function __construct(
-        Application          $application,
-        TemplateInterface    $template,
-        RequestInterface     $request,
-        UserServiceInterface $userService,
-        UserGroupService     $userGroupService,
+        Application       $application,
+        TemplateInterface $template,
+        RequestInterface  $request,
+        UserService       $userService,
+        UserGroupService  $userGroupService,
         UserProfileService $userProfileService
 
     ) {

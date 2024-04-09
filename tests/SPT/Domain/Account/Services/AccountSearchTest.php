@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Domain\Account\Services\Builders\AccountSearchTokenizerDataTrait;
 use SPT\UnitaryTestCase;
@@ -236,7 +236,7 @@ class AccountSearchTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $userService = $this->createMock(UserServiceInterface::class);
+        $userService = $this->createMock(UserService::class);
         $userService
             ->method('getByLogin')
             ->willReturn(

@@ -56,7 +56,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Mvc\Controller\ItemTrait;
@@ -83,9 +83,9 @@ final class AccountHelper extends AccountHelperBase
     private ClientService             $clientService;
     private CustomFieldDataService    $customFieldService;
     private ?AccountPermission        $accountAcl = null;
-    private ?int                      $accountId  = null;
-    private UserServiceInterface $userService;
-    private UserGroupService     $userGroupService;
+    private ?int             $accountId = null;
+    private UserService      $userService;
+    private UserGroupService $userGroupService;
     private TagService           $tagService;
 
     public function __construct(
@@ -93,7 +93,7 @@ final class AccountHelper extends AccountHelperBase
         TemplateInterface         $template,
         RequestInterface          $request,
         AclInterface              $acl,
-        AccountService            $accountService,
+        AccountService $accountService,
         AccountHistoryService  $accountHistoryService,
         PublicLinkService      $publicLinkService,
         ItemPresetService      $itemPresetService,
@@ -103,7 +103,7 @@ final class AccountHelper extends AccountHelperBase
         CategoryService        $categoryService,
         ClientService          $clientService,
         CustomFieldDataService $customFieldService,
-        UserServiceInterface   $userService,
+        UserService    $userService,
         UserGroupService       $userGroupService,
         TagService             $tagService
     ) {

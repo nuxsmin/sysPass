@@ -30,11 +30,11 @@ use Attribute;
  * Class Hydratable
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class Hydratable
+final readonly class Hydratable
 {
-    private readonly array $targetClass;
+    private array $targetClass;
 
-    public function __construct(private readonly string $sourceProperty, array $targetClass)
+    public function __construct(private string $sourceProperty, array $targetClass)
     {
         $this->targetClass = array_filter(
             $targetClass,

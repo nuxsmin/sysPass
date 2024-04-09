@@ -44,7 +44,7 @@ use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;
@@ -70,7 +70,7 @@ final class InstallerService implements InstallerServiceInterface
     public function __construct(
         RequestInterface                        $request,
         private readonly ConfigFileService      $config,
-        private readonly UserServiceInterface   $userService,
+        private readonly UserService $userService,
         private readonly UserGroupService       $userGroupService,
         private readonly UserProfileService     $userProfileService,
         private readonly ConfigService          $configService,

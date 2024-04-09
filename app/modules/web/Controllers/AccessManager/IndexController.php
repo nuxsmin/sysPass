@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
@@ -59,27 +59,27 @@ final class IndexController extends ControllerBase
     private UserGroupGrid               $userGroupGrid;
     private UserProfileGrid             $userProfileGrid;
     private AuthTokenGrid               $authTokenGrid;
-    private PublicLinkGrid              $publicLinkGrid;
-    private UserServiceInterface        $userService;
-    private UserGroupService   $userGroupService;
+    private PublicLinkGrid   $publicLinkGrid;
+    private UserService      $userService;
+    private UserGroupService $userGroupService;
     private UserProfileService $userProfileService;
     private AuthTokenService   $authTokenService;
     private PublicLinkService $publicLinkService;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        TabsGridHelper       $tabsGridHelper,
-        UserGrid             $userGrid,
-        UserGroupGrid        $userGroupGrid,
-        UserProfileGrid      $userProfileGrid,
-        AuthTokenGrid        $authTokenGrid,
-        PublicLinkGrid       $publicLinkGrid,
-        UserServiceInterface $userService,
-        UserGroupService     $userGroupService,
-        UserProfileService $userProfileService,
-        AuthTokenService     $authTokenService,
-        PublicLinkService    $publicLinkService
+        Application         $application,
+        WebControllerHelper $webControllerHelper,
+        TabsGridHelper      $tabsGridHelper,
+        UserGrid            $userGrid,
+        UserGroupGrid       $userGroupGrid,
+        UserProfileGrid     $userProfileGrid,
+        AuthTokenGrid       $authTokenGrid,
+        PublicLinkGrid      $publicLinkGrid,
+        UserService         $userService,
+        UserGroupService    $userGroupService,
+        UserProfileService  $userProfileService,
+        AuthTokenService    $authTokenService,
+        PublicLinkService   $publicLinkService
     ) {
         parent::__construct($application, $webControllerHelper);
 

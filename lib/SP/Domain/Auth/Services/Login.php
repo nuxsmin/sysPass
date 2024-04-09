@@ -47,11 +47,11 @@ use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
+use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Ports\UserServiceInterface;
-use SP\Domain\User\Services\UserLoginRequest;
+use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\UserMasterPassStatus;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -88,16 +88,16 @@ final class Login extends Service implements LoginService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                                  $application,
-        private readonly AuthProviderInterface       $authProvider,
-        private readonly LanguageInterface           $language,
-        private readonly TrackService                $trackService,
-        private readonly RequestInterface            $request,
-        private readonly UserServiceInterface        $userService,
-        private readonly UserPassRecoverService      $userPassRecoverService,
-        private readonly TemporaryMasterPassService  $temporaryMasterPassService,
-        private readonly UserMasterPassService $userMasterPassService,
-        private readonly UserProfileService $userProfileService
+        Application                                 $application,
+        private readonly AuthProviderInterface      $authProvider,
+        private readonly LanguageInterface          $language,
+        private readonly TrackService               $trackService,
+        private readonly RequestInterface           $request,
+        private readonly UserService                $userService,
+        private readonly UserPassRecoverService     $userPassRecoverService,
+        private readonly TemporaryMasterPassService $temporaryMasterPassService,
+        private readonly UserMasterPassService      $userMasterPassService,
+        private readonly UserProfileService         $userProfileService
     ) {
         parent::__construct($application);
 

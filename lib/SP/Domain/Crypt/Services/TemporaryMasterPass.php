@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\User\Ports\UserServiceInterface;
+use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Util\PasswordUtil;
 
@@ -73,11 +73,11 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     private ?int $maxTime = null;
 
     public function __construct(
-        Application                           $application,
-        private readonly ConfigService        $configService,
-        private readonly UserServiceInterface $userService,
-        private readonly MailService $mailService,
-        private readonly CryptInterface       $crypt,
+        Application                     $application,
+        private readonly ConfigService  $configService,
+        private readonly UserService    $userService,
+        private readonly MailService    $mailService,
+        private readonly CryptInterface $crypt,
     ) {
         parent::__construct($application);
     }
