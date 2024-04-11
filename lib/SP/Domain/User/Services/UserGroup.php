@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
+use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -47,9 +47,9 @@ use function SP\__u;
 final class UserGroup extends Service implements UserGroupService
 {
     public function __construct(
-        Application                                      $application,
-        private readonly UserGroupRepository             $userGroupRepository,
-        private readonly UserToUserGroupServiceInterface $userToUserGroupService,
+        Application                             $application,
+        private readonly UserGroupRepository    $userGroupRepository,
+        private readonly UserToUserGroupService $userToUserGroupService,
     ) {
         parent::__construct($application);
     }

@@ -42,8 +42,6 @@ use function SP\__u;
 
 /**
  * Class Tag
- *
- * @template T of TagModel
  */
 final class Tag extends Service implements TagService
 {
@@ -55,7 +53,7 @@ final class Tag extends Service implements TagService
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return QueryResult<T>
+     * @return QueryResult<TagModel>
      */
     public function search(ItemSearchData $itemSearchData): QueryResult
     {
@@ -113,13 +111,11 @@ final class Tag extends Service implements TagService
      *
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids): TagService
+    public function deleteByIdBatch(array $ids): void
     {
-        if ($this->tagRepository->deleteByIdBatch($ids) !== count($ids)) {
+        if ($this->tagRepository->deleteByIdBatch($ids)->getAffectedNumRows() !== count($ids)) {
             throw ServiceException::warning(__u('Error while removing the tags'));
         }
-
-        return $this;
     }
 
     /**
@@ -127,9 +123,9 @@ final class Tag extends Service implements TagService
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(TagModel $itemData): int
+    public function create(TagModel $tag): int
     {
-        return $this->tagRepository->create($itemData)->getLastId();
+        return $this->tagRepository->create($tag)->getLastId();
     }
 
     /**
@@ -137,15 +133,15 @@ final class Tag extends Service implements TagService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(TagModel $itemData): int
+    public function update(TagModel $tag): int
     {
-        return $this->tagRepository->update($itemData);
+        return $this->tagRepository->update($tag);
     }
 
     /**
      * Get all items from the service's repository
      *
-     * @return array<T>
+     * @return array<TagModel>
      */
     public function getAll(): array
     {

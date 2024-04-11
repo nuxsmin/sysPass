@@ -145,7 +145,7 @@ class ClientTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('delete')
             ->with($id)
-            ->willReturn(new QueryResult([]));
+            ->willReturn(new QueryResult());
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Client not found');
@@ -275,11 +275,6 @@ class ClientTest extends UnitaryTestCase
         $this->client->deleteByIdBatch($ids);
     }
 
-    /**
-     * @throws ConstraintException
-     * @throws SPException
-     * @throws QueryException
-     */
     public function testGetAll()
     {
         $client = ClientGenerator::factory()->buildClient();

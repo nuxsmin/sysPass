@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,14 +26,13 @@ namespace SP\Domain\User\Ports;
 
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 /**
  * Class UserToUserGroupService
  *
  * @package SP\Domain\Common\Services\UserGroup
  */
-interface UserToUserGroupServiceInterface
+interface UserToUserGroupService
 {
     /**
      * @throws ConstraintException
@@ -52,21 +51,6 @@ interface UserToUserGroupServiceInterface
      * @throws QueryException
      */
     public function getUsersByGroupId(int $id): array;
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    public function getById(int $id): array;
-
-    /**
-     * Checks whether the user is included in the group
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function checkUserInGroup(int $groupId, int $userId): bool;
 
     /**
      * Returns the groups which the user belongs to

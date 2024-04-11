@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\User;
-use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
+use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
 use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
@@ -67,8 +67,8 @@ class AccountAclTest extends UnitaryTestCase
         AclActionsInterface::ACCOUNT_DELETE,
     ];
     private static array                               $accounts;
-    private Acl                                        $acl;
-    private UserToUserGroupServiceInterface|MockObject $userToUserGroupService;
+    private Acl                               $acl;
+    private UserToUserGroupService|MockObject $userToUserGroupService;
 
     public static function setUpBeforeClass(): void
     {
@@ -684,7 +684,7 @@ class AccountAclTest extends UnitaryTestCase
             self::$faker->unixTime
         );
 
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
@@ -729,7 +729,7 @@ class AccountAclTest extends UnitaryTestCase
             self::$faker->unixTime
         );
 
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
@@ -776,7 +776,7 @@ class AccountAclTest extends UnitaryTestCase
             self::$faker->unixTime
         );
 
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
@@ -812,7 +812,7 @@ class AccountAclTest extends UnitaryTestCase
             self::$faker->unixTime
         );
 
-        $userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
@@ -844,7 +844,7 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $this->acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
-        $this->userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $this->userToUserGroupService->method('getGroupsForUser')
                                      ->willReturnMap([
                                                          [1, [new Simple(['userGroupId' => 2])]],

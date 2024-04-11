@@ -69,6 +69,8 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getGroupsForUser(int $userId): QueryResult
     {
@@ -158,6 +160,8 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      * @param $id int
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {

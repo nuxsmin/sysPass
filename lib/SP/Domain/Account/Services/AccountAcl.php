@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDataDto;
-use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
+use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\processException;
@@ -60,10 +60,10 @@ final class AccountAcl extends Service implements AccountAclService
     private UserDataDto        $userData;
 
     public function __construct(
-        Application                                      $application,
-        private readonly AclInterface                    $acl,
-        private readonly UserToUserGroupServiceInterface $userToUserGroupService,
-        private readonly ?FileCacheService               $fileCache = null
+        Application                             $application,
+        private readonly AclInterface           $acl,
+        private readonly UserToUserGroupService $userToUserGroupService,
+        private readonly ?FileCacheService      $fileCache = null
     ) {
         parent::__construct($application);
 

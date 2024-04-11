@@ -28,7 +28,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Tag\Models\Tag;
+use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -41,6 +41,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface TagService
 {
     /**
+     * @return QueryResult<TagModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -51,14 +52,14 @@ interface TagService
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getById(int $id): Tag;
+    public function getById(int $id): TagModel;
 
     /**
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getByName(string $name): ?Tag;
+    public function getByName(string $name): ?TagModel;
 
     /**
      * @throws ConstraintException
@@ -68,30 +69,30 @@ interface TagService
     public function delete(int $id): TagService;
 
     /**
-     * @param  int[]  $ids
+     * @param int[] $ids
      *
      * @throws SPException
      */
-    public function deleteByIdBatch(array $ids): TagService;
+    public function deleteByIdBatch(array $ids): void;
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
      */
-    public function create(Tag $itemData): int;
+    public function create(TagModel $tag): int;
 
     /**
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(Tag $itemData): int;
+    public function update(TagModel $tag): int;
 
     /**
      * Get all items from the service's repository
      *
-     * @return Tag[]
+     * @return array<TagModel>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
-use SP\Domain\User\Ports\UserToUserGroupServiceInterface;
+use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Domain\User\Services\UserGroup;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -47,9 +47,9 @@ use SPT\UnitaryTestCase;
 class UserGroupTest extends UnitaryTestCase
 {
 
-    private MockObject|UserGroupRepository $userGroupRepository;
-    private UserToUserGroupServiceInterface|MockObject $userToUserGroupService;
-    private UserGroup $userGroup;
+    private MockObject|UserGroupRepository    $userGroupRepository;
+    private UserToUserGroupService|MockObject $userToUserGroupService;
+    private UserGroup                         $userGroup;
 
     /**
      * @throws ConstraintException
@@ -372,7 +372,7 @@ class UserGroupTest extends UnitaryTestCase
             UserGroupRepositoryStub::class,
             $userGroupRepositoryMethods
         );
-        $this->userToUserGroupService = $this->createMock(UserToUserGroupServiceInterface::class);
+        $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
 
         $this->userGroup = new UserGroup($this->application, $this->userGroupRepository, $this->userToUserGroupService);
     }
