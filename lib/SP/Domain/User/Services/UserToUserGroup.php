@@ -69,7 +69,7 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
 
     /**
      * @param int $id
-     * @return array
+     * @return array<int>
      */
     public function getUsersByGroupId(int $id): array
     {

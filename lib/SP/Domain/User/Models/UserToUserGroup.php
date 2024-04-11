@@ -35,7 +35,6 @@ class UserToUserGroup extends Model
 
     protected ?int   $userGroupId = null;
     protected ?int   $userId      = null;
-    protected ?array $users       = null;
 
     public function getUserGroupId(): ?int
     {
@@ -45,10 +44,5 @@ class UserToUserGroup extends Model
     public function getUserId(): ?int
     {
         return $this->userId;
-    }
-
-    public function getUsers(): ?array
-    {
-        return $this->users;
     }
 }

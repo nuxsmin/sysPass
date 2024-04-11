@@ -79,8 +79,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $userToUserGroup = new UserToUserGroupModel(
             [
                 'userGroupId' => self::$faker->randomNumber(3),
-                'userId' => self::$faker->randomNumber(3),
-                'users' => [100, 200, 300]
+                'userId' => self::$faker->randomNumber(3)
             ]
         );
 
@@ -99,8 +98,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $userToUserGroup = new UserToUserGroupModel(
             [
                 'userGroupId' => self::$faker->randomNumber(3),
-                'userId' => self::$faker->randomNumber(3),
-                'users' => [100, 200, 300]
+                'userId' => self::$faker->randomNumber(3)
             ]
         );
 
