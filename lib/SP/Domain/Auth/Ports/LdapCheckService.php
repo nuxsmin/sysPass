@@ -25,6 +25,7 @@
 namespace SP\Domain\Auth\Ports;
 
 
+use SP\Domain\Auth\Dtos\LdapCheckResults;
 use SP\Providers\Auth\Ldap\LdapException;
 
 /**
@@ -37,10 +38,10 @@ interface LdapCheckService
     /**
      * @throws LdapException
      */
-    public function getObjects(bool $includeGroups = true): array;
+    public function getObjects(bool $includeGroups = true): LdapCheckResults;
 
     /**
      * @throws LdapException
      */
-    public function getObjectsByFilter(string $filter): array;
+    public function getObjectsByFilter(string $filter): LdapCheckResults;
 }

@@ -89,10 +89,10 @@ final class CheckController extends SimpleControllerBase
             $this->template->assign('header', __('Results'));
 
             return $this->returnJsonResponseData(
-                ['template' => $this->template->render(), 'items' => $data['results']],
+                ['template' => $this->template->render(), 'items' => $data->getResults()],
                 JsonMessage::JSON_SUCCESS,
                 __u('LDAP connection OK'),
-                [sprintf(__('Objects found: %d'), $data['count'])]
+                [sprintf(__('Objects found: %d'), $data->count())]
             );
         } catch (Exception $e) {
             processException($e);

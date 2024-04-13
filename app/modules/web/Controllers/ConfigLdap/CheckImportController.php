@@ -93,13 +93,13 @@ final class CheckImportController extends SimpleControllerBase
 
             $this->template->addTemplate('results', 'itemshow');
             $this->template->assign('header', __('Results'));
-            $this->template->assign('results', $data);
+            $this->template->assign('results', $data->getResults());
 
             return $this->returnJsonResponseData(
-                ['template' => $this->template->render(), 'items' => $data['results']],
+                ['template' => $this->template->render(), 'items' => $data->getResults()],
                 JsonMessage::JSON_SUCCESS,
                 __u('LDAP connection OK'),
-                [sprintf(__('Objects found: %d'), $data['count'])]
+                [sprintf(__('Objects found: %d'), $data->count())]
             );
         } catch (Exception $e) {
             processException($e);

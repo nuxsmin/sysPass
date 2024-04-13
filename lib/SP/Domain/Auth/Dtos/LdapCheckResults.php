@@ -22,27 +22,34 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
-
-use Iterator;
+namespace SP\Domain\Auth\Dtos;
 
 /**
- * Class LdapResults
+ * Class LdapCheckResults
  */
-readonly class LdapResults
+final class LdapCheckResults
 {
-    public function __construct(private int $count, private Iterator $iterator)
+
+    private array $results = [];
+
+    public function __construct(array $items, ?string $type = null)
     {
+        $this->addItems($items, $type);
     }
 
-    public function getIterator(): Iterator
+
+    public function addItems(array $items, ?string $type = null): void
     {
-        return $this->iterator;
+        $this->results[] = ['items' => $items, 'type' => $type];
     }
 
-    public function getCount(): int
+    public function count(): int
     {
-        return $this->count;
+        return (int)array_sum(array_map(fn(array $result) => count($result['items']), $this->results));
     }
 
+    public function getResults(): array
+    {
+        return $this->results;
+    }
 }
