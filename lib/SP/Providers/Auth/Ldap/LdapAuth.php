@@ -41,7 +41,7 @@ use function SP\processException;
  *
  * @implements LdapService<LdapAuthData>
  */
-final class LdapAuth implements LdapAuthService
+final readonly class LdapAuth implements LdapAuthService
 {
     /**
      * LdapBase constructor.
@@ -51,19 +51,19 @@ final class LdapAuth implements LdapAuthService
      * @param ConfigDataInterface $configData
      */
     public function __construct(
-        private readonly LdapService $ldap,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly ConfigDataInterface      $configData
+        private LdapService              $ldap,
+        private EventDispatcherInterface $eventDispatcher,
+        private ConfigDataInterface      $configData
     ) {
     }
 
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginDto $userLoginData
+     * @param UserLoginDto $userLoginDto
      * @return LdapAuthData
      */
-    public function authenticate(UserLoginDto $userLoginData): LdapAuthData
+    public function authenticate(UserLoginDto $userLoginDto): LdapAuthData
     {
         $ldapAuthData = new LdapAuthData($this->isAuthGranted());
 
@@ -72,7 +72,7 @@ final class LdapAuth implements LdapAuthService
 
             $this->ldap->connect();
 
-            $this->getAttributes($userLoginData->getLoginUser(), $ldapAuthData);
+            $this->getAttributes($userLoginDto->getLoginUser(), $ldapAuthData);
 
             // Comprobamos si la cuenta está bloqueada o expirada
             if ($ldapAuthData->getExpire() > 0) {
@@ -85,7 +85,7 @@ final class LdapAuth implements LdapAuthService
                 return $ldapAuthData->fail();
             }
 
-            $this->ldap->connect($ldapAuthData->getDn(), $userLoginData->getLoginPass());
+            $this->ldap->connect($ldapAuthData->getDn(), $userLoginDto->getLoginPass());
 
             return $ldapAuthData->success();
         } catch (LdapException $e) {

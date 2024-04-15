@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -52,7 +52,7 @@ interface SessionContextInterface extends ContextInterface
     public function getSearchFilters(): ?AccountSearchFilterDto;
 
     /**
-     * @param \SP\Domain\Account\Dtos\AccountSearchFilterDto $searchFilters
+     * @param AccountSearchFilterDto $searchFilters
      */
     public function setSearchFilters(AccountSearchFilterDto $searchFilters): void;
 

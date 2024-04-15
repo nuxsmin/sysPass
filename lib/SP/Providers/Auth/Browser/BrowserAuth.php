@@ -27,16 +27,16 @@ namespace SP\Providers\Auth\Browser;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
-use SP\Providers\Auth\AuthInterface;
+use SP\Providers\Auth\AuthService;
 
 /**
  * Class Browser
  *
  * Autentificación basada en credenciales del navegador
  *
- * @implements AuthInterface<BrowserAuthData>
+ * @implements AuthService<BrowserAuthData>
  */
-final class BrowserAuth implements BrowserAuthInterface
+final class BrowserAuth implements BrowserAuthService
 {
     private ConfigDataInterface $configData;
     private RequestInterface    $request;
@@ -50,16 +50,16 @@ final class BrowserAuth implements BrowserAuthInterface
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginDto $userLoginData
+     * @param UserLoginDto $userLoginDto
      * @return BrowserAuthData
      */
-    public function authenticate(UserLoginDto $userLoginData): BrowserAuthData
+    public function authenticate(UserLoginDto $userLoginDto): BrowserAuthData
     {
         $browserAuthData = new BrowserAuthData($this->isAuthGranted());
 
-        if (!empty($userLoginData->getLoginUser())
-            && !empty($userLoginData->getLoginPass())
-            && $this->checkServerAuthUser($userLoginData->getLoginUser())
+        if (!empty($userLoginDto->getLoginUser())
+            && !empty($userLoginDto->getLoginPass())
+            && $this->checkServerAuthUser($userLoginDto->getLoginUser())
         ) {
             return $browserAuthData->success();
         }
@@ -69,8 +69,8 @@ final class BrowserAuth implements BrowserAuthInterface
             $authPass = $this->getAuthPass();
 
             if ($authUser !== null && $authPass !== null) {
-                $userLoginData->setLoginUser($authUser);
-                $userLoginData->setLoginPass($authPass);
+                $userLoginDto->setLoginUser($authUser);
+                $userLoginDto->setLoginPass($authPass);
 
                 $browserAuthData->setName($authUser);
 
@@ -80,7 +80,7 @@ final class BrowserAuth implements BrowserAuthInterface
             return $browserAuthData->fail();
         }
 
-        return $this->checkServerAuthUser($userLoginData->getLoginUser())
+        return $this->checkServerAuthUser($userLoginDto->getLoginUser())
             ? $browserAuthData->success()
             : $browserAuthData->fail();
     }

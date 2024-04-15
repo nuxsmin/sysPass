@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Providers\Auth;
 
+use SP\Domain\User\Dtos\UserDataDto;
+
 /**
  * Class AuthDataBase
  */
@@ -40,8 +42,10 @@ abstract class AuthDataBase
     /**
      * @param bool $authoritative Whether this authentication is required to access to the application
      */
-    public function __construct(private readonly bool $authoritative = false)
-    {
+    public function __construct(
+        private readonly bool         $authoritative = false,
+        private readonly ?UserDataDto $userDataDto = null
+    ) {
     }
 
     public function getName(): ?string
@@ -62,11 +66,6 @@ abstract class AuthDataBase
     public function setEmail(string $email): void
     {
         $this->email = $email;
-    }
-
-    public function getAuthenticated(): ?int
-    {
-        return $this->authenticated;
     }
 
     public function getServer(): ?string
@@ -120,5 +119,10 @@ abstract class AuthDataBase
     public function isOk(): bool
     {
         return $this->authenticated && $this->success && !$this->failed;
+    }
+
+    public function getUserDataDto(): ?UserDataDto
+    {
+        return $this->userDataDto;
     }
 }

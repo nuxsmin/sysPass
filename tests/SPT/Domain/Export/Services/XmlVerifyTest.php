@@ -25,6 +25,7 @@
 namespace SPT\Domain\Export\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Services\ServiceException;
@@ -35,7 +36,6 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Services\XmlVerify;
 use SPT\UnitaryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlVerifyTest
@@ -230,7 +230,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->xmlVerify->verify(self::VALID_ENCRYPTED_FILE, 'test_encrypt');
     }
 
-    protected function getConfig(): ConfigFileService
+    protected function buildConfig(): ConfigFileService
     {
         $configData = new ConfigData([ConfigDataInterface::PASSWORD_SALT => 'a_salt']);
 

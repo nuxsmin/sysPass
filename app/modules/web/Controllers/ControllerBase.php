@@ -48,7 +48,7 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Browser\BrowserAuthService;
 
 use function SP\__;
 use function SP\logger;
@@ -76,8 +76,8 @@ abstract class ControllerBase
     protected ?ProfileData      $userProfileData = null;
     protected bool                         $isAjax;
     protected LayoutHelper                 $layoutHelper;
-    protected string                       $actionName;
-    private BrowserAuthInterface           $browser;
+    protected string           $actionName;
+    private BrowserAuthService $browser;
 
     public function __construct(
         Application $application,

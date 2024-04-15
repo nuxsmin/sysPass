@@ -24,16 +24,16 @@
 
 namespace SP\Providers\Auth\Database;
 
-use SP\Providers\Auth\AuthInterface;
+use SP\Providers\Auth\AuthService;
 
 /**
  * Class Database
  *
  * Autentificación basada en base de datos
  *
- * @extends AuthInterface<DatabaseAuthData>
+ * @extends AuthService<DatabaseAuthData>
  */
-interface DatabaseAuthService extends AuthInterface
+interface DatabaseAuthService extends AuthService
 {
     /**
      * Indica si es requerida para acceder a la aplicación

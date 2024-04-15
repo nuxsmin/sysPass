@@ -24,29 +24,27 @@
 
 namespace SP\Providers\Auth;
 
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 
 /**
- * Class AuthResult
+ * Interface AuthInterface
+ *
+ * @template T
  */
-final readonly class AuthResult
+interface AuthService
 {
+    /**
+     * Authenticate using user's data
+     *
+     * @param UserLoginDto $userLoginDto
+     * @return T
+     */
+    public function authenticate(UserLoginDto $userLoginDto): AuthDataBase;
 
-    public function __construct(
-        private AuthType                                      $authTypeEnum,
-        private LdapAuthData|DatabaseAuthData|BrowserAuthData $authData
-    ) {
-    }
-
-    public function getAuthType(): AuthType
-    {
-        return $this->authTypeEnum;
-    }
-
-    public function getAuthData(): LdapAuthData|DatabaseAuthData|BrowserAuthData
-    {
-        return $this->authData;
-    }
+    /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return bool
+     */
+    public function isAuthGranted(): bool;
 }

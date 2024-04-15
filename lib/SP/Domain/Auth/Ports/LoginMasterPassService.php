@@ -22,30 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth;
+namespace SP\Domain\Auth\Ports;
 
 use SP\Domain\Auth\Dtos\UserLoginDto;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
- * Interface AuthInterface
- *
- * @template T
- * @package Auth
+ * Class LoginMasterPass
  */
-interface AuthInterface
+interface LoginMasterPassService
 {
     /**
-     * Authenticate using user's data
+     * Load master password or request it
      *
-     * @param UserLoginDto $userLoginData
-     * @return T
+     * @param UserLoginDto $userLoginDto
+     * @param UserDataDto $userDataDto
+     * @throws AuthException
+     * @throws ServiceException
      */
-    public function authenticate(UserLoginDto $userLoginData): AuthDataBase;
-
-    /**
-     * Indica si es requerida para acceder a la aplicación
-     *
-     * @return bool
-     */
-    public function isAuthGranted(): bool;
+    public function loadMasterPass(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void;
 }

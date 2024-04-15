@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Plugin\PluginManager;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Browser\BrowserAuthService;
 
 /**
  * Class GetEnvironmentController
@@ -48,15 +48,15 @@ final class GetEnvironmentController extends SimpleControllerBase
     use JsonTrait;
 
     private CryptPKIInterface    $cryptPKI;
-    private PluginManager        $pluginManager;
-    private BrowserAuthInterface $browser;
+    private PluginManager      $pluginManager;
+    private BrowserAuthService $browser;
 
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         CryptPKIInterface $cryptPKI,
         PluginManager $pluginManager,
-        BrowserAuthInterface $browser
+        BrowserAuthService $browser
     ) {
         $this->cryptPKI = $cryptPKI;
         $this->pluginManager = $pluginManager;

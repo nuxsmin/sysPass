@@ -68,9 +68,8 @@ final class LoginController extends ControllerBase
     {
         try {
             $from = $this->getSignedUriFromRequest($this->request, $this->configData);
-            $this->loginService->setFrom($from);
 
-            $loginResponse = $this->loginService->doLogin();
+            $loginResponse = $this->loginService->doLogin($from);
 
             $this->checkForwarded();
 
@@ -91,8 +90,10 @@ final class LoginController extends ControllerBase
             );
 
             return $this->returnJsonResponseData([
-                'url' => $this->session->getTrasientKey('redirect') ?: $loginResponse->getRedirect(),
-            ]);
+                                                     'url' => $this->session->getTrasientKey(
+                                                         'redirect'
+                                                     ) ?: $loginResponse->getRedirect(),
+                                                 ]);
         } catch (Exception $e) {
             processException($e);
 

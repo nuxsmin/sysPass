@@ -26,6 +26,7 @@ namespace SP\Domain\User\Ports;
 
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 
 /**
@@ -36,29 +37,46 @@ use SP\Domain\User\Dtos\UserMasterPassDto;
 interface UserMasterPassService
 {
     /**
-     * Actualizar la clave maestra con la clave anterior del usuario
+     * Update the current user's master password with the previous user's login password
      *
      * @throws ServiceException
      */
-    public function updateFromOldPass(string $oldUserPass, UserLoginDto $userLoginDto): UserMasterPassDto;
+    public function updateFromOldPass(
+        string       $oldUserPass,
+        UserLoginDto $userLoginDto,
+        UserDataDto  $userDataDto
+    ): UserMasterPassDto;
 
     /**
-     * Comprueba la clave maestra del usuario.
+     * Load the user's master password
      *
      * @throws ServiceException
      */
-    public function load(UserLoginDto $userLoginDto, ?string $userPass = null): UserMasterPassDto;
+    public function load(
+        UserLoginDto $userLoginDto,
+        UserDataDto  $userDataDto,
+        ?string      $userPass = null
+    ): UserMasterPassDto;
 
     /**
-     * Actualizar la clave maestra del usuario al realizar login
+     * Update the user's master pass on log in.
+     * It requires the user's login data to build a secure key to store the master password
      *
+     * @param string $userMasterPass
+     * @param UserLoginDto $userLoginDto
+     * @param int $userId
+     * @return UserMasterPassDto
      * @throws ServiceException
      */
-    public function updateOnLogin(string $userMasterPass, UserLoginDto $userLoginDto): UserMasterPassDto;
+    public function updateOnLogin(string $userMasterPass, UserLoginDto $userLoginDto, int $userId): UserMasterPassDto;
 
     /**
-     * Actualizar la clave maestra del usuario en la BBDD.
+     * Update the user's master password in the database
      *
+     * @param string $masterPass
+     * @param string $userLogin
+     * @param string $userPass
+     * @return UserMasterPassDto
      * @throws ServiceException
      */
     public function create(string $masterPass, string $userLogin, string $userPass): UserMasterPassDto;

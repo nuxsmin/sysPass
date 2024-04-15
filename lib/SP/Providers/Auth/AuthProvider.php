@@ -27,7 +27,7 @@ namespace SP\Providers\Auth;
 use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Providers\Provider;
 use SplObjectStorage;
 
@@ -36,16 +36,14 @@ use function SP\__u;
 defined('APP_ROOT') || die();
 
 /**
- * Class Auth
+ * Class AuthProvider
  *
  * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
- *
- * @package SP\Providers\Auth
  */
-class AuthProvider extends Provider implements AuthProviderInterface
+final class AuthProvider extends Provider implements AuthProviderService
 {
     /**
-     * @var SplObjectStorage<AuthInterface>
+     * @var SplObjectStorage<AuthService,AuthType>
      */
     protected readonly SplObjectStorage $auths;
 
@@ -67,45 +65,43 @@ class AuthProvider extends Provider implements AuthProviderInterface
     /**
      * Register authentication methods
      *
-     * @param AuthInterface $auth
-     * @param AuthTypeEnum $authTypeEnum
+     * @param AuthService $auth
+     * @param AuthType $authTypeEnum
      * @throws AuthException
      */
-    public function registerAuth(AuthInterface $auth, AuthTypeEnum $authTypeEnum): void
+    public function registerAuth(AuthService $auth, AuthType $authTypeEnum): void
     {
         if ($this->auths->contains($auth)) {
-            throw new AuthException(
-                __u('Authentication already initialized'),
-                SPException::ERROR,
-                $auth::class
-            );
+            throw AuthException::error(__u('Authentication already initialized'), $auth::class);
         }
 
-        $this->auths->attach($auth, $authTypeEnum->value);
+        $this->auths->attach($auth, $authTypeEnum);
     }
 
     /**
-     * Probar los métodos de autentificación
-     *
-     * @param UserLoginDto $userLoginData
-     *
-     * @return false|AuthResult[]
+     * @inheritDoc
      */
-    public function doAuth(UserLoginDto $userLoginData): array|bool
+    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDataDto
     {
-        $authsResult = [];
-
         $this->auths->rewind();
 
         while ($this->auths->valid()) {
-            $auth = $this->auths->current();
-            $authName = $this->auths->getInfo();
+            $authResult = new AuthResult(
+                $this->auths->getInfo(),
+                $this->auths->current()->authenticate($userLoginData)
+            );
 
-            $authsResult[] = new AuthResult($authName, $auth->authenticate($userLoginData));
+            $callback($authResult);
+
+            $authData = $authResult->getAuthData();
+
+            if ($authData->isAuthoritative() && $authData->isOk()) {
+                return $authData->getUserDataDto();
+            }
 
             $this->auths->next();
         }
 
-        return count($authsResult) > 0 ? $authsResult : false;
+        return null;
     }
 }

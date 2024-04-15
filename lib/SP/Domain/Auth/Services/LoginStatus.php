@@ -22,25 +22,19 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth;
-
-use SP\Domain\Auth\Dtos\UserLoginDto;
+namespace SP\Domain\Auth\Services;
 
 /**
- * Class Auth
- *
- * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
- *
- * @package SP\Providers\Auth
+ * Class LoginStatus
  */
-interface AuthProviderInterface
+enum LoginStatus: int
 {
-    /**
-     * Probar los métodos de autentificación
-     *
-     * @param UserLoginDto $userLoginData
-     *
-     * @return false|AuthResult[]
-     */
-    public function doAuth(UserLoginDto $userLoginData): array|bool;
+    case OK                    = 0;
+    case INVALID_LOGIN         = 1;
+    case INVALID_MASTER_PASS   = 2;
+    case USER_DISABLED         = 3;
+    case OLD_PASS_REQUIRED     = 5;
+    case MAX_ATTEMPTS_EXCEEDED = 6;
+    case PASS_RESET_REQUIRED   = 7;
+    case PASS                  = 100;
 }

@@ -91,10 +91,10 @@ use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 use SP\Providers\Acl\AclHandler;
 use SP\Providers\Auth\AuthProvider;
-use SP\Providers\Auth\AuthProviderInterface;
-use SP\Providers\Auth\AuthTypeEnum;
+use SP\Providers\Auth\AuthProviderService;
+use SP\Providers\Auth\AuthType;
 use SP\Providers\Auth\Browser\BrowserAuth;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Browser\BrowserAuthService;
 use SP\Providers\Auth\Database\DatabaseAuth;
 use SP\Providers\Auth\Database\DatabaseAuthService;
 use SP\Providers\Auth\Ldap\LdapActions;
@@ -167,7 +167,7 @@ final class CoreDefinitions
             ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class),
             DatabaseAuthService::class => autowire(DatabaseAuth::class),
-            BrowserAuthInterface::class => autowire(BrowserAuth::class),
+            BrowserAuthService::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'getFrom']),
             LdapConnectionInterface::class => autowire(LdapConnection::class),
             LdapActionsService::class => autowire(LdapActions::class),
@@ -176,23 +176,23 @@ final class CoreDefinitions
                     'ldap',
                     factory([LdapBase::class, 'factory'])
                 ),
-            AuthProviderInterface::class => factory(
+            AuthProviderService::class => factory(
                 static function (
-                    AuthProvider         $authProvider,
-                    ConfigDataInterface  $configData,
-                    LdapAuthService      $ldapAuth,
-                    BrowserAuthInterface $browserAuth,
-                    DatabaseAuthService  $databaseAuth,
+                    AuthProvider        $authProvider,
+                    ConfigDataInterface $configData,
+                    LdapAuthService     $ldapAuth,
+                    BrowserAuthService  $browserAuth,
+                    DatabaseAuthService $databaseAuth,
                 ) {
                     if ($configData->isLdapEnabled()) {
-                        $authProvider->registerAuth($ldapAuth, AuthTypeEnum::Ldap);
+                        $authProvider->registerAuth($ldapAuth, AuthType::Ldap);
                     }
 
                     if ($configData->isAuthBasicEnabled()) {
-                        $authProvider->registerAuth($browserAuth, AuthTypeEnum::Browser);
+                        $authProvider->registerAuth($browserAuth, AuthType::Browser);
                     }
 
-                    $authProvider->registerAuth($databaseAuth, AuthTypeEnum::Database);
+                    $authProvider->registerAuth($databaseAuth, AuthType::Database);
 
                     return $authProvider;
                 }

@@ -24,32 +24,41 @@
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Domain\Auth\Dtos\LoginResponseDto;
+use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\AuthResult;
+use SP\Providers\Auth\Browser\BrowserAuthData;
+use SP\Providers\Auth\Database\DatabaseAuthData;
+use SP\Providers\Auth\Ldap\LdapAuthData;
 
 /**
- * Interface LoginService
+ * Class LoginDatabase
  */
-interface LoginService
+interface LoginAuthHandlerService
 {
     /**
-     * Execute login process
+     * Check response from database authentication
      *
-     * @param string|null $from Set the source routable action
-     * @return LoginResponseDto
+     * @param DatabaseAuthData $authData
+     * @param UserLoginDto $userLoginDto
      * @throws AuthException
      */
-    public function doLogin(?string $from = null): LoginResponseDto;
+    public function authDatabase(DatabaseAuthData $authData, UserLoginDto $userLoginDto): void;
 
     /**
-     * Handle the authentication result to determine whether the login is successful
+     * Check response from browser authentication
      *
-     * @param AuthResult $authResult The authentication result
+     * @param BrowserAuthData $authData
+     * @param UserLoginDto $userLoginDto
      * @throws AuthException
-     * @uses LoginAuthHandlerService::authBrowser()
-     * @uses LoginAuthHandlerService::authDatabase()
-     * @uses LoginAuthHandlerService::authLdap()
      */
-    public function handleAuthResponse(AuthResult $authResult): void;
+    public function authBrowser(BrowserAuthData $authData, UserLoginDto $userLoginDto): void;
+
+    /**
+     * Check response from LDAP authentication
+     *
+     * @param LdapAuthData $authData
+     * @param UserLoginDto $userLoginDto
+     * @throws AuthException
+     */
+    public function authLdap(LdapAuthData $authData, UserLoginDto $userLoginDto): void;
 }

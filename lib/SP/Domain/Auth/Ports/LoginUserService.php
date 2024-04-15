@@ -22,31 +22,25 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth;
+namespace SP\Domain\Auth\Ports;
 
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Auth\Dtos\LoginResponseDto;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
- * Class AuthResult
+ * Interface LoginUserService
  */
-final readonly class AuthResult
+interface LoginUserService
 {
-
-    public function __construct(
-        private AuthType                                      $authTypeEnum,
-        private LdapAuthData|DatabaseAuthData|BrowserAuthData $authData
-    ) {
-    }
-
-    public function getAuthType(): AuthType
-    {
-        return $this->authTypeEnum;
-    }
-
-    public function getAuthData(): LdapAuthData|DatabaseAuthData|BrowserAuthData
-    {
-        return $this->authData;
-    }
+    /**
+     * Check the user status
+     *
+     * @param UserDataDto $userDataDto
+     * @return LoginResponseDto
+     * @throws AuthException
+     * @throws ServiceException
+     */
+    public function checkUser(UserDataDto $userDataDto): LoginResponseDto;
 }

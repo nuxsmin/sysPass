@@ -24,15 +24,15 @@
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Providers\Auth\AuthInterface;
+use SP\Providers\Auth\AuthService;
 use SP\Providers\Auth\Ldap\LdapAuthData;
 
 /**
  * Class LdapBase
  *
- * @extends AuthInterface<LdapAuthData>
+ * @extends AuthService<LdapAuthData>
  */
-interface LdapAuthService extends AuthInterface
+interface LdapAuthService extends AuthService
 {
     public const ACCOUNT_NO_GROUPS = 702;
     public const ACCOUNT_EXPIRED   = 701;

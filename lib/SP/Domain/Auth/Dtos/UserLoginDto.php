@@ -24,27 +24,18 @@
 
 namespace SP\Domain\Auth\Dtos;
 
-use SP\Domain\User\Dtos\UserDataDto;
-
 /**
  * Class UserLoginDto
  */
 class UserLoginDto
 {
-    protected ?string      $loginUser   = null;
-    protected ?string      $loginPass   = null;
-    protected ?UserDataDto $userDataDto = null;
+    private ?string $loginUser;
+    private ?string $loginPass;
 
-    /**
-     * @param string|null $loginUser
-     * @param string|null $loginPass
-     * @param UserDataDto|null $userDataDto
-     */
-    public function __construct(?string $loginUser = null, ?string $loginPass = null, ?UserDataDto $userDataDto = null)
+    public function __construct(?string $loginUser = null, ?string $loginPass = null)
     {
         $this->loginUser = $loginUser;
         $this->loginPass = $loginPass;
-        $this->userDataDto = $userDataDto;
     }
 
     public function getLoginUser(): ?string
@@ -65,15 +56,5 @@ class UserLoginDto
     public function setLoginPass(string $loginPass): void
     {
         $this->loginPass = $loginPass;
-    }
-
-    public function getUserDataDto(): ?UserDataDto
-    {
-        return $this->userDataDto;
-    }
-
-    public function setUserDataDto(UserDataDto $userDataDto = null): void
-    {
-        $this->userDataDto = $userDataDto;
     }
 }

@@ -24,29 +24,18 @@
 
 namespace SP\Domain\Auth\Dtos;
 
-/**
- * Class LoginResponse
- *
- * @package SP\Domain\Auth\Services
- */
-final class LoginResponseDto
-{
-    private int     $status;
-    private ?string $redirect;
+use SP\Domain\Auth\Services\LoginStatus;
 
-    /**
-     * LoginResponse constructor.
-     *
-     * @param  int  $status
-     * @param  string|null  $redirect
-     */
-    public function __construct(int $status, ?string $redirect = null)
+/**
+ * Class LoginResponseDto
+ */
+final readonly class LoginResponseDto
+{
+    public function __construct(private LoginStatus $status, private ?string $redirect = null)
     {
-        $this->status = $status;
-        $this->redirect = $redirect;
     }
 
-    public function getStatus(): int
+    public function getStatus(): LoginStatus
     {
         return $this->status;
     }

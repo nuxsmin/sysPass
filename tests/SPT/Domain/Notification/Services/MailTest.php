@@ -296,7 +296,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
-    protected function getConfig(): ConfigFileService
+    protected function buildConfig(): ConfigFileService
     {
         $configData = ConfigDataGenerator::factory()->buildConfigData();
         $configData->setMailServer(self::$faker->domainName());

@@ -34,6 +34,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
@@ -60,31 +61,32 @@ final class UserMasterPass extends Service implements UserMasterPassService
     }
 
     /**
-     * Update the master pass by using the old user's password
-     *
-     * @throws ServiceException
+     * @inheritDoc
      */
-    public function updateFromOldPass(string $oldUserPass, UserLoginDto $userLoginDto): UserMasterPassDto
-    {
-        $response = $this->load($userLoginDto, $oldUserPass);
+    public function updateFromOldPass(
+        string       $oldUserPass,
+        UserLoginDto $userLoginDto,
+        UserDataDto  $userDataDto
+    ): UserMasterPassDto {
+        $response = $this->load($userLoginDto, $userDataDto, $oldUserPass);
 
         if ($response->getUserMasterPassStatus() === UserMasterPassStatus::Ok) {
-            return $this->updateOnLogin($response->getClearMasterPass(), $userLoginDto);
+            return $this->updateOnLogin($response->getClearMasterPass(), $userLoginDto, $userDataDto->getId());
         }
 
         return new UserMasterPassDto(UserMasterPassStatus::Invalid);
     }
 
     /**
-     * Load the user's master pass
-     *
-     * @throws ServiceException
+     * @inheritDoc
      */
-    public function load(UserLoginDto $userLoginDto, ?string $userPass = null): UserMasterPassDto
-    {
+    public function load(
+        UserLoginDto $userLoginDto,
+        UserDataDto  $userDataDto,
+        ?string      $userPass = null
+    ): UserMasterPassDto {
         try {
-            if (($userDataDto = $userLoginDto->getUserDataDto()) === null
-                || empty($userDataDto->getMPass())
+            if (empty($userDataDto->getMPass())
                 || empty($userDataDto->getMKey())
                 || empty($systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD))
             ) {
@@ -139,15 +141,11 @@ final class UserMasterPass extends Service implements UserMasterPassService
     }
 
     /**
-     * Update the user's master pass on log in.
-     * It requires the user's login data to build a secure key to store the master password
-     *
-     * @throws ServiceException
+     * @inheritDoc
      */
-    public function updateOnLogin(string $userMasterPass, UserLoginDto $userLoginDto): UserMasterPassDto
+    public function updateOnLogin(string $userMasterPass, UserLoginDto $userLoginDto, int $userId): UserMasterPassDto
     {
         try {
-            $userData = $userLoginDto->getUserDataDto();
             $systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD);
 
             if (null === $systemMasterPassHash) {
@@ -164,7 +162,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
                 );
 
                 $this->userRepository->updateMasterPassById(
-                    $userData->getId(),
+                    $userId,
                     $response->getCryptMasterPass(),
                     $response->getCryptSecuredKey()
                 );
@@ -183,9 +181,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
     }
 
     /**
-     * Actualizar la clave maestra del usuario en la BBDD.
-     *
-     * @throws ServiceException
+     * @inheritDoc
      */
     public function create(string $masterPass, string $userLogin, string $userPass): UserMasterPassDto
     {

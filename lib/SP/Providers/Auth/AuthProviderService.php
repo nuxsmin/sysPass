@@ -24,29 +24,23 @@
 
 namespace SP\Providers\Auth;
 
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Auth\Dtos\UserLoginDto;
+use SP\Domain\User\Dtos\UserDataDto;
 
 /**
- * Class AuthResult
+ * Interface AuthProviderService
  */
-final readonly class AuthResult
+interface AuthProviderService
 {
-
-    public function __construct(
-        private AuthType                                      $authTypeEnum,
-        private LdapAuthData|DatabaseAuthData|BrowserAuthData $authData
-    ) {
-    }
-
-    public function getAuthType(): AuthType
-    {
-        return $this->authTypeEnum;
-    }
-
-    public function getAuthData(): LdapAuthData|DatabaseAuthData|BrowserAuthData
-    {
-        return $this->authData;
-    }
+    /**
+     * Authenticate using the registered authentication providers.
+     *
+     * It iterates over the registered authentication providers and returns whenever an authoritative provider
+     * successfully authenticates the user.
+     *
+     * @param UserLoginDto $userLoginData
+     * @param callable(AuthResult):void $callback A callback function to call after the authentication.
+     * @return UserDataDto|null
+     */
+    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDataDto;
 }

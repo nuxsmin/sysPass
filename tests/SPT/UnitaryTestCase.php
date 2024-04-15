@@ -84,7 +84,7 @@ abstract class UnitaryTestCase extends TestCase
      */
     protected function setUp(): void
     {
-        $this->application = $this->mockApplication();
+        $this->application = $this->buildApplication();
         $this->config = $this->application->getConfig();
 
         parent::setUp();
@@ -94,24 +94,34 @@ abstract class UnitaryTestCase extends TestCase
      * @return Application
      * @throws ContextException|Exception
      */
-    private function mockApplication(): Application
+    private function buildApplication(): Application
     {
-        $this->context = new StatelessContext();
-        $this->context->initialize();
-        $this->context->setUserData($this->getUserDataDto());
-        $this->context->setUserProfile(new ProfileData());
+        $this->context = $this->buildContext();
 
         return new Application(
-            $this->getConfig(),
+            $this->buildConfig(),
             $this->createStub(EventDispatcherInterface::class),
             $this->context
         );
     }
 
     /**
+     * @throws ContextException
+     */
+    protected function buildContext(): ContextInterface
+    {
+        $context = new StatelessContext();
+        $context->initialize();
+        $context->setUserData($this->buildUserDataDto());
+        $context->setUserProfile(new ProfileData());
+
+        return $context;
+    }
+
+    /**
      * @return UserDataDto
      */
-    private function getUserDataDto(): UserDataDto
+    private function buildUserDataDto(): UserDataDto
     {
         return new UserDataDto(
             new User(
@@ -129,7 +139,7 @@ abstract class UnitaryTestCase extends TestCase
     /**
      * @throws Exception
      */
-    protected function getConfig(): ConfigFileService
+    protected function buildConfig(): ConfigFileService
     {
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 

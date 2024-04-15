@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthInterface;
+use SP\Providers\Auth\Browser\BrowserAuthService;
 
 /**
  * Class WebControllerHelper
@@ -44,15 +44,15 @@ final class WebControllerHelper
     private AclInterface $acl;
     private RequestInterface     $request;
     private PhpExtensionChecker  $extensionChecker;
-    private TemplateInterface    $template;
-    private BrowserAuthInterface $browser;
-    private LayoutHelper         $layoutHelper;
+    private TemplateInterface  $template;
+    private BrowserAuthService $browser;
+    private LayoutHelper       $layoutHelper;
 
     public function __construct(
         SimpleControllerHelper $simpleControllerHelper,
-        TemplateInterface    $template,
-        BrowserAuthInterface $browser,
-        LayoutHelper         $layoutHelper
+        TemplateInterface  $template,
+        BrowserAuthService $browser,
+        LayoutHelper       $layoutHelper
     ) {
         $this->theme = $simpleControllerHelper->getTheme();
         $this->router = $simpleControllerHelper->getRouter();
@@ -94,7 +94,7 @@ final class WebControllerHelper
         return $this->template;
     }
 
-    public function getBrowser(): BrowserAuthInterface
+    public function getBrowser(): BrowserAuthService
     {
         return $this->browser;
     }

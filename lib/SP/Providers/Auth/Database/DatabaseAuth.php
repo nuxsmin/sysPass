@@ -47,14 +47,50 @@ final readonly class DatabaseAuth implements DatabaseAuthService
     /**
      * Authenticate using user's data
      *
-     * @param UserLoginDto $userLoginData
+     * @param UserLoginDto $userLoginDto
      * @return DatabaseAuthData
      */
-    public function authenticate(UserLoginDto $userLoginData): DatabaseAuthData
+    public function authenticate(UserLoginDto $userLoginDto): DatabaseAuthData
     {
-        $authData = new DatabaseAuthData($this->isAuthGranted());
+        $authUser = $this->authUser($userLoginDto);
 
-        return $this->authUser($userLoginData) ? $authData->success() : $authData->fail();
+        $authData = new DatabaseAuthData($this->isAuthGranted(), $authUser ?: null);
+
+        return $authUser ? $authData->success() : $authData->fail();
+    }
+
+    private function authUser(UserLoginDto $userLoginDto): UserDataDto|false
+    {
+        try {
+            $userDataDto = new UserDataDto($this->userService->getByLogin($userLoginDto->getLoginUser()));
+
+            if ($userDataDto->getIsMigrate() && $this->checkMigrateUser($userDataDto, $userLoginDto)) {
+                $this->userPassService->migrateUserPassById($userDataDto->getId(), $userLoginDto->getLoginPass());
+
+                return $userDataDto;
+            }
+
+            if (Hash::checkHashKey($userLoginDto->getLoginPass(), $userDataDto->getPass())) {
+                return $userDataDto;
+            }
+        } catch (Exception $e) {
+            processException($e);
+        }
+
+        return false;
+    }
+
+    private function checkMigrateUser(UserDataDto $userDataDto, UserLoginDto $userLoginDto): bool
+    {
+        $passHashSha = sha1($userDataDto->getHashSalt() . $userLoginDto->getLoginPass());
+
+        return ($userDataDto->getPass() === $passHashSha
+                || $userDataDto->getPass() === md5($userLoginDto->getLoginPass())
+                || hash_equals(
+                    $userDataDto->getPass(),
+                    crypt($userLoginDto->getLoginPass(), $userDataDto->getHashSalt())
+                )
+                || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDataDto->getPass()));
     }
 
     /**
@@ -65,42 +101,5 @@ final readonly class DatabaseAuth implements DatabaseAuthService
     public function isAuthGranted(): bool
     {
         return true;
-    }
-
-    private function authUser(UserLoginDto $userLoginData): bool
-    {
-        try {
-            $userLoginResponse = new UserDataDto($this->userService->getByLogin($userLoginData->getLoginUser()));
-
-            $userLoginData->setUserDataDto($userLoginResponse);
-
-            if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser($userLoginResponse, $userLoginData)) {
-                $this->userPassService->migrateUserPassById(
-                    $userLoginResponse->getId(),
-                    $userLoginData->getLoginPass()
-                );
-
-                return true;
-            }
-
-            return Hash::checkHashKey($userLoginData->getLoginPass(), $userLoginResponse->getPass());
-        } catch (Exception $e) {
-            processException($e);
-        }
-
-        return false;
-    }
-
-    private function checkMigrateUser(UserDataDto $userLoginResponse, UserLoginDto $userLoginData): bool
-    {
-        $passHashSha = sha1($userLoginResponse->getHashSalt() . $userLoginData->getLoginPass());
-
-        return ($userLoginResponse->getPass() === $passHashSha
-                || $userLoginResponse->getPass() === md5($userLoginData->getLoginPass())
-                || hash_equals(
-                    $userLoginResponse->getPass(),
-                    crypt($userLoginData->getLoginPass(), $userLoginResponse->getHashSalt())
-                )
-                || Hash::checkHashKey($userLoginData->getLoginPass(), $userLoginResponse->getPass()));
     }
 }

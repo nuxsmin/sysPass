@@ -28,10 +28,13 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\AuthInterface;
 use SP\Providers\Auth\AuthProvider;
-use SP\Providers\Auth\AuthTypeEnum;
+use SP\Providers\Auth\AuthResult;
+use SP\Providers\Auth\AuthService;
+use SP\Providers\Auth\AuthType;
 use SP\Providers\Auth\Browser\BrowserAuthData;
+use SP\Providers\Auth\Database\DatabaseAuthData;
+use SP\Providers\Auth\Ldap\LdapAuthData;
 use SPT\UnitaryTestCase;
 
 /**
@@ -50,14 +53,14 @@ class AuthProviderTest extends UnitaryTestCase
      */
     public function testRegisterAuthFail()
     {
-        $auth1 = $this->createMock(AuthInterface::class);
+        $auth1 = $this->createMock(AuthService::class);
 
-        $this->authProvider->registerAuth($auth1, AuthTypeEnum::Ldap);
+        $this->authProvider->registerAuth($auth1, AuthType::Ldap);
 
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Authentication already initialized');
 
-        $this->authProvider->registerAuth($auth1, AuthTypeEnum::Ldap);
+        $this->authProvider->registerAuth($auth1, AuthType::Ldap);
     }
 
     /**
@@ -76,19 +79,44 @@ class AuthProviderTest extends UnitaryTestCase
         $browserAuthData->setStatusCode(0);
         $browserAuthData->success();
 
-        $auth = $this->createMock(AuthInterface::class);
-        $auth->expects(self::once())
-             ->method('authenticate')
-             ->with($userLoginData)
-             ->willReturn($browserAuthData);
+        $ldapAuthData = new LdapAuthData(true);
+        $ldapAuthData->setName(self::$faker->name);
+        $ldapAuthData->setEmail(self::$faker->email);
+        $ldapAuthData->setStatusCode(1);
+        $ldapAuthData->success();
 
-        $this->authProvider->registerAuth($auth, AuthTypeEnum::Ldap);
+        $databaseAuthData = new DatabaseAuthData(true);
+        $databaseAuthData->setName(self::$faker->name);
+        $databaseAuthData->setEmail(self::$faker->email);
+        $databaseAuthData->setStatusCode(2);
+        $databaseAuthData->success();
 
-        $out = $this->authProvider->doAuth($userLoginData);
+        $authBrowser = $this->createMock(AuthService::class);
+        $authBrowser->expects(self::once())
+                    ->method('authenticate')
+                    ->with($userLoginData)
+                    ->willReturn($browserAuthData);
 
-        self::assertCount(1, $out);
-        self::assertEquals(AuthTypeEnum::Ldap->value, $out[0]->getAuthName());
-        self::assertEquals($browserAuthData, $out[0]->getData());
+        $authLdap = $this->createMock(AuthService::class);
+        $authLdap->expects(self::once())
+                 ->method('authenticate')
+                 ->with($userLoginData)
+                 ->willReturn($ldapAuthData);
+
+        $authDatabase = $this->createMock(AuthService::class);
+        $authDatabase->expects(self::never())
+                     ->method('authenticate');
+
+        $this->authProvider->registerAuth($authBrowser, AuthType::Browser);
+        $this->authProvider->registerAuth($authLdap, AuthType::Ldap);
+        $this->authProvider->registerAuth($authDatabase, AuthType::Database);
+
+        $callback = static function (AuthResult $authResult) {
+            $authData = $authResult->getAuthData();
+            return $authData->isAuthoritative() && !$authData->isOk();
+        };
+
+        $this->authProvider->doAuth($userLoginData, $callback);
     }
 
     protected function setUp(): void
@@ -97,6 +125,4 @@ class AuthProviderTest extends UnitaryTestCase
 
         $this->authProvider = new AuthProvider($this->application);
     }
-
-
 }
