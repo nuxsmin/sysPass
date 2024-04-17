@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Auth\Services;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -33,11 +32,14 @@ use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LoginAuthHandlerService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Ports\UserService;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Providers\Auth\AuthType;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
@@ -52,7 +54,7 @@ use function SP\__u;
  */
 final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerService
 {
-    private ConfigDataInterface $configData;
+    private readonly ConfigDataInterface $configData;
 
     /**
      * @throws InvalidArgumentException
@@ -143,7 +145,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
                 }
 
                 $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
-            } catch (Exception $e) {
+            } catch (ConstraintException|DuplicatedItemException|QueryException $e) {
                 throw AuthException::error(
                     __u('Internal error'),
                     __FUNCTION__,
@@ -215,7 +217,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
         try {
             $userLoginRequest = new UserLoginRequest(
                 $userLoginDto->getLoginUser(),
-                $this->configData->isLdapDatabaseEnabled() ?: $userLoginDto->getLoginPass(),
+                $userLoginDto->getLoginPass(),
                 $authData->getName(),
                 $authData->getEmail(),
                 true
@@ -226,7 +228,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             } else {
                 $this->userService->createOnLogin($userLoginRequest);
             }
-        } catch (Exception $e) {
+        } catch (ConstraintException|DuplicatedItemException|QueryException $e) {
             throw AuthException::error(__u('Internal error'), __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
         }
     }

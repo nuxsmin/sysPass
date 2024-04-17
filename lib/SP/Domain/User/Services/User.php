@@ -150,7 +150,11 @@ final class User extends Service implements UserService
     /**
      * Creates an item
      *
-     * @throws SPException
+     * @param UserLoginRequest $userLoginRequest
+     * @return int
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     public function createOnLogin(UserLoginRequest $userLoginRequest): int
     {
@@ -177,9 +181,7 @@ final class User extends Service implements UserService
     }
 
     /**
-     * Creates an item
-     *
-     * @throws SPException
+     * @inheritDoc
      */
     public function create(UserModel $user): int
     {

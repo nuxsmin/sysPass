@@ -96,14 +96,22 @@ interface UserService
     /**
      * Creates an item
      *
-     * @throws SPException
+     * @param UserLoginRequest $userLoginRequest
+     * @return int
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     public function createOnLogin(UserLoginRequest $userLoginRequest): int;
 
     /**
      * Creates an item
      *
-     * @throws SPException
+     * @param UserModel $user
+     * @return int
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     public function create(UserModel $user): int;
 

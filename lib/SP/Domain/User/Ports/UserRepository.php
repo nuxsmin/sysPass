@@ -30,7 +30,6 @@ use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -230,7 +229,9 @@ interface UserRepository extends Repository
      * @param UserModel $user
      *
      * @return QueryResult
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     public function create(UserModel $user): QueryResult;
 }

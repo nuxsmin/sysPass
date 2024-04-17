@@ -27,6 +27,7 @@ namespace SPT;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
@@ -46,10 +47,11 @@ abstract class UnitaryTestCase extends TestCase
 {
     use PHPUnitHelper;
 
-    protected static Generator           $faker;
-    protected readonly ConfigFileService $config;
-    protected readonly Application       $application;
-    protected readonly ContextInterface  $context;
+    protected static Generator $faker;
+
+    protected readonly ConfigFileService|Stub $config;
+    protected readonly Application            $application;
+    protected readonly ContextInterface       $context;
 
     public static function setUpBeforeClass(): void
     {
@@ -79,27 +81,28 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @throws ContextException
      * @throws Exception
+     * @throws ContextException
      */
     protected function setUp(): void
     {
-        $this->application = $this->buildApplication();
-        $this->config = $this->application->getConfig();
-
         parent::setUp();
+
+        $this->application = $this->buildApplication();
     }
 
     /**
      * @return Application
-     * @throws ContextException|Exception
+     * @throws Exception
+     * @throws ContextException
      */
     private function buildApplication(): Application
     {
         $this->context = $this->buildContext();
+        $this->config = $this->buildConfig();
 
         return new Application(
-            $this->buildConfig(),
+            $this->config,
             $this->createStub(EventDispatcherInterface::class),
             $this->context
         );

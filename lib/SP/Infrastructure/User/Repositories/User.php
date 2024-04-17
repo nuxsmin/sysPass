@@ -33,7 +33,6 @@ use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Models\UserPreferences;
@@ -269,7 +268,9 @@ final class User extends BaseRepository implements UserRepository
      * @param UserModel $user
      *
      * @return QueryResult
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     public function create(UserModel $user): QueryResult
     {
@@ -414,6 +415,8 @@ final class User extends BaseRepository implements UserRepository
      * @param string $login
      *
      * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin(string $login): bool
     {
