@@ -40,7 +40,7 @@ use function SP\__u;
  */
 abstract class LoginBase extends Service
 {
-    private TrackRequest $trackRequest;
+    private readonly TrackRequest $trackRequest;
 
     /**
      * @throws InvalidArgumentException
