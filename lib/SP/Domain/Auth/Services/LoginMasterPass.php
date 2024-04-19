@@ -66,11 +66,11 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
         $oldPass = $this->request->analyzeEncrypted('oldpass');
 
         if ($masterPass) {
-            $this->checkMasterPass($masterPass, $userLoginDto);
+            $this->loadTemporary($masterPass, $userLoginDto, $userDataDto->getId());
         } elseif ($oldPass) {
-            $this->loadMasterPassUsingOld($oldPass, $userLoginDto);
+            $this->loadUsingOld($oldPass, $userLoginDto, $userDataDto);
         } else {
-            $this->loadCurrentMasterPass($userLoginDto, $userDataDto);
+            $this->loadCurrent($userLoginDto, $userDataDto);
         }
     }
 
@@ -78,21 +78,32 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
      * @throws AuthException
      * @throws ServiceException
      */
-    private function checkMasterPass(string $masterPass, UserLoginDto $userLoginDto): void
+    private function loadTemporary(string $key, UserLoginDto $userLoginDto, int $userId): void
     {
         try {
-            if ($this->temporaryMasterPassService->checkTempMasterPass($masterPass)) {
+            if (!$this->temporaryMasterPassService->checkKey($key)) {
                 $this->eventDispatcher->notify(
-                    'login.masterPass.temporary',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Using temporary password')))
+                    'login.masterPass',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
                 );
 
-                $masterPass = $this->temporaryMasterPassService->getUsingKey($masterPass);
+                $this->addTracking();
+
+                throw AuthException::info(__u('Wrong master password'), null, LoginStatus::INVALID_MASTER_PASS->value);
             }
 
-            if ($this->userMasterPassService->updateOnLogin($masterPass, $userLoginDto)
-                                            ->getUserMasterPassStatus() !== UserMasterPassStatus::Ok
-            ) {
+            $this->eventDispatcher->notify(
+                'login.masterPass.temporary',
+                new Event($this, EventMessage::factory()->addDescription(__u('Using temporary password')))
+            );
+
+            $userMasterPassDto = $this->userMasterPassService->updateOnLogin(
+                $this->temporaryMasterPassService->getUsingKey($key),
+                $userLoginDto,
+                $userId
+            );
+
+            if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
                 $this->eventDispatcher->notify(
                     'login.masterPass',
                     new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
@@ -116,11 +127,11 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
      * @throws AuthException
      * @throws ServiceException
      */
-    private function loadMasterPassUsingOld(string $oldPass, UserLoginDto $userLoginDto): void
+    private function loadUsingOld(string $oldPass, UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
     {
-        if ($this->userMasterPassService->updateFromOldPass($oldPass, $userLoginDto)
-                                        ->getUserMasterPassStatus() !== UserMasterPassStatus::Ok
-        ) {
+        $userMasterPassDto = $this->userMasterPassService->updateFromOldPass($oldPass, $userLoginDto, $userDataDto);
+
+        if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
             $this->eventDispatcher->notify(
                 'login.masterPass',
                 new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
@@ -141,7 +152,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
      * @throws AuthException
      * @throws ServiceException
      */
-    private function loadCurrentMasterPass(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
+    private function loadCurrent(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
     {
         switch ($this->userMasterPassService->load($userLoginDto, $userDataDto)->getUserMasterPassStatus()) {
             case UserMasterPassStatus::CheckOld:

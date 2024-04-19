@@ -41,7 +41,7 @@ interface TemporaryMasterPassService
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
-     * @param  int  $maxTime  El tiempo máximo de validez de la clave
+     * @param int $maxTime El tiempo máximo de validez de la clave
      *
      * @return string
      * @throws ServiceException
@@ -51,12 +51,12 @@ interface TemporaryMasterPassService
     /**
      * Comprueba si la clave temporal es válida
      *
-     * @param  string  $pass  clave a comprobar
+     * @param string $key clave a comprobar
      *
      * @return bool
      * @throws ServiceException
      */
-    public function checkTempMasterPass(string $pass): bool;
+    public function checkKey(string $key): bool;
 
     /**
      * @throws ConstraintException

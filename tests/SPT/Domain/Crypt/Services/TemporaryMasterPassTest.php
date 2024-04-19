@@ -166,7 +166,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('save');
 
-        self::assertTrue($this->temporaryMasterPass->checkTempMasterPass($pass));
+        self::assertTrue($this->temporaryMasterPass->checkKey($pass));
     }
 
     /**
@@ -186,7 +186,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('save');
 
-        self::assertFalse($this->temporaryMasterPass->checkTempMasterPass($pass));
+        self::assertFalse($this->temporaryMasterPass->checkKey($pass));
     }
 
     /**
@@ -223,7 +223,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->method('save')
             ->with('tempmaster_attempts', $attempts + 1);
 
-        self::assertFalse($this->temporaryMasterPass->checkTempMasterPass($pass));
+        self::assertFalse($this->temporaryMasterPass->checkKey($pass));
     }
 
     /**
@@ -266,7 +266,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->method('saveBatch')
             ->with($configRequest);
 
-        self::assertFalse($this->temporaryMasterPass->checkTempMasterPass($pass));
+        self::assertFalse($this->temporaryMasterPass->checkKey($pass));
     }
 
     /**
@@ -285,7 +285,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('save');
 
-        self::assertFalse($this->temporaryMasterPass->checkTempMasterPass($pass));
+        self::assertFalse($this->temporaryMasterPass->checkKey($pass));
     }
 
     /**
@@ -307,7 +307,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while checking the temporary password');
 
-        $this->temporaryMasterPass->checkTempMasterPass($pass);
+        $this->temporaryMasterPass->checkKey($pass);
     }
 
     /**

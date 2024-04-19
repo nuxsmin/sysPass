@@ -135,12 +135,12 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     /**
      * Comprueba si la clave temporal es válida
      *
-     * @param string $pass clave a comprobar
+     * @param string $key clave a comprobar
      *
      * @return bool
      * @throws ServiceException
      */
-    public function checkTempMasterPass(string $pass): bool
+    public function checkKey(string $key): bool
     {
         try {
             $passMaxTime = (int)$this->configService->getByParam(self::PARAM_MAX_TIME);
@@ -171,15 +171,12 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             }
 
             $isValid = Hash::checkHashKey(
-                $pass,
+                $key,
                 $this->configService->getByParam(self::PARAM_HASH)
             );
 
             if (!$isValid) {
-                $this->configService->save(
-                    self::PARAM_ATTEMPTS,
-                    $attempts + 1
-                );
+                $this->configService->save(self::PARAM_ATTEMPTS, $attempts + 1);
             }
 
             return $isValid;
