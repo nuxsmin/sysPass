@@ -22,22 +22,19 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Client\Ports;
+namespace SP\Domain\Account\Ports;
 
 use League\Fractal\Resource\Collection;
-use SP\Domain\Client\Models\Client;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
 
 /**
- * Class ClientAdapter
- *
- * @package SP\Adapters
+ * Interface AccountAdapter
  */
-interface ClientAdapterInterface
+interface AccountAdapter
 {
     /**
      * @throws ConstraintException
@@ -45,7 +42,7 @@ interface ClientAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(Client $data, CustomFieldDataService $customFieldService): Collection;
+    public function includeCustomFields(AccountEnrichedDto $accountEnrichedDto): Collection;
 
-    public function transform(Client $data): array;
+    public function transform(AccountEnrichedDto $data): array;
 }

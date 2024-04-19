@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,24 +25,18 @@
 namespace SP\Domain\Common\Adapters;
 
 use League\Fractal\TransformerAbstract;
-use RuntimeException;
+use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
- * Class AdapterBase
- *
- * @package SP\Adapters
+ * Class Adapter
  */
 abstract class Adapter extends TransformerAbstract
 {
-    protected ConfigDataInterface $configData;
-
-    public function __construct(ConfigDataInterface $configData)
+    public function __construct(protected readonly ConfigDataInterface $configData)
     {
-        $this->configData = $configData;
-
-        if (!method_exists(static::class, 'transform')) {
-            throw new RuntimeException('\'transform\' method must be implemented');
-        }
     }
+
+    abstract public function transform(Model&Dto $data);
 }

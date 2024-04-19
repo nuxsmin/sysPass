@@ -28,6 +28,7 @@ use League\Fractal\Resource\Collection;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -36,15 +37,13 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
+use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Util\Link;
 
 /**
- * Class CategoryAdapter
- *
- * @package SP\Adapters
+ * Class Category
  */
 final class Category extends Adapter implements CategoryAdapter
 {
@@ -70,14 +69,14 @@ final class Category extends Adapter implements CategoryAdapter
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $this->customFieldService),
-            new CustomFieldAdapter($this->configData)
+            new CustomField($this->configData)
         );
     }
 
     /**
      * @throws ActionNotFoundException
      */
-    public function transform(CategoryModel $data): array
+    public function transform(Model|CategoryModel $data): array
     {
         $actionRoute = $this->actions->getActionById(AclActionsInterface::CATEGORY_VIEW)->getRoute();
 

@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginUpgrader;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -55,7 +55,7 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
 
-        $plugin = self::createMock(PluginInterface::class);
+        $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService->expects($this->once())
@@ -90,7 +90,7 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
 
-        $plugin = self::createMock(PluginInterface::class);
+        $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService->expects($this->once())
@@ -123,7 +123,7 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
 
-        $plugin = self::createMock(PluginInterface::class);
+        $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService->expects($this->once())
@@ -152,7 +152,7 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
 
-        $plugin = self::createMock(PluginInterface::class);
+        $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService->expects($this->once())

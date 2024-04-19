@@ -26,12 +26,13 @@ namespace SP\Domain\Account\Dtos;
 
 use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 
 /**
  * Class AccountEnrichedDto
  */
-class AccountEnrichedDto
+class AccountEnrichedDto extends Dto
 {
     use ItemDataTrait;
 

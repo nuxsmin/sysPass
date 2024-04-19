@@ -22,15 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Plugin;
+namespace SP\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
-use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginLoaderService;
 use SP\Domain\Plugin\Ports\PluginOperationInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -38,11 +38,11 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 /**
  * Class PluginBase
  */
-abstract class PluginBase implements PluginInterface
+abstract class PluginBase implements Plugin
 {
     protected ?string $base = null;
     protected ?string $themeDir = null;
-    protected mixed   $data;
+    protected mixed   $data = null;
 
     /**
      * @throws ConstraintException
@@ -52,7 +52,7 @@ abstract class PluginBase implements PluginInterface
     public function __construct(
         protected readonly PluginOperationInterface $pluginOperation,
         private readonly PluginCompatilityService $pluginCompatilityService,
-        private readonly PluginLoaderService $pluginLoadService
+        private readonly PluginLoaderService      $pluginLoaderService
     ) {
         $this->load();
     }
@@ -65,7 +65,7 @@ abstract class PluginBase implements PluginInterface
     private function load(): void
     {
         if ($this->pluginCompatilityService->checkFor($this)) {
-            $this->pluginLoadService->loadFor($this);
+            $this->pluginLoaderService->loadFor($this);
         }
     }
 

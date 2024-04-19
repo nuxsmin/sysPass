@@ -24,7 +24,7 @@
 
 /**
  * @var  Plugin $plugin
- * @var  PluginInterface $pluginInfo
+ * @var  Plugin $pluginInfo
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -34,7 +34,7 @@
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Plugin\Models\Plugin;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Mvc\View\TemplateInterface;
 
 $plugin = $_getvar('plugin');

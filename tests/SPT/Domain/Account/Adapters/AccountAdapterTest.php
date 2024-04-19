@@ -29,7 +29,7 @@ use League\Fractal\Resource\Item;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\DataModel\Action;
-use SP\Domain\Account\Adapters\AccountAdapter;
+use SP\Domain\Account\Adapters\Account;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
@@ -66,7 +66,7 @@ class AccountAdapterTest extends UnitaryTestCase
                     )
                 );
 
-        $adapter = new AccountAdapter(
+        $adapter = new Account(
             $this->config->getConfigData(),
             $this->createStub(CustomFieldDataService::class),
             $actions
@@ -150,7 +150,7 @@ class AccountAdapterTest extends UnitaryTestCase
                 );
 
 
-        $adapter = new AccountAdapter($this->config->getConfigData(), $customFieldsService, $actions);
+        $adapter = new Account($this->config->getConfigData(), $customFieldsService, $actions);
 
         $fractal = new Manager();
         $fractal->parseIncludes('customFields');

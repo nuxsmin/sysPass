@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\Plugin;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginLoader;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -49,7 +49,7 @@ class PluginLoaderTest extends UnitaryTestCase
     public function testLoadForWithEnabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
-        $plugin = $this->createStub(PluginInterface::class);
+        $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginModel = new Plugin(['enabled' => true]);
@@ -72,7 +72,7 @@ class PluginLoaderTest extends UnitaryTestCase
     public function testLoadForWithDisabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
-        $plugin = $this->createStub(PluginInterface::class);
+        $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginModel = new Plugin(['enabled' => false]);
@@ -95,7 +95,7 @@ class PluginLoaderTest extends UnitaryTestCase
     public function testLoadForWithException()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
-        $plugin = $this->createStub(PluginInterface::class);
+        $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService

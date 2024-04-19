@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,17 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\CustomField\Adapters;
+namespace SP\Domain\Client\Ports;
 
-
-use SP\Domain\CustomField\Services\CustomFieldItem;
+use League\Fractal\Resource\Collection;
+use SP\Domain\Client\Models\Client;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 
 /**
- * Class CustomFieldAdapter
+ * Class ClientAdapter
  *
  * @package SP\Adapters
  */
-interface CustomFieldAdapterInterface
+interface ClientAdapter
 {
-    public function transform(CustomFieldItem $data): array;
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
+     */
+    public function includeCustomFields(Client $client, CustomFieldDataService $customFieldService): Collection;
+
+    public function transform(Client $data): array;
 }

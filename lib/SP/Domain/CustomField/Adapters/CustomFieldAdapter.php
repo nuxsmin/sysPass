@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,27 +24,12 @@
 
 namespace SP\Domain\CustomField\Adapters;
 
-use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**
  * Class CustomFieldAdapter
- *
- * @package SP\Adapters
  */
-final class CustomFieldAdapter extends Adapter implements CustomFieldAdapterInterface
+interface CustomFieldAdapter
 {
-    public function transform(CustomFieldItem $data): array
-    {
-        return [
-            'type'           => $data->typeName,
-            'typeText'       => $data->typeText,
-            'definitionId'   => $data->definitionId,
-            'definitionName' => $data->definitionName,
-            'help'           => $data->help,
-            'value'          => $data->value,
-            'encrypted'      => $data->isEncrypted,
-            'required'       => $data->required,
-        ];
-    }
+    public function transform(CustomFieldItem $data): array;
 }

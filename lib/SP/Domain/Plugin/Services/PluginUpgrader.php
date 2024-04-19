@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -52,12 +52,12 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
     }
 
     /**
-     * @param PluginInterface $plugin
+     * @param Plugin $plugin
      * @param string $version
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function upgradeFor(PluginInterface $plugin, string $version): void
+    public function upgradeFor(Plugin $plugin, string $version): void
     {
         try {
             $pluginModel = $this->pluginManagerService->getByName($plugin->getName());

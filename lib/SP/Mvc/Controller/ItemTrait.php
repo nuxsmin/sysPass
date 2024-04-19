@@ -52,41 +52,31 @@ trait ItemTrait
         $customFields = [];
 
         foreach ($customFieldDataService->getBy($moduleId, $itemId) as $item) {
-            $customField = new CustomFieldItem();
-            $customField->required = (bool)$item['required'];
-            $customField->showInList = (bool)$item['showInList'];
-            $customField->help = $item['help'];
-            $customField->definitionId = (int)$item['definitionId'];
-            $customField->definitionName = $item['definitionName'];
-            $customField->typeId = (int)$item['typeId'];
-            $customField->typeName = $item['typeName'];
-            $customField->typeText = $item['typeText'];
-            $customField->moduleId = (int)$item['moduleId'];
-            $customField->formId = self::getFormIdForName($item['definitionName']);
-            $customField->isEncrypted = (int)$item['isEncrypted'];
+            $valueEncrypted = !empty($item['data']) && !empty($item['key']);
+            $value = $valueEncrypted
+                ? self::formatValue($customFieldDataService->decrypt($item['data'], $item['key']) ?? '')
+                : $item['data'];
 
-            if (!empty($item['data']) && !empty($item['key'])) {
-                $customField->isValueEncrypted = true;
-                $customField->value = self::formatValue(
-                    $customFieldDataService->decrypt($item['data'], $item['key']) ?? ''
-                );
-            } else {
-                $customField->isValueEncrypted = false;
-                $customField->value = $item['data'];
-            }
+            $customField = new CustomFieldItem(
+                required:         (bool)$item['required'],
+                showInList:       (bool)$item['showInList'],
+                help:             $item['help'],
+                definitionId:     (int)$item['definitionId'],
+                definitionName:   $item['definitionName'],
+                typeId:           (int)$item['typeId'],
+                typeName:         $item['typeName'],
+                typeText:         $item['typeText'],
+                moduleId:         (int)$item['moduleId'],
+                formId:           self::getFormIdForName($item['definitionName']),
+                value:            $value,
+                isEncrypted:      (int)$item['isEncrypted'],
+                isValueEncrypted: $valueEncrypted
+            );
 
             $customFields[] = $customField;
         }
 
         return $customFields;
-    }
-
-    /**
-     * Returns the form Id for a given name
-     */
-    private static function getFormIdForName(string $name): string
-    {
-        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name)));
     }
 
     /**
@@ -103,6 +93,14 @@ trait ItemTrait
         }
 
         return $value;
+    }
+
+    /**
+     * Returns the form Id for a given name
+     */
+    private static function getFormIdForName(string $name): string
+    {
+        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name)));
     }
 
     /**

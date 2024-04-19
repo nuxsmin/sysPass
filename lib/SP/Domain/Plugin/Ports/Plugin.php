@@ -29,7 +29,7 @@ use SP\Domain\Core\Events\EventReceiver;
 /**
  * Interface PluginInterface
  */
-interface PluginInterface extends EventReceiver
+interface Plugin extends EventReceiver
 {
     /**
      * Devuelve el directorio base del plugin

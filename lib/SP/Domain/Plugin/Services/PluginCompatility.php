@@ -31,8 +31,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
-use SP\Domain\Plugin\Ports\PluginInterface;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
@@ -52,14 +52,14 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
     }
 
     /**
-     * @param PluginInterface $plugin
+     * @param Plugin $plugin
      *
      * @return bool
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function checkFor(PluginInterface $plugin): bool
+    public function checkFor(Plugin $plugin): bool
     {
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
         $appVersion = implode('.', array_slice(InstallerService::VERSION, 0, 2));

@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\Plugin;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginRegister;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -49,7 +49,7 @@ class PluginRegisterTest extends UnitaryTestCase
      */
     public function testRegisterForWithUnregisteredPlugin()
     {
-        $plugin = $this->createStub(PluginInterface::class);
+        $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -74,7 +74,7 @@ class PluginRegisterTest extends UnitaryTestCase
      */
     public function testRegisterForWithRegisteredPlugin()
     {
-        $plugin = $this->createStub(PluginInterface::class);
+        $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);

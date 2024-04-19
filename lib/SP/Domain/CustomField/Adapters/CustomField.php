@@ -22,24 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Plugin\Ports;
+namespace SP\Domain\CustomField\Adapters;
 
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**
- * Class PluginCompatilityInterface
+ * Class CustomFieldAdapter
  */
-interface PluginCompatilityService
+final class CustomField extends Adapter implements CustomFieldAdapter
 {
-    /**
-     * @param Plugin $plugin
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws NoSuchItemException
-     * @throws QueryException
-     */
-    public function checkFor(Plugin $plugin): bool;
+    public function transform(Dto|CustomFieldItem $data): array
+    {
+        return [
+            'type' => $data->typeName,
+            'typeText' => $data->typeText,
+            'definitionId' => $data->definitionId,
+            'definitionName' => $data->definitionName,
+            'help' => $data->help,
+            'value' => $data->value,
+            'encrypted' => $data->isEncrypted,
+            'required' => $data->required,
+        ];
+    }
 }

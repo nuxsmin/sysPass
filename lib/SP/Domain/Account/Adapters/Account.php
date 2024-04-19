@@ -26,7 +26,9 @@ namespace SP\Domain\Account\Adapters;
 
 use League\Fractal\Resource\Collection;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
+use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -35,25 +37,25 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
+use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Link;
 
 /**
- * Class AccountAdapter
+ * Class Account
  */
-final class AccountAdapter extends Adapter implements AccountAdapterInterface
+final class Account extends Adapter implements AccountAdapter
 {
     use ItemTrait;
 
     protected array $availableIncludes = ['customFields'];
 
     public function __construct(
-        ConfigDataInterface                     $configData,
+        ConfigDataInterface               $configData,
         private readonly CustomFieldDataService $customFieldService,
-        private readonly ActionsInterface       $actions
+        private readonly ActionsInterface $actions
     ) {
         parent::__construct($configData);
     }
@@ -64,18 +66,22 @@ final class AccountAdapter extends Adapter implements AccountAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(AccountEnrichedDto $data,): Collection
+    public function includeCustomFields(AccountEnrichedDto $accountEnrichedDto): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::ACCOUNT, $data->getId(), $this->customFieldService),
-            new CustomFieldAdapter($this->configData)
+            $this->getCustomFieldsForItem(
+                AclActionsInterface::ACCOUNT,
+                $accountEnrichedDto->getId(),
+                $this->customFieldService
+            ),
+            new CustomField($this->configData)
         );
     }
 
     /**
      * @throws ActionNotFoundException
      */
-    public function transform(AccountEnrichedDto $data): array
+    public function transform(Dto|AccountEnrichedDto $data): array
     {
         $account = $data->getAccountDataView();
         $actionRoute = $this->actions->getActionById(AclActionsInterface::ACCOUNT_VIEW)->getRoute();

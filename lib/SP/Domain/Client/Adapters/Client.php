@@ -25,25 +25,24 @@
 namespace SP\Domain\Client\Adapters;
 
 use League\Fractal\Resource\Collection;
-use SP\Domain\Client\Models\Client;
-use SP\Domain\Client\Ports\ClientAdapterInterface;
+use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Client\Ports\ClientAdapter;
 use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\CustomField\Adapters\CustomFieldAdapter;
+use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Util\Link;
 
 /**
- * Class ClientAdapter
- *
- * @package SP\Adapters
+ * Class Client
  */
-final class ClientAdapter extends Adapter implements ClientAdapterInterface
+final class Client extends Adapter implements ClientAdapter
 {
     use ItemTrait;
 
@@ -55,15 +54,15 @@ final class ClientAdapter extends Adapter implements ClientAdapterInterface
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(Client $data, CustomFieldDataService $customFieldService): Collection
+    public function includeCustomFields(ClientModel $client, CustomFieldDataService $customFieldService): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $data->id, $customFieldService),
-            new CustomFieldAdapter($this->configData)
+            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $customFieldService),
+            new CustomField($this->configData)
         );
     }
 
-    public function transform(Client $data): array
+    public function transform(Model|ClientModel $data): array
     {
         return [
             'id' => $data->getId(),

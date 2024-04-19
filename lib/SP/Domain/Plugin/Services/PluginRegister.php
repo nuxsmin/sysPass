@@ -31,7 +31,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginRegisterService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -52,7 +52,7 @@ final class PluginRegister extends Service implements PluginRegisterService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function registerFor(PluginInterface $plugin): void
+    public function registerFor(Plugin $plugin): void
     {
         try {
             $this->pluginManagerService->getByName($plugin->getName());
@@ -85,7 +85,7 @@ final class PluginRegister extends Service implements PluginRegisterService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function register(PluginInterface $plugin): void
+    private function register(Plugin $plugin): void
     {
         $this->pluginManagerService->create(new PluginModel(['name' => $plugin->getName(), 'enabled' => false]));
 

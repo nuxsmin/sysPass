@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@
     use SP\Domain\Config\Ports\ConfigDataInterface;
     use SP\Domain\Core\UI\ThemeIconsInterface;
     use SP\Domain\Install\Services\InstallerService;
-    use SP\Domain\Plugin\Ports\PluginInterface;
+    use SP\Domain\Plugin\Ports\Plugin;
     use SP\Mvc\View\TemplateInterface;
     use SP\Util\VersionUtil;
 
@@ -246,7 +246,7 @@
 
             <ul class="mdl-list">
                 <?php
-                /** @var PluginInterface $plugin */
+                /** @var Plugin $plugin */
                 foreach ($_getvar('plugins') as $name => $plugin): ?>
                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">

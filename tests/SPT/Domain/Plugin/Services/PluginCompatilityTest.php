@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginInterface;
+use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginCompatility;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -53,7 +53,7 @@ class PluginCompatilityTest extends UnitaryTestCase
      */
     public function testCheckForWithCompatible()
     {
-        $plugin = $this->createMock(PluginInterface::class);
+        $plugin = $this->createMock(Plugin::class);
 
         $plugin->expects($this->once())
                ->method('getCompatibleVersion')
@@ -76,7 +76,7 @@ class PluginCompatilityTest extends UnitaryTestCase
      */
     public function testCheckForWithNoCompatible()
     {
-        $plugin = $this->createMock(PluginInterface::class);
+        $plugin = $this->createMock(Plugin::class);
 
         $plugin->expects($this->once())
                ->method('getCompatibleVersion')

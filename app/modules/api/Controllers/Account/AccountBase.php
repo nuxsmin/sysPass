@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Account;
 
 use Klein\Klein;
 use SP\Core\Application;
-use SP\Domain\Account\Adapters\AccountAdapterInterface;
+use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
@@ -45,7 +45,7 @@ abstract class AccountBase extends ControllerBase
     protected AccountPresetService        $accountPresetService;
     protected AccountService          $accountService;
     protected CustomFieldDataService $customFieldService;
-    protected AccountAdapterInterface $accountAdapter;
+    protected AccountAdapter $accountAdapter;
 
     /**
      * @throws InvalidClassException
@@ -58,7 +58,7 @@ abstract class AccountBase extends ControllerBase
         AccountPresetService    $accountPresetService,
         AccountService          $accountService,
         CustomFieldDataService $customFieldService,
-        AccountAdapterInterface $accountAdapter
+        AccountAdapter $accountAdapter
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 

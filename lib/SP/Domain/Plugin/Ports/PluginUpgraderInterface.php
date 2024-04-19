@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,5 +29,5 @@ namespace SP\Domain\Plugin\Ports;
  */
 interface PluginUpgraderInterface
 {
-    public function upgradeFor(PluginInterface $plugin, string $version): void;
+    public function upgradeFor(Plugin $plugin, string $version): void;
 }

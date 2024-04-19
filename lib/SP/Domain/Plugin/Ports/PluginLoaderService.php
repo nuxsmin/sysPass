@@ -29,5 +29,5 @@ namespace SP\Domain\Plugin\Ports;
  */
 interface PluginLoaderService
 {
-    public function loadFor(PluginInterface $plugin): void;
+    public function loadFor(Plugin $plugin): void;
 }

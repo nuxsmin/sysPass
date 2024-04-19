@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,27 +25,30 @@
 namespace SP\Domain\CustomField\Services;
 
 use JsonSerializable;
+use SP\Domain\Common\Dtos\Dto;
 
 /**
  * Class CustomFieldItem
- *
- * @package SP\Domain\CustomField\Services
  */
-final class CustomFieldItem implements JsonSerializable
+final class CustomFieldItem extends Dto implements JsonSerializable
 {
-    public $required     = false;
-    public $showInList   = false;
-    public $help;
-    public $definitionId = 0;
-    public $definitionName;
-    public $typeId       = 0;
-    public $typeName;
-    public $typeText;
-    public $moduleId     = 0;
-    public $formId;
-    public $value;
-    public $isEncrypted;
-    public $isValueEncrypted;
+
+    public function __construct(
+        public readonly bool   $required,
+        public readonly bool   $showInList,
+        public readonly string $help,
+        public readonly int    $definitionId,
+        public readonly string $definitionName,
+        public readonly int    $typeId,
+        public readonly string $typeName,
+        public readonly string $typeText,
+        public readonly int    $moduleId,
+        public readonly string $formId,
+        public readonly mixed  $value,
+        public readonly bool   $isEncrypted,
+        public readonly bool   $isValueEncrypted
+    ) {
+    }
 
     /**
      * @inheritDoc
@@ -53,15 +56,15 @@ final class CustomFieldItem implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'required'         => $this->required,
-            'showInList'       => $this->showInList,
-            'help'             => $this->help,
-            'typeId'           => $this->typeId,
-            'typeName'         => $this->typeName,
-            'typeText'         => $this->typeText,
-            'moduleId'         => $this->moduleId,
-            'value'            => $this->value,
-            'isEncrypted'      => $this->isEncrypted,
+            'required' => $this->required,
+            'showInList' => $this->showInList,
+            'help' => $this->help,
+            'typeId' => $this->typeId,
+            'typeName' => $this->typeName,
+            'typeText' => $this->typeText,
+            'moduleId' => $this->moduleId,
+            'value' => $this->value,
+            'isEncrypted' => $this->isEncrypted,
             'isValueEncrypted' => $this->isValueEncrypted,
         ];
     }

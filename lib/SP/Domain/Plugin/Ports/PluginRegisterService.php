@@ -29,5 +29,5 @@ namespace SP\Domain\Plugin\Ports;
  */
 interface PluginRegisterService
 {
-    public function registerFor(PluginInterface $plugin): void;
+    public function registerFor(Plugin $plugin): void;
 }
