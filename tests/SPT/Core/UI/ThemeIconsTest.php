@@ -27,7 +27,7 @@ namespace SPT\Core\UI;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\UI\ThemeIcons;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
@@ -85,7 +85,7 @@ class ThemeIconsTest extends UnitaryTestCase
      */
     public function testLoadIconsWithCache()
     {
-        $context = $this->createMock(ContextInterface::class);
+        $context = $this->createMock(Context::class);
         $fileCache = $this->createMock(FileCacheService::class);
         $themeContext = $this->createMock(ThemeContextInterface::class);
 

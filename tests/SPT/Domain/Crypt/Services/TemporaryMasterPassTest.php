@@ -33,7 +33,7 @@ use SP\Core\Context\ContextException;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -316,7 +316,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      */
     public function testCreate()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'test_master_pass');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');
 
         $this->crypt
             ->expects(self::once())
@@ -353,7 +353,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      */
     public function testCreateWithError()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'test_master_pass');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');
 
         $this->crypt
             ->expects(self::once())

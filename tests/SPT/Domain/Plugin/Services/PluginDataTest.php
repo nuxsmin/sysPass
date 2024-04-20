@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -132,7 +132,7 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testUpdate()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'super_secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
 
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
 
@@ -167,7 +167,7 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testCreate()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'super_secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
 
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
 
@@ -203,7 +203,7 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testGetByItemId()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'super_secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
 
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
 
@@ -259,7 +259,7 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testGetByName()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'super_secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
 
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
 
@@ -319,7 +319,7 @@ class PluginDataTest extends UnitaryTestCase
      */
     public function testGetAll()
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'super_secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
 
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
 

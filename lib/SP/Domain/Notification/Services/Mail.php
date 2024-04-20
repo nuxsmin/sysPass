@@ -26,7 +26,6 @@ namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
@@ -34,6 +33,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Providers\MailerInterface;
 use SP\Html\Html;
@@ -48,8 +48,9 @@ use function SP\processException;
 final class Mail extends Service implements MailService
 {
     public function __construct(
-        Application                      $application,
-        private readonly MailerInterface $mailer,
+        Application                          $application,
+        private readonly MailerInterface     $mailer,
+        private readonly UriContextInterface $uriContext
     ) {
         parent::__construct($application);
     }
@@ -107,7 +108,7 @@ final class Mail extends Service implements MailService
             '',
             '--',
             sprintf('%s - %s', AppInfoInterface::APP_NAME, AppInfoInterface::APP_DESC),
-            Html::anchorText(BootstrapBase::$WEBURI),
+            Html::anchorText($this->uriContext->getWebUri()),
         ];
     }
 

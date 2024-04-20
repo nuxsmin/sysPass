@@ -32,6 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Providers\MailerInterface;
 use SP\Providers\Mail\MailParams;
@@ -324,6 +325,7 @@ class MailTest extends UnitaryTestCase
         parent::setUp();
 
         $this->mailer = $this->createMock(MailerInterface::class);
-        $this->mail = new Mail($this->application, $this->mailer);
+        $uriContext = $this->createMock(UriContextInterface::class);
+        $this->mail = new Mail($this->application, $this->mailer, $uriContext);
     }
 }

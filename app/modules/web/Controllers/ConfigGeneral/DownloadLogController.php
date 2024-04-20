@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use Exception;
 use JsonException;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -51,7 +51,7 @@ final class DownloadLogController extends SimpleControllerBase
         }
 
         try {
-            SessionContext::close();
+            Session::close();
 
             $file = new FileHandler(LOG_FILE);
             $file->checkFileExists();

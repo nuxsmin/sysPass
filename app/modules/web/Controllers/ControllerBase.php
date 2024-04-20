@@ -36,7 +36,8 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
@@ -63,21 +64,22 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected EventDispatcher         $eventDispatcher;
-    protected ConfigFileService       $config;
-    protected SessionContextInterface $session;
-    protected ThemeInterface               $theme;
-    protected AclInterface                 $acl;
-    protected ConfigDataInterface          $configData;
-    protected RequestInterface           $request;
-    protected PhpExtensionCheckerService $extensionChecker;
-    protected TemplateInterface $view;
-    protected ?UserDataDto      $userData        = null;
-    protected ?ProfileData      $userProfileData = null;
-    protected bool                         $isAjax;
-    protected LayoutHelper                 $layoutHelper;
-    protected string           $actionName;
-    private BrowserAuthService $browser;
+    protected readonly EventDispatcher            $eventDispatcher;
+    protected readonly ConfigFileService          $config;
+    protected readonly SessionContext             $session;
+    protected readonly ThemeInterface             $theme;
+    protected readonly AclInterface               $acl;
+    protected readonly ConfigDataInterface        $configData;
+    protected readonly RequestInterface           $request;
+    protected readonly PhpExtensionCheckerService $extensionChecker;
+    protected readonly TemplateInterface          $view;
+    protected readonly LayoutHelper               $layoutHelper;
+    protected readonly UriContextInterface        $uriContext;
+    protected ?UserDataDto                        $userData        = null;
+    protected ?ProfileData                        $userProfileData = null;
+    protected bool                                $isAjax;
+    protected string                              $actionName;
+    private readonly BrowserAuthService           $browser;
 
     public function __construct(
         Application $application,
@@ -96,6 +98,7 @@ abstract class ControllerBase
         $this->browser = $webControllerHelper->getBrowser();
         $this->layoutHelper = $webControllerHelper->getLayoutHelper();
         $this->view = $webControllerHelper->getTemplate();
+        $this->uriContext = $webControllerHelper->getUriContext();
 
         $this->view->setBase($this->getViewBaseName());
         $this->isAjax = $this->request->isAjax();

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\ConfigImport;
 use Exception;
 use JsonException;
 use SP\Core\Application;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -80,7 +80,7 @@ final class ImportController extends SimpleControllerBase
         try {
             $this->eventDispatcher->notify('run.import.start', new Event($this));
 
-            SessionContext::close();
+            Session::close();
 
             $counter = $this->importService->doImport($this->getImportParams())->getCounter();
 

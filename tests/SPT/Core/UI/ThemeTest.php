@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Core\UI\Theme;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Dtos\UserDataDto;
@@ -62,7 +62,7 @@ class ThemeTest extends UnitaryTestCase
      */
     public function testGetThemeNameUnathenticated()
     {
-        $context = $this->createMock(SessionContextInterface::class);
+        $context = $this->createMock(SessionContext::class);
         $context->expects(self::once())
                 ->method('isLoggedIn')
                 ->willReturn(false);
@@ -83,7 +83,7 @@ class ThemeTest extends UnitaryTestCase
      */
     public function testGetThemeNameAuthenticated()
     {
-        $context = $this->createMock(SessionContextInterface::class);
+        $context = $this->createMock(SessionContext::class);
         $context->expects(self::once())
                 ->method('isLoggedIn')
                 ->willReturn(true);

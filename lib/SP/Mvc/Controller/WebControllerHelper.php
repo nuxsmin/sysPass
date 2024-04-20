@@ -24,10 +24,10 @@
 
 namespace SP\Mvc\Controller;
 
-
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -37,31 +37,27 @@ use SP\Providers\Auth\Browser\BrowserAuthService;
 /**
  * Class WebControllerHelper
  */
-final class WebControllerHelper
+final readonly class WebControllerHelper
 {
-    private ThemeInterface       $theme;
-    private Klein                $router;
-    private AclInterface $acl;
-    private RequestInterface     $request;
-    private PhpExtensionChecker  $extensionChecker;
-    private TemplateInterface  $template;
-    private BrowserAuthService $browser;
-    private LayoutHelper       $layoutHelper;
+    private ThemeInterface      $theme;
+    private Klein               $router;
+    private AclInterface        $acl;
+    private RequestInterface    $request;
+    private PhpExtensionChecker $extensionChecker;
+    private UriContextInterface $uriContext;
 
     public function __construct(
-        SimpleControllerHelper $simpleControllerHelper,
-        TemplateInterface  $template,
-        BrowserAuthService $browser,
-        LayoutHelper       $layoutHelper
+        SimpleControllerHelper     $simpleControllerHelper,
+        private TemplateInterface  $template,
+        private BrowserAuthService $browser,
+        private LayoutHelper       $layoutHelper
     ) {
         $this->theme = $simpleControllerHelper->getTheme();
         $this->router = $simpleControllerHelper->getRouter();
         $this->acl = $simpleControllerHelper->getAcl();
         $this->request = $simpleControllerHelper->getRequest();
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
-        $this->template = $template;
-        $this->browser = $browser;
-        $this->layoutHelper = $layoutHelper;
+        $this->uriContext = $simpleControllerHelper->getUriContext();
     }
 
     public function getTheme(): ThemeInterface
@@ -87,6 +83,11 @@ final class WebControllerHelper
     public function getExtensionChecker(): PhpExtensionChecker
     {
         return $this->extensionChecker;
+    }
+
+    public function getUriContext(): UriContextInterface
+    {
+        return $this->uriContext;
     }
 
     public function getTemplate(): TemplateInterface

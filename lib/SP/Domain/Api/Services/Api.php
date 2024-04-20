@@ -38,7 +38,7 @@ use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -235,7 +235,7 @@ final class Api extends Service implements ApiService
      */
     public function requireMasterPass(): void
     {
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, $this->getMasterPassFromVault());
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, $this->getMasterPassFromVault());
     }
 
     /**

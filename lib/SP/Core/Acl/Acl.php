@@ -31,7 +31,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 use function SP\__;
@@ -50,9 +50,9 @@ final class Acl implements AclActionsInterface, AclInterface
     private ActionsInterface        $actions;
 
     public function __construct(
-        private readonly ContextInterface         $context,
+        private readonly Context $context,
         private readonly EventDispatcherInterface $eventDispatcher,
-        ActionsInterface $actions
+        ActionsInterface         $actions
     ) {
         self::$actionsStatic = $actions;
         $this->actions = $actions;

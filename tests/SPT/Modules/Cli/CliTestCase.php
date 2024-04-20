@@ -30,7 +30,7 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Infrastructure\Database\DbStorageHandler;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -68,7 +68,7 @@ abstract class CliTestCase extends TestCase
 
         self::$dic = $builder->build();
 
-        $context = self::$dic->get(ContextInterface::class);
+        $context = self::$dic->get(Context::class);
         $context->initialize();
     }
 

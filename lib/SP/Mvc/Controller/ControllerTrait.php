@@ -26,7 +26,6 @@ namespace SP\Mvc\Controller;
 
 use Closure;
 use Klein\Klein;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
@@ -35,11 +34,11 @@ use SP\Http\JsonResponse;
 use SP\Http\Uri;
 use SP\Util\Util;
 
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Trait ControllerTrait
- *
- * @package SP\Mvc\Controller
  */
 trait ControllerTrait
 {
@@ -72,7 +71,7 @@ trait ControllerTrait
     protected function sessionLogout(
         RequestInterface $request,
         ConfigDataInterface $configData,
-        Closure $onRedirect
+        Closure          $onRedirect
     ): void {
         if ($request->isJson()) {
             $jsonResponse = new JsonMessage(__u('Session not started or timed out'));
@@ -89,7 +88,7 @@ trait ControllerTrait
                 $route = $request->analyzeString('r');
                 $hash = $request->analyzeString('h');
 
-                $uri = new Uri(BootstrapBase::$WEBROOT.BootstrapBase::$SUBURI);
+                $uri = new Uri($this->uriContext->getWebRoot() . $this->uriContext->getSubUri());
                 $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {
@@ -123,7 +122,7 @@ trait ControllerTrait
      * @deprecated
      */
     protected function checkSecurityToken(
-        string $previousToken,
+        string           $previousToken,
         RequestInterface $request,
         ConfigDataInterface $configData
     ): void {
@@ -133,7 +132,7 @@ trait ControllerTrait
             $sk = $request->analyzeString('sk');
 
             if (!$sk || $previousToken !== $sk) {
-                throw new SPException(__u('Invalid Action'), SPException::ERROR, null, 1);
+                throw SPException::error(__u('Invalid Action'), null, 1);
             }
         }
     }

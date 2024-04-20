@@ -24,7 +24,6 @@
 
 namespace SP\Core;
 
-
 use SP\Providers\Acl\AclHandler;
 use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Log\FileLogHandler;
@@ -37,17 +36,17 @@ use SP\Providers\ProviderInterface;
 /**
  * The Provider helper class will have oll the providers availabe in the application
  */
-final class ProvidersHelper
+final readonly class ProvidersHelper
 {
 
     public function __construct(
-        private readonly FileLogHandler       $fileLogHandler,
-        private readonly ?DatabaseLogHandler  $databaseLogHandler = null,
-        private readonly ?MailHandler         $mailHandler = null,
-        private readonly ?SyslogHandler       $syslogHandler = null,
-        private readonly ?RemoteSyslogHandler $remoteSyslogHandler = null,
-        private readonly ?AclHandler          $aclHandler = null,
-        private readonly ?NotificationHandler $notificationHandler = null
+        private FileLogHandler       $fileLogHandler,
+        private ?DatabaseLogHandler  $databaseLogHandler = null,
+        private ?MailHandler         $mailHandler = null,
+        private ?SyslogHandler       $syslogHandler = null,
+        private ?RemoteSyslogHandler $remoteSyslogHandler = null,
+        private ?AclHandler          $aclHandler = null,
+        private ?NotificationHandler $notificationHandler = null
     ) {
     }
 

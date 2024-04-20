@@ -25,7 +25,7 @@
 namespace SP\Core\UI;
 
 use SP\Core\Context\ContextBase;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -53,7 +53,7 @@ final class ThemeIcons implements ThemeIconsInterface
     private array $icons = [];
 
     /**
-     * @param ContextInterface $context
+     * @param Context $context
      * @param FileCacheService $cache
      * @param ThemeContextInterface $themeContext
      * @return ThemeIconsInterface
@@ -61,7 +61,7 @@ final class ThemeIcons implements ThemeIconsInterface
      * @throws FileException
      */
     public static function loadIcons(
-        ContextInterface      $context,
+        Context          $context,
         FileCacheService $cache,
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface {

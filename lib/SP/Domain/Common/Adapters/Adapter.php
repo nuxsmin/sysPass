@@ -34,8 +34,10 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
  */
 abstract class Adapter extends TransformerAbstract
 {
-    public function __construct(protected readonly ConfigDataInterface $configData)
-    {
+    public function __construct(
+        protected readonly ConfigDataInterface $configData,
+        protected readonly string              $baseUrl
+    ) {
     }
 
     abstract public function transform(Model&Dto $data);

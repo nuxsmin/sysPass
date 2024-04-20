@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Models\Plugin;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginLoader;
@@ -52,7 +52,7 @@ class PluginLoaderTest extends UnitaryTestCase
         $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
-        $pluginModel = new Plugin(['enabled' => true]);
+        $pluginModel = new PluginModel(['enabled' => true]);
 
         $pluginManagerService
             ->expects($this->once())
@@ -75,7 +75,7 @@ class PluginLoaderTest extends UnitaryTestCase
         $plugin = $this->createStub(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
 
-        $pluginModel = new Plugin(['enabled' => false]);
+        $pluginModel = new PluginModel(['enabled' => false]);
 
         $pluginManagerService
             ->expects($this->once())

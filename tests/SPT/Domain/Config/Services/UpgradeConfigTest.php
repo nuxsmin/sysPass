@@ -32,11 +32,9 @@ use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\UpgradeConfig;
-use SP\Domain\Core\File\MimeType;
-use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Providers\FileLogHandlerProvider;
+use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SPT\UnitaryTestCase;
 
 /**
@@ -46,15 +44,11 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class UpgradeConfigTest extends UnitaryTestCase
 {
-
-    private MimeTypesService|MockObject       $mimeTypeService;
     private FileLogHandlerProvider|MockObject $fileLogHandlerProvider;
 
     public static function versionDataProvider(): array
     {
         return [
-            ['200.00000000', true],
-            ['300.00000000', true],
             ['320.20062801', false],
             ['340.00000000', false]
         ];
@@ -63,6 +57,7 @@ class UpgradeConfigTest extends UnitaryTestCase
     /**
      * @throws Exception
      * @throws FileException
+     * @throws UpgradeException
      */
     public function testUpgrade()
     {
@@ -75,62 +70,16 @@ class UpgradeConfigTest extends UnitaryTestCase
             $this->application->getContext()
         );
 
-        $this->checkUpgradeV200B17011202($configData);
-        $this->checkUpgradeV300B18111001($configData);
-        $this->checkUpgradeLdap($configData);
-
-        $configData->expects(self::exactly(4))
+        $configData->expects(self::never())
                    ->method('setConfigVersion')
                    ->with(self::anything());
 
-        $configFileService->expects(self::exactly(4))
+        $configFileService->expects(self::never())
                           ->method('save')
                           ->with($configData, false);
 
-        $upgradeConfig = new UpgradeConfig($application, $this->fileLogHandlerProvider, $this->mimeTypeService);
+        $upgradeConfig = new UpgradeConfig($application, $this->fileLogHandlerProvider);
         $upgradeConfig->upgrade($version, $configData);
-    }
-
-    private function checkUpgradeV200B17011202(ConfigDataInterface|MockObject $configData): void
-    {
-        $configData->expects(self::once())
-                   ->method('setSiteTheme')
-                   ->with('material-blue');
-    }
-
-    private function checkUpgradeV300B18111001(ConfigDataInterface|MockObject $configData): void
-    {
-        $configData->expects(self::once())
-                   ->method('getFilesAllowedExts')
-                   ->willReturn(['testA', 'testB']);
-
-        $this->mimeTypeService
-            ->expects(self::exactly(2))
-            ->method('getMimeTypes')
-            ->willReturn([new MimeType('application/test', '', 'testA')]);
-
-        $configData->expects(self::once())
-                   ->method('setFilesAllowedMime')
-                   ->with(['application/test']);
-    }
-
-    private function checkUpgradeLdap(ConfigDataInterface|MockObject $configData): void
-    {
-        $configData->expects(self::exactly(2))
-                   ->method('isLdapEnabled')
-                   ->willReturn(true);
-
-        $configData->expects(self::once())
-                   ->method('getAttributes')
-                   ->willReturn(['ldapAds' => 'test']);
-
-        $configData->expects(self::exactly(2))
-                   ->method('setLdapType')
-                   ->with(LdapTypeEnum::ADS->value);
-
-        $configData->expects(self::once())
-                   ->method('getLdapType')
-                   ->willReturn(LdapTypeEnum::AZURE->value);
     }
 
     /**
@@ -147,8 +96,5 @@ class UpgradeConfigTest extends UnitaryTestCase
         parent::setUp();
 
         $this->fileLogHandlerProvider = $this->createMock(FileLogHandlerProvider::class);
-        $this->mimeTypeService = $this->createMock(MimeTypesService::class);
     }
-
-
 }

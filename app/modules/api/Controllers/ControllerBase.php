@@ -37,7 +37,7 @@ use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 
@@ -50,8 +50,8 @@ abstract class ControllerBase
 {
     protected const SEARCH_COUNT_ITEMS = 25;
 
-    protected string              $controllerName;
-    protected ContextInterface    $context;
+    protected string  $controllerName;
+    protected Context $context;
     protected EventDispatcher $eventDispatcher;
     protected ApiService      $apiService;
     protected Klein           $router;

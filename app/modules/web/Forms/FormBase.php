@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Http\RequestInterface;
 
 /**
@@ -39,7 +39,7 @@ abstract class FormBase
 {
     protected ConfigFile $config;
     protected ConfigDataInterface $configData;
-    protected ContextInterface    $context;
+    protected Context $context;
 
     /**
      * FormBase constructor.

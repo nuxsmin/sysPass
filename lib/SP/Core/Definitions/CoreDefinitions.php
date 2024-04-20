@@ -55,7 +55,7 @@ use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
@@ -129,14 +129,14 @@ final class CoreDefinitions
             KleinResponse::class => create(KleinResponse::class),
             RequestInterface::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
-            ContextInterface::class =>
+            Context::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
                         ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
                     create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
-                    get(ContextInterface::class),
+                    get(Context::class),
                     autowire(ConfigBackup::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),

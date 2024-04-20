@@ -24,7 +24,6 @@
 
 namespace SP\Core\Bootstrap;
 
-use Closure;
 use Klein\Klein;
 use Klein\Request;
 use Klein\Response;
@@ -39,16 +38,12 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
-use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
-use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
-use SP\Plugin\PluginManager;
 use SP\Util\Checks;
 use Symfony\Component\Debug\Debug;
 use Throwable;
@@ -66,38 +61,17 @@ abstract class BootstrapBase implements BootstrapInterface
     public const CONTEXT_ACTION_NAME = "_actionName";
 
     protected const OOPS_MESSAGE = "Oops, it looks like this content does not exist...";
-    /**
-     * @deprecated Use {@see UriContextInterface::getWebRoot()} instead
-     * @var string The current request path relative to the sysPass root (e.g. files/index.php)
-     */
-    public static string $WEBROOT = '';
-    /**
-     * @deprecated Use {@see UriContextInterface::getWebUri()} instead
-     * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
-     */
-    public static string $WEBURI = '';
-    /**
-     * @deprecated Use {@see UriContextInterface::getSubUri()} instead
-     */
-    public static string $SUBURI = '';
-    /**
-     * @var mixed
-     */
-    public static      $LOCK;
-    public static bool $checkPhpVersion = false;
+    public static mixed $LOCK;
+    public static bool  $checkPhpVersion = false;
 
-    /**
-     * Bootstrap constructor.
-     */
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
         protected readonly Klein               $router,
         protected readonly RequestInterface    $request,
         private readonly UpgradeConfigChecker  $upgradeConfigChecker,
         protected readonly PhpExtensionChecker $extensionChecker,
-        protected readonly ContextInterface    $context,
+        protected readonly Context $context,
         private readonly ContainerInterface    $container,
-        protected readonly UriContextInterface $uriContext,
         protected readonly Response            $response,
     ) {
         // Set the default language
@@ -118,17 +92,16 @@ abstract class BootstrapBase implements BootstrapInterface
         );
 
         // Manage requests for options
-        $this->router->respond('OPTIONS', null, $this->manageCorsRequest());
-    }
+        $this->router->respond(
+            'OPTIONS',
+            null,
+            function ($request, $response) {
+                /** @var Request $request */
+                /** @var Response $response */
 
-    private function manageCorsRequest(): Closure
-    {
-        return function ($request, $response) {
-            /** @var Request $request */
-            /** @var Response $response */
-
-            $this->setCors($response);
-        };
+                $this->setCors($response);
+            }
+        );
     }
 
     final protected function setCors(Response $response): void
@@ -147,15 +120,6 @@ abstract class BootstrapBase implements BootstrapInterface
     abstract protected function configureRouter(): void;
 
     abstract public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void;
-
-    /**
-     * @deprecated
-     * FIXME: delete
-     */
-    public static function getContainer()
-    {
-        return null;
-    }
 
     final protected static function getClassFor(string $controllerName, string $actionName): string
     {
@@ -180,8 +144,8 @@ abstract class BootstrapBase implements BootstrapInterface
     /**
      * @throws CheckException
      * @throws ConfigException
+     * @throws FileException
      * @throws InitializationException
-     * @throws UpgradeException
      */
     final protected function initializeCommon(): void
     {
@@ -198,9 +162,8 @@ abstract class BootstrapBase implements BootstrapInterface
         $this->extensionChecker->checkMandatory();
 
         if (!self::$checkPhpVersion) {
-            throw new InitializationException(
-                sprintf(__('Required PHP version >= %s <= %s'), '8.1', '8.2'),
-                SPException::ERROR,
+            throw InitializationException::error(
+                sprintf(__('Required PHP version >= %s <= %s'), '8.2', '8.3'),
                 __u('Please update the PHP version to run sysPass')
             );
         }
@@ -217,32 +180,16 @@ abstract class BootstrapBase implements BootstrapInterface
         $server = $this->router->request()->server();
 
         // Copiar la cabecera http de autentificación para apache+php-fcgid
-        if ($server->get('HTTP_XAUTHORIZATION') !== null
-            && $server->get('HTTP_AUTHORIZATION') === null
-        ) {
+        if ($server->get('HTTP_XAUTHORIZATION') !== null && $server->get('HTTP_AUTHORIZATION') === null) {
             $server->set('HTTP_AUTHORIZATION', $server->get('HTTP_XAUTHORIZATION'));
         }
 
-        // Establecer las cabeceras de autentificación para apache+php-cgi
-        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
-        if (($server->get('HTTP_AUTHORIZATION') !== null
-             && preg_match(
-                 '/Basic\s+(.*)$/i',
-                 $server->get('HTTP_AUTHORIZATION'),
-                 $matches
-             ))
-            || ($server->get('REDIRECT_HTTP_AUTHORIZATION') !== null
-                && preg_match(
-                    '/Basic\s+(.*)$/i',
-                    $server->get('REDIRECT_HTTP_AUTHORIZATION'),
-                    $matches
-                ))
-        ) {
-            [$name, $password] = explode(
-                ':',
-                base64_decode($matches[1]),
-                2
-            );
+        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable
+        // es renombrada por apache
+        $authorization = $server->get('HTTP_AUTHORIZATION') ?? $server->get('REDIRECT_HTTP_AUTHORIZATION', '');
+
+        if (preg_match('/Basic\s+(.*)$/i', $authorization, $matches)) {
+            [$name, $password] = explode(':', base64_decode($matches[1]), 2);
 
             $server->set('PHP_AUTH_USER', strip_tags($name));
             $server->set('PHP_AUTH_PW', strip_tags($password));
@@ -294,11 +241,6 @@ abstract class BootstrapBase implements BootstrapInterface
         $this->upgradeConfigChecker->checkConfigVersion();
 
         ConfigUtil::checkConfigDir();
-    }
-
-    final protected function initializePluginClasses(): void
-    {
-        PluginManager::getPlugins();
     }
 
     /**

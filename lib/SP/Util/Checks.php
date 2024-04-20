@@ -31,8 +31,8 @@ namespace SP\Util;
  */
 final class Checks
 {
-    private const MIN_PHP_VERSION = 81000;
-    private const MAX_PHP_VERSION = 82000;
+    private const MIN_PHP_VERSION = 82000;
+    private const MAX_PHP_VERSION = 83000;
 
     /**
      * Comprobar si sysPass se ejecuta en W$indows.

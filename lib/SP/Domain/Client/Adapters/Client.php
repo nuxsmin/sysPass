@@ -58,7 +58,7 @@ final class Client extends Adapter implements ClientAdapter
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $customFieldService),
-            new CustomField($this->configData)
+            new CustomField($this->configData, $this->baseUrl)
         );
     }
 
@@ -77,7 +77,7 @@ final class Client extends Adapter implements ClientAdapter
                         $data->getId(),
                         AclActionsInterface::CLIENT_VIEW,
                         $this->configData,
-                        true
+                        $this->baseUrl
                     ),
                 ],
             ],

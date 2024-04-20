@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\RequestInterface;
 
@@ -77,7 +77,7 @@ final class Language implements LanguageInterface
     ];
 
     public function __construct(
-        private readonly ContextInterface    $context,
+        private readonly Context $context,
         private readonly ConfigDataInterface $configData,
         private readonly RequestInterface    $request
     ) {

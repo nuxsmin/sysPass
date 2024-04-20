@@ -26,13 +26,14 @@ namespace SPT\Core\Crypt;
 
 use Klein\DataCollection\DataCollection;
 use Klein\Request;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\UuidCookie;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Http\RequestInterface;
 use SPT\UnitaryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class UuidCookieTest
@@ -42,7 +43,8 @@ use PHPUnit\Framework\Attributes\Group;
 class UuidCookieTest extends UnitaryTestCase
 {
 
-    private RequestInterface|MockObject $requestInterface;
+    private RequestInterface|MockObject    $requestInterface;
+    private UriContextInterface|MockObject $uriContext;
 
 
     /**
@@ -70,7 +72,7 @@ class UuidCookieTest extends UnitaryTestCase
             ->method('getRequest')
             ->willReturn($request);
 
-        $cookie = UuidCookie::factory($this->requestInterface);
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
         self::assertEquals('test', $cookie->load($key));
     }
@@ -98,7 +100,7 @@ class UuidCookieTest extends UnitaryTestCase
             ->method('getRequest')
             ->willReturn($request);
 
-        $cookie = UuidCookie::factory($this->requestInterface);
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
         self::assertFalse($cookie->load($key));
     }
@@ -127,7 +129,7 @@ class UuidCookieTest extends UnitaryTestCase
             ->method('getRequest')
             ->willReturn($request);
 
-        $cookie = UuidCookie::factory($this->requestInterface);
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
         self::assertFalse($cookie->load($key));
     }
@@ -156,14 +158,14 @@ class UuidCookieTest extends UnitaryTestCase
             ->method('getRequest')
             ->willReturn($request);
 
-        $cookie = UuidCookie::factory($this->requestInterface);
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
         self::assertFalse($cookie->load($key));
     }
 
     public function testCreate()
     {
-        $uuidCookie = UuidCookie::factory($this->requestInterface);
+        $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
         $key = self::$faker->sha1;
         $cookie = $uuidCookie->create($key);
@@ -174,7 +176,7 @@ class UuidCookieTest extends UnitaryTestCase
     public function testSign()
     {
         $key = self::$faker->sha1;
-        $uuidCookie = UuidCookie::factory($this->requestInterface);
+        $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
         $cookieData = $uuidCookie->sign('test', $key);
         $out = $uuidCookie->getCookieData($cookieData, $key);
 
@@ -186,5 +188,6 @@ class UuidCookieTest extends UnitaryTestCase
         parent::setUp();
 
         $this->requestInterface = $this->createMock(RequestInterface::class);
+        $this->uriContext = $this->createMock(UriContextInterface::class);
     }
 }

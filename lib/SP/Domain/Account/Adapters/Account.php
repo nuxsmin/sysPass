@@ -54,10 +54,11 @@ final class Account extends Adapter implements AccountAdapter
 
     public function __construct(
         ConfigDataInterface               $configData,
+        string                            $baseUrl,
         private readonly CustomFieldDataService $customFieldService,
         private readonly ActionsInterface $actions
     ) {
-        parent::__construct($configData);
+        parent::__construct($configData, $baseUrl);
     }
 
     /**
@@ -74,7 +75,7 @@ final class Account extends Adapter implements AccountAdapter
                 $accountEnrichedDto->getId(),
                 $this->customFieldService
             ),
-            new CustomField($this->configData)
+            new CustomField($this->configData, $this->baseUrl)
         );
     }
 
@@ -127,7 +128,7 @@ final class Account extends Adapter implements AccountAdapter
                         $account->getId(),
                         $actionRoute,
                         $this->configData,
-                        true
+                        $this->baseUrl
                     ),
                 ],
             ],

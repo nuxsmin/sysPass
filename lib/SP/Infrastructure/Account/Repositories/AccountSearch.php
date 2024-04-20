@@ -31,7 +31,7 @@ use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchRepository;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -48,7 +48,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
 
     public function __construct(
         DatabaseInterface        $database,
-        ContextInterface         $session,
+        Context                  $session,
         EventDispatcherInterface $eventDispatcher,
         QueryFactory             $queryFactory,
         private readonly AccountFilterBuilder $accountFilterUser

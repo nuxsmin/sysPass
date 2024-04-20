@@ -28,127 +28,53 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Persistence\Ports\UpgradeDatabaseService;
 use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Providers\Log\FileLogHandler;
-use SP\Util\VersionUtil;
+
+use function SP\__;
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class UpgradeDatabase
  */
-final class UpgradeDatabase extends Service implements UpgradeDatabaseService
+final class UpgradeDatabase extends UpgradeBase
 {
-    /**
-     * @var array Versiones actualizables
-     */
-    private const UPGRADES = [
-        '300.18010101',
-        '300.18072302',
-        '300.18072501',
-        '300.18083001',
-        '300.18083002',
-        '300.18091101',
-        '300.18092401',
-        '300.18093001',
-        '300.18111801',
-        '300.18111901',
-        '310.19012201',
-        '310.19042701',
-    ];
-
-    private DatabaseInterface $database;
-
-    public function __construct(Application $application, DatabaseInterface $database, FileLogHandler $fileLogHandler)
-    {
-        parent::__construct($application);
-
-        $this->database = $database;
-        $this->eventDispatcher->attach($fileLogHandler);
+    public function __construct(
+        Application                        $application,
+        FileLogHandler                     $fileLogHandler,
+        private readonly DatabaseInterface $database,
+    ) {
+        parent::__construct($application, $fileLogHandler);
     }
 
-
-    /**
-     * Check if it needs to be upgraded
-     */
-    public static function needsUpgrade(string $version): bool
+    protected static function getUpgrades(): array
     {
-        return empty($version) || VersionUtil::checkVersion($version, self::UPGRADES);
+        return [
+            '400.24210101',
+        ];
+    }
+
+    protected function commitVersion(string $version): void
+    {
+        $this->configData->setDatabaseVersion($version);
     }
 
     /**
-     * Inicia el proceso de actualización de la BBDD.
-     *
-     * @throws FileException
      * @throws UpgradeException
      */
-    public function upgrade(string $version, ConfigDataInterface $configData): bool
-    {
-        $this->eventDispatcher->notify(
-            'upgrade.db.start',
-            new Event($this, EventMessage::factory()->addDescription(__u('Update DB')))
-        );
-
-        foreach (self::UPGRADES as $upgradeVersion) {
-            if (VersionUtil::checkVersion($version, $upgradeVersion)) {
-                if ($this->applyPreUpgrade() === false) {
-                    throw new UpgradeException(
-                        __u('Error while applying an auxiliary update'),
-                        SPException::CRITICAL,
-                        __u('Please, check the event log for more details')
-                    );
-                }
-
-                if ($this->applyUpgrade($upgradeVersion) === false) {
-                    throw new UpgradeException(
-                        __u('Error while updating the database'),
-                        SPException::CRITICAL,
-                        __u('Please, check the event log for more details')
-                    );
-                }
-
-                logger('DB Upgrade: ' . $upgradeVersion);
-
-                $configData->setDatabaseVersion($upgradeVersion);
-
-                $this->config->save($configData, false);
-            }
-        }
-
-        $this->eventDispatcher->notify(
-            'upgrade.db.end',
-            new Event($this, EventMessage::factory()->addDescription(__u('Update DB')))
-        );
-
-        return true;
-    }
-
-    /**
-     * Aplicar actualizaciones auxiliares antes de actualizar la BBDD
-     */
-    private function applyPreUpgrade(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Actualiza la BBDD según la versión.
-     *
-     * @throws UpgradeException
-     */
-    private function applyUpgrade(string $version): bool
+    protected function applyUpgrade(string $version): bool
     {
         $queries = $this->getQueriesFromFile($version);
 
         if (count($queries) === 0) {
             logger(__('Update file does not contain data'), 'ERROR');
 
-            throw new UpgradeException(__u('Update file does not contain data'), SPException::ERROR, $version);
+            throw UpgradeException::error(__u('Update file does not contain data'), $version);
         }
 
         foreach ($queries as $query) {
@@ -175,7 +101,7 @@ final class UpgradeDatabase extends Service implements UpgradeDatabaseService
                     )
                 );
 
-                throw new UpgradeException(__u('Error while updating the database'));
+                throw UpgradeException::error(__u('Error while updating the database'));
             }
         }
 
@@ -191,11 +117,9 @@ final class UpgradeDatabase extends Service implements UpgradeDatabaseService
     }
 
     /**
-     * Obtener las consultas de actualización desde un archivo
-     *
      * @throws UpgradeException
      */
-    private function getQueriesFromFile(string $filename): array
+    private function getQueriesFromFile(string $filename): iterable
     {
         $fileName = SQL_PATH .
                     DIRECTORY_SEPARATOR .
@@ -207,7 +131,7 @@ final class UpgradeDatabase extends Service implements UpgradeDatabaseService
         } catch (FileException $e) {
             processException($e);
 
-            throw new UpgradeException($e->getMessage());
+            throw UpgradeException::error($e->getMessage());
         }
     }
 }

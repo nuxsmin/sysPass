@@ -26,11 +26,11 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Language;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
@@ -43,6 +43,9 @@ use SP\Plugin\PluginManager;
 use SP\Util\FileUtil;
 use SP\Util\VersionUtil;
 
+use function SP\__;
+use function SP\processException;
+
 /**
  * Class LayoutHelper
  *
@@ -52,22 +55,21 @@ final class LayoutHelper extends HelperBase
 {
     private ThemeInterface    $theme;
     private CryptPKIInterface $cryptPKI;
-    private PluginManager     $pluginManager;
     private bool              $loggedIn;
 
     public function __construct(
-        Application      $application,
-        TemplateInterface $template,
-        RequestInterface $request,
-        ThemeInterface   $theme,
-        CryptPKIInterface $cryptPKI,
-        PluginManager    $pluginManager
+        Application                          $application,
+        TemplateInterface                    $template,
+        RequestInterface                     $request,
+        ThemeInterface                       $theme,
+        CryptPKIInterface                    $cryptPKI,
+        private readonly UriContextInterface $uriContext,
+        private readonly AclInterface        $acl
     ) {
         parent::__construct($application, $template, $request);
 
         $this->theme = $theme;
         $this->cryptPKI = $cryptPKI;
-        $this->pluginManager = $pluginManager;
         $this->loggedIn = $this->context->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);
@@ -113,7 +115,7 @@ final class LayoutHelper extends HelperBase
      */
     public function initBody(): void
     {
-        $baseUrl = $this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI;
+        $baseUrl = $this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri();
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
@@ -125,7 +127,7 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
-        $this->view->assign('homeRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT));
+        $this->view->assign('homeRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT));
 
         $this->loggedIn = $this->context->isLoggedIn();
 
@@ -150,7 +152,8 @@ final class LayoutHelper extends HelperBase
     protected function getResourcesLinks(): void
     {
         $version = VersionUtil::getVersionStringNormalized();
-        $baseUrl = ($this->configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
+        $baseUrl = ($this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri()) .
+                   $this->uriContext->getSubUri();
 
         $jsUriApp = new Uri($baseUrl);
         $jsUriApp->addParams(['_r' => 'resource/js', '_v' => sha1($version)]);
@@ -234,10 +237,11 @@ final class LayoutHelper extends HelperBase
 
             if (count($cssResources) > 0) {
                 $cssUriPlugin = new Uri($baseUrl);
-                $cssUriPlugin->addParams([
-                                             'b' => FileUtil::buildPath($base, 'css'),
-                                             'f' => implode(',', $cssResources)
-                                         ]
+                $cssUriPlugin->addParams(
+                    [
+                        'b' => FileUtil::buildPath($base, 'css'),
+                        'f' => implode(',', $cssResources)
+                    ]
                 );
 
                 $this->view->append('cssLinks', $cssUriPlugin->getUriSigned($this->configData->getPasswordSalt()));

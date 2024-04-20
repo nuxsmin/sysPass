@@ -24,7 +24,7 @@
 
 namespace SP\Core\Context;
 
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 
 use function SP\__u;
 
@@ -33,7 +33,7 @@ use function SP\__u;
  *
  * @package SP\Core\Session
  */
-abstract class ContextBase implements ContextInterface
+abstract class ContextBase implements Context
 {
     public const APP_STATUS_RELOADED  = 'reloaded';
     public const APP_STATUS_LOGGEDOUT = 'loggedout';

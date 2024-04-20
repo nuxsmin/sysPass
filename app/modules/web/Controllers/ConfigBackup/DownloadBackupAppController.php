@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 
 use Exception;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -55,7 +55,7 @@ final class DownloadBackupAppController extends SimpleControllerBase
         }
 
         try {
-            SessionContext::close();
+            Session::close();
 
             $filePath = BackupFileHelper::getAppBackupFilename(
                 BACKUP_PATH,

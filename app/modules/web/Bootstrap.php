@@ -32,6 +32,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Core\Bootstrap\RouteContext;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -82,8 +83,6 @@ final class Bootstrap extends BootstrapBase
                     $routeContextData->getController(),
                     $routeContextData->getActionName()
                 );
-
-                $this->initializePluginClasses();
 
                 if (!method_exists($controllerClass, $routeContextData->getMethodName())) {
                     logger($controllerClass . '::' . $routeContextData->getMethodName());

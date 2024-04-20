@@ -36,6 +36,7 @@ use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -82,7 +83,8 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
         private readonly AccountToFavoriteService $accountToFavoriteService,
         private readonly AccountCacheService      $accountCacheService,
         private readonly FileCacheService         $fileCache,
-        private readonly ConfigDataInterface      $configData
+        private readonly ConfigDataInterface $configData,
+        private readonly UriContextInterface $uriContext,
     ) {
         parent::__construct($application);
 
@@ -156,6 +158,7 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
                     $accountSearchView,
                     $accountAcl,
                     $this->configData,
+                    $this->uriContext,
                     $tags,
                     $maxTextLength,
                     isset($favorites[$accountSearchView->getId()]),

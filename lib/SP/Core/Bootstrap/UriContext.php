@@ -30,11 +30,11 @@ use SP\Domain\Http\RequestInterface;
 /**
  * Class UriContext
  */
-final class UriContext implements UriContextInterface
+final readonly class UriContext implements UriContextInterface
 {
-    private readonly string $subUri;
-    private readonly string $webRoot;
-    private readonly string $webUri;
+    private string $subUri;
+    private string $webRoot;
+    private string $webUri;
 
     public function __construct(RequestInterface $request)
     {

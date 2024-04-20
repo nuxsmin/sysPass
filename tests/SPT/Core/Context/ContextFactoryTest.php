@@ -26,7 +26,7 @@ namespace SPT\Core\Context;
 
 use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Context\ContextFactory;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Context\StatelessContext;
 use SPT\UnitaryTestCase;
 
@@ -40,7 +40,7 @@ class ContextFactoryTest extends UnitaryTestCase
     {
         $out = ContextFactory::getForModule('web');
 
-        $this->assertInstanceOf(SessionContext::class, $out);
+        $this->assertInstanceOf(Session::class, $out);
     }
 
     public function testGetForModuleWithOther()

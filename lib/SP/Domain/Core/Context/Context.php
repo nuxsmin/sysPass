@@ -28,14 +28,11 @@ use SP\Core\Context\ContextException;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\User\Dtos\UserDataDto;
-use SP\Domain\User\Services\UserData;
 
 /**
- * Class ContextInterface
- *
- * @package SP\Core\Session
+ * Class Context
  */
-interface ContextInterface
+interface Context
 {
     public const MASTER_PASSWORD_KEY = '_masterpass';
 
@@ -114,7 +111,7 @@ interface ContextInterface
     /**
      * Establece la cache de cuentas
      *
-     * @param  array  $accountsCache
+     * @param array $accountsCache
      */
     public function setAccountsCache(array $accountsCache): void;
 
@@ -122,8 +119,8 @@ interface ContextInterface
      * Sets an arbitrary key in the trasient collection.
      * This key is not bound to any known method or type
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed $value
      *
      * @throws ContextException
      */
@@ -133,8 +130,8 @@ interface ContextInterface
      * Gets an arbitrary key from the trasient collection.
      * This key is not bound to any known method or type
      *
-     * @param  string  $key
-     * @param  mixed|null  $default
+     * @param string $key
+     * @param mixed|null $default
      *
      * @return mixed
      */
@@ -146,9 +143,9 @@ interface ContextInterface
     public function setTemporaryMasterPass(string $password);
 
     /**
-     * @param  string  $pluginName
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $pluginName
+     * @param string $key
+     * @param mixed $value
      */
     public function setPluginKey(string $pluginName, string $key, mixed $value);
 

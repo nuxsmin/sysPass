@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\ItemPreset\AccountPermission as AccountPermissionPreset;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ProfileData;
@@ -45,6 +44,7 @@ use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -73,39 +73,40 @@ final class AccountHelper extends AccountHelperBase
 {
     use ItemTrait;
 
-    private AccountService            $accountService;
-    private AccountHistoryService     $accountHistoryService;
-    private PublicLinkService         $publicLinkService;
-    private ItemPresetService         $itemPresetService;
-    private MasterPassService         $masterPassService;
-    private AccountAclService         $accountAclService;
-    private CategoryService           $categoryService;
-    private ClientService             $clientService;
-    private CustomFieldDataService    $customFieldService;
-    private ?AccountPermission        $accountAcl = null;
-    private ?int             $accountId = null;
-    private UserService      $userService;
-    private UserGroupService $userGroupService;
-    private TagService           $tagService;
+    private AccountService         $accountService;
+    private AccountHistoryService  $accountHistoryService;
+    private PublicLinkService      $publicLinkService;
+    private ItemPresetService      $itemPresetService;
+    private MasterPassService      $masterPassService;
+    private AccountAclService      $accountAclService;
+    private CategoryService        $categoryService;
+    private ClientService          $clientService;
+    private CustomFieldDataService $customFieldService;
+    private ?AccountPermission     $accountAcl = null;
+    private ?int                   $accountId  = null;
+    private UserService            $userService;
+    private UserGroupService       $userGroupService;
+    private TagService             $tagService;
 
     public function __construct(
-        Application               $application,
-        TemplateInterface         $template,
-        RequestInterface          $request,
-        AclInterface              $acl,
-        AccountService $accountService,
-        AccountHistoryService  $accountHistoryService,
-        PublicLinkService      $publicLinkService,
-        ItemPresetService      $itemPresetService,
-        MasterPassService      $masterPassService,
-        AccountActionsHelper   $accountActionsHelper,
-        AccountAclService      $accountAclService,
-        CategoryService        $categoryService,
-        ClientService          $clientService,
-        CustomFieldDataService $customFieldService,
-        UserService    $userService,
-        UserGroupService       $userGroupService,
-        TagService             $tagService
+        Application                          $application,
+        TemplateInterface                    $template,
+        RequestInterface                     $request,
+        AclInterface                         $acl,
+        AccountService                       $accountService,
+        AccountHistoryService                $accountHistoryService,
+        PublicLinkService                    $publicLinkService,
+        ItemPresetService                    $itemPresetService,
+        MasterPassService                    $masterPassService,
+        AccountActionsHelper                 $accountActionsHelper,
+        AccountAclService                    $accountAclService,
+        CategoryService                      $categoryService,
+        ClientService                        $clientService,
+        CustomFieldDataService               $customFieldService,
+        UserService                          $userService,
+        UserGroupService                     $userGroupService,
+        TagService                           $tagService,
+        private readonly UriContextInterface $uriContext
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 
@@ -222,7 +223,8 @@ final class AccountHelper extends AccountHelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                           $this->uriContext->getSubUri();
 
                 $this->view->assign(
                     'publicLinkUrl',
@@ -375,9 +377,12 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign('accountAcl', $this->accountAcl);
 
         if ($this->accountId) {
+            $baseUrl = ($this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
+
             $this->view->assign(
                 'deepLink',
-                Link::getDeepLink($this->accountId, $this->actionId, $this->configData)
+                Link::getDeepLink($this->accountId, $this->actionId, $this->configData, $baseUrl)
             );
         }
     }

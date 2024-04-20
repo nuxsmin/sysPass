@@ -24,18 +24,18 @@
 
 namespace SP\Core\Context;
 
-use SP\Domain\Core\Context\ContextInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 
 /**
  * ContextFactory
  */
 final class ContextFactory
 {
-    public static function getForModule(string $module): ContextInterface|SessionContextInterface
+    public static function getForModule(string $module): Context|SessionContext
     {
         if ($module === 'web') {
-            return new SessionContext();
+            return new Session();
         }
 
         return new StatelessContext();

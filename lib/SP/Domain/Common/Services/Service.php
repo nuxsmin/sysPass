@@ -27,10 +27,10 @@ namespace SP\Domain\Common\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\SessionContext;
-use SP\Core\Crypt\Session;
+use SP\Core\Context\Session as SessionContext;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 
@@ -47,7 +47,7 @@ abstract class Service
     protected const STATUS_INTERNAL_ERROR = 1000;
 
     protected readonly ConfigFileService        $config;
-    protected readonly ContextInterface         $context;
+    protected readonly Context $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
 
     public function __construct(Application $application)
@@ -65,9 +65,9 @@ abstract class Service
     {
         try {
             if ($this->context instanceof SessionContext) {
-                $key = Session::getSessionKey($this->context);
+                $key = CryptSession::getSessionKey($this->context);
             } else {
-                $key = $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY);
+                $key = $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY);
             }
 
             if (empty($key)) {
@@ -90,7 +90,7 @@ abstract class Service
     {
         try {
             if ($this->context instanceof SessionContext) {
-                Session::saveSessionKey($masterPass, $this->context);
+                CryptSession::saveSessionKey($masterPass, $this->context);
             } else {
                 $this->context->setTrasientKey('_masterpass', $masterPass);
             }

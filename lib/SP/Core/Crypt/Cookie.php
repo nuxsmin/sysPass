@@ -24,26 +24,21 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Http\RequestInterface;
 
 use function SP\logger;
 
 /**
  * Class Cookie
- *
- * @package SP\Core\Crypt
  */
 abstract class Cookie
 {
-    /**
-     * Cookie constructor.
-     *
-     * @param string $cookieName
-     * @param RequestInterface $request
-     */
-    protected function __construct(private readonly string $cookieName, protected readonly RequestInterface $request)
-    {
+    protected function __construct(
+        private readonly string              $cookieName,
+        protected readonly RequestInterface  $request,
+        private readonly UriContextInterface $uriContext
+    ) {
     }
 
     /**
@@ -106,6 +101,6 @@ abstract class Cookie
             return false;
         }
 
-        return setcookie($this->cookieName, $data, 0, BootstrapBase::$WEBROOT);
+        return setcookie($this->cookieName, $data, 0, $this->uriContext->getWebRoot());
     }
 }

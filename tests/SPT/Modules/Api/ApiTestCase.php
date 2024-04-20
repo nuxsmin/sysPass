@@ -44,7 +44,7 @@ use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -185,7 +185,7 @@ abstract class ApiTestCase extends TestCase
             )
             ->build();
 
-        $context = $dic->get(ContextInterface::class);
+        $context = $dic->get(Context::class);
         $context->initialize();
         $context->setTrasientKey('_masterpass', '12345678900');
 

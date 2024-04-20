@@ -26,7 +26,7 @@ namespace SP\Providers;
 
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
@@ -37,7 +37,7 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 abstract class Provider implements ProviderInterface
 {
     protected readonly ConfigFileService $config;
-    protected readonly ContextInterface  $context;
+    protected readonly Context           $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
     protected bool                              $initialized = false;
 

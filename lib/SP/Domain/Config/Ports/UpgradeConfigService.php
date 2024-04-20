@@ -24,11 +24,11 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\Domain\Upgrade\Ports\Upgrade;
+use SP\Domain\Upgrade\Ports\UpgradeService;
 
 /**
  * Interface UpgradeConfigService
  */
-interface UpgradeConfigService extends Upgrade
+interface UpgradeConfigService extends UpgradeService
 {
 }

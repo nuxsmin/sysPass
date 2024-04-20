@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Session;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SPT\UnitaryTestCase;
@@ -41,7 +41,7 @@ use SPT\UnitaryTestCase;
 class SessionTest extends UnitaryTestCase
 {
 
-    private SessionContextInterface|MockObject $sessionContext;
+    private SessionContext|MockObject $sessionContext;
 
     /**
      * @throws Exception
@@ -130,7 +130,7 @@ class SessionTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->sessionContext = $this->createMock(SessionContextInterface::class);
+        $this->sessionContext = $this->createMock(SessionContext::class);
     }
 
 }

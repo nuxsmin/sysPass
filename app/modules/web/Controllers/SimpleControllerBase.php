@@ -31,7 +31,8 @@ use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
@@ -41,21 +42,20 @@ use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase
- *
- * @package SP\Modules\Web\Controllers
  */
 abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    protected EventDispatcher  $eventDispatcher;
-    protected ConfigFile       $config;
-    protected ContextInterface $session;
-    protected ThemeInterface      $theme;
-    protected Acl                 $acl;
-    protected Request             $request;
-    protected PhpExtensionChecker $extensionChecker;
-    protected ConfigDataInterface $configData;
+    protected readonly EventDispatcher     $eventDispatcher;
+    protected readonly ConfigFile          $config;
+    protected readonly Context             $session;
+    protected readonly ThemeInterface      $theme;
+    protected readonly Acl                 $acl;
+    protected readonly Request             $request;
+    protected readonly PhpExtensionChecker $extensionChecker;
+    protected readonly ConfigDataInterface $configData;
+    protected readonly UriContextInterface $uriContext;
 
     /**
      * @throws SessionTimeout
@@ -69,6 +69,7 @@ abstract class SimpleControllerBase
         $this->acl = $simpleControllerHelper->getAcl();
         $this->request = $simpleControllerHelper->getRequest();
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
+        $this->uriContext = $simpleControllerHelper->getUriContext();
         $this->controllerName = $this->getControllerName();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
@@ -94,7 +95,6 @@ abstract class SimpleControllerBase
 
             throw new SessionTimeout();
         }
-
 //        $this->checkSecurityToken($this->session, $this->request);
     }
 

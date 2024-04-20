@@ -25,26 +25,26 @@
 namespace SP\Core;
 
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\ContextInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * The Application helper class. It holds all the needed dependencies for the application
  */
-final class Application
+final readonly class Application
 {
     /**
      * Module constructor.
      *
      * @param ConfigFileService $config
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionContextInterface|ContextInterface $context
+     * @param SessionContext|Context $context
      */
     public function __construct(
-        private readonly ConfigFileService $config,
-        private readonly EventDispatcherInterface                 $eventDispatcher,
-        private readonly SessionContextInterface|ContextInterface $context
+        private ConfigFileService        $config,
+        private EventDispatcherInterface $eventDispatcher,
+        private SessionContext|Context   $context
     ) {
     }
 
@@ -58,7 +58,7 @@ final class Application
         return $this->eventDispatcher;
     }
 
-    public function getContext(): ContextInterface|SessionContextInterface
+    public function getContext(): Context|SessionContext
     {
         return $this->context;
     }

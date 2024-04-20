@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Http\RequestInterface;
 use SP\Http\Request;
 use SP\Mvc\View\TemplateInterface;
@@ -42,7 +42,7 @@ abstract class HelperBase
 {
     protected TemplateInterface   $view;
     protected ConfigDataInterface $configData;
-    protected ContextInterface    $context;
+    protected Context         $context;
     protected EventDispatcher $eventDispatcher;
     protected ConfigFile      $config;
     protected Request         $request;

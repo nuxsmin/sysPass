@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\DatabaseInterface;
@@ -50,7 +50,7 @@ abstract class BaseRepository implements Repository
 {
     public function __construct(
         protected readonly DatabaseInterface        $db,
-        protected readonly ContextInterface         $context,
+        protected readonly Context $context,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly QueryFactory             $queryFactory
     ) {

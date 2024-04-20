@@ -31,7 +31,7 @@ use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Session as CryptSession;
@@ -54,8 +54,6 @@ use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPreset;
-use SP\Domain\Upgrade\Services\UpgradeAppService;
-use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Services\UserProfile;
@@ -82,7 +80,6 @@ use SP\Modules\Web\Controllers\Status\StatusController;
 use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
-use SP\Plugin\PluginManager;
 use SP\Util\HttpUtil;
 
 use function SP\logger;
@@ -136,14 +133,14 @@ final class Init extends HttpModuleBase
     public const  ROUTE_UPGRADE                   = 'upgrade';
 
 
-    private Csrf $csrf;
+    private Csrf         $csrf;
     private Language      $language;
     private SecureSession $secureSessionService;
     private PluginManager $pluginManager;
     private ItemPreset   $itemPresetService;
     private DatabaseUtil $databaseUtil;
-    private UserProfile $userProfileService;
-    private bool        $isIndex = false;
+    private UserProfile  $userProfileService;
+    private bool         $isIndex = false;
 
     public function __construct(
         Application                          $application,
@@ -298,7 +295,7 @@ final class Init extends HttpModuleBase
 
         // Do not keep the PHP's session opened
         if (!in_array($controller, self::NO_SESSION_CLOSE, true)) {
-            SessionContext::close();
+            Session::close();
         }
     }
 
@@ -373,7 +370,7 @@ final class Init extends HttpModuleBase
                 $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
-            SessionContext::restart();
+            Session::restart();
         } else {
             $sidStartTime = $this->context->getSidStartTime();
 
@@ -382,7 +379,7 @@ final class Init extends HttpModuleBase
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
             } elseif (!$inMaintenance
-                      && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
+                      && time() > ($sidStartTime + Session::MAX_SID_TIME)
                       && $this->context->isLoggedIn()
             ) {
                 try {
@@ -390,7 +387,7 @@ final class Init extends HttpModuleBase
                 } catch (CryptException $e) {
                     logger($e->getMessage());
 
-                    SessionContext::restart();
+                    Session::restart();
 
                     return;
                 }

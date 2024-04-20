@@ -27,7 +27,7 @@ namespace SP\Core\Context;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\User\Dtos\UserDataDto;
 
@@ -38,10 +38,8 @@ use function SP\processException;
 
 /**
  * Class Session
- *
- * @package SP\Core\Session
  */
-class SessionContext extends ContextBase implements SessionContextInterface
+class Session extends ContextBase implements SessionContext
 {
     public const MAX_SID_TIME = 120;
 

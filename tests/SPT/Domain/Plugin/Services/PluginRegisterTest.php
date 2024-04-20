@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Models\Plugin;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginRegister;
@@ -60,7 +60,7 @@ class PluginRegisterTest extends UnitaryTestCase
 
         $pluginManagerService->expects($this->once())
                              ->method('create')
-                             ->with(new Plugin(['name' => 'test_plugin', 'enabled' => false]));
+            ->with(new PluginModel(['name' => 'test_plugin', 'enabled' => false]));
 
         $pluginRegister = new PluginRegister($this->application, $pluginManagerService);
 

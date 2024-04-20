@@ -36,7 +36,7 @@ use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -355,7 +355,7 @@ class PublicLinkTest extends UnitaryTestCase
             ->with(
                 $passData['pass'],
                 $passData['key'],
-                $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY)
+                $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY)
             )
             ->willReturn(self::$faker->password);
 
@@ -545,7 +545,7 @@ class PublicLinkTest extends UnitaryTestCase
             ->with(
                 $passData['pass'],
                 $passData['key'],
-                $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY)
+                $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY)
             )
             ->willReturn(self::$faker->password);
 
@@ -577,7 +577,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, self::$faker->password);
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password);
 
         $this->publicLink =
             new PublicLink(

@@ -78,11 +78,11 @@ final class VersionUtil
     /**
      * Return a normalized version string to be compared
      *
-     * @param array|string $versionIn
+     * @param array|string|null $versionIn
      *
      * @return string|null
      */
-    public static function normalizeVersionForCompare(array|string $versionIn): ?string
+    public static function normalizeVersionForCompare(array|string|null $versionIn): ?string
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {

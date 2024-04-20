@@ -28,7 +28,6 @@ namespace SP\Modules\Web\Controllers\Account;
 use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -57,11 +56,11 @@ final class ViewLinkController extends AccountControllerBase
     private ImageUtil      $imageUtil;
 
     public function __construct(
-        Application         $application,
+        Application        $application,
         WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        PublicLinkService   $publicLinkService,
-        ImageUtilInterface  $imageUtil
+        AccountService     $accountService,
+        PublicLinkService  $publicLinkService,
+        ImageUtilInterface $imageUtil
     ) {
         parent::__construct(
             $application,
@@ -138,7 +137,8 @@ final class ViewLinkController extends AccountControllerBase
                     ? '***'
                     : $this->request->getClientAddress(true);
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
+                $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                           $this->uriContext->getSubUri();
 
                 $deepLink = new Uri($baseUrl);
                 $deepLink->addParam(

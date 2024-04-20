@@ -31,7 +31,7 @@ use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
@@ -57,7 +57,7 @@ class ConfigFile implements ConfigFileService
     public function __construct(
         private readonly XmlFileStorageService $fileStorage,
         private readonly FileCacheService      $fileCache,
-        private readonly ContextInterface      $context,
+        private readonly Context $context,
         private readonly ConfigBackupService   $configBackupService,
         private ?ConfigDataInterface           $configData = null
     ) {

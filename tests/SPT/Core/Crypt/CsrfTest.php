@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
 use SPT\UnitaryTestCase;
@@ -43,8 +43,8 @@ use SPT\UnitaryTestCase;
 class CsrfTest extends UnitaryTestCase
 {
 
-    private SessionContextInterface|MockObject $sessionContext;
-    private RequestInterface|MockObject        $requestInterface;
+    private SessionContext|MockObject   $sessionContext;
+    private RequestInterface|MockObject $requestInterface;
     private ConfigDataInterface|MockObject     $configData;
     private Csrf                               $csrf;
 
@@ -277,7 +277,7 @@ class CsrfTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->sessionContext = $this->createMock(SessionContextInterface::class);
+        $this->sessionContext = $this->createMock(SessionContext::class);
         $this->requestInterface = $this->createMock(RequestInterface::class);
         $this->configData = $this->createMock(ConfigDataInterface::class);
 

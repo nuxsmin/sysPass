@@ -40,7 +40,7 @@ use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -602,7 +602,7 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->setup($actionId);
         $this->apiService->requireMasterPass();
 
-        $this->assertEquals($masterPass, $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY));
+        $this->assertEquals($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
     }
 
     /**
@@ -666,7 +666,7 @@ class ApiTest extends UnitaryTestCase
 
         $this->assertEquals(
             $this->apiService->getMasterPass(),
-            $this->context->getTrasientKey(ContextInterface::MASTER_PASSWORD_KEY)
+            $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY)
         );
     }
 }

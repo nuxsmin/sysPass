@@ -30,7 +30,7 @@ use Exception;
 use RuntimeException;
 use SP\Core\Context\ContextException;
 use SP\DataModel\ProfileData;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -122,7 +122,7 @@ function setupContext(): Container
         ->build();
 
     // Inicializar el contexto
-    $context = $dic->get(ContextInterface::class);
+    $context = $dic->get(Context::class);
     $context->initialize();
 
     $context->setTrasientKey('_masterpass', '12345678900');

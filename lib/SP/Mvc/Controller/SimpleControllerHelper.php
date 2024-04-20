@@ -24,36 +24,27 @@
 
 namespace SP\Mvc\Controller;
 
-
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
 
 /**
  * Class SimpleControllerHelper
  */
-final class SimpleControllerHelper
+final readonly class SimpleControllerHelper
 {
-    private ThemeInterface      $theme;
-    private Klein               $router;
-    private AclInterface $acl;
-    private RequestInterface    $request;
-    private PhpExtensionChecker $extensionChecker;
 
     public function __construct(
-        ThemeInterface   $theme,
-        Klein            $router,
-        AclInterface     $acl,
-        RequestInterface $request,
-        PhpExtensionChecker $extensionChecker
+        private ThemeInterface      $theme,
+        private Klein               $router,
+        private AclInterface        $acl,
+        private RequestInterface    $request,
+        private PhpExtensionChecker $extensionChecker,
+        private UriContextInterface $uriContext
     ) {
-        $this->theme = $theme;
-        $this->router = $router;
-        $this->acl = $acl;
-        $this->request = $request;
-        $this->extensionChecker = $extensionChecker;
     }
 
     public function getTheme(): ThemeInterface
@@ -79,5 +70,10 @@ final class SimpleControllerHelper
     public function getExtensionChecker(): PhpExtensionChecker
     {
         return $this->extensionChecker;
+    }
+
+    public function getUriContext(): UriContextInterface
+    {
+        return $this->uriContext;
     }
 }

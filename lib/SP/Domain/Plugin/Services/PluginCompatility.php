@@ -45,7 +45,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
 {
 
     public function __construct(
-        Application                             $application,
+        Application $application,
         private readonly PluginManagerService $pluginService
     ) {
         parent::__construct($application);

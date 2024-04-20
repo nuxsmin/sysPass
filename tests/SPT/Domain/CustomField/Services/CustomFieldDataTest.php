@@ -31,7 +31,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -130,7 +130,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -213,7 +213,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -303,7 +303,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -359,7 +359,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -410,7 +410,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -466,7 +466,7 @@ class CustomFieldDataTest extends UnitaryTestCase
             ->with($customFieldData->getDefinitionId())
             ->willReturn(new QueryResult([$customFieldDefinition]));
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())
@@ -500,7 +500,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $data = self::$faker->text();
         $key = self::$faker->password();
 
-        $this->context->setTrasientKey(ContextInterface::MASTER_PASSWORD_KEY, 'secret');
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
 
         $this->crypt
             ->expects(self::once())

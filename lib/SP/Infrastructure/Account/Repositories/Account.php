@@ -32,7 +32,7 @@ use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Models\AccountView as AccountViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountRepository;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -55,7 +55,7 @@ final class Account extends BaseRepository implements AccountRepository
 
     public function __construct(
         DatabaseInterface                     $database,
-        ContextInterface                      $session,
+        Context $session,
         QueryFactory                          $queryFactory,
         EventDispatcherInterface              $eventDispatcher,
         private readonly AccountFilterBuilder $accountFilterUser

@@ -25,228 +25,37 @@
 namespace SP\Domain\Config\Services;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\UpgradeConfigService;
-use SP\Domain\Core\File\MimeType;
-use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Providers\FileLogHandlerProvider;
-use SP\Infrastructure\File\FileException;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
-use SP\Util\VersionUtil;
-
-use function SP\__u;
+use SP\Domain\Upgrade\Services\UpgradeBase;
 
 /**
- * Class UpgradeService
- *
- * @package SP\Domain\Upgrade\Services
+ * Class UpgradeConfig
  */
-final class UpgradeConfig extends Service implements UpgradeConfigService
+final class UpgradeConfig extends UpgradeBase implements UpgradeConfigService
 {
-    /**
-     * @var array Versiones actualizables
-     */
-    private const UPGRADES = [
-        '200.17011202',
-        '300.18111001',
-        '300.18112501',
-        '320.20062801',
-    ];
-    private ?ConfigDataInterface $configData = null;
-
     public function __construct(
-        Application                       $application,
-        FileLogHandlerProvider            $fileLogHandlerProvider,
-        private readonly MimeTypesService $mimeTypes
+        Application            $application,
+        FileLogHandlerProvider $fileLogHandlerProvider
     ) {
-        parent::__construct($application);
+        parent::__construct($application, $fileLogHandlerProvider);
 
         $this->eventDispatcher->attach($fileLogHandlerProvider);
     }
 
-    public static function needsUpgrade(string $version): bool
+
+    protected static function getUpgrades(): array
     {
-        return VersionUtil::checkVersion($version, self::UPGRADES);
+        return [];
     }
 
-    /**
-     * Migrar valores de configuración.
-     * @throws FileException
-     */
-    public function upgrade(string $version, ConfigDataInterface $configData): void
+    protected function commitVersion(string $version): void
     {
-        $this->configData = $configData;
-
-        $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
-        $this->eventDispatcher->notify('upgrade.config.start', new Event($this, $message));
-
-        $upgradeable = array_filter(
-            self::UPGRADES,
-            static fn(string $upgradeVersion) => VersionUtil::checkVersion($version, $upgradeVersion)
-        );
-
-        foreach ($upgradeable as $upgradeVersion) {
-            $this->applyUpgrade($upgradeVersion);
-        }
-
-        $this->eventDispatcher->notify('upgrade.config.end', new Event($this, $message));
-    }
-
-    /**
-     * @throws FileException
-     */
-    private function applyUpgrade(string $version): void
-    {
-        switch ($version) {
-            case '200.17011202':
-                $this->upgradeV200B17011202($version);
-                break;
-            case '300.18111001':
-                $this->upgradeV300B18111001($version);
-                break;
-            case '300.18112501':
-                $this->upgradeV300B18112501($version);
-                break;
-            case '320.20062801':
-                $this->upgradeV320B20062801($version);
-                break;
-        }
-    }
-
-    /**
-     * @throws FileException
-     */
-    private function upgradeV200B17011202(string $version): void
-    {
-        $this->configData->setSiteTheme('material-blue');
         $this->configData->setConfigVersion($version);
-
-        $this->config->save($this->configData, false);
-
-        $this->eventDispatcher->notify(
-            'upgrade.config.process',
-            new Event(
-                $this,
-                EventMessage::factory()
-                            ->addDescription(__u('Update Configuration'))
-                            ->addDetail(__u('Version'), $version)
-            )
-        );
     }
 
-    /**
-     * @throws FileException
-     */
-    private function upgradeV300B18111001(string $version): void
+    protected function applyUpgrade(string $version): bool
     {
-        $extensions = array_map('strtolower', $this->configData->getFilesAllowedExts());
-        $configMimeTypes = [];
-
-        foreach ($extensions as $extension) {
-            $match = array_filter(
-                $this->mimeTypes->getMimeTypes(),
-                static fn(MimeType $mimeType) => strcasecmp($mimeType->getExtension(), $extension) === 0
-            );
-
-            if (count($match) > 0) {
-                $mimeType = array_shift($match);
-                $configMimeTypes[] = $mimeType->getType();
-
-                $this->eventDispatcher->notify(
-                    'upgrade.config.process',
-                    new Event(
-                        $this,
-                        EventMessage::factory()
-                                    ->addDescription(__u('MIME type set for this extension'))
-                                    ->addDetail(__u('MIME type'), $mimeType->getType())
-                                    ->addDetail(__u('Extension'), $extension)
-                    )
-                );
-            } else {
-                $this->eventDispatcher->notify(
-                    'upgrade.config.process',
-                    new Event(
-                        $this,
-                        EventMessage::factory()
-                                    ->addDescription(__u('MIME type not found for this extension'))
-                                    ->addDetail(__u('Extension'), $extension)
-                    )
-                );
-            }
-        }
-
-        $this->configData->setFilesAllowedMime($configMimeTypes);
-        $this->configData->setConfigVersion($version);
-
-        $this->config->save($this->configData, false);
-
-        $this->eventDispatcher->notify(
-            'upgrade.config.process',
-            new Event(
-                $this,
-                EventMessage::factory()
-                            ->addDescription(__u('Update Configuration'))
-                            ->addDetail(__u('Version'), $version)
-            )
-        );
-    }
-
-    /**
-     * @throws FileException
-     */
-    private function upgradeV300B18112501(string $version): void
-    {
-        if ($this->configData->isLdapEnabled()) {
-            $attributes = $this->configData->getAttributes();
-
-            if (isset($attributes['ldapAds']) && $attributes['ldapAds']) {
-                $this->configData->setLdapType(LdapTypeEnum::ADS->value);
-            } else {
-                $this->configData->setLdapType(LdapTypeEnum::STD->value);
-            }
-
-            $this->configData->setConfigVersion($version);
-
-            $this->config->save($this->configData, false);
-
-            $this->eventDispatcher->notify(
-                'upgrade.config.process',
-                new Event(
-                    $this,
-                    EventMessage::factory()
-                                ->addDescription(__u('Update Configuration'))
-                                ->addDetail(__u('Version'), $version)
-                )
-            );
-        }
-    }
-
-    /**
-     * @throws FileException
-     */
-    private function upgradeV320B20062801(string $version): void
-    {
-        if ($this->configData->isLdapEnabled()) {
-            if ($this->configData->getLdapType() === LdapTypeEnum::AZURE->value) {
-                $this->configData->setLdapType(LdapTypeEnum::ADS->value);
-            }
-
-            $this->configData->setConfigVersion($version);
-
-            $this->config->save($this->configData, false);
-
-            $this->eventDispatcher->notify(
-                'upgrade.config.process',
-                new Event(
-                    $this,
-                    EventMessage::factory()
-                                ->addDescription(__u('Update Configuration'))
-                                ->addDetail(__u('Version'), $version)
-                )
-            );
-        }
+        return true;
     }
 }

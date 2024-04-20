@@ -25,7 +25,7 @@
 namespace SP\Core\UI;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -48,7 +48,7 @@ final class Theme implements ThemeInterface
     ) {
     }
 
-    public static function getThemeName(ConfigDataInterface $configData, ContextInterface $context): ?string
+    public static function getThemeName(ConfigDataInterface $configData, Context $context): ?string
     {
         $name = $configData->getSiteTheme();
 

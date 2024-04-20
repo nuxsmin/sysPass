@@ -30,7 +30,7 @@ use SP\Domain\Core\Crypt\VaultInterface;
 /**
  * Class Session
  */
-interface SessionContextInterface extends ContextInterface
+interface SessionContext extends Context
 {
     /**
      * Devuelve el tema visual utilizado en sysPass

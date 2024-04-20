@@ -24,12 +24,12 @@
 
 namespace SP\Domain\Account\Adapters;
 
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Html\Html;
 
 /**
@@ -53,11 +53,12 @@ final class AccountSearchItem
         protected AccountSearchView          $accountSearchView,
         private readonly AccountPermission   $accountAcl,
         private readonly ConfigDataInterface $configData,
+        private readonly UriContextInterface $uriContext,
         private array                        $tags,
         private int                          $textMaxLength = 0,
         private bool                         $favorite = false,
-        private ?array                       $users = null,
-        private ?array                       $userGroups = null,
+        private readonly ?array              $users = null,
+        private readonly ?array              $userGroups = null,
         private ?string                      $color = null,
         private ?string                      $link = null,
     ) {
@@ -137,7 +138,8 @@ final class AccountSearchItem
         if (self::$publicLinkEnabled
             && $this->accountSearchView->getPublicLinkHash() !== null
         ) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
 
             return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
         }

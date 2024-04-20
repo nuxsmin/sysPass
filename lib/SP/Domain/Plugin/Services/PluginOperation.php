@@ -37,11 +37,11 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 /**
  * Class PluginOperation
  */
-final class PluginOperation implements PluginOperationInterface
+final readonly class PluginOperation implements PluginOperationInterface
 {
     public function __construct(
-        private readonly PluginDataService $pluginDataService,
-        private readonly string            $pluginName
+        private PluginDataService $pluginDataService,
+        private string            $pluginName
     ) {
     }
 

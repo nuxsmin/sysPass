@@ -40,8 +40,8 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\Login;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Context\ContextInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\RequestInterface;
@@ -65,7 +65,7 @@ use SPT\UnitaryTestCase;
 /**
  * Class LoginTest
  *
- * @property SessionContextInterface|MockObject $context
+ * @property SessionContext|MockObject $context
  */
 #[Group('unitary')]
 class LoginTest extends UnitaryTestCase
@@ -480,9 +480,9 @@ class LoginTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
-    protected function buildContext(): ContextInterface
+    protected function buildContext(): Context
     {
-        return $this->createMock(SessionContextInterface::class);
+        return $this->createMock(SessionContext::class);
     }
 
     /**

@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
 use Klein\Klein;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonMessage;
 use SP\Http\JsonResponse;
@@ -34,7 +34,7 @@ use SP\Http\JsonResponse;
 /**
  * Trait JsonTrait
  *
- * @property SessionContext $session
+ * @property Session $session
  * @property Klein $router
  */
 trait JsonTrait

@@ -68,6 +68,7 @@ class AccountAdapterTest extends UnitaryTestCase
 
         $adapter = new Account(
             $this->config->getConfigData(),
+            'testUrl',
             $this->createStub(CustomFieldDataService::class),
             $actions
         );
@@ -150,7 +151,7 @@ class AccountAdapterTest extends UnitaryTestCase
                 );
 
 
-        $adapter = new Account($this->config->getConfigData(), $customFieldsService, $actions);
+        $adapter = new Account($this->config->getConfigData(), 'testUrl', $customFieldsService, $actions);
 
         $fractal = new Manager();
         $fractal->parseIncludes('customFields');

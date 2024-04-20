@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\UI;
 
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\File\FileCache;
 
@@ -74,7 +74,7 @@ use SP\Infrastructure\File\FileCache;
 interface ThemeIconsInterface
 {
     public static function loadIcons(
-        ContextInterface      $context,
+        Context $context,
         FileCache             $cache,
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface;

@@ -25,7 +25,7 @@
 namespace SP\Core\Crypt;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Context\SessionContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfInterface;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
@@ -41,9 +41,9 @@ class Csrf implements CsrfInterface
 {
 
     public function __construct(
-        private readonly SessionContextInterface $context,
-        private readonly RequestInterface        $request,
-        private readonly ConfigDataInterface     $configData
+        private readonly SessionContext      $context,
+        private readonly RequestInterface    $request,
+        private readonly ConfigDataInterface $configData
     ) {
     }
 

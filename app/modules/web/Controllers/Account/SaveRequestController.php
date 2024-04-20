@@ -29,7 +29,6 @@ use Exception;
 use JsonException;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
@@ -54,10 +53,10 @@ final class SaveRequestController extends AccountControllerBase
     private UserService    $userService;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        AccountService       $accountService,
-        UserService $userService
+        Application         $application,
+        WebControllerHelper $webControllerHelper,
+        AccountService      $accountService,
+        UserService         $userService
     ) {
         parent::__construct(
             $application,
@@ -71,7 +70,7 @@ final class SaveRequestController extends AccountControllerBase
     /**
      * Saves a request action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
      * @throws JsonException
@@ -85,12 +84,13 @@ final class SaveRequestController extends AccountControllerBase
                 throw new ValidationException(__u('A description is needed'));
             }
 
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id);
 
-            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapBase::$WEBURI).BootstrapBase::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
 
             $deepLink = new Uri($baseUrl);
-            $deepLink->addParam('r', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $id);
+            $deepLink->addParam('r', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW) . '/' . $id);
 
             $usersId = [$accountDetails->userId, $accountDetails->userEditId];
 
@@ -106,7 +106,10 @@ final class SaveRequestController extends AccountControllerBase
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail(__u('Description'), $description)
-                    ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
+                    ->addDetail(
+                        __u('Link'),
+                        $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                    )
                     ->addExtra('accountId', $id)
                     ->addExtra('whoId', $this->userData->getId())
                     ->setExtra('userId', $usersId)
@@ -122,7 +125,7 @@ final class SaveRequestController extends AccountControllerBase
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId'     => $id,
+                    'itemId' => $id,
                     'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
                 ],
                 JsonMessage::JSON_SUCCESS,

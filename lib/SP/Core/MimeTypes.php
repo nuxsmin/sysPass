@@ -26,7 +26,6 @@ namespace SP\Core;
 
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
-use SP\Domain\Storage\Ports\FileCacheInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;

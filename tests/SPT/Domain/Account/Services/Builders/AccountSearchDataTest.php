@@ -25,12 +25,14 @@
 namespace SPT\Domain\Account\Services\Builders;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Services\Builders\AccountSearchData;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -135,6 +137,9 @@ class AccountSearchDataTest extends UnitaryTestCase
         $this->accountSearchDataBuilder->buildFrom($queryResult);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testInitializeWithException(): void
     {
         $fileCache = $this->createMock(FileCacheService::class);
@@ -151,7 +156,8 @@ class AccountSearchDataTest extends UnitaryTestCase
             $this->accountToFavoriteService,
             $this->accountCacheService,
             $fileCache,
-            $this->config->getConfigData()
+            $this->config->getConfigData(),
+            $this->createStub(UriContextInterface::class)
         );
     }
 
@@ -168,6 +174,8 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('load');
 
+        $uriContext = $this->createStub(UriContextInterface::class);
+
         $this->accountSearchDataBuilder =
             new AccountSearchData(
                 $this->application,
@@ -176,7 +184,8 @@ class AccountSearchDataTest extends UnitaryTestCase
                 $this->accountToFavoriteService,
                 $this->accountCacheService,
                 $this->fileCache,
-                $this->config->getConfigData()
+                $this->config->getConfigData(),
+                $uriContext
             );
     }
 

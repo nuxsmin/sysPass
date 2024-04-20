@@ -22,22 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Upgrade\Ports;
+namespace SP\Domain\Persistence\Ports;
 
-use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Upgrade\Ports\UpgradeService;
 
 /**
- * Interface Upgrade
+ * Class UpgradeDatabaseService
+ *
+ * @package SP\Domain\Upgrade\Services
  */
-interface Upgrade
+interface UpgradeServiceDatabaseService extends UpgradeService
 {
-    /**
-     * Check if it needs to be upgraded
-     */
-    public static function needsUpgrade(string $version): bool;
-
-    /**
-     * Performs the upgrading process
-     */
-    public function upgrade(string $version, ConfigDataInterface $configData);
 }

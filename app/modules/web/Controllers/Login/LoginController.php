@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\Login;
 use Exception;
 use JsonException;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LoginService;
@@ -49,7 +48,7 @@ final class LoginController extends ControllerBase
     private Login $loginService;
 
     public function __construct(
-        Application $application,
+        Application  $application,
         WebControllerHelper $webControllerHelper,
         LoginService $loginService
     ) {
@@ -74,7 +73,7 @@ final class LoginController extends ControllerBase
             $this->checkForwarded();
 
             $redirector = function ($route) use ($from) {
-                $uri = new Uri(ltrim(BootstrapBase::$SUBURI, '/'));
+                $uri = new Uri(ltrim($this->uriContext->getSubUri(), '/'));
                 $uri->addParam('r', $route);
 
                 if ($from !== null) {

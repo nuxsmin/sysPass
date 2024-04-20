@@ -24,14 +24,11 @@
 
 namespace SP\Util;
 
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Http\Uri;
 
 /**
  * Class Link
- *
- * @package SP\Util
  */
 final class Link
 {
@@ -39,19 +36,10 @@ final class Link
         int    $itemId,
         string $actionRoute,
         ConfigDataInterface $configData,
-        bool   $useUI = false
+        string $baseUrl
     ): string {
-        $route = sprintf('%s/%d', $actionRoute, $itemId);
-
-        if ($useUI) {
-            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . '/index.php';
-        } else {
-            $baseUrl = ($configData->getApplicationUrl() ?? BootstrapBase::$WEBURI) . BootstrapBase::$SUBURI;
-        }
-
-        $uri = new Uri($baseUrl);
-        $uri->addParam('r', $route);
-
-        return $uri->getUriSigned($configData->getPasswordSalt());
+        return (new Uri($baseUrl))
+            ->addParam('r', sprintf('%s/%d', $actionRoute, $itemId))
+            ->getUriSigned($configData->getPasswordSalt());
     }
 }

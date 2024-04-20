@@ -47,7 +47,7 @@ interface BrowserAuthService extends AuthService
     /**
      * Devolver el nombre del usuario autentificado por el servidor web
      *
-     * @return string
+     * @return string|null
      */
     public function getServerAuthUser(): ?string;
 }

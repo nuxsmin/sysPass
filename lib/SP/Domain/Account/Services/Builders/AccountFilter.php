@@ -30,7 +30,7 @@ use SP\DataModel\ProfileData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\User\Dtos\UserDataDto;
 
 /**
@@ -40,7 +40,7 @@ final class AccountFilter implements AccountFilterBuilder
 {
 
     public function __construct(
-        private readonly ContextInterface    $context,
+        private readonly Context $context,
         private readonly ConfigDataInterface $configData,
         private readonly QueryFactory        $queryFactory
     ) {

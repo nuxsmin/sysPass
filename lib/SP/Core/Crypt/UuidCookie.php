@@ -24,13 +24,12 @@
 
 namespace SP\Core\Crypt;
 
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Http\RequestInterface;
 
 /**
  * Class UuidCookie
- *
- * @package SP\Core\Crypt
  */
 class UuidCookie extends Cookie implements UuidCookieInterface
 {
@@ -39,9 +38,9 @@ class UuidCookie extends Cookie implements UuidCookieInterface
      */
     public const COOKIE_NAME = 'SYSPASS_UUID';
 
-    public static function factory(RequestInterface $request): UuidCookie
+    public static function factory(RequestInterface $request, UriContextInterface $uriContext): UuidCookie
     {
-        return new self(self::COOKIE_NAME, $request);
+        return new self(self::COOKIE_NAME, $request, $uriContext);
     }
 
     /**

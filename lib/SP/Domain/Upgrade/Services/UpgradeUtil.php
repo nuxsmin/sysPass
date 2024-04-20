@@ -31,8 +31,6 @@ use SP\Util\VersionUtil;
 
 /**
  * Class UpgradeUtil
- *
- * @package SP\Domain\Upgrade\Services
  */
 final class UpgradeUtil
 {
@@ -41,12 +39,12 @@ final class UpgradeUtil
      */
     public static function fixVersionNumber(string $version): string
     {
-        if (strpos($version, '.') === false) {
+        if (!str_contains($version, '.')) {
             if (strlen($version) === 10) {
-                return substr($version, 0, 2).'0.'.substr($version, 2);
+                return substr($version, 0, 2) . '0.' . substr($version, 2);
             }
 
-            return substr($version, 0, 3).'.'.substr($version, 3);
+            return substr($version, 0, 3) . '.' . substr($version, 3);
         }
 
         return $version;
@@ -60,9 +58,7 @@ final class UpgradeUtil
         // Fixes bug in 3.0.X version where some updates weren't applied
         // when upgrading from v2
         // $dbVersion is always '' when upgrading from v2
-        if (!empty($configData->getDatabaseVersion())
-            && empty($configData->getAppVersion())
-        ) {
+        if (!empty($configData->getDatabaseVersion()) && empty($configData->getAppVersion())) {
             $configData->setAppVersion(VersionUtil::getVersionStringNormalized());
             $config->save($configData, false);
         }

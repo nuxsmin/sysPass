@@ -25,7 +25,7 @@
 namespace SP\Domain\Task\Services;
 
 use JsonException;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Messages\TaskMessage;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
@@ -239,7 +239,7 @@ final class Task implements TaskInterface
 
         $this->fileTask->save(serialize($this));
 
-        SessionContext::close();
+        Session::close();
 
         return $this;
     }

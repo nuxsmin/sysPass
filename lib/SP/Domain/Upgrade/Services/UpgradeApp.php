@@ -25,95 +25,20 @@
 namespace SP\Domain\Upgrade\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Upgrade\Ports\UpgradeAppService;
-use SP\Infrastructure\File\FileException;
-use SP\Providers\Log\FileLogHandler;
-use SP\Util\VersionUtil;
 
-use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
  * Class UpgradeApp
  */
-final class UpgradeApp extends Service implements UpgradeAppService
+final class UpgradeApp extends UpgradeBase
 {
-    private const UPGRADES = [
-        '300.18010101',
-        '300.18072901',
-        '300.18072902',
-        '310.19012201',
-        '310.19042701',
-    ];
-
-    public function __construct(
-        Application    $application,
-        FileLogHandler $fileLogHandler,
-    ) {
-        parent::__construct($application);
-
-        $this->eventDispatcher->attach($fileLogHandler);
-    }
-
-    public static function needsUpgrade(string $version): bool
+    protected static function getUpgrades(): array
     {
-        return empty($version) || VersionUtil::checkVersion($version, self::UPGRADES);
+        return [];
     }
 
-    /**
-     * @throws UpgradeException
-     * @throws FileException
-     */
-    public function upgrade(
-        string $version,
-        ConfigDataInterface $configData
-    ): void {
-        $this->eventDispatcher->notify(
-            'upgrade.app.start',
-            new Event(
-                $this,
-                EventMessage::factory()->addDescription(__u('Update Application'))
-            )
-        );
-
-        foreach (self::UPGRADES as $appVersion) {
-            if (VersionUtil::checkVersion($version, $appVersion)) {
-                if ($this->applyUpgrade($appVersion) === false) {
-                    throw new UpgradeException(
-                        __u('Error while applying the application update'),
-                        SPException::CRITICAL,
-                        __u('Please, check the event log for more details')
-                    );
-                }
-
-                logger('APP Upgrade: ' . $appVersion);
-
-                $configData->setAppVersion($appVersion);
-
-                $this->config->save($configData, false);
-            }
-        }
-
-        $this->eventDispatcher->notify(
-            'upgrade.app.end',
-            new Event(
-                $this,
-                EventMessage::factory()->addDescription(__u('Update Application'))
-            )
-        );
-    }
-
-    /**
-     * Actualizaciones de la aplicación
-     */
-    private function applyUpgrade(string $version): bool
+    protected function applyUpgrade(string $version): bool
     {
         try {
             return true;
@@ -122,5 +47,10 @@ final class UpgradeApp extends Service implements UpgradeAppService
         }
 
         return false;
+    }
+
+    protected function commitVersion(string $version): void
+    {
+        $this->configData->setAppVersion($version);
     }
 }

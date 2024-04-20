@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -83,7 +83,7 @@ final class XmlExportController extends SimpleControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('sysPass XML export')))
             );
 
-            SessionContext::close();
+            Session::close();
 
             $file = $this->xmlExportService->export(new DirectoryHandler(BACKUP_PATH), $exportPassword);
 

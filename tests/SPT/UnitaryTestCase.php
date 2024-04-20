@@ -34,7 +34,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\DataModel\ProfileData;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\ContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\User;
@@ -50,8 +50,8 @@ abstract class UnitaryTestCase extends TestCase
     protected static Generator $faker;
 
     protected readonly ConfigFileService|Stub $config;
-    protected readonly Application            $application;
-    protected readonly ContextInterface       $context;
+    protected readonly Application $application;
+    protected readonly Context     $context;
 
     public static function setUpBeforeClass(): void
     {
@@ -111,7 +111,7 @@ abstract class UnitaryTestCase extends TestCase
     /**
      * @throws ContextException
      */
-    protected function buildContext(): ContextInterface
+    protected function buildContext(): Context
     {
         $context = new StatelessContext();
         $context->initialize();
