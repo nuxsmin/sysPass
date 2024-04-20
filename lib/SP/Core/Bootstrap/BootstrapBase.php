@@ -234,7 +234,6 @@ abstract class BootstrapBase implements BootstrapInterface
      * Cargar la configuración
      *
      * @throws ConfigException
-     * @throws FileException
      */
     private function initConfig(): void
     {

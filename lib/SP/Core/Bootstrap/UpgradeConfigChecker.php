@@ -24,39 +24,31 @@
 
 namespace SP\Core\Bootstrap;
 
-
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\UpgradeConfigService;
 use SP\Domain\Config\Services\UpgradeConfig;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
-use SP\Infrastructure\File\FileException;
 
 /**
  * Upgrade the config whenever is needed
  */
-class UpgradeConfigChecker
+readonly class UpgradeConfigChecker
 {
-    private UpgradeConfig       $upgradeConfigService;
-    private ConfigDataInterface $configData;
 
-    public function __construct(UpgradeConfigService $upgradeConfigService, ConfigDataInterface $configData)
-    {
-        $this->upgradeConfigService = $upgradeConfigService;
-        $this->configData = $configData;
+    public function __construct(
+        private UpgradeConfigService $upgradeConfigService,
+        private ConfigDataInterface  $configData
+    ) {
     }
 
     /**
      * Comprobar la versión de configuración y actualizarla
-     *
-     * @throws FileException
      */
     public function checkConfigVersion(): void
     {
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());
 
-        if ($this->configData->isInstalled()
-            && UpgradeConfig::needsUpgrade($configVersion)
-        ) {
+        if ($this->configData->isInstalled() && UpgradeConfig::needsUpgrade($configVersion)) {
             $this->upgradeConfigService->upgrade($configVersion, $this->configData);
         }
     }
