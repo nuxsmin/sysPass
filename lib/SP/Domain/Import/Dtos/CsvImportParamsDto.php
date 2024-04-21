@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Import\Dtos;
 
-use SP\Infrastructure\File\FileHandlerInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 
 /**
  * Class CsvImportParamsDto

@@ -35,9 +35,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountToTagRepository
- *
- * @package SP\Infrastructure\Account\Repositories
+ * Class AccountToTag
  */
 final class AccountToTag extends BaseRepository implements AccountToTagRepository
 {
@@ -49,6 +47,8 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
      * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTagsByAccountId(int $id): QueryResult
     {

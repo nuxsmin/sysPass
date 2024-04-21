@@ -36,7 +36,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class UserToUserGroupRepository
+ * Class UserToUserGroup
  *
  * @template T of UserToUserGroupModel
  */
@@ -49,6 +49,8 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      * @param int $userId
      *
      * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkUserInGroup(int $groupId, int $userId): bool
     {

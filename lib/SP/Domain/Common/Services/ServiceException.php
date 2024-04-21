@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,6 @@ use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class ServiceException
- *
- * @package SP\Domain\Common\Services
  */
 final class ServiceException extends SPException
 {

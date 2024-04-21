@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\Database;
 
 use PDO;
+use SP\Domain\Database\Ports\DbStorageHandler;
 
 use function SP\__u;
 

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Tag\Ports;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -45,7 +45,7 @@ interface TagService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * @throws ConstraintException

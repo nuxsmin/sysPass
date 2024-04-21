@@ -28,8 +28,8 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,8 +48,6 @@ use function SP\processException;
 
 /**
  * Class Track
- *
- * @package SP\Domain\Common\Services
  */
 final class Track extends Service implements TrackService
 {
@@ -173,10 +171,10 @@ final class Track extends Service implements TrackService
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->trackRepository->search($itemSearchData, time() - self::TIME_TRACKING);
     }

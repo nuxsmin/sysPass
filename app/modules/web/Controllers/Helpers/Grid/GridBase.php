@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Http\RequestInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridData;
@@ -67,13 +67,13 @@ abstract class GridBase extends HelperBase implements GridInterface
      * Actualizar los datos del paginador
      *
      * @param DataGridInterface $dataGrid
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return DataGridInterface
      */
     public function updatePager(
         DataGridInterface $dataGrid,
-        ItemSearchData $itemSearchData
+        ItemSearchDto $itemSearchData
     ): DataGridInterface {
         $dataGrid->getPager()
                  ->setLimitStart($itemSearchData->getLimitStart())

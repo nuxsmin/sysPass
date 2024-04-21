@@ -25,9 +25,9 @@
 namespace SP\Domain\User\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
@@ -68,10 +68,10 @@ final class UserProfile extends Service implements UserProfileService
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @return QueryResult<UserProfileModel>
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->userProfileRepository->search($itemSearchData);
     }

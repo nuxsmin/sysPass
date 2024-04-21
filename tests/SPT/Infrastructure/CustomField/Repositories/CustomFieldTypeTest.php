@@ -30,8 +30,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldType;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SPT\UnitaryTestCase;
 

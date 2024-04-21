@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Plugin\Repositories;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -96,6 +96,8 @@ final class Plugin extends BaseRepository implements PluginRepository
      * Devolver los plugins activados
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getEnabled(): QueryResult
     {
@@ -116,6 +118,8 @@ final class Plugin extends BaseRepository implements PluginRepository
      * @param int $pluginId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $pluginId): QueryResult
     {
@@ -136,6 +140,8 @@ final class Plugin extends BaseRepository implements PluginRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -154,6 +160,8 @@ final class Plugin extends BaseRepository implements PluginRepository
      * @param array $pluginsId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $pluginsId): QueryResult
     {
@@ -220,11 +228,13 @@ final class Plugin extends BaseRepository implements PluginRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -253,6 +263,8 @@ final class Plugin extends BaseRepository implements PluginRepository
      * @param string $name
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName(string $name): QueryResult
     {

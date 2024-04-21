@@ -26,7 +26,6 @@ namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
 use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -50,6 +49,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -63,9 +63,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountService
- *
- * @package SP\Domain\Account\Services
+ * Class Account
  */
 final class Account extends Service implements AccountService
 {
@@ -598,11 +596,11 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->accountRepository->search($itemSearchData);
     }

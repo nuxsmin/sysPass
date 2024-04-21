@@ -31,8 +31,6 @@ use SP\Http\JsonResponse;
 
 /**
  * Class JsonRpcResponse
- *
- * @package SP\Api
  */
 final class JsonRpcResponse
 {

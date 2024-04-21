@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Domain\Install\Ports\InstallerServiceInterface;
+use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
@@ -55,7 +55,7 @@ use function SP\processException;
 /**
  * Installer class
  */
-final class InstallerService implements InstallerServiceInterface
+final class Installer implements InstallerService
 {
     /**
      * sysPass' version and build number
@@ -84,7 +84,7 @@ final class InstallerService implements InstallerServiceInterface
      * @throws InvalidArgumentException
      * @throws SPException
      */
-    public function run(InstallData $installData): InstallerServiceInterface
+    public function run(InstallData $installData): InstallerService
     {
         $this->installData = $installData;
 

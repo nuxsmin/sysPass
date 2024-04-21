@@ -22,28 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Install\Ports;
 
-use Aura\SqlQuery\QueryInterface;
-use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Install\Adapters\InstallData;
 
 /**
- * Class QueryData
+ * Installer class
  */
-interface QueryDataInterface
+interface InstallerService
 {
-    public function getQuery(): QueryInterface;
-
-    public function getMapClassName(): string;
-
-    public function setMapClassName(string $class): QueryData;
-
     /**
-     * @throws QueryException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
-    public function getQueryCount(): QueryInterface;
-
-    public function getOnErrorMessage(): string;
-
-    public function setOnErrorMessage(string $onErrorMessage): QueryData;
+    public function run(InstallData $installData): InstallerService;
 }

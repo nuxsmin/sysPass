@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,8 +29,6 @@ use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class UpdatedMasterPassException
- *
- * @package SP\Domain\User\Services
  */
 final class UpdatedMasterPassException extends SPException
 {

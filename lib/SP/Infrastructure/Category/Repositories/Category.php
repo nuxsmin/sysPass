@@ -25,9 +25,9 @@
 namespace SP\Infrastructure\Category\Repositories;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -39,7 +39,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class CategoryRepository
+ * Class Category
  *
  * @template T of CategoryModel
  */
@@ -171,6 +171,8 @@ final class Category extends BaseRepository implements CategoryRepository
      * @param int $categoryId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $categoryId): QueryResult
     {
@@ -193,6 +195,8 @@ final class Category extends BaseRepository implements CategoryRepository
      * @param string $name
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName(string $name): QueryResult
     {
@@ -213,6 +217,8 @@ final class Category extends BaseRepository implements CategoryRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -274,12 +280,12 @@ final class Category extends BaseRepository implements CategoryRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

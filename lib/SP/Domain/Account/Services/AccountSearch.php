@@ -44,7 +44,7 @@ use SP\Util\Filter;
 use function SP\processException;
 
 /**
- * Class AccountSearchService
+ * Class AccountSearch
  */
 final class AccountSearch extends Service implements AccountSearchService
 {

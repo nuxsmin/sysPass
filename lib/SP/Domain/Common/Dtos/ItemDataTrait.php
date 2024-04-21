@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Common\Dtos;
 
-use SP\DataModel\Item;
+use SP\Domain\Common\Models\Item;
 
 /**
  * Trait ItemDataTrait
@@ -32,7 +32,7 @@ use SP\DataModel\Item;
 trait ItemDataTrait
 {
     /**
-     * @param Item[] $items
+     * @param \SP\Domain\Common\Models\Item[] $items
      *
      * @return array
      */

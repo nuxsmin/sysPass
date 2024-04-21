@@ -24,7 +24,6 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
@@ -32,6 +31,7 @@ use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 
 /**
@@ -94,7 +94,7 @@ final class AccountDataGenerator extends DataGenerator
     }
 
     /**
-     * @return Item[]
+     * @return \SP\Domain\Common\Models\Item[]
      */
     public function buildItemData(): array
     {

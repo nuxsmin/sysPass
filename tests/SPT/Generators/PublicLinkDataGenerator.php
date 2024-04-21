@@ -24,8 +24,8 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\PublicLinkList;
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Account\Models\PublicLinkList;
 
 /**
  * Class PublicLinkDataGenerator

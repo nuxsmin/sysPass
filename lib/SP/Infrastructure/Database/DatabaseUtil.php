@@ -25,13 +25,12 @@
 namespace SP\Infrastructure\Database;
 
 use Exception;
+use SP\Domain\Database\Ports\DbStorageHandler;
 
 use function SP\processException;
 
 /**
  * Class DBUtil con utilidades de la BD
- *
- * @package SP\Storage
  */
 class DatabaseUtil
 {

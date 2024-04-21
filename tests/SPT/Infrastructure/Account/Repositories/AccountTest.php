@@ -28,18 +28,18 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\Account;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SPT\Generators\AccountDataGenerator;
 use SPT\UnitaryTestCase;
@@ -642,7 +642,7 @@ class AccountTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -677,7 +677,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('runQuery')->with($callback, true);
 
-        $this->account->search(new ItemSearchData());
+        $this->account->search(new ItemSearchDto());
     }
 
     /**

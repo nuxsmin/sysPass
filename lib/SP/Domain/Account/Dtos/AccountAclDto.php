@@ -24,14 +24,12 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\ItemDataTrait;
+use SP\Domain\Common\Models\Item;
 
 /**
  * Class AccountAclDto
- *
- * @package SP\DataModel\Dto
  */
 final class AccountAclDto
 {

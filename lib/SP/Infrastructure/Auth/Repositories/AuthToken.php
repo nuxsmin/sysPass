@@ -25,9 +25,9 @@
 namespace SP\Infrastructure\Auth\Repositories;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -39,7 +39,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AuthTokenRepository
+ * Class AuthToken
  *
  * @template T of AuthTokenModel
  */
@@ -74,6 +74,8 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      * @param int $authTokenId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $authTokenId): QueryResult
     {
@@ -94,6 +96,8 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -133,14 +137,14 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -229,6 +233,8 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      *
      * @param int $userId
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTokenByUserId(int $userId): QueryResult
     {
@@ -364,6 +370,8 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      * @param $token    string El token de seguridad
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTokenByToken(int $actionId, string $token): QueryResult
     {

@@ -28,8 +28,6 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 
 /**
  * Class AccountSearchFilter
- *
- * @package SP\Domain\Account\Filters
  */
 final class AccountSearchFilterDto
 {

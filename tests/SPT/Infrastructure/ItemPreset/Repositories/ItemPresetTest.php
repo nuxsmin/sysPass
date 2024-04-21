@@ -32,12 +32,12 @@ use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPreset;
@@ -57,7 +57,7 @@ class ItemPresetTest extends UnitaryTestCase
 
     public function testGetByFilter()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -204,7 +204,7 @@ class ItemPresetTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -251,7 +251,7 @@ class ItemPresetTest extends UnitaryTestCase
             ->method('runQuery')
             ->with($callback, true);
 
-        $this->itemPreset->search(new ItemSearchData());
+        $this->itemPreset->search(new ItemSearchDto());
     }
 
     /**

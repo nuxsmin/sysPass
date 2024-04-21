@@ -24,7 +24,7 @@
 
 namespace SP\Util;
 
-use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\Install\Services\Installer;
 
 /**
  * Class VersionUtil
@@ -38,7 +38,7 @@ final class VersionUtil
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', InstallerService::VERSION) . '.' . InstallerService::BUILD;
+        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
     }
 
     /**
@@ -133,10 +133,10 @@ final class VersionUtil
      */
     public static function getVersionArray(bool $retBuild = false): array
     {
-        $version = array_values(InstallerService::VERSION);
+        $version = array_values(Installer::VERSION);
 
         if ($retBuild === true) {
-            $version[] = InstallerService::BUILD;
+            $version[] = Installer::BUILD;
 
             return $version;
         }

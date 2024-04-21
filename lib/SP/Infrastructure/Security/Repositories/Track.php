@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Security\Repositories;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Models\Track as TrackModel;
@@ -109,6 +109,8 @@ final class Track extends BaseRepository implements TrackRepository
      * @param TrackModel $track
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTracksForClientFromTime(TrackModel $track): QueryResult
     {
@@ -133,9 +135,13 @@ final class Track extends BaseRepository implements TrackRepository
     /**
      * Searches for items by a given filter
      *
+     * @param ItemSearchDto $itemSearchData
+     * @param int $time
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData, int $time): QueryResult
+    public function search(ItemSearchDto $itemSearchData, int $time): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

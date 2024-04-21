@@ -43,10 +43,10 @@ use function SP\processException;
 /**
  * Class ConfigBackup
  */
-class ConfigBackup implements ConfigBackupService
+readonly class ConfigBackup implements ConfigBackupService
 {
 
-    public function __construct(private readonly ConfigService $configService)
+    public function __construct(private ConfigService $configService)
     {
     }
 

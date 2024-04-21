@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,18 +24,18 @@
 
 namespace SP\Domain\Html;
 
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Http\Request as HttpRequest;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 /**
  * Class MinifyFile
  */
-final class MinifyFile
+final readonly class MinifyFile
 {
     public function __construct(
-        private readonly FileHandlerInterface $fileHandler,
-        private readonly bool $minify
+        private FileHandlerInterface $fileHandler,
+        private bool                 $minify
     ) {
     }
 

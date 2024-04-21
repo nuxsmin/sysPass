@@ -25,8 +25,8 @@
 namespace SP\Domain\CustomField\Ports;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
@@ -102,12 +102,12 @@ interface CustomFieldDefinitionRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 }

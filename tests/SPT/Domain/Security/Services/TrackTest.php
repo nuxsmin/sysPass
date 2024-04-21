@@ -28,7 +28,7 @@ use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,7 +54,7 @@ class TrackTest extends UnitaryTestCase
 
     public function testSearch()
     {
-        $itemSearchData = new ItemSearchData('test');
+        $itemSearchData = new ItemSearchDto('test');
 
         $this->trackRepository
             ->expects($this->once())

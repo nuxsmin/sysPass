@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Common\Dtos\ItemDataTrait;
+use SP\Domain\Common\Models\Item;
 
 /**
  * Class AccountEnrichedDto
@@ -38,15 +38,15 @@ class AccountEnrichedDto extends Dto
 
     private readonly int $id;
     /**
-     * @var Item[] Los usuarios secundarios de la cuenta.
+     * @var \SP\Domain\Common\Models\Item[] Los usuarios secundarios de la cuenta.
      */
     private array $users = [];
     /**
-     * @var Item[] Los grupos secundarios de la cuenta.
+     * @var \SP\Domain\Common\Models\Item[] Los grupos secundarios de la cuenta.
      */
     private array $userGroups = [];
     /**
-     * @var Item[] Las etiquetas de la cuenta.
+     * @var \SP\Domain\Common\Models\Item[] Las etiquetas de la cuenta.
      */
     private array $tags = [];
 
@@ -69,7 +69,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param Item[] $users
+     * @param \SP\Domain\Common\Models\Item[] $users
      *
      * @return AccountEnrichedDto
      */
@@ -82,7 +82,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param Item[] $groups
+     * @param \SP\Domain\Common\Models\Item[] $groups
      *
      * @return AccountEnrichedDto
      */
@@ -95,7 +95,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param Item[] $tags
+     * @param \SP\Domain\Common\Models\Item[] $tags
      *
      * @return AccountEnrichedDto
      */
@@ -108,7 +108,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return Item[]
+     * @return \SP\Domain\Common\Models\Item[]
      */
     public function getUsers(): array
     {
@@ -116,7 +116,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return Item[]
+     * @return \SP\Domain\Common\Models\Item[]
      */
     public function getUserGroups(): array
     {
@@ -124,7 +124,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return Item[]
+     * @return \SP\Domain\Common\Models\Item[]
      */
     public function getTags(): array
     {

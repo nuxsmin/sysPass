@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Acl;
 
-use SP\DataModel\Action;
+use SP\Domain\Core\Models\Action;
 use SP\Infrastructure\File\FileException;
 
 /**

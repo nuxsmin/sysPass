@@ -25,9 +25,9 @@
 namespace SP\Domain\Auth\Ports;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
@@ -78,14 +78,14 @@ interface AuthTokenRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * Creates an item

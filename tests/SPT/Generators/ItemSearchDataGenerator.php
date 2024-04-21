@@ -24,16 +24,16 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 
 /**
  * Class ItemSearchDataGenerator
  */
 final class ItemSearchDataGenerator extends DataGenerator
 {
-    public function buildItemSearchData(): ItemSearchData
+    public function buildItemSearchData(): ItemSearchDto
     {
-        return new ItemSearchData(
+        return new ItemSearchDto(
             $this->faker->name(),
             $this->faker->randomNumber(3),
             $this->faker->randomNumber(3)

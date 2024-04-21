@@ -22,12 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\File\Ports;
+
+use SP\Infrastructure\File\FileException;
 
 /**
  * Class FileHandler
- *
- * @package SP\Infrastructure\File;
  */
 interface FileHandlerInterface
 {

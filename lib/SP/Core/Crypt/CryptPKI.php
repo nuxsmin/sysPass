@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,8 +27,8 @@ namespace SP\Core\Crypt;
 use phpseclib\Crypt\RSA;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 use function SP\processException;
 

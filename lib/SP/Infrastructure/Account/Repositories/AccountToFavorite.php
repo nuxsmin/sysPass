@@ -34,9 +34,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountFavoriteRepository
- *
- * @package SP\Infrastructure\Account\Repositories
+ * Class AccountToFavorite
  */
 final class AccountToFavorite extends BaseRepository implements AccountToFavoriteRepository
 {
@@ -46,6 +44,8 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
      * @param $id int El Id de usuario
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserId(int $id): QueryResult
     {

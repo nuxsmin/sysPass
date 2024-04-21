@@ -22,6 +22,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 namespace SP\Domain\Common\Attributes;
 
 use Attribute;

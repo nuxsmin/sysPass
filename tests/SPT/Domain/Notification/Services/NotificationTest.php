@@ -27,8 +27,8 @@ namespace SPT\Domain\Notification\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
@@ -53,7 +53,7 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchForUserId()
     {
-        $itemSearchData = new ItemSearchData();
+        $itemSearchData = new ItemSearchDto();
 
         $this->notificationRepository
             ->expects($this->once())
@@ -98,7 +98,7 @@ class NotificationTest extends UnitaryTestCase
 
         $this->context->setUserData($userDataDto);
 
-        $itemSearchData = new ItemSearchData();
+        $itemSearchData = new ItemSearchDto();
 
         $this->notificationRepository
             ->expects($this->once())
@@ -112,7 +112,7 @@ class NotificationTest extends UnitaryTestCase
     {
         $userData = $this->context->getUserData();
 
-        $itemSearchData = new ItemSearchData();
+        $itemSearchData = new ItemSearchDto();
 
         $this->notificationRepository
             ->expects($this->once())

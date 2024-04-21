@@ -24,10 +24,10 @@
 
 namespace SP\Infrastructure\Client\Repositories;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -40,7 +40,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class ClientRepository
+ * Class Client
  *
  * @template T of ClientModel
  */
@@ -168,6 +168,8 @@ final class Client extends BaseRepository implements ClientRepository
      * @param int $clientId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $clientId): QueryResult
     {
@@ -190,6 +192,8 @@ final class Client extends BaseRepository implements ClientRepository
      * @param string $name
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName(string $name): QueryResult
     {
@@ -210,6 +214,8 @@ final class Client extends BaseRepository implements ClientRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -271,11 +277,13 @@ final class Client extends BaseRepository implements ClientRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -304,6 +312,8 @@ final class Client extends BaseRepository implements ClientRepository
      * @param AccountFilterBuilder $accountFilterUser
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult
     {

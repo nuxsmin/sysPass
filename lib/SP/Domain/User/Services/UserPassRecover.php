@@ -42,7 +42,7 @@ use function SP\__;
 use function SP\__u;
 
 /**
- * Class UserPassRecoverService
+ * Class UserPassRecover
  */
 final class UserPassRecover extends Service implements UserPassRecoverService
 {

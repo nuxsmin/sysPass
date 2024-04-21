@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\SecurityManager;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogService;
@@ -47,8 +47,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class IndexController extends ControllerBase
 {
-    protected ItemSearchData         $itemSearchData;
-    protected TabsGridHelper         $tabsGridHelper;
+    protected ItemSearchDto  $itemSearchData;
+    protected TabsGridHelper $tabsGridHelper;
     private EventlogGrid             $eventlogGrid;
     private TrackGrid             $trackGrid;
     private EventlogService $eventlogService;
@@ -73,7 +73,7 @@ final class IndexController extends ControllerBase
         $this->eventlogService = $eventlogService;
         $this->trackService = $trackService;
 
-        $this->itemSearchData = new ItemSearchData();
+        $this->itemSearchData = new ItemSearchDto();
     }
 
     /**

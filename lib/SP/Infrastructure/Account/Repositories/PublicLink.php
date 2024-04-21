@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\PublicLinkRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -39,9 +39,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class PublicLinkRepository
- *
- * @package SP\Infrastructure\Common\Repositories\PublicLink
+ * Class PublicLink
  */
 final class PublicLink extends BaseRepository implements PublicLinkRepository
 {
@@ -71,6 +69,8 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      * Returns all the items
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -129,11 +129,13 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param \SP\Domain\Core\Dtos\ItemSearchDto $itemSearchData
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -333,6 +335,8 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -370,6 +374,8 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      * @param $hash string
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByHash(string $hash): QueryResult
     {
@@ -409,6 +415,8 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      * @param int $itemId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getHashForItem(int $itemId): QueryResult
     {

@@ -24,18 +24,17 @@
 
 namespace SPT\Domain\Export\Services;
 
-use DOMDocument;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlAccountExport;
 use SPT\Generators\AccountDataGenerator;
 use SPT\UnitaryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlAccountExportTest

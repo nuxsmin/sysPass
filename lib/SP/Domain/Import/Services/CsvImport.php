@@ -32,10 +32,11 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 use function SP\__;
 use function SP\__u;
@@ -50,7 +51,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
 
     public function __construct(
         Application                           $application,
-        ImportHelper                          $importHelper,
+        ImportHelperInterface $importHelper,
         CryptInterface                        $crypt,
         private readonly FileHandlerInterface $fileHandler
     ) {

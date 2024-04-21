@@ -27,10 +27,10 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 use Exception;
 use SP\Core\Events\Event;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 
 /**
  * Class SearchController
@@ -61,12 +61,12 @@ final class SearchController extends TagBase
     }
 
     /**
-     * @return ItemSearchData
+     * @return ItemSearchDto
      * @throws ServiceException
      */
-    private function buildSearchData(): ItemSearchData
+    private function buildSearchData(): ItemSearchDto
     {
-        return new ItemSearchData(
+        return new ItemSearchDto(
             $this->apiService->getParamString('text'),
             0,
             $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)

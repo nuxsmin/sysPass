@@ -29,11 +29,11 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Import\Services\Import;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**

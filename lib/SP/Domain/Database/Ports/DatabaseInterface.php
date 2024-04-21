@@ -22,28 +22,41 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+namespace SP\Domain\Database\Ports;
 
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class ArchiveHandler
- *
- * @package SP\Infrastructure\File
+ * Interface DatabaseInterface
  */
-interface ArchiveHandlerInterface
+interface DatabaseInterface
 {
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Perform any type of query
      *
-     * @throws FileException
+     * @throws QueryException
+     * @throws ConstraintException
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
+    public function runQuery(QueryDataInterface $queryData, bool $fullCount = false): QueryResult;
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
-     *
-     * @return string The path to the file
-     * @throws FileException
+     * Don't fetch records and return prepared statement
      */
-    public function compressFile(string $file): string;
+    public function doFetchWithOptions(QueryDataInterface $queryData): iterable;
+
+    public function beginTransaction(): bool;
+
+    public function endTransaction(): bool;
+
+    public function rollbackTransaction(): bool;
+
+    /**
+     * Execute a raw query
+     *
+     * @param string $query
+     * @throws QueryException
+     */
+    public function runQueryRaw(string $query): void;
 }

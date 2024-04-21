@@ -25,9 +25,9 @@
 namespace SP\Domain\Import\Services;
 
 use DOMDocument;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use ValueError;
 
 use function SP\__u;
@@ -36,9 +36,9 @@ use function SP\logger;
 /**
  * Class XmlFile
  */
-final class XmlFile implements XmlFileService
+final readonly class XmlFile implements XmlFileService
 {
-    private readonly DOMDocument $document;
+    private DOMDocument $document;
 
     public function __construct()
     {

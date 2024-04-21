@@ -91,6 +91,8 @@ final class Config extends BaseRepository implements ConfigRepository
      * @param string $param
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByParam(string $param): QueryResult
     {
@@ -111,6 +113,8 @@ final class Config extends BaseRepository implements ConfigRepository
      * @param string $param
      *
      * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function has(string $param): bool
     {

@@ -24,8 +24,8 @@
 
 namespace SP\Domain\User\Ports;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
@@ -52,7 +52,7 @@ interface UserProfileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * @throws ConstraintException

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Security\Ports;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Models\Track as TrackModel;
@@ -78,10 +78,10 @@ interface TrackRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $time The time to decide whether the track has been tracked or not.
      * If the track time is equal or greater than $time, it's considered as tracked.
      * @return QueryResult<T>
      */
-    public function search(ItemSearchData $itemSearchData, int $time): QueryResult;
+    public function search(ItemSearchDto $itemSearchData, int $time): QueryResult;
 }

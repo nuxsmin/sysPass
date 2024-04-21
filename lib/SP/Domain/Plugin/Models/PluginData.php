@@ -24,12 +24,12 @@
 
 namespace SP\Domain\Plugin\Models;
 
-use SP\DataModel\EncryptedModel;
 use SP\Domain\Common\Attributes\Encryptable;
 use SP\Domain\Common\Attributes\Hydratable;
 use SP\Domain\Common\Models\HydratableModel;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Models\SerializedModel;
+use SP\Domain\Core\Models\EncryptedModel;
 use SP\Domain\Plugin\Ports\PluginDataStorage;
 
 /**

@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -37,9 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountToUserRepository
- *
- * @package SP\Infrastructure\Account\Repositories
+ * Class AccountToUser
  */
 final class AccountToUser extends BaseRepository implements AccountToUserRepository
 {
@@ -133,6 +131,8 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      * @param int $id con el id de la cuenta
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsersByAccountId(int $id): QueryResult
     {

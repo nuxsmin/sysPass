@@ -33,8 +33,6 @@ use function SP\__u;
 
 /**
  * Class ApiRequest
- *
- * @package SP\Domain\Api\Services
  */
 final class ApiRequest implements ApiRequestService
 {

@@ -25,9 +25,9 @@
 namespace SP\Infrastructure\User\Repositories;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountToUserGroup as AccountToUserGroupModel;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
@@ -137,7 +137,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
                 'Users'
             )
             ->innerJoin(UserModel::TABLE, sprintf('%s.id = %s.id', UserModel::TABLE, 'Users'))
-            ->bindValues(['userGroupId' => $userGroupId],);
+            ->bindValues(['userGroupId' => $userGroupId]);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -148,6 +148,8 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      * @param int $id
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -167,6 +169,8 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      * @param string $name
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName(string $name): QueryResult
     {
@@ -184,6 +188,8 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -222,11 +228,13 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

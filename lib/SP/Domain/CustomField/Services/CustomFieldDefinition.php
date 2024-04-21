@@ -25,9 +25,9 @@
 namespace SP\Domain\CustomField\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
@@ -57,7 +57,7 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->customFieldDefinitionRepository->search($itemSearchData);
     }

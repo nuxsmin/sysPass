@@ -33,9 +33,9 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Domain\Install\Ports\InstallerServiceInterface;
+use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
-use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\Install\Services\Installer;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -134,11 +134,11 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
-     * @return InstallerServiceInterface
+     * @return InstallerService
      */
-    private function getDefaultInstaller(): InstallerServiceInterface
+    private function getDefaultInstaller(): InstallerService
     {
-        return new InstallerService(
+        return new Installer(
             $this->request,
             $this->config,
             $this->userService,

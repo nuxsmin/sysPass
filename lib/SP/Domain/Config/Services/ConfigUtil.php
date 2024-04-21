@@ -33,8 +33,6 @@ use function SP\__u;
 
 /**
  * Class ConfigUtil
- *
- * @package Config
  */
 final class ConfigUtil
 {

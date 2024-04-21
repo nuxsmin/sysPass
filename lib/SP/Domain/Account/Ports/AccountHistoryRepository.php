@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -116,10 +116,10 @@ interface AccountHistoryRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
 }

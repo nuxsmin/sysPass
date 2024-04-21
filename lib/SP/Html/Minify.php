@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,11 @@ namespace SP\Html;
 
 use Klein\Request;
 use Klein\Response;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Html\Header;
 use SP\Domain\Html\MinifyFile;
 use SP\Domain\Html\MinifyInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SplObjectStorage;
 
 /**

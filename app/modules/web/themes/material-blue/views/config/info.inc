@@ -36,7 +36,7 @@
 
     use SP\Domain\Config\Ports\ConfigDataInterface;
     use SP\Domain\Core\UI\ThemeIconsInterface;
-    use SP\Domain\Install\Services\InstallerService;
+    use SP\Domain\Install\Services\Installer;
     use SP\Domain\Plugin\Ports\Plugin;
     use SP\Mvc\View\TemplateInterface;
     use SP\Util\VersionUtil;
@@ -59,7 +59,7 @@
             <?php
             printf(
                 '%s (<b>%s</b>)',
-                InstallerService::VERSION_TEXT,
+                Installer::VERSION_TEXT,
                 VersionUtil::getVersionStringNormalized()
             ); ?>
             <br>

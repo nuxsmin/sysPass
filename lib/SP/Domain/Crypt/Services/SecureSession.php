@@ -41,9 +41,7 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class SecureSessionService
- *
- * @package SP\Domain\Crypt\Services
+ * Class SecureSession
  */
 final class SecureSession extends Service implements SecureSessionService
 {

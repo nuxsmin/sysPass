@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Auth\Services;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Auth\Ports\AuthTokenActionInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -32,9 +31,9 @@ use SP\Domain\Core\Acl\AclInterface;
 /**
  * Class AuthTokenAction
  */
-final class AuthTokenAction implements AuthTokenActionInterface
+final readonly class AuthTokenAction implements AuthTokenActionInterface
 {
-    public function __construct(private readonly AclInterface $acl)
+    public function __construct(private AclInterface $acl)
     {
     }
 

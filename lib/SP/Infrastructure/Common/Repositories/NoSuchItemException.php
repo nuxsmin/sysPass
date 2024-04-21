@@ -28,8 +28,6 @@ use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class NoSuchItemException
- *
- * @package SP\Infrastructure\Common\Repositories
  */
 final class NoSuchItemException extends SPException
 {

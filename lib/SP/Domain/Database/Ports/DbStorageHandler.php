@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,37 +22,33 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Database\Ports;
 
-use SP\Util\Filter;
+use PDO;
+use SP\Infrastructure\Database\DatabaseException;
+use SP\Infrastructure\Database\DbStorageDriver;
 
 /**
- * Class ItemSearchData
+ * Interface DbStorageHandler
  */
-class ItemSearchData
+interface DbStorageHandler
 {
-    public function __construct(
-        private ?string       $seachString = null,
-        private readonly ?int $limitStart = 0,
-        private readonly ?int $limitCount = 0,
-    ) {
-        if (!empty($seachString)) {
-            $this->seachString = Filter::safeSearchString($seachString);
-        }
-    }
+    /**
+     * Obtener una conexión PDO
+     *
+     * @return PDO
+     * @throws DatabaseException
+     */
+    public function getConnection(): PDO;
 
-    public function getSeachString(): ?string
-    {
-        return $this->seachString;
-    }
+    /**
+     * Obtener una conexión PDO sin seleccionar la BD
+     *
+     * @return PDO
+     * @throws DatabaseException
+     */
+    public function getConnectionSimple(): PDO;
 
-    public function getLimitStart(): int
-    {
-        return $this->limitStart;
-    }
 
-    public function getLimitCount(): int
-    {
-        return $this->limitCount;
-    }
+    public function getDriver(): DbStorageDriver;
 }

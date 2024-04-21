@@ -28,7 +28,7 @@ use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class AccountPassData
+ * Class AccountPassItemWithIdAndName
  */
 class AccountPassItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {

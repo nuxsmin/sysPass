@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers\ItemManager;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
@@ -60,8 +60,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class IndexController extends ControllerBase
 {
-    protected ?ItemSearchData              $itemSearchData = null;
-    private TabsGridHelper      $tabsGridHelper;
+    protected ?ItemSearchDto $itemSearchData = null;
+    private TabsGridHelper   $tabsGridHelper;
     private CategoryService $categoryService;
     private TagService      $tagService;
     private ClientService   $clientService;
@@ -140,7 +140,7 @@ final class IndexController extends ControllerBase
      */
     protected function getGridTabs(): void
     {
-        $this->itemSearchData = new ItemSearchData(null, 0, $this->configData->getAccountCount());
+        $this->itemSearchData = new ItemSearchDto(null, 0, $this->configData->getAccountCount());
 
         if ($this->checkAccess(AclActionsInterface::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());

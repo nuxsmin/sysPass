@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,20 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Install\Ports;
-
-use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Install\Adapters\InstallData;
+namespace SP\Domain\Config\Dtos;
 
 /**
- * Installer class
+ * Class ConfigRequest
  */
-interface InstallerServiceInterface
+class ConfigRequest
 {
-    /**
-     * @throws InvalidArgumentException
-     * @throws SPException
-     */
-    public function run(InstallData $installData): InstallerServiceInterface;
+    private array $data = [];
+
+    public function add(string $param, string $value): void
+    {
+        $this->data[$param] = $value;
+    }
+
+    public function get(string $param): ?string
+    {
+        return $this->data[$param] ?? null;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
 }

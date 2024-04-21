@@ -25,9 +25,9 @@
 namespace SP\Domain\Notification\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
@@ -251,10 +251,10 @@ final class Notification extends Service implements NotificationService
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @return QueryResult<T>
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $userData = $this->context->getUserData();
 
@@ -270,11 +270,11 @@ final class Notification extends Service implements NotificationService
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $userId
      * @return QueryResult<T>
      */
-    public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult
+    public function searchForUserId(ItemSearchDto $itemSearchData, int $userId): QueryResult
     {
         return $this->notificationRepository->searchForUserId($itemSearchData, $userId);
     }

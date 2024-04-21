@@ -31,12 +31,12 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Notification\Repositories\Notification;
@@ -386,7 +386,7 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchForUserId()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -414,7 +414,7 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchForAdmin()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

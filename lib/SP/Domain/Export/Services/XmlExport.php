@@ -52,7 +52,7 @@ use SP\Util\VersionUtil;
 use function SP\__u;
 
 /**
- * Class XmlExportService
+ * Class XmlExport
  */
 final class XmlExport extends Service implements XmlExportService
 {

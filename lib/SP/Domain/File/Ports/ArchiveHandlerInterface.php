@@ -22,28 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\File\Ports;
 
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
-use SP\Domain\Common\Models\Model;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class ItemData
- *
- * @package SP\DataModel
+ * Class ArchiveHandler
  */
-class Item extends Model implements ItemWithIdAndNameModel
+interface ArchiveHandlerInterface
 {
-    protected ?int    $id   = null;
-    protected ?string $name = null;
+    /**
+     * Realizar un backup de la aplicación y comprimirlo.
+     *
+     * @throws FileException
+     */
+    public function compressDirectory(string $directory, ?string $regex = null): void;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+    /**
+     * Realizar un backup de la aplicación y comprimirlo.
+     *
+     * @return string The path to the file
+     * @throws FileException
+     */
+    public function compressFile(string $file): string;
 }

@@ -28,8 +28,8 @@ use JsonException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -66,7 +66,7 @@ class UserTest extends UnitaryTestCase
     {
         $user = UserDataGenerator::factory()->buildUserData();
 
-        $itemSearchData = new ItemSearchData(
+        $itemSearchData = new ItemSearchDto(
             self::$faker->text(),
             self::$faker->randomNumber(2),
             self::$faker->randomNumber(2)

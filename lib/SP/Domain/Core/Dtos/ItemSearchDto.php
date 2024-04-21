@@ -22,25 +22,37 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Core\Dtos;
+
+use SP\Util\Filter;
 
 /**
- * Class FileExtData
- *
- * @package SP\DataModel
+ * Class ItemSearchDto
  */
-class FileExtData extends File
+class ItemSearchDto
 {
-    protected ?string $clientName  = null;
-    protected ?string $accountName = null;
-
-    public function getClientName(): ?string
-    {
-        return $this->clientName;
+    public function __construct(
+        private ?string       $seachString = null,
+        private readonly ?int $limitStart = 0,
+        private readonly ?int $limitCount = 0,
+    ) {
+        if (!empty($seachString)) {
+            $this->seachString = Filter::safeSearchString($seachString);
+        }
     }
 
-    public function getAccountName(): ?string
+    public function getSeachString(): ?string
     {
-        return $this->accountName;
+        return $this->seachString;
+    }
+
+    public function getLimitStart(): int
+    {
+        return $this->limitStart;
+    }
+
+    public function getLimitCount(): int
+    {
+        return $this->limitCount;
     }
 }

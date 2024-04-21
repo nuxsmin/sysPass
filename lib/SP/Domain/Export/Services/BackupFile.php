@@ -39,19 +39,19 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Domain\Export\Ports\BackupFileService;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Common\Repositories\Query;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 
 use function SP\__u;
 
 /**
- * Esta clase es la encargada de realizar la copia de sysPass.
+ * Class BackupFile
  */
 final class BackupFile implements BackupFileService
 {

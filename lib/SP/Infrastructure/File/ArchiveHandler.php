@@ -27,6 +27,7 @@ namespace SP\Infrastructure\File;
 use Phar;
 use PharData;
 use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\File\Ports\ArchiveHandlerInterface;
 
 /**
  * Class ArchiveHandler

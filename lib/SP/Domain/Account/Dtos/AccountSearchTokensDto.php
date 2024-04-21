@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Dtos;
 
 /**
- * Class AccountSearchTokens
+ * Class AccountSearchTokensDto
  */
 final class AccountSearchTokensDto
 {

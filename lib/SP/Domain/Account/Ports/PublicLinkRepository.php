@@ -24,9 +24,9 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -72,11 +72,11 @@ interface PublicLinkRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * Creates an item

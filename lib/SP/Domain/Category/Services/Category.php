@@ -26,12 +26,12 @@ namespace SP\Domain\Category\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -56,11 +56,11 @@ final class Category extends Service implements CategoryService
     }
 
     /**
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @return QueryResult<T>
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->categoryRepository->search($itemSearchData);
     }

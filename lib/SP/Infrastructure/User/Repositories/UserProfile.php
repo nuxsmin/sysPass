@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\User\Repositories;
 
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
@@ -37,7 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class UserProfileRepository
+ * Class UserProfile
  *
  * @template T of UserProfileModel
  */
@@ -71,6 +71,8 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      * @param int $id
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -88,6 +90,8 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -126,11 +130,13 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

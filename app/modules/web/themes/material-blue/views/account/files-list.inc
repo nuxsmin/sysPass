@@ -26,10 +26,10 @@
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
- * @var File $file
+ * @var \SP\Domain\Account\Models\File $file
  */
 
-use SP\DataModel\File;
+use SP\Domain\Account\Models\File;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\Html;

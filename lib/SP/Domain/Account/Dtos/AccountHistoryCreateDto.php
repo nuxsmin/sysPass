@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,13 +29,13 @@ use SP\Domain\Account\Models\Account;
 /**
  * Class AccountHistoryCreateDto
  */
-class AccountHistoryCreateDto
+readonly class AccountHistoryCreateDto
 {
     public function __construct(
-        private readonly Account $account,
-        private readonly bool    $isModify,
-        private readonly bool    $isDelete,
-        private readonly string  $masterPassHash
+        private Account $account,
+        private bool    $isModify,
+        private bool    $isDelete,
+        private string  $masterPassHash
     ) {
     }
 

@@ -24,9 +24,9 @@
 
 namespace SP\Core\Acl;
 
-use SP\DataModel\Action;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;

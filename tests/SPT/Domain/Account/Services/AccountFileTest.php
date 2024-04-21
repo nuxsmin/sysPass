@@ -26,8 +26,8 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\File;
-use SP\DataModel\FileExtData;
+use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\FileExtData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Services\AccountFile;
 use SP\Domain\Common\Services\ServiceException;

@@ -22,20 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Common\Services;
+namespace SP\Domain\Database\Ports;
 
 /**
- * Trait ServiceItemTrait
- *
- * @package SP\Domain\Common\Services
- * @deprecated
+ * Interface DatabaseFileInterface
  */
-trait ServiceItemTrait
+interface DatabaseFileInterface
 {
     /**
-     * Get all items from the service's repository
-     *
-     * @return mixed
+     * Parses a database script file and returns an array of lines parsed
      */
-    abstract public function getAll();
+    public function parse(string $delimiter = ';'): iterable;
 }

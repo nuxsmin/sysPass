@@ -28,7 +28,7 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
 
 /**
- * Class UserLoginResponse
+ * Class UserDataDto
  */
 final readonly class UserDataDto
 {

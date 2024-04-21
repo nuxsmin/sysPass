@@ -42,6 +42,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
@@ -70,7 +71,7 @@ abstract class ImportBase extends Service implements ImportService
 
     public function __construct(
         Application                       $application,
-        ImportHelper                      $importHelper,
+        ImportHelperInterface $importHelper,
         protected readonly CryptInterface $crypt
     ) {
         parent::__construct($application);

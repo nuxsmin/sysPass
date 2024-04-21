@@ -27,11 +27,16 @@ namespace SPT\Domain\Account\Services\Builders;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount;
+use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Services\Builders\AccountSearchData;
+use SP\Domain\Common\Models\Item;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -67,11 +72,11 @@ class AccountSearchDataTest extends UnitaryTestCase
      */
     public function testBuildFrom(): void
     {
-        $accountSearchVData =
+        $accountSearchView =
             array_map(static fn() => AccountDataGenerator::factory()->buildAccountSearchView(), range(0, 4));
-        $numResults = count($accountSearchVData);
+        $numResults = count($accountSearchView);
 
-        $queryResult = new QueryResult($accountSearchVData);
+        $queryResult = new QueryResult($accountSearchView);
 
         $this->accountToFavoriteService
             ->expects(once())
@@ -80,11 +85,22 @@ class AccountSearchDataTest extends UnitaryTestCase
 
         $this->accountCacheService
             ->expects(exactly($numResults))
-            ->method('getCacheForAccount');
+            ->method('getCacheForAccount')
+            ->willReturn(new AccountCacheDto(100, [new Item(['id' => 200])], [new Item(['id' => 300])]));
 
+        $invokedCount = new InvokedCount($numResults);
         $this->accountAclService
-            ->expects(exactly($numResults))
-            ->method('getAcl');
+            ->expects($invokedCount)
+            ->method('getAcl')
+            ->with(
+                AclActionsInterface::ACCOUNT_SEARCH,
+                self::callback(static function (AccountAclDto $current) use ($accountSearchView, $invokedCount) {
+                    return $current->getAccountId() ===
+                           $accountSearchView[$invokedCount->numberOfInvocations() - 1]->getId()
+                           && $current->getUsersId() == [new Item(['id' => 200])]
+                           && $current->getUserGroupsId() == [new Item(['id' => 300])];
+                })
+            );
 
         $this->accountToTagRepository
             ->expects(exactly($numResults))
@@ -118,7 +134,8 @@ class AccountSearchDataTest extends UnitaryTestCase
 
         $this->accountCacheService
             ->expects(exactly($numResults))
-            ->method('getCacheForAccount');
+            ->method('getCacheForAccount')
+            ->willReturn(new AccountCacheDto(0, [], []));
 
         $this->accountAclService
             ->expects(exactly($numResults))

@@ -32,11 +32,11 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Security\Models\Track as TrackModel;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Security\Repositories\Track;
@@ -133,7 +133,7 @@ class TrackTest extends UnitaryTestCase
 
     public function testSearch()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -160,7 +160,7 @@ class TrackTest extends UnitaryTestCase
 
     public function testSearchWithEmptyString()
     {
-        $item = new ItemSearchData();
+        $item = new ItemSearchDto();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

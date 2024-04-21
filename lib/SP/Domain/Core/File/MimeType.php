@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,13 +27,13 @@ namespace SP\Domain\Core\File;
 /**
  * Class MimeType
  */
-final class MimeType
+final readonly class MimeType
 {
 
     public function __construct(
-        private readonly string $type,
-        private readonly string $description,
-        private readonly string $extension
+        private string $type,
+        private string $description,
+        private string $extension
     ) {
     }
 

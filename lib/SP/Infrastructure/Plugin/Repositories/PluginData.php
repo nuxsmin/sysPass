@@ -143,6 +143,8 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      *
      * @param string $name
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName(string $name): QueryResult
     {
@@ -162,6 +164,8 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -180,6 +184,8 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * @param string[] $names
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByNameBatch(array $names): QueryResult
     {
@@ -231,6 +237,8 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * @param int $itemId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByItemId(string $name, int $itemId): QueryResult
     {

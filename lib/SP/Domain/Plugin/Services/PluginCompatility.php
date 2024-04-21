@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\Install\Services\Installer;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
@@ -43,7 +43,6 @@ use function SP\__;
  */
 final class PluginCompatility extends Service implements PluginCompatilityService
 {
-
     public function __construct(
         Application $application,
         private readonly PluginManagerService $pluginService
@@ -62,7 +61,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
     public function checkFor(Plugin $plugin): bool
     {
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
-        $appVersion = implode('.', array_slice(InstallerService::VERSION, 0, 2));
+        $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion, '<')) {
             $this->eventDispatcher->notify(

@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\Item;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 

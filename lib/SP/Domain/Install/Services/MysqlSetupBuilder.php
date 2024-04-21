@@ -24,7 +24,6 @@
 
 namespace SP\Domain\Install\Services;
 
-
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -33,7 +32,7 @@ use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileHandler;
 
 /**
- * Class DatabaseSetupBuilder
+ * Class MysqlSetupBuilder
  */
 final class MysqlSetupBuilder implements MysqlSetupBuilderInterface
 {

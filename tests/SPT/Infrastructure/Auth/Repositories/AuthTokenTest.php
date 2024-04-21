@@ -32,14 +32,14 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Auth\Repositories\AuthToken;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\AuthTokenGenerator;
@@ -62,7 +62,7 @@ class AuthTokenTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -108,7 +108,7 @@ class AuthTokenTest extends UnitaryTestCase
             ->method('runQuery')
             ->with($callback, true);
 
-        $this->authToken->search(new ItemSearchData());
+        $this->authToken->search(new ItemSearchDto());
     }
 
     /**

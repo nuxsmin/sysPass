@@ -30,17 +30,17 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
-use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\ImportStrategy;
 use SP\Domain\Import\Services\KeepassImport;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Import\Services\XmlFormat;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**
@@ -231,7 +231,7 @@ class ImportStrategyTest extends UnitaryTestCase
 
         $this->importStrategy = new ImportStrategy(
             $this->application,
-            $this->createStub(ImportHelper::class),
+            $this->createStub(ImportHelperInterface::class),
             $this->createStub(CryptInterface::class),
             $this->xmlFileService
         );

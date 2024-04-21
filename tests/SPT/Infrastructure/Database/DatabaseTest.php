@@ -37,10 +37,10 @@ use RuntimeException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\QueryDataInterface;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DbStorageDriver;
-use SP\Infrastructure\Database\DbStorageHandler;
-use SP\Infrastructure\Database\QueryDataInterface;
 use SPT\UnitaryTestCase;
 
 /**

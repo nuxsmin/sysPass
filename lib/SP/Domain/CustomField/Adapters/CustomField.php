@@ -26,6 +26,7 @@ namespace SP\Domain\CustomField\Adapters;
 
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\CustomField\Ports\CustomFieldAdapter;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**

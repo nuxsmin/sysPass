@@ -47,9 +47,7 @@ use function SP\__u;
 use function SP\logger;
 
 /**
- * Class AccountCryptService
- *
- * @package SP\Domain\Account\Services
+ * Class AccountCrypt
  */
 final class AccountCrypt extends Service implements AccountCryptService
 {
@@ -119,7 +117,7 @@ final class AccountCrypt extends Service implements AccountCryptService
     /**
      * @param Account[] $accounts
      * @param callable $passUpdater
-     * @param \SP\Domain\Crypt\Dtos\UpdateMasterPassRequest $updateMasterPassRequest
+     * @param UpdateMasterPassRequest $updateMasterPassRequest
      *
      * @return EventMessage
      */

@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\File;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -37,9 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountFileRepository
- *
- * @package SP\Infrastructure\Account\Repositories
+ * Class AccountFile
  */
 final class AccountFile extends BaseRepository implements AccountFileRepository
 {
@@ -186,11 +184,11 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -37,9 +37,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountToUserGroupRepository
- *
- * @package SP\Infrastructure\Account\Repositories
+ * Class AccountToUserGroup
  */
 final class AccountToUserGroup extends BaseRepository implements AccountToUserGroupRepository
 {
@@ -51,6 +49,8 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      * @param int $id con el Id de la cuenta
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserGroupsByAccountId(int $id): QueryResult
     {
@@ -76,6 +76,8 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserGroupsByUserGroupId(int $id): QueryResult
     {

@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\CustomField\Repositories;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
@@ -106,6 +106,8 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
      * @param int $id
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -126,6 +128,8 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -189,14 +193,14 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

@@ -22,17 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Account\Models;
 
 /**
- * Interface DatabaseFileInterface
- *
- * @package SP\Storage
+ * Class FileExtData
  */
-interface DatabaseFileInterface
+class FileExtData extends File
 {
-    /**
-     * Parses a database script file and returns an array of lines parsed
-     */
-    public function parse(string $delimiter = ';'): iterable;
+    protected ?string $clientName  = null;
+    protected ?string $accountName = null;
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
+    }
+
+    public function getAccountName(): ?string
+    {
+        return $this->accountName;
+    }
 }

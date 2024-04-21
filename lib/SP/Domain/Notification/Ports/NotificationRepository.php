@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Notification\Ports;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
@@ -130,22 +130,22 @@ interface NotificationRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $userId
      *
      * @return QueryResult<T>
      */
-    public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult;
+    public function searchForUserId(ItemSearchDto $itemSearchData, int $userId): QueryResult;
 
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $userId
      *
      * @return QueryResult<T>
      */
-    public function searchForAdmin(ItemSearchData $itemSearchData, int $userId): QueryResult;
+    public function searchForAdmin(ItemSearchDto $itemSearchData, int $userId): QueryResult;
 
     /**
      * Marcar una notificación como leída

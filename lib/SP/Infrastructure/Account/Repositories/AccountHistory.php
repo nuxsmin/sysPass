@@ -24,10 +24,10 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -38,9 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class AccountHistoryRepository
- *
- * @package Services
+ * Class AccountHistory
  */
 final class AccountHistory extends BaseRepository implements AccountHistoryRepository
 {
@@ -49,22 +47,21 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Obtiene el listado del histórico de una cuenta.
      *
-     * @param $id
-     *
-     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function getHistoryForAccount($id): QueryResult
+    public function getHistoryForAccount(int $id): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
             ->from('AccountHistory AS Account')
             ->cols([
-                'Account.id',
-                'Account.dateEdit',
-                'Account.dateAdd',
-                'User.login AS userAdd',
-                'UserEdit.login AS userEdit',
-            ])
+                       'Account.id',
+                       'Account.dateEdit',
+                       'Account.dateAdd',
+                       'User.login AS userAdd',
+                       'UserEdit.login AS userEdit',
+                   ])
             ->join('INNER', 'User as User', 'Account.userId = User.id')
             ->join('LEFT', 'User as UserEdit', 'Account.userEditId = UserEdit.id')
             ->where('Account.id = :id')
@@ -91,33 +88,33 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->newInsert()
             ->into('Account')
             ->cols([
-                'accountId'          => $accountData->getId(),
-                'clientId'           => $accountData->getClientId(),
-                'categoryId'         => $accountData->getCategoryId(),
-                'name'               => $accountData->getName(),
-                'login'              => $accountData->getLogin(),
-                'url'                => $accountData->getUrl(),
-                'pass'               => $accountData->getPass(),
-                'key'                => $accountData->getKey(),
-                'notes'              => $accountData->getNotes(),
-                'userId'             => $accountData->getUserId(),
-                'userGroupId'        => $accountData->getUserGroupId(),
-                'userEditId'         => $accountData->getUserEditId(),
-                'isPrivate'          => $accountData->getIsPrivate(),
-                'isPrivateGroup'     => $accountData->getIsPrivateGroup(),
-                'passDate'           => $accountData->getPassDate(),
-                'passDateChange'     => $accountData->getPassDateChange(),
-                'parentId'           => $accountData->getParentId(),
-                'countView'          => $accountData->getCountView(),
-                'countDecrypt'       => $accountData->getCountDecrypt(),
-                'dateAdd'            => $accountData->getDateAdd(),
-                'dateEdit'           => $accountData->getDateEdit(),
-                'otherUserEdit'      => $accountData->getOtherUserEdit(),
-                'otherUserGroupEdit' => $accountData->getOtherUserGroupEdit(),
-                'isModify'           => $dto->isModify(),
-                'isDeleted'          => $dto->isDelete(),
-                'mPassHash'          => $dto->getMasterPassHash(),
-            ]);
+                       'accountId' => $accountData->getId(),
+                       'clientId' => $accountData->getClientId(),
+                       'categoryId' => $accountData->getCategoryId(),
+                       'name' => $accountData->getName(),
+                       'login' => $accountData->getLogin(),
+                       'url' => $accountData->getUrl(),
+                       'pass' => $accountData->getPass(),
+                       'key' => $accountData->getKey(),
+                       'notes' => $accountData->getNotes(),
+                       'userId' => $accountData->getUserId(),
+                       'userGroupId' => $accountData->getUserGroupId(),
+                       'userEditId' => $accountData->getUserEditId(),
+                       'isPrivate' => $accountData->getIsPrivate(),
+                       'isPrivateGroup' => $accountData->getIsPrivateGroup(),
+                       'passDate' => $accountData->getPassDate(),
+                       'passDateChange' => $accountData->getPassDateChange(),
+                       'parentId' => $accountData->getParentId(),
+                       'countView' => $accountData->getCountView(),
+                       'countDecrypt' => $accountData->getCountDecrypt(),
+                       'dateAdd' => $accountData->getDateAdd(),
+                       'dateEdit' => $accountData->getDateEdit(),
+                       'otherUserEdit' => $accountData->getOtherUserEdit(),
+                       'otherUserGroupEdit' => $accountData->getOtherUserGroupEdit(),
+                       'isModify' => $dto->isModify(),
+                       'isDeleted' => $dto->isDelete(),
+                       'mPassHash' => $dto->getMasterPassHash(),
+                   ]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating history'));
 
@@ -127,7 +124,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return bool
      * @throws ConstraintException
@@ -149,9 +146,11 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Returns the item for given id
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -159,40 +158,40 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->newSelect()
             ->from('AccountHistory AS Account')
             ->cols([
-                'Account.id',
-                'Account.accountId',
-                'Account.name',
-                'Account.categoryId',
-                'Account.userId',
-                'Account.clientId',
-                'Account.userGroupId',
-                'Account.userEditId',
-                'Account.login',
-                'Account.url',
-                'Account.notes',
-                'Account.countView',
-                'Account.countDecrypt',
-                'Account.dateAdd',
-                'Account.dateEdit',
-                'Account.otherUserEdit',
-                'Account.otherUserGroupEdit',
-                'Account.isPrivate',
-                'Account.isPrivateGroup',
-                'Account.passDate',
-                'Account.passDateChange',
-                'Account.parentId',
-                'Account.userLogin',
-                'Account.publicLinkHash',
-                'Account.isModify',
-                'Account.isDeleted',
-                'Account.mPassHash',
-                'Category.name AS categoryName',
-                'User.name AS userName',
-                'Client.name AS clientName',
-                'UserGroup.name AS userGroupName',
-                'UserEdit.name AS userEditName',
-                'UserEdit.login AS userEditLogin',
-            ])
+                       'Account.id',
+                       'Account.accountId',
+                       'Account.name',
+                       'Account.categoryId',
+                       'Account.userId',
+                       'Account.clientId',
+                       'Account.userGroupId',
+                       'Account.userEditId',
+                       'Account.login',
+                       'Account.url',
+                       'Account.notes',
+                       'Account.countView',
+                       'Account.countDecrypt',
+                       'Account.dateAdd',
+                       'Account.dateEdit',
+                       'Account.otherUserEdit',
+                       'Account.otherUserGroupEdit',
+                       'Account.isPrivate',
+                       'Account.isPrivateGroup',
+                       'Account.passDate',
+                       'Account.passDateChange',
+                       'Account.parentId',
+                       'Account.userLogin',
+                       'Account.publicLinkHash',
+                       'Account.isModify',
+                       'Account.isDeleted',
+                       'Account.mPassHash',
+                       'Category.name AS categoryName',
+                       'User.name AS userName',
+                       'Client.name AS clientName',
+                       'UserGroup.name AS userGroupName',
+                       'UserEdit.name AS userEditName',
+                       'UserEdit.login AS userEditLogin',
+                   ])
             ->where('Account.id = :id')
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
@@ -211,6 +210,8 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      * Returns all the items
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -218,40 +219,40 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->newSelect()
             ->from('AccountHistory AS Account')
             ->cols([
-                'Account.id',
-                'Account.accountId',
-                'Account.name',
-                'Account.categoryId',
-                'Account.userId',
-                'Account.clientId',
-                'Account.userGroupId',
-                'Account.userEditId',
-                'Account.login',
-                'Account.url',
-                'Account.notes',
-                'Account.countView',
-                'Account.countDecrypt',
-                'Account.dateAdd',
-                'Account.dateEdit',
-                'Account.otherUserEdit',
-                'Account.otherUserGroupEdit',
-                'Account.isPrivate',
-                'Account.isPrivateGroup',
-                'Account.passDate',
-                'Account.passDateChange',
-                'Account.parentId',
-                'Account.userLogin',
-                'Account.publicLinkHash',
-                'Account.isModify',
-                'Account.isDeleted',
-                'Account.mPassHash',
-                'Category.name AS categoryName',
-                'User.name AS userName',
-                'Client.name AS clientName',
-                'UserGroup.name AS userGroupName',
-                'UserEdit.name AS userEditName',
-                'UserEdit.login AS userEditLogin',
-            ])
+                       'Account.id',
+                       'Account.accountId',
+                       'Account.name',
+                       'Account.categoryId',
+                       'Account.userId',
+                       'Account.clientId',
+                       'Account.userGroupId',
+                       'Account.userEditId',
+                       'Account.login',
+                       'Account.url',
+                       'Account.notes',
+                       'Account.countView',
+                       'Account.countDecrypt',
+                       'Account.dateAdd',
+                       'Account.dateEdit',
+                       'Account.otherUserEdit',
+                       'Account.otherUserGroupEdit',
+                       'Account.isPrivate',
+                       'Account.isPrivateGroup',
+                       'Account.passDate',
+                       'Account.passDateChange',
+                       'Account.parentId',
+                       'Account.userLogin',
+                       'Account.publicLinkHash',
+                       'Account.isModify',
+                       'Account.isDeleted',
+                       'Account.mPassHash',
+                       'Category.name AS categoryName',
+                       'User.name AS userName',
+                       'Client.name AS clientName',
+                       'UserGroup.name AS userGroupName',
+                       'UserEdit.name AS userEditName',
+                       'UserEdit.login AS userEditLogin',
+                   ])
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->join('INNER', 'UserGroup', 'Account.userGroupId = UserGroup.id')
@@ -265,7 +266,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Deletes all the items for given ids
      *
-     * @param  array  $ids
+     * @param array $ids
      *
      * @return int
      * @throws ConstraintException
@@ -290,7 +291,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Deletes all the items for given accounts id
      *
-     * @param  array  $ids
+     * @param array $ids
      *
      * @return int
      * @throws ConstraintException
@@ -315,24 +316,26 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Searches for items by a given filter
      *
-     * @param  ItemSearchData  $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
             ->from('AccountHistory AS Account')
             ->cols([
-                'Account.id',
-                'Account.name',
-                'Client.name AS clientName',
-                'Category.name AS categoryName',
-                'Account.isModify',
-                'Account.isDeleted',
-                'IFNULL(Account.dateEdit,Account.dateAdd) as date',
-            ])
+                       'Account.id',
+                       'Account.name',
+                       'Client.name AS clientName',
+                       'Category.name AS categoryName',
+                       'Account.isModify',
+                       'Account.isDeleted',
+                       'IFNULL(Account.dateEdit,Account.dateAdd) as date',
+                   ])
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
             ->orderBy(['Account.date DESC', 'clientName ASC', 'Account.id DESC'])
@@ -344,12 +347,12 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                 ->where('Account.name LIKE :name')
                 ->orWhere('Client.name LIKE :clientName');
 
-            $search = '%'.$itemSearchData->getSeachString().'%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
 
             $query->bindValues([
-                'name'       => $search,
-                'clientName' => $search,
-            ]);
+                                   'name' => $search,
+                                   'clientName' => $search,
+                               ]);
         }
 
         return $this->db->runQuery(QueryData::build($query), true);
@@ -359,6 +362,8 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult
     {
@@ -383,7 +388,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
-     * @param  int  $accountId
+     * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
      *
      * @return bool
@@ -396,10 +401,10 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->newUpdate()
             ->table('AccountHistory')
             ->cols([
-                'pass'      => $encryptedPassword->getPass(),
-                'key'       => $encryptedPassword->getKey(),
-                'mPassHash' => $encryptedPassword->getHash(),
-            ])
+                       'pass' => $encryptedPassword->getPass(),
+                       'key' => $encryptedPassword->getKey(),
+                       'mPassHash' => $encryptedPassword->getHash(),
+                   ])
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
 

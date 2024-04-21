@@ -31,8 +31,8 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InstallError;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Domain\Install\Ports\InstallerServiceInterface;
-use SP\Domain\Install\Services\InstallerService;
+use SP\Domain\Install\Ports\InstallerService;
+use SP\Domain\Install\Services\Installer;
 use SP\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,13 +67,13 @@ final class InstallCommand extends CommandBase
     /**
      * @var string
      */
-    protected static         $defaultName = 'sp:install';
-    private InstallerService $installer;
+    protected static  $defaultName = 'sp:install';
+    private Installer $installer;
 
     public function __construct(
         LoggerInterface   $logger,
         ConfigFileService $config,
-        InstallerServiceInterface $installer
+        InstallerService $installer
     ) {
         parent::__construct($logger, $config);
 

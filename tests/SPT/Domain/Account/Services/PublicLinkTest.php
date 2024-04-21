@@ -29,7 +29,6 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
@@ -38,6 +37,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -255,7 +255,7 @@ class PublicLinkTest extends UnitaryTestCase
 
     public function testSearch()
     {
-        $itemSearchData = new ItemSearchData(self::$faker->colorName);
+        $itemSearchData = new ItemSearchDto(self::$faker->colorName);
 
         $this->publicLinkRepository
             ->expects(self::once())

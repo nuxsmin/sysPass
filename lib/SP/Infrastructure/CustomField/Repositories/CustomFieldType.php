@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\CustomField\Repositories;
 
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
 use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -32,7 +34,7 @@ use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class CustomFieldTypeRepository
+ * Class CustomFieldType
  *
  * @template T of CustomFieldTypeModel
  */
@@ -46,6 +48,8 @@ final class CustomFieldType extends BaseRepository implements CustomFieldTypeRep
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {

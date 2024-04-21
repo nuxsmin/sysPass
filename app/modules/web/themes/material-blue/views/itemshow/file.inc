@@ -30,7 +30,7 @@
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\File;
+use SP\Domain\Account\Models\File;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;

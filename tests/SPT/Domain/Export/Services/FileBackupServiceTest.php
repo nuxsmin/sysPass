@@ -33,15 +33,15 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Domain\Export\Services\BackupFile;
-use SP\Infrastructure\Database\DatabaseInterface;
+use SP\Domain\File\Ports\ArchiveHandlerInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\ArchiveHandlerInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SPT\UnitaryTestCase;
 
 /**

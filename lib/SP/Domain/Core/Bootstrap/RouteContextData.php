@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,13 +27,13 @@ namespace SP\Domain\Core\Bootstrap;
 /**
  * Class RouteContextData
  */
-final class RouteContextData
+final readonly class RouteContextData
 {
     public function __construct(
-        private readonly string $controller,
-        private readonly string $actionName,
-        private readonly string $methodName,
-        private readonly array  $methodParams
+        private string $controller,
+        private string $actionName,
+        private string $methodName,
+        private array  $methodParams
     ) {
     }
 

@@ -27,10 +27,10 @@ namespace SP\Modules\Api\Controllers\Client;
 
 use Exception;
 use SP\Core\Events\Event;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 
 /**
  * Class SearchController
@@ -62,12 +62,12 @@ final class SearchController extends ClientBase
     }
 
     /**
-     * @return ItemSearchData
+     * @return ItemSearchDto
      * @throws ServiceException
      */
-    private function buildSearchData(): ItemSearchData
+    private function buildSearchData(): ItemSearchDto
     {
-        $itemSearchData = new ItemSearchData();
+        $itemSearchData = new ItemSearchDto();
         $itemSearchData->setSeachString($this->apiService->getParamString('text'));
         $itemSearchData->setLimitCount(
             $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)

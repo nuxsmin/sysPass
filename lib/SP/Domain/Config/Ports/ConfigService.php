@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Config\Ports;
 
-use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;

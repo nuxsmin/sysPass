@@ -25,13 +25,13 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\File;
-use SP\DataModel\FileExtData;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\FileExtData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -44,9 +44,7 @@ use SP\Util\ImageUtilInterface;
 use function SP\__u;
 
 /**
- * Class AccountFileService
- *
- * @package SP\Domain\Account\Services
+ * Class AccountFile
  */
 final class AccountFile extends Service implements AccountFileService
 {
@@ -139,11 +137,11 @@ final class AccountFile extends Service implements AccountFileService
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $searchData
+     * @param ItemSearchDto $searchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $searchData): QueryResult
+    public function search(ItemSearchDto $searchData): QueryResult
     {
         return $this->accountFileRepository->search($searchData);
     }

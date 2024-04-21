@@ -32,9 +32,9 @@ use SP\Core\Context\ContextException;
 use SP\DataModel\ProfileData;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DbStorageHandler;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Util\FileUtil;
 

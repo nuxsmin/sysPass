@@ -39,8 +39,6 @@ use function SP\logger;
 
 /**
  * Class Service
- *
- * @package SP\Domain\Common\Services
  */
 abstract class Service
 {

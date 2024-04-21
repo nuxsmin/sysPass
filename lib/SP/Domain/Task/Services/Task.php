@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,11 +27,12 @@ namespace SP\Domain\Task\Services;
 use JsonException;
 use SP\Core\Context\Session;
 use SP\Core\Messages\TaskMessage;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
+
 use function SP\logger;
 use function SP\processException;
 

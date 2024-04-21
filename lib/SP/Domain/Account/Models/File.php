@@ -22,15 +22,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Account\Models;
 
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;
 
 /**
- * Class FileData
- *
- * @package SP\DataModel
+ * Class File
  */
 class File extends Model implements ItemWithIdAndNameModel
 {

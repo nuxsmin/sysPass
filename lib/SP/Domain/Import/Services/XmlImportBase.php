@@ -30,6 +30,7 @@ use Iterator;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 
 /**
  * Class XmlImportBase
@@ -45,7 +46,7 @@ abstract class XmlImportBase extends ImportBase
      */
     public function __construct(
         Application                    $application,
-        ImportHelper                   $importHelper,
+        ImportHelperInterface $importHelper,
         CryptInterface                 $crypt,
         protected readonly DOMDocument $document
     ) {

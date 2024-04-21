@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,12 +27,12 @@ namespace SP\Domain\Account\Dtos;
 /**
  * Class EncryptedPassword
  */
-final class EncryptedPassword
+final readonly class EncryptedPassword
 {
     public function __construct(
-        private readonly string  $pass,
-        private readonly string  $key,
-        private readonly ?string $hash = null
+        private string  $pass,
+        private string  $key,
+        private ?string $hash = null
     ) {
     }
 

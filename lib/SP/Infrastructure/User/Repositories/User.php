@@ -26,11 +26,11 @@ namespace SP\Infrastructure\User\Repositories;
 
 use Exception;
 use JsonException;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountToUser as AccountToUserModel;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
@@ -218,14 +218,14 @@ final class User extends BaseRepository implements UserRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -351,6 +351,8 @@ final class User extends BaseRepository implements UserRepository
      * Returns items' basic information
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -529,6 +531,8 @@ final class User extends BaseRepository implements UserRepository
      * Obtener el email de los usuarios
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmail(): QueryResult
     {
@@ -549,6 +553,8 @@ final class User extends BaseRepository implements UserRepository
      * @param array<int> $ids
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailById(array $ids): QueryResult
     {

@@ -30,9 +30,9 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
-use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -50,9 +50,7 @@ use function SP\__u;
 use function SP\processException;
 
 /**
- * Class TemporaryMasterPassService
- *
- * @package SP\Domain\Crypt\Services
+ * Class TemporaryMasterPass
  */
 final class TemporaryMasterPass extends Service implements TemporaryMasterPassService
 {

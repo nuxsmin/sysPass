@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Plugin\Ports;
 
-use SP\DataModel\Item;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Common\Models\Item;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -110,7 +110,7 @@ interface PluginManagerService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * Devuelve los datos de un plugin por su nombre

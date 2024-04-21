@@ -27,9 +27,9 @@ namespace SP\Domain\User\Services;
 use JsonException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -46,7 +46,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class UserService
+ * Class User
  */
 final class User extends Service implements UserService
 {
@@ -226,7 +226,7 @@ final class User extends Service implements UserService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $searchData): QueryResult
+    public function search(ItemSearchDto $searchData): QueryResult
     {
         return $this->userRepository->search($searchData);
     }

@@ -29,7 +29,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Util\VersionUtil;
 
 /**
- * Class configData
+ * Class ConfigData
  */
 final class ConfigData extends DataCollection implements ConfigDataInterface
 {

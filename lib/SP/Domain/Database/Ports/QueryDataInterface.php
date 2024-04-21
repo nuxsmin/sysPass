@@ -22,43 +22,29 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Database\Ports;
 
-use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+use Aura\SqlQuery\QueryInterface;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Database\QueryData;
 
 /**
- * Class ActionData
- *
- * @package SP\DataModel
+ * Class QueryData
  */
-class Action implements ItemWithIdAndNameModel
+interface QueryDataInterface
 {
-    public function __construct(
-        private readonly int    $id,
-        private readonly string $name,
-        private readonly string $text,
-        private readonly string $route
-    ) {
-    }
+    public function getQuery(): QueryInterface;
 
+    public function getMapClassName(): string;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function setMapClassName(string $class): QueryData;
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+    /**
+     * @throws QueryException
+     */
+    public function getQueryCount(): QueryInterface;
 
-    public function getText(): string
-    {
-        return $this->text;
-    }
+    public function getOnErrorMessage(): string;
 
-    public function getRoute(): string
-    {
-        return $this->route;
-    }
+    public function setOnErrorMessage(string $onErrorMessage): QueryData;
 }

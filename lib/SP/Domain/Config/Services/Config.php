@@ -26,9 +26,9 @@ namespace SP\Domain\Config\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\DataModel\Dto\ConfigRequest;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Config\Ports\ConfigRepository;
 use SP\Domain\Config\Ports\ConfigService;

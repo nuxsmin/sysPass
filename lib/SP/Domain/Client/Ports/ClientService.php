@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Client\Ports;
 
-use SP\DataModel\Item;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Client\Models\Client;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -44,7 +44,7 @@ interface ClientService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * @throws NoSuchItemException

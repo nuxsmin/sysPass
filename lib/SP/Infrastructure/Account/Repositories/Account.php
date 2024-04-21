@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
@@ -33,21 +32,20 @@ use SP\Domain\Account\Models\AccountView as AccountViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;
 
 /**
- * Class AccountRepository
- *
- * @package Services
+ * Class Account
  */
 final class Account extends BaseRepository implements AccountRepository
 {
@@ -490,11 +488,11 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

@@ -44,9 +44,7 @@ use SP\Infrastructure\File\FileException;
 use function SP\processException;
 
 /**
- * Class AccountAclService
- *
- * @package SP\Domain\Account\Services
+ * Class AccountAcl
  */
 final class AccountAcl extends Service implements AccountAclService
 {

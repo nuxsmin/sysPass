@@ -28,19 +28,20 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Tag\Ports\TagService;
 
 /**
  * A helper class to provide the needed services.
  */
-class ImportHelper
+readonly class ImportHelper implements ImportHelperInterface
 {
     public function __construct(
-        private readonly AccountService  $accountService,
-        private readonly CategoryService $categoryService,
-        private readonly ClientService   $clientService,
-        private readonly TagService      $tagService,
-        private readonly ConfigService   $configService
+        private AccountService  $accountService,
+        private CategoryService $categoryService,
+        private ClientService   $clientService,
+        private TagService      $tagService,
+        private ConfigService   $configService
     ) {
     }
 

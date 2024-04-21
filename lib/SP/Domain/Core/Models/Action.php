@@ -22,14 +22,41 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\CustomField\Adapters;
+namespace SP\Domain\Core\Models;
 
-use SP\Domain\CustomField\Services\CustomFieldItem;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 
 /**
- * Class CustomFieldAdapter
+ * Class Action
  */
-interface CustomFieldAdapter
+readonly class Action implements ItemWithIdAndNameModel
 {
-    public function transform(CustomFieldItem $data): array;
+    public function __construct(
+        private int    $id,
+        private string $name,
+        private string $text,
+        private string $route
+    ) {
+    }
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getRoute(): string
+    {
+        return $this->route;
+    }
 }

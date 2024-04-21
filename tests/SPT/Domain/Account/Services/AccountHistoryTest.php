@@ -26,13 +26,13 @@ namespace SPT\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Account\Services\AccountHistory;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -168,7 +168,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testSearch()
     {
         $itemSearchData =
-            new ItemSearchData(self::$faker->text, self::$faker->randomNumber(), self::$faker->randomNumber());
+            new ItemSearchDto(self::$faker->text, self::$faker->randomNumber(), self::$faker->randomNumber());
 
         $this->accountHistoryRepository->expects(self::once())->method('search')->with($itemSearchData);
 

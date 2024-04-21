@@ -49,6 +49,8 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
      * @param int $time
      *
      * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAttemptsByUserId(int $userId, int $time): int
     {
@@ -121,6 +123,8 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
      * @param int $time
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserIdForHash(string $hash, int $time): QueryResult
     {

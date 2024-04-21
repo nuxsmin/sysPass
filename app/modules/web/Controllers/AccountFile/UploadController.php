@@ -29,13 +29,13 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\File;
+use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -161,7 +161,7 @@ final class UploadController extends ControllerBase
     }
 
     /**
-     * @param File $fileData
+     * @param \SP\Domain\Account\Models\File $fileData
      * @param FileHandlerInterface $fileHandler
      *
      * @return string

@@ -31,8 +31,6 @@ use function SP\__u;
 
 /**
  * Class FileCache
- *
- * @package SP\Infrastructure\File;
  */
 class FileCache extends FileCacheBase
 {

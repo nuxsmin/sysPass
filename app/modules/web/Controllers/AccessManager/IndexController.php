@@ -27,10 +27,10 @@ namespace SP\Modules\Web\Controllers\AccessManager;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Ports\UserGroupService;
@@ -53,8 +53,8 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class IndexController extends ControllerBase
 {
-    protected ItemSearchData            $itemSearchData;
-    protected TabsGridHelper            $tabsGridHelper;
+    protected ItemSearchDto  $itemSearchData;
+    protected TabsGridHelper $tabsGridHelper;
     private UserGrid                    $userGrid;
     private UserGroupGrid               $userGroupGrid;
     private UserProfileGrid             $userProfileGrid;
@@ -96,7 +96,7 @@ final class IndexController extends ControllerBase
         $this->authTokenService = $authTokenService;
         $this->publicLinkService = $publicLinkService;
         $this->tabsGridHelper = $tabsGridHelper;
-        $this->itemSearchData = new ItemSearchData();
+        $this->itemSearchData = new ItemSearchDto();
     }
 
     /**

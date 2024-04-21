@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,14 +22,10 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
-
-use SP\Domain\Account\Models\PublicLink;
+namespace SP\Domain\Account\Models;
 
 /**
- * Class PublicLinkListData
- *
- * @package SP\DataModel
+ * Class PublicLinkList
  */
 class PublicLinkList extends PublicLink
 {

@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\File;
-use SP\DataModel\FileExtData;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\FileExtData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -87,7 +87,7 @@ interface AccountFileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $searchData): QueryResult;
+    public function search(ItemSearchDto $searchData): QueryResult;
 
     /**
      * Returns the item for given id

@@ -27,15 +27,15 @@ namespace SP\Domain\Import\Dtos;
 /**
  * Class LdapImportParams
  */
-final class LdapImportParamsDto
+final readonly class LdapImportParamsDto
 {
     public function __construct(
-        private readonly ?int    $defaultUserGroup = null,
-        private readonly ?int    $defaultUserProfile = null,
-        private readonly ?string $loginAttribute = null,
-        private readonly ?string $userNameAttribute = null,
-        private readonly ?string $userGroupNameAttribute = null,
-        private readonly ?string $filter = null
+        private ?int    $defaultUserGroup = null,
+        private ?int    $defaultUserProfile = null,
+        private ?string $loginAttribute = null,
+        private ?string $userNameAttribute = null,
+        private ?string $userGroupNameAttribute = null,
+        private ?string $filter = null
     ) {
     }
 

@@ -27,9 +27,7 @@ namespace SP\Domain\Api\Dtos;
 use SP\Core\DataCollection;
 
 /**
- * Class ApiData
- *
- * @package SP\Domain\Api\Services
+ * Class ApiRequestData
  */
 final class ApiRequestData extends DataCollection
 {

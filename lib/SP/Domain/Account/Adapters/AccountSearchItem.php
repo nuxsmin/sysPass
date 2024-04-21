@@ -24,16 +24,16 @@
 
 namespace SP\Domain\Account\Adapters;
 
-use SP\DataModel\Item;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Html\Html;
 
 /**
- * Class AccountSearchItem para contener los datos de cada cuenta en la búsqueda
+ * Class AccountSearchItem
  */
 final class AccountSearchItem
 {
@@ -248,7 +248,7 @@ final class AccountSearchItem
     }
 
     /**
-     * @return Item[]
+     * @return \SP\Domain\Common\Models\Item[]
      */
     public function getTags(): array
     {

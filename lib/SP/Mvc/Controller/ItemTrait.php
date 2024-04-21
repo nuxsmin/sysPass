@@ -24,8 +24,8 @@
 
 namespace SP\Mvc\Controller;
 
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
@@ -212,9 +212,9 @@ trait ItemTrait
     /**
      * Returns search data object for the current request
      */
-    protected function getSearchData(int $limitCount, RequestInterface $request): ItemSearchData
+    protected function getSearchData(int $limitCount, RequestInterface $request): ItemSearchDto
     {
-        return new ItemSearchData(
+        return new ItemSearchDto(
             $request->analyzeString('search'),
             $request->analyzeInt('start', 0),
             $request->analyzeInt('count', $limitCount)

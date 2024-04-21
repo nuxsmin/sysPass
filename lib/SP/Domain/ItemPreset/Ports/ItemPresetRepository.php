@@ -25,8 +25,8 @@
 namespace SP\Domain\ItemPreset\Ports;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
@@ -90,7 +90,7 @@ interface ItemPresetRepository extends Repository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
      *
@@ -98,7 +98,7 @@ interface ItemPresetRepository extends Repository
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
      * Returns the item for given id

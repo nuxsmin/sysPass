@@ -22,33 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
-
-use PDO;
+namespace SP\Domain\Common\Models;
 
 /**
- * Interface DBStorageInterface
- *
- * @package SP\Storage
+ * Class Item
  */
-interface DbStorageHandler
+class Item extends Model implements ItemWithIdAndNameModel
 {
-    /**
-     * Obtener una conexión PDO
-     *
-     * @return PDO
-     * @throws DatabaseException
-     */
-    public function getConnection(): PDO;
+    protected ?int    $id   = null;
+    protected ?string $name = null;
 
-    /**
-     * Obtener una conexión PDO sin seleccionar la BD
-     *
-     * @return PDO
-     * @throws DatabaseException
-     */
-    public function getConnectionSimple(): PDO;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-
-    public function getDriver(): DbStorageDriver;
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 }

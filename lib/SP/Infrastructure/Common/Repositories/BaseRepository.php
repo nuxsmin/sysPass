@@ -34,7 +34,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -43,8 +43,6 @@ use function SP\logger;
 
 /**
  * Class Repository
- *
- * @package SP\Infrastructure\Common\Repositories
  */
 abstract class BaseRepository implements Repository
 {

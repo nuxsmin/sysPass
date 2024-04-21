@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\ItemPreset\Repositories;
 
 use Exception;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class ItemPresetBaseRepository
+ * Class ItemPreset
  *
  * @template T of ItemPresetModel
  */
@@ -116,6 +116,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      * @param int $itemPresetId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $itemPresetId): QueryResult
     {
@@ -141,6 +143,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      * @param int $userProfileId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByFilter(string $type, int $userId, int $userGroupId, int $userProfileId): QueryResult
     {
@@ -180,6 +184,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -217,7 +223,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult<T>
      *
@@ -225,7 +231,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      * @throws QueryException
      * @throws Exception
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()

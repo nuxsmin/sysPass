@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallDataFactory;
-use SP\Domain\Install\Ports\InstallerServiceInterface;
+use SP\Domain\Install\Ports\InstallerService;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -42,12 +42,12 @@ final class InstallController extends ControllerBase
 {
     use JsonTrait;
 
-    private InstallerServiceInterface $installer;
+    private InstallerService $installer;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerServiceInterface $installer
+        InstallerService $installer
     ) {
         parent::__construct($application, $webControllerHelper);
 

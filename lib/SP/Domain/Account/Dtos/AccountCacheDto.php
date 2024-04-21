@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,12 +26,10 @@ namespace SP\Domain\Account\Dtos;
 
 /**
  * Class AccountCacheDto
- *
- * @package SP\DataModel\Dto
  */
-class AccountCacheDto
+readonly class AccountCacheDto
 {
-    private readonly int $time;
+    private int $time;
 
     /**
      * AccountCacheDto constructor.
@@ -41,9 +39,9 @@ class AccountCacheDto
      * @param array $userGroups
      */
     public function __construct(
-        private readonly int   $accountId,
-        private readonly array $users,
-        private readonly array $userGroups
+        private int   $accountId,
+        private array $users,
+        private array $userGroups
     ) {
         $this->time = time();
     }

@@ -33,14 +33,16 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchRepository;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\Filter;
 
 /**
- * Class AccountSearchRepository
+ * Class AccountSearch
  */
 final class AccountSearch extends BaseRepository implements AccountSearchRepository
 {
@@ -101,6 +103,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      * @param AccountSearchFilterDto $accountSearchFilter
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult
     {

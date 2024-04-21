@@ -22,20 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\File\Ports;
+namespace SP\Domain\CustomField\Ports;
 
-
-use SP\Infrastructure\File\FileException;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 
 /**
- * Class CsvFileHandler
+ * Class CustomFieldAdapter
  */
-interface CsvFileHandler
+interface CustomFieldAdapter
 {
-    /**
-     * Read a CSV file
-     *
-     * @throws FileException
-     */
-    public function readCsv(string $delimiter): iterable;
+    public function transform(CustomFieldItem $data): array;
 }

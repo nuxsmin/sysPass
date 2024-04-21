@@ -33,14 +33,14 @@ use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Category\Repositories\Category;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\CategoryGenerator;
@@ -233,7 +233,7 @@ class CategoryTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -278,7 +278,7 @@ class CategoryTest extends UnitaryTestCase
             ->method('runQuery')
             ->with($callback, true);
 
-        $this->category->search(new ItemSearchData());
+        $this->category->search(new ItemSearchDto());
     }
 
     public function testGetAll()

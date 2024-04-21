@@ -162,6 +162,8 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -177,6 +179,8 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      * Returns all the items that were encrypted
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllEncrypted(): QueryResult
     {

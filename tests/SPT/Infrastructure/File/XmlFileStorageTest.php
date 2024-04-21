@@ -29,8 +29,8 @@ use DOMException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Infrastructure\File\XmlFileStorage;
 use SPT\UnitaryTestCase;
 

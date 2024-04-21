@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\Core\Models;
 
 use ReflectionClass;
 use SP\Domain\Common\Attributes\Encryptable;

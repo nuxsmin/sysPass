@@ -42,7 +42,7 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Read and write the settings in the defined config file
+ * Class ConfigFile
  */
 class ConfigFile implements ConfigFileService
 {

@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\File;
 
 use RuntimeException;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Util\Util;
 use SplFileObject;
 
@@ -34,8 +35,6 @@ use function SP\logger;
 
 /**
  * Class FileHandler
- *
- * @package SP\Infrastructure\File;
  */
 final class FileHandler extends SplFileObject implements FileHandlerInterface
 {

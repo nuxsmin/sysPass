@@ -43,8 +43,6 @@ use SP\Mvc\Controller\Validators\ValidatorInterface;
 
 /**
  * Class AccountPreset
- *
- * @package SP\Domain\Account\Services
  */
 final class AccountPreset extends Service implements AccountPresetService
 {

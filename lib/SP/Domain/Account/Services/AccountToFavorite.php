@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,9 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class AccountFavoriteService
- *
- * @package SP\Domain\Account\Services
+ * Class AccountToFavorite
  */
 final class AccountToFavorite extends Service implements AccountToFavoriteService
 {

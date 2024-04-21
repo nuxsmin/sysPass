@@ -22,27 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\Dto;
+namespace SP\Domain\Import\Ports;
+
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Category\Ports\CategoryService;
+use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Tag\Ports\TagService;
 
 /**
- * Class ConfigRequest
+ * Interface ImportHelperInterface
  */
-class ConfigRequest
+interface ImportHelperInterface
 {
-    private array $data = [];
+    public function getAccountService(): AccountService;
 
-    public function add(string $param, string $value): void
-    {
-        $this->data[$param] = $value;
-    }
+    public function getCategoryService(): CategoryService;
 
-    public function get(string $param): ?string
-    {
-        return $this->data[$param] ?? null;
-    }
+    public function getClientService(): ClientService;
 
-    public function getData(): array
-    {
-        return $this->data;
-    }
+    public function getTagService(): TagService;
+
+    public function getConfigService(): ConfigService;
 }

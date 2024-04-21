@@ -26,8 +26,6 @@ namespace SP\Domain\Api\Dtos;
 
 /**
  * Class ApiResponse
- *
- * @package SP\Api
  */
 final class ApiResponse
 {

@@ -25,9 +25,9 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToTagService;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -35,9 +35,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class AccountToTagService
- *
- * @package SP\Domain\Account\Services
+ * Class AccountToTag
  */
 final class AccountToTag extends Service implements AccountToTagService
 {

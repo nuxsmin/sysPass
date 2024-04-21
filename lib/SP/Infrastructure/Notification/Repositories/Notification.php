@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Notification\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
-use SP\DataModel\ItemSearchData;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 use function SP\__u;
 
 /**
- * Class NotificationRepository
+ * Class Notification
  *
  * @template T of NotificationModel
  */
@@ -168,6 +168,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * @param int $notificationId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $notificationId): QueryResult
     {
@@ -188,6 +190,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * Returns all the items
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
@@ -206,6 +210,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * @param array $notificationsId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $notificationsId): QueryResult
     {
@@ -247,12 +253,14 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult
+    public function searchForUserId(ItemSearchDto $itemSearchData, int $userId): QueryResult
     {
         $query = $this->getBaseSearch($itemSearchData)
                       ->where(
@@ -265,7 +273,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
         return $this->db->runQuery($queryData, true);
     }
 
-    private function getBaseSearch(ItemSearchData $itemSearchData): SelectInterface
+    private function getBaseSearch(ItemSearchDto $itemSearchData): SelectInterface
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -289,12 +297,14 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function searchForAdmin(ItemSearchData $itemSearchData, int $userId): QueryResult
+    public function searchForAdmin(ItemSearchDto $itemSearchData, int $userId): QueryResult
     {
         $query = $this->getBaseSearch($itemSearchData)
                       ->where('(userId = :userId OR onlyAdmin = 1 OR sticky = 1)', ['userId' => $userId]);
@@ -334,6 +344,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate(string $component, int $userId): QueryResult
     {
@@ -357,6 +369,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForUserId(int $userId): QueryResult
     {
@@ -376,6 +390,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * @param int $userId
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId(int $userId): QueryResult
     {
@@ -396,6 +412,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * @param int $userId
      *
      * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForAdmin(int $userId): QueryResult
     {

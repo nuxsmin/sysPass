@@ -33,15 +33,15 @@ use JsonException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Models\Simple as SimpleModel;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Database\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\User\Repositories\User;
@@ -541,7 +541,7 @@ class UserTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -572,7 +572,7 @@ class UserTest extends UnitaryTestCase
      */
     public function testSearchWithNoString()
     {
-        $item = new ItemSearchData();
+        $item = new ItemSearchDto();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -612,7 +612,7 @@ class UserTest extends UnitaryTestCase
             )
         );
 
-        $item = new ItemSearchData(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

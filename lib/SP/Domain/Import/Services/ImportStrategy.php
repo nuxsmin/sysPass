@@ -27,12 +27,13 @@ namespace SP\Domain\Import\Services;
 use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandlerInterface;
 use SP\Util\Util;
 
 use function SP\__;
@@ -55,10 +56,10 @@ final class ImportStrategy extends Service implements ImportStrategyService
     ];
 
     public function __construct(
-        private readonly Application    $application,
-        private readonly ImportHelper   $importHelper,
-        private readonly CryptInterface $crypt,
-        private readonly XmlFileService $xmlFile,
+        private readonly Application           $application,
+        private readonly ImportHelperInterface $importHelper,
+        private readonly CryptInterface        $crypt,
+        private readonly XmlFileService        $xmlFile,
     ) {
         parent::__construct($application);
     }

@@ -28,8 +28,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -373,7 +373,7 @@ class PluginManagerTest extends UnitaryTestCase
 
     public function testSearch()
     {
-        $itemSearchData = new ItemSearchData();
+        $itemSearchData = new ItemSearchDto();
 
         $queryResult = new QueryResult([1]);
 

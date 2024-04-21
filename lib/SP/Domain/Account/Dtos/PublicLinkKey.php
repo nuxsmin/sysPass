@@ -29,8 +29,6 @@ use SP\Util\PasswordUtil;
 
 /**
  * Class PublicLinkKey
- *
- * @package SP\Domain\Common\Services\PublicLink
  */
 final class PublicLinkKey
 {

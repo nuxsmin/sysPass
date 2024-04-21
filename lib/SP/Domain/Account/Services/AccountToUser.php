@@ -25,16 +25,16 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\Item;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Ports\AccountToUserService;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class AccountToUserService
+ * Class AccountToUser
  */
 final class AccountToUser extends Service implements AccountToUserService
 {

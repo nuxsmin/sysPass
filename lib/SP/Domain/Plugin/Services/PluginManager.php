@@ -25,9 +25,9 @@
 namespace SP\Domain\Plugin\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemSearchData;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -46,7 +46,6 @@ use function SP\__u;
  */
 final class PluginManager extends Service implements PluginManagerService
 {
-
     public function __construct(Application $application, private readonly PluginRepository $pluginRepository)
     {
         parent::__construct($application);
@@ -148,10 +147,10 @@ final class PluginManager extends Service implements PluginManagerService
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      * @return QueryResult<T>
      */
-    public function search(ItemSearchData $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->pluginRepository->search($itemSearchData);
     }
