@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,12 +31,13 @@ use SP\Domain\Http\RequestInterface;
 /**
  * Class RequestBasedPassword
  */
-final class RequestBasedPassword implements RequestBasedPasswordInterface
+final readonly class RequestBasedPassword implements RequestBasedPasswordInterface
 {
     public function __construct(
-        private readonly RequestInterface $request,
-        private readonly ConfigDataInterface $configData
-    ) {}
+        private RequestInterface    $request,
+        private ConfigDataInterface $configData
+    ) {
+    }
 
     public function build(): string
     {
@@ -55,7 +56,7 @@ final class RequestBasedPassword implements RequestBasedPasswordInterface
     private function getWellKnownData(): string
     {
         return sha1(
-            $this->request->getHeader('User-Agent').
+            $this->request->getHeader('User-Agent') .
             $this->request->getClientAddress()
         );
     }
