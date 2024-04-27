@@ -116,7 +116,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
-    public function testUpdateUserCannotChangePermissionsWithoutAdminApp()
+    public function testUpdateUserCannotChangePermissionsWithoutPermission()
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -124,9 +124,13 @@ class AccountTest extends UnitaryTestCase
 
         $this->context->setUserData(
             new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false])
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
             )
         );
+
+        $this->context->getUserProfile()->setAccPermission(false);
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
