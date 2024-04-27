@@ -66,7 +66,9 @@ class SerdeTest extends UnitaryTestCase
      */
     public function testDeserialize()
     {
-        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:" * attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
+        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
+                . "\0" . '*' . "\0" .
+                'attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
 
         $out = Serde::deserialize($data);
 
@@ -86,7 +88,9 @@ class SerdeTest extends UnitaryTestCase
      */
     public function testDeserializeWithClass()
     {
-        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:" * attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
+        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
+                . "\0" . '*' . "\0" .
+                'attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
 
         $out = Serde::deserialize($data, __PHP_Incomplete_Class::class);
 
@@ -106,7 +110,9 @@ class SerdeTest extends UnitaryTestCase
      */
     public function testDeserializeWithClassException()
     {
-        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:" * attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
+        $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
+                . "\0" . '*' . "\0" .
+                'attributes";a:4:{s:12:"passwordSalt";s:60:"901a4d025ab807564c3c46afc69ab9fd1ae25c6dbba7d62ce3b279f7523c";s:10:"configDate";i:1633156732;s:11:"configSaver";s:7:"sysPass";s:10:"configHash";s:40:"0f099212786ab8090432f2889ac37c2a977f164a";}}';
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Invalid target class');

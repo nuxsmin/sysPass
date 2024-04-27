@@ -85,7 +85,7 @@ final class Serde
     private static function fixSerialized(string $serialized): object
     {
         $dump = preg_replace_callback(
-            '/s:\d+:"[\x00\s]+[^\x00\s]*[\x00\s]+([^"]+)"/',
+            '/s:\d+:"\x00+[^\x00]*\x00+([^"]+)"/',
             static function ($matches) {
                 return 's:' . strlen($matches[1]) . ':"' . $matches[1] . '"';
             },
