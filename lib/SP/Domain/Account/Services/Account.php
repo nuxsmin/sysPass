@@ -25,8 +25,6 @@
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
@@ -54,9 +52,11 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 

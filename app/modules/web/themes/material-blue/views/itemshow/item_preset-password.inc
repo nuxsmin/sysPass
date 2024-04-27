@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,15 +23,16 @@
  */
 
 /**
- * @var Password $password
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var \SP\Domain\ItemPreset\Models\Password $password
+ * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\ItemPreset\Models\Password;
 use SP\Mvc\View\TemplateInterface;
 
 $password = $_getvar('password');

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,10 @@
 
 namespace SP\Mvc\Controller\Validators;
 
-use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPreset\PresetInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\Password;
+use SP\Domain\ItemPreset\Ports\PresetInterface;
 
 use function SP\__;
 use function SP\__u;

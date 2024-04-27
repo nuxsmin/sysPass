@@ -24,10 +24,6 @@
 
 namespace SP\Domain\ItemPreset\Models;
 
-use SP\DataModel\ItemPreset\AccountPermission;
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Domain\Common\Attributes\Hydratable;
 use SP\Domain\Common\Models\HydratableModel;
 use SP\Domain\Common\Models\Model;

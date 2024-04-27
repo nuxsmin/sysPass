@@ -32,10 +32,9 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Util;
+use SP\Util\Serde;
 
 use function SP\__u;
 use function SP\processException;
@@ -55,7 +54,7 @@ readonly class ConfigBackup implements ConfigBackupService
      */
     public static function configToJson(string $configData): string
     {
-        return JsonResponse::buildJsonFrom(Util::unserialize(ConfigData::class, $configData), JSON_PRETTY_PRINT);
+        return Serde::serializeJson(Serde::deserialize($configData, ConfigData::class), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -73,18 +72,17 @@ readonly class ConfigBackup implements ConfigBackupService
 
     private function packConfigData(ConfigDataInterface $configData): string
     {
-        return bin2hex(gzcompress(serialize($configData)));
+        return bin2hex(gzcompress(Serde::serialize($configData)));
     }
 
     /**
      * @throws FileException
      * @throws ServiceException
+     * @throws SPException
      */
     public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $configFile->save(
-            Util::unserialize(ConfigData::class, $this->getBackup())
-        )->getConfigData();
+        return $configFile->save(Serde::deserialize($this->getBackup(), ConfigData::class))->getConfigData();
     }
 
     /**

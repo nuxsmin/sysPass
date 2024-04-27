@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,6 +29,7 @@ use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use Random\RandomException;
 
 /**
  * Class PasswordUtil
@@ -51,7 +52,7 @@ final class PasswordUtil
      * @param int|null $flags Password chars included and checking strength flags
      *
      * @return string
-     * @throws Exception
+     * @throws RandomException
      */
     public static function randomPassword(int $length = 16, int $flags = null): string
     {

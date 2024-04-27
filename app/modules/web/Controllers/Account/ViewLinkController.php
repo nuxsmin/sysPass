@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -43,7 +43,7 @@ use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
 use SP\Util\ImageUtilInterface;
-use SP\Util\Util;
+use SP\Util\Serde;
 
 /**
  * Class ViewLinkController
@@ -56,10 +56,10 @@ final class ViewLinkController extends AccountControllerBase
     private ImageUtil      $imageUtil;
 
     public function __construct(
-        Application        $application,
+        Application       $application,
         WebControllerHelper $webControllerHelper,
-        AccountService     $accountService,
-        PublicLinkService  $publicLinkService,
+        AccountService    $accountService,
+        PublicLinkService $publicLinkService,
         ImageUtilInterface $imageUtil
     ) {
         parent::__construct(
@@ -98,9 +98,9 @@ final class ViewLinkController extends AccountControllerBase
                 $vault = unserialize($publicLinkData->getData(), ['allowed_classes' => [Vault::class]]);
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(
-                    AccountExtData::class,
-                    $vault->getData($this->publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey())
+                $accountData = Serde::deserialize(
+                    $vault->getData($this->publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey()),
+                    AccountExtData::class
                 );
 
                 $this->view->assign(

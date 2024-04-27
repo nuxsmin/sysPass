@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\ProfileData;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 
 /**
@@ -81,7 +81,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return ProfileData
+     * @return \SP\Domain\User\Models\ProfileData
      */
     private function getProfileDataFromRequest(): ProfileData
     {

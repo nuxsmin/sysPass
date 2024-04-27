@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SPT\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\TestCase;
-use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\Password;
 use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 /**
  * @var callable $_getvar
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var AccountExtData $accountData
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
@@ -32,9 +32,10 @@
  */
 
 use SP\DataModel\AccountExtData;
-use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Mvc\View\Components\SelectItem;
 
 ?>

@@ -25,16 +25,16 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Application;
-use SP\DataModel\ItemPreset\AccountPermission;
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\ItemPreset\Models\AccountPermission;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\Password;
+use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;

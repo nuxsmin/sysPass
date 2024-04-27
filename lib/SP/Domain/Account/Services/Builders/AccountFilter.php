@@ -26,12 +26,12 @@ namespace SP\Domain\Account\Services\Builders;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
-use SP\DataModel\ProfileData;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 
 /**
  * Class AccountFilterUser
@@ -93,7 +93,7 @@ final class AccountFilter implements AccountFilterBuilder
     /**
      * @param UserDataDto $userData
      * @param bool $useGlobalSearch
-     * @param ProfileData|null $userProfile
+     * @param \SP\Domain\User\Models\ProfileData|null $userProfile
      *
      * @return bool
      */

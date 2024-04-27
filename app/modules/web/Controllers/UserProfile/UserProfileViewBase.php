@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\DataModel\ProfileData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;

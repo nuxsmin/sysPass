@@ -24,9 +24,9 @@
 
 namespace SPT\Generators;
 
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemPreset\Password;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\Password;
 
 /**
  * Class ItemPresetDataGenerator

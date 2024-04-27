@@ -26,6 +26,7 @@ namespace SP\Infrastructure\File;
 
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Util\Serde;
 
 use function SP\__u;
 
@@ -52,7 +53,7 @@ class FileCache extends FileCacheBase
         $this->checkOrInitializePath($path);
         $this->createPath();
 
-        $this->path->write(serialize($data));
+        $this->path->write(Serde::serialize($data));
 
         return $this;
     }

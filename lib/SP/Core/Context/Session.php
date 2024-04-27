@@ -24,12 +24,12 @@
 
 namespace SP\Core\Context;
 
-use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 
 use function SP\__u;
 use function SP\getLastCaller;

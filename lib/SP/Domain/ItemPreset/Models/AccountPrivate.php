@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,12 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\ItemPreset;
+namespace SP\Domain\ItemPreset\Models;
 
 /**
- * Interface PresetInterface
+ * Class AccountPrivate
+ *
+ * TODO: serde using JSON
  */
-interface PresetInterface
+final readonly class AccountPrivate
 {
-    public function getPresetType(): string;
+    public function __construct(
+        private ?bool $privateUser = false,
+        private ?bool $privateGroup = false
+    ) {
+    }
+
+    public function isPrivateUser(): bool
+    {
+        return $this->privateUser;
+    }
+
+    public function isPrivateGroup(): bool
+    {
+        return $this->privateGroup;
+    }
 }

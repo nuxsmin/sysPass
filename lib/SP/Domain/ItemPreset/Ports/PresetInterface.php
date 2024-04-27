@@ -22,28 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\ItemPreset;
+namespace SP\Domain\ItemPreset\Ports;
 
 /**
- * Class AccountPrivate
- *
- * @package SP\DataModel
+ * Interface PresetInterface
  */
-final class AccountPrivate
+interface PresetInterface
 {
-    public function __construct(
-        private readonly ?bool $privateUser = false,
-        private readonly ?bool $privateGroup = false
-    ) {
-    }
-
-    public function isPrivateUser(): bool
-    {
-        return $this->privateUser;
-    }
-
-    public function isPrivateGroup(): bool
-    {
-        return $this->privateGroup;
-    }
+    public function getPresetType(): string;
 }

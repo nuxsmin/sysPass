@@ -27,7 +27,6 @@ namespace SP\Domain\Install\Services;
 
 use Exception;
 use SP\Core\Crypt\Hash;
-use SP\DataModel\ProfileData;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -39,6 +38,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\RequestInterface;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,7 @@ use RuntimeException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Util\Serde;
 
 /**
  * Class Vault
@@ -93,7 +94,7 @@ final class Vault implements VaultInterface
      */
     public function getSerialized(): string
     {
-        return serialize($this);
+        return Serde::serialize($this);
     }
 
     /**

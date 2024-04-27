@@ -26,6 +26,8 @@ namespace SP\Domain\Common\Models;
 
 use ReflectionClass;
 use SP\Domain\Common\Attributes\Hydratable;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Util\Serde;
 
 /**
  * Trait SerializedModel
@@ -37,6 +39,7 @@ trait SerializedModel
      * @param class-string<THydrate> $class
      *
      * @return THydrate|null
+     * @throws SPException
      */
     public function hydrate(string $class): ?object
     {
@@ -54,7 +57,7 @@ trait SerializedModel
             $property = $this->{$instance->getSourceProperty()};
 
             if (count($valid) > 0 && $property !== null) {
-                return unserialize($property, ['allowed_classes' => [$class]]) ?: null;
+                return Serde::deserialize($property, $class) ?: null;
             }
         }
 
@@ -78,7 +81,7 @@ trait SerializedModel
             );
 
             if (count($valid) > 0) {
-                return $this->mutate([$instance->getSourceProperty() => serialize($object)]);
+                return $this->mutate([$instance->getSourceProperty() => Serde::serialize($object)]);
             }
         }
 

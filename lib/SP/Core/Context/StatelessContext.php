@@ -24,8 +24,8 @@
 
 namespace SP\Core\Context;
 
-use SP\DataModel\ProfileData;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 
 use function SP\processException;
 

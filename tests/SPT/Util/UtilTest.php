@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,15 +25,15 @@
 namespace SPT\Util;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Util\Util;
+use SPT\UnitaryTestCase;
 
 /**
  * Class UtilTest
- *
- * @package SPT\Util
  */
-class UtilTest extends TestCase
+#[Group('unitary')]
+class UtilTest extends UnitaryTestCase
 {
     /**
      * This method is called after the last test of this test class is run.
@@ -71,16 +71,6 @@ class UtilTest extends TestCase
             [134217728, 134217728],
             [137438953472, 137438953472],
         ];
-    }
-
-    public function testCastToClass()
-    {
-        self::markTestIncomplete();
-    }
-
-    public function testUnserialize()
-    {
-        self::markTestIncomplete();
     }
 
     /**

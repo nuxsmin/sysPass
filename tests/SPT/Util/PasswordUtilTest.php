@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,14 +25,15 @@
 namespace SPT\Util;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Random\RandomException;
 use SP\Util\PasswordUtil;
 
 /**
  * Class PasswordUtilTest
- *
- * @package SPT\Util
  */
+#[Group('unitary')]
 class PasswordUtilTest extends TestCase
 {
 
@@ -56,6 +57,9 @@ class PasswordUtilTest extends TestCase
         }
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testRandomPassword()
     {
         $lengths = [16, 32, 64];
@@ -71,6 +75,9 @@ class PasswordUtilTest extends TestCase
         }
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testRandomPasswordNoFlags()
     {
         $pass = PasswordUtil::randomPassword(16, 0);
@@ -82,6 +89,9 @@ class PasswordUtilTest extends TestCase
         $this->assertEquals(0, $strength['number']);
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testRandomPasswordSpecial()
     {
         $flags = PasswordUtil::FLAG_PASSWORD_SPECIAL | PasswordUtil::FLAG_PASSWORD_STRENGTH;
@@ -94,6 +104,9 @@ class PasswordUtilTest extends TestCase
         $this->assertEquals(0, $strength['number']);
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testRandomPasswordNumbers()
     {
         $flags = PasswordUtil::FLAG_PASSWORD_NUMBER | PasswordUtil::FLAG_PASSWORD_STRENGTH;
@@ -106,9 +119,14 @@ class PasswordUtilTest extends TestCase
         $this->assertEquals(0, $strength['special']);
     }
 
+
+    /**
+     * @throws RandomException
+     */
     public function testRandomPasswordAll()
     {
-        $flags = PasswordUtil::FLAG_PASSWORD_NUMBER | PasswordUtil::FLAG_PASSWORD_SPECIAL | PasswordUtil::FLAG_PASSWORD_STRENGTH;
+        $flags = PasswordUtil::FLAG_PASSWORD_NUMBER | PasswordUtil::FLAG_PASSWORD_SPECIAL |
+                 PasswordUtil::FLAG_PASSWORD_STRENGTH;
         $pass = PasswordUtil::randomPassword(16, $flags);
         $strength = PasswordUtil::checkStrength(str_split($pass));
 

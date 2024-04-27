@@ -22,12 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Models\Model;
 
 /**
  * Class ProfileData
+ *
+ * TODO: serde using JSON
  */
 class ProfileData extends Model
 {
@@ -68,7 +70,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accView
+     * @param bool $accView
      *
      * @return ProfileData
      */
@@ -85,7 +87,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accViewPass
+     * @param bool $accViewPass
      *
      * @return ProfileData
      */
@@ -102,7 +104,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accViewHistory
+     * @param bool $accViewHistory
      *
      * @return ProfileData
      */
@@ -119,7 +121,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accEdit
+     * @param bool $accEdit
      *
      * @return ProfileData
      */
@@ -136,7 +138,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accEditPass
+     * @param bool $accEditPass
      *
      * @return ProfileData
      */
@@ -153,7 +155,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accAdd
+     * @param bool $accAdd
      *
      * @return ProfileData
      */
@@ -170,7 +172,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accDelete
+     * @param bool $accDelete
      *
      * @return ProfileData
      */
@@ -187,7 +189,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accFiles
+     * @param bool $accFiles
      *
      * @return ProfileData
      */
@@ -204,7 +206,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accPrivate
+     * @param bool $accPrivate
      *
      * @return ProfileData
      */
@@ -221,7 +223,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accPrivateGroup
+     * @param bool $accPrivateGroup
      *
      * @return ProfileData
      */
@@ -238,7 +240,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accPermission
+     * @param bool $accPermission
      *
      * @return ProfileData
      */
@@ -255,7 +257,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accPublicLinks
+     * @param bool $accPublicLinks
      *
      * @return ProfileData
      */
@@ -272,7 +274,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $accGlobalSearch
+     * @param bool $accGlobalSearch
      *
      * @return ProfileData
      */
@@ -289,7 +291,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $configGeneral
+     * @param bool $configGeneral
      *
      * @return ProfileData
      */
@@ -306,7 +308,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $configEncryption
+     * @param bool $configEncryption
      *
      * @return ProfileData
      */
@@ -323,7 +325,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $configBackup
+     * @param bool $configBackup
      *
      * @return ProfileData
      */
@@ -340,7 +342,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $configImport
+     * @param bool $configImport
      *
      * @return ProfileData
      */
@@ -357,7 +359,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmUsers
+     * @param bool $mgmUsers
      *
      * @return ProfileData
      */
@@ -374,7 +376,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmGroups
+     * @param bool $mgmGroups
      *
      * @return ProfileData
      */
@@ -391,7 +393,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmProfiles
+     * @param bool $mgmProfiles
      *
      * @return ProfileData
      */
@@ -408,7 +410,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmCategories
+     * @param bool $mgmCategories
      *
      * @return ProfileData
      */
@@ -425,7 +427,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmCustomers
+     * @param bool $mgmCustomers
      *
      * @return ProfileData
      */
@@ -442,7 +444,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmApiTokens
+     * @param bool $mgmApiTokens
      *
      * @return ProfileData
      */
@@ -459,7 +461,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmPublicLinks
+     * @param bool $mgmPublicLinks
      *
      * @return ProfileData
      */
@@ -476,7 +478,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmAccounts
+     * @param bool $mgmAccounts
      *
      * @return ProfileData
      */
@@ -493,7 +495,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmTags
+     * @param bool $mgmTags
      *
      * @return ProfileData
      */
@@ -510,7 +512,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmFiles
+     * @param bool $mgmFiles
      *
      * @return ProfileData
      */
@@ -527,7 +529,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmItemsPreset
+     * @param bool $mgmItemsPreset
      *
      * @return ProfileData
      */
@@ -544,7 +546,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $evl
+     * @param bool $evl
      *
      * @return ProfileData
      */
@@ -561,7 +563,7 @@ class ProfileData extends Model
     }
 
     /**
-     * @param  bool  $mgmCustomFields
+     * @param bool $mgmCustomFields
      *
      * @return ProfileData
      */

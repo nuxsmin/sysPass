@@ -32,11 +32,11 @@ use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
-use SP\DataModel\ProfileData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SPT\Generators\ConfigDataGenerator;
 

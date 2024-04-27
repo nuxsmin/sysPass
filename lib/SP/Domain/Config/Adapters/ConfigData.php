@@ -26,6 +26,7 @@ namespace SP\Domain\Config\Adapters;
 
 use SP\Core\DataCollection;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Util\Serde;
 use SP\Util\VersionUtil;
 
 /**
@@ -378,7 +379,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
      */
     public function setConfigHash(): ConfigDataInterface
     {
-        $this->set(ConfigDataInterface::CONFIG_HASH, sha1(serialize($this->getArrayCopy())));
+        $this->set(ConfigDataInterface::CONFIG_HASH, sha1(Serde::serialize($this->getArrayCopy())));
 
         return $this;
     }

@@ -24,12 +24,12 @@
 
 namespace SP\Domain\Account\Ports;
 
-use SP\DataModel\ProfileData;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 
 /**
  * Class AccountAclService

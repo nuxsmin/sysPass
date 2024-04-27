@@ -25,9 +25,9 @@
 namespace SP\Domain\Core\Context;
 
 use SP\Core\Context\ContextException;
-use SP\DataModel\ProfileData;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Models\ProfileData;
 
 /**
  * Class Context

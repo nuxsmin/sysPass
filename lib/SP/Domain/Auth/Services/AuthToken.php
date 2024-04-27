@@ -47,6 +47,7 @@ use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Util\PasswordUtil;
+use SP\Util\Serde;
 
 use function SP\__u;
 
@@ -228,7 +229,7 @@ final class AuthToken extends Service implements AuthTokenService
         $this->authTokenRepository->transactionAware(
             function () use ($authToken) {
                 $token = $this->generateToken();
-                $vault = serialize($this->getSecureData($token, $authToken->getHash()));
+                $vault = Serde::serialize($this->getSecureData($token, $authToken->getHash()));
 
                 $this->authTokenRepository->refreshTokenByUserId(
                     $authToken->getUserId(),

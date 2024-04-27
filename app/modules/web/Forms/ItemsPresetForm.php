@@ -24,14 +24,14 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\DataModel\ItemPreset\AccountPermission;
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\AccountPermission;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\Password;
+use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
@@ -120,7 +120,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return AccountPermission
+     * @return \SP\Domain\ItemPreset\Models\AccountPermission
      * @throws ValidationException
      */
     private function makePermissionPreset(): AccountPermission
@@ -166,7 +166,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return Password
+     * @return \SP\Domain\ItemPreset\Models\Password
      * @throws ValidationException
      */
     private function makePasswordPreset(): Password

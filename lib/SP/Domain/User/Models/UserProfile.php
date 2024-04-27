@@ -24,7 +24,6 @@
 
 namespace SP\Domain\User\Models;
 
-use SP\DataModel\ProfileData;
 use SP\Domain\Common\Attributes\Hydratable;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Models\Model;

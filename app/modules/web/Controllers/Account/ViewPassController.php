@@ -30,11 +30,11 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\ItemPreset\Password;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
@@ -113,7 +113,7 @@ final class ViewPassController extends AccountControllerBase
     }
 
     /**
-     * @return Password
+     * @return \SP\Domain\ItemPreset\Models\Password
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException

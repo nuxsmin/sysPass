@@ -31,9 +31,9 @@
  * @var TemplateInterface $this
  */
 
-use SP\DataModel\ProfileData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 use SP\Mvc\View\TemplateInterface;
 

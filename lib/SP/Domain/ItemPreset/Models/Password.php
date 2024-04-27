@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,12 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\ItemPreset;
+namespace SP\Domain\ItemPreset\Models;
+
+use SP\Domain\ItemPreset\Ports\PresetInterface;
 
 /**
  * Class Password
  *
- * @package SP\DataModel\ItemPreset
+ * TODO: serde using JSON
  */
 class Password implements PresetInterface
 {
@@ -35,29 +37,17 @@ class Password implements PresetInterface
 
     public const EXPIRE_TIME_MULTIPLIER = 86400;
 
-    /**
-     * @param  int  $length
-     * @param  bool  $useNumbers
-     * @param  bool  $useLetters
-     * @param  bool  $useSymbols
-     * @param  bool  $useUpper
-     * @param  bool  $useLower
-     * @param  bool  $useImage
-     * @param  int  $expireTime
-     * @param  int  $score
-     * @param  string|null  $regex
-     */
     public function __construct(
-        private int $length,
-        private bool $useNumbers,
-        private bool $useLetters,
-        private bool $useSymbols,
-        private bool $useUpper,
-        private bool $useLower,
-        private bool $useImage,
-        private int $expireTime,
-        private int $score,
-        private ?string $regex = null
+        private readonly int     $length,
+        private readonly bool    $useNumbers,
+        private readonly bool    $useLetters,
+        private readonly bool    $useSymbols,
+        private readonly bool    $useUpper,
+        private readonly bool    $useLower,
+        private readonly bool    $useImage,
+        private int              $expireTime,
+        private readonly int     $score,
+        private readonly ?string $regex = null
     ) {
         $this->expireTime = $expireTime * self::EXPIRE_TIME_MULTIPLIER;
     }

@@ -31,6 +31,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+use SP\Util\Serde;
 use SP\Util\Util;
 
 use function SP\logger;
@@ -222,7 +223,7 @@ final class Task implements TaskInterface
     {
         logger("Register Task: $this->name");
 
-        $this->fileTask->save(serialize($this));
+        $this->fileTask->save(Serde::serialize($this));
 
         return $this;
     }
@@ -238,7 +239,7 @@ final class Task implements TaskInterface
     {
         logger("Register Task (session): $this->name");
 
-        $this->fileTask->save(serialize($this));
+        $this->fileTask->save(Serde::serialize($this));
 
         Session::close();
 

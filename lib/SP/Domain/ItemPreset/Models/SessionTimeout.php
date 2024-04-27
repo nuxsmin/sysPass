@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel\ItemPreset;
+namespace SP\Domain\ItemPreset\Models;
 
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
@@ -30,37 +30,26 @@ use SP\Http\Address;
 /**
  * Class SessionTimeout
  *
- * @package SP\DataModel\ItemPreset
+ * TODO: serde using JSON
  */
-class SessionTimeout
+readonly class SessionTimeout
 {
-    /**
-     * @var string
-     */
-    private $address;
-    /**
-     * @var string
-     */
-    private $mask;
-    /**
-     * @var int
-     */
-    private $timeout;
+    private string $address;
+    private string $mask;
 
     /**
      * SessionTimeout constructor.
      *
      * @param string $address IP address and/or mask
-     * @param int    $timeout Timeout in seconds
+     * @param int $timeout Timeout in seconds
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(string $address, int $timeout)
+    public function __construct(string $address, private int $timeout)
     {
         $parse = Address::parse4($address);
 
         $this->address = $parse['address'];
-        $this->timeout = $timeout;
 
         $this->setMask($parse);
     }
@@ -68,7 +57,7 @@ class SessionTimeout
     /**
      * @param array $parse
      */
-    private function setMask(array $parse)
+    private function setMask(array $parse): void
     {
         if (isset($parse['cidr'])) {
             $this->mask = Address::cidrToDec($parse['cidr']);
@@ -79,25 +68,16 @@ class SessionTimeout
         }
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
-    /**
-     * @return string
-     */
     public function getMask(): string
     {
         return $this->mask;
     }
 
-    /**
-     * @return int
-     */
     public function getTimeout(): int
     {
         return $this->timeout;

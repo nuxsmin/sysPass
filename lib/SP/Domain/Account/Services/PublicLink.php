@@ -48,6 +48,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
+use SP\Util\Serde;
 
 use function SP\__u;
 
@@ -200,7 +201,7 @@ final class PublicLink extends Service implements PublicLinkService
         ];
 
         return Vault::factory($this->crypt)
-                    ->saveData(serialize($account->mutate($properties)), $key->getKey())
+            ->saveData(Serde::serialize($account->mutate($properties)), $key->getKey())
                     ->getSerialized();
     }
 
@@ -292,7 +293,7 @@ final class PublicLink extends Service implements PublicLinkService
 
         $useInfo[] = self::getUseInfo($publicLink->getHash(), $this->request);
 
-        $this->publicLinkRepository->addLinkView($publicLink->mutate(['useInfo' => serialize($useInfo)]));
+        $this->publicLinkRepository->addLinkView($publicLink->mutate(['useInfo' => Serde::serialize($useInfo)]));
     }
 
     /**

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,10 @@
 namespace SP\Util;
 
 use JetBrains\PhpStorm\NoReturn;
+use JsonException;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+
 use function SP\logger;
 
 /**
@@ -46,12 +48,12 @@ final class Util
         $checkDir = static function ($dir) {
             $file = 'syspass.test';
 
-            if (file_exists($dir.DIRECTORY_SEPARATOR.$file)) {
+            if (file_exists($dir . DIRECTORY_SEPARATOR . $file)) {
                 return $dir;
             }
 
             if (is_dir($dir) || mkdir($dir) || is_dir($dir)) {
-                if (touch($dir.DIRECTORY_SEPARATOR.$file)) {
+                if (touch($dir . DIRECTORY_SEPARATOR . $file)) {
                     return $dir;
                 }
             }
@@ -109,8 +111,8 @@ final class Util
      * Also takes into account some text-based representations of true of false,
      * such as 'false','N','yes','on','off', etc.
      *
-     * @param  mixed  $in  The variable to check
-     * @param  bool  $strict  If set to false, consider everything that is not false to
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
      *                      be true.
      *
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
@@ -140,80 +142,10 @@ final class Util
     }
 
     /**
-     * Cast an object to another class, keeping the properties, but changing the methods
-     *
-     * @param  string  $dstClass  Destination class name
-     * @param  string|object  $serialized
-     * @param  string|null  $srcClass  Old class name for removing from private methods
-     *
-     * @return mixed
-     */
-    public static function unserialize(string $dstClass, string|object $serialized, ?string $srcClass = null): mixed
-    {
-        if (!is_object($serialized)) {
-            $match = preg_match_all('/O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
-
-            $process = false;
-
-            if ($match) {
-                foreach ($matches['class'] as $class) {
-                    if ($class !== $dstClass || !class_exists($class)) {
-                        $process = true;
-                    }
-                }
-
-                if ($process === false) {
-                    return unserialize($serialized);
-                }
-            }
-
-            // Serialized data needs to be processed to change the class name
-            if ($process === true) {
-                // If source class is set, it will try to clean up the class name from private methods
-                if ($srcClass !== null) {
-                    $serialized = preg_replace_callback(
-                        '/:\d+:"\x00'.preg_quote($srcClass, '/').'\x00(\w+)"/',
-                        static function ($matches) {
-                            return ':'.strlen($matches[1]).':"'.$matches[1].'"';
-                        },
-                        $serialized
-                    );
-                }
-
-                return self::castToClass($serialized, $dstClass);
-            }
-
-            if (preg_match('/a:\d+:{/', $serialized)) {
-                return unserialize($serialized);
-            }
-        }
-
-        return $serialized;
-    }
-
-    /**
-     * Cast an object to another class
-     */
-    public static function castToClass($cast, $class)
-    {
-        // TODO: should avoid '__PHP_Incomplete_Class'?
-
-        $cast = is_object($cast) ? serialize($cast) : $cast;
-
-        return unserialize(
-            preg_replace(
-                '/O:\d+:"[^"]++"/',
-                'O:'.strlen($class).':"'.$class.'"',
-                $cast
-            )
-        );
-    }
-
-    /**
      * Bloquear la aplicación
      *
-     * @throws \JsonException
-     * @throws \SP\Infrastructure\File\FileException
+     * @throws JsonException
+     * @throws FileException
      */
     public static function lockApp(int $userId, string $subject): void
     {
@@ -239,7 +171,7 @@ final class Util
      * Comprueba si la aplicación está bloqueada
      *
      * @return bool|string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function getAppLock(): bool|string
     {
