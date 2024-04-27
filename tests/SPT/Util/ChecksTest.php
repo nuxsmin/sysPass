@@ -22,29 +22,26 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util;
+namespace SPT\Util;
+
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use SP\Util\Checks;
 
 /**
- * Class Checks
+ * Class ChecksTest
  */
-final class Checks
+#[Group('unitary')]
+class ChecksTest extends TestCase
 {
-    private const MIN_PHP_VERSION = 80200;
-    private const MAX_PHP_VERSION = 80300;
 
-    /**
-     * Comprobar si sysPass se ejecuta en W$indows.
-     */
-    public static function checkIsWindows(): bool
+    public function testCheckIsWindows()
     {
-        return PHP_OS_FAMILY === 'Windows';
+        $this->assertFalse(Checks::checkIsWindows());
     }
 
-    /**
-     * Comprobar la versión de PHP.
-     */
-    public static function checkPhpVersion(): bool
+    public function testCheckPhpVersion()
     {
-        return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
+        $this->assertTrue(Checks::checkPhpVersion());
     }
 }

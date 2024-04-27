@@ -22,29 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util;
+namespace SPT\Util;
+
+use PHPUnit\Framework\Attributes\Group;
+use SP\Util\DateUtil;
+use SPT\UnitaryTestCase;
 
 /**
- * Class Checks
+ * Class DateUtilTest
  */
-final class Checks
+#[Group('unitary')]
+class DateUtilTest extends UnitaryTestCase
 {
-    private const MIN_PHP_VERSION = 80200;
-    private const MAX_PHP_VERSION = 80300;
-
-    /**
-     * Comprobar si sysPass se ejecuta en W$indows.
-     */
-    public static function checkIsWindows(): bool
+    public function testGetDateFromUnix()
     {
-        return PHP_OS_FAMILY === 'Windows';
+        $out = DateUtil::getDateFromUnix(self::$faker->unixTime());
+
+        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/', $out);
     }
 
-    /**
-     * Comprobar la versión de PHP.
-     */
-    public static function checkPhpVersion(): bool
+    public function testGetDateFromUnixFromString()
     {
-        return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
+        $date = self::$faker->date();
+        $out = DateUtil::getDateFromUnix($date);
+
+        $this->assertEquals($date, $out);
     }
 }
